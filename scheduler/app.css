@@ -1237,6 +1237,77 @@ button.scheduler-row-head__num::after {
 .scheduler-card__road-lamp > .scheduler-card__road-name { font-weight: 600; }
 .scheduler-card__road-lamp--stop > .scheduler-card__road-name { color: var(--rux-text-error); }
 .scheduler-card__road-fault { color: var(--rux-text-secondary); }
+/* The trip card's On the road row: what the bar's live line says, the
+   warning's name in its colour, and an arrow, one press that opens the live
+   card. */
+.scheduler-card__live-open {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  inline-size: 100%;
+  margin-block-start: var(--rux-spacing-02);
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  border: 0;
+  background: var(--card-hover);
+  color: var(--card-ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-card__live-open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+.scheduler-card__live-said { flex: none; font-weight: 600; }
+.scheduler-card__live-open--error > .scheduler-card__live-said { color: var(--rux-text-error); }
+.scheduler-card__live-more { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
+.scheduler-card__live-open > svg { flex: none; fill: currentColor; }
+/* THE LIVE CARD, data.js's drawLiveCard: wider than the trip card, for its
+   map. Each warning is a band tinted its colour, its mark and name over
+   the sentence that says why; the map stands under them with its two links;
+   each driver's clocks are three meters, filled to what is left of what the
+   rule allows, amber under an hour; the tank and the engine close it. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card--live) {
+  inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
+  overflow-y: auto;
+}
+.scheduler-card__live-warn {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--rux-spacing-01) var(--rux-spacing-03);
+  align-items: center;
+}
+.scheduler-card__live-warn--error { background: color-mix(in srgb, var(--rux-support-error) 16%, transparent); }
+.scheduler-card__live-warn--warning { background: color-mix(in srgb, var(--rux-support-warning) 18%, transparent); }
+.scheduler-card__live-warn > svg { flex: none; fill: currentColor; }
+.scheduler-card__live-warn--error > svg { color: var(--rux-support-error); }
+.scheduler-card__live-warn--warning > svg { color: var(--scheduler-mark-warning); }
+.scheduler-card__live-why { grid-column: 2; color: var(--card-ink); }
+.scheduler-card__live-map { display: grid; gap: var(--rux-spacing-03); padding-block: var(--rux-spacing-03); }
+.scheduler-card__live-map-box { block-size: 12rem; background: var(--rux-layer-01); }
+.scheduler-card__live-map-box.leaflet-container { font: inherit; }
+.scheduler-card__live-links { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
+.scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
+.scheduler-card__live-clocks {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  gap: var(--rux-spacing-01) var(--rux-spacing-03);
+  align-items: center;
+  padding-inline-start: calc(16px + var(--rux-spacing-03));
+}
+.scheduler-card__live-clock { color: var(--rux-text-secondary); }
+.scheduler-card__live-meter {
+  block-size: 6px;
+  border-radius: 3px;
+  background: linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left, 0%) 100% no-repeat,
+    var(--rux-layer-accent-01);
+}
+.scheduler-card__live-meter--low {
+  background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left, 0%) 100% no-repeat,
+    var(--rux-layer-accent-01);
+}
+.scheduler-card__live-left { font-variant-numeric: tabular-nums; }
+.scheduler-card__live-left--low { color: var(--rux-text-primary); font-weight: 600; }
+.scheduler-card__live-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02) var(--rux-spacing-03); color: var(--rux-text-secondary); }
+.scheduler-card__live-seen { margin-inline-start: auto; }
 /* An update: its author's 16px face in the column the alerts' marks stand
    in, its words, and its age at the right of its first line, so every age
    stands in one column. */
@@ -1579,7 +1650,8 @@ button.scheduler-row-head__num::after {
   inset-block: 0;
   inset-inline-start: 0;
   inline-size: 3px;
-  background: var(--scheduler-mark-success);
+  color: var(--scheduler-mark-success);
+  background: currentColor;
   pointer-events: none;
 }
 /* A BAR COMING ON THE ROAD starts as a bus does, data.js's roadStart. With
@@ -1607,7 +1679,7 @@ button.scheduler-row-head__num::after {
   44% { opacity: .8; }
   52% { opacity: .15; }
   60% { opacity: 1; box-shadow: none; }
-  66% { opacity: 1; box-shadow: 0 0 10px 2px var(--scheduler-mark-success); }
+  66% { opacity: 1; box-shadow: 0 0 10px 2px currentColor; }
   100% { opacity: 1; box-shadow: none; }
 }
 @keyframes scheduler-road-lit { from { opacity: 0; } }
@@ -1632,6 +1704,43 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-update .scheduler-bar__road { display: none; }
 /* Named with its line, to outrank the row's first child, which may shrink. */
 .scheduler-bar__road > * { flex: none; }
+/* WHAT THE LINE SAYS FIRST, data.js's roadBar from live-trip.js: the worst
+   warning, its mark and name in red or amber and its few words, or where
+   the bus is on its leg. The line is one row high and
+   wraps out of sight what does not fit, so a warning keeps its place and
+   the gauges go on a bar too narrow for both; where the bus is comes after
+   the gauges and goes first. A warning's words are cut short to fit. The
+   edge takes the warning's colour. */
+.scheduler-bar--road > .scheduler-bar__road {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  block-size: var(--scheduler-row-h);
+  overflow: hidden;
+}
+.scheduler-bar__road > .scheduler-road__says {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.scheduler-bar__road > .scheduler-road__says--phase { order: 1; }
+.scheduler-road__says svg { flex: none; inline-size: 13px; block-size: 13px; }
+.scheduler-road__said { flex: none; white-space: nowrap; }
+.scheduler-road__says--error .scheduler-road__said,
+.scheduler-road__says--warning .scheduler-road__said { font-weight: 600; }
+/* The words and their mark in the colours a bar's words take, which every
+   theme sets to read on its bars; the edge keeps the mark colours. */
+.scheduler-road__says--error .scheduler-road__said,
+.scheduler-road__says--error svg { color: var(--scheduler-age-old); }
+.scheduler-road__says--warning .scheduler-road__said,
+.scheduler-road__says--warning svg { color: var(--scheduler-age-week); }
+.scheduler-road__more { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-road__gauges { display: flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-road__says--error + .scheduler-road__gauges,
+.scheduler-road__says--warning + .scheduler-road__gauges { margin-inline-start: auto; }
+.scheduler-road__edge--error { color: var(--scheduler-mark-error); background: currentColor; }
+.scheduler-road__edge--warning { color: var(--scheduler-mark-warning); background: currentColor; }
 /* The arrow the bus heads by, turned to its heading. */
 .scheduler-road__heading { display: flex; color: var(--scheduler-mark-success); }
 .scheduler-road__heading svg { inline-size: 13px; block-size: 13px; transform: rotate(var(--scheduler-heading, 0deg)); }

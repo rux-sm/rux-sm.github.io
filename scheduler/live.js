@@ -26,6 +26,7 @@
   const Road = window.SchedulerRoad;
   const W = window.SchedulerWeek;
   const Places = window.SchedulerPlaces;
+  const LiveMap = window.SchedulerLiveMap;
 
   const ASK_EVERY = 60e3;
   const TRIPS_EVERY = 5 * 60e3;
@@ -139,31 +140,18 @@
     : b.mph ? `${b.mph} mph` : b.mph === 0 ? 'Stopped' : b.engine === 'on' ? 'Running' : 'No reading');
 
   // ── the map ─────────────────────────────────────────────────────────────
-  /* The tiles follow the theme: the light street map on a light page and
-     the dark one on a dark page, read off the page's own background. */
-  const darkPage = () => {
-    const [r, g, b] = (getComputedStyle(document.body).backgroundColor.match(/\d+/g) || [255, 255, 255]).map(Number);
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b < 128;
-  };
+  /* live-map.js draws the pins and the leg, as the board's live card does.
+     The tiles follow the theme, read off the page's own background. */
   let style = null;
   function styleMap() {
-    const want = darkPage() ? 'dark-matter-brown' : 'osm-bright';
+    const want = LiveMap.style();
     if (map && want !== style) { style = want; map.style(want); }
   }
 
-  /* A bus's pin: its number on its trip's colour, with an arrow turned the
-     way it heads while it moves. Only a bus out on a trip has one; the rest
-     are in the Yard beside the map. The arrow is the sprite's glyph copied
-     in, since Chrome paints no `<use>` of the hidden sprite inside Leaflet's
-     layers. */
-  const ARROW = '#m-arrow_upward-fill';
-  const arrowGlyph = () => document.getElementById(ARROW.slice(1))?.innerHTML ?? '';
-  function pinHtml(s) {
-    const arrow = s.bus.heading != null && s.bus.mph > 0
-      ? `<svg class="scheduler-live-pin__arrow" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" style="rotate:${s.bus.heading}deg">${arrowGlyph()}</svg>` : '';
-    const cls = `scheduler-live-pin scheduler-bar--${s.hue}${s.bus.bus_id === chosen ? ' scheduler-live-pin--chosen' : ''}`;
-    return `<div class="${cls}">${arrow}<span>${s.number}</span></div>`;
-  }
+  /* A bus's pin: only a bus out on a trip has one; the rest are in the Yard
+     beside the map. */
+  const pinHtml = s => LiveMap.pinHtml({ number: s.number, hue: s.hue, heading: s.bus.heading, moving: s.bus.mph > 0,
+    chosen: s.bus.bus_id === chosen });
 
   function drawPins(out) {
     const L = window.L;
@@ -186,27 +174,11 @@
     for (const [id, pin] of pins) if (!out.some(s => s.bus.bus_id === id && s.here)) { pin.remove(); pins.delete(id); }
   }
 
-  /* The chosen bus's leg: the path it has driven, its stops, a ring for
-     each and filled once reached, and a dashed line from the bus on to its
-     next stop. Each draws in a class app.css colours. */
+  // The chosen bus's leg, as live-map.js draws it.
+  const legOf = s => ({ path: s.bus.path, here: s.here, stop: s.stop, at: s.where.at, stops: s.stops, reached: s.where.reached, clock });
   function drawLeg(s) {
-    const L = window.L;
     legLayer?.remove();
-    legLayer = null;
-    if (!s?.out) return;
-    legLayer = L.layerGroup().addTo(map);
-    const path = (s.bus.path || []).map(p => [p[0], p[1]]);
-    if (path.length > 1) L.polyline(path, { className: 'scheduler-live-path', interactive: false }).addTo(legLayer);
-    if (s.stop && !s.where.at && s.here && s.stop.point) {
-      L.polyline([s.here, s.stop.point], { className: 'scheduler-live-ahead', interactive: false }).addTo(legLayer);
-    }
-    s.stops.forEach((stop, i) => {
-      if (!stop.point) return;
-      const reached = i <= s.where.reached;
-      L.circleMarker(stop.point, { radius: 6, className: `scheduler-live-stop${reached ? ' scheduler-live-stop--reached' : ''}` })
-        .bindTooltip(`${stop.name}${stop.due != null ? ` · ${clock(stop.due)}` : ''}`, { direction: 'top', offset: [0, -6] })
-        .addTo(legLayer);
-    });
+    legLayer = s?.out ? LiveMap.drawLeg(map, legOf(s)) : null;
   }
 
   // ── the panel ───────────────────────────────────────────────────────────
@@ -296,7 +268,7 @@
 
   // The map moves to a bus out on a trip, and its whole leg.
   function focus(s) {
-    const points = [s.here, ...(s.bus.path || []).map(p => [p[0], p[1]]), ...s.stops.filter(x => x.point).map(x => x.point)];
+    const points = LiveMap.pointsOf(legOf(s));
     if (points.length > 1) map.fitBounds(points, { padding: [48, 48], maxZoom: 15 });
     else map.setView(s.here, 15);
   }
@@ -320,9 +292,9 @@
     if (busRows.error) throw busRows.error;
     busesById = new Map((busRows.data || []).map(b => [b.id, b]));
     slow = Number(settings.data?.find(r => r.key === 'route-times-v1')?.value?.drive_slowdown_percent) || 0;
-    map = Places.baseMap($('scheduler-live-map'), darkPage() ? 'dark-matter-brown' : 'osm-bright');
+    map = Places.baseMap($('scheduler-live-map'), LiveMap.style());
     if (!map) { say('error', "The map didn't load", Places.unavailable() || 'Reload the page to try again.'); return; }
-    style = darkPage() ? 'dark-matter-brown' : 'osm-bright';
+    style = LiveMap.style();
     map.setView([26.2, -98.2], 9);
     new ResizeObserver(() => map.invalidateSize()).observe($('scheduler-live-map'));
     // A theme picked while the page is open turns the tiles with it.

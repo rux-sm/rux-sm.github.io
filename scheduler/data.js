@@ -760,10 +760,13 @@
      and three rows say what Samsara says. The time row is the leg's clock: the
      departure, a line that fills from yard-out to yard-back with the bus
      drawn at now, and the return, the line amber while the bus will reach its
-     next stop late. The update's row gives way to the bus: an arrow turned the
-     way it heads and its speed, or Idle or Off with how long, or No signal
-     with how long since Samsara last heard from it; then a fuel gauge and
-     the tank's percent, amber under a quarter. An engine lamp sits at the
+     next stop late. The update's row gives way to the bus: first the worst of
+     live-trip.js's warnings, its mark and name in red or amber and a few
+     words, with the edge in its colour, or with none where the bus is on its
+     leg; then at the row's end an arrow turned the way it heads and its
+     speed, or Idle or Off with how long, or No signal with how long since
+     Samsara last heard from it, and a fuel gauge and the tank's percent,
+     amber under a quarter. An engine lamp sits at the
      destination row's end, red for the stop lamp and amber for a warning,
      with what its codes say on its tooltip. Each driver Samsara has in the bus
      wears their duty in place of their dot, ringed by the driving hours they
@@ -771,9 +774,9 @@
      name; the one at the wheel is bold. The next stop and when the bus gets
      there are the trip's card's and the line's tooltip, road.js working them
      out. A driver at the wheel the bar does not name is named on the line
-     before the speed. A bar is out from its yard-out to its yard-back
-     whatever the engine is doing, and in the two hours either side only while
-     it runs. The samsara-now Edge Function is asked once a minute, and only
+     before the speed. A bar is out from ten minutes before its yard-out to
+     its yard-back whatever the engine is doing, and in the two hours either
+     side only while it runs. The samsara-now Edge Function is asked once a minute, and only
      while such a bar is on the board and the page is in view. */
   const ROAD_EVERY = 60e3;
   const ROAD_HOUR = 3600e3;
@@ -784,6 +787,8 @@
     off: { icon: '#m-power_settings_new-fill', word: 'Off duty' },
   };
   const Road = window.SchedulerRoad;
+  const Live = window.SchedulerLiveTrip;
+  const LiveMap = window.SchedulerLiveMap;
   const roadHours = ms => `${Math.floor(ms / ROAD_HOUR)}:${String(Math.floor((ms % ROAD_HOUR) / 60e3)).padStart(2, '0')}`;
   // A leg's stretch on the road, padded at each end, as road.js reads it.
   const roadSpan = leg => Road.span(leg);
@@ -876,9 +881,13 @@
   function drawRoad() {
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
       const bus = roadBusOf(bar);
-      const out = !!bar.dataset.roadFrom && Road.isOut(bus, [Number(bar.dataset.roadFrom), Number(bar.dataset.roadTo)]);
+      const span = [Number(bar.dataset.roadFrom), Number(bar.dataset.roadTo)];
+      const out = !!bar.dataset.roadFrom && (Road.isOut(bus, span) || Live.watching(bus, span));
       roadBar(bar, out ? bus : null);
     }
+    // A live card that shows follows its bus with each answer.
+    const shown = selectedBar();
+    if (shown && liveFor === barKey(shown)) placeBarOpen(shown);
   }
 
   // One driver's duty on their name: the mark ringed by the hours left, bold
@@ -946,61 +955,104 @@
     setTimeout(() => bar.classList.remove(name), ROAD_START_MS);
   }
 
+  // The drivers a bar names, by id.
+  const roadNamed = bar => new Set([...bar.querySelectorAll(':scope > .scheduler-bar__drivers > .scheduler-bar__crew > .scheduler-crew')]
+    .map(c => c.dataset.driverId).filter(Boolean));
+
+  /* What live-trip.js says of an out bar's bus: its warnings, worst first,
+     and where it is on its leg. Handed the drivers the bar names, every bus
+     in Samsara's answer, the yard's point and the leg's yard-out, and each
+     stop's drive and whether its wait is rest, from the trip's own stops. */
+  function roadLook(bar, bus, next, named) {
+    const rows = new Map((heldTrip(bar.dataset.tripId)?.trip_stops ?? []).map(s => [String(s.id), s]));
+    const look = {
+      bus, next, named: [...named], now: Date.now(),
+      others: roadAnswer?.buses ?? [],
+      numberOf: id => panelIndex.buses.get(id)?.number ?? null,
+      yard: yardPlace ? [Number(yardPlace.lat), Number(yardPlace.lng)] : null,
+      yardOut: Number(bar.dataset.roadFrom) + Road.MARGIN,
+      drives: (next?.stops ?? []).map(s => {
+        const row = rows.get(s.key);
+        return { min: driveMin(row?.drive), rest: ['off', 'sleeper'].includes(row?.dwell_status) };
+      }),
+    };
+    return { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) };
+  }
+
   function roadBar(bar, bus) {
     const next = bus ? roadNext(bar, bus) : null;
     const done = bus ? roadDone(bar) : null;
-    const key = bus ? JSON.stringify([bus.engine, bus.engine_at && roadAgo(bus.engine_at), bus.mph, bus.heading, bus.place,
-      bus.fuel, bus.fault, bus.faults, bus.seen && roadAgo(bus.seen), bus.drivers, done,
-      next?.stop?.key, next?.at, next?.arrival, next?.late]) : '';
-    if ((bar.dataset.road ?? '') === key) return;
-    if (key) bar.dataset.road = key; else delete bar.dataset.road;
-    bar.classList.toggle('scheduler-bar--road', !!bus);
-    const edge = bar.querySelector(':scope > .scheduler-road__edge');
-    if (bus && !edge) { bar.appendChild(el('span', 'scheduler-road__edge')); roadStart(bar, bus); }
-    else if (!bus) edge?.remove();
-    roadTimes(bar, done, !!next?.late);
-    roadLamp(bar, bus);
-    const line = bar.querySelector(':scope > .scheduler-bar__road');
     const crewBox = bar.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
     const crew = crewBox ? [...crewBox.querySelectorAll(':scope > .scheduler-crew')] : [];
     const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
+    const said = bus ? roadLook(bar, bus, next, named) : null;
+    const key = bus ? JSON.stringify([bus.engine, bus.engine_at && roadAgo(bus.engine_at), bus.mph, bus.heading, bus.place,
+      bus.fuel, bus.fault, bus.faults, bus.seen && roadAgo(bus.seen), bus.drivers, done,
+      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase]) : '';
+    if ((bar.dataset.road ?? '') === key) return;
+    if (key) bar.dataset.road = key; else delete bar.dataset.road;
+    bar.classList.toggle('scheduler-bar--road', !!bus);
+    const worst = said?.warnings[0] ?? null;
+    // The edge in the worst warning's colour, red or amber, else green.
+    let edge = bar.querySelector(':scope > .scheduler-road__edge');
+    if (bus && !edge) { edge = el('span', 'scheduler-road__edge'); bar.appendChild(edge); roadStart(bar, bus); }
+    else if (!bus) { edge?.remove(); edge = null; }
+    if (edge) edge.className = `scheduler-road__edge${worst ? ` scheduler-road__edge--${worst.tone}` : ''}`;
+    roadTimes(bar, done, !!next?.late);
+    roadLamp(bar, bus);
+    const line = bar.querySelector(':scope > .scheduler-bar__road');
     for (const item of crew) roadCrew(item, bus?.drivers.find(d => d.driver_id && d.driver_id === item.dataset.driverId) ?? null);
     if (crewBox) fitCrew(crewBox);
     if (!line) return;
     if (!bus) { line.replaceChildren(); line.removeAttribute('title'); return; }
-    const parts = [];
+    /* The line says one thing first: the worst warning, its mark, its name
+       and its few words, or with none where the bus is on its leg. The
+       gauges follow at the line's end. */
+    const says = el('span', 'scheduler-road__says');
+    if (worst) {
+      says.classList.add(`scheduler-road__says--${worst.tone}`);
+      says.append(svgUse(worst.tone === 'error' ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 16 16'),
+        el('span', 'scheduler-road__said', worst.title), el('span', 'scheduler-road__more', worst.detail));
+    } else if (said.phase) {
+      says.classList.add('scheduler-road__says--phase');
+      says.append(el('span', 'scheduler-road__said', said.phase.title));
+      if (said.phase.detail) says.appendChild(el('span', 'scheduler-road__more', said.phase.detail));
+    }
+    const gauges = el('span', 'scheduler-road__gauges');
     const wheel = bus.drivers.find(d => d.wheel) ?? null;
     if (wheel && !named.has(wheel.driver_id)) {
-      parts.push(el('span', 'scheduler-road__who', roadShort(wheel.name)));
-      if (wheel.left_ms != null) parts.push(roadHoursEl(wheel.left_ms));
+      gauges.appendChild(el('span', 'scheduler-road__who', roadShort(wheel.name)));
+      if (wheel.left_ms != null) gauges.appendChild(roadHoursEl(wheel.left_ms));
     }
     /* What the engine is doing: moving, the arrow the way it heads and the
        speed; idling or off, for how long; with no reading, how long since
        Samsara last heard from the bus. */
-    if (bus.engine == null) parts.push(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.seen ? `No signal ${roadAgo(bus.seen)}` : 'No signal'));
-    else if (bus.engine === 'idle') parts.push(el('span', 'scheduler-road__state scheduler-road__state--idle', bus.engine_at ? `Idle ${roadAgo(bus.engine_at)}` : 'Idle'));
-    else if (bus.engine === 'off') parts.push(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.engine_at ? `Off ${roadAgo(bus.engine_at)}` : 'Off'));
+    if (bus.engine == null) gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.seen ? `No signal ${roadAgo(bus.seen)}` : 'No signal'));
+    else if (bus.engine === 'idle') gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--idle', bus.engine_at ? `Idle ${roadAgo(bus.engine_at)}` : 'Idle'));
+    else if (bus.engine === 'off') gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.engine_at ? `Off ${roadAgo(bus.engine_at)}` : 'Off'));
     else {
       if (bus.heading != null) {
         const arrow = el('span', 'scheduler-road__heading');
         arrow.style.setProperty('--scheduler-heading', `${bus.heading}deg`);
         arrow.appendChild(svgUse('#m-navigation-fill', '16', '0 0 16 16'));
-        parts.push(arrow);
+        gauges.appendChild(arrow);
       }
-      if (bus.mph != null) parts.push(el('span', 'scheduler-road__speed', String(bus.mph)), el('span', 'scheduler-road__unit', 'mph'));
-      else parts.push(el('span', 'scheduler-road__state', 'Running'));
+      if (bus.mph != null) gauges.append(el('span', 'scheduler-road__speed', String(bus.mph)), el('span', 'scheduler-road__unit', 'mph'));
+      else gauges.appendChild(el('span', 'scheduler-road__state', 'Running'));
     }
     // The tank: a gauge and its percent, amber under a quarter.
     if (bus.fuel != null) {
       const low = bus.fuel < ROAD_LOW_FUEL;
       const gauge = el('span', `scheduler-road__fuel${low ? ' scheduler-road__fuel--low' : ''}`);
       gauge.style.setProperty('--scheduler-fuel', `${bus.fuel}%`);
-      parts.push(gauge, el('span', `scheduler-road__fuel-pct${low ? ' scheduler-road__fuel-pct--low' : ''}`, `${bus.fuel}%`));
+      gauges.append(gauge, el('span', `scheduler-road__fuel-pct${low ? ' scheduler-road__fuel-pct--low' : ''}`, `${bus.fuel}%`));
     }
-    line.replaceChildren(...parts);
+    line.replaceChildren(...[says, gauges].filter(x => x.childNodes.length));
     const arrives = next?.stop && !next.at && next.arrival != null
       ? `${next.stop.name}: arrives ${hhmm(Road.clockOf(next.arrival), true)}${next.stop.due != null ? `, due ${hhmm(Road.clockOf(next.stop.due), true)}` : ''}${next.late ? `, ${next.late} min late` : ''}` : null;
+    // Every warning heads the tooltip, each in a sentence.
     line.title = [
+      ...said.warnings.map(w => `${w.title}: ${w.sentence}`),
       [bus.engine === 'idle' ? 'Idling' : bus.engine === 'off' ? 'Engine off' : bus.engine == null ? 'No engine reading'
         : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
       bus.fuel != null ? `Fuel ${bus.fuel}%` : null,
@@ -1011,6 +1063,25 @@
   }
 
   setInterval(askRoad, ROAD_EVERY);
+
+  /* THE LIVE CARD opens from a press on an out bar's live line, in the
+     card's place; a press anywhere else on the bar shows the trip card, as it
+     always has, and a press on the line of a bar whose live card shows puts
+     the card away, as a second press on a bar does. It runs before app.js's
+     own press, which it stops only to turn a shown card from one to the
+     other. `liveFor` is the bar, by barKey, whose card is the live one. */
+  let liveFor = null;
+  gridEl?.addEventListener('click', e => {
+    const bar = e.target.closest('.scheduler-bar');
+    if (!bar?.dataset.tripId || e.detail > 1) return;
+    const key = barKey(bar);
+    const onLine = !!bar.dataset.road && !!e.target.closest('.scheduler-bar__road');
+    const selected = bar.getAttribute('aria-pressed') === 'true';
+    if (onLine && selected && liveFor === key) { liveFor = null; return; }
+    const want = onLine ? key : null;
+    if (selected && liveFor !== want) { liveFor = want; e.stopPropagation(); placeBarOpen(bar); return; }
+    liveFor = want;
+  }, true);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && Date.now() - roadAsked > ROAD_EVERY) askRoad();
   });
@@ -14454,7 +14525,7 @@
     const key = [docked, bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip),
-      JSON.stringify(barFacts.get(bar) ?? null)].join('|');
+      JSON.stringify(barFacts.get(bar) ?? null), liveFor === barKey(bar) ? `live ${bar.dataset.road ?? ''}` : ''].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
     // carries the trip's rows ahead of them.
@@ -14476,7 +14547,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [drawCard(trip, bar)] : []));
+    }), ...(carded ? [liveFor === barKey(bar) && bar.dataset.road ? drawLiveCard(trip, bar) : drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
@@ -15048,6 +15119,168 @@
     }
     return list;
   }
+  /* THE LIVE CARD'S MAP: one Leaflet map, made the first time a live card
+     opens and moved into each live card drawn after, so a card drawn again
+     with each answer keeps the office's own zoom; it fits the leg afresh
+     only for another bus. live-map.js loads Leaflet and draws the pin and
+     the leg, as the Live map page does. */
+  let liveMap = null;
+  async function liveMapInto(holder, bar, bus, next, hue) {
+    const none = words => holder.isConnected && holder.replaceWith(el('p', 'scheduler-card__live-none', words));
+    try { await LiveMap.load(); } catch { none("The map didn't load. Show on Live map opens it."); return; }
+    if (!holder.isConnected) return;
+    if (!liveMap) {
+      const host = el('div', 'scheduler-card__live-map-box');
+      holder.replaceWith(host);
+      const map = window.SchedulerPlaces.baseMap(host, LiveMap.style(), { scrollWheelZoom: false });
+      if (!map) { host.replaceWith(el('p', 'scheduler-card__live-none', window.SchedulerPlaces.unavailable() || "The map didn't load.")); return; }
+      liveMap = { host, map, layer: null, pin: null, busId: null, style: LiveMap.style() };
+    } else holder.replaceWith(liveMap.host);
+    const { map } = liveMap;
+    map.invalidateSize();
+    const want = LiveMap.style();
+    if (want !== liveMap.style) { liveMap.style = want; map.style(want); }
+    const here = bus.lat != null && bus.lng != null ? [bus.lat, bus.lng] : null;
+    const leg = { path: bus.path, here, stop: next?.stop ?? null, at: !!next?.at, stops: next?.stops ?? [],
+      reached: next?.where.reached ?? -1, clock: ms => hhmm(Road.clockOf(ms), true) };
+    liveMap.layer?.remove();
+    liveMap.layer = LiveMap.drawLeg(map, leg);
+    liveMap.pin?.remove();
+    liveMap.pin = here ? window.L.marker(here, { keyboard: false, interactive: false, icon: window.L.divIcon({
+      className: 'scheduler-live-pin-box', iconSize: null,
+      html: LiveMap.pinHtml({ number: panelIndex.buses.get(bar.dataset.busId)?.number ?? '', hue, heading: bus.heading, moving: bus.mph > 0 }),
+    }) }).addTo(map) : null;
+    if (liveMap.busId !== bus.bus_id) {
+      liveMap.busId = bus.bus_id;
+      const points = LiveMap.pointsOf(leg);
+      if (points.length > 1) map.fitBounds(points, { padding: [24, 24], maxZoom: 14 });
+      else map.setView(points[0] ?? [26.2, -98.2], points.length ? 13 : 9);
+    }
+    // The card pops in at a smaller scale, so the map measures itself again once it settles.
+    requestAnimationFrame(() => map.invalidateSize());
+  }
+
+  // A driver's three clocks, each against the most its rule allows.
+  const LIVE_CLOCKS = [['Drive', 'drive_ms', 10 * ROAD_HOUR], ['Shift', 'shift_ms', 15 * ROAD_HOUR], ['Cycle', 'cycle_ms', 70 * ROAD_HOUR]];
+  function drawLiveCard(trip, bar) {
+    const card = el('div', 'scheduler-card scheduler-card--live');
+    card.dataset.tripId = trip.id;
+    const row = cls => el('div', `scheduler-card__row ${cls}`);
+    const bus = roadBusOf(bar);
+    const number = panelIndex.buses.get(bar.dataset.busId)?.number;
+    const back = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__action', 'Trip card');
+    back.type = 'button';
+    back.setAttribute('aria-label', 'Show the trip card');
+    back.addEventListener('click', () => { liveFor = null; placeBarOpen(bar); });
+    const head = row('scheduler-card__live-head');
+    head.appendChild(cardTitle(number != null ? `Bus ${number} on the road` : 'On the road', null, back));
+    card.appendChild(head);
+    if (!bus) return card;
+    const next = roadNext(bar, bus);
+    const said = roadLook(bar, bus, next, roadNamed(bar));
+    // Each warning in a band of its colour: its mark, its name and why.
+    for (const w of said.warnings) {
+      const band = row(`scheduler-card__live-warn scheduler-card__live-warn--${w.tone}`);
+      band.append(svgUse(w.tone === 'error' ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 16 16'),
+        el('strong', 'scheduler-card__live-warn-name', w.title), el('span', 'scheduler-card__live-why', w.sentence));
+      card.appendChild(band);
+    }
+    // The map of the leg, then where to see more of it.
+    const mapRow = row('scheduler-card__live-map');
+    const holder = el('div', 'scheduler-card__live-map-box');
+    const links = el('div', 'scheduler-card__live-links');
+    const link = (words, href, away) => {
+      const a = el('a', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
+      a.href = href;
+      if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+      return a;
+    };
+    if (bus.lat != null && bus.lng != null) links.appendChild(link('Open in Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
+    links.appendChild(link('Show on Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
+    mapRow.append(holder, links);
+    card.appendChild(mapRow);
+    liveMapInto(holder, bar, bus, next, hueFor(trip));
+    /* The stops still to come, each with the time it is due, the next with
+       when the bus gets there and how late. */
+    const toCome = next ? next.stops.filter((st, i) => i > next.where.reached || (next.at && i === next.where.reached)) : [];
+    if (toCome.length) {
+      const part = row('scheduler-card__road');
+      part.appendChild(cardTitle('Stops'));
+      const list = el('ul', 'scheduler-card__road-list');
+      for (const st of toCome) {
+        const isNext = st === next.stop;
+        const item = el('li', `scheduler-card__road-stop${isNext ? ' scheduler-card__road-stop--next' : ''}`);
+        item.append(el('span', 'scheduler-card__road-name', st.name || 'Stop'));
+        const when = el('span', 'scheduler-card__road-words');
+        if (isNext && next.at) when.textContent = 'Here now';
+        else {
+          const words = [st.due != null ? `Due ${hhmm(Road.clockOf(st.due), true)}` : null,
+            isNext && next.arrival != null ? `arrives ${hhmm(Road.clockOf(next.arrival), true)}` : null,
+            isNext && next.late ? `${next.late} min late` : null].filter(Boolean).join(' · ');
+          when.textContent = words || 'No time';
+          if (isNext && next.late) when.classList.add('scheduler-card__road-words--late');
+        }
+        item.appendChild(when);
+        list.appendChild(item);
+      }
+      part.appendChild(list);
+      card.appendChild(part);
+    }
+    // Each driver in the bus, the one at the wheel first, with their three clocks.
+    if (bus.drivers.length) {
+      const part = row('scheduler-card__road');
+      part.appendChild(cardTitle('Drivers'));
+      const list = el('ul', 'scheduler-card__road-list');
+      for (const d of [...bus.drivers].sort((a, b) => b.wheel - a.wheel)) {
+        const item = el('li', 'scheduler-card__live-driver');
+        const who = el('div', `scheduler-card__road-driver${d.wheel ? ' scheduler-card__road-driver--wheel' : ''}`);
+        who.append(d.duty ? roadMark(d.duty) : el('span', 'scheduler-crew__duty'), el('span', 'scheduler-card__road-name', d.name),
+          el('span', 'scheduler-card__road-words', [ROAD_DUTY[d.duty]?.word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')));
+        const clocks = el('div', 'scheduler-card__live-clocks');
+        for (const [name, field, most] of LIVE_CLOCKS) {
+          const ms = d[field];
+          if (ms == null) continue;
+          const low = ms < ROAD_HOUR;
+          const meter = el('span', `scheduler-card__live-meter${low ? ' scheduler-card__live-meter--low' : ''}`);
+          meter.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, ms / most) * 100)}%`);
+          clocks.append(el('span', 'scheduler-card__live-clock', name), meter,
+            el('span', `scheduler-card__live-left${low ? ' scheduler-card__live-left--low' : ''}`, `${roadHours(ms)} left`));
+        }
+        item.appendChild(who);
+        if (clocks.children.length) item.appendChild(clocks);
+        list.appendChild(item);
+      }
+      part.appendChild(list);
+      card.appendChild(part);
+    }
+    // An engine lamp that is on, with what each of its codes says.
+    if (bus.fault) {
+      const part = row('scheduler-card__road');
+      const lamps = el('ul', 'scheduler-card__road-list');
+      const item = el('li', `scheduler-card__road-lamp scheduler-card__road-lamp--${bus.fault}`);
+      item.append(el('span', 'scheduler-card__road-name', bus.fault === 'stop' ? 'Engine stop lamp on' : 'Engine warning lamp on'));
+      for (const words of bus.faults ?? []) item.appendChild(el('span', 'scheduler-card__road-fault', words));
+      lamps.appendChild(item);
+      part.appendChild(lamps);
+      card.appendChild(part);
+    }
+    // The tank, what the engine is doing, and when Samsara last heard.
+    const foot = row('scheduler-card__live-foot');
+    if (bus.fuel != null) {
+      const low = bus.fuel < ROAD_LOW_FUEL;
+      const gauge = el('span', `scheduler-road__fuel${low ? ' scheduler-road__fuel--low' : ''}`);
+      gauge.style.setProperty('--scheduler-fuel', `${bus.fuel}%`);
+      foot.append(el('span', 'scheduler-card__live-fuel', 'Fuel'), gauge,
+        el('span', `scheduler-road__fuel-pct${low ? ' scheduler-road__fuel-pct--low' : ''}`, `${bus.fuel}%`));
+    }
+    foot.appendChild(el('span', 'scheduler-card__live-motion', bus.engine === 'idle' ? `Idle${bus.engine_at ? ` ${roadAgo(bus.engine_at)}` : ''}`
+      : bus.engine === 'off' ? `Engine off${bus.engine_at ? ` ${roadAgo(bus.engine_at)}` : ''}` : bus.engine == null ? 'No engine reading'
+      : bus.mph != null ? `${bus.mph} mph` : 'Engine on'));
+    foot.appendChild(el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
+    card.appendChild(foot);
+    return card;
+  }
+
   function drawCard(trip, bar) {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
@@ -15095,55 +15328,23 @@
       }
       needsList.appendChild(band);
     }
-    /* ON THE ROAD: while the bar is out, the leg's stops still to come, each
-       with the time it is due, the next with when the bus gets there, then
-       each driver Samsara has in the bus, with their duty and the driving
-       hours they have left, the one at the wheel first. An engine lamp that
-       is on heads the section, with what each of its codes says. */
-    const onRoad = bar?.dataset.road ? roadBusOf(bar) : null;
-    const ahead = onRoad ? roadNext(bar, onRoad) : null;
-    const toCome = ahead ? ahead.stops.filter((st, i) => i > ahead.where.reached || (ahead.at && i === ahead.where.reached)) : [];
-    if (onRoad && (onRoad.drivers.length || toCome.length || onRoad.fault)) {
+    /* ON THE ROAD: while the bar is out, one row saying what its live line
+       says, the worst warning or where the bus is, which opens the live
+       card. */
+    if (bar?.dataset.road) {
+      const bus = roadBusOf(bar);
+      const said = bus ? roadLook(bar, bus, roadNext(bar, bus), roadNamed(bar)) : null;
+      const worst = said?.warnings[0] ?? null;
+      const words = worst ? [worst.title, worst.detail] : said?.phase ? [said.phase.title, said.phase.detail] : ['Out on its leg', ''];
       const part = row('scheduler-card__road');
-      const head = el('div', 'scheduler-card__title');
-      head.appendChild(el('span', 'scheduler-card__heading', 'On the road'));
-      part.appendChild(head);
-      if (onRoad.fault) {
-        const lamps = el('ul', 'scheduler-card__road-list');
-        const item = el('li', `scheduler-card__road-lamp scheduler-card__road-lamp--${onRoad.fault}`);
-        item.append(el('span', 'scheduler-card__road-name', onRoad.fault === 'stop' ? 'Engine stop lamp on' : 'Engine warning lamp on'));
-        for (const words of onRoad.faults ?? []) item.appendChild(el('span', 'scheduler-card__road-fault', words));
-        lamps.appendChild(item);
-        part.appendChild(lamps);
-      }
-      if (toCome.length) {
-        const stopsList = el('ul', 'scheduler-card__road-list');
-        for (const st of toCome) {
-          const isNext = st === ahead.stop;
-          const item = el('li', `scheduler-card__road-stop${isNext ? ' scheduler-card__road-stop--next' : ''}`);
-          item.append(el('span', 'scheduler-card__road-name', st.name || 'Stop'));
-          const when = el('span', 'scheduler-card__road-words');
-          if (isNext && ahead.at) when.textContent = 'Here now';
-          else {
-            const said = [st.due != null ? `Due ${hhmm(Road.clockOf(st.due), true)}` : null,
-              isNext && ahead.arrival != null ? `arrives ${hhmm(Road.clockOf(ahead.arrival), true)}` : null,
-              isNext && ahead.late ? `${ahead.late} min late` : null].filter(Boolean).join(' · ');
-            when.textContent = said || 'No time';
-            if (isNext && ahead.late) when.classList.add('scheduler-card__road-words--late');
-          }
-          item.appendChild(when);
-          stopsList.appendChild(item);
-        }
-        part.appendChild(stopsList);
-      }
-      const list = el('ul', 'scheduler-card__road-list');
-      for (const d of [...onRoad.drivers].sort((a, b) => b.wheel - a.wheel)) {
-        const item = el('li', `scheduler-card__road-driver${d.wheel ? ' scheduler-card__road-driver--wheel' : ''}`);
-        item.append(d.duty ? roadMark(d.duty) : el('span', 'scheduler-crew__duty'),
-          el('span', 'scheduler-card__road-name', d.name), el('span', 'scheduler-card__road-words', roadWords({ ...d, wheel: false })));
-        list.appendChild(item);
-      }
-      if (list.children.length) part.appendChild(list);
+      part.appendChild(cardTitle('On the road'));
+      const open = el('button', `scheduler-card__live-open${worst ? ` scheduler-card__live-open--${worst.tone}` : ''}`);
+      open.type = 'button';
+      open.setAttribute('aria-label', `Open the live card: ${words.filter(Boolean).join(', ')}`);
+      open.append(el('span', 'scheduler-card__live-said', words[0]), el('span', 'scheduler-card__live-more', words[1] || ''),
+        svgUse('#m-keyboard_arrow_right', '16', '0 0 16 16'));
+      open.addEventListener('click', () => { liveFor = barKey(bar); placeBarOpen(bar); });
+      part.appendChild(open);
       card.appendChild(part);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over

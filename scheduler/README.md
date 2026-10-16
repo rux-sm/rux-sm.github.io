@@ -134,7 +134,7 @@ fills in comes back as a link that opens the editor at `./?draft=<id>` with
 the filled fields marked, and Save there writes it. `docs/working-from-claude.md`
 is how to use it, and section 4 of `docs/database-inventory.md` is what it is.
 Trip documents open through `trip-document-link/`; `samsara-miles/` fills Actual
-miles, and `samsara-now/` shows a bus out on its trip, its speed, fuel, engine lamp and drivers, on its bar and on the Live map, `live.html`.
+miles, and `samsara-now/` shows a bus out on its trip, its warnings, speed, fuel, engine lamp and drivers, on its bar, in its live card and on the Live map, `live.html`.
 
 The schedule grid and the trip bar are this app's own; Carbon has neither.
 Everything else is Design's, linked live at `/design/…` with no copy here.

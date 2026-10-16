@@ -90,6 +90,21 @@
     return [...order.filter(id => on.includes(id)), ...on.filter(id => !order.includes(id))];
   }
 
+  /* MORE PASSENGERS THAN SEATS. `seatsOf` is the seats a leg's buses have
+     between them, from each bus's capacity, or null while a vehicle on it has
+     no bus or a bus with its seats unrecorded, since only a whole leg can be
+     counted. `overSeats` says the passengers the trip carries over those
+     seats, in words, or null when they fit or either is unknown. The Buses
+     tab, the bar and its card read both, so they say it alike; it is a
+     warning and asks nothing more, since the office decides what to send. */
+  const seatsTotal = capacities => (capacities.length && capacities.every(c => Number(c) > 0)
+    ? capacities.reduce((sum, c) => sum + Number(c), 0) : null);
+  const seatsOf = (trip, leg, busesById = new Map()) => seatsTotal((trip.trip_assignments || [])
+    .filter(a => (a.leg || 'outbound') === leg)
+    .map(a => (a.bus_id != null ? busesById.get(a.bus_id)?.capacity ?? null : null)));
+  const overSeats = (people, seats) => (Number(people) > 0 && seats != null && Number(people) > seats
+    ? `${Number(people)} passengers and ${seats} seats` : null);
+
   /* Where the bus this leg is on falls short of a requirement, said in full,
      or null. No bus means nothing to compare, and an unrecorded capacity is
      not a shortfall. */
@@ -317,7 +332,7 @@
 
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
-    needIds, requirementsOf, shortfall, needsFor, wrongType,
+    needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
     setDriverForms, readDriverForms, formKindsOf, driverFormsOf,
   };

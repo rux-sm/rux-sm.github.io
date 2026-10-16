@@ -24,25 +24,6 @@ site.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
 
-### A clash on a saved trip
-
-- **One rule, `scheduler/clashes.js`, says what stands in a saved trip's
-  way:** another trip, time off, days out, Inactive, or a licence or medical
-  card that runs out before the leg ends.
-- **A clash is by the clock.** Two legs that share only the day one ends and
-  the other begins clash when the second leaves before the first is back. A
-  leg with no times counts as a clash, because unknown is not fine.
-- **The bar, `checklist.js` and Prep read that one answer,** so they cannot
-  disagree. A placeholder raises nothing on itself.
-- **A clash warns and never refuses.** Save says what the date change now
-  clashes with and goes through, because the other trip may be about to move.
-- **A lapsed card is never picked automatically.** A person can still pick
-  that driver and is told in words, because the date on file may be old.
-- **A date move takes Buses done off,** as it takes Route and Billing off,
-  because the bus was chosen for other days.
-- **A bus's own dates stay on the Fleet page,** raising nothing on a trip.
-- **More passengers than seats is an alert on the bar,** and stays a warning.
-
 ### The driver
 
 - **What a driver's job reads as is one file, `scheduler/driver-job.js`,**
@@ -151,10 +132,6 @@ site.
 None open.
 
 ## Tasks
-
-### Clashes
-
-- [ ] Put the seats sum in `leg-facts.js` and alert on the bar and its card.
 
 ### The driver and the links
 

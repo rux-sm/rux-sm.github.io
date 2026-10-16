@@ -1,0 +1,30 @@
+// Runs leg-facts.js's seat count against invented legs: the seats a leg's
+// buses have between them, and when the passengers are more than that.
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+
+const window = {};
+for (const f of ['../requirements.js', '../leg-facts.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+const { seatsOf, overSeats } = window.SchedulerLegFacts;
+
+let failed = 0;
+function expect(name, got, want) {
+  const ok = JSON.stringify(got) === JSON.stringify(want);
+  if (!ok) failed++;
+  console.log(`   ${ok ? 'ok  ' : 'FAIL'}  ${name}${ok ? '' : `\n         got  ${JSON.stringify(got)}\n         want ${JSON.stringify(want)}`}`);
+}
+
+const buses = new Map([['b56', { capacity: 56 }], ['b36', { capacity: 36 }], ['bx', { capacity: null }]]);
+const trip = (...ids) => ({ trip_assignments: ids.map(bus_id => ({ leg: 'outbound', bus_id })) });
+
+expect('a leg\'s seats are its buses\' seats added up', seatsOf(trip('b56', 'b36'), 'outbound', buses), 92);
+expect('a vehicle with no bus yet leaves the leg uncounted', seatsOf(trip('b56', null), 'outbound', buses), null);
+expect('a bus with its seats unrecorded leaves the leg uncounted', seatsOf(trip('b56', 'bx'), 'outbound', buses), null);
+expect('a leg with no vehicles is uncounted', seatsOf(trip(), 'outbound', buses), null);
+expect('the other leg\'s buses are not counted', seatsOf({ trip_assignments: [{ leg: 'return', bus_id: 'b56' }] }, 'outbound', buses), null);
+expect('more passengers than seats is said in words', overSeats(60, 56), '60 passengers and 56 seats');
+expect('as many as the seats fit', overSeats(56, 56), null);
+expect('no headcount or no count of seats says nothing', [overSeats(null, 56), overSeats(0, 56), overSeats(60, null)], [null, null, null]);
+
+console.log(failed ? `\n  ${failed} fault(s) in leg facts` : '\n  leg facts: every case passed');
+process.exit(failed ? 1 : 0);

@@ -31,7 +31,7 @@
      reads a leg as the board does. */
   const {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
-    needIds, requirementsOf, shortfall, needsFor, wrongType,
+    needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact,
   } = window.SchedulerLegFacts;
 
@@ -1093,14 +1093,16 @@
     const clashes = placeholder || !assign ? []
       : standingFor(trip, leg.leg, driversById, busesById).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
-    barFacts.set(bar, { needs, misfits });
+    // More passengers than the leg's buses seat, a warning on every bar of the leg.
+    const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.leg, busesById));
+    barFacts.set(bar, { needs, misfits, overSeated });
 
     /* The one mark, at the destination row's end: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
        a mistake on the board; the warning colour is a job still to do. A trip
        with both shows red, and a trip with no alert shows no mark. A mark,
        not a button, because the bar is the button. */
-    const alerts = alertsOf(trip, { needs, misfits });
+    const alerts = alertsOf(trip, { needs, misfits, overSeated });
     const attention = alerts.length
       ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
@@ -3156,16 +3158,13 @@
     // What the trip needs stays, and keeps any focus in it; the vehicles redraw.
     for (const n of [...panelFleet.children]) if (!n.hasAttribute('data-fleet-needs')) n.remove();
     const split = fleetSplit();
-    /* MORE PASSENGERS THAN SEATS IS SAID, AND NOTHING MORE: the office decides
-       what to send, so no need is turned on and no bus added. A leg is counted
-       once every vehicle on it has a bus whose seats are recorded, and its
-       notice stands over its own vehicles. */
+    /* MORE PASSENGERS THAN SEATS IS SAID, AND NOTHING MORE, by leg-facts.js's
+       rule: no need is turned on and no bus added. Its notice stands over the
+       leg's own vehicles. */
     const people = passengersNow();
     const seatsShort = buses => {
-      const seats = buses.map(b => Number(panelIndex.buses.get(b.busId)?.capacity) || null);
-      if (!people || !seats.length || seats.includes(null)) return null;
-      const total = seats.reduce((a, n) => a + n, 0);
-      return people > total ? notice('warning', 'More passengers than seats', `${people} passengers and ${total} seats.`) : null;
+      const over = overSeats(people, seatsTotal(buses.map(b => panelIndex.buses.get(b.busId)?.capacity ?? null)));
+      return over ? notice('warning', 'More passengers than seats', `${over.charAt(0).toUpperCase()}${over.slice(1)}.`) : null;
     };
     for (const leg of ['outbound', 'return']) {
       const buses = editing.fleet[leg];
@@ -14628,6 +14627,7 @@
     if (!dayOfContact(trip) && !trip.contact_not_needed) {
       list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
     }
+    if (facts?.overSeated) list.push({ row: 'scheduler-card__warn', go: 'fleet', spot: 'seats', words: `More passengers than seats: ${facts.overSeated}` });
     for (const n of facts?.needs ?? []) {
       if (n.done || n.short) continue;
       list.push({ row: 'scheduler-card__warn', go: n.id === 'hos' ? 'forms' : 'billing', spot: n.id, words: TODO_WORDS[n.id] ?? n.label });

@@ -11,7 +11,7 @@
   "updated": "2026-10-04",
   "status": "approved",
   "summary": "ship a sales order for an item already in stock, and check inventory went down.",
-  "order": 7,
+  "order": 8,
   "sources": [
     "tdsls4246m000",
     "tdsls4501m140",

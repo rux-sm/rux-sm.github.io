@@ -551,7 +551,7 @@
       "code": "tdsls4534s000",
       "name": "Sales Order Line Status",
       "purpose": "Lists a sales order line's activities and the next order step that must be performed.",
-      "route": "Status on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)"
+      "route": "References ➔ Status on the form of one order line, Sales Order Lines (tdsls4101m000); the help names Status on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)"
     },
     {
       "code": "tdsls4601m000",

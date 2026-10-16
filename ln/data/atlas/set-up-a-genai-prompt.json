@@ -8,10 +8,10 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-13",
+  "updated": "2026-10-15",
   "status": "draft",
   "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
-  "order": 0,
+  "order": 1,
   "sources": [
     "ttrpi5560m000",
     "ttrpi5100m000",
@@ -3001,6 +3001,29 @@
       "kind": "prose",
       "tokens": [
         {
+          "t": "strong",
+          "v": "To run a command rather than build one"
+        },
+        {
+          "t": "text",
+          "v": ", see "
+        },
+        {
+          "t": "link",
+          "v": "Use the AI commands",
+          "href": "use-the-ai-commands.md"
+        },
+        {
+          "t": "text",
+          "v": ". It covers this example's stock check and a status check on a sales order line."
+        }
+      ],
+      "text": "To run a command rather than build one, see Use the AI commands. It covers this example's stock check and a status check on a sales order line."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
           "t": "text",
           "v": "> "
         },
@@ -4276,6 +4299,99 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Every part, even when empty"
+                }
+              ],
+              "text": "Every part, even when empty"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Keeps a part the model would drop"
+                }
+              ],
+              "text": "Keeps a part the model would drop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On a prompt about an order line, the list of its activities was left out until this was said"
+                }
+              ],
+              "text": "On a prompt about an order line, the list of its activities was left out until this was said"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Which rows to print"
+                }
+              ],
+              "text": "Which rows to print"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A filter the model applies to the rows it is sent"
+                }
+              ],
+              "text": "A filter the model applies to the rows it is sent"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The same prompt printed every activity of the line, most of them not applicable. Told only to name the first activity not executed, it named one that did not apply"
+                }
+              ],
+              "text": "The same prompt printed every activity of the line, most of them not applicable. Told only to name the first activity not executed, it named one that did not apply"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A name for a code"
+                }
+              ],
+              "text": "A name for a code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The name behind a code the dataset cannot reach"
+                }
+              ],
+              "text": "The name behind a code the dataset cannot reach"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The next step came back as a session code"
+                }
+              ],
+              "text": "The next step came back as a session code"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Nothing to report"
                 }
               ],
@@ -4329,6 +4445,37 @@
                 }
               ],
               "text": "Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A case of its own"
+                }
+              ],
+              "text": "A case of its own"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The words for a kind of record the general rule misreads"
+                }
+              ],
+              "text": "The words for a kind of record the general rule misreads"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A canceled order line was given a next step"
+                }
+              ],
+              "text": "A canceled order line was given a next step"
             }
           ]
         },
@@ -4660,6 +4807,28 @@
               "tokens": [
                 {
                   "t": "literal",
+                  "v": "Write these parts in this order, and write every part, even when it is empty."
+                }
+              ],
+              "text": "Write these parts in this order, and write every part, even when it is empty."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
                   "v": "First line: [what opens the answer]."
                 }
               ],
@@ -4708,6 +4877,28 @@
                 }
               ],
               "text": "If there are no [rows of that kind], write \"[the exact words]\"."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "literal",
+                  "v": "For these codes, write the name instead of the code: [code] is [name]. Write any other code as it is."
+                }
+              ],
+              "text": "For these codes, write the name instead of the code: [code] is [name]. Write any other code as it is."
             }
           ]
         },
@@ -4895,10 +5086,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The example: an item, its stock in each warehouse and its planned receipts and issues"
+                  "v": "The example: an item, its stock in each warehouse and its planned receipts and issues. A status check on a sales order line, with its blocking records, its activities and its deliveries"
                 }
               ],
-              "text": "The example: an item, its stock in each warehouse and its planned receipts and issues"
+              "text": "The example: an item, its stock in each warehouse and its planned receipts and issues. A status check on a sales order line, with its blocking records, its activities and its deliveries"
             }
           ]
         },
@@ -5313,6 +5504,37 @@
                 }
               ],
               "text": "Type part of its name in the box above Description"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Dataset Modeler opens as two empty panes"
+                }
+              ],
+              "text": "The Dataset Modeler opens as two empty panes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
+                }
+              ],
+              "text": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
             }
           ]
         },
@@ -5909,5 +6131,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 5
+  "openIssues": 6
 }

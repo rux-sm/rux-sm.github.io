@@ -11,7 +11,7 @@
   "updated": "2026-09-02",
   "status": "draft",
   "summary": "buy raw materials on a purchase order and receive them into a warehouse.",
-  "order": 4,
+  "order": 5,
   "sources": [
     "tccom4120s000",
     "tccom4520m000",

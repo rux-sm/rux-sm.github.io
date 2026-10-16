@@ -13,7 +13,7 @@
   "updated": "2026-09-03",
   "status": "draft",
   "summary": "create a small item family, purchased components and one manufactured item, ready for a production order.",
-  "order": 1,
+  "order": 2,
   "sources": [
     "tccom0100s000",
     "tccom0500m000",

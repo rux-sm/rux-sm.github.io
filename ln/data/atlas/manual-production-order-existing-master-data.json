@@ -11,7 +11,7 @@
   "updated": "2026-10-04",
   "status": "draft",
   "summary": "make one finished item on a manual production order and receive it into the warehouse.",
-  "order": 5,
+  "order": 6,
   "sources": [
     "ticst0101m000",
     "ticst0101m100",

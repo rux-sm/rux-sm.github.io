@@ -1,9 +1,9 @@
-commit   e45cbdc2d37c9f7220b442681e0f1cd024495987
-date     2026-10-13T15:21:35Z
-subject  feat(procurement): File three September screens
+commit   f0892fc1ba941a85bb77c8e9342d8e9115bcc0c4
+date     2026-10-16T00:55:15Z
+subject  feat(genai): Walk through running the AI commands
 contract 16 
 tier     export
-sha256   b19102d177bde9451950c9d53da31be23e0ef912d4656f91c8056951b1962286
+sha256   4820a7b66975e87b7a1b94af6e5fdf7c2c9b59de7a65c36cb4e04b489ce9f6fe
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

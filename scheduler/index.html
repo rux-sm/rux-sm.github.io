@@ -302,8 +302,8 @@
 <!-- The live week board. data.js reads buses, trips, their assignments,
   drivers and out-of-service windows from the database the rux-ui app also
   writes, and saves trip edits back. The grid and trip bar are this app's own
-  components (app.css); specimen.html draws every state the grid can draw,
-  with no network. -->
+  components (app.css); components.html draws every state of the bar with
+  the board's own bar.js and road-bar.js, from invented samples. -->
   <!-- Full width, Carbon's modifier for a data-dense page: the board is
        scanned rather than read, so it takes the whole width. -->
   <div class="rux--css-grid rux--css-grid--full-width scheduler-app" id="scheduler-app">
@@ -1818,6 +1818,8 @@
 <script src="carried.js"></script>
 <script src="toast.js"></script>
 <script src="draft-fields.js"></script>
+<script src="bar.js"></script>
+<script src="road-bar.js"></script>
 <script src="data.js"></script>
 <script src="to-do.js"></script>
 <script src="departures.js"></script>

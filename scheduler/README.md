@@ -136,7 +136,7 @@ is how to use it, and section 4 of `docs/database-inventory.md` is what it is.
 Trip documents open through `trip-document-link/`; `samsara-miles/` fills Actual
 miles, and `samsara-now/` shows a bus out on its trip, its warnings, speed, fuel, engine lamp and drivers, on its bar, in its live card and on the Live map, `live.html`.
 
-The schedule grid and the trip bar are this app's own; Carbon has neither.
+The schedule grid and the trip bar are this app's own; Carbon has neither. `bar.js` draws the trip bar and `road-bar.js` a bus out on its trip, for the board and for `components.html`, which shows every state of each, drawn from the invented trips in `components-data.js`.
 Everything else is Design's, linked live at `/design/…` with no copy here.
 
 ## Run and check it

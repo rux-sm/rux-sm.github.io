@@ -30,8 +30,8 @@
      them: leg-facts.js, which every Scheduler page loads, so the to-do list
      reads a leg as the board does. */
   const {
-    REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
-    needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
+    setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
+    needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact,
   } = window.SchedulerLegFacts;
 
@@ -85,33 +85,15 @@
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
-  // The days after the last it takes a leg comes back, before the office's
-  // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
-  // return +1, and a driver's rest counts from it.
-  const daysBack = leg => leg.backDays ?? 0;
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
   const { TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
 
-  /* The three letters a compact block carries in place of a destination that
-     will not fit in a day column. Initials where the place is more than one
-     word and the first three letters where it is one, which is how the office
-     already says them: San Antonio is SA, Corpus Christi is CC, Laredo is LAR.
-     The trailing state comes off first, because six destinations in ten end in
-     one and a phone does not need it, and the small joining words go with it so
-     that Port of Brownsville is PB. Three at most. The bar's `aria-label` keeps
-     the whole name, so nothing is lost to a screen reader. */
-  const CODE_SKIP = new Set(['of', 'the', 'at', 'on', 'and']);
-  const destCode = dest => {
-    const words = String(dest || '')
-      .replace(/,\s*[A-Za-z]{2}\.?\s*$/, '')
-      .split(/[\s\-/]+/)
-      .map(w => w.replace(/[^A-Za-z0-9]/g, ''))
-      .filter(w => w && !CODE_SKIP.has(w.toLowerCase()));
-    if (!words.length) return '';
-    return (words.length > 1 ? words.map(w => w[0]).join('') : words[0]).slice(0, 3).toUpperCase();
-  };
+  /* A trip's bar, its crew and its alerts, and the times as they say them:
+     bar.js, which the components page draws its samples with too. */
+  const Bar = window.SchedulerBar;
+  const { alertsOf, crewEl, crewName, fitCrew, hhmm, clockEl, setAt, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
 
@@ -601,45 +583,8 @@
 
   // -- drawing --------------------------------------------------------------
   /* What each bar knows about its bus and its trip's needs, for the trip's
-     card: `{ needs, misfits }`, set as the bar is drawn. */
+     card: bar.js's `facts`, set as the bar is drawn. */
   const barFacts = new WeakMap();
-  /* The bar's attention mark: how many alerts the trip has, in a disc of
-     `tone`, saying in `words` what they are. */
-  const attentionMark = (tone, words) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`, String(words.length));
-    m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', words.join(' · '));
-    m.title = words.join(' · ');
-    return m;
-  };
-  /* A destination as the bar shows it: the home state, ", TX" or " TX" at
-     the end, is left off, since nearly every trip is in Texas and the two
-     letters cut the place's own name short. Another state stays. What was
-     typed is untouched everywhere else. */
-  const placeName = dest => String(dest || '').replace(/,?\s+TX\s*$/i, '');
-  const addRow = (bar, cls, ...parts) => {
-    const r = el('div', `scheduler-bar__row ${cls}`);
-    for (const p of parts) if (p != null) r.appendChild(p);
-    bar.appendChild(r);
-  };
-  // Twelve-hour, "7:50am", or "7:50a" with `short`. `|| 12` turns hour 0 and
-  // hour 12 into 12.
-  const hhmm = (t, short) => {
-    if (!t) return '';
-    const [h, m] = String(t).split(':');
-    const hr = Number(h);
-    if (!Number.isFinite(hr) || m === undefined) return String(t).slice(0, 5);
-    return `${hr % 12 || 12}:${m}${hr < 12 ? 'a' : 'p'}${short ? '' : 'm'}`;
-  };
-  /* A short time as the bar draws it: the figures, then the a or p in a
-     span app.css sets smaller and dimmer, so the figures are what reads. */
-  const clockEl = short => {
-    const f = document.createDocumentFragment();
-    // A time `hhmm` could not read comes back as typed, with nothing to split.
-    if (/[ap]$/.test(short)) f.append(short.slice(0, -1), el('span', 'scheduler-bar__ampm', short.slice(-1)));
-    else f.append(short);
-    return f;
-  };
 
   // The trip's documents labelled Itinerary, newest first. The first is the one
   // rux-ui picks: a re-uploaded itinerary replaces the one before.
@@ -659,178 +604,24 @@
       : d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
   };
 
-  const crewName = c => (c.who ? (c.who.short_name || c.who.name) : 'Unknown driver');
-
-  // When a status was set, as "Sep 12, 3:40 PM" on this computer's clock.
-  const setAt = at => {
-    const d = new Date(at || '');
-    return Number.isNaN(d.getTime()) ? ''
-      : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-  };
-
-  /* A crew member in words, for the tooltip and the bar's label: the role, the
-     name, and a status other than Not sent with who set it and when. */
-  function crewText(c) {
-    if (c.needed) return `${c.label} needed`;
-    const parts = [c.label, c.who ? (c.who.name || c.who.short_name) : 'Unknown driver'];
-    const { value, label } = c.status;
-    // Not sent names itself and stops there: nobody set it, so there is no
-    // who or when to give. It still says its name, because it has a disc of
-    // its own and a reader hovering grey is asking what grey means.
-    if (value === 'off') {
-      parts.push(label);
-    } else {
-      parts.push(c.row?.source === 'driver' ? `${label} by the driver` : `${label}, set by dispatch`);
-      const at = setAt((value === 'confirmed' && c.row?.acceptedAt)
-        || (value === 'declined' && c.row?.declinedAt) || c.row?.updatedAt);
-      if (at) parts.push(at);
-    }
-    return parts.join(' · ');
-  }
-
-  /* One crew member on the drivers row: a mark in the status's tone, then the
-     short name. A driver or co-driver's mark is a small dot, and a relief
-     driver's the two opposite arrows, so a relief never reads as another
-     driver while every driver costs as little width as it can. The colours
-     are the answer and nothing else: white no status yet, amber sent and
-     waiting, green confirmed, red declined. So a role nobody fills has no
-     status either, its mark white and "No driver" dimmed, as "No times" is,
-     and a declined driver's name is struck through, so the colour is never
-     the only signal. An empty seat on a leg that is due takes the warning
-     colour instead, mark and words, because it is the one that needs filling
-     now. */
-  const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
-  function crewEl(c, due) {
-    const tone = c.needed ? 'off' : c.status.tone;
-    const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
-      c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
-    const dot = !RELIEF_ROLES.has(c.role);
-    const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot'].filter(Boolean).join(' '));
-    mark.appendChild(dot ? el('span', 'scheduler-crew__dot') : svgUse(c.icon, '16', c.box));
-    item.appendChild(mark);
-    item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
-      c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
-    item.title = crewText(c);
-    if (c.driverId != null) item.dataset.driverId = c.driverId;
-    // The seat it is: what a press pulls its driver out by, and where a carried one goes in.
-    item.dataset.seat = c.role;
-    return item;
-  }
-
-  /* A leg is due from today to the end of next week, the stretch the office
-     staffs: it has not finished, and it starts before the week after next. */
-  const legDue = leg => {
-    const now = new Date();
-    return leg.to >= iso(now) && leg.from < iso(addDays(mondayOf(now), 14));
-  };
-
-  /* THE CREW GIVES WAY A WHOLE NAME AT A TIME, from the end, and says how
-     many it left out: "Raul +1". Only a first name that does not fit alone is
-     cut short. It is measured, so it runs again whenever the bar's width
-     changes; the bar is watched rather than the crew, whose own width is what
-     this sets. */
-  const fitCrew = crew => {
-    const items = [...crew.children].filter(n => n.classList.contains('scheduler-crew'));
-    crew.querySelector(':scope > .scheduler-bar__more')?.remove();
-    for (const item of items) item.style.removeProperty('display');
-    const cut = () => items.some(item => {
-      const name = item.style.display ? null : item.querySelector('.scheduler-crew__name');
-      return name && name.scrollWidth > name.clientWidth;
-    });
-    if (items.length < 2 || !cut()) return;
-    const more = el('span', 'scheduler-bar__more');
-    crew.appendChild(more);
-    for (let shown = items.length - 1; shown >= 1; shown--) {
-      items[shown].style.display = 'none';
-      const left = items.slice(shown);
-      more.textContent = `+${left.length}`;
-      more.title = left.map(item => item.title).join('\n');
-      if (!cut()) break;
-    }
-  };
-  const crewObserver = new ResizeObserver(entries => {
-    for (const { target } of entries) {
-      const crew = target.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
-      if (crew) fitCrew(crew);
-    }
-  });
-
   /* ── On the road, from Samsara ─────────────────────────────────────────────
-     While a bus is out on its trip, its bar wears a green edge down its start,
-     and three rows say what Samsara says. The time row is the leg's clock: the
-     departure, a line that fills from yard-out to yard-back with the bus
-     drawn at now, and the return, the line amber while the bus will reach its
-     next stop late. The update's row gives way to the bus: first the worst of
-     live-trip.js's warnings, its mark and name in red or amber and a few
-     words, with the edge in its colour, or with none where the bus is on its
-     leg; then at the row's end an arrow turned the way it heads and its
-     speed, or Idle or Off with how long, or No signal with how long since
-     Samsara last heard from it, and a fuel gauge and the tank's percent,
-     amber under a quarter. An engine lamp sits at the
-     destination row's end, red for the stop lamp and amber for a warning,
-     with what its codes say on its tooltip. Each driver Samsara has in the bus
-     wears their duty in place of their dot, ringed by the driving hours they
-     have left of ten, the ring amber under one hour with the hours after the
-     name; the one at the wheel is bold. The next stop and when the bus gets
-     there are the trip's card's and the line's tooltip, road.js working them
-     out. A driver at the wheel the bar does not name is named on the line
-     before the speed. A bar is out from ten minutes before its yard-out to
-     its yard-back whatever the engine is doing, and in the two hours either
-     side only while it runs. The samsara-now Edge Function is asked once a minute, and only
-     while such a bar is on the board and the page is in view. */
+     While a bus is out on its trip, road-bar.js draws its bar's live line
+     from what Samsara says, and the live card reads the same answer. A bar
+     is out from ten minutes before its yard-out to its yard-back whatever the
+     engine is doing, and in the two hours either side only while it runs.
+     The samsara-now Edge Function is asked once a minute, and only while
+     such a bar is on the board and the page is in view. */
   const ROAD_EVERY = 60e3;
-  const ROAD_HOUR = 3600e3;
-  const ROAD_DUTY = {
-    driving: { icon: '#m-search_hands_free-fill', word: 'Driving' },
-    on: { icon: '#m-assignment-fill', word: 'On duty' },
-    sleeper: { icon: '#m-bedtime-fill', word: 'Sleeper' },
-    off: { icon: '#m-power_settings_new-fill', word: 'Off duty' },
-  };
   const Road = window.SchedulerRoad;
   const Live = window.SchedulerLiveTrip;
   const LiveMap = window.SchedulerLiveMap;
-  const roadHours = ms => `${Math.floor(ms / ROAD_HOUR)}:${String(Math.floor((ms % ROAD_HOUR) / 60e3)).padStart(2, '0')}`;
-  // A leg's stretch on the road, padded at each end, as road.js reads it.
-  const roadSpan = leg => Road.span(leg);
+  const RoadBar = window.SchedulerRoadBar;
+  const { HOUR: ROAD_HOUR, DUTY: ROAD_DUTY, LOW_FUEL: ROAD_LOW_FUEL, hours: roadHours, mark: roadMark,
+    ago: roadAgo, short: roadShort } = RoadBar;
   const roadOut = bar => {
     const now = Date.now();
     return Number(bar.dataset.roadFrom) <= now && now <= Number(bar.dataset.roadTo);
   };
-  const roadWords = d => [ROAD_DUTY[d.duty]?.word ?? 'Status unknown',
-    d.left_ms != null ? `${roadHours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
-  const roadShort = name => {
-    const words = String(name).trim().split(/\s+/);
-    return words.length > 1 ? `${words[0]} ${words.at(-1)[0]}.` : words[0];
-  };
-  /* A duty's mark; given the hours left, ringed by them, the ring's share set
-     as a custom property app.css draws. */
-  const roadMark = (duty, left) => {
-    const mark = el('span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
-    mark.appendChild(svgUse(ROAD_DUTY[duty].icon, '16', '0 0 16 16'));
-    if (left != null) {
-      mark.classList.add('scheduler-crew__duty--ring');
-      if (left < ROAD_HOUR) mark.classList.add('scheduler-crew__duty--low');
-      mark.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, left / ROAD_DRIVE) * 100)}%`);
-    }
-    return mark;
-  };
-  // The hours a driver may still drive, amber under one.
-  const roadHoursEl = ms => el('span', `scheduler-crew__hours${ms < ROAD_HOUR ? ' scheduler-crew__hours--low' : ''}`, roadHours(ms));
-  // A passenger carrier's driver may drive ten hours, so a full ring is ten.
-  const ROAD_DRIVE = 10 * ROAD_HOUR;
-  const ROAD_LOW_FUEL = 25;
-  // How long since an instant, "12m", "3h" or "2d".
-  const roadAgo = at => {
-    const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
-    return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
-  };
-  // How far through the leg now is, 0 to 100, from yard-out to yard-back.
-  const roadDone = bar => {
-    const from = Number(bar.dataset.roadFrom) + Road.MARGIN, to = Number(bar.dataset.roadTo) - Road.MARGIN;
-    return to > from ? Math.round(Math.min(1, Math.max(0, (Date.now() - from) / (to - from))) * 100) : 0;
-  };
-  // An instant as the bar draws a time, "5:40p".
-  const roadClock = ms => clockEl(hhmm(Road.clockOf(ms), true));
 
   let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false, roadLive = null;
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
@@ -890,78 +681,6 @@
     if (shown?.dataset.road && roadTabOf(shown) === 'road') placeBarOpen(shown);
   }
 
-  // One driver's duty on their name: the mark ringed by the hours left, bold
-  // at the wheel, the hours after the name under one, and the hours on the
-  // tooltip; with no driver, the name as the bar drew it.
-  function roadCrew(item, d) {
-    item.querySelector(':scope > .scheduler-crew__duty')?.remove();
-    item.querySelector(':scope > .scheduler-crew__hours')?.remove();
-    item.classList.remove('scheduler-crew--wheel');
-    delete item.dataset.duty;
-    if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
-    if (!d) return;
-    item.dataset.baseTitle = item.title;
-    if (d.duty) { item.prepend(roadMark(d.duty, d.left_ms)); item.dataset.duty = d.duty; }
-    item.classList.toggle('scheduler-crew--wheel', d.wheel);
-    if (d.left_ms != null && d.left_ms < ROAD_HOUR) item.appendChild(roadHoursEl(d.left_ms));
-    item.title = `${item.title}\nSamsara: ${roadWords(d)}`;
-  }
-
-  // The leg's clock on the time row: departure, the line with the bus at now, return.
-  function roadTimes(bar, done, late) {
-    const row = bar.querySelector(':scope > .scheduler-bar__time');
-    if (!row) return;
-    row.querySelector(':scope > .scheduler-road__times')?.remove();
-    if (done == null) return;
-    const dep = bar.dataset.depart, back = bar.dataset.back;
-    const times = el('span', 'scheduler-road__times');
-    const strip = el('span', `scheduler-road__strip${late ? ' scheduler-road__strip--late' : ''}`);
-    strip.style.setProperty('--scheduler-done', `${done}%`);
-    strip.append(el('span', 'scheduler-road__bus'));
-    const depEl = el('span'), backEl = el('span');
-    if (dep) depEl.append(clockEl(dep));
-    if (back) backEl.append(clockEl(back));
-    times.append(depEl, strip, backEl);
-    row.appendChild(times);
-  }
-
-  // The engine's lamp at the destination row's end, with what its codes say.
-  function roadLamp(bar, bus) {
-    const row = bar.querySelector(':scope > .scheduler-bar__dest');
-    row?.querySelector(':scope > .scheduler-road__lamp')?.remove();
-    if (!row || !bus?.fault) return;
-    const lamp = el('span', `scheduler-road__lamp scheduler-road__lamp--${bus.fault}`);
-    lamp.appendChild(svgUse('#m-car_repair-fill', '16', '0 0 16 16'));
-    const words = [bus.fault === 'stop' ? 'Engine stop lamp on' : 'Engine warning lamp on', ...(bus.faults ?? [])];
-    lamp.title = words.join('\n');
-    lamp.setAttribute('role', 'img');
-    lamp.setAttribute('aria-label', words.join(' · '));
-    row.insertBefore(lamp, row.children[1] ?? null);
-  }
-
-  /* A bar coming on the road starts as a bus does: with its engine running it
-     shudders while the starter cranks and its edge flickers until the engine
-     catches, app.css's scheduler-bar--starting; with the engine off or no
-     signal its edge only fades in. Once per leg's bus a page load, so a board
-     drawn again, a save or another week, brings the bar back lit and still. */
-  const ROAD_START_MS = 1200;
-  const ROAD_BRAKE_MS = 1600;
-  const ROAD_ARRIVING_MS = 5 * 60e3;
-  const ROAD_ALARM_MS = 60e3;
-  const roadStarted = new Set();
-  // Each bus's speed at the last answer, for the brake lights.
-  const roadSpeeds = new Map();
-  // When this page first saw each red warning on each bar, so it blinks for its first minute.
-  const roadAlarms = new Map();
-  function roadStart(bar, bus) {
-    const key = `${bar.dataset.tripId}:${bar.dataset.leg}:${bar.dataset.busId}`;
-    if (roadStarted.has(key) || view.motion !== 'full') return;
-    roadStarted.add(key);
-    const name = bus.engine === 'on' || bus.engine === 'idle' ? 'scheduler-bar--starting' : 'scheduler-bar--lit';
-    bar.classList.add(name);
-    setTimeout(() => bar.classList.remove(name), ROAD_START_MS);
-  }
-
   // The drivers a bar names, by id.
   const roadNamed = bar => new Set([...bar.querySelectorAll(':scope > .scheduler-bar__drivers > .scheduler-bar__crew > .scheduler-crew')]
     .map(c => c.dataset.driverId).filter(Boolean));
@@ -986,131 +705,15 @@
     return { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) };
   }
 
+  // An out bar's live line, or none, drawn by road-bar.js from the board's answer.
   function roadBar(bar, bus) {
     const next = bus ? roadNext(bar, bus) : null;
-    const done = bus ? roadDone(bar) : null;
-    const crewBox = bar.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
-    const crew = crewBox ? [...crewBox.querySelectorAll(':scope > .scheduler-crew')] : [];
-    const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
-    const said = bus ? roadLook(bar, bus, next, named) : null;
-    const key = bus ? JSON.stringify([bus.engine, bus.engine_at && roadAgo(bus.engine_at), bus.mph, bus.heading, bus.place,
-      bus.fuel, bus.fault, bus.faults, bus.seen && roadAgo(bus.seen), bus.drivers, done,
-      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase]) : '';
-    if ((bar.dataset.road ?? '') === key) return;
-    if (key) bar.dataset.road = key; else delete bar.dataset.road;
-    bar.classList.toggle('scheduler-bar--road', !!bus);
-    const worst = said?.warnings[0] ?? null;
-    /* THE BAR'S LIGHT, which app.css draws from `data-light`: run while the
-       bus moves, its flame as long as it is fast; idle with the engine
-       running and the bus still; rest while a driver is in the sleeper and
-       none drives; off with the engine off; scan with no signal. The edge
-       takes the worst warning's colour, else purple at rest, grey with no
-       signal, green. A red warning blinks for the first minute this page has
-       seen it, `data-alarm`. A bus moving at the last answer and stopped now
-       flashes its brake lights once, and one due at its next stop within
-       five minutes shows its headlight. */
-    let edge = bar.querySelector(':scope > .scheduler-road__edge');
-    if (bus && !edge) {
-      edge = el('span', 'scheduler-road__edge');
-      bar.append(edge, el('span', 'scheduler-road__front'));
-      roadStart(bar, bus);
-    } else if (!bus) {
-      edge?.remove();
-      bar.querySelector(':scope > .scheduler-road__front')?.remove();
-      edge = null;
-      delete bar.dataset.light;
-      bar.removeAttribute('data-arriving');
-      bar.removeAttribute('data-alarm');
-      bar.style.removeProperty('--scheduler-thrust');
-    }
-    if (bus) {
-      const moving = bus.engine === 'on' && bus.mph > 0;
-      const resting = !moving && bus.drivers.some(d => d.duty === 'sleeper') && !bus.drivers.some(d => d.duty === 'driving');
-      const light = bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
-      bar.dataset.light = light;
-      edge.className = `scheduler-road__edge${worst ? ` scheduler-road__edge--${worst.tone}` : light === 'rest' || light === 'scan' ? ` scheduler-road__edge--${light}` : ''}`;
-      bar.style.setProperty('--scheduler-thrust', `${Math.round(10 + Math.min(80, bus.mph ?? 0) * .22)}px`);
-      const alarm = worst?.tone === 'error' ? `${barKey(bar)}|${worst.kind}` : null;
-      if (alarm && !roadAlarms.has(alarm)) roadAlarms.set(alarm, Date.now());
-      const blinkFor = alarm ? roadAlarms.get(alarm) + ROAD_ALARM_MS - Date.now() : 0;
-      bar.toggleAttribute('data-alarm', blinkFor > 0);
-      if (blinkFor > 0) setTimeout(() => bar.removeAttribute('data-alarm'), blinkFor);
-      const was = roadSpeeds.get(bus.bus_id);
-      roadSpeeds.set(bus.bus_id, bus.mph);
-      if (was > 0 && bus.mph === 0) {
-        bar.classList.add('scheduler-bar--braking');
-        setTimeout(() => bar.classList.remove('scheduler-bar--braking'), ROAD_BRAKE_MS);
-      }
-      const now = Date.now();
-      bar.toggleAttribute('data-arriving', !!next?.stop && !next.at && next.arrival != null
-        && next.arrival - now <= ROAD_ARRIVING_MS && next.arrival >= now - 60e3);
-    }
-    roadTimes(bar, done, !!next?.late);
-    roadLamp(bar, bus);
-    const line = bar.querySelector(':scope > .scheduler-bar__road');
-    for (const item of crew) roadCrew(item, bus?.drivers.find(d => d.driver_id && d.driver_id === item.dataset.driverId) ?? null);
-    if (crewBox) fitCrew(crewBox);
-    if (!line) return;
-    if (!bus) { line.replaceChildren(); line.removeAttribute('title'); return; }
-    /* The line says one thing first: the worst warning, its mark, its name
-       and its few words, or with none where the bus is on its leg. The
-       gauges follow at the line's end. */
-    const says = el('span', 'scheduler-road__says');
-    if (worst) {
-      says.classList.add(`scheduler-road__says--${worst.tone}`);
-      says.append(svgUse(worst.tone === 'error' ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 16 16'),
-        el('span', 'scheduler-road__said', worst.title), el('span', 'scheduler-road__more', worst.detail));
-    } else if (bar.dataset.light === 'rest') {
-      says.classList.add('scheduler-road__says--rest');
-      says.append(el('span', 'scheduler-road__said', 'Resting'));
-      if (said.phase) says.appendChild(el('span', 'scheduler-road__more', said.phase.title));
-    } else if (said.phase) {
-      says.classList.add('scheduler-road__says--phase');
-      says.append(el('span', 'scheduler-road__said', said.phase.title));
-      if (said.phase.detail) says.appendChild(el('span', 'scheduler-road__more', said.phase.detail));
-    }
-    const gauges = el('span', 'scheduler-road__gauges');
-    const wheel = bus.drivers.find(d => d.wheel) ?? null;
-    if (wheel && !named.has(wheel.driver_id)) {
-      gauges.appendChild(el('span', 'scheduler-road__who', roadShort(wheel.name)));
-      if (wheel.left_ms != null) gauges.appendChild(roadHoursEl(wheel.left_ms));
-    }
-    /* What the engine is doing: moving, the arrow the way it heads and the
-       speed; idling or off, for how long; with no reading, how long since
-       Samsara last heard from the bus. */
-    if (bus.engine == null) gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.seen ? `No signal ${roadAgo(bus.seen)}` : 'No signal'));
-    else if (bus.engine === 'idle') gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--idle', bus.engine_at ? `Idle ${roadAgo(bus.engine_at)}` : 'Idle'));
-    else if (bus.engine === 'off') gauges.appendChild(el('span', 'scheduler-road__state scheduler-road__state--quiet', bus.engine_at ? `Off ${roadAgo(bus.engine_at)}` : 'Off'));
-    else {
-      if (bus.heading != null) {
-        const arrow = el('span', 'scheduler-road__heading');
-        arrow.style.setProperty('--scheduler-heading', `${bus.heading}deg`);
-        arrow.appendChild(svgUse('#m-navigation-fill', '16', '0 0 16 16'));
-        gauges.appendChild(arrow);
-      }
-      if (bus.mph != null) gauges.append(el('span', 'scheduler-road__speed', String(bus.mph)), el('span', 'scheduler-road__unit', 'mph'));
-      else gauges.appendChild(el('span', 'scheduler-road__state', 'Running'));
-    }
-    // The tank: a gauge and its percent, amber under a quarter.
-    if (bus.fuel != null) {
-      const low = bus.fuel < ROAD_LOW_FUEL;
-      const gauge = el('span', `scheduler-road__fuel${low ? ' scheduler-road__fuel--low' : ''}`);
-      gauge.style.setProperty('--scheduler-fuel', `${bus.fuel}%`);
-      gauges.append(gauge, el('span', `scheduler-road__fuel-pct${low ? ' scheduler-road__fuel-pct--low' : ''}`, `${bus.fuel}%`));
-    }
-    line.replaceChildren(...[says, gauges].filter(x => x.childNodes.length));
-    const arrives = next?.stop && !next.at && next.arrival != null
-      ? `${next.stop.name}: arrives ${hhmm(Road.clockOf(next.arrival), true)}${next.stop.due != null ? `, due ${hhmm(Road.clockOf(next.stop.due), true)}` : ''}${next.late ? `, ${next.late} min late` : ''}` : null;
-    // Every warning heads the tooltip, each in a sentence.
-    line.title = [
-      ...said.warnings.map(w => `${w.title}: ${w.sentence}`),
-      [bus.engine === 'idle' ? 'Idling' : bus.engine === 'off' ? 'Engine off' : bus.engine == null ? 'No engine reading'
-        : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
-      bus.fuel != null ? `Fuel ${bus.fuel}%` : null,
-      next?.at ? `At ${next.stop.name}` : arrives,
-      ...bus.drivers.map(d => `${d.name}: ${roadWords(d)}`),
-      `Samsara, ${new Date(roadAnswer.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`,
-    ].filter(Boolean).join('\n');
+    RoadBar.draw(bar, bus, {
+      next,
+      said: bus ? roadLook(bar, bus, next, roadNamed(bar)) : null,
+      at: roadAnswer?.at,
+      motion: view.motion,
+    });
   }
 
   setInterval(askRoad, ROAD_EVERY);
@@ -1186,235 +789,19 @@
     return standingOf.get(key);
   };
 
+  /* One bar, drawn by bar.js from what the board holds: its drivers, buses
+     and statuses, the standing rule's answer for the leg, a move still being
+     saved, the trip's itinerary and the end of the stretch the office
+     staffs, which moves with the week's first day. */
   function barEl(b, driversById, busesById, statuses) {
-    const { trip, leg, assign, place, slot } = b;
-    const hue = hueFor(trip);
-    const bar = el('article', `scheduler-bar scheduler-bar--${hue}`);
-    // The bar menu reads both to check the trip's colour and paint Standard.
-    bar.dataset.tripColor = tripColorOf(trip) ?? '';
-    bar.dataset.standardHue = standardHueOf(trip);
-    // The itinerary shortcut and menu item open this document.
-    const itinerary = latestItinerary(trip);
-    bar.dataset.itineraryId = itinerary?.id ?? '';
-    // The bar menu's hotel item reads both: whether the trip needs a hotel, and
-    // whether this leg's is booked.
-    bar.dataset.needHotel = trip.need_hotel ? 'true' : '';
-    bar.dataset.hotelBooked = trip[`hotel_booked_${leg.leg}`] ? 'true' : '';
-    bar.setAttribute('role', 'button');
-    bar.tabIndex = 0;
-    bar.setAttribute('aria-pressed', 'false');
-    bar.dataset.tripId = trip.id;
-    // A trip that is back stays where it is on the board; close-out.js says when.
-    if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
-    bar.dataset.leg = leg.leg;
-    bar.dataset.start = place.start;
-    bar.dataset.span = place.span;
-    // The slot is the position an empty slot's assignment row is written at.
-    bar.dataset.slot = slot;
-    if (assign) {
-      bar.dataset.assignmentId = assign.id;
-      if (heldMoves.get(String(assign.id))?.saving) bar.classList.add('scheduler-bar--saving');
-      bar.dataset.busId = assign.bus_id ?? '';
-    }
-    if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
-    if (place.toNext) bar.classList.add('scheduler-bar--to-next');
-    bar.style.setProperty('--scheduler-start', place.start);
-    bar.style.setProperty('--scheduler-span', place.span);
-    bar.style.setProperty('--scheduler-lane', b.lane);
-
-    /* A PLACEHOLDER IS NOT A TRIP YET, as billing.js reads one. Nothing is
-       due on it, so its bar is never the wrong bus and draws no empty seat and
-       no missing bus; a driver someone has named still shows. */
-    const placeholder = window.SchedulerBilling.placeholder(trip);
-
-    /* A leg that leaves the group or fetches it is striped at one end, as
-       app.css draws it: a one-way trip and a split's drop-off where the group
-       is let off, a split's pickup where it is collected. The stripe says
-       which leg of a split this is, so the reference is only its count. */
-    const split = trip.trip_type === SPLIT;
-    const stripe = trip.trip_type === 'one_way' || (split && leg.leg !== 'return') ? 'end'
-      : split ? 'start' : null;
-    if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
-    const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
-    /* How many buses the leg takes, written after the destination on a leg of
-       more than one: `×3`. Which of them a bar is goes unsaid, because its row
-       is the bus. */
-    const count = leg.count || 1;
-
-    /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
-       no mark for a need: the needs are read on the trip's card, which `barFacts`
-       hands them to, and the bar only counts the ones still open. A bus that
-       does not fit turns that count red, since it is a mistake to put right
-       rather than a job still to come: the wrong type of bus, or one that
-       falls short of a need. A placeholder has neither. */
-    const bus = assign?.bus_id != null ? busesById.get(assign.bus_id) : null;
-    const wrong = bus ? wrongType(assign.vehicle_type, bus) : null;
-    /* Every need the trip carries, in the office's order, and whether this bus
-       meets it. The hotel is the one a bus cannot answer for: it is booked or
-       it is not, per leg, and the trip says which. */
-    const needs = placeholder ? [] : needsFor(trip, assign).map(id => {
-      const name = id === 'hotel' ? (REQUIREMENTS.hotel?.label || 'Hotel') : requirementLabel(id);
-      if (id === 'hotel') {
-        const booked = !!trip[`hotel_booked_${leg.leg}`];
-        return { id, href: REQUIREMENTS.hotel?.icon, name, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
-      }
-      const missing = shortfall(id, bus);
-      return {
-        id,
-        href: requirementIcon(id),
-        letter: requirementIcon(id) ? null : name.trim().charAt(0).toUpperCase(),
-        name,
-        label: missing || name,
-        done: !missing,
-        short: !!missing,
-      };
+    const { bar, facts } = Bar.draw(b, {
+      driversById, busesById, statuses,
+      standing: (trip, leg) => standingFor(trip, leg, driversById, busesById),
+      saving: id => !!heldMoves.get(String(id))?.saving,
+      itineraryOf: latestItinerary,
+      staffedUntil: iso(addDays(mondayOf(new Date()), 14)),
     });
-    /* A PART-TIME DRIVER SIGNS AN HOURS-OF-SERVICE RECORD, so a bus with one
-       in any seat needs it, and it is done once the Forms page marks each
-       of them printed. Like the hotel, it is a job and not the bus's
-       equipment, so it is never a misfit. */
-    const partTimers = placeholder ? [] : (assign?.trip_drivers || []).filter(d => d.driver_id
-      && activeRolesOf(assign).has(d.role || 'driver')
-      && driversById.get(d.driver_id)?.employment_type === 'part-time');
-    if (partTimers.length) {
-      const printed = partTimers.every(d => d.hos_form_printed);
-      needs.push({ id: 'hos', href: '#m-schedule', name: 'Hours of service',
-        label: printed ? 'Hours of service printed' : 'Hours of service not printed', done: printed });
-    }
-    /* WHAT STANDS IN THE WAY of this bus and its seats, by clashes.js's
-       standing rule: another trip, days out, time off, Inactive or a card
-       that runs out. Each is a mistake to put right, so a misfit. */
-    const clashes = placeholder || !assign ? []
-      : standingFor(trip, leg.leg, driversById, busesById).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
-    const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
-    // More passengers than the leg's buses seat, a warning on every bar of the leg.
-    const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.leg, busesById));
-    /* THE DRIVERS ON THIS BUS who said no, or whom the leg changed for since
-       they said yes, as driver-job.js reads it: each a warning, which the
-       Contact list puts right. */
-    const tells = [];
-    const driverAlerts = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses).flatMap(c => {
-      if (c.needed) return [];
-      const name = c.who?.short_name || c.who?.name || 'A driver';
-      if (c.status?.value === 'declined') return [`${name} declined`];
-      const lines = window.SchedulerDriverJob?.changesSince(trip, leg.leg, c.driverId, c.row,
-        { busesById, driversById, nameOf: requirementLabel }) ?? [];
-      if (!lines.length) return [];
-      tells.push(name);
-      return [`Tell ${name}: ${lines.join(', ')}`];
-    });
-    // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    barFacts.set(bar, { needs, misfits, overSeated, driverAlerts, tells });
-
-    /* The one mark, at the destination row's end: how many alerts the trip's
-       card opens with, its colour how badly. Red is a bus that does not fit,
-       a mistake on the board; the warning colour is a job still to do. A trip
-       with both shows red, and a trip with no alert shows no mark. A mark,
-       not a button, because the bar is the button. */
-    const alerts = alertsOf(trip, { needs, misfits, overSeated, driverAlerts });
-    const attention = alerts.length
-      ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
-    const destName = el('span', null, placeName(trip.destination) || 'No destination');
-    const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
-    if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
-    addRow(bar, 'scheduler-bar__dest', dest, attention);
-    addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
-
-    // The booking contact as the trip records it. When both do not fit, the
-    // phone drops out and the name stays; app.css does that.
-    const contact = tripContact(trip, 0);
-    const who = el('span', null, contact?.name || '');
-    if (contact) who.title = [contact.name, showPhone(contact.phone)].filter(Boolean).join(' · ');
-    addRow(bar, 'scheduler-bar__contact', who, contact?.phone ? el('span', 'scheduler-bar__phone', showPhone(contact.phone)) : null);
-
-    // Departure and return on one line, "2:10p–12:30a", the short form on
-    // every bar so bars of one width read alike and the narrowest day column
-    // holds it. A leg with neither says so, so an empty row never reads as a
-    // rendering fault. The spot time is not drawn, because two times already
-    // fill the row; the editor shows it.
-    const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
-    // "No times" is dimmed, quieter than a time, as app.css draws it.
-    const none = !dep && !back;
-    // Thin spaces either side of the dash, so the two times read as two.
-    const when = el('span', none ? 'scheduler-bar__none' : null);
-    if (dep && back) when.append(clockEl(dep), '\u2009\u2013\u2009', clockEl(back));
-    else if (dep) when.append('Dep ', clockEl(dep));
-    else if (back) when.append('Ret ', clockEl(back));
-    else when.append('No times');
-    if (daysBack(leg)) {
-      const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
-      mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
-      when.appendChild(mark);
-    }
-    /* A second form, for the compact board: one line has room for one time, and
-       the one worth reading at a glance is when the bus leaves. A leg with only
-       a return says so, and a leg with neither says the times are still to come,
-       rather than leaving the row empty. */
-    const whenDep = el('span', none ? 'scheduler-bar__time-dep scheduler-bar__none' : 'scheduler-bar__time-dep');
-    if (dep) whenDep.append(clockEl(dep));
-    else if (back) whenDep.append('Ret ', clockEl(back));
-    else whenDep.append('No times');
-    addRow(bar, 'scheduler-bar__time', when, whenDep);
-
-    /* The newest update's words on one line, the last thing anyone said
-       about the trip, as the card's list starts with it. While the trip has
-       anything open, the words take the colour of the update's age, so
-       down a week the eye finds the trips still in play and how lately
-       each was touched, with no mark beside them, since the colour is the
-       mark: green while the card's age reads in
-       minutes, hours or 1d, amber for the rest of its first week, and red
-       once the card shows a date. Open is anything the card would warn of
-       or the office still waits on: a bus that does not fit, a need still
-       to do, nobody to call on the day, or a confirmation, PO, itinerary or
-       balance not in. A settled trip's update stays in the bar's ink, since
-       its age asks for nothing. A trip with none leaves the row empty, so
-       every bar on the board is one height. */
-    const latest = updatesOf(trip)[0] ?? null;
-    const news = el('span', null, latest?.body || '');
-    let tone = '';
-    if (latest) {
-      news.title = `${latest.body}\n${updateStamp(latest)}`;
-      const open = window.SchedulerCloseOut.isBack(trip) ? window.SchedulerCloseOut.asks(trip).length > 0
-        : waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-          || (!dayOfContact(trip) && !trip.contact_not_needed);
-      const days = (Date.now() - Date.parse(latest.created_at)) / 864e5;
-      if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
-    }
-    addRow(bar, `scheduler-bar__update${tone}`, news);
-    // The line that takes the update's place while the bus is out; roadBar fills it.
-    addRow(bar, 'scheduler-bar__road');
-    const road = bar.dataset.busId ? roadSpan(leg) : null;
-    if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
-    // The two times the time row draws, for the leg's clock while the bus is out.
-    if (dep) bar.dataset.depart = dep;
-    if (back) bar.dataset.back = back;
-
-    // The crew in role order, or what the bar needs before it can have one.
-    const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];
-    const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
-    const due = legDue(leg);
-    crewBox.append(...crew.map(c => crewEl(c, due)));
-    // Who drives this bar, for the driver grid to pick out.
-    bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
-    // An empty seat, which app.css outlines while a driver is carried.
-    if (crew.some(c => c.needed)) bar.dataset.wantsCrew = 'true';
-    crewObserver.observe(bar);
-    addRow(bar, 'scheduler-bar__drivers', crewBox);
-
-    /* The compact board's label. Not a row, so the full board never draws it
-       and neither does the docked sheet, which draws every row. */
-    const code = destCode(trip.destination);
-    if (code) bar.appendChild(el('span', 'scheduler-bar__code', code));
-
-    bar.setAttribute('aria-label', [
-      trip.destination || 'No destination', trip.customer, kind, count > 1 ? `${count} buses` : null,
-      place.fromPrev ? 'continues from the previous week' : null,
-      place.toNext ? 'continues into the next week' : null,
-      trip.confirmed === false ? 'unconfirmed' : null,
-      ...crew.map(crewText),
-      ...misfits,
-      asksFollowUp(trip) ? 'needs a follow-up' : null,
-    ].filter(Boolean).join(', '));
+    barFacts.set(bar, facts);
     return bar;
   }
 
@@ -4445,15 +3832,6 @@
      `imported` row was copied out of the old notes, so it has a date and no
      time. An update whose words were changed says so. */
   const UPDATE_COLUMNS = 'id,created_at,actor_id,actor_name,body,kind,edited_at';
-  function updateStamp(u) {
-    const at = new Date(u.created_at);
-    const opts = { month: 'short', day: 'numeric' };
-    if (at.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
-    const when = u.kind === 'imported' ? at.toLocaleDateString(undefined, opts)
-      : at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' });
-    return [when, u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'),
-      u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
-  }
   // The Updates window's shorter stamp, under a face that already names the
   // author: the time for today's update, the day for an older one.
   function updateDay(u) {
@@ -5292,7 +4670,7 @@
   /* The follow-up rules, `follow-up.js`: what a trip waits on, how long it
      has been quiet, and whether it asks. */
   const { set: setFollowUp, waitsOf, updatesOf, quietSince, asks: asksFollowUp, due: dueFollowUp, daysToGo,
-    agoShort, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
+    agoShort } = window.SchedulerFollowUp;
 
   let editing = null;   // { id, before: {...} }
 
@@ -15135,47 +14513,6 @@
     return title;
   }
 
-  /* The warning a need still to be done shows. EVERY ALERT NAMES ITS THING
-     FIRST AND ITS STATE AFTER, in one of a few words: needed, what the bus
-     lacks; missing, what the trip has not got; pending, what is still to be
-     done; due, money owed. */
-  const TODO_WORDS = { hotel: 'Hotel booking pending', hos: 'HOS form pending' };
-  /* EVERY ALERT A TRIP HAS, in the order its card lists them, from `facts`,
-     what `barFacts` holds for the bar: its words, the card row it is drawn
-     as, where a press on it goes and the field it names. The bar counts
-     these and the card draws them, so the two never disagree.
-
-     A bus that does not fit this trip leads: it is a mistake on the board,
-     and it goes when the bus is changed. Then the follow-up reminder, one for
-     each thing waited on, which stays while it is true, until the missing
-     thing arrives or an update is written. Then nobody named to call on the
-     day, on a trip not marked as needing no one. Last, a need that is still a
-     job, the hotel to book or the hours-of-service form to print; a need the
-     bus falls short of is already a misfit, and one that is met is no alert. */
-  function alertsOf(trip, facts) {
-    /* A trip that is back asks only what its record lacks, close-out.js's
-       list, in place of everything asked before it left. */
-    const CloseOut = window.SchedulerCloseOut;
-    if (CloseOut.isBack(trip)) {
-      return CloseOut.asks(trip).map(id => ({ row: 'scheduler-card__warn', go: CloseOut.GO[id], spot: id, words: CloseOut.WORDS[id] }));
-    }
-    const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
-    if (asksFollowUp(trip)) {
-      for (const w of waitsOf(trip)) {
-        list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w] });
-      }
-    }
-    if (!dayOfContact(trip) && !trip.contact_not_needed) {
-      list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
-    }
-    if (facts?.overSeated) list.push({ row: 'scheduler-card__warn', go: 'fleet', spot: 'seats', words: `More passengers than seats: ${facts.overSeated}` });
-    for (const words of facts?.driverAlerts ?? []) list.push({ row: 'scheduler-card__warn', go: 'contacts', spot: 'driver', words });
-    for (const n of facts?.needs ?? []) {
-      if (n.done || n.short) continue;
-      list.push({ row: 'scheduler-card__warn', go: n.id === 'hos' ? 'forms' : 'billing', spot: n.id, words: TODO_WORDS[n.id] ?? n.label });
-    }
-    return list;
-  }
   /* THE LIVE CARD'S MAP: one Leaflet map, made the first time a live card
      opens and moved into each live card drawn after, so a card drawn again
      with each answer keeps the office's own zoom; it fits the leg afresh

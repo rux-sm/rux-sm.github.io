@@ -1,0 +1,226 @@
+// Runs bar.js and road-bar.js against components-data.js's invented samples,
+// the ones components.html draws, and checks each sample's bar carries the
+// classes, marks and words its state should: the colours, stripes, times,
+// update ages and crew of the trip bar, the alerts it counts, and each light
+// and warning of a bus out on its trip. The rule files they read are loaded
+// beside them, in components.html's order, into a stand-in page that builds
+// elements and finds them by the selectors the two files use.
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+
+/* ── A stand-in page ──────────────────────────────────────────────────────
+   Elements with classes, attributes, a dataset kept in those attributes,
+   style properties, children and text, found by class and attribute
+   selectors joined by spaces and `>`, `:scope` being the element asked. */
+const kebab = s => s.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`);
+class Node {
+  constructor() { this.childNodes = []; this.parentNode = null; }
+  get children() { return this.childNodes.filter(n => n instanceof Element); }
+  get firstChild() { return this.childNodes[0] ?? null; }
+  get parentElement() { return this.parentNode instanceof Element ? this.parentNode : null; }
+  get textContent() { return this.childNodes.map(n => n.textContent).join(''); }
+  set textContent(v) { this.replaceChildren(); if (v != null && v !== '') this.appendChild(new Text(String(v))); }
+  adopt(n) {
+    if (typeof n === 'string') return [new Text(n)];
+    if (n instanceof Fragment) { const kids = [...n.childNodes]; n.childNodes = []; return kids; }
+    n.parentNode?.removeChild(n);
+    return [n];
+  }
+  insertAt(i, ...nodes) {
+    const kids = nodes.flatMap(n => this.adopt(n));
+    for (const k of kids) k.parentNode = this;
+    this.childNodes.splice(i, 0, ...kids);
+  }
+  appendChild(n) { this.insertAt(this.childNodes.length, n); return n; }
+  append(...nodes) { this.insertAt(this.childNodes.length, ...nodes); }
+  prepend(...nodes) { this.insertAt(0, ...nodes); }
+  insertBefore(n, ref) { const i = ref ? this.childNodes.indexOf(ref) : -1; this.insertAt(i < 0 ? this.childNodes.length : i, n); return n; }
+  removeChild(n) { this.childNodes = this.childNodes.filter(c => c !== n); n.parentNode = null; return n; }
+  replaceChildren(...nodes) { for (const c of this.childNodes) c.parentNode = null; this.childNodes = []; this.append(...nodes); }
+  remove() { this.parentNode?.removeChild(this); }
+  replaceWith(n) { const p = this.parentNode; if (!p) return; const i = p.childNodes.indexOf(this); p.removeChild(this); p.insertAt(i, n); }
+  *walk() { for (const c of this.children) { yield c; yield* c.walk(); } }
+  querySelectorAll(sel) { return [...this.walk()].filter(e => matches(e, parse(sel), this)); }
+  querySelector(sel) { return this.querySelectorAll(sel)[0] ?? null; }
+}
+class Text extends Node { constructor(t) { super(); this.text = t; } get textContent() { return this.text; } }
+class Fragment extends Node {}
+class Element extends Node {
+  constructor(tag) {
+    super();
+    this.tagName = tag.toUpperCase();
+    this.attributes = new Map();
+    this.classList = {
+      add: (...c) => this.setClasses([...this.classes(), ...c]),
+      remove: (...c) => this.setClasses(this.classes().filter(x => !c.includes(x))),
+      contains: c => this.classes().includes(c),
+      toggle: (c, on = !this.classList.contains(c)) => { (on ? this.classList.add : this.classList.remove)(c); return on; },
+    };
+    const props = new Map();
+    this.style = new Proxy({
+      setProperty: (k, v) => props.set(k, String(v)), removeProperty: k => props.delete(k),
+      getPropertyValue: k => props.get(k) ?? '',
+    }, {
+      get: (t, k) => (k in t ? t[k] : props.get(kebab(String(k))) ?? ''),
+      set: (t, k, v) => { props.set(kebab(String(k)), v); return true; },
+    });
+    this.dataset = new Proxy({}, {
+      get: (_, k) => this.attributes.get(`data-${kebab(String(k))}`),
+      set: (_, k, v) => { this.attributes.set(`data-${kebab(String(k))}`, String(v)); return true; },
+      deleteProperty: (_, k) => { this.attributes.delete(`data-${kebab(String(k))}`); return true; },
+      has: (_, k) => this.attributes.has(`data-${kebab(String(k))}`),
+    });
+  }
+  classes() { return (this.attributes.get('class') ?? '').split(/\s+/).filter(Boolean); }
+  setClasses(list) { this.attributes.set('class', [...new Set(list)].join(' ')); }
+  get className() { return this.attributes.get('class') ?? ''; }
+  set className(v) { this.attributes.set('class', String(v)); }
+  get title() { return this.attributes.get('title') ?? ''; }
+  set title(v) { this.attributes.set('title', String(v)); }
+  set tabIndex(v) { this.attributes.set('tabindex', String(v)); }
+  setAttribute(k, v) { this.attributes.set(k, String(v)); }
+  getAttribute(k) { return this.attributes.get(k) ?? null; }
+  hasAttribute(k) { return this.attributes.has(k); }
+  removeAttribute(k) { this.attributes.delete(k); }
+  toggleAttribute(k, on = !this.attributes.has(k)) { if (on) this.attributes.set(k, ''); else this.attributes.delete(k); return on; }
+}
+// A selector as steps, each a compound and the combinator before it.
+const parse = sel => {
+  const steps = [];
+  let comb = ' ';
+  for (const tok of sel.trim().split(/\s*(>)\s*|\s+/).filter(Boolean)) {
+    if (tok === '>') { comb = '>'; continue; }
+    steps.push({ comb, scope: tok === ':scope', classes: [...tok.matchAll(/\.([\w-]+)/g)].map(m => m[1]),
+      attrs: [...tok.matchAll(/\[([\w-]+)(?:="([^"]*)")?\]/g)].map(m => [m[1], m[2]]) });
+    comb = ' ';
+  }
+  return steps;
+};
+const fits = (e, s, scope) => (s.scope ? e === scope
+  : s.classes.every(c => e.classList.contains(c)) && s.attrs.every(([k, v]) => e.hasAttribute(k) && (v == null || e.getAttribute(k) === v)));
+function matches(e, steps, scope, i = steps.length - 1) {
+  if (!e || !fits(e, steps[i], scope)) return false;
+  if (i === 0) return steps[0].scope || true;
+  if (steps[i].comb === '>') return matches(e.parentElement ?? (e.parentNode === scope ? scope : null), steps, scope, i - 1);
+  for (let p = e.parentElement ?? (e.parentNode === scope ? scope : null); p; p = p.parentElement) if (matches(p, steps, scope, i - 1)) return true;
+  return false;
+}
+const document = {
+  createElement: tag => new Element(tag),
+  createElementNS: (_, tag) => new Element(tag),
+  createDocumentFragment: () => new Fragment(),
+};
+
+/* ── The page's scripts ─────────────────────────────────────────────────── */
+const window = {};
+const context = { window, document, Intl, Date, Math, Number, String, Map, Set, Array, Object, JSON, Promise, WeakMap, RegExp,
+  setTimeout: () => 0, console };
+for (const file of ['requirements.js', 'leg-facts.js', 'phone.js', 'billing.js', 'follow-up.js', 'week.js', 'road.js', 'live-trip.js',
+  'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'components-data.js']) {
+  runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context, { filename: file });
+}
+const { SchedulerBar: Bar, SchedulerRoadBar: RoadBar, SchedulerLiveTrip: Live, SchedulerWeek: Week } = window;
+const data = window.SchedulerComponentsData.build();
+
+// Each sample's bars drawn as components.js draws them.
+function drawn(sectionId, name) {
+  const sample = data.sections.find(s => s.id === sectionId)?.samples.find(s => s.name === name);
+  if (!sample) throw new Error(`no sample ${sectionId} / ${name}`);
+  return sample.rows.flatMap(r => r.bars).map(spec => {
+    const leg = Week.legsOf(spec.trip).find(l => l.leg === spec.leg);
+    const assigns = spec.trip.trip_assignments.filter(a => (a.leg || 'outbound') === spec.leg);
+    const b = { trip: spec.trip, leg, slot: spec.slot, lane: 0, assign: 'assign' in spec ? spec.assign : assigns[spec.slot] ?? null,
+      place: { start: spec.start, span: spec.span, fromPrev: !!spec.fromPrev, toNext: !!spec.toNext } };
+    const { bar } = Bar.draw(b, { ...data, saving: () => !!spec.state?.saving });
+    if (spec.live) {
+      const { bus, look, before } = spec.live;
+      const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
+      if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now });
+      RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now });
+    }
+    return bar;
+  });
+}
+const has = (bar, sel) => !!bar.querySelector(sel);
+const text = (bar, sel) => bar.querySelector(sel)?.textContent ?? null;
+const mark = bar => { const m = bar.querySelector('.scheduler-bar__msg'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label')}` : null; };
+const hue = bar => bar.classes().find(c => /^scheduler-bar--(blue|red|teal|green|purple|magenta|amber)$/.test(c))?.slice(15);
+
+let failed = 0;
+function expect(name, got, want) {
+  const ok = JSON.stringify(got) === JSON.stringify(want);
+  if (!ok) failed++;
+  console.log(`   ${ok ? 'ok  ' : 'FAIL'}  ${name}${ok ? '' : `\n         got  ${JSON.stringify(got)}\n         want ${JSON.stringify(want)}`}`);
+}
+
+console.log('\n  The trip bar');
+expect('each colour paints its hue, with no alert', drawn('trip-bar', 'Colours').map(b => [hue(b), mark(b)]),
+  [['blue', null], ['red', null], ['teal', null], ['green', null], ['purple', null], ['magenta', null], ['amber', null]]);
+const [holder] = drawn('trip-bar', 'A placeholder');
+expect('a placeholder: no times, the named driver, no empty seat, no alert',
+  [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
+  ['No times', ['Ben'], null]);
+expect('one way is striped at its end', drawn('trip-bar', 'One way').map(b => b.classList.contains('scheduler-bar--stripe-end')), [true]);
+expect('a split\'s drop-off is striped at its end and its pickup at its start',
+  drawn('trip-bar', 'Drop-off and pickup').map(b => b.classes().find(c => c.startsWith('scheduler-bar--stripe-'))), ['scheduler-bar--stripe-end', 'scheduler-bar--stripe-start']);
+expect('three buses: counted, and the third needs a bus',
+  drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
+  [['×3', 'Marco'], ['×3', 'Lena'], ['×3', 'Needs a bus']]);
+expect('either side of the week', drawn('trip-bar', 'Either side of the week').map(b => [b.classList.contains('scheduler-bar--from-prev'), b.classList.contains('scheduler-bar--to-next')]),
+  [[true, false], [false, true]]);
+const [back] = drawn('trip-bar', 'Back at the yard');
+expect('a trip back asks what its record lacks', [back.classList.contains('scheduler-bar--back'), mark(back)],
+  [true, 'amber Actual miles missing · Driver pay missing · Invoice missing']);
+expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
+  ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
+expect('an open trip\'s update takes its age\'s colour, a settled one none',
+  drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__update').classes().find(c => c.startsWith('scheduler-bar__update--')) ?? null),
+  ['scheduler-bar__update--new', 'scheduler-bar__update--week', 'scheduler-bar__update--old', null]);
+expect('a leg with no bus says so', drawn('trip-bar', 'Needs a bus').map(b => text(b, '.scheduler-bar__crew')), ['Needs a bus']);
+
+console.log('\n  The crew');
+expect('each status its tone, a declined name struck through',
+  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|warning|success)$/.test(x))?.split('--')[1], c.classList.contains('scheduler-crew--declined')]; }),
+  [['off', false], ['error', false], ['warning', false], ['success', false], ['success', false], ['error', true]]);
+const [relief] = drawn('crew', 'Co-driver and relief');
+expect('drivers are dots and relief drivers arrows',
+  [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, has(c, '.scheduler-crew__dot')]),
+  [['driver', true], ['co-driver', true], ['relief-start', false], ['relief-end', false]]);
+expect('an empty seat is in the warning colour only while the leg is due',
+  drawn('crew', 'Empty seats').map(b => [...b.querySelectorAll('.scheduler-crew')].filter(c => c.querySelector('.scheduler-bar__none')).map(c => c.classList.contains('scheduler-crew--due'))),
+  [[true, true], [false, false]]);
+
+console.log('\n  Alerts');
+const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
+  'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both'];
+expect('each alert counted in its colour', alerts.map(n => mark(drawn('alerts', n)[0])), [
+  'amber Hotel booking pending', 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
+  'amber Rosa declined', 'amber Tell Ben: Stops changed', 'amber HOS form pending', 'red Coach needed', 'red Sleeper needed',
+  'red Sleeper needed · Trip contact missing']);
+expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
+
+console.log('\n  Out on the road');
+const lit = n => drawn('road', n)[0];
+expect('each light', ['At highway speed', 'At a crawl', 'Idling', 'Resting', 'Engine off', 'No signal'].map(n => lit(n).dataset.light),
+  ['run', 'run', 'idle', 'rest', 'off', 'scan']);
+expect('a faster bus casts a longer flame', ['At a crawl', 'At highway speed'].map(n => lit(n).style.getPropertyValue('--scheduler-thrust')), ['11px', '24px']);
+const edge = b => b.querySelector('.scheduler-road__edge').className;
+expect('each warning its edge, its name first on the line',
+  ['Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [edge(b), text(b, '.scheduler-road__said')]; }), [
+    ['scheduler-road__edge scheduler-road__edge--error', 'Not rolling'], ['scheduler-road__edge scheduler-road__edge--error', 'Wrong bus'],
+    ['scheduler-road__edge scheduler-road__edge--warning', 'Late to spot'], ['scheduler-road__edge scheduler-road__edge--warning', 'Short on hours']]);
+expect('a red warning blinks for its first minute', lit('Not rolling').hasAttribute('data-alarm'), true);
+expect('late to its spot, the leg\'s line is amber', has(lit('Late to spot'), '.scheduler-road__strip--late'), true);
+expect('under an hour left, the ring and the hours are amber',
+  [has(lit('Short on hours'), '.scheduler-crew__duty--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50']);
+expect('resting and no signal colour the edge', [edge(lit('Resting')), edge(lit('No signal'))],
+  ['scheduler-road__edge scheduler-road__edge--rest', 'scheduler-road__edge scheduler-road__edge--scan']);
+expect('stopping brakes, and a stop five minutes off lights the headlight',
+  [lit('Braking').classList.contains('scheduler-bar--braking'), lit('Arriving').hasAttribute('data-arriving'), lit('At highway speed').hasAttribute('data-arriving')], [true, true, false]);
+expect('under a quarter tank the gauge is amber', [has(lit('Low fuel'), '.scheduler-road__fuel--low'), has(lit('At highway speed'), '.scheduler-road__fuel--low')], [true, false]);
+expect('each engine lamp', drawn('road', 'Engine lamps').map(b => b.querySelector('.scheduler-road__lamp').classes()[1]),
+  ['scheduler-road__lamp--warning', 'scheduler-road__lamp--stop']);
+expect('a driver the bar does not name is named on the line', text(lit('Someone else at the wheel'), '.scheduler-road__who'), 'Omar D.');
+
+console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
+process.exit(failed ? 1 : 0);

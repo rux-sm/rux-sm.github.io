@@ -1620,7 +1620,7 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
 
-/* ON THE ROAD, from Samsara: while the bus is out, data.js's roadBar says
+/* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says
    so in three rows and an edge. The edge is 3px of the success colour down
    the bar's start, its own element, because the light and Apple themes paint
    their edges as the bar's background layers and a watched bar's ring is its
@@ -1638,7 +1638,7 @@ button.scheduler-row-head__num::after {
   background: currentColor;
   pointer-events: none;
 }
-/* ITS LIGHT, from data.js's roadBar: the bar's `data-light` says what the
+/* ITS LIGHT, from road-bar.js: the bar's `data-light` says what the
    bus is doing, and its hue is the edge's, the worst warning's red or amber,
    purple while a driver rests in the sleeper, grey with no signal, else
    green, at theme.css's --scheduler-glow, with a core of that hue toward
@@ -1855,7 +1855,7 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-update .scheduler-bar__road { display: none; }
 /* Named with its line, to outrank the row's first child, which may shrink. */
 .scheduler-bar__road > * { flex: none; }
-/* WHAT THE LINE SAYS FIRST, data.js's roadBar from live-trip.js: the worst
+/* WHAT THE LINE SAYS FIRST, road-bar.js from live-trip.js: the worst
    warning, its mark and name in red or amber and its few words, or where
    the bus is on its leg. The line is one row high and
    wraps out of sight what does not fit, so a warning keeps its place and
@@ -5340,3 +5340,28 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-live-ahead { stroke: var(--rux-support-info); stroke-width: 3; stroke-dasharray: 6 6; stroke-opacity: .8; fill: none; }
 .scheduler-live-stop { stroke: var(--rux-text-primary); stroke-width: 2; fill: var(--rux-background); fill-opacity: 1; }
 .scheduler-live-stop--reached { fill: var(--rux-support-success); }
+
+/* ── The components page ─────────────────────────────────────────────────────
+   components.html: every state of the board's parts, each sample a board of
+   its own a few days wide under its name and what it shows, side by side as
+   the width allows. The view's controls sit above them in one wrapping row. */
+.scheduler-components { display: flex; flex-direction: column; gap: var(--rux-spacing-07); padding-block: var(--rux-spacing-07); }
+.scheduler-components__intro { max-inline-size: 42rem; color: var(--rux-text-secondary); }
+.scheduler-components__view { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--rux-spacing-05) var(--rux-spacing-07); }
+.scheduler-components__control { display: flex; flex-direction: column; gap: var(--rux-spacing-03); inline-size: 15rem; }
+.scheduler-components__rows { display: flex; flex-wrap: wrap; gap: 0 var(--rux-spacing-05); margin: 0; }
+.scheduler-components__rows > legend { flex-basis: 100%; }
+.scheduler-components__section { display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
+.scheduler-components__samples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
+  gap: var(--rux-spacing-07) var(--rux-spacing-06);
+}
+.scheduler-components__sample { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; margin: 0; }
+.scheduler-components__caption { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-02) var(--rux-spacing-03); }
+/* The name's line is as tall as the Play again button, so every board in a row starts level. */
+.scheduler-components__name { display: flex; align-items: center; min-block-size: var(--rux-layout-size-height-sm, 2rem); }
+.scheduler-components__note { flex-basis: 100%; order: 2; color: var(--rux-text-secondary); }
+.scheduler-components__again { margin-inline-start: auto; }
+/* A sample is as tall as its rows: the board's cap is for a whole week. */
+.scheduler-components__board { max-block-size: none; }

@@ -94,8 +94,7 @@ now line.
 | `../rux-ui/intake.html` | later | Needs the Worker's extract route and the itinerary component. |
 | `../rux-ui/m.html`, `../rux-ui/d.html` | keep | Redirect stubs, unchanged. |
 | `../rux-ui/doc.html` | keep | Redirect by document id, unchanged. |
-
-Dropped: `../rux-ui/gallery.html` and the four specimen pages.
+| `../rux-ui/gallery.html` and its specimen pages | keep, as one | `components.html`, behind the log-in and linked from Design's index: every state of the trip bar and of a bus out on its trip, drawn by the board's own `bar.js` and `road-bar.js` from the invented trips in `components-data.js`, each a board a few days wide under its name and what it shows. Motion, the full or compact board and the view menu's rows are picked above them for this page alone, opening as the board was last left; the theme is the account's. A state that plays once, starting, a red warning's blink, braking, saved or refused, plays again from its button. `tools/check-bar.mjs` checks what each sample's bar carries. |
 
 ## 5. Order of building
 

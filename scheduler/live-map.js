@@ -14,8 +14,8 @@
    bus's pin: its number on its trip's colour, with an arrow turned the way it
    heads while it moves, ringed by the light its bar casts, `light` the bar's
    `data-light` and `tone` a warning's, as app.css draws them.
-   `lightOf(bus)` is that light from samsara-now's bus, as the board's
-   roadBar works it out.
+   `lightOf(bus)` is that light from samsara-now's bus, as road-bar.js
+   works it out for the board.
    `drawLeg(map, s)` draws a bus's leg in a layer of its own and hands the
    layer back: the path driven, a dashed line from the bus on to its next
    stop, and each stop a ring, filled once reached. `s` is { path, here,

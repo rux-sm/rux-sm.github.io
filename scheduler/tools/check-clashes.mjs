@@ -72,6 +72,23 @@ expect('a trip leaving early the morning after is back-to-back too', [said(f.nea
 f = fit([trip({ from: '2026-10-13', back: null, dest: 'Dallas', buses: [['a1', 'b1', 'd1']] })], mine);
 expect('a rest that cannot be told is tight', [said(f.near, 'd1'), f.tight.has('d1')], [['Back-to-back with Dallas, rest unknown'], true]);
 
+// ── by the clock ────────────────────────────────────────────────────────────
+const on14 = (out, back, dest) => trip({ from: '2026-10-14', out, back, dest, buses: [['a1', 'b1', 'd1']] });
+const sits = t => { const r = fit([t], mine); return r.buses.size ? 'clash' : said(r.near, 'd1')[0] ?? 'free'; };
+expect('a run that morning, back before this one leaves, is back-to-back, not a clash',
+  sits(on14('05:00', '07:30', 'School')), 'Back-to-back with School, 0.5h rest');
+expect('a run that evening, leaving after this one is back, is back-to-back', sits(on14('19:00', '23:00', 'Game')), 'Back-to-back with Game, 1h rest');
+expect('a run in the middle of the day clashes', sits(on14('12:00', '15:00', 'Lunch')), 'clash');
+expect('a run that day with no times clashes, because unknown is not fine', sits(on14(null, null, 'Unknown')), 'clash');
+expect('a two-day trip back the morning this one leaves, before it leaves, is back-to-back',
+  sits(trip({ from: '2026-10-13', to: '2026-10-14', back: '07:00', dest: 'Houston', buses: [['a1', 'b1', 'd1']] })), 'Back-to-back with Houston, 1h rest');
+expect('the same trip back after this one leaves clashes',
+  sits(trip({ from: '2026-10-13', to: '2026-10-14', back: '09:00', dest: 'Houston', buses: [['a1', 'b1', 'd1']] })), 'clash');
+expect('a trip leaving the evening this one is back, after it is back, is back-to-back',
+  sits(trip({ from: '2026-10-14', to: '2026-10-16', out: '20:00', dest: 'Denver', buses: [['a1', 'b1', 'd1']] })), 'Back-to-back with Denver, 2h rest');
+expect('a trip over a day this one runs through, past its edges, clashes',
+  sits(trip({ from: '2026-10-12', to: '2026-10-16', dest: 'Denver', buses: [['a1', 'b1', 'd1']] })), 'clash');
+
 // ── who to ask ──────────────────────────────────────────────────────────────
 const D = (id, priority, extra = {}) => ({ id, name: id, priority, ...extra });
 f = fit([

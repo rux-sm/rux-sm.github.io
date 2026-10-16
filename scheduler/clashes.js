@@ -51,11 +51,35 @@
     return daysBetween(backDay, parseISO(later.from)) * 24 - end + start;
   };
 
+  /* How another leg sits against this one, by the clock: 'clash', 'near'
+     with the hours of rest between them, or null when it is days away. Legs
+     over the same days clash. Two that share only the day one ends and the
+     other begins clash when the second leaves before the first is back, and
+     when either time is missing, because unknown is not fine; otherwise
+     they are back-to-back, as legs on days side by side are. */
+  function besideOf(range, l) {
+    const before = iso(addDays(parseISO(range.from), -1));
+    const after = iso(addDays(parseISO(range.to), 1));
+    if (datesOverlap(range, l)) {
+      const edge = l.to === range.from || l.from === range.to;
+      const oneDay = (l.to < range.to ? l.to : range.to) === (l.from > range.from ? l.from : range.from);
+      if (!edge || !oneDay) return { kind: 'clash' };
+      // Of two legs on one day, the earlier is the one that leaves first.
+      const lFirst = l.from < range.from || (l.from === range.from && (l.depart ?? '') < (range.depart ?? ''));
+      const rest = lFirst ? restBetween(l, range) : restBetween(range, l);
+      return rest == null || rest < 0 ? { kind: 'clash' } : { kind: 'near', rest };
+    }
+    if (l.to !== before && l.from !== after) return null;
+    const rest = l.to === before ? restBetween(l, range) : restBetween(range, l);
+    // A leg the day before that runs past midnight into this one is a clash.
+    return rest != null && rest < 0 ? { kind: 'clash' } : { kind: 'near', rest };
+  }
+
   /* What stands in each bus's and driver's way on one leg's dates. `buses`
-     and `drivers` are clashes, which a pick warns of; `near` is a trip ending
-     the day before or starting the day after, which warns but does not rule
-     the driver out, and `tight` the drivers among them whose rest is under
-     REST_HOURS or unknown; `worked` is the days each driver drove in the
+     and `drivers` are clashes, which a pick warns of, as `besideOf` reads
+     them; `near` is a trip back-to-back with it, which warns but does not
+     rule the driver out, and `tight` the drivers among them whose rest is
+     under REST_HOURS or unknown; `worked` is the days each driver drove in the
      RECENT_DAYS before the leg, which ranks drivers of one priority so the
      work spreads. `range` is the leg's dates, with its `depart` and `back`
      times when it has them. `skip` leaves out the editor's whole trip, whose
@@ -65,13 +89,13 @@
     const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
     if (!range) return { buses, drivers, near, tight, worked };
     const before = iso(addDays(parseISO(range.from), -1));
-    const after = iso(addDays(parseISO(range.to), 1));
     const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
     for (const t of trips) {
       if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
       for (const l of legsOf(t)) {
-        const clash = datesOverlap(range, l);
-        const next = !clash && (l.to === before || l.from === after);
+        const beside = besideOf(range, l);
+        const clash = beside?.kind === 'clash';
+        const next = beside?.kind === 'near';
         const days = [];
         if (datesOverlap(recent, l)) {
           for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
@@ -86,14 +110,8 @@
           if (clash) {
             add(buses, a.bus_id, text);
             for (const d of crew) add(drivers, d.driver_id, text);
-          }
-          // A leg the day before that runs past midnight into this one is a
-          // clash, not a short rest.
-          const rest = next ? (l.to === before ? restBetween(l, range) : restBetween(range, l)) : null;
-          if (rest != null && rest < 0) {
-            add(buses, a.bus_id, text);
-            for (const d of crew) add(drivers, d.driver_id, text);
           } else if (next) {
+            const rest = beside.rest;
             const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
             for (const d of crew) {
               add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
@@ -159,5 +177,5 @@
       .join(' · ');
   }
 
-  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse };
+  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse };
 })();

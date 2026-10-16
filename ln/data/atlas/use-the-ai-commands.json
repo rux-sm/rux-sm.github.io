@@ -37,10 +37,19 @@
             },
             {
               "t": "text",
-              "v": " The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock."
+              "v": " The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in "
+            },
+            {
+              "t": "link",
+              "v": "Set up a GenAI prompt",
+              "href": "set-up-a-genai-prompt.md"
+            },
+            {
+              "t": "text",
+              "v": ", Is it worth a prompt."
             }
           ],
-          "text": "What LN is doing. The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock."
+          "text": "What LN is doing. The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in Set up a GenAI prompt, Is it worth a prompt."
         },
         {
           "kind": "steps",
@@ -213,23 +222,31 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the first line of the answer"
+                      "v": "Read the first two lines of the answer"
                     }
                   ],
-                  "text": "Read the first line of the answer"
+                  "text": "Read the first two lines of the answer"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The item, its description and its unit. A blank description reads "
+                      "v": "The description, the item code in brackets and the unit; then an "
                     },
                     {
-                      "t": "literal",
-                      "v": "[not available]"
+                      "t": "text",
+                      "v": "Attention:"
+                    },
+                    {
+                      "t": "text",
+                      "v": " line for each warehouse with more allocated than on hand or with stock blocked, or "
+                    },
+                    {
+                      "t": "text",
+                      "v": "No warnings."
                     }
                   ],
-                  "text": "The item, its description and its unit. A blank description reads [not available]"
+                  "text": "The description, the item code in brackets and the unit; then an Attention: line for each warehouse with more allocated than on hand or with stock blocked, or No warnings."
                 }
               ],
               "id": "0.4",
@@ -251,19 +268,51 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the warehouse lines"
+                      "v": "Read each warehouse's section"
                     }
                   ],
-                  "text": "Read the warehouse lines"
+                  "text": "Read each warehouse's section"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "One line for each warehouse: its code and name, then on hand, blocked, allocated and on order"
+                      "v": "Its code and name; "
+                    },
+                    {
+                      "t": "text",
+                      "v": "ON HAND"
+                    },
+                    {
+                      "t": "text",
+                      "v": " and "
+                    },
+                    {
+                      "t": "text",
+                      "v": "BLOCKED"
+                    },
+                    {
+                      "t": "text",
+                      "v": " on one line; "
+                    },
+                    {
+                      "t": "text",
+                      "v": "ALLOCATED"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with the orders going out indented under it; "
+                    },
+                    {
+                      "t": "text",
+                      "v": "ON ORDER"
+                    },
+                    {
+                      "t": "text",
+                      "v": " with the orders coming in under it"
                     }
                   ],
-                  "text": "One line for each warehouse: its code and name, then on hand, blocked, allocated and on order"
+                  "text": "Its code and name; ON HAND and BLOCKED on one line; ALLOCATED with the orders going out indented under it; ON ORDER with the orders coming in under it"
                 }
               ],
               "id": "0.5",
@@ -285,23 +334,23 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the planned lines"
+                      "v": "Read the last line"
                     }
                   ],
-                  "text": "Read the planned lines"
+                  "text": "Read the last line"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "One line for each planned receipt or issue, earliest first: date, warehouse, order type, order and line, transaction type and quantity. With none, "
+                      "v": "Empty:"
                     },
                     {
                       "t": "text",
-                      "v": "Nothing planned in or out."
+                      "v": " and the warehouses that hold nothing and expect nothing, or no such line"
                     }
                   ],
-                  "text": "One line for each planned receipt or issue, earliest first: date, warehouse, order type, order and line, transaction type and quantity. With none, Nothing planned in or out."
+                  "text": "Empty: and the warehouses that hold nothing and expect nothing, or no such line"
                 }
               ],
               "id": "0.6",
@@ -323,56 +372,38 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the last sentence"
+                      "v": "Add up the warehouses' "
+                    },
+                    {
+                      "t": "text",
+                      "v": "ON HAND"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and their "
+                    },
+                    {
+                      "t": "text",
+                      "v": "ON ORDER"
+                    },
+                    {
+                      "t": "text",
+                      "v": ", and compare each with 0.2"
                     }
                   ],
-                  "text": "Read the last sentence"
+                  "text": "Add up the warehouses' ON HAND, and their ON ORDER, and compare each with 0.2"
                 },
                 {
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "It names any warehouse where more is allocated than is on hand, or says there is none"
+                      "v": "The sums equal the item's row. Where they do not, act on the row"
                     }
                   ],
-                  "text": "It names any warehouse where more is allocated than is on hand, or says there is none"
+                  "text": "The sums equal the item's row. Where they do not, act on the row"
                 }
               ],
               "id": "0.7",
-              "optional": false,
-              "produces": false
-            },
-            {
-              "cells": [
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "0.8"
-                    }
-                  ],
-                  "text": "0.8"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "Add up the warehouses' on hand, and their on order, and compare each with 0.2"
-                    }
-                  ],
-                  "text": "Add up the warehouses' on hand, and their on order, and compare each with 0.2"
-                },
-                {
-                  "tokens": [
-                    {
-                      "t": "text",
-                      "v": "The sums equal the item's row"
-                    }
-                  ],
-                  "text": "The sums equal the item's row"
-                }
-              ],
-              "id": "0.8",
               "optional": false,
               "produces": false
             }
@@ -1201,10 +1232,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The stock check prints some planned transactions twice"
+                  "v": "The stock check writes a transaction that repeats once, marked "
+                },
+                {
+                  "t": "text",
+                  "v": "(listed twice)"
                 }
               ],
-              "text": "The stock check prints some planned transactions twice"
+              "text": "The stock check writes a transaction that repeats once, marked (listed twice)"
             }
           ]
         },
@@ -1214,35 +1249,85 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Order types as codes"
+                  "v": "Order type names"
                 }
               ],
-              "text": "Order types as codes"
+              "text": "Order type names"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The stock check prints order types as codes such as "
-                },
-                {
-                  "t": "literal",
-                  "v": "act.sls"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "literal",
-                  "v": "proj.contract"
-                },
-                {
-                  "t": "text",
-                  "v": ", and what each stands for is not read here"
+                  "v": "The stock check names eight order types; any other prints as its code, and the names are not checked against a source"
                 }
               ],
-              "text": "The stock check prints order types as codes such as act.sls and proj.contract, and what each stands for is not read here"
+              "text": "The stock check names eight order types; any other prints as its code, and the names are not checked against a source"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not in date order"
+                }
+              ],
+              "text": "Not in date order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The stock check lists each figure's orders in the order LN sends them"
+                }
+              ],
+              "text": "The stock check lists each figure's orders in the order LN sends them"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Can disagree with the row"
+                }
+              ],
+              "text": "Can disagree with the row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One item's warehouses added up to 500 less on hand than its row, so the row is what to act on"
+                }
+              ],
+              "text": "One item's warehouses added up to 500 less on hand than its row, so the row is what to act on"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A demonstration"
+                }
+              ],
+              "text": "A demonstration"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN's own inventory screens show what the stock check shows; Status Overview is the one that reads and explains"
+                }
+              ],
+              "text": "LN's own inventory screens show what the stock check shows; Status Overview is the one that reads and explains"
             }
           ]
         },
@@ -1498,5 +1583,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 3
+  "openIssues": 5
 }

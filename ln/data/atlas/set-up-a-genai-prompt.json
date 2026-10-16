@@ -3539,6 +3539,63 @@
     },
     {
       "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The stock check fails the third question, so it is kept only as a demonstration."
+        },
+        {
+          "t": "text",
+          "v": " Its work is laying out figures LN already holds, and the rule against calculating leaves the model nothing to judge. LN shows the same data on screens of its own, "
+        },
+        {
+          "t": "session",
+          "code": "whwmd4300m000",
+          "name": "Inventory 360"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Warehousing ➔ Inventory 360"
+        },
+        {
+          "t": "text",
+          "v": ", and "
+        },
+        {
+          "t": "session",
+          "code": "whinp1300m000",
+          "name": "Planned Inventory Transactions - Graphical View"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Planned Inventory Transactions - Graphical View"
+        },
+        {
+          "t": "text",
+          "v": ". The question a seller has, whether a quantity can be promised by a date, is "
+        },
+        {
+          "t": "text",
+          "v": "available to promise"
+        },
+        {
+          "t": "text",
+          "v": ", which LN checks itself. On the default model its answers changed from run to run, it could not be made to sort, and a long item comes back as a long block of text a sortable list shows better. Status Overview fits better: it reads a line's statuses and names the step that comes next."
+        }
+      ],
+      "text": "The stock check fails the third question, so it is kept only as a demonstration. Its work is laying out figures LN already holds, and the rule against calculating leaves the model nothing to judge. LN shows the same data on screens of its own, Inventory 360 (whwmd4300m000), Warehousing ➔ Inventory 360, and Planned Inventory Transactions - Graphical View (whinp1300m000), Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Planned Inventory Transactions - Graphical View. The question a seller has, whether a quantity can be promised by a date, is available to promise, which LN checks itself. On the default model its answers changed from run to run, it could not be made to sort, and a long item comes back as a long block of text a sortable list shows better. Status Overview fits better: it reads a line's statuses and names the step that comes next.",
+      "under": "Is it worth a prompt"
+    },
+    {
+      "kind": "prose",
       "tokens": [],
       "text": "",
       "under": "Is it worth a prompt"

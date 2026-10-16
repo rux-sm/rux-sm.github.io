@@ -1,9 +1,9 @@
-commit   6a317005bda559897507d3ae73154668ed0328ec
-date     2026-10-16T00:57:39Z
-subject  fix(genai): Show the AI command links on LN Guide
+commit   6490fb1b7517de5df39581f35ca1d4b84150ac24
+date     2026-10-16T03:25:58Z
+subject  feat(genai): Keep the stock check as a demo
 contract 16 
 tier     export
-sha256   a29681557f2f3d1f5f9ff551eaeed8bd577f4312ce6791deb147b8a159c61408
+sha256   29ea9195afb75e87a808736fb8554de57e7fd365e3dc9efb70eadcfcfb874474
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

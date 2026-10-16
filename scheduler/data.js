@@ -8853,10 +8853,12 @@
          when it reached each leg's pickup, on the trip as last saved. It puts
          the farthest bus's total in Actual miles, each seated driver it saw in
          their own field and each arrival on its bus, for Save to write. A trip not yet saved has nothing to read, so has no menu. */
-      const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
-      const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-5');
+      /* The trip's two figures in a tile, and each bus in a tile of its own
+         under it, 8px apart as a list's tiles are. */
+      const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-3');
       const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
-      milesBody.append(miles);
+      milesBody.append(fieldTile(miles));
       /* The seats' fields and what Samsara says stand under the two fields
          only while they hold something, since an empty stack still takes its
          gap, and a stack's display outranks `hidden`. */
@@ -8972,7 +8974,7 @@
             group.append(head, ...(pickup ? [pickup] : []), ...fields);
             after.append(...notes.map(words => el('p', 'rux--form__helper-text', words)));
             drawTotal();
-            groups.push(group);
+            groups.push(fieldTile(group));
           });
         }
         seatMilesBox.replaceChildren(...groups);

@@ -5,11 +5,13 @@
    a task's trip on the To do list, and for the Trips page's Show choices. The page reads them itself, because only the
    board's week holds trips otherwise: every live trip for the follow-ups,
    and the buses, seats, stops and contacts of the ones leaving within 30
-   days. A change to a trip arrives on the `scheduler-to-do-rows` channel and
+   days, with the trips, time off and days out around them, which
+   clashes.js's standing rule reads. A change to a trip arrives on the `scheduler-to-do-rows` channel and
    reads them again, and each reading says `scheduler:to-do-rows`.
 
-   Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js
-   and to-do.js loaded first, and /account.js for the client.
+   Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js,
+   week.js, clashes.js and to-do.js loaded first, and /account.js for the
+   client.
    ========================================================================== */
 (() => {
   'use strict';
@@ -38,22 +40,26 @@
     'trip_updates(created_at,kind)'].join(',');
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+    'departure_time', 'return_time',
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed))',
-    'trip_stops(leg,arrive,spot,depart_prev)'].join(',');
+    'trip_stops(position,leg,type,arrive,spot,depart_prev)'].join(',');
 
   async function read() {
     const today = iso(new Date());
     const far = dayFrom(ToDo.SHORT_DAYS);
     const within = col => `and(${col}.gte.${today},${col}.lte.${far})`;
-    const [light, heavy, buses, drivers, settings] = await Promise.all([
+    const [light, heavy, buses, drivers, settings, nearby] = await Promise.all([
       // A trip that left a season ago can still owe a balance; older than that is History's.
       client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
       client.from('trips').select(HEAVY).is('cancelled_at', null)
         .or([within('start_date'), within('return_start_date'), within('end_date')].join(',')).then(unwrap),
-      client.from('buses').select('id,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
-      client.from('drivers').select('id,employment_type').then(unwrap),
+      client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
+      // The names, status and card dates, for what stands in a driver's way.
+      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
+      // What is around the trips leaving within 30 days, for the Clash rows.
+      window.SchedulerClashes?.readNearby(client, today, dayFrom(ToDo.SHORT_DAYS + 30)) ?? null,
     ]);
     const setting = new Map(settings.map(s => [s.key, s.value]));
     Facts.setRequirementList(setting.get('requirements-v1'));
@@ -69,6 +75,7 @@
     const facts = {
       busesById: new Map(buses.map(b => [b.id, b])),
       driversById: new Map(drivers.map(d => [d.id, d])),
+      nearby,
       statuses: new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r])),
     };
     trips = new Map(all.map(t => [t.id, t]));

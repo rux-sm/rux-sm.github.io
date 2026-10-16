@@ -271,13 +271,18 @@
      hours-of-service form, how many of the leg's buses have no fuel card
      number yet, which only a trip with a card asks, and, where the customer
      asks for driver forms, who lacks a current one and how many seats have
-     theirs not printed. */
-  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
+     theirs not printed. Handed `nearby`, the trips, time off and days out
+     around it, it also says what stands in its way, as clashes.js's
+     standing rule says it. */
+  function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
+    if (nearby && window.SchedulerClashes) {
+      facts.clashes = window.SchedulerClashes.standing(trip, leg, nearby, { driversById, busesById }).map(c => c.words);
+    }
     for (const a of assigns) {
       if (a.bus_id == null) continue;
       facts.busesAssigned++;

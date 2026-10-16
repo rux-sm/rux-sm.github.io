@@ -76,6 +76,18 @@ expect('a leg leaving in three days is not leaving soon',
   said(rows([{ ...good, start_date: day(3), end_date: day(3) }], { factsOf: () => ({ ...full, seatsOpen: 1 }), contactOf: () => false })),
   []);
 
+const clash = ['Bus 897: On trip Austin', 'Rigo: Time off'];
+expect('a leg within 30 days with something in its way is a Clash row, whatever its confirmation',
+  said(rows([good, { ...good, id: 'b', confirmed: false, quoted_price: null, created_at: ago(0) }], { ...facts, factsOf: () => ({ ...full, clashes: clash }) }))
+    .filter(r => r.startsWith('clash')),
+  ['clash:a:outbound Bus 897: On trip Austin · Rigo: Time off', 'clash:b:outbound Bus 897: On trip Austin · Rigo: Time off']);
+expect('a clash past 30 days, or on a placeholder, gives no row',
+  said(rows([{ ...good, start_date: day(31), end_date: day(31) }, { ...good, id: 'p', trip_bar_color: 'amber' }],
+    { ...facts, factsOf: () => ({ ...full, clashes: clash }) })), []);
+expect('leaving soon leaves out a clash the Clash row already says',
+  said(rows([soon], { factsOf: () => ({ ...full, clashes: clash }), contactOf: () => true })),
+  ['clash:a:outbound Bus 897: On trip Austin · Rigo: Time off']);
+
 expect('leaving soon leaves out what the follow-up and Short rows already say',
   said(rows([{ ...soon, confirmed: false, trip_assignments: [], trip_documents: [] },
     { ...soon, id: 'b', bus_count: 2 }],

@@ -9,9 +9,16 @@
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
    licence or medical card that runs out before a leg ends.
 
-   Nothing here reads the page or the database: each takes the trips, time
-   off and days out a page read, as `readNearby` in data.js reads them.
-   Needs week.js and leg-facts.js loaded first.
+   THE STANDING RULE: `standing(trip, leg, nearby, read)` is what stands in
+   a saved leg's way, bus by bus and seat by seat: another trip, a bus's days
+   out, a driver's time off, a driver set Inactive, or a card that runs out
+   before the leg ends. The bar, the checklist, Prep and the Trips page all
+   read it, so they cannot disagree. A placeholder raises nothing on itself,
+   though it still stands in another trip's way.
+
+   Nothing here reads the page. The one read is `readNearby`, handed the
+   page's client, so every page reads the same trips, time off and days out
+   around a range. Needs week.js and leg-facts.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -177,5 +184,59 @@
       .join(' · ');
   }
 
-  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse };
+  /* What stands in a saved leg's way, one entry for each thing: the
+     assignment and the driver it is on, `what` it is, and `words`, the bus's
+     number or the driver's name before it. `read` holds the page's
+     `driversById` and `busesById`. */
+  const PLACEHOLDER = ['amber', 'orange', 'yellow'];
+  function standing(trip, leg, nearby, { driversById = new Map(), busesById = new Map() } = {}) {
+    if (!trip || trip.cancelled_at || PLACEHOLDER.includes(String(trip.trip_bar_color || '').toLowerCase())) return [];
+    const range = legsOf(trip).find(l => l.leg === leg);
+    if (!range) return [];
+    const fit = fitFor(nearby, range, { tripId: trip.id });
+    const out = [];
+    const put = (a, driverId, subject, what) => {
+      if (!out.some(o => o.assignmentId === a.id && o.driverId === driverId && o.what === what)) {
+        out.push({ assignmentId: a.id, busId: a.bus_id ?? null, driverId, what, words: `${subject}: ${what}` });
+      }
+    };
+    for (const a of (trip.trip_assignments || []).filter(x => (x.leg || 'outbound') === leg)) {
+      if (a.bus_id != null) {
+        const bus = busesById.get(a.bus_id);
+        for (const what of fit.buses.get(a.bus_id) ?? []) put(a, null, bus?.number != null ? `Bus ${bus.number}` : 'The bus', what);
+      }
+      const on = activeRolesOf(a);
+      for (const d of a.trip_drivers || []) {
+        if (d.driver_id == null || !on.has(d.role || 'driver')) continue;
+        const who = driversById.get(d.driver_id);
+        const name = who?.short_name || who?.name || 'A driver';
+        for (const what of fit.drivers.get(d.driver_id) ?? []) put(a, d.driver_id, name, what);
+        if (who?.status && who.status !== 'active') put(a, d.driver_id, name, 'Inactive');
+        const lapse = who ? cardLapse(who, range) : '';
+        if (lapse) put(a, d.driver_id, name, lapse);
+      }
+    }
+    return out;
+  }
+
+  /* The trips, time off and out-of-service days around a range: trips from
+     90 days before it, so one still running into it is seen, to a day past it,
+     so one starting the day after reads as back-to-back. Each trip comes with
+     its times and stops, which say when it leaves and is back. */
+  async function readNearby(client, lo, hi) {
+    const past = iso(addDays(parseISO(hi), 1));
+    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    const [trips, off, oos] = await Promise.all([
+      client.from('trips')
+        .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,trip_type,'
+          + 'trip_stops(position,leg,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,active_roles,trip_drivers(driver_id,role))')
+        .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
+        .then(unwrap),
+      client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
+    ]);
+    return { trips, off, oos };
+  }
+
+  window.SchedulerClashes = { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, besideOf, fitFor, rankDrivers, autoPicks, cardLapse, standing, readNearby };
 })();

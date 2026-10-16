@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    The one copy of the to-do list's computed rows. Nothing writes one and
    nothing stores one: each is worked out from the trips every time, so it
-   asks while it is true and is gone once its trip is fixed. Four rules, each
+   asks while it is true and is gone once its trip is fixed. Five rules, each
    read from the file that owns it:
 
      Follow-up     a trip that asks for a follow-up, as follow-up.js decides
@@ -14,6 +14,9 @@
                    has fewer buses than it needs
      No times      a confirmed trip with a leg leaving within a week whose
                    stops have no times in
+     Clash         a leg leaving within 30 days with something in a bus's or
+                   a driver's way, as clashes.js's standing rule says, where
+                   the page handed in what is around it
 
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line.
@@ -40,6 +43,7 @@
   const KINDS = {
     'short': { label: 'Short of buses' },
     'times': { label: 'No times' },
+    'clash': { label: 'Clash' },
     'leaving': { label: 'Leaving soon' },
     'follow-up': { label: 'Follow-up' },
   };
@@ -111,14 +115,27 @@
         }
       }
 
+      const clashed = new Set();
+      const factsFor = new Map();
+      const factsAt = leg => { if (!factsFor.has(leg)) factsFor.set(leg, factsOf(trip, leg)); return factsFor.get(leg); };
+      for (const leg of Checklist.legsOf(trip)) {
+        if (!within(legDay(trip, leg), SHORT_DAYS)) continue;
+        const clashes = factsAt(leg).clashes ?? [];
+        if (clashes.length) {
+          clashed.add(leg);
+          out.push(row('clash', trip, leg, { what: clashes.join(' · '), detail: null }));
+        }
+      }
+
       for (const leg of Checklist.legsOf(trip)) {
         if (!within(legDay(trip, leg), SOON_DAYS)) continue;
         const said = new Set([
           ...(waits.includes('confirmation') ? ['confirmed'] : []),
           ...(waits.includes('itinerary') ? ['itinerary'] : []),
           ...(short.has(leg) ? ['buses'] : []),
+          ...(clashed.has(leg) ? ['clashes'] : []),
         ]);
-        const open = Checklist.legItems(trip, leg, factsOf(trip, leg), contactOf(trip))
+        const open = Checklist.legItems(trip, leg, factsAt(leg), contactOf(trip))
           .filter(i => !i.done && SOON_GROUPS.includes(i.group) && !said.has(i.id.split(':')[0]));
         if (open.length) out.push(row('leaving', trip, leg, { what: open.map(openWords).join(' · '), detail: null }));
       }

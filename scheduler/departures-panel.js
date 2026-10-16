@@ -127,7 +127,8 @@
   const readBasics = () => (basics ??= (async () => {
     const [busRows, driverRows, settings, profiles] = await Promise.all([
       client.from('buses').select('id,number,capacity,type,ada_lift,sleeper,equipment').then(unwrap),
-      client.from('drivers').select('id,name,short_name,employment_type').then(unwrap),
+      // The status and the card dates, for what stands in a driver's way.
+      client.from('drivers').select('id,name,short_name,employment_type,status,license_exp,med_card_expiry').then(unwrap),
       client.from('settings').select('key,value').in('key', ['requirements-v1', 'follow-up-v1', 'billing-workflow-v1']).then(unwrap),
       client.from('profiles').select('id,display_name,photo_path,avatar_color').then(unwrap),
     ]);
@@ -149,11 +150,21 @@
       .or(`start_date.eq.${which},return_start_date.eq.${which},end_date.eq.${which}`).order('start_date').then(unwrap);
     const legs = Departures.legsOn(trips, which);
     const ids = [...new Set(legs.map(l => l.trip.id))];
-    const statusRows = ids.length ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [];
+    // The trips, time off and days out around the day, for what stands in each leg's way.
+    const [statusRows, nearby] = await Promise.all([
+      ids.length ? client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [],
+      legs.length && window.SchedulerClashes ? window.SchedulerClashes.readNearby(client, which, lastOf(legs, which)) : null,
+    ]);
     const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
-    return legs.map(l => Departures.page(l.trip, l.leg, { ...read, statuses }))
+    return legs.map(l => Departures.page(l.trip, l.leg, { ...read, statuses, nearby }))
       .sort((a, b) => soonest(a).localeCompare(soonest(b)));
   }
+
+  // The last day any of a day's legs takes, so what is read around them reaches its end.
+  const lastOf = (legs, which) => legs.reduce((last, l) => {
+    const to = window.SchedulerWeek?.legsOf(l.trip).find(x => x.leg === l.leg)?.to;
+    return to && to > last ? to : last;
+  }, which);
 
   // Several days' legs, one day after another.
   const readDays = async which => (await Promise.all(which.map(readDay))).flat();

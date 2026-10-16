@@ -59,6 +59,12 @@ expect('a bus short of a need and unconfirmed drivers are open',
     .filter(i => /fit|drivers|envelopes/.test(i)),
   ['fit:outbound-', 'drivers:outbound-', 'envelopes:outbound-']);
 
+expect('something in the way is an open Buses item, and nothing in the way, or nothing read, adds none',
+  [ids(checklist(ready, () => ({ ...full, clashes: ['Rigo: Time off'] }), true)).filter(i => i.startsWith('clashes')),
+    ids(checklist(ready, () => ({ ...full, clashes: [] }), true)).filter(i => i.startsWith('clashes')),
+    ids(checklist(ready, () => full, true)).filter(i => i.startsWith('clashes'))],
+  [['clashes:outbound-'], [], []]);
+
 const forms = f => ids(checklist(ready, () => ({ ...full, ...f }), true)).filter(i => i.startsWith('driver-forms'));
 expect('driver forms are asked for only where the customer wants them, and done once each is on file and printed',
   [forms({}), forms({ formsWanted: 1, formsMissing: ['Ana, Background check'] }), forms({ formsWanted: 1, formsLeft: 1 }),

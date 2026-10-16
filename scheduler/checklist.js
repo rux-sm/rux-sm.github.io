@@ -8,8 +8,9 @@
      Entered      the Route, Buses and Billing tabs each marked done
      Customer     confirmed, the itinerary received or not needed, a trip
                   contact
-     Buses        every bus assigned and fit for the trip, every seat
-                  filled, every driver confirmed
+     Buses        every bus assigned and fit for the trip, nothing in a
+                  bus's or a driver's way, every seat filled, every driver
+                  confirmed
      Paperwork    each driver's itinerary and envelope printed, the
                   hours-of-service record of each part-time driver, and each
                   driver's form of a kind the customer asks for
@@ -40,7 +41,7 @@
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
        envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft,
-       formsWanted, formsMissing, formsLeft },
+       formsWanted, formsMissing, formsLeft, clashes },
      where `seats`
      counts the seats with a driver in them. `tripContact` is whether the trip
      has a day-of contact. */
@@ -72,6 +73,8 @@
     if (facts.busesShort) {
       add('Buses', 'fit', 'Every bus fits the trip', false, TABS.buses, `${plural(facts.busesShort, 'bus falls', 'buses fall')} short`);
     }
+    // What stands in the way, as clashes.js says it, where the page read it.
+    if (facts.clashes?.length) add('Buses', 'clashes', 'No clashes', false, TABS.buses, facts.clashes.join(' · '));
     add('Buses', 'seats', 'Every seat filled', !facts.seatsOpen, TABS.buses,
       facts.seatsOpen ? `${plural(facts.seatsOpen, 'seat', 'seats')} open` : null);
     if (facts.seats) {

@@ -23,9 +23,11 @@
    customer still owes, the hotel where the office books it, and the driver
    details sent to the booking contact. A bus's block
    holds what the bus needs, met or not, its fuel card among them where the
-   trip has one, and each crew member's lines:
-   confirmed, then the itinerary, the envelope, the reminder, and the
-   hours-of-service form for a part-time driver.
+   trip has one, and anything in the bus's way, and each crew member's lines:
+   confirmed, then the itinerary, the envelope, the reminder, the
+   hours-of-service form for a part-time driver, and anything in the driver's
+   way. What is in the way is clashes.js's standing rule, read against the
+   `nearby` trips, time off and days out the caller hands in.
 
    Nothing here reads the database or the page. The trip row brings its
    columns, its `trip_prep` row and its seats with their steps, and the
@@ -130,8 +132,9 @@
 
   /* One bus of the leg: what it needs, met or not, and its crew's lines. A
      row with no bus yet says so, and so does a seat with nobody in it. */
-  function busBlock(trip, assign, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}) {
+  function busBlock(trip, assign, { busesById = new Map(), driversById = new Map(), statuses = new Map() } = {}, clashes = []) {
     const bus = assign.bus_id != null ? busesById.get(assign.bus_id) ?? null : null;
+    const mine = clashes.filter(c => String(c.assignmentId) === String(assign.id));
     const needs = [];
     if (bus) {
       const type = Facts.wrongType(assign.vehicle_type, bus);
@@ -147,6 +150,7 @@
       const number = String(assign.fuel_card_number ?? '').trim();
       needs.push({ id: 'fuelCard', label: number ? `Fuel card ${number}` : 'Fuel card', met: !!number, action: 'forms:envelope' });
     }
+    for (const c of mine.filter(x => x.driverId == null)) needs.push({ id: `clash:${c.what}`, label: c.what, met: false });
     const crew = [];
     for (const c of Facts.crewOf(trip, assign, driversById, statuses)) {
       if (c.needed) {
@@ -171,6 +175,7 @@
       const forms = Facts.driverFormsOf(trip, assign.leg || 'outbound', c.driverId);
       for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
       if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
+      for (const x of mine.filter(m => m.driverId === c.driverId)) lines.push(line(`clash:${x.what}`, 'warn', x.what));
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
         role: c.label, partTime, seat, driverId: c.driverId, lines });
     }
@@ -183,10 +188,11 @@
      the order the trip keeps them, and how many lines are not done. */
   function page(trip, leg, read = {}) {
     const lines = tripLines(trip, leg);
+    const clashes = read.nearby && window.SchedulerClashes ? window.SchedulerClashes.standing(trip, leg, read.nearby, read) : [];
     const buses = (trip.trip_assignments || [])
       .filter(a => (a.leg || 'outbound') === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-      .map(a => busBlock(trip, a, read));
+      .map(a => busBlock(trip, a, read, clashes));
     const tripLeft = lines.filter(l => l.state !== 'done').length;
     const needed = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     // A bus the leg needs and has no row for is one more thing left.

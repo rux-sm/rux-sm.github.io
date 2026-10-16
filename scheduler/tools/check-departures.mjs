@@ -4,8 +4,8 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'to-do.js', 'departures.js']) {
-  runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
+for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
+  runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window, Intl, Date });
 }
 const { prepDays, legsOn, page, summary } = window.SchedulerDepartures;
 const { statusKey } = window.SchedulerLegFacts;
@@ -96,6 +96,15 @@ expect('a part-time co-driver has an HOS form line, and a bus says what it needs
 expect('a bus that lacks a need and has no driver says both, and a bus the leg has no row for is counted',
   [two.buses[1].needs.map(n => `${n.label}:${n.met}`), said(two.buses[1].crew[0].lines), two.buses[1].left, two.missing, two.left],
   [['Sleeper:false'], ['warn Driver needed'], 2, 1, 4 + 2 + 1]);
+
+// Another trip on the same bus and driver that day, and the driver away.
+const other = { id: 'o', destination: 'Austin', trip_type: 'round_trip', start_date: day(1), end_date: day(1),
+  trip_assignments: [bus('o1', 1, [seat('os', 'd1', 'driver')])], trip_stops: [] };
+const clashed = page(trip, 'outbound', { ...read, nearby: { trips: [trip, other], off: [{ driver_id: 'd1', start_date: day(1), end_date: day(1) }], oos: [] } });
+expect('a bus and its driver say what stands in their way, each a line still to sort out',
+  [clashed.buses[0].needs.filter(n => !n.met).map(n => n.label), said(clashed.buses[0].crew[0].lines).filter(l => l.startsWith('warn'))],
+  [['On trip Austin'], ['warn On trip Austin', 'warn Time off']]);
+expect('with nothing read around it, a leg says no clash', page(trip, 'outbound', read).buses[0].needs.filter(n => !n.met).length, 0);
 
 const card = page({ ...trip, bus_count: 2, need_fuel_card: true, trip_assignments: [
   bus('a1', 1, [seat('s1', 'd1', 'driver', done)], { fuel_card_number: '4417' }),

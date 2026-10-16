@@ -9,7 +9,7 @@ const window = {};
 for (const f of ['../requirements.js', '../leg-facts.js', '../week.js', '../clashes.js']) {
   runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 }
-const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse } = window.SchedulerClashes;
+const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, standing } = window.SchedulerClashes;
 const { legsOf } = window.SchedulerWeek;
 
 let failed = 0;
@@ -117,6 +117,25 @@ expect('a card lasting the trip says nothing', lapse('2027-01-01', '2026-10-14')
 expect('a card out before the trip has expired', lapse('2026-10-01', null), 'Licence expired Oct 1, 2026');
 expect('both cards are said', lapse('2026-10-01', '2026-10-13').split(' · ').length, 2);
 expect('no date on file says nothing', lapse(null, ''), '');
+
+// ── the standing rule ───────────────────────────────────────────────────────
+const saved = trip({ from: '2026-10-14', dest: 'Saved', buses: [['s1', 'b1', 'd1', 'd2']] });
+const read = {
+  busesById: new Map([['b1', { number: '897' }]]),
+  driversById: new Map([['d1', { name: 'Rigoberto Gomez', short_name: 'Rigo', status: 'active', license_exp: '2026-10-10' }],
+    ['d2', { name: 'Ana Ruiz', status: 'inactive' }]]),
+};
+const around = { trips: [saved, trip({ from: '2026-10-14', out: '12:00', back: '15:00', dest: 'Lunch', buses: [['x1', 'b1', 'd9']] })],
+  off: [{ driver_id: 'd1', start_date: '2026-10-14', end_date: '2026-10-14' }], oos: [] };
+expect('a saved leg says each thing in its way, by the bus\'s number and the driver\'s name',
+  standing(saved, 'outbound', around, read).map(c => c.words),
+  ['Bus 897: On trip Lunch', 'Rigo: Time off', 'Rigo: Licence expired Oct 10, 2026', 'Ana Ruiz: Inactive']);
+expect('each thing names its assignment and driver', standing(saved, 'outbound', around, read).map(c => [c.assignmentId, c.driverId]),
+  [['s1', null], ['s1', 'd1'], ['s1', 'd1'], ['s1', 'd2']]);
+expect('a placeholder raises nothing on itself', standing({ ...saved, trip_bar_color: 'amber' }, 'outbound', around, read), []);
+const blocking = { ...around, trips: [saved, { ...trip({ from: '2026-10-14', dest: 'Hold', buses: [['h1', 'b1']] }), trip_bar_color: 'amber' }], off: [] };
+expect('and still stands in another trip\'s way', standing(saved, 'outbound', blocking, read).map(c => c.words)[0], 'Bus 897: On trip Hold');
+expect('its own trip is never in its way', standing(saved, 'outbound', { trips: [saved], off: [], oos: [] }, { driversById: new Map() }), []);
 
 console.log(failed ? `\n  ${failed} fault(s) in clashes` : '\n  clashes: every case passed');
 process.exit(failed ? 1 : 0);

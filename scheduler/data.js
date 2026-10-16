@@ -981,6 +981,16 @@
     return card;
   }
 
+  /* The trips, time off and days out the board read, which a bar's standing
+     rule is read against, and each leg's answer, kept until the next draw. */
+  let boardNearby = { trips: [], off: [], oos: [] };
+  const standingOf = new Map();
+  const standingFor = (trip, leg, driversById, busesById) => {
+    const key = `${trip.id}:${leg}`;
+    if (!standingOf.has(key)) standingOf.set(key, window.SchedulerClashes.standing(trip, leg, boardNearby, { driversById, busesById }));
+    return standingOf.get(key);
+  };
+
   function barEl(b, driversById, busesById, statuses) {
     const { trip, leg, assign, place, slot } = b;
     const hue = hueFor(trip);
@@ -1077,7 +1087,12 @@
       needs.push({ id: 'hos', href: '#m-schedule', name: 'Hours of service',
         label: printed ? 'Hours of service printed' : 'Hours of service not printed', done: printed });
     }
-    const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label)].filter(Boolean);
+    /* WHAT STANDS IN THE WAY of this bus and its seats, by clashes.js's
+       standing rule: another trip, days out, time off, Inactive or a card
+       that runs out. Each is a mistake to put right, so a misfit. */
+    const clashes = placeholder || !assign ? []
+      : standingFor(trip, leg.leg, driversById, busesById).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
+    const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
     barFacts.set(bar, { needs, misfits });
 
     /* The one mark, at the destination row's end: how many alerts the trip's
@@ -1200,6 +1215,8 @@
   let renderedWeek = null;
   function render(data, target) {
     const { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd } = data;
+    boardNearby = { trips, off: timeOff, oos };
+    standingOf.clear();
     const kept = !target && renderedWeek === iso(weekStart) ? selectedBar() : null;
     const keepRef = kept ? barRef(kept) : null;
     // One week or two, from the range asked for. The board's columns follow
@@ -2626,24 +2643,8 @@
     return from ? { from, to: v('scheduler-f-end') || from } : null;
   };
 
-  /* The trips, time off and out-of-service days around a range: trips from
-     90 days before it, so one still running into it is seen, to a day past it,
-     so one starting the day after reads as back-to-back. Each trip comes with
-     its times and stops, which say how long a back-to-back driver rests. */
-  async function readNearby(lo, hi) {
-    const past = iso(addDays(parseISO(hi), 1));
-    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
-    const [trips, off, oos] = await withTimeout(Promise.all([
-      client.from('trips')
-        .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,'
-          + 'trip_stops(position,leg,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,active_roles,trip_drivers(driver_id,role))')
-        .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
-        .then(unwrap),
-      client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-    ]));
-    return { trips, off, oos };
-  }
+  // The trips, time off and days out around a range, as clashes.js reads them.
+  const readNearby = (lo, hi) => withTimeout(window.SchedulerClashes.readNearby(client, lo, hi));
 
   async function loadFleetClashes() {
     if (!client || !editing?.fleet) return;

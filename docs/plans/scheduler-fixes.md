@@ -154,13 +154,6 @@ None open.
 
 ### Clashes
 
-- [ ] Move `fitFor`, `restBetween`, `rankDrivers`, `autoPicks` and
-      `cardLapse` into `scheduler/clashes.js` with
-      `scheduler/tools/check-clashes.mjs`, and make a clash read the clock.
-- [ ] Add the standing rule and read it on the bar, in the checklist's Buses
-      group, as a kind of gap in `to-do.js`, on a leg's Prep tile and as a
-      choice on the Trips page; load `week.js` and `clashes.js` on the board
-      and the Trips page, the two that load `to-do-rows.js`.
 - [ ] Warn at Save when a date change makes a clash.
 - [ ] Say a lapsed card in words in every picker, and leave that driver out
       of the automatic picks.

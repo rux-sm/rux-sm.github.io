@@ -299,7 +299,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,miles,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -2479,7 +2479,7 @@
     seats.driver.on = true;
     const needs = needsObject(needIds(seed.needs));
     const vehicleType = seed.vehicleType ?? null;
-    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, seats,
+    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, pickupAt: null, seats,
       needs, vehicleType, seed: { needs: { ...needs }, vehicleType } };
   };
 
@@ -2491,6 +2491,7 @@
     bus.id = a.id;
     bus.position = a.position ?? null;
     bus.busId = a.bus_id ?? null;
+    bus.pickupAt = a.pickup_at ?? null;
     bus.needs = needsObject(needIds(a.needs));
     bus.vehicleType = a.vehicle_type ?? null;
     const on = activeRolesOf(a);
@@ -2600,6 +2601,9 @@
         }
         const patch = {};
         if (!same(b.busId, prev.busId)) patch.bus_id = b.busId;
+        // Another bus did not reach the pickup when this one did.
+        const pickupAt = same(b.busId, prev.busId) ? b.pickupAt ?? null : null;
+        if (!same(pickupAt, prev.pickupAt)) patch.pickup_at = pickupAt;
         if (!sameNeeds(b.needs, prev.needs)) patch.needs = needsObject(needIds(b.needs));
         if ((b.vehicleType ?? null) !== (prev.vehicleType ?? null)) patch.vehicle_type = b.vehicleType ?? null;
         if (renumber && prev.position !== i) patch.position = i;
@@ -2625,11 +2629,12 @@
       if (ops.inserts.length || ops.updates.length || ops.deletes.length) work.legs.push(ops);
     }
     /* Any change to who sits where, or a status picked here, sends the crew.
-       A seat's miles alone is the close-out filling in, and sends nothing. */
+       A seat's miles and a bus's pickup arrival are the close-out filling
+       in, and send nothing. */
     const statusPicked = fleetLegsToSave().some(leg => now[leg].some(b => ROLES.some(r => b.seats[r.role].statusDirty)));
     const onlyMiles = s => s.op === 'update' && Object.keys(s.patch).every(k => k === 'miles');
     const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
-      || ops.updates.some(u => Object.keys(u.patch).length || !u.seats.every(onlyMiles)));
+      || ops.updates.some(u => Object.keys(u.patch).some(k => k !== 'pickup_at') || !u.seats.every(onlyMiles)));
     work.statuses = moved || statusPicked;
     work.work = Object.keys(work.trip).length > 0 || work.legs.length > 0 || work.statuses;
     return work;
@@ -8819,10 +8824,10 @@
       );
       miles.classList.add('scheduler-pair--figures');
       /* Get from Samsara, in the heading's menu, asks the samsara-miles Edge
-         Function how far each bus went by its odometer, and who drove it, on
-         the trip as last saved. It puts the farthest bus's total in Actual
-         miles, and each seated driver it saw in their own field, for Save to
-         write. A trip not yet saved has nothing to read, so has no menu. */
+         Function how far each bus went by its odometer, who drove it and
+         when it reached each leg's pickup, on the trip as last saved. It puts
+         the farthest bus's total in Actual miles, each seated driver it saw in
+         their own field and each arrival on its bus, for Save to write. A trip not yet saved has nothing to read, so has no menu. */
       const milesBody = el('div', 'rux--stack-vertical rux--stack-scale-4');
       const seatMilesBox = el('div', 'rux--stack-vertical rux--stack-scale-5');
       const samsaraOut = el('div', 'rux--stack-vertical rux--stack-scale-2');
@@ -8860,7 +8865,22 @@
          or logged into another bus, pulls apart. Then where Samsara and the
          seats differ: who drove the bus the trip does not seat, and who the
          trip seats that Samsara never saw in it. The Buses tab is where a
-         seat is put right. */
+         seat is put right. Under the bus's name, when it reached the leg's
+         pickup, and whether that was on time, which earns the Driver seat
+         its on-time pay. */
+      const pickupLine = (b, leg) => {
+        if (!b.pickupAt) return null;
+        const at = Date.parse(b.pickupAt);
+        const late = Road.pickupLate(Road.stopsOf(trip, leg)[0]?.due ?? null, at);
+        const line = el('p', 'rux--form__helper-text');
+        line.append(`Reached the pickup at ${hhmm(Road.clockOf(at), true)}`);
+        if (late != null) {
+          const tag = el('span', `rux--tag rux--layout--size-sm rux--tag--sm ${late ? 'rux--tag--warm-gray' : 'rux--tag--green'}`);
+          tag.append(el('span', 'rux--tag__label', late ? `${late} min late` : `On time, $${Road.ON_TIME_PAY}`));
+          line.append(' ', tag);
+        }
+        return line;
+      };
       const drawSeatMiles = () => {
         if (!editing?.fleet) return;
         const split = fleetSplit();
@@ -8869,7 +8889,8 @@
           editing.fleet[leg].forEach((b, i) => {
             const seats = ROLES.map(r => ({ role: r.role, seat: b.seats[r.role] })).filter(x => seatFilled(x.seat));
             const found = b.busId ? legFound(b.busId, leg) : null;
-            if (!seats.length && !found) return;
+            const pickup = pickupLine(b, leg);
+            if (!seats.length && !found && !pickup) return;
             const bus = b.busId ? panelIndex?.buses?.get(b.busId) : null;
             const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (leg === 'return' ? ', pickup' : ', drop-off') : ''}`;
             const odometer = found?.miles ?? null;
@@ -8915,7 +8936,7 @@
               if (nobody) notes.push(`Nobody logged in: ${mi(nobody.miles)}`);
               if (unseen.length) notes.push(`On the trip, not seen in Samsara: ${unseen.join(', ')}`);
             }
-            group.append(head, ...fields);
+            group.append(head, ...(pickup ? [pickup] : []), ...fields);
             after.append(...notes.map(words => el('p', 'rux--form__helper-text', words)));
             drawTotal();
             groups.push(group);
@@ -8947,10 +8968,14 @@
         samsaraFound = r.data;
         samsaraOut.replaceChildren(...(samsaraFound.buses.length ? []
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
-        // Each seated driver Samsara saw drive the seat's bus on its leg.
+        /* Each seated driver Samsara saw drive the seat's bus on its leg, and
+           when each bus reached the leg's pickup; an arrival Samsara cannot
+           find leaves the one saved. */
         let filled = samsaraFound.actual != null;
         for (const leg of fleetLegs()) {
           for (const b of editing.fleet?.[leg] ?? []) {
+            const at = b.busId ? legFound(b.busId, leg)?.pickup_at : null;
+            if (at) { b.pickupAt = at; filled = true; }
             const drove = b.busId ? droveOn(b.busId, leg) : null;
             if (!drove) continue;
             for (const role of ROLES.map(x => x.role)) {

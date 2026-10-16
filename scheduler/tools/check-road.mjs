@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 for (const f of ['../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
-const { stopsOf, whereOn, clockOf, lateBy, arrivals, live } = window.SchedulerRoad;
+const { stopsOf, whereOn, clockOf, lateBy, pickupLate, arrivals, live } = window.SchedulerRoad;
 const { officeInstant } = window.SchedulerWeek;
 
 let failed = 0;
@@ -95,6 +95,9 @@ expect('ten minutes after it is due is on time', lateBy(T('2026-10-15', '17:30')
 expect('eleven minutes after is late by eleven', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:41')), 11);
 expect('early is on time', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:00')), 0);
 expect('no time due is never late', lateBy(null, T('2026-10-15', '17:00')), 0);
+expect('a pickup reached at its Spot is on time', pickupLate(T('2026-10-15', '16:30'), T('2026-10-15', '16:30')), 0);
+expect('a pickup reached a minute after is a minute late', pickupLate(T('2026-10-15', '16:30'), T('2026-10-15', '16:31')), 1);
+expect('a pickup with no time due or no arrival says nothing', [pickupLate(null, 1), pickupLate(1, null)], [null, null]);
 
 // Arrivals.
 let clock = 0, asked = 0, changed = 0;

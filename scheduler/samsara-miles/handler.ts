@@ -2,14 +2,21 @@
 // Edge runtime and under Node, where scheduler/tools/check-samsara-miles.mjs
 // sends it sample trips. The trip editor's Get from Samsara sends a trip's id
 // and gets back how far each of its buses went on each leg, by Samsara's
-// odometer, who drove each one on each leg and in all, and the farthest bus's
-// total for the Actual miles box.
+// odometer, who drove each one on each leg and in all, when each reached each
+// leg's pickup, and the farthest bus's total for the Actual miles box.
 //
 // A LEG'S WINDOW is its planned yard-out to yard-back, from its stops, widened
 // by two hours each side to catch an early start or a late return; a parked
 // bus adds no miles, so the margin costs nothing. The margin stops where the
 // same bus's previous or next trip begins, and a bus booked on another trip
 // inside the window itself gets no miles for that leg.
+//
+// A BUS'S PICKUP ARRIVAL is when it came within a quarter mile of its leg's
+// pickup and stayed, for a stay that lasts until two hours before the pickup
+// is due or later, the reach the board's live line keeps in scheduler/road.js.
+// A bus already there when its window opens, as at a pickup in the yard,
+// arrived when the window opens. It is read across the leg's window, to
+// twelve hours past the due time at most, and while the leg is still out.
 //
 // TIMES ARE THE OFFICE'S. The stops keep McAllen wall-clock times with no zone,
 // and each is turned into an instant with that date's offset.
@@ -32,6 +39,8 @@ export type Stop = {
   arrive_date: string | null
   spot: string | null
   spot_date: string | null
+  lat?: number | string | null
+  lng?: number | string | null
 }
 export type Assignment = { bus_id: string | null; leg: string | null }
 export type Trip = {
@@ -57,6 +66,7 @@ export type Readings = Record<string, {
 export type Driver = { id: string; name: string | null }
 export type VehicleTrip = { startMs: number; endMs?: number; driverId?: number | string | null; distanceMeters?: number }
 export type SamsaraDriver = { id: string; name: string }
+export type Fix = { time: string; latitude: number; longitude: number }
 
 export type Deps = {
   // The trip with its stops and buses, read on the caller's own log-in, or
@@ -77,6 +87,8 @@ export type Deps = {
   vehicleTrips(vehicleId: string, fromMs: number, toMs: number): Promise<VehicleTrip[]>
   // Every Samsara driver's id and name.
   samsaraDrivers(): Promise<SamsaraDriver[]>
+  // A vehicle's GPS points between two instants.
+  gps(vehicleId: string, fromMs: number, toMs: number): Promise<Fix[]>
   // Whether a Samsara key is set.
   keyed: boolean
   now(): number
@@ -91,6 +103,9 @@ export type BusLeg = {
   // Who drove the bus on this leg, for the leg's own seats, most miles first,
   // or null when Samsara could not say.
   drivers: Drove[] | null
+  // When the bus reached the leg's pickup, or null when it did not, the
+  // pickup has no map point, or Samsara could not say.
+  pickup_at: string | null
 }
 // A driver Samsara saw drive the bus, matched to the scheduler's where it can
 // be, or nobody logged in when `name` is null.
@@ -190,6 +205,51 @@ export function legWindow(trip: Trip, leg: 'outbound' | 'return'): Window | null
 
 const legsOf = (trip: Trip): ('outbound' | 'return')[] =>
   trip.return_start_date ? ['outbound', 'return'] : ['outbound']
+
+// ── the pickup ──────────────────────────────────────────────────────────────
+
+const NEAR_MILES = 0.25
+const EARLY_MS = 2 * 3600_000
+const AFTER_DUE_MS = 12 * 3600_000
+
+// The miles between two points as the crow flies; each is [lat, lng].
+export function crow(a: [number, number], b: [number, number]): number {
+  const rad = Math.PI / 180
+  const dLat = (b[0] - a[0]) * rad, dLng = (b[1] - a[1]) * rad
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin(dLng / 2) ** 2
+  return 3958.8 * 2 * Math.asin(Math.sqrt(h))
+}
+
+// A leg's pickup, the row week.js picks, with its map point and when the bus
+// is due there: its Spot, or the leg's departure where it has none, on the
+// row's own date or the leg's first day. Null when it has no map point.
+export function pickupOf(trip: Trip, leg: 'outbound' | 'return'): { point: [number, number]; due: number | null } | null {
+  const rows = (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === leg)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+  const p = rows.find(s => s.type === 'pickup') ?? rows[0]
+  if (!p || p.lat == null || p.lng == null || p.lat === '' || p.lng === '') return null
+  const point: [number, number] = [Number(p.lat), Number(p.lng)]
+  if (!point.every(Number.isFinite)) return null
+  const from = leg === 'return' ? trip.return_start_date : trip.start_date
+  const [time, date] = p.spot ? [p.spot, p.spot_date]
+    : [p.depart_prev ?? (leg === 'outbound' ? trip.departure_time : trip.return_time), p.depart_prev ? p.depart_prev_date : null]
+  return { point, due: time && (date ?? from) ? instant((date ?? from)!, time) : null }
+}
+
+// The first point of the stay at the pickup that reaches two hours before it
+// is due, as an instant, or null. A parked bus sends few points, so a stay is
+// the points inside the reach with none outside between them.
+export function arrivalAt(point: [number, number], due: number | null, fixes: Fix[]): number | null {
+  const pts = fixes.map(f => ({ at: Date.parse(f.time), p: [f.latitude, f.longitude] as [number, number] }))
+    .filter(f => Number.isFinite(f.at) && f.p.every(Number.isFinite)).sort((a, b) => a.at - b.at)
+  let came: number | null = null
+  for (const f of pts) {
+    if (crow(point, f.p) > NEAR_MILES) { came = null; continue }
+    came ??= f.at
+    if (due == null || f.at >= due - EARLY_MS) return came
+  }
+  return null
+}
 
 const legOfAssignment = (a: Assignment): 'outbound' | 'return' => (a.leg === 'return' ? 'return' : 'outbound')
 
@@ -300,6 +360,23 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const read = new Map<number, Readings>()
   await Promise.all([...wanted].map(async ([at, ids]) => { read.set(at, await deps.readings([...ids], iso(at))) }))
 
+  // Each bus's arrival at each leg's pickup, from its GPS points; a vehicle
+  // whose points do not come has none.
+  const arrived = new Map<string, number | null>()
+  await Promise.all(asks.map(async a => {
+    if (!a.vehicle || (a.note && a.note !== 'not-finished')) return
+    const pickup = pickupOf(trip, a.leg)
+    if (!pickup) return
+    const to = pickup.due != null ? Math.min(a.to, pickup.due + AFTER_DUE_MS) : a.to
+    if (to <= a.from) return
+    const fixes = await deps.gps(a.vehicle, a.from, to).catch(() => [] as Fix[])
+    arrived.set(`${a.bus}|${a.leg}`, arrivalAt(pickup.point, pickup.due, fixes))
+  }))
+  const pickupAt = (bus: string, leg: string) => {
+    const at = arrived.get(`${bus}|${leg}`)
+    return at == null ? null : iso(at)
+  }
+
   /* Who drove each bus: Samsara's own trips for it that start inside each
      leg's window, their miles added up for each driver logged in. Without the
      key's permission to read them, nobody is known. */
@@ -339,11 +416,12 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const out: BusMiles[] = busIds.map(bus => {
     const mine: BusLeg[] = asks.filter(a => a.bus === bus).map(a => {
       const drivers = droveFor(bus, a.leg)
-      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers }
+      const pickup_at = pickupAt(bus, a.leg)
+      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers, pickup_at }
       const got = between(read.get(a.from)?.[a.vehicle], read.get(a.to)?.[a.vehicle], a.from)
       return got
-        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers }
-        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers }
+        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers, pickup_at }
+        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers, pickup_at }
     })
     const whole = mine.length > 0 && mine.every(l => l.miles != null)
     return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null,

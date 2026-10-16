@@ -1,5 +1,6 @@
 // The Edge Function `samsara-miles`: a trip's id in, how far each of its
-// buses went by Samsara's odometer out; what it answers is `handler.ts`.
+// buses went by Samsara's odometer and when each reached its pickup out; what
+// it answers is `handler.ts`.
 // Samsara's API refuses calls from a web page and its key must never reach
 // the public site, so the editor asks here.
 //
@@ -14,13 +15,13 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Readings, type Trip, type Vehicle, type VehicleTrip } from './handler.ts'
+import { handle, type Fix, type Readings, type Trip, type Vehicle, type VehicleTrip } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 
-const STOPS = 'trip_stops(leg,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date)'
+const STOPS = 'trip_stops(leg,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
 const TRIP = `id,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,${STOPS}`
 
 // Every page of a Samsara list.
@@ -100,6 +101,14 @@ Deno.serve(req => {
         throw new Error(`samsara /v1/fleet/trips ${r.status}`)
       }
       return ((await r.json())?.trips ?? []) as VehicleTrip[]
+    },
+    async gps(vehicleId, fromMs, toMs) {
+      const rows = await samsara<{ id: string; gps?: Fix[] }>('/fleet/vehicles/stats/history', {
+        types: 'gps', vehicleIds: vehicleId,
+        startTime: new Date(fromMs).toISOString(), endTime: new Date(toMs).toISOString(),
+      })
+      // A vehicle's points may come over more than one page.
+      return rows.flatMap(r => r.gps ?? [])
     },
     // The drivers' names, from the hours list, which names every driver.
     async samsaraDrivers() {

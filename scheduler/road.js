@@ -23,6 +23,10 @@
    Geoapify's drive slowed by the office's percent, asked at most once every
    five minutes for each bus, and again sooner only for another stop.
    A bus is late when it gets there more than 10 minutes after it is due.
+
+   `pickupLate(due, at)` says whether a bus that reached its pickup at `at`,
+   as samsara-miles finds it in the GPS history, was on time: at or before it
+   was due, which earns the Driver seat `ON_TIME_PAY` dollars.
    ========================================================================== */
 (() => {
   'use strict';
@@ -138,6 +142,12 @@
     return min > LATE_MIN ? min : 0;
   };
 
+  // 0 for a pickup reached on time, the minutes late, or null when either
+  // time is missing.
+  const ON_TIME_PAY = 20;
+  const pickupLate = (due, at) => (due == null || at == null ? null
+    : at <= due ? 0 : Math.max(1, Math.round((at - due) / 60e3)));
+
   /* Each bus's arrival at its next stop, as an instant: `get(busId, stop,
      here)` hands back the last one worked out for that bus and stop, and asks
      again when it is five minutes old, or at once for another stop. `drive`
@@ -198,5 +208,5 @@
     };
   }
 
-  window.SchedulerRoad = { NEAR_MILES, LATE_MIN, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, arrivals, live };
+  window.SchedulerRoad = { NEAR_MILES, LATE_MIN, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
 })();

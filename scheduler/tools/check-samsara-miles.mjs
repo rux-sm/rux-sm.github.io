@@ -1,7 +1,7 @@
 // Runs samsara-miles's handler, the trip editor's door to Samsara's odometer,
 // against sample trips with invented readings: the window each leg is read
-// across, the miles each bus gets or why it gets none, the farthest bus's
-// total, and what a caller who should not get an answer is told. The handler
+// across, the miles each bus gets or why it gets none, when each reached its
+// pickup, the farthest bus's total, and what a caller who should not get an answer is told. The handler
 // is TypeScript with no imports; its types are taken off and the rest is run
 // as a module.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-miles/handler.ts', import.meta.u
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-miles-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, instant, legWindow, milesFor } = await import(pathToFileURL(file).href);
+const { arrivalAt, handle, instant, legWindow, milesFor, pickupOf } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -97,7 +97,7 @@ const SEGMENTS = {
     { startMs: Date.parse('2026-10-10T04:00:00Z'), driverId: 11, distanceMeters: Math.round(70 * MILE) },
   ],
 };
-function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false, segments = SEGMENTS } = {}) {
+function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false, segments = SEGMENTS, fixes = {} } = {}) {
   const asked = [];
   let samsaraCalls = 0;
   return {
@@ -117,6 +117,10 @@ function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer
       },
       drivers: async () => [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Ortiz' }],
       vehicleTrips: async v => { if (tripsFail) throw new Error('401'); return segments[v] ?? []; },
+      gps: async (v, from, to) => {
+        asked.push(['gps', v, iso(from), iso(to)]);
+        return (fixes[v] ?? []).filter(f => Date.parse(f.time) >= from && Date.parse(f.time) <= to);
+      },
       samsaraDrivers: async () => [{ id: '11', name: 'Ana Ruiz Jr' }, { id: '12', name: 'Dee Moss' }],
     },
   };
@@ -203,6 +207,53 @@ a = await milesFor(both, p.deps);
 expect('each leg says who drove the bus on it, and the bus who drove it in all',
   [a.buses[0].legs.map(l => l.drivers.map(d => [d.name, d.miles])), a.buses[0].drivers.map(d => [d.name, d.miles])],
   [[[['Ana Ruiz Jr', 80]], [['Dee Moss', 70], ['Ana Ruiz Jr', 10]]], [['Ana Ruiz Jr', 90], ['Dee Moss', 70]]]);
+
+// ── the pickup ──────────────────────────────────────────────────────────────
+// The yard, and a pickup about six miles north; a quarter mile is 0.0036°.
+const YARD = [26.2000, -98.2300];
+const PICK = [26.2900, -98.2300];
+const fix = (time, [lat, lng]) => ({ time, latitude: lat, longitude: lng });
+const north = d => [PICK[0] + d, PICK[1]];
+const placed = trip(7, { trip_stops: [
+  stop('pickup', 'outbound', 0, { depart_prev: '06:00', spot: '07:00', lat: String(PICK[0]), lng: String(PICK[1]) }),
+  stop('return', 'outbound', 1, { arrive: '12:00' }),
+], trip_assignments: [{ bus_id: 'b1', leg: 'outbound' }] });
+
+let pk = pickupOf(placed, 'outbound');
+expect('the pickup is due at its Spot', [pk.point, iso(pk.due)], [PICK, '2026-10-10T12:00:00.000Z']);
+pk = pickupOf(trip(8, { departure_time: '05:30', trip_stops: [stop('pickup', 'outbound', 0, { lat: 1, lng: 2 })] }), 'outbound');
+expect('with no Spot it is due at the leg\'s departure', iso(pk.due), '2026-10-10T10:30:00.000Z');
+expect('a pickup with no map point has none', pickupOf(trip(9, { trip_stops: [stop('pickup', 'outbound', 0, { spot: '07:00' })] }), 'outbound'), null);
+
+const due = Date.parse('2026-10-10T12:00:00Z');
+expect('the first point inside a quarter mile is the arrival', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T11:00:00Z', YARD), fix('2026-10-10T11:40:00Z', north(0.01)), fix('2026-10-10T11:52:00Z', north(0.002)),
+  fix('2026-10-10T11:58:00Z', PICK)])), '2026-10-10T11:52:00.000Z');
+expect('a point more than two hours early does not count', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T08:00:00Z', YARD), fix('2026-10-10T09:00:00Z', PICK), fix('2026-10-10T09:30:00Z', YARD),
+  fix('2026-10-10T12:10:00Z', PICK)])), '2026-10-10T12:10:00.000Z');
+expect('a bus already there arrived when its points start', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T09:00:00Z', PICK), fix('2026-10-10T12:30:00Z', north(0.001))])), '2026-10-10T09:00:00.000Z');
+expect('a bus parked since it came arrived when it came, whatever points it sent', iso(arrivalAt(PICK, due, [
+  fix('2026-10-10T08:00:00Z', YARD), fix('2026-10-10T09:10:00Z', north(0.002)), fix('2026-10-10T12:20:00Z', PICK)])),
+  '2026-10-10T09:10:00.000Z');
+expect('a bus that never gets near has not arrived', arrivalAt(PICK, due, [
+  fix('2026-10-10T11:00:00Z', YARD), fix('2026-10-10T12:00:00Z', north(0.01))]), null);
+
+const FIXES = { v101: [fix('2026-10-10T09:00:00Z', YARD), fix('2026-10-10T12:04:00Z', PICK)] };
+p = parts({ odometer, found: placed, fixes: FIXES });
+a = await milesFor(placed, p.deps);
+expect('each leg says when its bus reached the pickup', a.buses[0].legs.map(l => l.pickup_at), ['2026-10-10T12:04:00.000Z']);
+expect('read from the window\'s start to twelve hours past due at most', p.asked.find(x => x[0] === 'gps'),
+  ['gps', 'v101', '2026-10-10T09:00:00.000Z', '2026-10-10T19:00:00.000Z']);
+p = parts({ odometer, found: placed, fixes: FIXES, now: Date.parse('2026-10-10T13:00:00Z') });
+a = await milesFor(placed, p.deps);
+expect('a leg still out has its arrival, and no miles yet', [a.buses[0].legs[0].pickup_at, a.buses[0].legs[0].note],
+  ['2026-10-10T12:04:00.000Z', 'not-finished']);
+p = parts({ found: placed, odometer: (v, at) => ({ obdOdometerMeters: reading(at, Math.round(Date.parse(at) / 360_000 * MILE)) }) });
+p.deps.gps = async () => { throw new Error('403'); };
+a = await milesFor(placed, p.deps);
+expect('points that do not come leave the arrival empty and the miles whole', [a.buses[0].legs[0].pickup_at, a.actual], [null, 100]);
 
 // ── who is answered ─────────────────────────────────────────────────────────
 async function post(body, { auth = 'Bearer staff', method = 'POST', origin = 'http://localhost:8641', ...opts } = {}) {

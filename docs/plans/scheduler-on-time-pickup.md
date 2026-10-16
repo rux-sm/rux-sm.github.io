@@ -14,8 +14,8 @@ office sees it on the trip and where it adds up driver pay.
 ## Decisions
 
 - **On time is within a quarter mile of the pickup at or before its Spot
-  time,** or the leg's departure where it has no Spot, the same reach rule
-  the board's live line uses in `scheduler/road.js`.
+  time,** or the leg's departure where it has no Spot; the arrival is the
+  start of the stay there, as `scheduler/samsara-miles/handler.ts` reads it.
 - **The arrival is kept on each bus's row of the leg,** a new
   `trip_assignments.pickup_at`; whether it was on time is worked out from it
   and the Spot, never stored, so a corrected Spot corrects it.
@@ -31,19 +31,16 @@ office sees it on the trip and where it adds up driver pay.
 
 ## Questions
 
+- Is a quarter mile right? Trips 100074, 100907 and 100908 come out late or
+  with no arrival, which a map pin away from where the buses wait would also
+  give; their GPS is too old to look at beside the pin.
 - Where is driver pay added up once rux-ui is retired: a pay list on the
   Drivers page for a pay period, or a column in the trip export?
 
 ## Tasks
 
-- [ ] Add `trip_assignments.pickup_at`, shown to rux and applied on his yes,
-  and its row in `scheduler/docs/database-inventory.md`.
-- [ ] Teach `samsara-miles` to answer each bus's pickup arrival from its GPS
-  history, with sample cases in `scheduler/tools/check-samsara-miles.mjs`,
-  and deploy it on rux's yes.
-- [ ] Save the arrival with the miles from the Billing tab's Get from
-  Samsara, and show it on the Billing tab beside the Driver seat: on time and
-  $20, or the minutes late.
+- [ ] Show the pickup's arrival on the trip's card while the bus is out, on
+  time in green or the minutes late in amber, from the live trail.
 - [ ] Fill the arrival for the trips since the start of the pay period rux
   names, read-only first, written on his yes.
 - [ ] Add the $20 where driver pay is added up, once the question is answered.

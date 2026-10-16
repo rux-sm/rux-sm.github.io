@@ -1,6 +1,6 @@
 // Runs live-trip.js, what a bus out on its leg is warned of, against sample
 // buses on Friday 16 October 2026, when 14:30 UTC is 9:30 AM at the office:
-// each of the four warnings, what keeps each quiet, their order, and where
+// each of the five warnings, what keeps each quiet, their order, and where
 // the bus is when nothing is wrong. road.js is loaded beside it, as the board
 // loads it, and Late to spot is also read from a bus's path through it.
 import { readFileSync } from 'node:fs';
@@ -58,6 +58,8 @@ const in746 = { bus_id: 'b746', drivers: [driver('d1', 'Lena Garza')] };
 const lena = bus({ drivers: [] });
 expect('a driver the bar names logged into another bus warns',
   warningsOf(look({ bus: lena, others: [in746] })).map(w => [w.title, w.detail]), [['Wrong bus', 'Lena is logged into 746']]);
+expect('it names the driver and the other bus, for the crew\'s mark',
+  warningsOf(look({ bus: lena, others: [in746] })).map(w => [w.driver, w.bus]), [['d1', '746']]);
 expect('the driver in this bus as well says nothing', kinds(look({ bus: bus(), others: [in746] })), []);
 expect('before the ten minutes ahead of yard-out says nothing', kinds(look({ bus: lena, others: [in746], now: at('13:00') })), []);
 
@@ -110,10 +112,17 @@ expect('a co-driver\'s hours count with the driver\'s',
     next: toAlamo, drives: [{}, { min: 270 }, { min: 300 }], now: at('14:45') })), []);
 expect('no driver at the wheel says nothing', kinds(look({ bus: bus({ drivers: [driver('d1', 'Rosa Peña', { wheel: false, left_ms: 0 })] }), next: toAlamo })), []);
 
+console.log('\n  Stop lamp');
+expect('the red stop lamp warns, its first code the words and every code in the sentence',
+  warningsOf(look({ bus: bus({ fault: 'stop', faults: ['Coolant temperature high', 'Oil pressure low'] }) })).map(w => [w.kind, w.tone, w.detail, w.sentence]),
+  [['stopLamp', 'error', 'Coolant temperature high', "The engine's red stop lamp is on: Coolant temperature high; Oil pressure low."]]);
+expect('with no codes it says the lamp is on', warningsOf(look({ bus: bus({ fault: 'stop', faults: [] }) })).map(w => w.detail), ['Engine stop lamp on']);
+expect('an amber warning lamp is not this warning', kinds(look({ bus: bus({ fault: 'check', faults: ['Check engine lamp'] }) })), []);
+
 console.log('\n  Order and phase');
 expect('the worst comes first',
-  kinds(look({ bus: bus({ engine: 'off', drivers: [driver('d1', 'Rosa Peña', { left_ms: 0 })] }), yard: null, next: late, now: at('14:45') })),
-  ['notRolling', 'lateToSpot', 'shortOnHours']);
+  kinds(look({ bus: bus({ engine: 'off', fault: 'stop', drivers: [driver('d1', 'Rosa Peña', { left_ms: 0 })] }), yard: null, next: late, now: at('14:45') })),
+  ['stopLamp', 'notRolling', 'lateToSpot', 'shortOnHours']);
 expect('on the way to a stop', phaseOf(look({ next: ahead({ arrival: at('14:55') }) })), { title: 'To Lakeview High School', detail: '~9:55a' });
 expect('at a stop', phaseOf(look({ next: ahead({ at: true, where: { reached: 0, at: true, next: 1 } }) })), { title: 'At Lakeview High School', detail: '' });
 expect('on the way back', phaseOf(look({ next: ahead({ stop: stops[2], where: { reached: 1, at: false, next: 2 } }) })), { title: 'To the yard', detail: '' });

@@ -473,11 +473,9 @@
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }
     addRow(bar, `scheduler-bar__update${tone}`, news);
-    // The line that takes the update's place while the bus is out; road-bar.js fills it.
-    addRow(bar, 'scheduler-bar__road');
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
-    // The two times the time row draws, for the leg's clock while the bus is out.
+    // The two times the time row draws, for the live card's tooltip and its way back to the yard.
     if (dep) bar.dataset.depart = dep;
     if (back) bar.dataset.back = back;
 

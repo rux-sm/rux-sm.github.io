@@ -118,6 +118,7 @@ export const ICONS = {
   'event--busy': { material: 'event_busy', rux: null },  // Carbon draws no crossed-out day; Material's is a calendar with a cross.
   'fit-to-width': { material: 'fit_screen', rux: null },
   'folder': { material: 'folder', rux: null },
+  'gas-station--filled': { material: 'local_gas_station-fill', rux: null },  // A bus's tank on its live card.
   'grid': { material: 'grid_view', rux: null },
   'health-cross': { material: 'medical_services', rux: null },  // The cross on a medical bag, so it is not read as `add`.
   'hotel': { material: 'airline_seat_flat', rux: null },  // Carbon's hotel is a bed, which is what a sleeper coach is.

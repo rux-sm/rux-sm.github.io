@@ -7,11 +7,14 @@
 
    `warningsOf(look)` lists what is wrong with a bus out on its leg, worst
    first, each { kind, tone, title, detail, sentence }:
+     stopLamp, red: the engine's red stop lamp is on; its first code is the
+       few words and every code is in the sentence.
      notRolling, red: from ten minutes before yard-out the engine is still
        off, or once yard-out has passed the bus is still at the yard, before
        it has reached any stop.
      wrongBus, red: from the same ten minutes, a driver the bar names whom
-       Samsara has logged into another bus.
+       Samsara has logged into another bus; it also carries `driver`, that
+       driver's id, and `bus`, the other bus's number, for the crew's mark.
      lateToSpot, amber: the next stop is the pickup and the bus gets there
        more than road.js's LATE_MIN after its spot.
      shortOnHours, amber: the driving hours left in the bus, every driver's
@@ -82,12 +85,22 @@
       const d = other.drivers.find(x => x.driver_id === id);
       const number = numberOf(other.bus_id) ?? 'another bus';
       return {
-        kind: 'wrongBus', tone: 'error', title: 'Wrong bus',
+        kind: 'wrongBus', tone: 'error', title: 'Wrong bus', driver: id, bus: number,
         detail: `${first(d.name)} is logged into ${number}`,
         sentence: `${d.name} drives this leg, but Samsara has them logged into ${number}.`,
       };
     }
     return null;
+  }
+
+  function stopLamp({ bus }) {
+    if (bus?.fault !== 'stop') return null;
+    const codes = (bus.faults ?? []).filter(Boolean);
+    return {
+      kind: 'stopLamp', tone: 'error', title: 'Stop lamp',
+      detail: codes[0] ?? 'Engine stop lamp on',
+      sentence: codes.length ? `The engine's red stop lamp is on: ${codes.join('; ')}.` : "The engine's red stop lamp is on.",
+    };
   }
 
   function lateToSpot({ next }) {
@@ -124,7 +137,7 @@
     };
   }
 
-  const RULES = [notRolling, wrongBus, lateToSpot, shortOnHours];
+  const RULES = [stopLamp, notRolling, wrongBus, lateToSpot, shortOnHours];
   const warningsOf = look => RULES.map(rule => rule(look)).filter(Boolean);
 
   function phaseOf({ next }) {

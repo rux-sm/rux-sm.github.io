@@ -1,5 +1,5 @@
-// The Edge Function `samsara-now`: each bus's engine, speed and drivers right
-// now, by Samsara; what it answers is `handler.ts`. Samsara's API refuses
+// The Edge Function `samsara-now`: each bus's engine, speed, fuel and drivers
+// right now, by Samsara; what it answers is `handler.ts`. Samsara's API refuses
 // calls from a web page and its key must never reach the public site, so the
 // board asks here.
 //
@@ -62,8 +62,16 @@ Deno.serve(req => {
       const rows = await samsara<Vehicle>('/fleet/vehicles', { limit: '512' })
       return rows.map(v => ({ id: String(v.id), name: String(v.name ?? '') }))
     },
-    stats(vehicleIds) {
-      return samsara<Stat>('/fleet/vehicles/stats', { types: 'engineStates,gps', vehicleIds: vehicleIds.join(',') })
+    // Samsara gives three kinds of reading a call, so the fault codes are a
+    // second call, and a bus's two answers are joined by its id.
+    async stats(vehicleIds) {
+      const ids = vehicleIds.join(',')
+      const [main, faults] = await Promise.all([
+        samsara<Stat>('/fleet/vehicles/stats', { types: 'engineStates,gps,fuelPercents', vehicleIds: ids }),
+        samsara<Stat>('/fleet/vehicles/stats', { types: 'faultCodes', vehicleIds: ids }).catch(() => [] as Stat[]),
+      ])
+      const faultOf = new Map(faults.map(f => [String(f.id), f.faultCodes]))
+      return main.map(s => ({ ...s, faultCodes: faultOf.get(String(s.id)) }))
     },
     clocks() {
       return samsara<Clock>('/fleet/hos/clocks', { limit: '512' })

@@ -1231,6 +1231,12 @@ button.scheduler-row-head__num::after {
 .scheduler-card__road-stop--next { display: grid; }
 .scheduler-card__road-stop--next > .scheduler-card__road-words { flex: initial; }
 .scheduler-card__road-words--late { color: var(--rux-text-primary); font-weight: 600; }
+/* An engine lamp that is on: its name in bold, in the error text colour for
+   the stop lamp, then each code's words on a line of its own, wrapped whole. */
+.scheduler-card__road-lamp { display: grid; gap: var(--rux-spacing-01); }
+.scheduler-card__road-lamp > .scheduler-card__road-name { font-weight: 600; }
+.scheduler-card__road-lamp--stop > .scheduler-card__road-name { color: var(--rux-text-error); }
+.scheduler-card__road-fault { color: var(--rux-text-secondary); }
 /* An update: its author's 16px face in the column the alerts' marks stand
    in, its words, and its age at the right of its first line, so every age
    stands in one column. */
@@ -1559,15 +1565,23 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
 
-/* ON THE ROAD, from Samsara: while the bus is out, the update's line gives
-   way to the engine's dot and the next stop with the time it is due, or with
-   no stop to name the speed and the place, and each driver Samsara has in the bus wears their duty in place of
-   their dot, the driver at the wheel with the hours they may still drive.
-   The dot is green with the engine running, amber idling, and grey off or
-   unknown during the trip's hours. The words take the colours the update's
-   age is written in, which every theme sets to read on its bars: green, and
-   amber for idling, a late stop and under an hour left. A board set to hide
-   the updates hides this line with them, so every bar keeps one height. */
+/* ON THE ROAD, from Samsara: while the bus is out, data.js's roadBar says
+   so in three rows and an edge. The edge is 3px of the success colour down
+   the bar's start, its own element, because the light and Apple themes paint
+   their edges as the bar's background layers and a watched bar's ring is its
+   ::after. The time row becomes the leg's clock, the update's
+   row the bus's own readings, and the engine lamp joins the destination row;
+   a board set to hide the updates hides the readings with them, so every bar
+   keeps one height. The words take the colours the update's age is written
+   in, which every theme sets to read on its bars. */
+.scheduler-road__edge {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: var(--scheduler-mark-success);
+  pointer-events: none;
+}
 .scheduler-bar__road { display: none; }
 .scheduler-bar--road > .scheduler-bar__update { display: none; }
 .scheduler-bar--road > .scheduler-bar__road {
@@ -1575,50 +1589,99 @@ button.scheduler-row-head__num::after {
   align-items: center;
   justify-content: flex-start;
   gap: var(--rux-spacing-02);
-  --scheduler-road: var(--scheduler-mark-success);
-  --scheduler-road-ink: var(--scheduler-age-new);
-}
-.scheduler-bar--idling > .scheduler-bar__road { --scheduler-road: var(--scheduler-mark-warning); --scheduler-road-ink: var(--scheduler-age-week); }
-.scheduler-bar--parked > .scheduler-bar__road {
-  --scheduler-road: color-mix(in srgb, currentColor 60%, transparent);
-  --scheduler-road-ink: color-mix(in srgb, currentColor 75%, transparent);
 }
 .scheduler-week--no-update .scheduler-bar__road { display: none; }
 /* Named with its line, to outrank the row's first child, which may shrink. */
-.scheduler-bar__road > .scheduler-road__dot {
-  flex: none;
-  inline-size: 6px;
-  block-size: 6px;
-  margin-inline: 3px var(--rux-spacing-01);
-  border-radius: 50%;
-  background: var(--scheduler-road);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--scheduler-road) 30%, transparent);
-}
-.scheduler-road__speed, .scheduler-road__unit, .scheduler-road__who { flex: none; color: var(--scheduler-road-ink); }
-.scheduler-road__speed, .scheduler-road__due, .scheduler-crew__hours { font-family: var(--rux-code-01-font-family); font-variant-numeric: tabular-nums; }
+.scheduler-bar__road > * { flex: none; }
+/* The arrow the bus heads by, turned to its heading. */
+.scheduler-road__heading { display: flex; color: var(--scheduler-mark-success); }
+.scheduler-road__heading svg { inline-size: 13px; block-size: 13px; transform: rotate(var(--scheduler-heading, 0deg)); }
+.scheduler-road__speed { font-variant-numeric: tabular-nums; }
+.scheduler-road__who { font-weight: 600; }
 .scheduler-road__unit { font-size: .72em; opacity: .75; margin-inline-start: calc(-1 * var(--rux-spacing-01)); }
-/* The next stop: the arrow or At, the stop's name, cut to fit, and the time
-   it is due, which keeps its room. */
-.scheduler-road__next { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; margin-inline-start: var(--rux-spacing-01); }
-.scheduler-road__arrow, .scheduler-road__word { flex: none; opacity: .75; }
-.scheduler-road__stop { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scheduler-road__due { flex: none; padding-inline-start: var(--rux-spacing-01); color: var(--scheduler-age-new); }
-.scheduler-road__due--late { color: var(--scheduler-age-week); }
-.scheduler-road__due--plain { color: inherit; }
-.scheduler-road__place { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
-/* The hours the driver at the wheel may still drive, after their name. */
-.scheduler-crew__hours { flex: none; color: var(--scheduler-age-new); }
+.scheduler-road__state--idle { color: var(--scheduler-age-week); }
+.scheduler-road__state--quiet { opacity: .7; }
+/* THE FUEL GAUGE: a 22 by 7 outline in the bar's ink, filled to the tank's
+   share, then the percent; amber under a quarter. */
+.scheduler-road__fuel {
+  inline-size: 22px;
+  block-size: 7px;
+  margin-inline-start: var(--rux-spacing-03);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 55%, transparent);
+  background: linear-gradient(currentColor, currentColor) 1px 1px / calc((100% - 2px) * var(--scheduler-fuel) / 100%) calc(100% - 2px) no-repeat;
+}
+.scheduler-road__fuel-pct { font-variant-numeric: tabular-nums; opacity: .85; }
+.scheduler-road__fuel--low, .scheduler-road__fuel-pct--low { color: var(--scheduler-age-week); opacity: 1; }
+/* THE LEG'S CLOCK on the time row, in place of the two times: the departure,
+   a line from yard-out to yard-back filled to now with the bus a square on
+   it, and the return. Amber while the bus will reach its next stop late. */
+.scheduler-bar--road > .scheduler-bar__time > :not(.scheduler-road__times) { display: none; }
+.scheduler-bar__row > .scheduler-road__times {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  min-inline-size: 0;
+  overflow: visible;
+}
+.scheduler-road__times > :not(.scheduler-road__strip) { flex: none; }
+.scheduler-road__strip {
+  --scheduler-strip: var(--scheduler-mark-success);
+  position: relative;
+  flex: 1 1 0;
+  min-inline-size: var(--rux-spacing-07);
+  block-size: 10px;
+  /* Room for the bus square's half beyond either end of the line. */
+  margin-inline: var(--rux-spacing-01);
+  background:
+    linear-gradient(var(--scheduler-strip), var(--scheduler-strip)) 0 50% / var(--scheduler-done) 2px no-repeat,
+    linear-gradient(color-mix(in srgb, currentColor 30%, transparent), color-mix(in srgb, currentColor 30%, transparent)) 0 50% / 100% 2px no-repeat;
+}
+.scheduler-road__strip--late { --scheduler-strip: var(--scheduler-mark-warning); }
+.scheduler-road__bus {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: var(--scheduler-done);
+  inline-size: 10px;
+  block-size: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 3px;
+  background: currentColor;
+  box-shadow: 0 0 0 2px var(--scheduler-bg);
+}
+/* THE ENGINE LAMP at the destination row's end, before the alert count: red
+   for the stop lamp, amber for a warning. */
+.scheduler-bar__row > .scheduler-road__lamp { display: flex; flex: none; align-self: center; margin-inline-start: auto; }
+.scheduler-road__lamp svg { inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-road__lamp--check { color: var(--scheduler-mark-warning); }
+.scheduler-road__lamp--stop { color: var(--scheduler-mark-error); }
+.scheduler-road__lamp + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
+/* The hours a driver may still drive, after their name only under one hour. */
+.scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }
 /* A driver's duty takes the place of their dot: the wheel driving, the
    clipboard on duty, the moon in the sleeper and the power button off duty,
-   each its own shape so the colour is never the only signal. */
+   each its own shape so the colour is never the only signal. Ringed, the
+   ring is the hours they may still drive, of ten, amber under one. */
 .scheduler-crew[data-duty] > .scheduler-crew__mark { display: none; }
 .scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+.scheduler-crew__duty--ring {
+  --scheduler-ring: var(--scheduler-mark-success);
+  block-size: var(--scheduler-mark-glyph);
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--scheduler-bg) 76%, transparent 80%),
+    conic-gradient(var(--scheduler-ring) var(--scheduler-left), color-mix(in srgb, currentColor 25%, transparent) 0);
+}
+.scheduler-crew__duty--ring svg { inline-size: 10px; block-size: 10px; }
+.scheduler-crew__duty--low { --scheduler-ring: var(--scheduler-mark-warning); }
 .scheduler-crew__duty--driving { color: var(--scheduler-mark-success); }
 .scheduler-crew__duty--on { color: var(--scheduler-mark-info); }
 .scheduler-crew__duty--sleeper { color: var(--scheduler-mark-rest); }
-.scheduler-crew__duty--off { color: currentColor; opacity: .7; }
+.scheduler-crew__duty--off { color: currentColor; }
+.scheduler-crew__duty--off svg { opacity: .7; }
 .scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
    seat they are in, so it shows the open hand; the trip in the editor and a

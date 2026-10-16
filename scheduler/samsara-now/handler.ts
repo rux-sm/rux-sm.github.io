@@ -2,9 +2,15 @@
 // Edge runtime and under Node, where scheduler/tools/check-samsara-now.mjs
 // sends it sample fleets. The board and the Live map ask it once a minute,
 // and get back, for each bus Samsara knows, whether its engine is
-// on, how fast it is going, where it is and which way it is heading, and the
-// drivers logged into it with their duty status and the driving hours each
-// has left.
+// on, how fast it is going, where it is and which way it is heading, how
+// much fuel it has and whether its engine reports a fault, and the drivers
+// logged into it with their duty status and the driving hours each has left.
+//
+// FUEL is the tank's percent as the engine last reported it. A FAULT is the
+// engine's warning lamp: `stop` when the red stop lamp is on, `check` when an
+// amber warning, emissions or check-engine lamp is, with up to three of the
+// codes Samsara describes in words. A bus whose engine reports neither has
+// them null.
 //
 // A BUS IS THE SAMSARA VEHICLE NAMED WITH ITS NUMBER, as in samsara-miles. A
 // DRIVER IS THE SAMSARA DRIVER WITH THE SAME FIRST AND LAST NAME: middle names,
@@ -36,6 +42,15 @@ export type Stat = {
   id: string
   engineState?: { time: string; value: string }
   gps?: { time: string; latitude?: number; longitude?: number; headingDegrees?: number; speedMilesPerHour?: number; reverseGeo?: { formattedLocation?: string } }
+  fuelPercent?: { time: string; value: number }
+  faultCodes?: Faults
+}
+type Lamps = { emissionsIsOn?: boolean; protectIsOn?: boolean; stopIsOn?: boolean; warningIsOn?: boolean }
+export type Faults = {
+  time?: string
+  j1939?: { checkEngineLights?: Lamps; diagnosticTroubleCodes?: { spnDescription?: string; fmiDescription?: string }[] }
+  obdii?: { checkEngineLightIsOn?: boolean; diagnosticTroubleCodes?: { confirmedDtcs?: { dtcDescription?: string; dtcShortCode?: string }[] }[] }
+  oem?: { diagnosticTroubleCodes?: { codeDescription?: string; codeIdentifier?: string }[] }
 }
 export type Fix = { time: string; latitude: number; longitude: number }
 export type Clock = {
@@ -79,6 +94,8 @@ export type LiveDriver = {
 export type LiveBus = {
   bus_id: string
   engine: 'on' | 'idle' | 'off' | null
+  // When the engine came to that state, as Samsara stamps it.
+  engine_at: string | null
   mph: number | null
   place: string | null
   lat: number | null
@@ -87,6 +104,9 @@ export type LiveBus = {
   // [latitude, longitude, ms] from oldest to newest, for a bus the caller asked a path of.
   path?: [number, number, number][]
   seen: string | null
+  fuel: number | null
+  fault: 'stop' | 'check' | null
+  faults: string[]
   drivers: LiveDriver[]
 }
 export type Answer = { at: string; hours: boolean; buses: LiveBus[] }
@@ -195,6 +215,19 @@ export function thin(fixes: Fix[]): [number, number, number][] {
   return kept
 }
 
+// The engine's lamp and what its codes say, from Samsara's fault codes.
+export function faultOf(f: Faults | undefined): { fault: 'stop' | 'check' | null; faults: string[] } {
+  const lamps = f?.j1939?.checkEngineLights ?? {}
+  const fault = lamps.stopIsOn ? 'stop'
+    : lamps.warningIsOn || lamps.protectIsOn || lamps.emissionsIsOn || f?.obdii?.checkEngineLightIsOn ? 'check' : null
+  const words = [
+    ...(f?.j1939?.diagnosticTroubleCodes ?? []).map(c => [c.spnDescription, c.fmiDescription].filter(Boolean).join(': ')),
+    ...(f?.obdii?.diagnosticTroubleCodes ?? []).flatMap(c => (c.confirmedDtcs ?? []).map(d => d.dtcDescription || d.dtcShortCode || '')),
+    ...(f?.oem?.diagnosticTroubleCodes ?? []).map(c => c.codeDescription || c.codeIdentifier || ''),
+  ].map(w => String(w).trim()).filter(Boolean)
+  return { fault, faults: [...new Set(words)].slice(0, 3) }
+}
+
 const ENGINE: Record<string, 'on' | 'idle' | 'off'> = { On: 'on', Idle: 'idle', Off: 'off' }
 const nameOf = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
 
@@ -245,6 +278,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         // for an hour has an hour-old stamp; the state holds while the GPS is
         // still reporting.
         engine: s?.engineState && (engineFresh || gpsFresh) ? ENGINE[s.engineState.value] ?? null : null,
+        engine_at: s?.engineState && (engineFresh || gpsFresh) && Number.isFinite(engineAt) ? new Date(engineAt).toISOString() : null,
         mph: gpsFresh && typeof s!.gps!.speedMilesPerHour === 'number' ? Math.round(s!.gps!.speedMilesPerHour) : null,
         place: gpsFresh ? s!.gps!.reverseGeo?.formattedLocation ?? null : null,
         // Where the bus is, however old, so a bus parked for days still has a place on the map.
@@ -252,6 +286,8 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         lng: typeof s?.gps?.longitude === 'number' ? s.gps.longitude : null,
         heading: gpsFresh && typeof s!.gps!.headingDegrees === 'number' ? Math.round(s!.gps!.headingDegrees) : null,
         seen: seen.length ? new Date(Math.max(...seen)).toISOString() : null,
+        fuel: typeof s?.fuelPercent?.value === 'number' ? Math.round(Math.min(100, Math.max(0, s.fuelPercent.value))) : null,
+        ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
         ...(since.has(vehicle) ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }

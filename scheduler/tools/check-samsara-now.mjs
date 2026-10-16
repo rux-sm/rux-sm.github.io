@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-now/handler.ts', import.meta.url
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-now-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor } = await import(pathToFileURL(file).href);
+const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -83,7 +83,9 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
       drivers: async () => DRIVERS,
       vehicles: async () => { calls++; return [{ id: 'v101', name: '101' }, { id: 'v102', name: ' 102 ' }]; },
       stats: async ids => { calls++; return [
-        { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), latitude: 26.2, longitude: -97.7, headingDegrees: 271.6, speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } } },
+        { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), latitude: 26.2, longitude: -97.7, headingDegrees: 271.6, speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } },
+          fuelPercent: { time: ago(5), value: 68.4 },
+          faultCodes: { time: ago(5), j1939: { checkEngineLights: { warningIsOn: true }, diagnosticTroubleCodes: [{ spnDescription: 'Coolant level', fmiDescription: 'Low' }] } } },
         { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), latitude: 26.1, longitude: -98.2, headingDegrees: 90, speedMilesPerHour: 30 } },
         { id: 'v103', engineState: { time: ago(90), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 32 } },
       ].filter(s => ids.includes(s.id)); },
@@ -102,6 +104,14 @@ let a = await liveFor(BUSES, DRIVERS, p.deps);
 expect('only the buses Samsara has come back', a.buses.map(b => b.bus_id), ['b1', 'b2']);
 expect('a fresh reading gives the engine, the speed and the place',
   [a.buses[0].engine, a.buses[0].mph, a.buses[0].place], ['on', 65, 'Somewhere, TX']);
+expect('the fuel, and the engine lamp with what its code says',
+  [a.buses[0].fuel, a.buses[0].fault, a.buses[0].faults], [68, 'check', ['Coolant level: Low']]);
+expect('a bus that reports no fuel and no fault has them empty',
+  [a.buses[1].fuel, a.buses[1].fault, a.buses[1].faults], [null, null, []]);
+expect('the red stop lamp outranks an amber one',
+  faultOf({ j1939: { checkEngineLights: { warningIsOn: true, stopIsOn: true } } }).fault, 'stop');
+expect('an OBD check-engine lamp is a check, named by its short code',
+  faultOf({ obdii: { checkEngineLightIsOn: true, diagnosticTroubleCodes: [{ confirmedDtcs: [{ dtcShortCode: 'P0128' }] }] } }), { fault: 'check', faults: ['P0128'] });
 expect('a reading forty minutes old says nothing about now', [a.buses[1].engine, a.buses[1].mph], [null, null]);
 expect('where a bus is and the way it heads, a fresh reading',
   [a.buses[0].lat, a.buses[0].lng, a.buses[0].heading], [26.2, -97.7, 272]);
@@ -123,8 +133,8 @@ expect('a path Samsara refuses is an empty one, and the bus still comes back',
 const long = parts();
 long.deps.vehicles = async () => [{ id: 'v103', name: '103' }];
 const onLong = await liveFor([{ id: 'b4', number: '103' }], DRIVERS, long.deps);
-expect('an engine on since long ago is still on while the GPS reports',
-  [onLong.buses[0].engine, onLong.buses[0].mph], ['on', 32]);
+expect('an engine on since long ago is still on while the GPS reports, and says since when',
+  [onLong.buses[0].engine, onLong.buses[0].mph, onLong.buses[0].engine_at], ['on', 32, new Date(NOW - 90 * 60_000).toISOString()]);
 expect('the drivers logged into the bus, who is at the wheel, and their hours',
   a.buses[0].drivers.map(x => [x.driver_id, x.duty, x.wheel, x.left_ms]),
   [['d1', 'driving', true, 9 * H + 3 * 60_000], ['d2', 'sleeper', false, 4 * H]]);

@@ -233,7 +233,8 @@
     }
     // A driver's forms are files, opened from the trip's Forms list.
     if (where === 'trip-forms') return { words: 'Print', href: tripHref(page, '&tab=forms') };
-    if (where === 'contacts') return { words: line.key === 'reminder' ? 'Remind' : 'Send', href: tripHref(page, '&open=contacts') };
+    // The word on the Contact list's button the line opens it for.
+    if (where === 'contacts') return { words: line.key === 'reminder' ? 'Remind' : line.key === 'told' ? 'Tell' : 'Send', href: tripHref(page, '&open=contacts') };
     if (where === 'billing') return { words: 'Open', href: tripHref(page, '&tab=billing') };
     return null;
   }

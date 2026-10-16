@@ -1173,15 +1173,19 @@
     /* THE DRIVERS ON THIS BUS who said no, or whom the leg changed for since
        they said yes, as driver-job.js reads it: each a warning, which the
        Contact list puts right. */
+    const tells = [];
     const driverAlerts = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses).flatMap(c => {
       if (c.needed) return [];
       const name = c.who?.short_name || c.who?.name || 'A driver';
       if (c.status?.value === 'declined') return [`${name} declined`];
       const lines = window.SchedulerDriverJob?.changesSince(trip, leg.leg, c.driverId, c.row,
         { busesById, driversById, nameOf: requirementLabel }) ?? [];
-      return lines.length ? [`Tell ${name}: ${lines.join(', ')}`] : [];
+      if (!lines.length) return [];
+      tells.push(name);
+      return [`Tell ${name}: ${lines.join(', ')}`];
     });
-    barFacts.set(bar, { needs, misfits, overSeated, driverAlerts });
+    // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
+    barFacts.set(bar, { needs, misfits, overSeated, driverAlerts, tells });
 
     /* The one mark, at the destination row's end: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
@@ -12047,6 +12051,11 @@
     hotelItem.hidden = !bar.dataset.needHotel || locked;
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
+    // Call or text rings the card's Needs bell while a driver on this bus is to be told of a change.
+    const tells = barFacts.get(bar)?.tells ?? [];
+    const due = document.getElementById('scheduler-bar-menu-contacts-due');
+    due.hidden = !tells.length;
+    due.querySelector('.rux--visually-hidden').textContent = tells.length ? `, tell ${listed(tells)}` : '';
     tidyRules(barMenu);
   }
 
@@ -14482,9 +14491,10 @@
      leg. Once a driver has confirmed, the Customer part opens with the driver
      details letter, to email or copy. Text opens the phone's own messages, except a driver's on a computer,
      which opens the office's Google Messages conversation with them where the
-     Drivers page holds one. Each driver's card adds Remind and a Copy square:
-     their reminder of this leg, typed into a new text, or copied before their
-     Google Messages conversation opens, since it takes no text.
+     Drivers page holds one. Each driver's card adds Remind: their reminder
+     of this leg, typed into a new text, or copied before their Google
+     Messages conversation opens, since it takes no text. While the leg
+     changed for them since they accepted it, Tell stands in its place.
 
      A call or text to the customer's people offers, in a notice, to add it to
      the trip's updates; ignored, nothing is written. Calls to drivers offer
@@ -14569,9 +14579,9 @@
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
       .sort((a, b) => (String(a.id) === bar.dataset.assignmentId ? -1 : String(b.id) === bar.dataset.assignmentId ? 1
         : (a.position ?? 0) - (b.position ?? 0)));
-    /* Each driver's reminder of this leg, in the Driver week info's wording:
-       their day, bus, role and spot or swap, the leg's towns and its newest
-       itinerary. Today is the office's, in Chicago. */
+    /* Each driver's leg as a text to them says it, in the Driver week info's
+       wording: their day, bus, role and spot or swap, the leg's towns and its
+       newest itinerary. Today is the office's, in Chicago. */
     const driverText = window.SchedulerDriverText;
     const inbound = leg === 'return' && trip.trip_type === SPLIT;
     const legStart = inbound ? trip.return_start_date : trip.start_date;
@@ -14580,15 +14590,14 @@
     const legPickup = legStops.find(s => s.type === 'pickup') || {};
     const legBack = [...legStops].reverse().find(s => s.type === 'return') || {};
     const officeToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
-    const reminderOf = (a, c) => {
+    const jobOf = (a, c) => {
       if (!driverText || !legStart) return null;
       const seat = (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role);
       const partnerSeat = (a.trip_drivers || []).find(d => d.driver_id && (d.role || 'driver') === 'driver'
         && String(d.driver_id) !== String(c.driverId));
       const partner = partnerSeat ? panelIndex.driversById.get(partnerSeat.driver_id) : null;
       const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
-      const first = String(c.who.short_name || c.who.name || 'there').trim().split(/\s+/)[0];
-      return driverText.reminder(first, {
+      return {
         trip, leg, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
         bus: number != null ? String(number) : '',
         spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
@@ -14596,22 +14605,30 @@
         from: legPickup.address || legPickup.name,
         to: inbound ? (legBack.address || legBack.name || '') : trip.destination, toYard: inbound,
         itinerary: latestItinerary(trip)?.id || '',
-      }, officeToday, c.who.language);
+      };
     };
+    const changesOf = (c, lang) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
+      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel, lang }) ?? [];
     const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
       .filter(c => c.who)
-      .map(c => ({
-        name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
-        bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
-        reminder: reminderOf(a, c),
-        // The driver's own row on this bus, which keeps whether they were reminded.
-        seat: (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role) ?? null,
-        // What the driver said no to, or what changed since they said yes, as driver-job.js reads it.
-        declined: c.status?.value === 'declined',
-        tell: window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
-          { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel }) ?? [],
-        seatRole: c.role,
-      }));
+      .map(c => {
+        const job = jobOf(a, c);
+        const first = String(c.who.short_name || c.who.name || 'there').trim().split(/\s+/)[0];
+        const tell = changesOf(c);
+        return {
+          name: c.who.name, role: c.label, driverId: c.driverId, phone: c.who.phone || null, texting: c.who.texting_url || null,
+          bus: a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null,
+          reminder: job && driverText.reminder(first, job, officeToday, c.who.language),
+          // The driver's own row on this bus, which keeps whether they were reminded.
+          seat: (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role) ?? null,
+          // What the driver said no to, or what changed since they said yes, as driver-job.js reads it.
+          declined: c.status?.value === 'declined',
+          tell,
+          // What changed, told to the driver in their own language, with the leg as it stands.
+          news: job && tell.length ? link => driverText.change(first, job, officeToday, changesOf(c, c.who.language), link, c.who.language) : null,
+          seatRole: c.role,
+        };
+      });
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
 
@@ -14649,17 +14666,19 @@
       if (!(await ask(`Mark ${firstName(p.name)} as reminded?`))) return;
       if (await setReminded(p, true)) { await show(); toast('success', `${firstName(p.name)} is marked as reminded`); }
     };
-    /* MARK THE DRIVER AS TOLD, on a yes: many changes are told by phone, so
-       the office says it was, and what the driver now knows is the leg as it
-       stands. Their accepting again does the same. */
-    const askTold = async p => {
+    /* MARK THE DRIVER AS TOLD, on a yes: after Tell, or by Mark as told for
+       a change told by phone, the office says it was, and what the driver now
+       knows is the leg as it stands; reading it is theirs. Their accepting
+       again does the same. `again` draws what is open: the window from Mark
+       as told, the board alone after Tell, which put the window away. */
+    const askTold = async (p, again = redraw) => {
       if (!(await ask(`Mark ${firstName(p.name)} as told of the changes?`, p.tell.join(' · ')))) return;
       const view = window.SchedulerDriverJob.viewNow(trip, leg, p.driverId,
         { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel });
       const { data, error } = await client.rpc('mark_driver_told',
         { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
       if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
-      await redraw();
+      await again();
       toast('success', `${firstName(p.name)} is marked as told`);
     };
     const askInfoSent = async (to, note) => {
@@ -14782,11 +14801,11 @@
        parted by Carbon's divider: a group text to every driver on the leg,
        from two drivers up; the driver details letter to the booking contact,
        emailed or copied for Missive; an email to a contact who has an
-       address; each driver's reminder of the leg; and Add number for a person
-       with none. Where the screen is roomy the reminders, the copied letter
-       and the contact's email are the row's tasks, and the emailed letter
-       stays here, as the copied one does while the booking contact has no
-       row. */
+       address; each driver's reminder of the leg, or their Tell; and Add
+       number for a person with none. Where the screen is roomy the reminders,
+       the copied letter and the contact's email are the row's tasks, and the
+       emailed letter stays here, as the copied one does while the booking
+       contact has no row. */
     const groups = [[], [], [], [], []];
     const [toAll, toLetter, toEmail, toRemind, toAdd] = groups;
     const hand = (p, group, it) => {
@@ -14816,10 +14835,35 @@
     for (const p of people) {
       if (p.email) hand(p, toEmail, { label: `Email ${p.name}`, words: 'Email', icon: '#m-mail', run: goTo(`mailto:${p.email}`, offer('Emailed', p.name)) });
     }
+    /* Tell takes Remind's place while the leg changed for a driver since they
+       accepted it: a text of what changed and the leg as it stands, with their
+       link where it is live and carries this leg, asked for as the window
+       opens so the text is ready on the press. It is typed in or copied as a
+       reminder is, and then the board asks to mark them told. */
+    const linkOf = p => (client ? client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: p.driverId }) : Promise.resolve({}))
+      .then(({ data: s, error }) => (!error && s?.token && (!s.expiresAt || new Date(s.expiresAt) > new Date())
+        && (s.assignmentRefs || []).some(r => String(r.tripId) === String(trip.id) && (r.leg || 'outbound') === leg)
+        ? driverText.DRIVER_LINK + encodeURIComponent(s.token) : ''), () => '');
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
        the reminder first to paste. */
     for (const p of drivers) {
+      if (p.news) {
+        const text = linkOf(p).then(p.news);
+        const asTell = { label: `Tell ${p.name}`, words: 'Tell', icon: '#m-notification_important' };
+        if (p.texting && !docked) {
+          hand(p, toRemind, { ...asTell, run: async () => {
+            if (await copyText(await text)) toast('success', 'Changes copied', `Paste them in ${p.name}'s conversation.`);
+            closeContacts();
+            window.open(p.texting, '_blank', 'noopener');
+            void askTold(p, show);
+          } });
+        } else if (p.phone) {
+          hand(p, toRemind, { ...asTell, run: async () =>
+            goTo(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(await text)}`, () => void askTold(p, show))() });
+        }
+        continue;
+      }
       if (!p.reminder) continue;
       if (p.texting && !docked) {
         hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications', run: async () => {

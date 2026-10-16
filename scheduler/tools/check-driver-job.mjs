@@ -73,6 +73,8 @@ const read = { busesById: new Map([['b1', { number: 763 }], ['b2', { number: 897
   driversById: new Map([['d1', { short_name: 'Rigo' }], ['d2', { short_name: 'Ana' }]]), nameOf: id => (id === 'sleeper' ? 'Sleeper berth' : id) };
 expect('the office reads what changed since the driver accepted, in English, naming it only',
   changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, read), ['Bus changed']);
+expect('the text that tells a driver names it in their language',
+  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, lang: 'es' }), ['Cambió: Autobús']);
 expect('nothing changed says nothing', changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office, 'outbound', 'd1', read) }, read), []);
 expect('a seat not confirmed, or with no kept view, says nothing',
   [changesSince(office, 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office, 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);

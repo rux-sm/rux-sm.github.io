@@ -4,8 +4,8 @@
    One leg as a driver reads it in a text, loaded by the Driver week info
    page and by the board and owned by neither: the week info message lists a
    driver's legs over their link, and the Contacts window's reminder sends one
-   leg on its own. One wording, so a reminder and the week's message never
-   describe the same leg two ways. The Drivers page loads it for the address
+   leg on its own, as its Tell does a leg that changed. One wording, so a
+   reminder and the week's message never describe the same leg two ways. The Drivers page loads it for the address
    of a driver's link alone, so the link it copies is the one sent.
 
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
@@ -75,7 +75,10 @@
       reminderToday: name => `Hi ${name}, a reminder for your trip today:`,
       reminderTomorrow: name => `Hi ${name}, a reminder for your trip tomorrow:`,
       reminderSoon: name => `Hi ${name}, a reminder for your trip coming up:`,
-      week: (name, range) => `Hi ${name}, here are your assignments for ${range}:`,
+      changedToday: name => `Hi ${name}, your trip today changed:`,
+      changedTomorrow: name => `Hi ${name}, your trip tomorrow changed:`,
+      changedSoon: name => `Hi ${name}, your trip coming up changed:`,
+      week:(name, range) => `Hi ${name}, here are your assignments for ${range}:`,
       noneTicked: name => `Hi ${name}, no trips are ticked yet.`,
       details: 'Trip details and itineraries:',
     },
@@ -96,7 +99,10 @@
       reminderToday: name => `Hola ${name}, te recordamos tu viaje de hoy:`,
       reminderTomorrow: name => `Hola ${name}, te recordamos tu viaje de mañana:`,
       reminderSoon: name => `Hola ${name}, te recordamos tu próximo viaje:`,
-      week: (name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
+      changedToday: name => `Hola ${name}, cambió tu viaje de hoy:`,
+      changedTomorrow: name => `Hola ${name}, cambió tu viaje de mañana:`,
+      changedSoon: name => `Hola ${name}, cambió tu próximo viaje:`,
+      week:(name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
       noneTicked: name => `Hola ${name}, todavía no hay viajes marcados.`,
       details: 'Detalles e itinerarios de tus viajes:',
     },
@@ -155,19 +161,36 @@
     return lines;
   }
 
+  // Whether a leg leaves today, tomorrow or later, from `today` as yyyy-mm-dd.
+  const whenOf = (l, today) => {
+    const [y, m, d] = today.split('-').map(Number);
+    return iso(l.start) === today ? 'today' : iso(l.start) === iso(new Date(y, m - 1, d + 1)) ? 'tomorrow' : 'soon';
+  };
+
   /* The reminder for one leg, to one driver by their first name: today,
      tomorrow, or coming up, from `today` as yyyy-mm-dd on the office's
      calendar, then the leg's lines and its itinerary. */
   function reminder(first, l, today, lang = 'en') {
     const w = wordsFor(lang);
-    const [y, m, d] = today.split('-').map(Number);
-    const next = iso(new Date(y, m - 1, d + 1));
-    const hello = iso(l.start) === today ? w.reminderToday : iso(l.start) === next ? w.reminderTomorrow : w.reminderSoon;
+    const when = whenOf(l, today);
+    const hello = when === 'today' ? w.reminderToday : when === 'tomorrow' ? w.reminderTomorrow : w.reminderSoon;
     return [hello(first), '', ...legLines(l, { itinerary: true, lang })].join('\n');
+  }
+
+  /* The news of a leg that changed, to one driver by their first name: what
+     changed, a line each as driver-job.js names it in their language, then
+     the leg's lines as it stands, then their link, where the leg reads in
+     full. With no link, the leg's itinerary takes its place. */
+  function change(first, l, today, changes, link, lang = 'en') {
+    const w = wordsFor(lang);
+    const when = whenOf(l, today);
+    const hello = when === 'today' ? w.changedToday : when === 'tomorrow' ? w.changedTomorrow : w.changedSoon;
+    return [hello(first), ...changes, '', ...legLines(l, { itinerary: !link, lang }),
+      ...(link ? ['', w.details, link] : [])].join('\n');
   }
 
   window.SchedulerDriverText = {
     SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor,
-    messageDate, messageRange, timeText, town, roleLabel, isRelief, stopsForLeg, legLines, reminder,
+    messageDate, messageRange, timeText, town, roleLabel, isRelief, stopsForLeg, legLines, reminder, change,
   };
 })();

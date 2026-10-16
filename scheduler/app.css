@@ -1739,6 +1739,10 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--off { color: var(--scheduler-mark-done, currentColor); }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
+/* The bar menu's Call or text carries the card's Needs bell, in its warning
+   colour, while a driver on the bus is to be told of a change. */
+.scheduler-bar-menu__due { color: var(--scheduler-mark-warning); }
+.scheduler-bar-menu__due[hidden] { display: none; }
 
 /* ── Frame and toolbar ──────────────────────────────────────────────────────
    `.scheduler-frame` is the schedule's column: the toolbar sits directly on the

@@ -238,10 +238,19 @@
      `driversById` and `nameOf`, the office's name for a need. `row` is the
      seat's status as get_trip_driver_statuses returns it; only a confirmed
      seat with a kept view can have changed, so one accepted before views
-     were kept says nothing. The lines are English, as the office reads them,
-     and brief, Pickup changed or Bus changed, because a card and a To do row
-     say only what to tell, and the driver's own page gives the old and new. */
+     were kept says nothing. The lines are brief, Pickup changed or Bus
+     changed, because a card and a To do row say only what to tell, and the
+     driver's own page gives the old and new. They are English, as the office
+     reads them, unless `read.lang` names the driver's language, for the text
+     that tells them; a need the driver page names in it is named so here. */
   const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name, brief: true };
+  const briefIn = lang => (lang && lang !== 'en' && WORDS[lang] ? {
+    ...ENGLISH, w: WORDS[lang],
+    keptRequirement: name => {
+      const id = Object.keys(WORDS.en.legacy).find(k => WORDS.en.legacy[k] === name);
+      return id ? WORDS[lang].legacy[id] : name;
+    },
+  } : ENGLISH);
   const officeTrip = (trip, { busesById = new Map(), driversById = new Map() } = {}) => ({
     ...trip,
     trip_assignments: (trip.trip_assignments || []).map(a => ({
@@ -255,7 +264,7 @@
     const names = { get: id => read.nameOf?.(id) };
     const l = legOf({ tripId: trip.id, leg }, officeTrip(trip, read), driverId, names);
     if (l.error) return [];
-    return changesBetween(row.acceptedView, jobView(l), l, ENGLISH);
+    return changesBetween(row.acceptedView, jobView(l), l, briefIn(read.lang));
   }
   // The view the office keeps for a driver it marks as told: the leg as it stands.
   function viewNow(trip, leg, driverId, read = {}) {

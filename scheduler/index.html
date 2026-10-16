@@ -107,6 +107,7 @@
 <symbol id="m-sticky_note_2" viewBox="0 -960 960 960"><path d="M180-180h400v-200h200v-400H180v600Zm-60 60v-720h720v480L600-120H120Zm180-300v-60h170v60H300Zm0-160v-60h360v60H300ZM180-180v-600 600Z"/></symbol>
 <symbol id="m-notifications" viewBox="0 -960 960 960"><path d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160Zm320-302Zm0 422q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM300-260h360v-304q0-75-52.5-127.5T480-744q-75 0-127.5 52.5T300-564v304Z"/></symbol>
 <symbol id="m-notifications-fill" viewBox="0 -960 960 960"><path d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80Z"/></symbol>
+<symbol id="m-notification_important" viewBox="0 -960 960 960"><path d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160Zm320-302Zm0 422q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM300-260h360v-304q0-75-52.5-127.5T480-744q-75 0-127.5 52.5T300-564v304Zm150-166h60v-214h-60v214Zm29.98 106q14.02 0 23.52-9.48t9.5-23.5q0-14.02-9.48-23.52t-23.5-9.5q-14.02 0-23.52 9.48t-9.5 23.5q0 14.02 9.48 23.52t23.5 9.5Z"/></symbol>
 <symbol id="m-notification_important-fill" viewBox="0 -960 960 960"><path d="M160-200v-60h80v-304q0-84 49.5-150.5T420-798v-82h120v82q81 17 130.5 83.5T720-564v304h80v60H160ZM480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80Zm-30-346h60v-214h-60v214Zm29.98 106q14.02 0 23.52-9.48t9.5-23.5q0-14.02-9.48-23.52t-23.5-9.5q-14.02 0-23.52 9.48t-9.5 23.5q0 14.02 9.48 23.52t23.5 9.5Z"/></symbol>
 <symbol id="m-more_vert" viewBox="0 -960 960 960"><path d="M479.86-160Q460-160 446-174.14t-14-34Q432-228 446.14-242t34-14Q500-256 514-241.86t14 34Q528-188 513.86-174t-34 14Zm0-272Q460-432 446-446.14t-14-34Q432-500 446.14-514t34-14Q500-528 514-513.86t14 34Q528-460 513.86-446t-34 14Zm0-272Q460-704 446-718.14t-14-34Q432-772 446.14-786t34-14Q500-800 514-785.86t14 34Q528-732 513.86-718t-34 14Z"/></symbol>
 <symbol id="m-beach_access-fill" viewBox="0 -960 960 960"><path d="M795-128 532-391l46-46 263 263-46 46Zm-570-46q-88-97-102-223t43-236q2 33 14.5 73.5T216-475q23 44 55 91t72 92L225-174Zm159-159q-49-50-85-106.5t-54.5-109Q226-601 226-645t22-68q24-26 69.5-27T418-723q55 18 113 53.5T636-585L384-333Zm293-293q-44-40-90.5-72t-92-54.5Q449-775 407-787t-76-13q111-60 239-46t225 102L677-626Z"/></symbol>
@@ -925,11 +926,13 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-mail"/></svg></div>
       <div class="rux--menu-item__label">Add email thread</div>
     </li>
-    <!-- Opens the Contacts window: everyone to call or text about this bar. -->
+    <!-- Opens the Contacts window: everyone to call or text about this bar.
+         The bell shows while a driver on the bus is to be told of a change. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-contacts">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-call"/></svg></div>
       <div class="rux--menu-item__label">Call or text</div>
+      <div class="rux--menu-item__shortcut scheduler-bar-menu__due" id="scheduler-bar-menu-contacts-due" hidden><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-notifications-fill"/></svg><span class="rux--visually-hidden"></span></div>
     </li>
     <!-- Opens the Live map on this bar's bus. -->
     <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-bar-menu-map">

@@ -203,9 +203,11 @@
    cannot grow invisibly the way a toggle's does: on a touch screen the row
    itself is 44px. A large item keeps its 48px, which Carbon sets with a more
    specific rule. Asked for by Notes, whose side nav is how a phone moves
-   between pages. */
+   between pages. The header's links mirrored into the nav are rows of it
+   too, and how the company website's phone moves between pages. */
 @media (pointer: coarse) {
   a.rux--side-nav__link { min-block-size: 2.75rem; }
+  .rux--side-nav a.rux--header__menu-item { min-block-size: 2.75rem; }
   .rux--side-nav__menu a.rux--side-nav__link {
     block-size: 2.75rem;
     min-block-size: 2.75rem;
@@ -2709,8 +2711,10 @@
 /* THE NAV'S ROWS ARE ROUNDED AND STAND OFF ITS EDGES, and the page you are
    on is the row's fill alone: a Mac's sidebar marks its selection with a
    rounded fill and no bar. The row is 8px in from each side and keeps its
-   words where Carbon set them. */
-[data-theme^="apple-"] a.rux--side-nav__link {
+   words where Carbon set them. The header's links mirrored into the nav are
+   its rows too, and take the same shape and label below. */
+[data-theme^="apple-"] a.rux--side-nav__link,
+[data-theme^="apple-"] .rux--side-nav a.rux--header__menu-item {
   margin-inline: var(--rux-spacing-03);
   border-radius: 8px;
 }
@@ -2725,10 +2729,13 @@
    an icon in the accent, and only the row you are on is bold: read from
    Mail's. Carbon sets every row bold in the secondary colour under a grey
    icon, which on a Mac reads as a list of headings. */
-[data-theme^="apple-"] a.rux--side-nav__link { font-weight: 400; }
+[data-theme^="apple-"] a.rux--side-nav__link,
+[data-theme^="apple-"] .rux--side-nav a.rux--header__menu-item { font-weight: 400; }
 [data-theme^="apple-"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current),
-[data-theme^="apple-"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current) > span { font-weight: 700; }
-[data-theme^="apple-"] a.rux--side-nav__link > .rux--side-nav__link-text { color: var(--rux-text-primary); }
+[data-theme^="apple-"] a.rux--side-nav__link:is([aria-current=page], .rux--side-nav__link--current) > span,
+[data-theme^="apple-"] .rux--side-nav a.rux--header__menu-item[aria-current=page] .rux--text-truncate-end { font-weight: 700; }
+[data-theme^="apple-"] a.rux--side-nav__link > .rux--side-nav__link-text,
+[data-theme^="apple-"] .rux--side-nav a.rux--header__menu-item .rux--text-truncate-end { color: var(--rux-text-primary); }
 [data-theme^="apple-"] a.rux--side-nav__link .rux--side-nav__icon:not(.rux--side-nav__submenu-chevron) > svg {
   fill: var(--rux-icon-interactive);
 }

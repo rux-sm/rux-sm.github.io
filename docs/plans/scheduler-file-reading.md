@@ -2,16 +2,43 @@
 type: plan
 ---
 
-# Plan: read an itinerary and a PO into the trip
+# Plan: read the customer's papers and thread into the trip
 
 ## Goal
 
-An itinerary already on a trip fills the trip's route, and a PO or a signed
-contract fills Billing, each as a draft the office checks and saves. A reading
-says what the paper leaves open and where it disagrees with the trip. It
-saves nothing itself.
+When a trip has the customer's itinerary on its Files tab and its email
+thread linked, Claude checks the trip against those two, the customer's
+latest word, and drafts a fix for what differs. An itinerary already on a
+trip also fills the trip's route, and a PO or a signed contract fills
+Billing, each as a draft the office checks and saves. A reading says what
+the paper leaves open and where it disagrees with the trip. It saves nothing
+itself.
 
 ## Decisions
+
+### The customer's word as the check
+
+- **The authority for what a trip should be is the customer's latest word:**
+  the newest itinerary file on the trip, and its email thread, newer mail
+  over an older file. The scheduler is the office's copy of it.
+- **The connector gets `read_trip_document`,** which answers a trip
+  document's text as the person signed in may open it, so Claude in the
+  Claude app or Claude Code reads it on the person's own plan, with no API
+  key. The text is drawn from the PDF in the function itself; a scanned
+  page with no text says so.
+- **`get_trip` lists the trip's documents** with their ids and labels, and
+  already answers the thread's link, which the Missive connector reads.
+- **A trip review reads both when they are there** and lists each
+  difference with both values: a stop, a time, a day, the headcount, the
+  bus count, the price. A missing file or thread is said, never guessed
+  around. It drafts the fixes as a change to the trip, with `stop_changes`
+  for stops, and Claude presses Save on rux's yes.
+- **A review that finds a trip's thread and the trip has none links it,** in
+  the same drafted change, so the next review has it.
+- **This part comes first,** because it needs no API credits and no
+  question; the editor's Read button below follows it.
+
+### The editor's Read button
 
 - **Claude reads the file through the Claude API, called from a third Edge
   Function, `trip-file-reader`,** source in `scheduler/trip-file-reader/`,
@@ -71,6 +98,20 @@ saves nothing itself.
   is rux's to make and cannot be changed without Anthropic's support.
 
 ## Tasks
+
+### The customer's word as the check
+
+- [ ] Add `read_trip_document` to the connector, the PDF's text drawn in the
+      function with one pinned library, and the trip's documents to
+      `get_trip`; try it on invented PDFs, one with no text; deploy on
+      rux's yes.
+- [ ] Teach the `trips` skill and `working-from-claude.md` the review:
+      read the thread and the newest itinerary, list each difference with
+      both values, draft the fixes and the missing thread link.
+- [ ] Review three coming trips that have both, from a new session, and
+      read each listed difference against the paper and the thread.
+
+### The editor's Read button
 
 - [ ] Write five invented itineraries and three invented POs, with what each
       should read as: a one-day round trip, several days with a hotel, a

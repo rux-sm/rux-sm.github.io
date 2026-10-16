@@ -77,9 +77,6 @@ stays dark, as it is now. The launch itself is
 
 - [ ] Rebuild the Fleet page around its vehicles, with the gallery below
       under Explore the coaches.
-- [ ] Turn the four facts into a strip, Groups we serve into a two-column
-      list, and the quotation into an open one; take the circles off the
-      icons across the site.
 - [ ] Alternate whole sections between black and charcoal, and drop the
       card fills the open layouts no longer need.
 - [ ] Set the type scale in `theme.css`.
@@ -89,8 +86,6 @@ stays dark, as it is now. The launch itself is
 - [ ] Give the header's logo more room and make its phone action easier to
       see.
 - [ ] Crop the empty sky from the About page's office photograph.
-- [ ] Put the USDOT and MC numbers in the footer and the safety rating in
-      the strip, linked to SAFER.
 - [ ] Put the photographs of a 56-seat coach and the van on the Fleet page
       once rux has them.
 - [ ] Fit the widened hero photograph once rux has made it, with its small

@@ -89,6 +89,35 @@ const shortStops = stopsOf(short, 'outbound');
 const pullOut = path(T('2026-10-15', '16:45'), [[0, 0], [0, 2]]);
 expect('a yard return due soon is not reached as the bus pulls out', [whereOn(shortStops, pullOut).reached, whereOn(shortStops, pullOut).next], [-1, 0]);
 
+// A bus parked short of a pickup pin that is not where it loads.
+const toNear = path(yardOut, [[0, 4]]);
+const parkedAt = (m, ms, n) => Array.from({ length: n }, (_, i) => [...at(m), ms + i * 60e3]);
+const near = (p, bus) => { const w = whereOn(stops, p, bus); return [w.reached, w.at, w.next]; };
+const shy = 5 - 0.4;
+const stopped = [...path(yardOut, [[0, 4]]), [...at(shy), toNear.at(-1)[2] + 30e3]];
+expect('a bus that stands still for two minutes within half a mile of the pickup is at it',
+  near([...stopped, ...parkedAt(shy, stopped.at(-1)[2] + 60e3, 2)]), [0, true, 1]);
+expect('a bus stopped there only a minute is not yet',
+  near([...stopped, ...parkedAt(shy, stopped.at(-1)[2] + 60e3, 1).map(p => [p[0], p[1], p[2] - 30e3])]), [-1, false, 0]);
+expect('a bus parked with no new points counts its wait from its reading',
+  near(stopped, { lat: at(shy)[0], lng: at(shy)[1], engine: 'idle', mph: 0, seen: new Date(stopped.at(-1)[2] + 5 * 60e3).toISOString() }), [0, true, 1]);
+expect('a bus still driving past at that distance is not',
+  near(stopped, { lat: at(shy)[0], lng: at(shy)[1], engine: 'on', mph: 30, seen: new Date(stopped.at(-1)[2] + 5 * 60e3).toISOString() }), [-1, false, 0]);
+// As Samsara sends it: a point as the bus pulls into the lot, then none for over an hour, the next a little way on.
+const pulledIn = [...path(yardOut, [[0, 4]]), [...at(shy - 0.1), toNear.at(-1)[2] + 20e3], [...at(shy), toNear.at(-1)[2] + 80 * 60e3]];
+expect('two points a little apart with a long quiet between them are a bus parked', near(pulledIn), [0, true, 1]);
+const idleSince = toNear.at(-1)[2] + 60e3;
+const idling = { lat: at(shy)[0], lng: at(shy)[1], engine: 'idle', engine_at: new Date(idleSince).toISOString(), mph: 0, seen: new Date(idleSince).toISOString() };
+expect('a bus idling there over two minutes is at the pickup before Samsara sends another point',
+  [whereOn(stops, toNear, idling, idleSince + 3 * 60e3).at, whereOn(stops, toNear, idling, idleSince + 60e3).at], [true, false]);
+const parkedFar = 5 - 0.7;
+expect('a bus parked further than half a mile is not at the pickup',
+  near([...path(yardOut, [[0, 4]]), ...parkedAt(parkedFar, toNear.at(-1)[2] + 60e3, 5)]), [-1, false, 0]);
+const loadedAndGone = [...stopped, ...parkedAt(shy, stopped.at(-1)[2] + 60e3, 5), ...path(stopped.at(-1)[2] + 10 * 60e3, [[5, 12]])];
+expect('once it drives on, the pickup is behind it and the arena is next', near(loadedAndGone), [0, false, 1]);
+expect('a stop that is not a pickup still needs the quarter mile',
+  [whereOn(stops, [...toArena.slice(0, 20), ...parkedAt(20 - 0.4, toArena[19][2] + 60e3, 5)]).reached], [0]);
+
 // Late.
 expect('an instant reads on the office\'s clock', [clockOf(T('2026-10-15', '17:05')), clockOf(T('2026-12-15', '00:40'))], ['17:05', '00:40']);
 expect('ten minutes after it is due is on time', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:40')), 0);

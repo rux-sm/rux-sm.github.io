@@ -126,7 +126,7 @@
     if (!out) return s;
     s.hue = W.hueFor(leg.trip);
     s.stops = Road.stopsOf(leg.trip, leg.leg);
-    s.where = Road.whereOn(s.stops, bus.path);
+    s.where = Road.whereOn(s.stops, bus.path, bus);
     if (s.where.at) s.stop = s.stops[s.where.reached];
     else if (s.where.next >= 0) {
       s.stop = s.stops[s.where.next];

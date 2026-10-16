@@ -13,10 +13,12 @@
 
    `stopsOf(trip, leg)` lists a leg's stops in order with the time the bus is
    due at each: the pickup at its Spot, every other stop and the yard return
-   at their Arrives. `whereOn(stops, path)` follows the path through them: a
-   stop is reached when the bus comes within a quarter mile of it, in order,
-   and no sooner than two hours before it is due, so a bus driving past a
-   later stop on its way has not reached it. The next stop is the first after
+   at their Arrives. `whereOn(stops, path, bus)` follows the path through
+   them: a stop is reached when the bus comes within a quarter mile of it, in
+   order, and no sooner than two hours before it is due, so a bus driving
+   past a later stop on its way has not reached it. A pickup is also reached
+   by a bus that stands still for two minutes within half a mile of it, since
+   a pin on a campus or a stadium is rarely where the bus loads. The next stop is the first after
    the last one reached that has a map point.
 
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
@@ -37,6 +39,14 @@
   // The furthest back a path is asked from, so a leg days long loads quickly.
   const PATH_BACK = 12 * 3600e3;
   const LATE_MIN = 10;
+  /* A bus parked this near a pickup is there. Parked is standing still this
+     long: points within GPS wander of each other, or two points this little
+     apart with that long between them, since Samsara sends few points from a
+     bus that sits, or the engine idle or off that long. */
+  const PARKED_MILES = 0.5;
+  const STILL_MILES = 0.03;
+  const CREPT_MILES = 0.15;
+  const PARKED_MS = 2 * 60e3;
 
   // The miles between two points as the crow flies; each is [lat, lng].
   const miles = (a, b) => {
@@ -97,20 +107,40 @@
      starts where the bus waited before it left, the yard, and nothing is
      reached until the bus has left there, so a short trip's yard return is
      not reached as the bus pulls out. A path begins at most twelve hours
-     back, so a stop due before it begins is taken as reached. */
-  function whereOn(stops, path) {
-    let reached = -1, inside = false, left = false;
-    const begins = path?.[0]?.[2];
+     back, so a stop due before it begins is taken as reached. A pickup is
+     also reached by a bus that has stood still within half a mile of it,
+     and left behind once the bus is half a mile off. `bus`, samsara-now's
+     reading, ends the path where it stands while it is stopped, idle or
+     off, parked once its engine has idled or been off two minutes by `now`,
+     so a bus that sends no new points still counts its wait. */
+  function whereOn(stops, path, bus = null, now = Date.now()) {
+    let reached = -1, inside = false, left = false, reach = NEAR_MILES, rest = null, before = null;
+    const points = [...(path || [])];
+    const standing = bus?.lat != null && bus?.lng != null && (bus.mph === 0 || bus.engine === 'idle' || bus.engine === 'off');
+    const idle = standing && (bus.engine === 'idle' || bus.engine === 'off') && now - Date.parse(bus.engine_at) >= PARKED_MS;
+    let last = null;
+    if (standing) {
+      last = [bus.lat, bus.lng, Math.max(Date.parse(bus.seen) || now, (points.at(-1)?.[2] ?? -Infinity) + 1)];
+      points.push(last);
+    }
+    const begins = points[0]?.[2];
     if (begins != null) stops.forEach((s, i) => { if (s.due != null && s.due < begins) reached = i; });
-    for (const p of path || []) {
-      left ||= miles(path[0], p) > NEAR_MILES;
+    for (const p of points) {
+      left ||= miles(points[0], p) > NEAR_MILES;
+      // Where the bus came to rest, kept while it stays within GPS wander of it.
+      if (!rest || miles(rest, p) > STILL_MILES) rest = p;
+      const crept = before && p[2] - before[2] >= PARKED_MS && miles(before, p) <= CREPT_MILES;
+      before = p;
       if (!left) continue;
-      if (inside && miles(stops[reached].point, p) > NEAR_MILES) inside = false;
+      if (inside && miles(stops[reached].point, p) > reach) inside = false;
       if (inside) continue;
+      const parked = p[2] - rest[2] >= PARKED_MS || crept || (p === last && idle);
       for (let j = reached + 1; j < stops.length; j++) {
         const s = stops[j];
         if (!s.point || (s.due != null && p[2] < s.due - EARLY_MS)) continue;
-        if (miles(s.point, p) <= NEAR_MILES) { reached = j; inside = true; break; }
+        const d = miles(s.point, p);
+        if (d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
+        if (parked && s.type === 'pickup' && d <= PARKED_MILES) { reached = j; inside = true; reach = PARKED_MILES; break; }
       }
     }
     const next = stops.findIndex((s, i) => i > reached && s.point);
@@ -208,5 +238,5 @@
     };
   }
 
-  window.SchedulerRoad = { NEAR_MILES, LATE_MIN, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
+  window.SchedulerRoad = { NEAR_MILES, PARKED_MILES, LATE_MIN, MARGIN, miles, span, isOut, stopsOf, whereOn, clockOf, lateBy, ON_TIME_PAY, pickupLate, arrivals, live };
 })();

@@ -10,7 +10,8 @@
    The link functions are the ones rux-ui calls: create_driver_schedule_share
    makes a link, or brings back the driver's last one so the address stays
    the same; update_driver_schedule_share saves a new choice to the same
-   address; revoke_driver_schedule_share stops it. A link's dates run from
+   address; revoke_driver_schedule_share stops it, and replace_driver_schedule_share
+   gives it a new address, which stops the old one. A link's dates run from
    the first ticked leg to the last. Copy only copies, and only while the
    link shows the ticked trips, because a copied text is not a sent one. Mark
    as sent, offered while the message can be copied and the driver has not
@@ -185,6 +186,7 @@
     save.textContent = link ? 'Update link' : 'Create link';
     save.disabled = !count || count > MAX_LEGS || matchesLink();
     $('scheduler-send-revoke').hidden = !link;
+    $('scheduler-send-replace').hidden = !link;
     $('scheduler-send-state').textContent = count > MAX_LEGS ? `A link holds at most ${MAX_LEGS} trips. Untick some.`
       : !link ? (count ? `No link yet. ${count} ${count === 1 ? 'trip is' : 'trips are'} ticked.` : 'No link yet. Tick the trips to send.')
       : matchesLink() ? 'The link shows these trips.'
@@ -220,6 +222,17 @@
       refresh();
       return;
     }
+    link = r.data;
+    refresh();
+    await page.show(link.token);
+  }
+
+  /* A link that has gone further than it should gets a new address: the old
+     one stops opening the driver's trips, and the trips on it stay. */
+  async function replace() {
+    const r = await client.rpc('replace_driver_schedule_share', { p_token: link.token });
+    window.Rux?.modal?.close($('scheduler-send-replace-modal'));
+    if (r.error || !r.data?.token) { problem("The link wasn't replaced, so the old address still works. Try again."); return; }
     link = r.data;
     refresh();
     await page.show(link.token);
@@ -351,6 +364,8 @@
     $('scheduler-send-copy').addEventListener('click', () => copy().catch(() => { $('scheduler-send-copied').textContent = "The message couldn't be copied. Try again."; }));
     $('scheduler-send-mark').addEventListener('click', () => mark().catch(() => { $('scheduler-send-copied').textContent = 'The trips could not be marked. Set them from the trip.'; }));
     $('scheduler-send-revoke').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-revoke-modal'), e.currentTarget));
+    $('scheduler-send-replace').addEventListener('click', e => window.Rux?.modal?.open($('scheduler-send-replace-modal'), e.currentTarget));
+    $('scheduler-send-replace-confirm').addEventListener('click', () => replace().catch(() => problem("The link wasn't replaced, so the old address still works. Try again.")));
     $('scheduler-send-revoke-confirm').addEventListener('click', () => revoke().catch(() => problem("The link wasn't revoked, so it still works. Try again.")));
     const wanted = new URLSearchParams(location.search).get('driver') || '';
     if (wanted && drivers.some(d => d.id === wanted)) picker.value = wanted;

@@ -58,6 +58,10 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - Route, Buses and Billing are marked Done once each is reviewed against what we know now; a later itinerary is updated in and the tab marked again.
 - Printing the itinerary and envelopes is prep for the day before the trip, so it is not reported as missing earlier.
 
+## Updates
+
+- An update is a few general words, such as Updated itinerary or Bus assignment changed, never the details, because the bar and its card show the update whole and the details already sit on the trip's tabs and files.
+
 ## Placeholders
 
 - A yellow (amber) trip is a placeholder: the bus is held, no quote is sent yet. Asked to add a trip, look for a placeholder with the same customer and dates and fill it in with `draft_trip_change` rather than drafting a new one. Report it as a placeholder, not a booking.

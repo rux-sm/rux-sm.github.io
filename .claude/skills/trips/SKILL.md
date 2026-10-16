@@ -181,8 +181,8 @@ reads only the ones before it. Nothing is written until step 10.
   one trip is not approval of the next.
 - A save, its update, Done marks and History entry are named rux alone, as
   if he made the change by hand, because he wants every update to read as his.
-- Save opens Updates: replace its suggestion with one line saying what changed
-  and why.
+- Save opens Updates: replace its suggestion with a few general words by
+  `rules.md`, such as Updated itinerary.
 - "Update your lists?" after a save offers to add new places to Locations:
   answer it by `rules.md`, and name in the report each place saved.
 - Check with `get_trip` that it landed: `quote_lines`, `quote_sent_price`,

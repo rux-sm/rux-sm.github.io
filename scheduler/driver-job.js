@@ -181,8 +181,9 @@
 
   /* Each difference as one line the driver reads. `say` is the page's words,
      `{ w, keptValue, keptRequirement }`, since a kept value is English and the
-     page writes it in its own language. */
-  function changesBetween(was, now, l, { w, keptValue, keptRequirement }) {
+     page writes it in its own language. With `brief`, a changed value is named
+     and not given, Pickup changed rather than its old and new places. */
+  function changesBetween(was, now, l, { w, keptValue, keptRequirement, brief = false }) {
     const lines = [];
     for (const key of VIEW_KEYS) {
       const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
@@ -200,6 +201,8 @@
         const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));
         if (added.length) lines.push(w.added(added.map(keptRequirement).join(', ')));
         if (gone.length) lines.push(w.removed(gone.map(keptRequirement).join(', ')));
+      } else if (brief) {
+        lines.push(w.changed(w.view[key]));
       } else {
         lines.push(`${w.view[key]}: ${keptValue(key, a) || w.none} → ${keptValue(key, b) || w.none}`);
       }
@@ -235,8 +238,10 @@
      `driversById` and `nameOf`, the office's name for a need. `row` is the
      seat's status as get_trip_driver_statuses returns it; only a confirmed
      seat with a kept view can have changed, so one accepted before views
-     were kept says nothing. The lines are English, as the office reads them. */
-  const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name };
+     were kept says nothing. The lines are English, as the office reads them,
+     and brief, Pickup changed or Bus changed, because a card and a To do row
+     say only what to tell, and the driver's own page gives the old and new. */
+  const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name, brief: true };
   const officeTrip = (trip, { busesById = new Map(), driversById = new Map() } = {}) => ({
     ...trip,
     trip_assignments: (trip.trip_assignments || []).map(a => ({

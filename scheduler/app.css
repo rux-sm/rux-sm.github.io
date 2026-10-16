@@ -21,10 +21,10 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board all open at one width, Carbon's
-   `rux--side-panel--sm`, so the board's regions line up whichever are open:
-   the lists' pane, the roster, the trip editor and the document viewer. The
-   viewer's size button takes it to `md`, `lg` and `xl`, since its width is
+/* The panels beside the board open at Carbon's `rux--side-panel--sm`, so the
+   board's regions line up whichever are open: the lists' pane, the roster and
+   the document viewer. The trip editor opens at `md`, for the room its tabs'
+   figures and fields need side by side. The viewer's size button takes it to `md`, `lg` and `xl`, since its width is
    the document's zoom: a letter page in 20rem renders 11pt text at under 6px.
    `placeRoom` in data.js prices the panels by reading these back off them, so
    the arithmetic and the layout cannot drift. */
@@ -38,8 +38,8 @@
   --scheduler-viewer-lg-w: 40rem;
   --scheduler-viewer-xl-w: 65rem;
   --scheduler-viewer-w: var(--scheduler-viewer-sm-w);
-  /* The trip editor, Carbon's `rux--side-panel--sm`. */
-  --scheduler-editor-w: 20rem;
+  /* The trip editor, Carbon's `rux--side-panel--md`. */
+  --scheduler-editor-w: 30rem;
 }
 
 .scheduler-week {
@@ -1774,8 +1774,8 @@ button.scheduler-row-head__num::after {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 20rem matches the panel's
-   `rux--side-panel--sm` class, and the two move together. */
+   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
+   `rux--side-panel--md` class, and the two move together. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */

@@ -49,8 +49,9 @@ the last one forwarded came in March 2026.
   root, so nothing else changes.
 - **The repository is rux-sm's,** for now, the account that already runs
   these pages; an organization for the company can take it over later.
-- **Its look is Design's, on its Apple theme,** light pages with dark bands,
-  for a modern, rounded look in the device's own typeface. Pages are built
+- **Its look is Design's, on its Apple dark theme,** for a modern, rounded
+  look in the device's own typeface; [website-design.md](website-design.md)
+  is how it is being refined. Pages are built
   from Design's shell, tiles,
   notifications, accordion and form controls, copied into the site's
   `design/` from Design's committed build by its sync tool and held to

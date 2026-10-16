@@ -19,6 +19,7 @@ rux's side.
 | Tool | For | Never for |
 | :--- | :--- | :--- |
 | Scheduler connector: `find_trips`, `get_trip`, `list_buses`, `list_drivers`, `find_availability`, `find_contacts`, `needs_attention` | reading a trip, its buses and drivers, and what the board says it lacks; checking a save landed | saving: it writes drafts only |
+| `read_trip_document` | the text of a PDF on the trip's Files tab, by the id `get_trip` lists under `documents` | a scanned page, which has no text: say it could not be read |
 | `draft_trip`, `draft_trip_change` | a new trip, or a change, as a link that opens the editor filled in | |
 | rux's Chrome, through Claude in Chrome, logged in | the trip editor and the forms on the published site, `https://rux-sm.github.io/scheduler/`, for every real Save, since it runs only checked code | the built-in browser pane, which cannot pass the log-in; `http://localhost:8641/scheduler/`, which is for testing a change with its writes recorded (`scheduler/docs/proving-a-save.md`) |
 | Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `change_labels` and `manage_calendar_events`, which write to Missive |
@@ -28,27 +29,42 @@ rux's side.
 
 ## Reviewing a trip
 
-1. `get_trip` for the numbers. Note `booking_contact_email` and `booking_contact_missive_url`.
-2. Read the whole email thread (see Missive below). Find the latest quote sent,
-   the itinerary (in the email, an attachment, or the trip's Files tab), what
-   confirms the trip (contract, PO, payment) and where that stands, what the
-   customer asked for, and who to contact if the booking contact is away.
-3. Open the trip: `/scheduler/?trip=<id>&date=<start_date>`. Read
+The customer's latest word is what the trip should be: the newest itinerary
+on its Files tab, and its email thread, newer mail over an older file. The
+scheduler is the office's copy of it, so a review lists where the copy
+differs.
+
+1. `get_trip` for the numbers. Note `booking_contact_email`,
+   `booking_contact_missive_url` and `documents`.
+2. Read the newest Itinerary in `documents` with `read_trip_document`, and
+   the newest PO and contract when the trip has them. A page with no text, or
+   a trip with no itinerary, is said in the report, never guessed around.
+3. Read the whole email thread (see Missive below). Find the latest quote sent,
+   any itinerary or change sent after the file was added, what confirms the
+   trip (contract, PO, payment) and where that stands, what the customer asked
+   for, and who to contact if the booking contact is away. A trip with no
+   thread linked is searched for by its booking contact; a trip with neither
+   says so.
+4. Open the trip: `/scheduler/?trip=<id>&date=<start_date>`. Read
    Route, Buses, Billing, Details and Files, and the bar's card for what
    the trip still lacks.
-4. List what disagrees: stops and times against the itinerary, a typed
-   Estimated miles against the route's, the quote lines against the quote sent,
-   Quote sent marked or not, Route's notices (second driver, fuel card),
-   contacts, the newest update, the email thread linked or not.
-5. Report before changing anything: what the emails say, what you would
-   change, and only the questions `rules.md` does not already answer.
-6. On rux's go, make the changes, press each tab's Done once it is reviewed,
-   say exactly what Save will write, and save on his yes (see Saving). A
-   change to saved stops' times, days or waits is drafted, not clicked:
-   `draft_trip_change` with `stop_changes`, each stop named by the `id`
-   `get_trip` answers; open its link on the published site, check the
-   stops with a blue bar and the notice, and Save on his yes. One link is
-   one trip.
+5. List each difference with both values, the trip's and the customer's, and
+   where the customer said it: a stop, a time, a day, the headcount, the bus
+   count, the price. Then what else disagrees: a typed Estimated miles against
+   the route's, the quote lines against the quote sent, Quote sent marked or
+   not, Route's notices (second driver, fuel card), contacts, the newest
+   update.
+6. Report before changing anything: the differences, what you would change,
+   and only the questions `rules.md` does not already answer.
+7. On rux's go, draft the fixes as one `draft_trip_change`: fields by name,
+   saved stops' times, days and waits by `stop_changes`, each stop named by
+   the `id` `get_trip` answers, and `booking_contact_missive_url` when the
+   review found the thread and the trip has none, so the next review has it.
+   Open its link on the published site, check the fields and stops with a
+   blue bar and the notice, press each tab's Done once it is reviewed, say
+   exactly what Save will write, and save on his yes (see Saving). A stop to
+   add, remove or move is done on the Route tab, since a draft cannot. One
+   link is one trip.
 
 ## Entering a quote
 

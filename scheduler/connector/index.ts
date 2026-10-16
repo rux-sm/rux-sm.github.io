@@ -20,6 +20,7 @@ import { z } from 'npm:zod@4.6.5'
 // The pages' own rule files, joined by build-connector-rules.mjs: what a
 // draft may fill, and what Prep and the To do list say a trip lacks.
 import rules from './rules.ts'
+import { pdfText } from './pdf-text.ts'
 const DraftFields = rules.SchedulerDraftFields
 const Billing = rules.SchedulerBilling
 const LegFacts = rules.SchedulerLegFacts
@@ -307,7 +308,7 @@ Deno.serve(
     [withOAuthProtectedResource(), withSupabase({ auth: 'user' })],
     async (req, { supabase }) => {
       const handler = createMcpHandler(() => {
-        const server = new McpServer({ name: 'scheduler', version: '0.6.0' })
+        const server = new McpServer({ name: 'scheduler', version: '0.7.0' })
 
         server.registerTool(
           'find_trips',
@@ -347,7 +348,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, and the day it was added; read_trip_document reads one. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -388,10 +389,39 @@ Deno.serve(
             const gaps = live ? prep.pages.flatMap((p: Row) => Departures.gapWords(p).map((w: string) => (p.legName ? `${p.legName}: ${w}` : w))) : []
             const to_do = prep ? ToDo.rows([prep.trip], ToDo.handed(prep.read)).map(toDoWords) : []
 
+            // The Files tab, newest first, so the customer's latest paper leads.
+            const documents = orThrow(await supabase.from('trip_documents')
+              .select('id, label, file_name, file_size, created_at')
+              .eq('trip_id', trip.id).order('created_at', { ascending: false }))
+
             return answer({
               trip, updates, warnings: [...gaps, ...stopDateWarnings(trip, stops)], to_do, buses,
-              stops: markPastMidnight(trip, stops), quote_lines,
+              stops: markPastMidnight(trip, stops), quote_lines, documents,
             })
+          },
+        )
+
+        server.registerTool(
+          'read_trip_document',
+          {
+            title: 'Read a trip\'s file',
+            description:
+              'The text of one file on a trip\'s Files tab, by the id get_trip lists under documents, as the person signed in may open it: each page\'s text in order. Only a PDF is read. A page with no text, such as a scanned one, is listed in no_text, and readable is false with the reason when the file cannot be read; nothing on such a page can be known from here, so say so rather than guess. A table comes back as lines of words, so read each time against the place on its own line. An itinerary is the customer\'s word on the trip only as of the day it was added; a newer email in its thread says more.',
+            inputSchema: z.object({ document_id: z.string().uuid() }),
+            annotations: { readOnlyHint: true },
+          },
+          async ({ document_id }) => {
+            const doc = orThrow(await supabase.from('trip_documents')
+              .select('id, trip_id, label, file_name, file_path, file_size, created_at')
+              .eq('id', document_id).maybeSingle())
+            if (!doc) throw new Error('No such file, or it is not one you can see.')
+            const about = { id: doc.id, trip_id: doc.trip_id, label: doc.label, file_name: doc.file_name, added: doc.created_at }
+            // The bucket is private and staff-only, so the download is the caller's own.
+            const { data: blob, error } = await supabase.storage.from('trip-documents').download(doc.file_path)
+            if (error || !blob) {
+              return answer({ ...about, readable: false, why: `The file could not be fetched: ${error?.message ?? 'it is not in storage'}.` })
+            }
+            return answer({ ...about, ...(await pdfText(new Uint8Array(await blob.arrayBuffer()))) })
           },
         )
 

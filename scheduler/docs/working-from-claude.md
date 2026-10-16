@@ -47,7 +47,14 @@ before the late-return hour, 4:00 AM unless the Settings page says otherwise,
 came back the night before, so that day is free; the answer names it with the
 time it is back, since a departure before then cannot be promised.
 
-A document comes back with a link to its file. The link works for ten
+Claude can read a trip's own files too, the itineraries, POs and contracts
+on its Files tab, as text, and check the trip against them and its email
+thread: ask it to review a trip. It lists each place the trip differs from
+the customer's latest word, with both values, and drafts the fixes as one
+link. Only a PDF is read, and a scanned page has no text to read, which
+Claude says rather than guess.
+
+A document from the Documents page comes back with a link to its file. The link works for ten
 minutes and only for staff; ask again for a fresh one. Claude finds documents
 and cannot upload, replace or delete one, which the Documents page does.
 
@@ -125,8 +132,8 @@ server**.
   its stops, which the editor lays out on the Route tab marked to check: a
   place that is a saved location is set to it, and any other waits to be
   chosen from its list.
-- It cannot confirm a trip, mark one paid, assign a bus or a driver, or touch
-  a document.
+- It cannot confirm a trip, mark one paid, assign a bus or a driver, or
+  upload, replace or delete a document.
 - An unopened draft is deleted after 14 days.
 
 ## Saving from Claude Code

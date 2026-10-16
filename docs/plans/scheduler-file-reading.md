@@ -101,15 +101,9 @@ itself.
 
 ### The customer's word as the check
 
-- [ ] Add `read_trip_document` to the connector, the PDF's text drawn in the
-      function with one pinned library, and the trip's documents to
-      `get_trip`; try it on invented PDFs, one with no text; deploy on
-      rux's yes.
-- [ ] Teach the `trips` skill and `working-from-claude.md` the review:
-      read the thread and the newest itinerary, list each difference with
-      both values, draft the fixes and the missing thread link.
-- [ ] Review three coming trips that have both, from a new session, and
-      read each listed difference against the paper and the thread.
+- [ ] Review three coming trips that have both, from a new session, where
+      `read_trip_document` is listed, and read each listed difference
+      against the paper and the thread.
 
 ### The editor's Read button
 

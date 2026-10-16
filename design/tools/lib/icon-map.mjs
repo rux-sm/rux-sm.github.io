@@ -75,6 +75,7 @@ export const ICONS = {
   'bus': { material: 'directions_bus', rux: null },
   'calculator': { material: 'calculate', rux: null },
   'car': { material: 'directions_car', rux: null },
+  'car--front': { material: 'car_repair-fill', rux: null },  // An engine reporting a fault: the car under a wrench.
   'calendar': { material: 'calendar_month', rux: null },
   'caret--down': { material: 'arrow_drop_down', rux: null },
   'caret--left': { material: 'arrow_left', rux: null },
@@ -128,6 +129,7 @@ export const ICONS = {
   'launch': { material: 'open_in_new', rux: null },
   'list': { material: 'list', rux: null },
   'location': { material: 'location_on', rux: null },
+  'location--current': { material: 'navigation-fill', rux: null },  // The arrow a bus heads by, turned to its heading.
   'low-severity': { material: 'square', rux: null },
   'maximize': { material: 'open_in_full', rux: null },
   'menu': { material: 'menu', rux: null },

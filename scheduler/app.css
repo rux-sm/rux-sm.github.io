@@ -4840,10 +4840,10 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-customer-notes { white-space: pre-line; }
 
 /* ── The Live map ─────────────────────────────────────────────────────────
-   live.html: the map, with the buses listed beside it, in one card that
-   fills the window under the header, as the board does; on a phone the list
-   goes under the map. A bus's pin and its number in the list wear its
-   trip's colour from the bar's own palette, and grey when it is not out. */
+   live.html: the map of the buses out on a trip, with the panel of buses
+   beside it, in one card that fills the window under the header, as the
+   board does; on a phone the panel goes under the map. A bus's pin and its
+   number in its tile wear its trip's colour from the bar's own palette. */
 .scheduler-live-page [hidden] { display: none; }
 .scheduler-live__notice { margin-block-end: var(--rux-spacing-05); }
 .scheduler-live {
@@ -4857,28 +4857,32 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-live__map { isolation: isolate; min-block-size: 0; background: var(--rux-layer-02); }
 /* Leaflet sets its own face on the map; the pins take the page's. */
 .scheduler-live__map.leaflet-container { font: inherit; }
-.scheduler-live__list { margin: 0; padding: 0; list-style: none; overflow: auto; border-inline-start: 1px solid var(--rux-border-subtle-01); }
+/* The panel stands on the page's own surface, so its tiles stand out on it as
+   the To do pane's do, with 16px of panel around them and its own scroll. */
+.scheduler-live__panel {
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--rux-spacing-05);
+  background: var(--rux-background);
+  border-inline-start: 1px solid var(--rux-border-subtle-01);
+}
 @media (max-width: 41.98rem) {
   .scheduler-live { grid-template-columns: minmax(0, 1fr); grid-template-rows: 60% minmax(0, 1fr); }
-  .scheduler-live__list { border-inline-start: 0; border-block-start: 1px solid var(--rux-border-subtle-01); }
+  .scheduler-live__panel { border-inline-start: 0; border-block-start: 1px solid var(--rux-border-subtle-01); }
 }
-.scheduler-live__bus {
+/* On the road: a tile a bus, a step apart, its number beside its words. */
+.scheduler-live__tiles, .scheduler-live__yard { margin: 0; padding: 0; list-style: none; }
+.scheduler-live__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
+.scheduler-live__tile {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: var(--rux-spacing-03);
   inline-size: 100%;
-  padding: var(--rux-spacing-04) var(--rux-spacing-05);
-  border: 0;
-  border-block-end: 1px solid var(--rux-border-subtle-01);
-  background: transparent;
+  min-block-size: 0;
   color: var(--rux-text-primary);
-  font: inherit;
   text-align: start;
-  cursor: pointer;
 }
-.scheduler-live__bus:hover { background: var(--rux-layer-hover-01); }
-.scheduler-live__bus[aria-pressed="true"] { background: var(--rux-layer-selected-01); }
-.scheduler-live__bus:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .scheduler-live__num {
   align-self: start;
   min-inline-size: 3rem;
@@ -4889,13 +4893,16 @@ html:has(.scheduler-page[data-takeover]) {
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-.scheduler-live__num--yard, .scheduler-live-pin--yard {
-  --scheduler-bg: var(--rux-tag-background-gray);
-  --scheduler-fg: var(--rux-tag-color-gray);
-}
+/* The Yard: small tiles two to a row, a bus's number over its engine. */
+.scheduler-live__yard { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: var(--rux-spacing-03); }
+.scheduler-live__yard-tile { display: grid; min-block-size: 0; min-inline-size: 0; }
+.scheduler-live__yard-num { font-weight: 600; font-variant-numeric: tabular-nums; }
 .scheduler-live__said { display: grid; min-inline-size: 0; }
 .scheduler-live__dest { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-live__line { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--rux-text-secondary); }
+.scheduler-live__next { display: flex; gap: var(--rux-spacing-02); }
+.scheduler-live__stop { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+.scheduler-live__due { flex: none; }
 .scheduler-live__hours, .scheduler-live__due { font-variant-numeric: tabular-nums; }
 .scheduler-live__hours--low, .scheduler-live__due--late { color: var(--rux-text-primary); font-weight: 600; }
 /* A pin: its number on the trip's colour, centred on where the bus is, the

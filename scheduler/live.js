@@ -1,14 +1,14 @@
 /* ==========================================================================
    live.js — THE LIVE MAP
    --------------------------------------------------------------------------
-   live.html is a map of every bus Samsara has, where it is now, with a list
-   beside it. A bus out on a trip is a tag in its trip's colour with an arrow
-   the way it is heading, and its line in the list says what its bar says:
+   live.html is a map of the buses out on a trip, where each is now, with a
+   panel beside it. A bus out is a tag in its trip's colour with an arrow the
+   way it is heading, and its tile under On the road says what its bar says:
    its driver and the hours they may still drive, its speed, and its next stop
    with the time it is due, amber with the minutes over when it will be late.
-   A bus that is not out is grey, where it was last seen.
+   Every other bus Samsara has is a small tile under Yard, off the map.
 
-   Pressing a bus, on the map or in the list, shows its leg: the path it has
+   Pressing a bus, on the map or its tile, shows its leg: the path it has
    driven since it left the yard, its stops, filled once reached, and a dashed
    line on to the next. live.html?bus=<bus id> opens on that bus, as the
    board's Show on map does. road.js says which stop is next and when the bus
@@ -43,10 +43,8 @@
     return `${Number(h) % 12 || 12}:${m}${Number(h) < 12 ? 'a' : 'p'}`;
   };
   const hours = ms => `${Math.floor(ms / HOUR)}:${String(Math.floor((ms % HOUR) / 60e3)).padStart(2, '0')}`;
-  const short = name => {
-    const words = String(name || '').trim().split(/\s+/);
-    return words.length > 1 ? `${words[0]} ${words.at(-1)[0]}.` : words[0];
-  };
+  // A driver by their first name, so their hours and the speed fit the tile.
+  const short = name => String(name || '').trim().split(/\s+/)[0];
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const dayFrom = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
 
@@ -153,55 +151,39 @@
     if (map && want !== style) { style = want; map.style(want); }
   }
 
-  /* A bus's pin: its number on its trip's colour, or grey when it is not
-     out, with an arrow turned the way it heads while it moves. Buses not out
-     within a tenth of a mile of each other, as at the yard, share one pin
-     with every number on it, which presses as the first. The arrow is the
-     sprite's glyph copied in, since Chrome paints no `<use>` of the hidden
-     sprite inside Leaflet's layers. */
+  /* A bus's pin: its number on its trip's colour, with an arrow turned the
+     way it heads while it moves. Only a bus out on a trip has one; the rest
+     are in the Yard beside the map. The arrow is the sprite's glyph copied
+     in, since Chrome paints no `<use>` of the hidden sprite inside Leaflet's
+     layers. */
   const ARROW = '#m-arrow_upward-fill';
   const arrowGlyph = () => document.getElementById(ARROW.slice(1))?.innerHTML ?? '';
-  const TOGETHER_MILES = 0.1;
-  function pinsOf(states) {
-    const out = [];
-    for (const s of states) {
-      if (!s.here) continue;
-      const near = !s.out && out.find(p => !p.out && Road.miles(p.here, s.here) <= TOGETHER_MILES);
-      if (near) { near.members.push(s); continue; }
-      out.push({ here: s.here, out: s.out, members: [s] });
-    }
-    return out.map(p => {
-      const s = p.members[0];
-      const moving = s.out && s.bus.heading != null && s.bus.mph > 0;
-      const arrow = moving
-        ? `<svg class="scheduler-live-pin__arrow" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" style="rotate:${s.bus.heading}deg">${arrowGlyph()}</svg>` : '';
-      const isChosen = p.members.some(m => m.bus.bus_id === chosen);
-      const cls = ['scheduler-live-pin', s.out ? `scheduler-bar--${s.hue}` : 'scheduler-live-pin--yard',
-        isChosen ? 'scheduler-live-pin--chosen' : ''].filter(Boolean).join(' ');
-      return { key: s.bus.bus_id, here: p.here, busId: s.bus.bus_id, z: isChosen ? 2000 : s.out ? 1000 : 0,
-        html: `<div class="${cls}">${arrow}<span>${p.members.map(m => m.number).join(' · ')}</span></div>` };
-    });
+  function pinHtml(s) {
+    const arrow = s.bus.heading != null && s.bus.mph > 0
+      ? `<svg class="scheduler-live-pin__arrow" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" style="rotate:${s.bus.heading}deg">${arrowGlyph()}</svg>` : '';
+    const cls = `scheduler-live-pin scheduler-bar--${s.hue}${s.bus.bus_id === chosen ? ' scheduler-live-pin--chosen' : ''}`;
+    return `<div class="${cls}">${arrow}<span>${s.number}</span></div>`;
   }
 
-  function drawPins(states) {
+  function drawPins(out) {
     const L = window.L;
-    const want = pinsOf(states);
-    for (const w of want) {
-      let pin = pins.get(w.key);
+    for (const s of out) {
+      if (!s.here) continue;
+      const html = pinHtml(s);
+      let pin = pins.get(s.bus.bus_id);
       if (!pin) {
-        pin = L.marker(w.here, { keyboard: false, riseOnHover: true,
-          icon: L.divIcon({ className: 'scheduler-live-pin-box', html: w.html, iconSize: null }) }).addTo(map);
-        pin.on('click', () => choose(pin.busId));
-        pins.set(w.key, pin);
+        pin = L.marker(s.here, { keyboard: false, riseOnHover: true,
+          icon: L.divIcon({ className: 'scheduler-live-pin-box', html, iconSize: null }) }).addTo(map);
+        pin.on('click', () => choose(s.bus.bus_id));
+        pins.set(s.bus.bus_id, pin);
       } else {
-        pin.setLatLng(w.here);
-        if (pin.html !== w.html) pin.setIcon(L.divIcon({ className: 'scheduler-live-pin-box', html: w.html, iconSize: null }));
+        pin.setLatLng(s.here);
+        if (pin.html !== html) pin.setIcon(L.divIcon({ className: 'scheduler-live-pin-box', html, iconSize: null }));
       }
-      pin.html = w.html;
-      pin.busId = w.busId;
-      pin.setZIndexOffset(w.z);
+      pin.html = html;
+      pin.setZIndexOffset(s.bus.bus_id === chosen ? 1000 : 0);
     }
-    for (const [key, pin] of pins) if (!want.some(w => w.key === key)) { pin.remove(); pins.delete(key); }
+    for (const [id, pin] of pins) if (!out.some(s => s.bus.bus_id === id && s.here)) { pin.remove(); pins.delete(id); }
   }
 
   /* The chosen bus's leg: the path it has driven, its stops, a ring for
@@ -227,70 +209,94 @@
     });
   }
 
-  // ── the list ────────────────────────────────────────────────────────────
-  function rowOf(s) {
+  // ── the panel ───────────────────────────────────────────────────────────
+  /* A bus out on a trip, as a tile that presses to show it on the map: its
+     number on its trip's colour, the destination, the driver at the wheel
+     with their hours, the speed, and the next stop as its bar says it. */
+  function roadTile(s) {
     const item = el('li');
-    const button = el('button', 'scheduler-live__bus');
-    button.type = 'button';
-    button.setAttribute('aria-pressed', String(s.bus.bus_id === chosen));
-    button.addEventListener('click', () => choose(s.bus.bus_id));
-    const num = el('span', `scheduler-live__num ${s.out ? `scheduler-bar--${s.hue}` : 'scheduler-live__num--yard'}`, s.number);
+    const chosenNow = s.bus.bus_id === chosen;
+    const tile = el('button', `rux--tile rux--tile--selectable scheduler-live__tile${chosenNow ? ' rux--tile--is-selected' : ''}`);
+    tile.type = 'button';
+    tile.setAttribute('aria-pressed', String(chosenNow));
+    tile.addEventListener('click', () => choose(s.bus.bus_id));
     const said = el('span', 'scheduler-live__said');
-    if (s.out) {
-      said.appendChild(el('span', 'scheduler-live__dest', s.leg.trip.destination || 'Trip'));
-      const who = el('span', 'scheduler-live__line');
-      if (s.wheel) {
-        who.append(short(s.wheel.name));
-        if (s.wheel.left_ms != null) who.appendChild(el('span', `scheduler-live__hours${s.wheel.left_ms < HOUR ? ' scheduler-live__hours--low' : ''}`, ` ${hours(s.wheel.left_ms)}`));
-        who.append(' · ');
-      }
-      who.append(motion(s.bus));
-      said.appendChild(who);
-      if (s.stop) {
-        const next = el('span', 'scheduler-live__line');
-        if (s.where.at) next.append(`At ${s.stop.name}`);
-        else {
-          next.append(`→ ${s.stop.name}`);
-          const when = s.stop.due ?? s.arrival;
-          if (when != null) next.appendChild(el('span', `scheduler-live__due${s.late ? ' scheduler-live__due--late' : ''}`,
-            ` ${clock(when)}${s.late ? ` +${s.late}` : ''}`));
-        }
-        said.appendChild(next);
-      }
-    } else {
-      /* A bus not out: where it is while it reports, or when it last did. */
-      const seen = s.bus.seen ? new Date(s.bus.seen).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : null;
-      said.appendChild(el('span', 'scheduler-live__dest', s.bus.place || (seen ? `Seen ${seen}` : 'Not reporting')));
-      said.appendChild(el('span', 'scheduler-live__line', s.bus.place ? motion(s.bus) : 'Not reporting now'));
+    said.appendChild(el('span', 'scheduler-live__dest', s.leg.trip.destination || 'Trip'));
+    const who = el('span', 'scheduler-live__line');
+    if (s.wheel) {
+      who.append(short(s.wheel.name));
+      if (s.wheel.left_ms != null) who.appendChild(el('span', `scheduler-live__hours${s.wheel.left_ms < HOUR ? ' scheduler-live__hours--low' : ''}`, ` ${hours(s.wheel.left_ms)}`));
+      who.append(' · ');
     }
-    button.append(num, said);
-    item.appendChild(button);
+    who.append(motion(s.bus));
+    said.appendChild(who);
+    // The next stop's name gives way, and its time keeps its room.
+    if (s.stop) {
+      const next = el('span', 'scheduler-live__line scheduler-live__next');
+      next.appendChild(el('span', 'scheduler-live__stop', s.where.at ? `At ${s.stop.name}` : `→ ${s.stop.name}`));
+      const when = s.where.at ? null : s.stop.due ?? s.arrival;
+      if (when != null) next.appendChild(el('span', `scheduler-live__due${s.late ? ' scheduler-live__due--late' : ''}`,
+        `${clock(when)}${s.late ? ` +${s.late}` : ''}`));
+      said.appendChild(next);
+    }
+    tile.append(el('span', `scheduler-live__num scheduler-bar--${s.hue}`, s.number), said);
+    item.appendChild(tile);
     return item;
   }
 
-  // The buses out first, then the rest, each by number.
+  /* A bus at the yard, as a small tile: its number, and its engine while it
+     reports, or when it last did: the time today, the weekday before. */
+  function yardTile(s) {
+    const tile = el('li', 'rux--tile scheduler-live__yard-tile');
+    const at = s.bus.seen ? Date.parse(s.bus.seen) : null;
+    const seen = at == null ? null : new Date(at).toDateString() === new Date().toDateString()
+      ? clock(at) : new Date(at).toLocaleDateString([], { weekday: 'short' });
+    const now = s.bus.place != null || s.bus.engine != null;
+    tile.append(el('span', 'scheduler-live__yard-num', s.number),
+      el('span', 'scheduler-live__line', now ? motion(s.bus) : seen ? `Seen ${seen}` : 'Not reporting'));
+    return tile;
+  }
+
+  const group = words => el('h2', 'scheduler-to-do__group', words);
+  function drawPanel(out, yard) {
+    const parts = [group('On the road')];
+    if (out.length) {
+      const list = el('ul', 'scheduler-live__tiles');
+      list.append(...out.map(roadTile));
+      parts.push(list);
+    } else parts.push(el('p', 'rux--tile scheduler-to-do__none', 'No bus is out.'));
+    if (yard.length) {
+      const list = el('ul', 'scheduler-live__yard');
+      list.append(...yard.map(yardTile));
+      parts.push(group('Yard'), list);
+    }
+    $('scheduler-live-panel').replaceChildren(...parts);
+  }
+
+  // Each group by bus number.
   const byNumber = (a, b) => String(a.number).localeCompare(String(b.number), undefined, { numeric: true });
   function draw() {
     if (!map || !answer) return;
     styleMap();
-    const states = (answer.buses || []).map(stateOf).sort((a, b) => b.out - a.out || byNumber(a, b));
-    drawPins(states);
-    $('scheduler-live-list').replaceChildren(...states.map(rowOf));
-    drawLeg(states.find(s => s.bus.bus_id === chosen));
+    const states = (answer.buses || []).map(stateOf).sort(byNumber);
+    const out = states.filter(s => s.out);
+    drawPins(out);
+    drawPanel(out, states.filter(s => !s.out));
+    drawLeg(out.find(s => s.bus.bus_id === chosen));
     if (!fitted) {
       fitted = true;
-      const chosenState = states.find(s => s.bus.bus_id === chosen && s.here);
+      const chosenState = out.find(s => s.bus.bus_id === chosen && s.here);
       if (chosenState) focus(chosenState);
       else {
-        const points = states.filter(s => s.here).map(s => s.here);
+        const points = out.filter(s => s.here).map(s => s.here);
         if (points.length) map.fitBounds(points, { padding: [48, 48], maxZoom: 13 });
       }
     }
   }
 
-  // The map moves to a bus: its whole leg when it is out, the bus alone when not.
+  // The map moves to a bus out on a trip, and its whole leg.
   function focus(s) {
-    const points = s.out ? [s.here, ...(s.bus.path || []).map(p => [p[0], p[1]]), ...s.stops.filter(x => x.point).map(x => x.point)] : [s.here];
+    const points = [s.here, ...(s.bus.path || []).map(p => [p[0], p[1]]), ...s.stops.filter(x => x.point).map(x => x.point)];
     if (points.length > 1) map.fitBounds(points, { padding: [48, 48], maxZoom: 15 });
     else map.setView(s.here, 15);
   }
@@ -300,7 +306,7 @@
     history.replaceState(null, '', chosen ? `live.html?bus=${encodeURIComponent(chosen)}` : 'live.html');
     draw();
     const s = chosen && answer?.buses?.find(b => b.bus_id === chosen);
-    if (s) { const st = stateOf(s); if (st.here) focus(st); }
+    if (s) { const st = stateOf(s); if (st.out && st.here) focus(st); }
   }
 
   // ── start ───────────────────────────────────────────────────────────────

@@ -11806,8 +11806,8 @@
     }
     fillCrewItems(bar);
     fillAssignItems(bar);
-    // A bar with no bus has nothing on the map.
-    document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId;
+    // Only a bus out on its trip is on the map.
+    document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId || !bar.dataset.road;
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for

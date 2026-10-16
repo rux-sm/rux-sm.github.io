@@ -945,10 +945,17 @@
      signal its edge only fades in. Once per leg's bus a page load, so a board
      drawn again, a save or another week, brings the bar back lit and still. */
   const ROAD_START_MS = 1200;
+  const ROAD_BRAKE_MS = 1600;
+  const ROAD_ARRIVING_MS = 5 * 60e3;
+  const ROAD_ALARM_MS = 60e3;
   const roadStarted = new Set();
+  // Each bus's speed at the last answer, for the brake lights.
+  const roadSpeeds = new Map();
+  // When this page first saw each red warning on each bar, so it blinks for its first minute.
+  const roadAlarms = new Map();
   function roadStart(bar, bus) {
     const key = `${bar.dataset.tripId}:${bar.dataset.leg}:${bar.dataset.busId}`;
-    if (roadStarted.has(key)) return;
+    if (roadStarted.has(key) || view.motion !== 'full') return;
     roadStarted.add(key);
     const name = bus.engine === 'on' || bus.engine === 'idle' ? 'scheduler-bar--starting' : 'scheduler-bar--lit';
     bar.classList.add(name);
@@ -993,11 +1000,51 @@
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);
     const worst = said?.warnings[0] ?? null;
-    // The edge in the worst warning's colour, red or amber, else green.
+    /* THE BAR'S LIGHT, which app.css draws from `data-light`: run while the
+       bus moves, its flame as long as it is fast; idle with the engine
+       running and the bus still; rest while a driver is in the sleeper and
+       none drives; off with the engine off; scan with no signal. The edge
+       takes the worst warning's colour, else purple at rest, grey with no
+       signal, green. A red warning blinks for the first minute this page has
+       seen it, `data-alarm`. A bus moving at the last answer and stopped now
+       flashes its brake lights once, and one due at its next stop within
+       five minutes shows its headlight. */
     let edge = bar.querySelector(':scope > .scheduler-road__edge');
-    if (bus && !edge) { edge = el('span', 'scheduler-road__edge'); bar.appendChild(edge); roadStart(bar, bus); }
-    else if (!bus) { edge?.remove(); edge = null; }
-    if (edge) edge.className = `scheduler-road__edge${worst ? ` scheduler-road__edge--${worst.tone}` : ''}`;
+    if (bus && !edge) {
+      edge = el('span', 'scheduler-road__edge');
+      bar.append(edge, el('span', 'scheduler-road__front'));
+      roadStart(bar, bus);
+    } else if (!bus) {
+      edge?.remove();
+      bar.querySelector(':scope > .scheduler-road__front')?.remove();
+      edge = null;
+      delete bar.dataset.light;
+      bar.removeAttribute('data-arriving');
+      bar.removeAttribute('data-alarm');
+      bar.style.removeProperty('--scheduler-thrust');
+    }
+    if (bus) {
+      const moving = bus.engine === 'on' && bus.mph > 0;
+      const resting = !moving && bus.drivers.some(d => d.duty === 'sleeper') && !bus.drivers.some(d => d.duty === 'driving');
+      const light = bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
+      bar.dataset.light = light;
+      edge.className = `scheduler-road__edge${worst ? ` scheduler-road__edge--${worst.tone}` : light === 'rest' || light === 'scan' ? ` scheduler-road__edge--${light}` : ''}`;
+      bar.style.setProperty('--scheduler-thrust', `${Math.round(10 + Math.min(80, bus.mph ?? 0) * .22)}px`);
+      const alarm = worst?.tone === 'error' ? `${barKey(bar)}|${worst.kind}` : null;
+      if (alarm && !roadAlarms.has(alarm)) roadAlarms.set(alarm, Date.now());
+      const blinkFor = alarm ? roadAlarms.get(alarm) + ROAD_ALARM_MS - Date.now() : 0;
+      bar.toggleAttribute('data-alarm', blinkFor > 0);
+      if (blinkFor > 0) setTimeout(() => bar.removeAttribute('data-alarm'), blinkFor);
+      const was = roadSpeeds.get(bus.bus_id);
+      roadSpeeds.set(bus.bus_id, bus.mph);
+      if (was > 0 && bus.mph === 0) {
+        bar.classList.add('scheduler-bar--braking');
+        setTimeout(() => bar.classList.remove('scheduler-bar--braking'), ROAD_BRAKE_MS);
+      }
+      const now = Date.now();
+      bar.toggleAttribute('data-arriving', !!next?.stop && !next.at && next.arrival != null
+        && next.arrival - now <= ROAD_ARRIVING_MS && next.arrival >= now - 60e3);
+    }
     roadTimes(bar, done, !!next?.late);
     roadLamp(bar, bus);
     const line = bar.querySelector(':scope > .scheduler-bar__road');
@@ -1013,6 +1060,10 @@
       says.classList.add(`scheduler-road__says--${worst.tone}`);
       says.append(svgUse(worst.tone === 'error' ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 16 16'),
         el('span', 'scheduler-road__said', worst.title), el('span', 'scheduler-road__more', worst.detail));
+    } else if (bar.dataset.light === 'rest') {
+      says.classList.add('scheduler-road__says--rest');
+      says.append(el('span', 'scheduler-road__said', 'Resting'));
+      if (said.phase) says.appendChild(el('span', 'scheduler-road__more', said.phase.title));
     } else if (said.phase) {
       says.classList.add('scheduler-road__says--phase');
       says.append(el('span', 'scheduler-road__said', said.phase.title));
@@ -11267,12 +11318,18 @@
     update: 'scheduler-week--no-update',
     drivers: 'scheduler-week--no-drivers',
   };
-  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false };
+  /* `motion` is how much a bus out on its trip moves on its bar: full,
+     calm, every light held still, or off, the edge alone. It starts calm
+     for a computer set to reduce motion. */
+  const MOTIONS = ['full', 'calm', 'off'];
+  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false,
+    motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
     for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks', 'yard']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason Sunday is: it sizes the range.
   twoWeeks = view.twoWeeks;
@@ -11303,9 +11360,10 @@
     // a resize, so the trip tabs follow here.
     placeBarOpen();
     markTripBars();
-    for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"]') || []) {
+    schEl.dataset.motion = view.motion;
+    for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"][data-motion]') || []) {
       const key = item.dataset.row || item.dataset.view;
-      const on = !!view[key];
+      const on = item.dataset.motion ? view.motion === item.dataset.motion : !!view[key];
       item.setAttribute('aria-checked', String(on));
       const slot = item.querySelector('.rux--menu-item__selection-icon');
       if (slot) { if (on) slot.replaceChildren(svgUse('#m-check', '16', '0 0 20 20')); else slot.replaceChildren(); }
@@ -11333,6 +11391,8 @@
   });
 
   viewMenu?.addEventListener('click', e => {
+    const motion = e.target.closest('[role="menuitemradio"][data-motion]');
+    if (motion) { view.motion = motion.dataset.motion; applyView(); return; }
     const item = e.target.closest('[role="menuitemcheckbox"]');
     if (!item) return;
     const key = item.dataset.row || item.dataset.view;
@@ -15670,6 +15730,13 @@
     show();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
+  // What the lights mean: the legend of a live bar's lights, in a window of its own.
+  document.getElementById('scheduler-menu-lights')?.addEventListener('click', () => {
+    const menu = document.getElementById('scheduler-view-menu');
+    if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
+    const modal = document.getElementById('scheduler-lights-modal');
+    if (modal) window.Rux?.modal?.open?.(modal);
+  });
   document.getElementById('scheduler-menu-print-week')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }

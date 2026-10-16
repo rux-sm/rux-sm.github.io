@@ -10,9 +10,12 @@
    `window.L` is there.
    `style()` is the tiles for the page's own background: the light street
    map on a light page and the dark one on a dark page.
-   `pinHtml({ number, hue, heading, moving, chosen })` is a bus's pin: its
-   number on its trip's colour, with an arrow turned the way it heads while
-   it moves.
+   `pinHtml({ number, hue, heading, moving, chosen, light, tone })` is a
+   bus's pin: its number on its trip's colour, with an arrow turned the way it
+   heads while it moves, ringed by the light its bar casts, `light` the bar's
+   `data-light` and `tone` a warning's, as app.css draws them.
+   `lightOf(bus)` is that light from samsara-now's bus, as the board's
+   roadBar works it out.
    `drawLeg(map, s)` draws a bus's leg in a layer of its own and hands the
    layer back: the path driven, a dashed line from the bus on to its next
    stop, and each stop a ring, filled once reached. `s` is { path, here,
@@ -47,10 +50,17 @@
      of the hidden sprite inside Leaflet's layers. */
   const ARROW = '#m-arrow_upward-fill';
   const glyph = () => document.getElementById(ARROW.slice(1))?.innerHTML ?? '';
-  function pinHtml({ number, hue, heading, moving, chosen }) {
+  function pinHtml({ number, hue, heading, moving, chosen, light, tone }) {
     const arrow = heading != null && moving
       ? `<svg class="scheduler-live-pin__arrow" width="14" height="14" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" style="rotate:${heading}deg">${glyph()}</svg>` : '';
-    return `<div class="scheduler-live-pin scheduler-bar--${hue}${chosen ? ' scheduler-live-pin--chosen' : ''}">${arrow}<span>${number}</span></div>`;
+    const lit = `${light ? ` data-light="${light}"` : ''}${tone ? ` data-tone="${tone}"` : ''}`;
+    return `<div class="scheduler-live-pin scheduler-bar--${hue}${chosen ? ' scheduler-live-pin--chosen' : ''}"${lit}>${arrow}<span>${number}</span></div>`;
+  }
+
+  function lightOf(bus) {
+    const moving = bus.engine === 'on' && bus.mph > 0;
+    const resting = !moving && bus.drivers?.some(d => d.duty === 'sleeper') && !bus.drivers?.some(d => d.duty === 'driving');
+    return bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
   }
 
   function drawLeg(map, s) {
@@ -73,5 +83,5 @@
 
   const pointsOf = s => [s.here, ...(s.path || []).map(p => [p[0], p[1]]), ...s.stops.filter(x => x.point).map(x => x.point)].filter(Boolean);
 
-  window.SchedulerLiveMap = { load, style, pinHtml, drawLeg, pointsOf };
+  window.SchedulerLiveMap = { load, style, pinHtml, lightOf, drawLeg, pointsOf };
 })();

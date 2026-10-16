@@ -1633,11 +1633,177 @@ button.scheduler-row-head__num::after {
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  inline-size: 3px;
+  inline-size: 4px;
   color: var(--scheduler-mark-success);
   background: currentColor;
   pointer-events: none;
 }
+/* ITS LIGHT, from data.js's roadBar: the bar's `data-light` says what the
+   bus is doing, and its hue is the edge's, the worst warning's red or amber,
+   purple while a driver rests in the sleeper, grey with no signal, else
+   green, at theme.css's --scheduler-glow, with a core of that hue toward
+   white. An out bar loses its back corners, so the light comes out of a flat
+   back. How much moves is the view menu's Motion, `data-motion` on the board:
+   full, calm, every light steady, or off, the edge alone.
+   - run: a flame behind the bar, its core inside its light, as long as the
+     bus is fast, --scheduler-thrust, flickering smoothly.
+   - idle and rest: a soft light at the back, breathing with the edge,
+     slower at rest; it stays behind the bar, off the trips around it.
+   - off: the edge alone; scan: a grey edge with a light sweeping up and down
+     it, looking for the signal.
+   - A red warning blinks for its first minute, data.js's `data-alarm`, then
+     holds a steady red glow.
+   The light is the bar's shadow, the only thing a bar draws outside itself,
+   so it gives way to a selected, pressed or lifted bar's own. */
+.scheduler-bar--road {
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  --scheduler-road-hue: var(--scheduler-mark-success);
+  --scheduler-road-light: color-mix(in srgb, var(--scheduler-road-hue) var(--scheduler-glow, 45%), transparent);
+  --scheduler-road-core: color-mix(in srgb, var(--scheduler-road-hue) var(--scheduler-core-mix, 35%), var(--scheduler-road-white, #fff));
+}
+.scheduler-bar--road:has(> .scheduler-road__edge--rest) { --scheduler-road-hue: var(--scheduler-mark-rest); }
+.scheduler-bar--road:has(> .scheduler-road__edge--warning) { --scheduler-road-hue: var(--scheduler-mark-warning); }
+.scheduler-bar--road:has(> .scheduler-road__edge--error) { --scheduler-road-hue: var(--scheduler-mark-error); }
+.scheduler-road__edge--rest { color: var(--scheduler-mark-rest); }
+.scheduler-road__edge--scan { color: var(--scheduler-road-scan); background: color-mix(in srgb, currentColor 30%, transparent); overflow: hidden; }
+.scheduler-road__edge--scan::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: -30%;
+  block-size: 30%;
+  background: linear-gradient(transparent, currentColor, transparent);
+  animation: scheduler-road-scan 2.4s ease-in-out infinite;
+}
+@keyframes scheduler-road-scan { 0%, 100% { inset-block-start: -30%; } 50% { inset-block-start: 100%; } }
+@keyframes scheduler-road-run {
+  0%, 100% {
+    box-shadow: calc(var(--scheduler-thrust, 16px) * -.5) 0 calc(var(--scheduler-thrust, 16px) * .5) -3px var(--scheduler-road-core),
+      calc(var(--scheduler-thrust, 16px) * -1) 0 var(--scheduler-thrust, 16px) -4px var(--scheduler-road-light);
+  }
+  33% {
+    box-shadow: calc(var(--scheduler-thrust, 16px) * -.6) 0 calc(var(--scheduler-thrust, 16px) * .55) -3px var(--scheduler-road-core),
+      calc(var(--scheduler-thrust, 16px) * -1.15) 0 calc(var(--scheduler-thrust, 16px) * 1.1) -4px var(--scheduler-road-light);
+  }
+  66% {
+    box-shadow: calc(var(--scheduler-thrust, 16px) * -.45) 0 calc(var(--scheduler-thrust, 16px) * .45) -3px var(--scheduler-road-core),
+      calc(var(--scheduler-thrust, 16px) * -.9) 0 calc(var(--scheduler-thrust, 16px) * .95) -4px var(--scheduler-road-light);
+  }
+}
+@keyframes scheduler-road-aura {
+  0%, 100% { box-shadow: -3px 0 8px -4px var(--scheduler-road-light); }
+  50% { box-shadow: -7px 0 12px -4px var(--scheduler-road-light); }
+}
+@keyframes scheduler-road-breath { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
+.scheduler-bar--road:not(.scheduler-bar--starting)[data-light="idle"] > .scheduler-road__edge { animation: scheduler-road-breath 2.6s ease-in-out infinite; }
+.scheduler-bar--road:not(.scheduler-bar--starting)[data-light="rest"] > .scheduler-road__edge { animation: scheduler-road-breath 4.5s ease-in-out infinite; }
+@keyframes scheduler-road-alarm {
+  0%, 45%, 100% { box-shadow: -6px 0 12px -4px var(--scheduler-road-light); }
+  55%, 90% { box-shadow: 0 0 0 0 transparent; }
+}
+.scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open,
+  .scheduler-bar--starting, .scheduler-bar--saved, .scheduler-bar--refused)[data-light="run"] {
+  animation: scheduler-road-run .45s ease-in-out infinite;
+}
+.scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open,
+  .scheduler-bar--starting, .scheduler-bar--saved, .scheduler-bar--refused)[data-light="idle"] {
+  animation: scheduler-road-aura 2.6s ease-in-out infinite;
+}
+.scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open,
+  .scheduler-bar--starting, .scheduler-bar--saved, .scheduler-bar--refused)[data-light="rest"] {
+  animation: scheduler-road-aura 4.5s ease-in-out infinite;
+}
+.scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open,
+  .scheduler-bar--starting, .scheduler-bar--saved, .scheduler-bar--refused):has(> .scheduler-road__edge--error) {
+  animation: none;
+  box-shadow: -6px 0 12px -4px var(--scheduler-road-light);
+}
+.scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open,
+  .scheduler-bar--starting, .scheduler-bar--saved, .scheduler-bar--refused)[data-alarm]:has(> .scheduler-road__edge--error) {
+  animation: scheduler-road-alarm 1.4s linear infinite;
+}
+/* BRAKE LIGHTS: a bus that was moving at the last answer and is stopped now
+   flashes its core's light at its front once, then settles into its glow. */
+@keyframes scheduler-road-brake {
+  0% { box-shadow: 8px 0 14px -3px var(--scheduler-road-core); }
+  40% { box-shadow: 4px 0 8px -3px var(--scheduler-road-core); }
+  100% { box-shadow: -3px 0 8px -4px var(--scheduler-road-light); }
+}
+.scheduler-bar.scheduler-bar--road.scheduler-bar--braking:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--open) {
+  animation: scheduler-road-brake 1.6s ease-out;
+}
+/* THE HEADLIGHT: in the last five minutes before its next stop, light builds
+   in the bar's front, breathing. */
+.scheduler-road__front {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 2.5rem;
+  background: linear-gradient(to left, color-mix(in srgb, var(--scheduler-road-core) var(--scheduler-glow, 45%), transparent), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease-out;
+}
+@keyframes scheduler-road-head { from { opacity: .45; } to { opacity: 1; } }
+.scheduler-bar--road[data-arriving] > .scheduler-road__front { opacity: 1; animation: scheduler-road-head 2.5s ease-in-out infinite alternate; }
+/* THE COMET: while the bus moves, its square on the leg's clock trails a
+   little light; and a tank under a quarter blinks its amber. */
+@keyframes scheduler-road-comet {
+  0%, 100% { box-shadow: -8px 0 6px -2px color-mix(in srgb, currentColor 50%, transparent); }
+  50% { box-shadow: -16px 0 8px -2px color-mix(in srgb, currentColor 70%, transparent); }
+}
+.scheduler-bar--road[data-light="run"] .scheduler-road__bus { animation: scheduler-road-comet .5s ease-in-out infinite; }
+@keyframes scheduler-road-fuel { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.scheduler-road__fuel--low, .scheduler-road__fuel-pct--low { animation: scheduler-road-fuel 1.2s ease-in-out infinite; }
+/* CALM holds every light still in its strongest steady form; OFF leaves the
+   edge alone. Neither starts a bar like a bus. */
+[data-motion="calm"] .scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open)[data-light="run"] {
+  animation: none;
+  box-shadow: calc(var(--scheduler-thrust, 16px) * -.6) 0 calc(var(--scheduler-thrust, 16px) * .6) -4px var(--scheduler-road-light);
+}
+[data-motion="calm"] .scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open):is([data-light="idle"], [data-light="rest"]) {
+  animation: none;
+  box-shadow: -5px 0 10px -4px var(--scheduler-road-light);
+}
+[data-motion="calm"] .scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open)[data-alarm]:has(> .scheduler-road__edge--error) {
+  animation: none;
+}
+[data-motion="off"] .scheduler-bar.scheduler-bar--road:not([aria-pressed="true"], .scheduler-bar--pressed, .scheduler-bar--same-trip, .scheduler-bar--open) {
+  animation: none;
+  box-shadow: none;
+}
+[data-motion="off"] .scheduler-road__front { display: none; }
+:is([data-motion="calm"], [data-motion="off"]) :is(.scheduler-bar.scheduler-bar--road.scheduler-bar--braking, .scheduler-bar--road > .scheduler-road__edge,
+  .scheduler-road__edge--scan::after, .scheduler-bar--road[data-arriving] > .scheduler-road__front,
+  .scheduler-bar--road[data-light="run"] .scheduler-road__bus, .scheduler-road__fuel--low, .scheduler-road__fuel-pct--low) { animation: none; }
+[data-motion="calm"] .scheduler-road__edge--scan::after { inset-block-start: 35%; }
+[data-motion="off"] .scheduler-road__edge--scan::after { display: none; }
+/* THE LEGEND, the view menu's What the lights mean: a small bar for each
+   light, drawn still. */
+.scheduler-lights { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; list-style: none; }
+.scheduler-lights > li { display: flex; align-items: center; gap: var(--rux-spacing-05); }
+.scheduler-lights__swatch {
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 1.25rem;
+  margin-inline-start: var(--rux-spacing-04);
+  background: var(--rux-tag-background-blue);
+  border-inline-start: 4px solid var(--scheduler-mark-success);
+  --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-success) var(--scheduler-glow, 45%), transparent);
+  box-shadow: -8px 0 10px -4px var(--scheduler-road-light);
+}
+.scheduler-lights__swatch[data-light="idle"] { box-shadow: -4px 0 8px -4px var(--scheduler-road-light); }
+.scheduler-lights__swatch[data-light="rest"] { border-color: var(--scheduler-mark-rest); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-rest) var(--scheduler-glow, 45%), transparent); box-shadow: -4px 0 8px -4px var(--scheduler-road-light); }
+.scheduler-lights__swatch[data-light="scan"] { border-color: var(--scheduler-road-scan); box-shadow: none; }
+.scheduler-lights__swatch[data-light="error"] { border-color: var(--scheduler-mark-error); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-error) var(--scheduler-glow, 45%), transparent); }
+.scheduler-lights__swatch[data-light="warning"] { border-color: var(--scheduler-mark-warning); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-warning) var(--scheduler-glow, 45%), transparent); }
+.scheduler-lights__swatch[data-light="arriving"] {
+  box-shadow: none;
+  background: linear-gradient(to left, color-mix(in srgb, var(--scheduler-mark-success) var(--scheduler-core-mix, 35%), var(--scheduler-road-white, #fff)), transparent 60%), var(--rux-tag-background-blue);
+}
+.scheduler-lights__note { margin-block-start: var(--rux-spacing-06); color: var(--rux-text-secondary); }
+
 /* A BAR COMING ON THE ROAD starts as a bus does, data.js's roadStart. With
    the engine running, the bar shudders a pixel each way while the starter
    cranks, then gives one firmer shake as the engine catches and settles; its
@@ -1673,6 +1839,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--starting > .scheduler-bar__road,
 .scheduler-bar--starting > .scheduler-bar__time > .scheduler-road__times { animation: scheduler-road-gauges 1100ms ease-out; }
 .scheduler-bar--lit > .scheduler-road__edge { animation: scheduler-road-lit 400ms ease-out; }
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar.scheduler-bar--starting { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar.scheduler-bar--starting { animation: none; }
   .scheduler-bar--starting > .scheduler-road__edge { animation: scheduler-road-lit 400ms ease-out; }
@@ -1719,6 +1886,7 @@ button.scheduler-row-head__num::after {
 .scheduler-road__says--error svg { color: var(--scheduler-age-old); }
 .scheduler-road__says--warning .scheduler-road__said,
 .scheduler-road__says--warning svg { color: var(--scheduler-age-week); }
+.scheduler-road__says--rest .scheduler-road__said { font-weight: 600; color: color-mix(in srgb, var(--scheduler-mark-rest) 70%, var(--scheduler-fg)); }
 .scheduler-road__more { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-road__gauges { display: flex; align-items: center; gap: var(--rux-spacing-02); }
 .scheduler-road__says--error + .scheduler-road__gauges,
@@ -5147,6 +5315,24 @@ html:has(.scheduler-page[data-takeover]) {
   cursor: pointer;
 }
 .scheduler-live-pin--chosen { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+/* A pin rings with the light its bar casts, in the same hue and rhythm:
+   flickering while the bus moves, breathing while it idles, slower and purple
+   at rest, amber while it will be late, and a dashed grey with no signal.
+   The board's Motion, kept with its view, holds the rings still or off. */
+.scheduler-live-pin[data-light] {
+  --scheduler-road-hue: var(--scheduler-mark-success);
+  --scheduler-road-light: color-mix(in srgb, var(--scheduler-road-hue) var(--scheduler-glow, 45%), transparent);
+}
+.scheduler-live-pin[data-light="rest"] { --scheduler-road-hue: var(--scheduler-mark-rest); }
+.scheduler-live-pin[data-tone="warning"] { --scheduler-road-hue: var(--scheduler-mark-warning); }
+@keyframes scheduler-live-run { 0%, 100% { box-shadow: 0 0 0 3px var(--scheduler-road-light); } 33% { box-shadow: 0 0 0 6px var(--scheduler-road-light); } 66% { box-shadow: 0 0 0 4px var(--scheduler-road-light); } }
+@keyframes scheduler-live-idle { 0%, 100% { box-shadow: 0 0 0 3px var(--scheduler-road-light); } 50% { box-shadow: 0 0 0 7px var(--scheduler-road-light); } }
+.scheduler-live-pin[data-light="run"] { animation: scheduler-live-run .45s ease-in-out infinite; }
+.scheduler-live-pin[data-light="idle"] { animation: scheduler-live-idle 2.6s ease-in-out infinite; }
+.scheduler-live-pin[data-light="rest"] { animation: scheduler-live-idle 4.5s ease-in-out infinite; }
+.scheduler-live-pin[data-light="scan"] { opacity: .7; outline: 2px dashed var(--scheduler-road-scan); outline-offset: 2px; }
+[data-motion="calm"] .scheduler-live-pin[data-light]:not([data-light="off"], [data-light="scan"]) { animation: none; box-shadow: 0 0 0 4px var(--scheduler-road-light); }
+[data-motion="off"] .scheduler-live-pin[data-light] { animation: none; box-shadow: none; }
 .scheduler-live-pin__arrow { display: block; flex: none; }
 /* The chosen bus's leg: the path it drove, the dashed way on to its next
    stop, and its stops, a ring until reached and filled after. */

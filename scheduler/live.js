@@ -151,7 +151,7 @@
   /* A bus's pin: only a bus out on a trip has one; the rest are in the Yard
      beside the map. */
   const pinHtml = s => LiveMap.pinHtml({ number: s.number, hue: s.hue, heading: s.bus.heading, moving: s.bus.mph > 0,
-    chosen: s.bus.bus_id === chosen });
+    chosen: s.bus.bus_id === chosen, light: LiveMap.lightOf(s.bus), tone: s.late ? 'warning' : '' });
 
   function drawPins(out) {
     const L = window.L;
@@ -293,6 +293,10 @@
     busesById = new Map((busRows.data || []).map(b => [b.id, b]));
     slow = Number(settings.data?.find(r => r.key === 'route-times-v1')?.value?.drive_slowdown_percent) || 0;
     map = Places.baseMap($('scheduler-live-map'), LiveMap.style());
+    // The pins move as much as the board's Motion says, which the board keeps with its view.
+    let motion = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'calm' : 'full';
+    try { motion = JSON.parse(localStorage.getItem('scheduler.view') || '{}').motion || motion; } catch { /* the default stands */ }
+    $('scheduler-live-map').dataset.motion = motion;
     if (!map) { say('error', "The map didn't load", Places.unavailable() || 'Reload the page to try again.'); return; }
     style = LiveMap.style();
     map.setView([26.2, -98.2], 9);

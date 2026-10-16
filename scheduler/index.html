@@ -777,7 +777,61 @@
       <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">Start week on Sunday</div>
     </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <!-- How much a bus out on its trip moves on its bar, kept with the view,
+         and what each of its lights means; see data.js. -->
+    <li class="rux--menu-item-group" role="none">
+      <ul role="group" aria-label="Motion">
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="true" tabindex="0" data-motion="full">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Motion: full</div>
+        </li>
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="0" data-motion="calm">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Motion: calm</div>
+        </li>
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="0" data-motion="off">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Motion: off</div>
+        </li>
+      </ul>
+    </li>
+    <li class="rux--menu-item" role="menuitem" tabindex="0" id="scheduler-menu-lights">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">What the lights mean</div>
+    </li>
   </ul>
+
+  <!-- What each light on a bus out on its trip means, opened from the view
+       menu; app.css draws each swatch still. -->
+  <div class="rux--layer-one rux--modal" id="scheduler-lights-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-lights-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+      <div class="rux--modal-header">
+        <h2 class="rux--modal-header__heading" id="scheduler-lights-h">What the lights mean</h2>
+        <div class="rux--modal-close-button">
+          <button type="button" class="rux--modal-close" aria-label="Close" title="Close" data-rux-close autofocus>
+            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="rux--modal-content">
+        <ul class="scheduler-lights">
+          <li><span class="scheduler-lights__swatch" data-light="run" aria-hidden="true"></span>Light behind the bar: the bus is moving, a longer light is faster</li>
+          <li><span class="scheduler-lights__swatch" data-light="idle" aria-hidden="true"></span>Soft light breathing at the back: the engine is on and the bus is stopped</li>
+          <li><span class="scheduler-lights__swatch" data-light="rest" aria-hidden="true"></span>Purple: a driver is resting in the sleeper</li>
+          <li><span class="scheduler-lights__swatch" data-light="scan" aria-hidden="true"></span>Grey edge: no signal from the bus</li>
+          <li><span class="scheduler-lights__swatch" data-light="error" aria-hidden="true"></span>Red: act now; it blinks for its first minute</li>
+          <li><span class="scheduler-lights__swatch" data-light="warning" aria-hidden="true"></span>Amber: keep an eye on it</li>
+          <li><span class="scheduler-lights__swatch" data-light="arriving" aria-hidden="true"></span>Light in front: at its next stop within five minutes</li>
+        </ul>
+        <p class="scheduler-lights__note">Motion, in this menu, holds the lights still or turns them off.</p>
+      </div>
+    </div>
+  </div>
 
   <!-- The board's context menu, opened by right-clicking or holding an empty cell. data.js
        places it at the pointer and opens it through Rux.menu.open, which

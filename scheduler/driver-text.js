@@ -75,9 +75,14 @@
       reminderToday: name => `Hi ${name}, a reminder for your trip today:`,
       reminderTomorrow: name => `Hi ${name}, a reminder for your trip tomorrow:`,
       reminderSoon: name => `Hi ${name}, a reminder for your trip coming up:`,
-      changedToday: name => `Hi ${name}, your trip today changed:`,
-      changedTomorrow: name => `Hi ${name}, your trip tomorrow changed:`,
-      changedSoon: name => `Hi ${name}, your trip coming up changed:`,
+      // "Hi Maria, your bus and spot time changed for today's trip."
+      changed: (name, what, plural, when) => `Hi ${name}, your ${what} changed for ${when}.`,
+      changedWhen: { today: "today's trip", tomorrow: "tomorrow's trip", soon: 'your upcoming trip' },
+      changedWhat: {
+        dates: 'dates', time: 'spot time', place: 'pickup', destination: 'destination', stops: 'stops',
+        bus: 'bus', role: 'role', relief: 'relief details', requirements: 'requirements', itinerary: 'itinerary',
+      },
+      and: 'and',
       week:(name, range) => `Hi ${name}, here are your assignments for ${range}:`,
       noneTicked: name => `Hi ${name}, no trips are ticked yet.`,
       details: 'Trip details and itineraries:',
@@ -99,9 +104,14 @@
       reminderToday: name => `Hola ${name}, te recordamos tu viaje de hoy:`,
       reminderTomorrow: name => `Hola ${name}, te recordamos tu viaje de mañana:`,
       reminderSoon: name => `Hola ${name}, te recordamos tu próximo viaje:`,
-      changedToday: name => `Hola ${name}, cambió tu viaje de hoy:`,
-      changedTomorrow: name => `Hola ${name}, cambió tu viaje de mañana:`,
-      changedSoon: name => `Hola ${name}, cambió tu próximo viaje:`,
+      // "Hola Maria, cambió el autobús de tu viaje de hoy."
+      changed: (name, what, plural, when) => `Hola ${name}, ${plural ? 'cambiaron' : 'cambió'} ${what} de ${when}.`,
+      changedWhen: { today: 'tu viaje de hoy', tomorrow: 'tu viaje de mañana', soon: 'tu próximo viaje' },
+      changedWhat: {
+        dates: 'las fechas', time: 'la hora de llegada', place: 'el lugar de recogida', destination: 'el destino', stops: 'las paradas',
+        bus: 'el autobús', role: 'el puesto', relief: 'los detalles del relevo', requirements: 'los requisitos', itinerary: 'el itinerario',
+      },
+      and: 'y',
       week:(name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
       noneTicked: name => `Hola ${name}, todavía no hay viajes marcados.`,
       details: 'Detalles e itinerarios de tus viajes:',
@@ -177,15 +187,21 @@
     return [hello(first), '', ...legLines(l, { itinerary: true, lang })].join('\n');
   }
 
-  /* The news of a leg that changed, to one driver by their first name: what
-     changed, a line each as driver-job.js names it in their language, then
-     the leg's lines as it stands, then their link, where the leg reads in
-     full. With no link, the leg's itinerary takes its place. */
+  // What changed, in a list a sentence can hold: "bus", "bus and spot time", "bus, pickup and stops".
+  const PLURAL = new Set(['dates', 'stops', 'relief', 'requirements']);
+  const listOf = (items, and) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} ${and} ${items.at(-1)}`);
+
+  /* The news of a leg that changed, to one driver by their first name: one
+     sentence naming what changed, from `changes`, the VIEW_KEYS names
+     driver-job.js gives, then the leg's lines as it stands, then their link,
+     where the leg reads in full. With no link, the leg's itinerary takes its
+     place. */
   function change(first, l, today, changes, link, lang = 'en') {
     const w = wordsFor(lang);
-    const when = whenOf(l, today);
-    const hello = when === 'today' ? w.changedToday : when === 'tomorrow' ? w.changedTomorrow : w.changedSoon;
-    return [hello(first), ...changes, '', ...legLines(l, { itinerary: !link, lang }),
+    const keys = [...new Set(changes)].filter(k => w.changedWhat[k]);
+    const plural = keys.length > 1 || PLURAL.has(keys[0]);
+    const hello = w.changed(first, listOf(keys.map(k => w.changedWhat[k]), w.and), plural, w.changedWhen[whenOf(l, today)]);
+    return [hello, '', ...legLines(l, { itinerary: !link, lang }),
       ...(link ? ['', w.details, link] : [])].join('\n');
   }
 

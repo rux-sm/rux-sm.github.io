@@ -14113,8 +14113,8 @@
         itinerary: latestItinerary(trip)?.id || '',
       };
     };
-    const changesOf = (c, lang) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
-      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel, lang }) ?? [];
+    const changesOf = (c, keys = false) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
+      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel, keys }) ?? [];
     const crewOfBus = a => crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
       .filter(c => c.who)
       .map(c => {
@@ -14131,7 +14131,7 @@
           declined: c.status?.value === 'declined',
           tell,
           // What changed, told to the driver in their own language, with the leg as it stands.
-          news: job && tell.length ? link => driverText.change(first, job, officeToday, changesOf(c, c.who.language), link, c.who.language) : null,
+          news: job && tell.length ? link => driverText.change(first, job, officeToday, changesOf(c, true), link, c.who.language) : null,
           seatRole: c.role,
         };
       });

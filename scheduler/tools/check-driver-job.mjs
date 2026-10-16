@@ -75,6 +75,8 @@ expect('the office reads what changed since the driver accepted, in English, nam
   changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, read), ['Bus changed']);
 expect('the text that tells a driver names it in their language',
   changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, lang: 'es' }), ['Cambió: Autobús']);
+expect('the text that tells a driver gets what changed by name, to word itself',
+  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, keys: true }), ['bus']);
 expect('nothing changed says nothing', changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office, 'outbound', 'd1', read) }, read), []);
 expect('a seat not confirmed, or with no kept view, says nothing',
   [changesSince(office, 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office, 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);

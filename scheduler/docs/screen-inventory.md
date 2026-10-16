@@ -268,7 +268,7 @@ driver, a text with their reminder of the leg typed in: "Hi Oscar, a reminder fo
 tomorrow:", then the leg in the Driver week info message's own lines, from
 `scheduler/driver-text.js`, and the newest itinerary's link; and Add number for a person with none.
 While the leg changed for a driver since they accepted it, Tell takes the place of their Remind: "Hi
-Oscar, your trip tomorrow changed:", what changed as their Contact list row names it, the leg in the
+Oscar, your bus changed for tomorrow's trip.", naming what their Contact list row names, the leg in the
 same lines, then their link where it is live and carries the leg, or the itinerary's link where it
 does not; after it the board asks to mark them told. On a screen md or wider Remind or Tell is a
 button in its driver's row, and the booking contact's holds Driver info, which copies the driver

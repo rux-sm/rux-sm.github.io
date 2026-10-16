@@ -1407,8 +1407,10 @@ const window = {};
   /* Each difference as one line the driver reads. `say` is the page's words,
      `{ w, keptValue, keptRequirement }`, since a kept value is English and the
      page writes it in its own language. With `brief`, a changed value is named
-     and not given, Pickup changed rather than its old and new places. */
-  function changesBetween(was, now, l, { w, keptValue, keptRequirement, brief = false }) {
+     and not given, Pickup changed rather than its old and new places. With
+     `keys`, each difference is its VIEW_KEYS name alone, for a text that
+     words them itself. */
+  function changesBetween(was, now, l, { w, keptValue, keptRequirement, brief = false, keys = false }) {
     const lines = [];
     for (const key of VIEW_KEYS) {
       const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
@@ -1420,7 +1422,8 @@ const window = {};
       // A relief driver's card gives the handoff, which `relief` compares, and
       // not the bus's spot time.
       if (key === 'time' && isRelief(l.role)) continue;
-      if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
+      if (keys) lines.push(key);
+      else if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
       else if (key === 'stops') lines.push(w.stopsChanged);
       else if (key === 'requirements') {
         const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));
@@ -1466,8 +1469,9 @@ const window = {};
      were kept says nothing. The lines are brief, Pickup changed or Bus
      changed, because a card and a To do row say only what to tell, and the
      driver's own page gives the old and new. They are English, as the office
-     reads them, unless `read.lang` names the driver's language, for the text
-     that tells them; a need the driver page names in it is named so here. */
+     reads them, unless `read.lang` names the driver's language; a need the
+     driver page names in it is named so here. `read.keys` gives the
+     VIEW_KEYS names instead, which the text that tells the driver words. */
   const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name, brief: true };
   const briefIn = lang => (lang && lang !== 'en' && WORDS[lang] ? {
     ...ENGLISH, w: WORDS[lang],
@@ -1489,7 +1493,7 @@ const window = {};
     const names = { get: id => read.nameOf?.(id) };
     const l = legOf({ tripId: trip.id, leg }, officeTrip(trip, read), driverId, names);
     if (l.error) return [];
-    return changesBetween(row.acceptedView, jobView(l), l, briefIn(read.lang));
+    return changesBetween(row.acceptedView, jobView(l), l, { ...briefIn(read.lang), keys: !!read.keys });
   }
   // The view the office keeps for a driver it marks as told: the leg as it stands.
   function viewNow(trip, leg, driverId, read = {}) {

@@ -1,11 +1,12 @@
 // Runs driver-job.js, what a driver's leg asks of them and what changed since
 // they accepted it, against an invented trip: the leg as the driver works it,
-// what Accept keeps, the lines a change reads as, and where the driver stands.
+// what Accept keeps, the lines a change reads as, and where the driver stands;
+// and driver-text.js's sentence that tells a driver what changed.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../share/driver-words.js', '../driver-job.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const { legOf, jobView, changesBetween, stateOf, keyOf } = window.SchedulerDriverJob;
 const en = window.SchedulerDriverWords.en;
 // The English page's words, as share/driver.js hands them in.
@@ -76,10 +77,22 @@ expect('the office reads what changed since the driver accepted, in English, nam
 expect('the text that tells a driver names it in their language',
   changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, lang: 'es' }), ['Cambió: Autobús']);
 expect('the text that tells a driver gets what changed by name, to word itself',
-  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, keys: true }), ['bus']);
+  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, { ...read, keys: true }), [{ key: 'bus' }]);
 expect('nothing changed says nothing', changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office, 'outbound', 'd1', read) }, read), []);
 expect('a seat not confirmed, or with no kept view, says nothing',
   [changesSince(office, 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office, 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);
+
+// The sentence that tells a driver, by an invented co-driver's leg today.
+const told = { trip: { trip_type: 'one_way' }, leg: 'outbound', role: 'co-driver', start: new Date(2026, 9, 16), end: new Date(2026, 9, 16), bus: '763', spot: '14:45:00', from: 'A, Hidalgo, TX', to: 'B, Zapata, TX' };
+const opening = (changes, lang) => window.SchedulerDriverText.change('Ana', told, '2026-10-16', changes, 'link', lang).split('\n')[0];
+expect('one change is one sentence', opening([{ key: 'bus' }]), "Hi Ana, your bus changed for today's trip.");
+expect('several values are one list', opening([{ key: 'place' }, { key: 'stops' }, { key: 'itinerary', removed: false }]),
+  "Hi Ana, your pickup, stops and itinerary changed for today's trip.");
+expect('a new date comes first, and the rest changed too', opening([{ key: 'dates' }, { key: 'bus' }]), 'Hi Ana, the date of your trip changed. Your bus changed too.');
+expect('a role, a need and a removed itinerary each say what, and only the first names the trip',
+  opening([{ key: 'role' }, { key: 'requirements', added: ['Hotel'], removed: ['HOS form'] }, { key: 'itinerary', removed: true }]),
+  "Hi Ana, you're now the co-driver on today's trip. It now needs: Hotel. It no longer needs: HOS form. It no longer has an itinerary.");
+expect('Spanish agrees in number', opening([{ key: 'bus' }, { key: 'time' }], 'es'), 'Hola Ana, cambiaron el autobús y la hora de llegada de tu viaje de hoy.');
 
 console.log(failed ? `\n  ${failed} fault(s) in driver job` : '\n  driver job: every case passed');
 process.exit(failed ? 1 : 0);

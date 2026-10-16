@@ -1408,8 +1408,9 @@ const window = {};
      `{ w, keptValue, keptRequirement }`, since a kept value is English and the
      page writes it in its own language. With `brief`, a changed value is named
      and not given, Pickup changed rather than its old and new places. With
-     `keys`, each difference is its VIEW_KEYS name alone, for a text that
-     words them itself. */
+     `keys`, each difference is `{ key }` by its VIEW_KEYS name, for a text
+     that words them itself; requirements add the `added` and `removed`
+     names, and an itinerary says whether it was `removed`. */
   function changesBetween(was, now, l, { w, keptValue, keptRequirement, brief = false, keys = false }) {
     const lines = [];
     for (const key of VIEW_KEYS) {
@@ -1422,8 +1423,11 @@ const window = {};
       // A relief driver's card gives the handoff, which `relief` compares, and
       // not the bus's spot time.
       if (key === 'time' && isRelief(l.role)) continue;
-      if (keys) lines.push(key);
-      else if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
+      if (keys) {
+        if (key === 'requirements') {
+          lines.push({ key, added: b.filter(x => !a.includes(x)).map(keptRequirement), removed: a.filter(x => !b.includes(x)).map(keptRequirement) });
+        } else lines.push(key === 'itinerary' ? { key, removed: !b } : { key });
+      } else if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
       else if (key === 'stops') lines.push(w.stopsChanged);
       else if (key === 'requirements') {
         const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));

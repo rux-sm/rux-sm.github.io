@@ -135,8 +135,6 @@ None open.
 
 ### The driver and the links
 
-- [ ] Move `legOf`, `jobView`, `changesBetween` and `stateOf` into
-      `scheduler/driver-job.js`, unchanged, with a check written first.
 - [ ] On the driver's page: read again on return to the tab, read again
       before Accept, tell a replaced itinerary by its file, show the stops
       folded with the changed lines, and draw the Cancelled card.

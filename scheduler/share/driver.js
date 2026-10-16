@@ -39,7 +39,6 @@
 (() => {
   'use strict';
 
-  const TZ = 'America/Chicago';
   const CHANNEL = 'scheduler-trips';
   const $ = id => document.getElementById(id);
   const staffPage = document.body.dataset.driver === 'staff';
@@ -66,7 +65,16 @@
     svg.appendChild(use);
     return svg;
   };
-  const clean = v => String(v ?? '').trim();
+  /* The rules for a driver's job, shared with the office: driver-job.js.
+     The page hands in what only it holds: the office's names for the trip's
+     needs, the answers, the kept views and its words. */
+  const Job = window.SchedulerDriverJob;
+  const { dateOnly, dayFmt, rangeText, timeText, todayIso, roleKey, jobView, keyOf } = Job;
+  let requirementNames = new Map();
+  const legOf = (ref, trip, driverId) => Job.legOf(ref, trip, driverId, requirementNames);
+  const pageWords = () => ({ w, keptValue, keptRequirement });
+  const changesBetween = (was, now, l) => Job.changesBetween(was, now, l, pageWords());
+  const stateOf = l => Job.stateOf(l, { statuses, views }, pageWords());
 
   // -- the language ---------------------------------------------------------------
   /* The page starts in the language the driver chose on this phone, else the
@@ -128,28 +136,6 @@
     requestAnimationFrame(() => { live.textContent = text; });
   };
 
-  // -- dates and times, as the driver reads them --------------------------------
-  const dateOnly = v => {
-    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(clean(v));
-    return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])) : null;
-  };
-  // English unless a locale is named: what Accept keeps is always English.
-  const dayFmt = (opts, locale = 'en-US') => new Intl.DateTimeFormat(locale, { timeZone: 'UTC', ...opts });
-  const dayText = (v, year = true, locale) => {
-    const d = dateOnly(v);
-    return d ? dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(year ? { year: 'numeric' } : {}) }, locale).format(d) : '';
-  };
-  // `short` leaves the year off a range within this year, for a card's title.
-  // What Accept keeps is always the long form, so it compares alike.
-  const rangeText = (from, to, short = false, locale) => {
-    const a = dateOnly(from), b = dateOnly(to) || a;
-    if (!a) return '';
-    const year = !(short && a.getUTCFullYear() === b.getUTCFullYear()
-      && b.getUTCFullYear() === +todayIso().slice(0, 4));
-    if (a.getTime() === b.getTime()) return dayText(from, year, locale);
-    const sameYear = a.getUTCFullYear() === b.getUTCFullYear();
-    return `${dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }) }, locale).format(a)} – ${dayText(to, year, locale)}`;
-  };
   /* Dates an accepted card kept, in English, written again in the page's
      language for the list of what changed: "Sat, Oct 17, 2026", alone or as
      one end of a range, the year taken from the end that carries it. */
@@ -168,18 +154,6 @@
     });
     return shown.join(' – ');
   };
-  // A wall-clock time as it was typed, "06:00" or "6:00 am", as 6:00 AM.
-  const timeText = v => {
-    const t = clean(v);
-    const clock = /^(\d{1,2}):(\d{2})(?::\d{2})?$/.exec(t);
-    if (clock) {
-      const h = +clock[1];
-      return `${h % 12 || 12}:${clock[2]} ${h < 12 ? 'AM' : 'PM'}`;
-    }
-    return /^\d{1,2}:\d{2}\s*[ap]m$/i.test(t) ? t.replace(/\s+/g, ' ').toUpperCase() : t;
-  };
-  // A leg stays until the end of its last day, in the office's time.
-  const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
   // "Today" while a leg is under way and "Tomorrow" the day before, in the
   // office's time, so the day a driver checks for reads first.
   const soonText = (from, to) => {
@@ -191,133 +165,11 @@
     return start === d.toISOString().slice(0, 10) ? w.tomorrow : '';
   };
 
-  // -- the trip, as rux-ui reads it -------------------------------------------
-  // A seat's kind, which the page writes in its language, and its English
-  // label, which is what Accept keeps.
-  const ROLE_KEY = { 'driver': 'driver', 'co-driver': 'co-driver', 'relief-start': 'relief', 'relief-end': 'relief', 'relief_driver': 'relief' };
-  const roleKey = r => ROLE_KEY[r] || 'driver';
-  const roleLabel = r => WORDS.en.role[roleKey(r)];
-  const isRelief = r => roleKey(r) === 'relief';
-  // A seat other than the driver counts only while the bus lists its role.
-  const activeSeats = a => {
-    const roles = Array.isArray(a.active_roles) ? new Set(a.active_roles.map(e => String(e).split(':', 1)[0])) : null;
-    return (a.trip_drivers || []).filter(d => (d.role || 'driver') === 'driver' || roles === null || roles.has(d.role));
-  };
-
-  // A drop-off-and-pickup trip saved as one list splits at its second pickup.
-  const stopsForLeg = (trip, leg) => {
-    const all = [...(trip.trip_stops || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-    let out = all.filter(s => (s.leg || 'outbound') !== 'return');
-    let back = all.filter(s => s.leg === 'return');
-    if (trip.trip_type === 'dropoff_pickup' && !back.length) {
-      const firstReturn = out.findIndex(s => s.type === 'return');
-      const second = out.findIndex((s, i) => i > firstReturn && s.type === 'pickup');
-      if (firstReturn >= 0 && second > firstReturn) { back = out.slice(second); out = out.slice(0, second); }
-    }
-    return leg === 'return' ? back : out;
-  };
-
-  const LEGACY_REQS = [['sleeper', 'req_sleeper'], ['pax56', 'req_56pax'], ['adaLift', 'req_ada'], ['hotel', 'need_hotel'], ['fuelCard', 'need_fuel_card']];
-  const LEGACY_NAMES = WORDS.en.legacy;
-  let requirementNames = new Map();
-  const requirementsOf = trip => {
-    const ids = trip.trip_reqs && Object.keys(trip.trip_reqs).length
-      ? Object.entries(trip.trip_reqs).filter(([, on]) => on).map(([id]) => id)
-      : LEGACY_REQS.filter(([, col]) => trip[col]).map(([id]) => id);
-    return ids.map(id => requirementNames.get(id) || LEGACY_NAMES[id] || id);
-  };
-
-  // The day-of contact first, then the second, then whoever booked.
-  const contactOf = trip => [
-    [trip.trip_contact_1_name, trip.trip_contact_1_phone],
-    [trip.trip_contact_2_name, trip.trip_contact_2_phone],
-    [trip.booking_contact_name, trip.booking_contact_phone],
-  ].map(([name, tel]) => ({ name: clean(name), phone: clean(tel) })).find(c => c.name || c.phone) || null;
-
-  /* The trip's itinerary, by the office's rule: a file whose type is
-     Itinerary and no other, so a file named after one is not one. The newest
-     is the one shown, marked Updated when it replaced another. */
-  const itinerariesOf = trip => {
-    const same = (trip.trip_documents || []).filter(d => clean(d.label).toLowerCase() === 'itinerary');
-    if (!same.length) return [];
-    const newest = same.reduce((a, b) => (new Date(b.created_at || 0) > new Date(a.created_at || 0) ? b : a));
-    return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
-  };
   // A file opens through its document page, which asks for a link signed for
   // ten minutes each time it is opened, since the bucket is closed. Absolute,
   // so it opens in its own tab as the file itself did.
   const fileUrl = id => (id ? `${location.origin}/scheduler/share/document.html?id=${encodeURIComponent(id)}` : '');
 
-  /* One leg of one trip, as this driver works it. */
-  function legOf(ref, trip, driverId) {
-    const leg = ref.leg || 'outbound';
-    const assignments = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
-    const mine = assignments.find(a => activeSeats(a).some(d => String(d.driver_id) === String(driverId)));
-    if (!mine) return { error: 'notYours' };
-    const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
-    const role = seat.role || 'driver';
-    const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
-    const stops = stopsForLeg(trip, leg);
-    const pickup = stops.find(s => s.type === 'pickup') || {};
-    const back = [...stops].reverse().find(s => s.type === 'return') || {};
-    const start = inbound ? trip.return_start_date : trip.start_date;
-    const end = inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date);
-    const crew = assignments.map(a => ({
-      bus: a.buses?.number != null ? String(a.buses.number) : '',
-      mine: a === mine,
-      people: activeSeats(a).filter(d => String(d.driver_id) !== String(driverId)).map(d => ({
-        name: d.drivers?.short_name || d.drivers?.name || '',
-        role: roleKey(d.role),
-        phone: clean(d.drivers?.phone),
-      })),
-    })).filter(b => b.people.length).sort((a, b) => (a.mine ? -1 : b.mine ? 1 : 0));
-    return {
-      trip, leg, role, start, end,
-      destination: inbound ? (back.name || back.address || 'Yard') : (trip.destination || 'Destination'),
-      // Which of the two the page wrote, where the office named no place.
-      destinationWord: inbound ? (back.name || back.address ? null : 'yard') : (trip.destination ? null : 'destination'),
-      customer: clean(trip.customer),
-      bus: mine.buses?.number != null ? String(mine.buses.number) : '',
-      time: isRelief(role) ? (seat.report_time || pickup.spot || trip.spot_time) : (pickup.spot || trip.spot_time),
-      place: { name: clean(pickup.name), address: clean(pickup.address) },
-      stops,
-      relief: isRelief(role) ? {
-        at: clean(seat.report_time),
-        instructions: clean(seat.instructions),
-        // Who they take over from, to agree the handoff with when no time is set.
-        from: clean(activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.short_name
-          || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
-      } : null,
-      requirements: requirementsOf(trip),
-      contact: contactOf(trip),
-      crew,
-      itineraries: itinerariesOf(trip),
-      activeRoles: mine.active_roles || [],
-    };
-  }
-
-  /* THE DRIVER'S JOB, AS THE CARD AND ITS SHEETS SHOW IT. What Accept keeps
-     and a later load compares. Every value is text as the card writes it, so
-     a change reads as the driver would read it. The trip's notes are on
-     neither, so a change to them asks nothing. */
-  const stopText = s => [clean(s.name) || clean(s.address) || clean(s.label) || 'Stop',
-    s.arrive && `arrive ${timeText(s.arrive)}`, s.depart_prev && `leave ${timeText(s.depart_prev)}`].filter(Boolean).join(' · ');
-  function jobView(l) {
-    return {
-      dates: rangeText(l.start, l.end),
-      time: timeText(l.time),
-      place: [l.place.name, l.place.address].filter(Boolean).join(', '),
-      destination: l.destination,
-      stops: l.stops.map(stopText),
-      bus: l.bus,
-      role: roleLabel(l.role),
-      relief: l.relief ? [l.relief.at && `Handoff at ${timeText(l.relief.at)}`, l.relief.instructions].filter(Boolean).join(' · ') : '',
-      requirements: [...l.requirements].sort(),
-      itinerary: l.itineraries[0]?.id || '',
-    };
-  }
-  // What Accept keeps, in the order a change is listed.
-  const VIEW_KEYS = ['dates', 'time', 'place', 'destination', 'stops', 'bus', 'role', 'relief', 'requirements', 'itinerary'];
   // A kept value, which is English, as the page's language writes it.
   const keptValue = (key, v) => {
     if (!v || lang === 'en') return v;
@@ -331,50 +183,10 @@
     const id = Object.keys(WORDS.en.legacy).find(k => WORDS.en.legacy[k] === name);
     return id ? w.legacy[id] : name;
   };
-  // Each difference as one line the driver reads.
-  function changesBetween(was, now, l) {
-    const lines = [];
-    for (const key of VIEW_KEYS) {
-      const a = was?.[key] ?? (Array.isArray(now[key]) ? [] : '');
-      const b = now[key];
-      if (JSON.stringify(a) === JSON.stringify(b)) continue;
-      // A relief driver's card gives the handoff, which `relief` compares, and
-      // not the bus's spot time.
-      if (key === 'time' && isRelief(l.role)) continue;
-      if (key === 'itinerary') lines.push(b ? w.newItinerary : w.itineraryRemoved);
-      else if (key === 'stops') lines.push(w.stopsChanged);
-      else if (key === 'requirements') {
-        const added = b.filter(x => !a.includes(x)), gone = a.filter(x => !b.includes(x));
-        if (added.length) lines.push(w.added(added.map(keptRequirement).join(', ')));
-        if (gone.length) lines.push(w.removed(gone.map(keptRequirement).join(', ')));
-      } else {
-        lines.push(`${w.view[key]}: ${keptValue(key, a) || w.none} → ${keptValue(key, b) || w.none}`);
-      }
-    }
-    return lines;
-  }
-
   // -- the answer ---------------------------------------------------------------
   let token = '';
   let statuses = new Map();
   let views = new Map();
-  const keyOf = (tripId, leg, role) => `${tripId}:${leg || 'outbound'}:${role || 'driver'}`;
-
-  function stateOf(l) {
-    const row = statuses.get(keyOf(l.trip.id, l.leg, l.role)) || statuses.get(keyOf(l.trip.id, l.leg, 'driver'));
-    const legacy = String(l.activeRoles.find(e => String(e).split(':', 1)[0] === l.role) || '').split(':', 2)[1] || '';
-    const byDispatch = ['confirmed', 'success'].includes(legacy);
-    if (row?.status === 'declined') return { status: 'declined' };
-    if (!(row?.status === 'confirmed' || row?.confirmedAt || byDispatch)) return { status: 'pending' };
-    const kept = views.get(keyOf(l.trip.id, l.leg, l.role));
-    if (kept) {
-      const lines = changesBetween(kept, jobView(l), l);
-      return lines.length ? { status: 'changed', lines } : { status: 'accepted' };
-    }
-    const at = row?.confirmedAt || row?.acceptedAt;
-    const stale = at && l.trip.updated_at && new Date(l.trip.updated_at) > new Date(at);
-    return stale ? { status: 'changed', lines: [] } : { status: 'accepted' };
-  }
 
   let channel = null;
   async function answer(l, action) {

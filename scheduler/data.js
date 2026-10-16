@@ -11836,6 +11836,14 @@
       return;
     }
 
+    // One named window, as the editor's Email thread link opens it, so each
+    // thread reuses the tab.
+    if (item.id === 'scheduler-bar-menu-thread') {
+      const url = barThreadUrl(bar);
+      if (url) window.open(url, 'missive', 'noopener');
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-contacts') {
       openContactsFrom(bar, bar);
       return;
@@ -11929,6 +11937,12 @@
 
   // Fills the bar menu for one bar: which items apply, the Color chips and
   // the drivers' statuses.
+  // The bar's trip's email thread, or null when it has none or the link is not an https address.
+  function barThreadUrl(bar) {
+    const url = panelIndex.trips.get(bar.dataset.tripId)?.booking_contact_missive_url?.trim();
+    return url && /^https:\/\//i.test(url) ? url : null;
+  }
+
   function prepareBarMenu(bar) {
     barMenuFor = bar;
     document.getElementById('scheduler-bar-menu-unassign').hidden =
@@ -11957,6 +11971,7 @@
     document.getElementById('scheduler-bar-menu-map').hidden = !bar.dataset.busId || !bar.dataset.road;
     document.getElementById('scheduler-bar-menu-itinerary').hidden = !bar.dataset.itineraryId;
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
+    document.getElementById('scheduler-bar-menu-thread').hidden = !barThreadUrl(bar);
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
     const hotelItem = document.getElementById('scheduler-bar-menu-hotel');

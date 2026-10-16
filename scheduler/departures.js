@@ -25,8 +25,9 @@
    holds what the bus needs, met or not, its fuel card among them where the
    trip has one, and anything in the bus's way, and each crew member's lines:
    confirmed, then the itinerary, the envelope, the reminder, the
-   hours-of-service form for a part-time driver, and anything in the driver's
-   way. What is in the way is clashes.js's standing rule, read against the
+   hours-of-service form for a part-time driver, anything in the driver's
+   way, and a change since they accepted that they have not been told of, as
+   driver-job.js reads it. What is in the way is clashes.js's standing rule, read against the
    `nearby` trips, time off and days out the caller hands in.
 
    Nothing here reads the database or the page. The trip row brings its
@@ -176,6 +177,9 @@
       for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
       if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
       for (const x of mine.filter(m => m.driverId === c.driverId)) lines.push(line(`clash:${x.what}`, 'warn', x.what));
+      const changed = window.SchedulerDriverJob?.changesSince(trip, assign.leg || 'outbound', c.driverId, c.row,
+        { busesById, driversById, nameOf: Facts.requirementLabel }) ?? [];
+      if (changed.length) lines.push(line('told', 'todo', 'Tell of changes', { value: changed.join(', '), action: 'contacts' }));
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',
         role: c.label, partTime, seat, driverId: c.driverId, lines });
     }

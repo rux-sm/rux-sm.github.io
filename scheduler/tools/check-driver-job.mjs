@@ -65,5 +65,17 @@ expect('no answer is pending, and a decline is declined',
     stateOf(l, { statuses: new Map([[keyOf('t1', 'outbound', 'driver'), { status: 'declined' }]]), views: new Map() }, say).status],
   ['pending', 'declined']);
 
+// The office's reading, from rows that hold the bus and the driver by id.
+const { changesSince, viewNow } = window.SchedulerDriverJob;
+const office = { ...trip, trip_assignments: [{ leg: 'outbound', active_roles: null, bus_id: 'b2', trip_drivers: [
+  { driver_id: 'd1', role: 'driver' }, { driver_id: 'd2', role: 'co-driver' }] }] };
+const read = { busesById: new Map([['b1', { number: 763 }], ['b2', { number: 897 }]]),
+  driversById: new Map([['d1', { short_name: 'Rigo' }], ['d2', { short_name: 'Ana' }]]), nameOf: id => (id === 'sleeper' ? 'Sleeper berth' : id) };
+expect('the office reads what changed since the driver accepted, in English',
+  changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: view }, read), ['Bus: 763 → 897']);
+expect('nothing changed says nothing', changesSince(office, 'outbound', 'd1', { status: 'confirmed', acceptedView: viewNow(office, 'outbound', 'd1', read) }, read), []);
+expect('a seat not confirmed, or with no kept view, says nothing',
+  [changesSince(office, 'outbound', 'd1', { status: 'declined', acceptedView: view }, read), changesSince(office, 'outbound', 'd1', { status: 'confirmed' }, read)], [[], []]);
+
 console.log(failed ? `\n  ${failed} fault(s) in driver job` : '\n  driver job: every case passed');
 process.exit(failed ? 1 : 0);

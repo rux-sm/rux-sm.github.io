@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    The one copy of the to-do list's computed rows. Nothing writes one and
    nothing stores one: each is worked out from the trips every time, so it
-   asks while it is true and is gone once its trip is fixed. Five rules, each
+   asks while it is true and is gone once its trip is fixed. Seven rules, each
    read from the file that owns it:
 
      Follow-up     a trip that asks for a follow-up, as follow-up.js decides
@@ -17,6 +17,9 @@
      Clash         a leg leaving within 30 days with something in a bus's or
                    a driver's way, as clashes.js's standing rule says, where
                    the page handed in what is around it
+     Declined      a leg leaving within 30 days a driver said no to
+     Tell          a leg leaving within 30 days that changed for a driver
+                   since they accepted, as driver-job.js reads it
 
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line.
@@ -44,6 +47,8 @@
     'short': { label: 'Short of buses' },
     'times': { label: 'No times' },
     'clash': { label: 'Clash' },
+    'declined': { label: 'Driver declined' },
+    'tell': { label: 'Tell the driver' },
     'leaving': { label: 'Leaving soon' },
     'follow-up': { label: 'Follow-up' },
   };
@@ -120,10 +125,15 @@
       const factsAt = leg => { if (!factsFor.has(leg)) factsFor.set(leg, factsOf(trip, leg)); return factsFor.get(leg); };
       for (const leg of Checklist.legsOf(trip)) {
         if (!within(legDay(trip, leg), SHORT_DAYS)) continue;
-        const clashes = factsAt(leg).clashes ?? [];
+        const facts = factsAt(leg);
+        const clashes = facts.clashes ?? [];
         if (clashes.length) {
           clashed.add(leg);
           out.push(row('clash', trip, leg, { what: clashes.join(' · '), detail: null }));
+        }
+        if (facts.declined?.length) out.push(row('declined', trip, leg, { what: facts.declined.map(d => `${d.name} declined`).join(' · '), detail: null }));
+        if (facts.toTell?.length) {
+          out.push(row('tell', trip, leg, { what: facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join(', ')}`).join(' · '), detail: null }));
         }
       }
 
@@ -134,6 +144,7 @@
           ...(waits.includes('itinerary') ? ['itinerary'] : []),
           ...(short.has(leg) ? ['buses'] : []),
           ...(clashed.has(leg) ? ['clashes'] : []),
+          ...(within(legDay(trip, leg), SHORT_DAYS) ? ['declined', 'told'] : []),
         ]);
         const open = Checklist.legItems(trip, leg, factsAt(leg), contactOf(trip))
           .filter(i => !i.done && SOON_GROUPS.includes(i.group) && !said.has(i.id.split(':')[0]));

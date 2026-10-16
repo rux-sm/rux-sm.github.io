@@ -1095,14 +1095,25 @@
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
     // More passengers than the leg's buses seat, a warning on every bar of the leg.
     const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.leg, busesById));
-    barFacts.set(bar, { needs, misfits, overSeated });
+    /* THE DRIVERS ON THIS BUS who said no, or whom the leg changed for since
+       they said yes, as driver-job.js reads it: each a warning, which the
+       Contact list puts right. */
+    const driverAlerts = placeholder || !assign ? [] : crewOf(trip, assign, driversById, statuses).flatMap(c => {
+      if (c.needed) return [];
+      const name = c.who?.short_name || c.who?.name || 'A driver';
+      if (c.status?.value === 'declined') return [`${name} declined`];
+      const lines = window.SchedulerDriverJob?.changesSince(trip, leg.leg, c.driverId, c.row,
+        { busesById, driversById, nameOf: requirementLabel }) ?? [];
+      return lines.length ? [`Tell ${name}: ${lines.join(', ')}`] : [];
+    });
+    barFacts.set(bar, { needs, misfits, overSeated, driverAlerts });
 
     /* The one mark, at the destination row's end: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
        a mistake on the board; the warning colour is a job still to do. A trip
        with both shows red, and a trip with no alert shows no mark. A mark,
        not a button, because the bar is the button. */
-    const alerts = alertsOf(trip, { needs, misfits, overSeated });
+    const alerts = alertsOf(trip, { needs, misfits, overSeated, driverAlerts });
     const attention = alerts.length
       ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
@@ -6687,6 +6698,8 @@
   function goToTripPart(action, leg = null) {
     if (action === 'forms') { openForms(selectedBar()); return; }
     if (action === 'itinerary') { openLegItinerary({ trip: editing?.id, leg }, selectedBar()); return; }
+    // The Contact list, where a driver is called and marked as told.
+    if (action === 'contacts') { const bar = selectedBar(); if (bar) openContactsFrom(bar, bar); return; }
     const tab = document.getElementById(`scheduler-tab-${action}`);
     if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
   }
@@ -14075,6 +14088,8 @@
     if (go === 'itinerary') { SHORTCUT_ACTIONS.find(a => a.id === 'itinerary').run(bar); return; }
     putCardAway(bar);
     if (go === 'forms') { openForms(bar); return; }
+    // A driver to tell, or one who declined, is put right from the Contact list.
+    if (go === 'contacts') { openContactsFrom(bar, bar); return; }
     const toFix = () => {
       const tab = document.getElementById(`scheduler-tab-${go}`);
       if (tab) window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
@@ -14272,6 +14287,11 @@
         reminder: reminderOf(a, c),
         // The driver's own row on this bus, which keeps whether they were reminded.
         seat: (a.trip_drivers || []).find(d => String(d.driver_id) === String(c.driverId) && (d.role || 'driver') === c.role) ?? null,
+        // What the driver said no to, or what changed since they said yes, as driver-job.js reads it.
+        declined: c.status?.value === 'declined',
+        tell: window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
+          { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel }) ?? [],
+        seatRole: c.role,
       }));
     const mine = assigns.filter(a => String(a.id) === bar.dataset.assignmentId).flatMap(crewOfBus);
     const others = assigns.filter(a => String(a.id) !== bar.dataset.assignmentId).flatMap(crewOfBus);
@@ -14309,6 +14329,19 @@
       if (!p.seat?.id || p.seat.trip_reminder_sent) return;
       if (!(await ask(`Mark ${firstName(p.name)} as reminded?`))) return;
       if (await setReminded(p, true)) { await show(); toast('success', `${firstName(p.name)} is marked as reminded`); }
+    };
+    /* MARK THE DRIVER AS TOLD, on a yes: many changes are told by phone, so
+       the office says it was, and what the driver now knows is the leg as it
+       stands. Their accepting again does the same. */
+    const askTold = async p => {
+      if (!(await ask(`Mark ${firstName(p.name)} as told of the changes?`, p.tell.join(' · ')))) return;
+      const view = window.SchedulerDriverJob.viewNow(trip, leg, p.driverId,
+        { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel });
+      const { data, error } = await client.rpc('mark_driver_told',
+        { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
+      if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
+      await redraw();
+      toast('success', `${firstName(p.name)} is marked as told`);
     };
     const askInfoSent = async (to, note) => {
       if (prep?.driver_info_sent) return;
@@ -14366,6 +14399,12 @@
         el('span', 'scheduler-contact__role', p.bus != null ? `Bus ${p.bus} ${p.role}` : p.role),
         el('strong', 'scheduler-contact__name', p.name),
         el('span', 'scheduler-contact__meta', p.phone ? showPhone(p.phone) : 'No number'));
+      // Something to put right with this person, in the warning colour.
+      const alertLine = words => {
+        const line = el('span', 'scheduler-contact__alert');
+        line.append(svgUse('#m-warning-fill', '16', '0 0 32 32'), el('span', null, words));
+        return line;
+      };
       // What was marked as sent to this person, with when, and the way to take it back.
       const sentLine = (words, at, undo) => {
         const line = el('span', 'scheduler-contact__sent');
@@ -14378,6 +14417,17 @@
         return line;
       };
       if (p.seat?.trip_reminder_sent) who.appendChild(sentLine('Reminded', p.seat.trip_reminder_sent_at, () => setReminded(p, false)));
+      // A driver who declined, or who has a change to be told of, with the way to mark them told.
+      if (p.declined) who.appendChild(alertLine('Declined'));
+      if (p.tell?.length) {
+        const line = alertLine(`Changed since they accepted: ${p.tell.join(' · ')}`);
+        const told = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Mark as told');
+        told.type = 'button';
+        told.setAttribute('aria-label', `Mark ${p.name} as told of the changes`);
+        told.addEventListener('click', () => askTold(p));
+        line.appendChild(told);
+        who.appendChild(line);
+      }
       if (p === booker && prep?.driver_info_sent) who.appendChild(sentLine('Driver info sent', prep.driver_info_sent_at, () => setInfoSent(false)));
       const acts = el('div', 'scheduler-contact__actions');
       if (p.phone) {
@@ -14628,6 +14678,7 @@
       list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
     }
     if (facts?.overSeated) list.push({ row: 'scheduler-card__warn', go: 'fleet', spot: 'seats', words: `More passengers than seats: ${facts.overSeated}` });
+    for (const words of facts?.driverAlerts ?? []) list.push({ row: 'scheduler-card__warn', go: 'contacts', spot: 'driver', words });
     for (const n of facts?.needs ?? []) {
       if (n.done || n.short) continue;
       list.push({ row: 'scheduler-card__warn', go: n.id === 'hos' ? 'forms' : 'billing', spot: n.id, words: TODO_WORDS[n.id] ?? n.label });
@@ -14640,7 +14691,7 @@
     const row = (cls, tag = 'div') => el(tag, `scheduler-card__row ${cls}`);
     /* A warning is a press that goes where it is put right: an editor tab,
        the Forms panel, or the itinerary slot's own upload. */
-    const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary' };
+    const WARN_GO = { fleet: 'Buses', billing: 'Billing', details: 'Details', forms: 'Forms', itinerary: 'Itinerary', contacts: 'Contacts' };
     const goes = (band, go, words) => {
       band.dataset.go = go;
       band.tabIndex = 0;
@@ -15474,7 +15525,9 @@
     // Whole rows again: a number, a status or a fitting the row head draws all
     // change without the fleet's size changing.
     const fleet = (data.buses || []).map(b => JSON.stringify(b)).sort().join(',');
-    return [drawn.join(','), windows(data.oos), windows(data.timeOff), fleet].join('|');
+    // Each driver's answer and what they accepted, which the crew and the alerts draw.
+    const answers = [...(data.statuses || new Map())].map(([key, row]) => `${key}=${JSON.stringify(row)}`).sort().join(',');
+    return [drawn.join(','), windows(data.oos), windows(data.timeOff), fleet, answers].join('|');
   };
 
   /* One read at a time, and the last ask always gets its own. A week change or
@@ -15519,7 +15572,7 @@
      is edited and it is the table of customers' own details. */
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
-    'driver_time_off', 'bus_out_of_service', 'settings'];
+    'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses'];
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;
 

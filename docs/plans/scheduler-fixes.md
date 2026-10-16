@@ -135,23 +135,13 @@ None open.
 
 ### The driver and the links
 
-- [ ] Write one migration: `trip_driver_statuses` sent live to staff,
-      `get_trip_driver_statuses` returning what each driver accepted, and
-      the function behind Mark the driver as told. Apply it on a yes.
-- [ ] Listen to the status table on the board and Prep, and count statuses
-      in `weekPrint`.
-- [ ] Raise Declined and Tell the driver on the bar, in `checklist.js`, the
-      Contact list and Prep, from `leg-facts.js`.
-- [ ] Write the triggers that take Printed, Reminded and Driver info sent
-      off when what they carried changes, as SQL on a yes.
 - [ ] Name the drivers to tell in the Cancel dialog, its toast and History.
-- [ ] Add `replace_driver_schedule_share` and the Inactive trigger as SQL on
-      a yes, and a Replace link button in Driver view.
+- [ ] Add a Replace link button in Driver view, over `replace_driver_schedule_share`.
 - [ ] End a document's address with its trip in `trip-document-link`, with a
       check of `handler.ts`, and deploy on a yes.
 - [ ] Take out the two open channels and their senders.
-- [ ] Return a bus's days out from `get_maintenance_schedule`, on a yes, and
-      draw them; name the bus in Recent changes.
+- [ ] Draw a bus's days out on the maintenance page from `outOfService`, and
+      name the bus in Recent changes.
 
 ### Money and the route
 

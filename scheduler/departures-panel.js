@@ -113,14 +113,16 @@
     // The money, as follow-up.js reads it, for what the customer still owes.
     'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
-    'itinerary_not_needed', 'contact_not_needed', 'trip_documents(label,created_at)',
+    'itinerary_not_needed', 'contact_not_needed',
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
-    'trip_stops(position,leg,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
+    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    // What a driver's job reads as, for a change they have not been told of.
+    'spot_time', 'trip_documents(id,label,created_at,file_path)',
+    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 
   // The buses, the drivers, the office's lists and the staff, read once a page.
   let basics = null;
@@ -614,7 +616,7 @@
   let channel = null;
   function listen() {
     channel = client.channel('scheduler-departures');
-    for (const table of ['trip_drivers', 'trip_prep', 'trip_assignments', 'trips', 'trip_documents', 'trip_stops', 'trip_payments']) {
+    for (const table of ['trip_drivers', 'trip_prep', 'trip_assignments', 'trips', 'trip_documents', 'trip_stops', 'trip_payments', 'trip_driver_statuses']) {
       channel.on('postgres_changes', { event: '*', schema: 'public', table }, refresh);
     }
     channel.subscribe();

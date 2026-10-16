@@ -5,7 +5,8 @@
    page and by the office's, so both name the same changes. `legOf` is one
    leg of one trip as the driver works it; `jobView` is what Accept keeps of
    it, every value text as the card writes it; `changesBetween` lists what
-   changed since, one line each; `stateOf` says where the driver stands.
+   changed since, one line each; `stateOf` says where the driver stands;
+   `changesSince` is the office's reading of the same, from its own rows.
 
    Nothing here reads the page or the database. The words a line is written
    in are the page's, handed in; what Accept keeps is always English. Needs
@@ -228,9 +229,38 @@
     return stale ? { status: 'changed', lines: [] } : { status: 'accepted' };
   }
 
+  /* THE OFFICE'S READING: what changed for a driver since they accepted,
+     from the office's own rows, which hold a bus and a driver by id where the
+     driver's link hands them over by name. `read` is the page's `busesById`,
+     `driversById` and `nameOf`, the office's name for a need. `row` is the
+     seat's status as get_trip_driver_statuses returns it; only a confirmed
+     seat with a kept view can have changed, so one accepted before views
+     were kept says nothing. The lines are English, as the office reads them. */
+  const ENGLISH = { w: WORDS.en, keptValue: (key, v) => v, keptRequirement: name => name };
+  const officeTrip = (trip, { busesById = new Map(), driversById = new Map() } = {}) => ({
+    ...trip,
+    trip_assignments: (trip.trip_assignments || []).map(a => ({
+      ...a,
+      buses: a.bus_id != null && busesById.get(a.bus_id) ? { number: busesById.get(a.bus_id).number } : null,
+      trip_drivers: (a.trip_drivers || []).map(d => ({ ...d, drivers: driversById.get(d.driver_id) ?? null })),
+    })),
+  });
+  function changesSince(trip, leg, driverId, row, read = {}) {
+    if (row?.status !== 'confirmed' || !row.acceptedView) return [];
+    const names = { get: id => read.nameOf?.(id) };
+    const l = legOf({ tripId: trip.id, leg }, officeTrip(trip, read), driverId, names);
+    if (l.error) return [];
+    return changesBetween(row.acceptedView, jobView(l), l, ENGLISH);
+  }
+  // The view the office keeps for a driver it marks as told: the leg as it stands.
+  function viewNow(trip, leg, driverId, read = {}) {
+    const l = legOf({ tripId: trip.id, leg }, officeTrip(trip, read), driverId, { get: id => read.nameOf?.(id) });
+    return l.error ? null : jobView(l);
+  }
+
   window.SchedulerDriverJob = {
     clean, dateOnly, dayFmt, dayText, rangeText, timeText, todayIso,
     ROLE_KEY, roleKey, roleLabel, isRelief, activeSeats, stopsForLeg, requirementsOf, contactOf, itinerariesOf,
-    legOf, stopText, jobView, VIEW_KEYS, changesBetween, keyOf, stateOf,
+    legOf, stopText, jobView, VIEW_KEYS, changesBetween, keyOf, stateOf, changesSince, viewNow,
   };
 })();

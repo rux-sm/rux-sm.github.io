@@ -288,11 +288,14 @@
      asks for driver forms, who lacks a current one and how many seats have
      theirs not printed. Handed `nearby`, the trips, time off and days out
      around it, it also says what stands in its way, as clashes.js's
-     standing rule says it. */
+     standing rule says it. `declined` names the drivers who said no, and
+     `toTell` each confirmed driver the leg changed for since they accepted,
+     as driver-job.js reads it, with the lines that say what. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
     const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
     const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
+      declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
@@ -309,6 +312,12 @@
         if (c.needed) { facts.seatsOpen++; continue; }
         facts.seats++;
         if (c.status?.value !== 'confirmed') facts.unconfirmed++;
+        const name = c.who?.short_name || c.who?.name || 'A driver';
+        if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
+        const lines = window.SchedulerDriverJob
+          ? window.SchedulerDriverJob.changesSince(trip, leg, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
+          : [];
+        if (lines.length) facts.toTell.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name, lines });
       }
       const roles = activeRolesOf(a);
       for (const d of a.trip_drivers || []) {

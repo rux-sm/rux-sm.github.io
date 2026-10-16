@@ -10,8 +10,8 @@
    reads them again, and each reading says `scheduler:to-do-rows`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js, leg-facts.js,
-   week.js, clashes.js and to-do.js loaded first, and /account.js for the
-   client.
+   week.js, clashes.js, share/driver-words.js, driver-job.js and to-do.js
+   loaded first, and /account.js for the client.
    ========================================================================== */
 (() => {
   'use strict';
@@ -23,7 +23,7 @@
   if (!client || !ToDo || !Facts) return;
 
   // The tables a row is read from; a change to one reads the trips again.
-  const TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates', 'trip_documents', 'trip_payments', 'trip_pos'];
+  const TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates', 'trip_documents', 'trip_payments', 'trip_pos', 'trip_driver_statuses'];
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const dayFrom = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
@@ -40,10 +40,10 @@
     'trip_updates(created_at,kind)'].join(',');
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'departure_time', 'return_time',
+    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path)',
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
-    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed))',
-    'trip_stops(position,leg,type,arrive,spot,depart_prev)'].join(',');
+    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
+    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 
   async function read() {
     const today = iso(new Date());
@@ -68,10 +68,9 @@
 
     const more = new Map(heavy.map(t => [t.id, t]));
     const all = light.map(t => ({ ...t, ...more.get(t.id) }));
-    const soon = all.filter(t => window.SchedulerChecklist.legsOf(t)
-      .some(leg => { const d = ToDo.legDay(t, leg); return d && d >= today && d <= dayFrom(ToDo.SOON_DAYS); }));
-    const statusRows = soon.length
-      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: soon.map(t => t.id) }).then(unwrap) : [];
+    // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
+    const statusRows = heavy.length
+      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
     const facts = {
       busesById: new Map(buses.map(b => [b.id, b])),
       driversById: new Map(drivers.map(d => [d.id, d])),

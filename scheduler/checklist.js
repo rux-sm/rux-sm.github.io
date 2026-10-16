@@ -10,7 +10,8 @@
                   contact
      Buses        every bus assigned and fit for the trip, nothing in a
                   bus's or a driver's way, every seat filled, every driver
-                  confirmed
+                  confirmed, no driver declined, and every driver told of a
+                  change since they accepted
      Paperwork    each driver's itinerary and envelope printed, the
                   hours-of-service record of each part-time driver, and each
                   driver's form of a kind the customer asks for
@@ -41,7 +42,7 @@
   /* One leg's items. `facts` is the board's reading of the leg's buses:
      { busesNeeded, busesAssigned, busesShort, seatsOpen, seats, unconfirmed,
        envelopesLeft, itinerariesLeft, partTime, hosLeft, fuelCardsLeft,
-       formsWanted, formsMissing, formsLeft, clashes },
+       formsWanted, formsMissing, formsLeft, clashes, declined, toTell },
      where `seats`
      counts the seats with a driver in them. `tripContact` is whether the trip
      has a day-of contact. */
@@ -81,6 +82,9 @@
       add('Buses', 'drivers', 'Every driver confirmed', !facts.unconfirmed, TABS.buses,
         facts.unconfirmed ? `${plural(facts.unconfirmed, 'driver', 'drivers')} not confirmed` : null);
     }
+    // A driver who said no, and a change a driver has not been told of, each said by name.
+    if (facts.declined?.length) add('Buses', 'declined', 'No driver declined', false, TABS.buses, facts.declined.map(d => `${d.name} declined`).join(' · '));
+    if (facts.toTell?.length) add('Buses', 'told', 'Every driver told of changes', false, 'contacts', facts.toTell.map(d => `Tell ${d.name}: ${d.lines.join(', ')}`).join(' · '));
 
     // Each driver is handed their own, so with nobody in a seat it is not printed yet.
     // The sheet is the itinerary the customer sent where the trip has one, and the one Forms draws where it has none.

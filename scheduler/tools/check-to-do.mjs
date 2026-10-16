@@ -88,6 +88,11 @@ expect('leaving soon leaves out a clash the Clash row already says',
   said(rows([soon], { factsOf: () => ({ ...full, clashes: clash }), contactOf: () => true })),
   ['clash:a:outbound Bus 897: On trip Austin · Rigo: Time off']);
 
+expect('a driver who declined and a change to tell are each a row, and leaving soon leaves them out',
+  said(rows([soon], { factsOf: () => ({ ...full, unconfirmed: 1, declined: [{ name: 'Ana' }], toTell: [{ name: 'Rigo', lines: ['Bus: 470 → 763'] }] }), contactOf: () => true }))
+    .map(r => r.split(' ')[0]),
+  ['declined:a:outbound', 'tell:a:outbound', 'leaving:a:outbound']);
+
 expect('leaving soon leaves out what the follow-up and Short rows already say',
   said(rows([{ ...soon, confirmed: false, trip_assignments: [], trip_documents: [] },
     { ...soon, id: 'b', bus_count: 2 }],

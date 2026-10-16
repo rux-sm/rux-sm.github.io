@@ -46,7 +46,7 @@ The side nav lists only pages that exist; each view is added when its page is. D
 | Customer page | new | `customers.html?id=`, who pays, on four tabs. Details holds the name, the usual pickup, Part of, the customer this one belongs to, as a school belongs to its district, the bill-to address and Notes, what stays true of the customer from trip to trip, then Usual needs: the office's vehicle needs as checkboxes, a Usual bus type from the office's types, Any when none is picked, and Driver forms required. Contacts lists who books for it. Trips lists every trip linked to the customer, the coming ones soonest first and then the past ones newest first, fifty at a time with Show older, each row its destination over its day, its number and its price with what is owing, paid, No price or Cancelled, opening the trip on the schedule; over them Quoted, Paid and Balance add up the trips that are not cancelled, each read as its own Billing tab reads it. Documents lists the documents issued to it and, where it is part of another customer, that customer's current documents under them, since a certificate written to a district covers its schools. A customer another is part of is not deleted. In the trip editor the linked customer's notes show under the Customer field, read only, and a new trip takes the customer's usual needs and bus type when the customer is picked, by hand or through its contact: each need is added to every vehicle of both legs and the type set where a vehicle has none. A saved trip is never changed by its customer. |
 | Itinerary editor | later | App component, with the Itineraries view. |
 | Trip manifest | drop | The office does not use it. A trip's headcount is the Details tab's Passengers. |
-| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination, the choice taking the kinds of gap `scheduler/to-do.js` works out too, Needs follow-up, Short of buses, No times, Clashes, a leg within 30 days with something in its way, and Leaving soon, and To close, a trip that is back and still lacks something, and `?show=` opening the page on one; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar has a search button, and Cmd-K, that open a Search trips window; a pick shows its week with the bar selected and in view, without opening the trip. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
+| Trip finder results page | keep | `trips.html`, every trip in a data table with search, a Show choice and pagination, the choice taking the kinds of gap `scheduler/to-do.js` works out too, Needs follow-up, Short of buses, No times, Clashes, a leg within 30 days with something in its way, Driver declined and Tell the driver, each within 30 days, and Leaving soon, and To close, a trip that is back and still lacks something, and `?show=` opening the page on one; a row opens its trip on the board. Results in a data table on a page. The schedule's toolbar has a search button, and Cmd-K, that open a Search trips window; a pick shows its week with the bar selected and in view, without opening the trip. It finds cancelled trips too, tagged Cancelled; one opens a dialog with the date and reason and a Bring back button. Cancelling needs a typed reason. |
 | Contact info, Driver week info | keep | Contact info is the Contact list, a modal from Call or text on the bar's right-click menu, or the Contacts slot of a phone's docked sheet: the customer's people, then the crew on each bus of the leg, each to call or text, with Remind for a driver's reminder of the leg and Driver info for the driver details sent to the booking contact; each asks before it marks what was sent. Driver week info is `driver-view.html`: staff pick a driver, tick the legs that go on the driver's link, copy the message, and make, update or revoke the link; Mark as sent sets each leg the driver has not answered to Pending response. A reminder and the week's message are written in the driver's language, English or Spanish as their profile's Language says, by `driver-text.js`. |
 | Print schedule | drop | The office does not use it. |
 | Requirements editor | keep | Settings section; a contained list with an add row. Icons come from the rux sprite by a fixed name. |
@@ -69,7 +69,7 @@ the schedule open, and faces on a bar show who has that trip.
 | Newest update on the bar | keep | A row between the times and the drivers holds the trip's newest update on one line, cut where the bar ends; a trip with none leaves it empty. While the trip has anything open, a warning on its card or a confirmation, PO, itinerary or balance the office still waits on, the words take the colour of the update's age, and a settled trip's stay in the bar's ink: green while the card's age reads in minutes, hours or 1d, amber for the rest of its first week, red once the card shows a date, except on an amber bar, where none of the three reads and the words keep the bar's ink. No mark leads the row, since the colour is the mark; the tooltip is the update whole and its stamp. Newest update in the week's More menu turns the row off, as it does the others. The phone's sheet leaves it out, because the updates are read just above the trip there. |
 | Live line while the bus is out | new | From the leg's yard-out to its yard-back, and in the two hours either side while the engine runs, the update's row shows what Samsara says: the engine's dot, green running, amber idling and grey off, then the leg's next stop with the time it is due, green while the bus will make it and amber with the minutes over when it will arrive more than 10 minutes late, `6:00p +75`, or At and the stop's name while the bus is within a quarter mile of it; with no stop to name, the speed and the place. A stop is reached when the bus's path since leaving the yard comes within a quarter mile of it, in order, no sooner than two hours before it is due; a stop with no map point is passed over. The arrival is Geoapify's drive from the bus, slowed by the route times' percent, asked at most every five minutes. The driver at the wheel has the hours they may still drive after their name, amber under one, and each driver Samsara has in the bus wears their duty's mark. The trip's card lists the stops still to come under On the road, the next with when the bus arrives, then the drivers. `road.js` holds the rules the board and the Live map share. |
 | Bus fit | keep | A bar whose bus is the wrong type for its vehicle, or falls short of a need its vehicle carries, including equipment the Fleet page records, or has something in its bus's or its drivers' way by `clashes.js`'s standing rule, another trip, days out, time off, Inactive or a card that runs out, said as `Bus 763: On trip Kingsville, TX`, turns the bar's alert count red; its card says what is wrong in a red band above the reminder. A placeholder raises none on itself. |
-| Needs and trip contact | keep | Under the card's Needs title, only what needs doing: a need the bus falls short of in the red band, and a need still to do, Hotel booking pending or HOS form pending, or More passengers than seats where the trip's Passengers are more than the leg's buses seat, a warning on every bar of the leg by `leg-facts.js`'s count, as the Buses tab's notice is; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks each part-time driver's record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says Trip contact missing in the card's warning band. |
+| Needs and trip contact | keep | Under the card's Needs title, only what needs doing: a need the bus falls short of in the red band, and a need still to do, Hotel booking pending or HOS form pending, or More passengers than seats where the trip's Passengers are more than the leg's buses seat, a warning on every bar of the leg by `leg-facts.js`'s count, as the Buses tab's notice is; and for a driver on the bus who declined, `Rigo declined`, or whom the leg changed for since they accepted, `Tell Rigo: Bus: 470 → 133`, as `driver-job.js` reads it, each opening the Contact list; a met need is not shown. Hours of service is a need on a bus with a part-time driver in any seat, done once the Forms page marks each part-time driver's record printed, and printed among the requirements on that driver's own envelope. A trip with no trip contact, and not marked as needing none, says Trip contact missing in the card's warning band. |
 | Late return | new | A bus back at the yard before the late-return hour, 4:00 AM unless the Settings page's Trips tab says otherwise, came back the night before. The leg takes the days up to the one before: its bar ends there and marks the return +1, and the day the bus is back on is free for that bus and its drivers, in the Buses tab's picks, the driver menu and the availability grid, with a back-to-back driver's rest counted from the real return. Back at or after that hour the leg takes the day it is back on, a one-day leg's bar running into the next day. The yard return decides, not the drop-off; a leg with no yard return takes its own dates, and hour 0 counts no return as the night before. The printed week and the connector's availability count the same days. |
 | Placeholder bar | keep | Amber is the office's placeholder, a trip not yet quoted, named Placeholder in the colour menu. Its bar is a yellow tint beside the others in a light theme and the warning colour in a dark one, and is never marked as the wrong bus, and draws no empty seat and no Needs a bus; a driver someone has named still shows. |
 | Upload itinerary | keep | On the bar's right-click menu, in place of Open itinerary on a trip without one. |
@@ -214,80 +214,69 @@ same size selected or not.
 
 ### Selecting is not opening
 
-A click selects a trip bar, its outline and its days in the driver grid, kept
-through any read of the same week, such as a save or a live change. A
-right-click selects it too, its card waiting until the menu shuts. A double-click,
-Enter, the bar's right-click menu, or on a phone the docked sheet's Open loads it into the panel, and the board
-scrolls across to show that trip whole beside it. A trip opens on the tab the
-last one was on. New trip is the toolbar's last button, its + alone where the
-words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the selected trip and opens
-on Details. The selected trip's card floats clear of the
-trip, placed the way a calendar's event popover is: beside the trip's first
-day, where everything the trip says is written, over the two days after it,
-the trip's own or the board's, with its arrow at that day's middle; over the
-two days before it where the two after are not both on screen, as at the
-week's end or on a board scrolled sideways; and above or below the trip only where neither side has room, slid back inside
-the board at either edge with its arrow still pointing at the trip. It carries no buttons: what a
-phone's docked sheet offers as slots is on the bar's right-click menu. The card is a raised
-surface a step lighter than the board inside a hairline, so it stands off the
-week on a dark theme as well as a light one. It is 18rem wide on every week,
-and two buses tall, or up to five where the trip's updates need the room, centred on the trip, so it covers about half the trips above and below
-it. Each
-warning and each one-line update is a 32px row in 14px regular type, 16px in from the card's sides, as a Carbon popover's content is; a
-warning's leave day drops under its words where both do not fit one line. The card opens with its warnings under a
-title, Needs, in Carbon's 14px heading with the bar's own alert disc beside it,
-its count in the same colour, so the disc on the bar and the list it counts read
-as one; they stand in a box of their own under it, the next layer up at an
-update's hover corner, plain rows with no tint and no rule between: a bus that
-does not fit behind a red bell, then the follow-up reminder, Trip contact
-missing, and each need still to do, Hotel booking pending or HOS form pending,
-each a line of its own behind a bell in its disc's colour. Once the trip is back, `close-out.js`'s
-list takes their place: Bus missing, Driver missing, Actual miles missing,
-Invoice missing and Balance due. A warning is a press that goes to its
-fix: the Itinerary slot, Forms, or the editor on Buses, Details or Billing
-with the cursor in the field it names.
-No warning has a dismiss; each stays until it is put right. Needs that are
-met are not shown.
-Then the updates: Updates in Carbon's 14px heading, its count in the alert
-set's grey disc,
-and + Add, a ghost button, at its end, over every update in
-full, newest first, each with its age at the right (45m, 2h, 3d, or its
-date, Sep 22, past a week), scrolling past the card's height and fading at its
-foot while there is more below; a line from the old notes shows a note icon.
-An update is a press that opens it in the Updates window. Add opens a box under
-the title and becomes Save, primary once a line is typed, which adds the line as
-Enter does; Save with nothing typed, Escape or leaving it empty closes it.
-The docked sheet has the same rows and presses but shows the two newest
-updates, cut to one line; a press elsewhere on the section, or its title's
-arrow, opens every update in full. Add is its own button. An update's author
-is its avatar's tooltip. With none, the title says No updates. The trip has
-no notes of its own: a note saved in rux-ui becomes an update.
-Only the selected trip has a card, the trip open in the editor too, where
-Open trip is disabled as Already open. Every trip has the same four slots: Open trip, the itinerary,
-opened or uploaded, Forms and Contacts; every other action is on the
-right-click menu. Contacts opens Contact list, a centred window as Updates is,
-of one Carbon contained list: the booking contact, the trip contacts, then
-every driver on the leg, this bar's bus first. Each row names who they are
-to the trip ("Booking contact", "Trip contact", "Booking and trip contact" for
-one person who is both, "Bus 218 Driver") over their name and number, with
-Call and Text, on a phone each its word under its icon beside the person. A ⋮ beside the close button holds the rest: Text all drivers,
-one group message from two drivers up; once a driver has confirmed, Email
-driver details and Copy driver details, the letter to the booking contact of
-every bus with its confirmed drivers' names and numbers, each leg under its
-date when their crews differ; Email for a contact who has an address; Remind
-for each driver, a text with their reminder of the leg typed in: "Hi Oscar,
-a reminder for your trip tomorrow:", then the leg in the Driver week info
-message's own lines, from `scheduler/driver-text.js`, and the newest
-itinerary's link; and Add number for a person with none. On a screen md or wider Remind is a button
-in its driver's row, and the booking contact's holds Driver info, which copies the driver details, and
-Email, each before Call and Text; the menu holds what is left. A driver's Text opens their Google
-Messages link on a computer where the Drivers page holds one; there, Remind copies the reminder first, to paste. A call, text
-or email to the customer's people, and the driver details, offer to add it to the trip's updates,
-and writes nothing if the offer is ignored. A shortcut that cannot act on the trip, such as the
-envelope on a bus with no driver, shows faint with the reason as its label. Escape clears the
-selection and takes the bar with it. The panel keeps its trip through week changes and other selections, so a call
-about another trip does not cost an edit in progress, and it asks before
-unsaved changes are lost.
+A click selects a trip bar, its outline and its days in the driver grid, kept through any read of
+the same week, such as a save or a live change. A right-click selects it too, its card waiting until
+the menu shuts. A double-click, Enter, the bar's right-click menu, or on a phone the docked sheet's
+Open loads it into the panel, and the board scrolls across to show that trip whole beside it. A trip
+opens on the tab the last one was on. New trip is the toolbar's last button, its + alone where the
+words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the
+selected trip and opens on Details. The selected trip's card floats clear of the trip, placed the
+way a calendar's event popover is: beside the trip's first day, where everything the trip says is
+written, over the two days after it, the trip's own or the board's, with its arrow at that day's
+middle; over the two days before it where the two after are not both on screen, as at the week's end
+or on a board scrolled sideways; and above or below the trip only where neither side has room, slid
+back inside the board at either edge with its arrow still pointing at the trip. It carries no
+buttons: what a phone's docked sheet offers as slots is on the bar's right-click menu. The card is a
+raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
+theme as well as a light one. It is 18rem wide on every week, and two buses tall, or up to five
+where the trip's updates need the room, centred on the trip, so it covers about half the trips above
+and below it. Each warning and each one-line update is a 32px row in 14px regular type, 16px in from
+the card's sides, as a Carbon popover's content is; a warning's leave day drops under its words
+where both do not fit one line. The card opens with its warnings under a title, Needs, in Carbon's
+14px heading with the bar's own alert disc beside it, its count in the same colour, so the disc on
+the bar and the list it counts read as one; they stand in a box of their own under it, the next
+layer up at an update's hover corner, plain rows with no tint and no rule between: a bus that does
+not fit behind a red bell, then the follow-up reminder, Trip contact missing, and each need still to
+do, Hotel booking pending or HOS form pending, each a line of its own behind a bell in its disc's
+colour. Once the trip is back, `close-out.js`'s list takes their place: Bus missing, Driver missing,
+Actual miles missing, Invoice missing and Balance due. A warning is a press that goes to its fix:
+the Itinerary slot, Forms, or the editor on Buses, Details or Billing with the cursor in the field
+it names. No warning has a dismiss; each stays until it is put right. Needs that are met are not
+shown. Then the updates: Updates in Carbon's 14px heading, its count in the alert set's grey disc,
+and + Add, a ghost button, at its end, over every update in full, newest first, each with its age at
+the right (45m, 2h, 3d, or its date, Sep 22, past a week), scrolling past the card's height and
+fading at its foot while there is more below; a line from the old notes shows a note icon. An update
+is a press that opens it in the Updates window. Add opens a box under the title and becomes Save,
+primary once a line is typed, which adds the line as Enter does; Save with nothing typed, Escape or
+leaving it empty closes it. The docked sheet has the same rows and presses but shows the two newest
+updates, cut to one line; a press elsewhere on the section, or its title's arrow, opens every update
+in full. Add is its own button. An update's author is its avatar's tooltip. With none, the title
+says No updates. The trip has no notes of its own: a note saved in rux-ui becomes an update. Only
+the selected trip has a card, the trip open in the editor too, where Open trip is disabled as
+Already open. Every trip has the same four slots: Open trip, the itinerary, opened or uploaded,
+Forms and Contacts; every other action is on the right-click menu. Contacts opens Contact list, a
+centred window as Updates is, of one Carbon contained list: the booking contact, the trip contacts,
+then every driver on the leg, this bar's bus first. Each row names who they are to the trip
+("Booking contact", "Trip contact", "Booking and trip contact" for one person who is both, "Bus 218
+Driver") over their name and number, with Call and Text, on a phone each its word under its icon
+beside the person. A ⋮ beside the close button holds the rest: Text all drivers, one group message
+from two drivers up; once a driver has confirmed, Email driver details and Copy driver details, the
+letter to the booking contact of every bus with its confirmed drivers' names and numbers, each leg
+under its date when their crews differ; Email for a contact who has an address; Remind for each
+driver, a text with their reminder of the leg typed in: "Hi Oscar, a reminder for your trip
+tomorrow:", then the leg in the Driver week info message's own lines, from
+`scheduler/driver-text.js`, and the newest itinerary's link; and Add number for a person with none.
+On a screen md or wider Remind is a button in its driver's row, and the booking contact's holds
+Driver info, which copies the driver details, and Email, each before Call and Text; the menu holds
+what is left. A driver's Text opens their Google Messages link on a computer where the Drivers page
+holds one; there, Remind copies the reminder first, to paste. A call, text or email to the
+customer's people, and the driver details, offer to add it to the trip's updates, and writes nothing
+if the offer is ignored. A driver who declined says so under their name, and one the leg changed for
+since they accepted says what changed, with Mark as told, which on a yes keeps the leg as it stands
+as what they know. A shortcut that cannot act on the trip, such as the envelope on a bus with no
+driver, shows faint with the reason as its label. Escape clears the selection and takes the bar with
+it. The panel keeps its trip through week changes and other selections, so a call about another trip
+does not cost an edit in progress, and it asks before unsaved changes are lost.
 
 While a trip is in the panel its bars are locked on the board: they do not drag, and their bus,
 colour and hotel are the panel's to change, so each changes in one place. The bar the panel holds

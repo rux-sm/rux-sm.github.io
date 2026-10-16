@@ -3077,6 +3077,10 @@ button.scheduler-row-head__num::after {
    words and when, then Undo. */
 .scheduler-contact__sent { display: flex; align-items: center; gap: var(--rux-spacing-02); color: var(--rux-text-secondary); font-size: 0.75rem; }
 .scheduler-contact__sent > svg { flex: none; color: var(--rux-support-success); }
+/* A decline, or a change the driver has not been told of, in the same small
+   line, its mark in the warning colour. */
+.scheduler-contact__alert { display: flex; align-items: center; flex-wrap: wrap; gap: var(--rux-spacing-02); color: var(--rux-text-secondary); font-size: 0.75rem; }
+.scheduler-contact__alert > svg { flex: none; color: var(--rux-support-warning); }
 .scheduler-contact__role {
   color: var(--rux-text-secondary);
   font-size: var(--rux-label-01-font-size);

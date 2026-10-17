@@ -49,7 +49,7 @@
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
   /* The narrowest a day column gets; past it the grid scrolls rather than
-     squeezing. 10rem leaves a one-day bar 137px of content, two 64px halves
+     squeezing. 10rem leaves a one-day bar 145px of content, two 68px halves
      and a rule, which a live bar's instruments are laid out on to the whole
      pixel. It is never less than three shortcut slots at their
      40px floor plus the gaps a bar keeps at either end, so a one-day trip is
@@ -614,8 +614,9 @@ button.scheduler-row-head__num::after {
   box-sizing: border-box;
   /* Each side's padding is its own property, so a striped end can widen its
      side and the arithmetic below still finds day one's edge. */
-  --scheduler-pad-start: var(--rux-spacing-03);
-  --scheduler-pad-end: var(--rux-spacing-03);
+  --scheduler-pad-start: var(--rux-spacing-02);
+  --scheduler-pad-end: var(--rux-spacing-02);
+  /* 4px on every side, so the words stand as far from each edge. */
   padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
   /* WHAT DAY ONE LEAVES, for the marks at a bar's top right end: the room
      past where a one-day bar's content would end, so a longer bar's dot and
@@ -801,8 +802,8 @@ button.scheduler-row-head__num::after {
    sits on it. On a continuing edge it lies inside the column of squares. */
 .scheduler-bar--stripe-start,
 .scheduler-bar--stripe-end { --scheduler-stripe: var(--rux-spacing-03); }
-.scheduler-bar--stripe-start { --scheduler-pad-start: calc(var(--scheduler-stripe) + var(--rux-spacing-03)); }
-.scheduler-bar--stripe-end { --scheduler-pad-end: calc(var(--scheduler-stripe) + var(--rux-spacing-03)); }
+.scheduler-bar--stripe-start { --scheduler-pad-start: calc(var(--scheduler-stripe) + var(--rux-spacing-02)); }
+.scheduler-bar--stripe-end { --scheduler-pad-end: calc(var(--scheduler-stripe) + var(--rux-spacing-02)); }
 .scheduler-bar--stripe-start::before,
 .scheduler-bar--stripe-end::before {
   content: '';
@@ -1725,7 +1726,7 @@ button.scheduler-row-head__num::after {
 /* A LIVE BAR, road-bar.js's: the destination and the customer, then the
    times in the contact row's place, the instruments in the time and update
    rows' place, and the drivers row as seats. On the narrowest bar every
-   edge lands on a whole pixel: two 64px halves and a 1px rule. */
+   edge lands on a whole pixel: two 68px halves and a 1px rule. */
 .scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
 /* On a bar longer than a day, the times, the instruments and the drivers
    keep to the width a one-day bar gives them: one day of this bar, worked
@@ -1734,7 +1735,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--road > :is(.scheduler-road__times, .scheduler-road__card, .scheduler-bar__drivers) {
   max-inline-size: calc((100% + var(--scheduler-pad-start) + var(--scheduler-pad-end) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span)
-    - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-03));
+    - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
 }
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
 
@@ -1750,9 +1751,9 @@ button.scheduler-row-head__num::after {
 .scheduler-road__say--quiet { opacity: .7; }
 
 /* THE INSTRUMENTS: one 16px row, two halves either side of a 1px rule,
-   in the room of two rows: 7px above it, 4px below it, and 5px under the
-   drivers row that follows. Their shade starts 2px under the times and
-   ends 4px above the bar's edge, 4px into the side padding. */
+   in the room of two rows: 8px above it and 8px below it to the drivers
+   row. Their shade starts 4px under the times and stands 2px off the bar's
+   sides and bottom. */
 .scheduler-road__card {
   --scheduler-road-tone: var(--scheduler-mark-success);
   position: relative;
@@ -1763,8 +1764,8 @@ button.scheduler-row-head__num::after {
   grid-template-rows: var(--scheduler-row-h);
   column-gap: 4px;
   align-items: center;
-  block-size: calc(2 * var(--scheduler-row-h) - 5px);
-  padding-block-start: 7px;
+  block-size: calc(2 * var(--scheduler-row-h));
+  padding-block-start: 8px;
   align-content: start;
   line-height: var(--scheduler-row-h);
 }
@@ -1775,14 +1776,14 @@ button.scheduler-row-head__num::after {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: 2px -4px calc(-1 * var(--scheduler-row-h) - 5px);
+  inset: 4px -2px calc(-1 * var(--scheduler-row-h) - 2px);
   border-radius: 4px;
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
 /* The drivers row is painted over the shade, which reaches under it. */
 .scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
-.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -5px; }
+.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -2px; }
 .scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .scheduler-road__rule { align-self: stretch; background: color-mix(in srgb, currentColor 18%, transparent); }
 .scheduler-road__half > .scheduler-road__say { display: none; }
@@ -1832,7 +1833,7 @@ button.scheduler-row-head__num::after {
   block-size: var(--scheduler-row-h);
   padding-block-start: 0;
 }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -4px calc(-1 * var(--scheduler-row-h) - 2px); }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -2px calc(-1 * var(--scheduler-row-h) - 2px); }
 .scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
 
 /* THE SEATS on a live bar's drivers row: the lead seat first, their hours

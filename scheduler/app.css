@@ -1620,42 +1620,29 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--dot { inline-size: auto; }
 .scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
 
-/* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says
-   so in a card and an edge. The edge is 4px of the success colour down
-   the bar's start, its own element, because the light and Apple themes paint
-   their edges as the bar's background layers and a watched bar's ring is its
-   ::after. The card takes the contact, time and update rows' place, and the
-   engine lamp joins the destination row. The words take the colours the
-   update's age is written in, which every theme sets to read on its bars. */
-.scheduler-road__edge {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 4px;
-  color: var(--scheduler-mark-success);
-  background: currentColor;
-  pointer-events: none;
-}
+/* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says so in
+   the rows under the customer, and the bar has no coloured edge or border
+   of its own, so the only ring a bar wears is the selected one. Its edge
+   element is not drawn: its class names the hue of the light the bar
+   casts. The words take the colours the update's age is written in, which
+   every theme sets to read on its bars. */
+.scheduler-road__edge { display: none; }
 /* ITS LIGHT, from road-bar.js: the bar's `data-light` says what the
    bus is doing, and its hue is the edge's, the worst warning's red or amber,
    purple while a driver rests in the sleeper, grey with no signal, else
    green, at theme.css's --scheduler-glow, with a core of that hue toward
-   white. An out bar loses its back corners, so the light comes out of a flat
-   back. How much moves is the view menu's Motion, `data-motion` on the board:
-   full, calm, every light steady, or off, the edge alone.
+   white. How much moves is the view menu's Motion, `data-motion` on the
+   board: full, calm, every light steady, or off, no light.
    - run: a flame behind the bar, its core inside its light, as long as the
      bus is fast, --scheduler-thrust, flickering smoothly.
-   - idle and rest: a soft light at the back, breathing with the edge,
-     slower at rest; it stays behind the bar, off the trips around it.
-   - off: the edge alone; scan: a grey edge with a light sweeping up and down
-     it, looking for the signal.
+   - idle and rest: a soft light at the back, breathing, slower at rest; it
+     stays behind the bar, off the trips around it.
+   - off and scan: no light; the dial says Off, or is grey and dashed.
    - A red warning blinks for its first minute, data.js's `data-alarm`, then
      holds a steady red glow.
    The light is the bar's shadow, the only thing a bar draws outside itself,
    so it gives way to a selected, pressed or lifted bar's own. */
 .scheduler-bar--road {
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
   --scheduler-road-hue: var(--scheduler-mark-success);
   --scheduler-road-light: color-mix(in srgb, var(--scheduler-road-hue) var(--scheduler-glow, 45%), transparent);
   --scheduler-road-core: color-mix(in srgb, var(--scheduler-road-hue) var(--scheduler-core-mix, 35%), var(--scheduler-road-white, #fff));
@@ -1784,15 +1771,14 @@ button.scheduler-row-head__num::after {
   block-size: 1.25rem;
   margin-inline-start: var(--rux-spacing-04);
   background: var(--rux-tag-background-blue);
-  border-inline-start: 4px solid var(--scheduler-mark-success);
   --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-success) var(--scheduler-glow, 45%), transparent);
   box-shadow: -8px 0 10px -4px var(--scheduler-road-light);
 }
 .scheduler-lights__swatch[data-light="idle"] { box-shadow: -4px 0 8px -4px var(--scheduler-road-light); }
-.scheduler-lights__swatch[data-light="rest"] { border-color: var(--scheduler-mark-rest); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-rest) var(--scheduler-glow, 45%), transparent); box-shadow: -4px 0 8px -4px var(--scheduler-road-light); }
-.scheduler-lights__swatch[data-light="scan"] { border-color: var(--scheduler-road-scan); box-shadow: none; }
-.scheduler-lights__swatch[data-light="error"] { border-color: var(--scheduler-mark-error); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-error) var(--scheduler-glow, 45%), transparent); }
-.scheduler-lights__swatch[data-light="warning"] { border-color: var(--scheduler-mark-warning); --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-warning) var(--scheduler-glow, 45%), transparent); }
+.scheduler-lights__swatch[data-light="rest"] { --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-rest) var(--scheduler-glow, 45%), transparent); box-shadow: -4px 0 8px -4px var(--scheduler-road-light); }
+.scheduler-lights__swatch[data-light="scan"] { box-shadow: none; outline: 2px dashed var(--scheduler-road-scan); outline-offset: -2px; }
+.scheduler-lights__swatch[data-light="error"] { --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-error) var(--scheduler-glow, 45%), transparent); }
+.scheduler-lights__swatch[data-light="warning"] { --scheduler-road-light: color-mix(in srgb, var(--scheduler-mark-warning) var(--scheduler-glow, 45%), transparent); }
 .scheduler-lights__swatch[data-light="arriving"] {
   box-shadow: none;
   background: linear-gradient(to left, color-mix(in srgb, var(--scheduler-mark-success) var(--scheduler-core-mix, 35%), var(--scheduler-road-white, #fff)), transparent 60%), var(--rux-tag-background-blue);
@@ -1837,20 +1823,65 @@ button.scheduler-row-head__num::after {
   .scheduler-bar.scheduler-bar--starting { animation: none; }
   .scheduler-bar--starting > .scheduler-road__edge { animation: scheduler-road-lit 400ms ease-out; }
 }
-/* THE CARD, road-bar.js's, in place of the contact, time and update rows:
-   the dial on the left and three lines beside it, one row each. Its shade
-   is a layer behind it that also takes in the drivers row, 2px in from the
-   bar's sides, so the words still line up with the destination. All well
-   the card is its shade alone; a warning gives it a 2px border in the
-   warning's colour and, for a red one, a red shade. */
+/* A LIVE BAR, road-bar.js's: the destination and the customer, then the
+   leg in the contact row's place, the cluster in the time and update rows'
+   place, and the drivers row as seats. The cluster's shade is a layer
+   behind it that also takes in the drivers row, 2px in from the bar's
+   sides, so the words still line up with the destination. */
 .scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
+
+/* THE LEG: out, the line with its stops and the bus, back. */
+.scheduler-bar__row.scheduler-road__leg { align-items: center; justify-content: flex-start; gap: var(--rux-spacing-02); }
+.scheduler-week--no-contact .scheduler-road__leg { display: none; }
+.scheduler-bar__row > :is(.scheduler-road__out, .scheduler-road__back) { flex: none; font-variant-numeric: tabular-nums; }
+.scheduler-bar__row > .scheduler-road__rail {
+  --scheduler-strip: var(--scheduler-mark-success);
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: var(--rux-spacing-07);
+  block-size: 12px;
+  margin-inline: var(--rux-spacing-02);
+  overflow: visible;
+  background:
+    linear-gradient(var(--scheduler-strip), var(--scheduler-strip)) 0 50% / var(--scheduler-done) 2px no-repeat,
+    linear-gradient(color-mix(in srgb, currentColor 25%, transparent), color-mix(in srgb, currentColor 25%, transparent)) 0 50% / 100% 2px no-repeat;
+}
+.scheduler-bar__row > .scheduler-road__rail--late { --scheduler-strip: var(--scheduler-mark-warning); }
+.scheduler-road__stop {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-start: var(--scheduler-at);
+  inline-size: 6px;
+  block-size: 6px;
+  margin-inline-start: -3px;
+  border-radius: 50%;
+  background: var(--scheduler-bg);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+.scheduler-road__stop--past { background: currentColor; }
+.scheduler-road__bus {
+  position: absolute;
+  inset-block-start: 1px;
+  inset-inline-start: var(--scheduler-done);
+  inline-size: 10px;
+  block-size: 10px;
+  margin-inline-start: -5px;
+  border-radius: 3px;
+  background: var(--scheduler-strip);
+  box-shadow: 0 0 0 2px var(--scheduler-bg);
+}
+.scheduler-road__bus--still { background: currentColor; }
+.scheduler-road__bus--scan { background: var(--scheduler-road-scan); }
+
+/* THE CLUSTER: the dial, then the tank and one line beside it. */
 .scheduler-road__card {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  grid-template-rows: repeat(3, var(--scheduler-row-h));
-  grid-template-areas: "dial next" "dial when" "dial tank";
+  grid-template-columns: calc(2 * var(--scheduler-row-h)) minmax(0, 1fr);
+  grid-template-rows: repeat(2, var(--scheduler-row-h));
+  grid-template-areas: "dial tank" "dial say";
   column-gap: var(--rux-spacing-03);
   line-height: var(--scheduler-row-h);
 }
@@ -1864,44 +1895,36 @@ button.scheduler-row-head__num::after {
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
-.scheduler-road__card--warning::before { box-shadow: inset 0 0 0 2px var(--scheduler-mark-warning); }
-.scheduler-road__card--error::before {
-  box-shadow: inset 0 0 0 2px var(--scheduler-mark-error);
-  background: color-mix(in srgb, var(--scheduler-mark-error) 18%, transparent);
-}
 /* The drivers row is painted over the shade, which reaches under it. */
 .scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
 .scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: 0; }
-/* Two drivers or more on a bar under an 11rem day leave room for names
-   only; the rings still turn amber under an hour. */
-.scheduler-bar--road { container: scheduler-road / inline-size; }
-@container scheduler-road (inline-size < 168px) {
-  .scheduler-bar__crew > .scheduler-crew:not(:only-child) > .scheduler-crew__hours { display: none; }
-}
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
-
 .scheduler-road__line { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.scheduler-road__next { grid-area: next; font-weight: 600; }
-.scheduler-road__next--error { color: var(--scheduler-age-old); }
-.scheduler-road__next--warning { color: var(--scheduler-age-week); }
-.scheduler-road__when { grid-area: when; font-variant-numeric: tabular-nums; }
-.scheduler-road__tank { grid-area: tank; font-variant-numeric: tabular-nums; }
-.scheduler-road__speed { grid-area: speed; display: none; font-variant-numeric: tabular-nums; }
-.scheduler-road__late { margin-inline-start: var(--rux-spacing-02); color: var(--scheduler-age-week); }
-.scheduler-road__quiet { opacity: .7; }
-.scheduler-road__pump { display: inline-flex; vertical-align: -2px; margin-inline-end: var(--rux-spacing-01); }
+.scheduler-road__tank { grid-area: tank; display: flex; align-items: center; gap: var(--rux-spacing-02); font-variant-numeric: tabular-nums; }
+.scheduler-road__pump { display: flex; flex: none; }
 .scheduler-road__pump svg { inline-size: 13px; block-size: 13px; }
-.scheduler-road__pump--low, .scheduler-road__pct--low { color: var(--scheduler-age-week); }
+.scheduler-road__meter {
+  flex: 1 1 auto;
+  min-inline-size: var(--rux-spacing-05);
+  block-size: 6px;
+  border-radius: 3px;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-fuel) 100% no-repeat,
+    color-mix(in srgb, currentColor 22%, transparent);
+}
+.scheduler-road__pct { flex: none; }
+.scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low { color: var(--scheduler-age-week); }
+.scheduler-road__say { grid-area: say; }
+.scheduler-road__say--error { color: var(--scheduler-age-old); font-weight: 600; }
+.scheduler-road__say--warning { color: var(--scheduler-age-week); font-weight: 600; }
+.scheduler-road__say--quiet { opacity: .7; }
+.scheduler-road__speed { grid-area: speed; display: none; font-variant-numeric: tabular-nums; }
 
-/* THE DIAL: speed outside in green, fuel inside in the ink, each a ring
-   open at the bottom over a faint track; the reading in the middle. */
-.scheduler-road__dial { grid-area: dial; position: relative; align-self: center; inline-size: 44px; block-size: 44px; }
+/* THE DIAL is the bus: a ring of speed over a faint track, open at the
+   bottom, and the reading in its middle. */
+.scheduler-road__dial { grid-area: dial; position: relative; align-self: center; inline-size: calc(2 * var(--scheduler-row-h)); block-size: calc(2 * var(--scheduler-row-h)); }
 .scheduler-road__dial svg { display: block; inline-size: 100%; block-size: 100%; overflow: visible; }
-.scheduler-road__ring { fill: none; stroke: color-mix(in srgb, currentColor 22%, transparent); stroke-width: 3; stroke-linecap: round; }
-.scheduler-road__ring--track { stroke-width: 2; }
+.scheduler-road__ring { fill: none; stroke: color-mix(in srgb, currentColor 22%, transparent); stroke-width: 3.5; stroke-linecap: round; }
 .scheduler-road__ring--speed { stroke: var(--scheduler-mark-success); }
-.scheduler-road__ring--fuel { stroke: currentColor; stroke-width: 2; }
-.scheduler-road__ring--low { stroke: var(--scheduler-mark-warning); }
 .scheduler-road__read {
   position: absolute;
   inset: 0;
@@ -1912,32 +1935,52 @@ button.scheduler-row-head__num::after {
   line-height: 1;
 }
 .scheduler-road__big { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.scheduler-road__small { margin-block-start: 1px; font-size: 9px; opacity: .75; }
+.scheduler-road__small { margin-block-start: 1px; font-size: 8px; opacity: .75; }
 .scheduler-road__small:empty { display: none; }
-.scheduler-road__dial--still .scheduler-road__big { font-size: 11px; }
+.scheduler-road__dial--still .scheduler-road__big { font-size: 10.5px; }
 .scheduler-road__dial--long .scheduler-road__big,
 .scheduler-road__dial--long .scheduler-road__small { color: var(--scheduler-age-week); opacity: 1; }
 .scheduler-road__dial--scan .scheduler-road__ring { stroke: var(--scheduler-road-scan); stroke-dasharray: 4 4; stroke-linecap: butt; }
 .scheduler-road__dial--scan .scheduler-road__read { color: var(--scheduler-road-scan); }
 
-/* FEWER ROWS, as the view's toggles leave among contact, time and update:
-   with two the dial goes and the lines read where and when, then the
-   speed and the tank; with one only where and when; with none no card. */
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card {
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: repeat(2, var(--scheduler-row-h));
-  grid-template-areas: "next when" "speed speed";
-}
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) :is(.scheduler-road__dial, .scheduler-road__tank) { display: none; }
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__speed { display: block; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update,
-  .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card {
+/* ONE ROW, with the time or update row off: the speed in words, or the
+   warning, beside the gauge; with both off, no cluster. */
+:is(.scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card {
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: var(--scheduler-row-h);
-  grid-template-areas: "next when";
+  grid-template-areas: "speed tank";
 }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update,
-  .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__speed { display: none; }
-.scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
+:is(.scheduler-week--no-time, .scheduler-week--no-update) :is(.scheduler-road__dial, .scheduler-road__say) { display: none; }
+:is(.scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__speed { display: block; }
+:is(.scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card:has(> :is(.scheduler-road__say--error, .scheduler-road__say--warning)) { grid-template-areas: "say tank"; }
+:is(.scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card:has(> :is(.scheduler-road__say--error, .scheduler-road__say--warning)) > .scheduler-road__say { display: block; }
+:is(.scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card:has(> :is(.scheduler-road__say--error, .scheduler-road__say--warning)) > .scheduler-road__speed { display: none; }
+.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
+
+/* THE SEATS on a live bar's drivers row: the one at the wheel first, each
+   driver's name over a bar of the driving hours left, sharing the row. */
+.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; }
+.scheduler-crew--seat { position: relative; flex: 1 1 0; align-self: stretch; align-items: flex-start; line-height: calc(var(--scheduler-row-h) - 4px); }
+.scheduler-crew--seat:only-child { flex: 0 1 60%; }
+.scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
+.scheduler-crew--seat > .scheduler-crew__mark { display: none; }
+.scheduler-crew--seat > .scheduler-crew__duty svg { inline-size: 11px; block-size: 11px; }
+.scheduler-crew--seat > .scheduler-crew__hours { display: none; margin-inline-start: auto; font-size: .85em; opacity: .75; }
+.scheduler-crew--seat:only-child > .scheduler-crew__hours,
+.scheduler-crew--seat > .scheduler-crew__hours--low { display: block; opacity: 1; }
+.scheduler-crew__left {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 1px;
+  block-size: 3px;
+  border-radius: 2px;
+  background:
+    linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat,
+    color-mix(in srgb, currentColor 20%, transparent);
+}
+.scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
+.scheduler-crew__left--away { background: var(--scheduler-mark-error); }
+.scheduler-crew--seat[data-duty="off"] > .scheduler-crew__left { background: linear-gradient(color-mix(in srgb, currentColor 60%, transparent), color-mix(in srgb, currentColor 60%, transparent)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 
 /* THE FUEL GAUGE on the live card: a 22 by 7 outline in the ink, filled to
    the tank's share, then the percent; amber under a quarter. */
@@ -1951,12 +1994,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-road__fuel-pct { font-variant-numeric: tabular-nums; opacity: .85; }
 .scheduler-road__fuel--low, .scheduler-road__fuel-pct--low { color: var(--scheduler-age-week); opacity: 1; }
-/* THE ENGINE LAMP at the destination row's end, before the alert count:
-   amber for a warning lamp. */
-.scheduler-bar__row > .scheduler-road__lamp { display: flex; flex: none; align-self: center; margin-inline-start: auto; }
-.scheduler-road__lamp svg { inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
-.scheduler-road__lamp--check { color: var(--scheduler-mark-warning); }
-.scheduler-road__lamp + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
 /* The hours a driver may still drive, after their name only under one hour. */
 .scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }
@@ -1989,8 +2026,8 @@ button.scheduler-row-head__num::after {
 .scheduler-crew--away > .scheduler-crew__name,
 .scheduler-crew__away { color: var(--scheduler-age-old); font-weight: 600; }
 .scheduler-crew__away { flex: none; }
-/* A driver at the wheel the bar does not name, at the drivers row's end. */
-.scheduler-bar__drivers > .scheduler-road__who { flex: none; display: flex; align-items: center; gap: var(--rux-spacing-02); }
+/* A driver at the wheel the bar does not name, a seat at the drivers row's end. */
+.scheduler-bar__drivers > .scheduler-road__who { flex: 1 1 0; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-02); }
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
    seat they are in, so it shows the open hand; the trip in the editor and a
    trip that is back give no driver up. While the figure is out the seat is dimmed, as a carried bar

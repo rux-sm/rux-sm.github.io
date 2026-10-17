@@ -1,31 +1,29 @@
 /* ==========================================================================
    Rux Scheduler — ROAD BAR, a bar while its bus is out on its trip
    --------------------------------------------------------------------------
-   While a bus is out on its trip, its bar wears a green edge down its start,
-   and a card takes the place of its contact, time and update rows, saying
-   what Samsara says. It is laid out for the narrowest bar, a one-day trip
-   on the board's narrowest day.
-   - The dial: an outer ring of speed, green to 80 mph, with the speed in
-     its middle; an inner ring of fuel in the bar's ink, amber under a
-     quarter. Idling or off, the middle says Idle or Off and how long, Idle
-     amber past IDLE_MS. With no signal the dial is grey and dashed.
-   - Three lines beside it: where the bus goes next in bold, when it gets
-     there with the minutes late in amber, and a fuel pump and the tank's
-     percent, or No signal and how long. At a stop they say At it and the
-     stop after; past the last stop, To the yard and when it is due back.
-   - The worst of live-trip.js's warnings takes the three lines instead:
-     its name in red or amber, then its few words split in two. The card
-     gets a border in its colour, and the edge does too.
-   The card is as many rows as the view leaves among contact, time and
-   update: three draw all of it, two drop the dial for two lines of words,
-   one keeps only the first line. app.css does that from the view's classes.
-   An engine's amber warning lamp sits at the destination row's end with what
-   its codes say on its tooltip. Each driver in the drivers row wears their
-   duty in place of their dot, ringed by the driving hours they have left of
-   ten, the ring amber under one hour with the hours after the name; the one
-   at the wheel is bold, and a driver Samsara has in another bus is the red
-   error mark, their name red with the bus after it. A driver at the wheel
-   the bar does not name joins the end of the row.
+   While a bus is out on its trip, its bar keeps its destination and
+   customer, and the rows under them say what Samsara says, laid out for the
+   narrowest bar, a one-day trip on the board's narrowest day.
+   - The leg, in the contact row's place: when it left the yard, a line to
+     when it is due back with each stop a dot and the bus a square on it,
+     green, or amber while the bus will reach its next stop late.
+   - The cluster, in the time and update rows' place: the dial, which is the
+     bus, a ring of speed green to TOP_MPH with the speed in its middle, or
+     Idle or Off and how long, Idle amber past IDLE_MS, or a grey dashed dial
+     with no signal. Beside it the tank as a gauge, amber under a quarter,
+     and one line: the worst of live-trip.js's warnings by name in red or
+     amber, or No signal and how long, or Check engine in amber while the
+     engine's warning lamp is on, or Engine OK.
+   - The drivers row, a seat for each driver: the one at the wheel first and
+     bold with no mark, since the dial says the bus moves, anyone else with
+     their duty's mark; under each name a bar of the driving hours left of
+     ten, amber under one. A driver Samsara has in another bus is the red
+     error mark, their name red with that bus after it. A driver at the
+     wheel the bar does not name joins the end of the row.
+   The bar has no coloured edge or border: a problem is its words and the
+   light the bar casts, in the worst warning's colour. The view's toggles
+   take the leg off with the contact row and the cluster down to one line,
+   then none, with the time and update rows.
 
    `draw(bar, bus, live)` draws it on a bar bar.js drew, or takes it off
    with no `bus`. `bus` is one bus of samsara-now's answer, and `live` what
@@ -102,15 +100,16 @@
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
     return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
   };
-  // One driver's duty on their name: the mark ringed by the hours left, bold
-  // at the wheel, the hours after the name under one, and the hours on the
-  // tooltip; logged into another bus, the red error mark and that bus after
-  // the name; with no driver, the name as the bar drew it.
+  /* One driver's seat on the drivers row: their name, a bar under it of the
+     driving hours they have left of ten, amber under one, and those hours,
+     which app.css shows for a driver alone or under one. The one at the
+     wheel goes first, bold and with no mark, since the dial says the bus is
+     moving; anyone else wears their duty's mark. A driver Samsara has in
+     another bus is the red error mark and their name in red with that bus
+     after it. With no driver, the name as the bar drew it. */
   function crewOn(item, d, elsewhere) {
-    item.querySelector(':scope > .scheduler-crew__duty')?.remove();
-    item.querySelector(':scope > .scheduler-crew__hours')?.remove();
-    item.querySelector(':scope > .scheduler-crew__away')?.remove();
-    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away');
+    for (const part of ['duty', 'hours', 'away', 'left']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
+    item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
     delete item.dataset.duty;
     if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
     if (elsewhere) {
@@ -119,32 +118,25 @@
       m.appendChild(svgUse('#m-error-fill', '16', '0 0 16 16'));
       item.prepend(m);
       item.dataset.duty = 'away';
-      item.classList.add('scheduler-crew--away');
-      item.appendChild(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`));
+      item.classList.add('scheduler-crew--away', 'scheduler-crew--seat');
+      item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`), leftBar(null, true));
       item.title = `${item.title}\nSamsara: ${elsewhere.sentence}`;
       return;
     }
     if (!d) return;
     item.dataset.baseTitle = item.title;
-    if (d.duty) { item.prepend(mark(d.duty, d.left_ms)); item.dataset.duty = d.duty; }
+    item.classList.add('scheduler-crew--seat');
+    if (d.duty) item.dataset.duty = d.duty;
+    if (d.duty && d.duty !== 'driving') item.prepend(mark(d.duty));
     item.classList.toggle('scheduler-crew--wheel', d.wheel);
-    if (d.left_ms != null && d.left_ms < HOUR) item.appendChild(hoursEl(d.left_ms));
+    if (d.left_ms != null) item.append(hoursEl(d.left_ms), leftBar(d.left_ms));
     item.title = `${item.title}\nSamsara: ${words(d)}`;
   }
-
-  /* The engine's amber warning lamp at the destination row's end, with what
-     its codes say; the red stop lamp is live-trip.js's warning instead. */
-  function lamp(bar, bus) {
-    const row = bar.querySelector(':scope > .scheduler-bar__dest');
-    row?.querySelector(':scope > .scheduler-road__lamp')?.remove();
-    if (!row || !bus?.fault || bus.fault === 'stop') return;
-    const it = el('span', `scheduler-road__lamp scheduler-road__lamp--${bus.fault}`);
-    it.appendChild(svgUse('#m-car_repair-fill', '16', '0 0 16 16'));
-    const said = ['Engine warning lamp on', ...(bus.faults ?? [])];
-    it.title = said.join('\n');
-    it.setAttribute('role', 'img');
-    it.setAttribute('aria-label', said.join(' · '));
-    row.insertBefore(it, row.children[1] ?? null);
+  // The bar of driving hours left under a seat; red and full for the wrong bus.
+  function leftBar(ms, away) {
+    const b = el('span', `scheduler-crew__left${away ? ' scheduler-crew__left--away' : ms < HOUR ? ' scheduler-crew__left--low' : ''}`);
+    b.style.setProperty('--scheduler-left', `${away ? 100 : Math.round(Math.min(1, ms / DRIVE) * 100)}%`);
+    return b;
   }
 
   /* A bar coming on the road starts as a bus does: with its engine running it
@@ -186,9 +178,9 @@
     /* THE BAR'S LIGHT, which app.css draws from `data-light`: run while the
        bus moves, its flame as long as it is fast; idle with the engine
        running and the bus still; rest while a driver is in the sleeper and
-       none drives; off with the engine off; scan with no signal. The edge
-       takes the worst warning's colour, else purple at rest, grey with no
-       signal, green. A red warning blinks for the first minute this page has
+       none drives; off with the engine off; scan with no signal. The light's
+       hue is named by an edge element app.css does not draw: the worst
+       warning's colour, else purple at rest, grey with no signal, green. A red warning blinks for the first minute this page has
        seen it, `data-alarm`. A bus moving at the last answer and stopped now
        flashes its brake lights once, and one due at its next stop within
        five minutes shows its headlight. */
@@ -228,7 +220,6 @@
       bar.toggleAttribute('data-arriving', !!next?.stop && !next.at && next.arrival != null
         && next.arrival - now <= ARRIVING_MS && next.arrival >= now - 60e3);
     }
-    lamp(bar, bus);
     const away = said?.warnings.find(w => w.kind === 'wrongBus') ?? null;
     for (const item of crew) {
       const id = item.dataset.driverId;
@@ -236,19 +227,20 @@
     }
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
+    leg(bar, bus, next, bar.dataset.light === 'run');
     card(bar, bus, next, said, worst, live.at);
   }
 
-  /* A driver at the wheel the bar does not name, at the drivers row's end
-     with their duty ring and the hours under one. */
+  /* A driver at the wheel the bar does not name, a seat at the drivers
+     row's end. */
   function wheelOn(bar, bus, named) {
     const row = bar.querySelector(':scope > .scheduler-bar__drivers');
     row?.querySelector(':scope > .scheduler-road__who')?.remove();
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
-    const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--wheel');
-    who.append(mark(wheel.duty ?? 'driving', wheel.left_ms), el('span', 'scheduler-crew__name', short(wheel.name)));
-    if (wheel.left_ms != null && wheel.left_ms < HOUR) who.appendChild(hoursEl(wheel.left_ms));
+    const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
+    who.appendChild(el('span', 'scheduler-crew__name', short(wheel.name)));
+    if (wheel.left_ms != null) who.append(hoursEl(wheel.left_ms), leftBar(wheel.left_ms));
     who.title = `${wheel.name}, not on this trip\nSamsara: ${words(wheel)}`;
     row.appendChild(who);
   }
@@ -267,18 +259,15 @@
     return path;
   };
 
-  /* The dial: speed outside, fuel inside, and in the middle the speed, or
-     Idle or Off with how long, or a dash with no signal. */
+  /* The dial is the bus: a ring of speed, green to TOP_MPH, and in the middle
+     the speed, or Idle or Off and how long, or a dash with no signal. */
   function dial(bus) {
     const box = el('span', 'scheduler-road__dial');
     const svg = document.createElementNS(SVG, 'svg');
     svg.setAttribute('viewBox', '0 0 44 44');
     svg.setAttribute('aria-hidden', 'true');
-    const low = bus.fuel != null && bus.fuel < LOW_FUEL;
-    svg.append(arc(20, null, 'scheduler-road__ring'),
-      arc(20, bus.engine === 'on' ? (bus.mph ?? 0) / TOP_MPH * 100 : 0, 'scheduler-road__ring scheduler-road__ring--speed'),
-      arc(15, null, 'scheduler-road__ring scheduler-road__ring--track'),
-      arc(15, bus.fuel ?? 0, `scheduler-road__ring scheduler-road__ring--fuel${low ? ' scheduler-road__ring--low' : ''}`));
+    svg.append(arc(19, null, 'scheduler-road__ring'),
+      arc(19, bus.engine === 'on' ? (bus.mph ?? 0) / TOP_MPH * 100 : 0, 'scheduler-road__ring scheduler-road__ring--speed'));
     const big = el('span', 'scheduler-road__big'), small = el('span', 'scheduler-road__small');
     if (bus.engine == null) { box.classList.add('scheduler-road__dial--scan'); big.textContent = '–'; }
     else if (bus.engine === 'idle' || bus.engine === 'off') {
@@ -296,12 +285,52 @@
     return box;
   }
 
-  // A stop's name as the card says it: the yard by that word.
-  const placeOf = stop => (stop.type === 'return' ? 'the yard' : stop.name || 'the next stop');
-  const clockOf = ms => clockEl(hhmm(Road.clockOf(ms), true));
+  // How far through the leg an instant is, 0 to 1, from yard-out to yard-back.
+  const shareOf = (bar, ms) => {
+    const from = Number(bar.dataset.roadFrom) + Road.MARGIN, to = Number(bar.dataset.roadTo) - Road.MARGIN;
+    return to > from ? Math.min(1, Math.max(0, (ms - from) / (to - from))) : 0;
+  };
 
-  /* THE CARD in place of the contact, time and update rows: the dial, three
-     lines and, on a board with two rows for it, the speed in words. */
+  /* THE LEG on the row under the customer: when it left the yard, a line from
+     yard-out to yard-back with each stop a dot, filled once reached, and the
+     bus a square on it, and when it is due back. The line is green, amber
+     while the bus will reach its next stop late. The bus is drawn at now
+     along the leg, kept between the last stop reached and the next. */
+  function leg(bar, bus, next, moving) {
+    let row = bar.querySelector(':scope > .scheduler-road__leg');
+    if (!bus) { row?.remove(); return; }
+    if (!row) {
+      row = el('div', 'scheduler-bar__row scheduler-road__leg');
+      bar.insertBefore(row, bar.querySelector(':scope > .scheduler-road__card') ?? bar.querySelector(':scope > .scheduler-bar__drivers'));
+    }
+    const line = el('span', `scheduler-road__rail${next?.late ? ' scheduler-road__rail--late' : ''}`);
+    const stops = next?.stops ?? [];
+    const reached = next?.where?.reached ?? -1;
+    const at = stops.map(s => (s.due != null ? shareOf(bar, s.due) : null));
+    for (const [i, x] of at.entries()) {
+      if (x == null) continue;
+      const dot = el('i', `scheduler-road__stop${i <= reached ? ' scheduler-road__stop--past' : ''}`);
+      dot.style.setProperty('--scheduler-at', `${Math.round(x * 100)}%`);
+      line.appendChild(dot);
+    }
+    let now = shareOf(bar, Date.now());
+    const lo = at.slice(0, reached + 1).filter(x => x != null).at(-1) ?? 0;
+    const hi = at.slice(reached + 1).find(x => x != null) ?? 1;
+    now = Math.min(Math.max(now, lo), next?.at ? lo : hi);
+    const busMark = el('em', `scheduler-road__bus${bus.engine == null ? ' scheduler-road__bus--scan' : moving ? '' : ' scheduler-road__bus--still'}`);
+    line.style.setProperty('--scheduler-done', `${Math.round(now * 100)}%`);
+    line.appendChild(busMark);
+    const out = el('span', 'scheduler-road__out'), back = el('span', 'scheduler-road__back');
+    if (bar.dataset.depart) out.append(clockEl(bar.dataset.depart));
+    if (bar.dataset.back) back.append(clockEl(bar.dataset.back));
+    row.replaceChildren(out, line, back);
+  }
+
+  /* THE CLUSTER in place of the time and update rows: the dial, and beside it
+     the tank as a gauge and one line, the worst warning's name in its
+     colour, or No signal and how long, or the engine: Check engine in amber
+     for its warning lamp, else Engine OK. On a board with one row for it,
+     the speed in words and the gauge. */
   function card(bar, bus, next, said, worst, at) {
     let box = bar.querySelector(':scope > .scheduler-road__card');
     if (!bus) { box?.remove(); return; }
@@ -309,44 +338,24 @@
       box = el('div', 'scheduler-road__card');
       bar.insertBefore(box, bar.querySelector(':scope > .scheduler-bar__drivers'));
     }
-    box.className = `scheduler-road__card${worst ? ` scheduler-road__card--${worst.tone}` : ''}`;
-    const line = cls => el('span', `scheduler-road__line ${cls}`);
-    const first = line('scheduler-road__next'), second = line('scheduler-road__when'), third = line('scheduler-road__tank');
-    const fourth = line('scheduler-road__speed');
-    if (worst) {
-      first.classList.add(`scheduler-road__next--${worst.tone}`);
-      first.textContent = worst.title;
-      const [one, ...rest] = String(worst.detail ?? '').split(' · ');
-      second.textContent = one;
-      if (rest.length) third.textContent = rest.join(' · ');
-    } else if (next?.at && next.stop) {
-      first.textContent = `At ${placeOf(next.stop)}`;
-      const after = next.stops?.[next.where?.next];
-      if (after) second.textContent = `Then ${placeOf(after)}`;
-    } else if (next?.stop) {
-      first.textContent = next.stop.type === 'return' ? 'To the yard' : next.stop.name;
-      const when = next.arrival ?? next.stop.due;
-      if (when != null) second.append(clockOf(when));
-      if (next.late) second.appendChild(el('span', 'scheduler-road__late', `+${next.late}m`));
-    } else {
-      first.textContent = 'To the yard';
-      if (bar.dataset.back) second.append(clockEl(bar.dataset.back));
-    }
-    // The tank, unless a warning's words took the line; with no signal, how long since.
-    if (!third.childNodes.length) {
-      if (bus.engine == null) third.append(el('span', 'scheduler-road__quiet', bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal'));
-      else if (bus.fuel != null) third.append(...pump(bus.fuel));
-    }
+    box.className = 'scheduler-road__card';
+    const tank = el('span', 'scheduler-road__line scheduler-road__tank');
+    if (bus.fuel != null) tank.append(...gauge(bus.fuel));
+    const say = el('span', 'scheduler-road__line scheduler-road__say');
+    if (worst) { say.classList.add(`scheduler-road__say--${worst.tone}`); say.textContent = worst.title; }
+    else if (bus.engine == null) { say.classList.add('scheduler-road__say--quiet'); say.textContent = bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal'; }
+    else if (bus.fault === 'check') { say.classList.add('scheduler-road__say--warning'); say.textContent = 'Check engine'; }
+    else { say.classList.add('scheduler-road__say--quiet'); say.textContent = 'Engine OK'; }
     // The speed in words, which app.css shows only where the dial has no room.
-    fourth.textContent = bus.engine == null ? 'No signal' : bus.engine === 'idle' ? 'Idle' : bus.engine === 'off' ? 'Off'
-      : bus.mph != null ? `${bus.mph} mph` : 'Running';
-    if (bus.fuel != null) fourth.append(' · ', ...pump(bus.fuel));
-    box.replaceChildren(dial(bus), first, second, third, fourth);
+    const speed = el('span', 'scheduler-road__line scheduler-road__speed', bus.engine == null ? 'No signal' : bus.engine === 'idle' ? 'Idle'
+      : bus.engine === 'off' ? 'Off' : bus.mph != null ? `${bus.mph} mph` : 'Running');
+    box.replaceChildren(dial(bus), tank, say, speed);
     const arrives = next?.stop && !next.at && next.arrival != null
       ? `${next.stop.name}: arrives ${hhmm(Road.clockOf(next.arrival), true)}${next.stop.due != null ? `, due ${hhmm(Road.clockOf(next.stop.due), true)}` : ''}${next.late ? `, ${next.late} min late` : ''}` : null;
     // Every warning heads the tooltip, each in a sentence.
-    box.title = [
+    const title = [
       ...said.warnings.map(w => `${w.title}: ${w.sentence}`),
+      bus.fault === 'check' ? ['Engine warning lamp on', ...(bus.faults ?? [])].join(' · ') : null,
       [bus.engine === 'idle' ? 'Idling' : bus.engine === 'off' ? 'Engine off' : bus.engine == null ? 'No engine reading'
         : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
       bus.fuel != null ? `Fuel ${bus.fuel}%` : null,
@@ -355,14 +364,19 @@
       ...bus.drivers.map(d => `${d.name}: ${words(d)}`),
       at ? `Samsara, ${new Date(at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : null,
     ].filter(Boolean).join('\n');
+    box.title = title;
+    const legRow = bar.querySelector(':scope > .scheduler-road__leg');
+    if (legRow) legRow.title = title;
   }
 
-  // The fuel pump and the tank's percent, amber under a quarter.
-  function pump(fuel) {
+  // The tank as a gauge: the pump, a bar filled to the tank's share, and the percent; amber under a quarter.
+  function gauge(fuel) {
     const low = fuel < LOW_FUEL;
     const icon = el('span', `scheduler-road__pump${low ? ' scheduler-road__pump--low' : ''}`);
     icon.appendChild(svgUse('#m-local_gas_station-fill', '16', '0 0 16 16'));
-    return [icon, el('span', `scheduler-road__pct${low ? ' scheduler-road__pct--low' : ''}`, `${fuel}%`)];
+    const meter = el('span', `scheduler-road__meter${low ? ' scheduler-road__meter--low' : ''}`);
+    meter.style.setProperty('--scheduler-fuel', `${fuel}%`);
+    return [icon, meter, el('span', `scheduler-road__pct${low ? ' scheduler-road__pct--low' : ''}`, `${fuel}%`)];
   }
 
   window.SchedulerRoadBar = { draw, HOUR, DUTY, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words };

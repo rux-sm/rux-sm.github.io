@@ -15067,7 +15067,7 @@
     show();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
-  // What the lights mean: the legend of a live bar's lights, in a window of its own.
+  // What the colours mean: the legend of a live bar's dial, in a window of its own.
   document.getElementById('scheduler-menu-lights')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }

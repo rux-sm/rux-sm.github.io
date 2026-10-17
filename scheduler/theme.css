@@ -45,18 +45,14 @@
   --scheduler-on-warning: var(--rux-text-inverse);
   --scheduler-mark-blank: var(--rux-text-primary);
 }
-/* THE LIGHT A LIVE BAR CASTS: strong on a dark board, where light shows,
-   and fainter on a light one. Its hot core, its headlight and its brake
-   flash are its own colour mixed toward white on a dark board, so no light
-   borrows a warning's colour, and its colour itself on a light one, where
-   white shows nothing. The grey is a bus with no signal. */
+/* THE LIGHT A LIVE MAP PIN CASTS: strong on a dark board, where light
+   shows, and fainter on a light one. The grey is a bus with no signal, on a
+   pin and on a live bar's dial. */
 :root,
 [data-theme="white"],
 [data-theme="g10"],
 [data-theme="apple-light"] {
   --scheduler-glow: 40%;
-  --scheduler-core-mix: 100%;
-  --scheduler-road-white: #fff;
   --scheduler-road-scan: var(--rux-icon-secondary);
 }
 [data-theme="g90"],
@@ -67,8 +63,6 @@
 [data-theme="spotify-dark"],
 [data-theme="apple-dark"] {
   --scheduler-glow: 70%;
-  --scheduler-core-mix: 35%;
-  --scheduler-road-white: #fff;
   --scheduler-road-scan: var(--rux-text-secondary);
 }
 

@@ -173,10 +173,10 @@
     }))));
     const crew = {
       id: 'crew', title: 'The crew',
-      intro: "Each seat in role order, its mark the driver's answer: white not sent, amber waiting, green confirmed, red declined.",
+      intro: "Each seat in role order, its mark the driver's answer, each its own shape: a grey broken ring not sent, a red bar to assign, an amber triangle waiting, a green check confirmed, a red mark declined.",
       samples: [
         { name: 'Each status', note: 'A declined name is struck through, so colour is never the only sign.', days: 3, rows: statusRows },
-        { name: 'Co-driver and relief', note: 'Drivers are dots; a relief driver at either end is two arrows.', days: 3,
+        { name: 'Co-driver and relief', note: 'A driver wears their answer; a relief driver at either end is two arrows.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ bus: 'b101',
             crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'pending-response'], ['d3', 'relief-start', 'confirmed'], ['d6', 'relief-end']] }] }), { span: 3 }))] },
         { name: 'Empty seats', note: 'Dimmed; in the warning colour once the leg is due, today to the end of next week.', days: 3,

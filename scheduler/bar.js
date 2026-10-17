@@ -166,14 +166,13 @@
   }
 
   /* One crew member on the drivers row: a mark in the status's tone, then the
-     short name. A driver or co-driver's mark is a small dot, and a relief
-     driver's the two opposite arrows, so a relief never reads as another
-     driver while every driver costs as little width as it can. The colours
-     are the answer and nothing else: white no status yet, amber sent and
-     waiting, green confirmed, red declined. So a role nobody fills has no
-     status either, its mark white and "No driver" dimmed, as "No times" is,
-     and a declined driver's name is struck through, so the colour is never
-     the only signal. An empty seat on a leg that is due takes the warning
+     short name. A driver or co-driver's mark is their status's own shape, the
+     one the editor shows, and a relief driver's the two opposite arrows, so a
+     relief never reads as another driver. The colours are the answer: grey
+     not sent, red to assign, amber sent and waiting, green confirmed, red
+     declined. A role nobody fills has no status, its mark a dashed empty
+     circle and "No driver" dimmed, as "No times" is, and a declined driver's
+     name is struck through as well. An empty seat on a leg that is due takes the warning
      colour instead, mark and words, because it is the one that needs filling
      now. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
@@ -184,7 +183,8 @@
     const dot = !RELIEF_ROLES.has(c.role);
     const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
       c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
-    mark.appendChild(dot ? el('span', 'scheduler-crew__dot') : svgUse(c.icon, '16', c.box));
+    mark.appendChild(c.needed && dot ? el('span', 'scheduler-crew__dot')
+      : dot ? svgUse(c.status.icon, '16', '0 0 32 32') : svgUse(c.icon, '16', c.box));
     item.appendChild(mark);
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));

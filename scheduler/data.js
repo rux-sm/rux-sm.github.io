@@ -2447,21 +2447,21 @@
       detail: r.detail, clash: [r.busy, r.lapse, r.near].filter(Boolean).join(' · '),
     }));
 
-  /* A status as Carbon's icon indicator: a shape per status as well as a
-     colour, and the yellow one carries its own dark mark, so each reads in
+  /* A status as Carbon's icon indicator: the shape DRIVER_STATUSES gives it,
+     the one the bar draws, in Carbon's colour, and the yellow one carries its own dark mark, so each reads in
      every theme without the bar's disc. The field's label already names the
      role, so the form needs no role icon. Each class is written out whole,
      for the class sweep. */
   const STATUS_ICON = {
-    off: { cls: 'rux--icon-indicator--not-started', icon: '#m-motion_photos_on' },
-    'pending-assignment': { cls: 'rux--icon-indicator--caution-major', icon: '#m-do_not_disturb_on-fill' },
-    'pending-response': { cls: 'rux--icon-indicator--caution-minor', icon: '#m-warning-fill' },
-    confirmed: { cls: 'rux--icon-indicator--succeeded', icon: '#m-check_circle-fill' },
-    declined: { cls: 'rux--icon-indicator--failed', icon: '#m-error-fill' },
+    off: 'rux--icon-indicator--not-started',
+    'pending-assignment': 'rux--icon-indicator--caution-major',
+    'pending-response': 'rux--icon-indicator--caution-minor',
+    confirmed: 'rux--icon-indicator--succeeded',
+    declined: 'rux--icon-indicator--failed',
   };
   const statusIcon = value => {
-    const svg = svgUse(STATUS_ICON[value].icon, '16', '0 0 32 32');
-    svg.setAttribute('class', `${STATUS_ICON[value].cls} scheduler-status-icon`);
+    const svg = svgUse(DRIVER_STATUSES.find(st => st.value === value).icon, '16', '0 0 32 32');
+    svg.setAttribute('class', `${STATUS_ICON[value]} scheduler-status-icon`);
     return svg;
   };
 

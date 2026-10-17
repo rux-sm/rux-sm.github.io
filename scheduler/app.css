@@ -1879,8 +1879,8 @@ button.scheduler-row-head__num::after {
 /* The hours a driver may still drive, after their name only under one hour. */
 .scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }
-/* A driver's duty takes the place of their dot: the wheel driving, the
-   clipboard on duty, the moon in the sleeper and the power button off duty,
+/* A driver's duty takes the place of their status mark: the wheel driving,
+   amber under an hour, the clipboard on duty, the moon in the sleeper and the power button off duty,
    each its own shape so the colour is never the only signal. Ringed, the
    ring is the hours they may still drive, of ten, amber under one. */
 .scheduler-crew[data-duty]:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
@@ -1897,12 +1897,13 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__duty--ring svg { inline-size: 10px; block-size: 10px; }
 .scheduler-crew__duty--low { --scheduler-ring: var(--scheduler-mark-warning); }
 .scheduler-crew__duty--driving { color: var(--scheduler-mark-success); }
+.scheduler-crew__duty--driving.scheduler-crew__duty--low { color: var(--scheduler-mark-warning); }
 .scheduler-crew__duty--on { color: var(--scheduler-mark-info); }
 .scheduler-crew__duty--sleeper { color: var(--scheduler-mark-rest); }
 .scheduler-crew__duty--off { color: currentColor; }
 .scheduler-crew__duty--off svg { opacity: .7; }
 .scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
-/* A driver Samsara has in another bus: the red error mark, the name in red
+/* A driver Samsara has in another bus: the red stop sign, the name in red
    and the bus after it. */
 .scheduler-crew__duty--away { color: var(--scheduler-mark-error); }
 .scheduler-crew--away > .scheduler-crew__name,

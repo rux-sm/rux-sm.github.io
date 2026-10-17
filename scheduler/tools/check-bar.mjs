@@ -90,14 +90,14 @@ const parse = sel => {
   let comb = ' ';
   for (const tok of sel.trim().split(/\s*(>)\s*|\s+/).filter(Boolean)) {
     if (tok === '>') { comb = '>'; continue; }
-    steps.push({ comb, scope: tok === ':scope', classes: [...tok.matchAll(/\.([\w-]+)/g)].map(m => m[1]),
+    steps.push({ comb, scope: tok === ':scope', tag: tok.match(/^[a-z]+/)?.[0].toUpperCase(), classes: [...tok.matchAll(/\.([\w-]+)/g)].map(m => m[1]),
       attrs: [...tok.matchAll(/\[([\w-]+)(?:="([^"]*)")?\]/g)].map(m => [m[1], m[2]]) });
     comb = ' ';
   }
   return steps;
 };
 const fits = (e, s, scope) => (s.scope ? e === scope
-  : s.classes.every(c => e.classList.contains(c)) && s.attrs.every(([k, v]) => e.hasAttribute(k) && (v == null || e.getAttribute(k) === v)));
+  : (!s.tag || e.tagName === s.tag) && s.classes.every(c => e.classList.contains(c)) && s.attrs.every(([k, v]) => e.hasAttribute(k) && (v == null || e.getAttribute(k) === v)));
 function matches(e, steps, scope, i = steps.length - 1) {
   if (!e || !fits(e, steps[i], scope)) return false;
   if (i === 0) return steps[0].scope || true;
@@ -179,13 +179,17 @@ expect('an open trip\'s update takes its age\'s colour, a settled one none',
 expect('a leg with no bus says so', drawn('trip-bar', 'Needs a bus').map(b => text(b, '.scheduler-bar__crew')), ['Needs a bus']);
 
 console.log('\n  The crew');
-expect('each status its tone, a declined name struck through',
-  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|warning|success)$/.test(x))?.split('--')[1], c.classList.contains('scheduler-crew--declined')]; }),
-  [['off', false], ['error', false], ['warning', false], ['success', false], ['success', false], ['error', true]]);
+// The href of the symbol a mark draws: its svg's one <use>.
+const useOf = m => m ? [...m.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null;
+const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
+expect('each status its tone and shape, a declined name struck through',
+  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
+  [['off', '#m-motion_photos_on', false], ['error', '#m-do_not_disturb_on-fill', false], ['warning', '#m-warning-fill', false],
+    ['success', '#m-check_circle-fill', false], ['success', '#m-check_circle-fill', false], ['error', '#m-error-fill', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
-expect('drivers are dots and relief drivers arrows',
-  [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, has(c, '.scheduler-crew__dot')]),
-  [['driver', true], ['co-driver', true], ['relief-start', false], ['relief-end', false]]);
+expect('drivers wear their status and relief drivers arrows',
+  [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, icon(c) === '#m-swap_horiz-fill']),
+  [['driver', false], ['co-driver', false], ['relief-start', true], ['relief-end', true]]);
 expect('an empty seat is in the warning colour only while the leg is due',
   drawn('crew', 'Empty seats').map(b => [...b.querySelectorAll('.scheduler-crew')].filter(c => c.querySelector('.scheduler-bar__none')).map(c => c.classList.contains('scheduler-crew--due'))),
   [[true, true], [false, false]]);
@@ -233,8 +237,9 @@ const wrong = lit('Wrong bus').querySelector('.scheduler-crew');
 expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.duty, text(wrong, '.scheduler-crew__away')], ['away', 'in 119']);
 expect('under an hour left, the bar and the hours are amber',
   [has(lit('Short on hours'), '.scheduler-crew__left--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50']);
-expect('the one at the wheel wears no mark, anyone else their duty',
-  [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => has(c, '.scheduler-crew__duty')), [false, true]);
+expect('every driver wears their duty, the one at the wheel the steering wheel',
+  [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => useOf(c.querySelector('.scheduler-crew__duty'))),
+  ['#m-search_hands_free-fill', '#m-bedtime-fill']);
 expect('two drivers: both in the row, the one at the wheel bold',
   [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
@@ -245,7 +250,8 @@ expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long 
   [['Idle', false], ['Idle', true]]);
 expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
 expect('a driver Samsara has in the bus reads confirmed whatever they answered',
-  lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), 'scheduler-crew__mark--success');
+  [lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), icon(lit('In the bus, not yet confirmed').querySelector('.scheduler-crew'))],
+  ['scheduler-crew__mark--success', '#m-check_circle-fill']);
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
 expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 

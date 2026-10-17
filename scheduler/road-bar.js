@@ -15,11 +15,12 @@
      pump, a short tank bar and its percent; the second row's room is air
      round them and the drivers.
    - The drivers row, a seat for each driver: the one at the wheel first and
-     bold with their status dot, confirmed since Samsara has them in the
-     bus, their driving
+     bold behind the steering wheel, amber under an hour, their driving
      hours left at the seat's end over a 2px bar of them, amber under one;
-     anyone else with their duty's mark, and their hours only under one. A
-     driver Samsara has in another bus is the red error mark, their name red
+     anyone else with their duty's mark, and their hours only under one;
+     with no duty reading, their status mark, Confirmed while Samsara has
+     them in the bus. A
+     driver Samsara has in another bus is the red stop sign, their name red
      with that bus after it. A driver at the wheel the bar does not name
      joins the end of the row.
    The bar wears no edge, border or light of its own: how the bus is doing
@@ -63,6 +64,9 @@
   };
 
   const HOUR = 3600e3;
+  const { DRIVER_STATUSES } = window.SchedulerLegFacts;
+  const CONFIRMED_ICON = DRIVER_STATUSES.find(s => s.value === 'confirmed').icon;
+  const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
   const DUTY = {
     driving: { icon: '#m-search_hands_free-fill', word: 'Driving' },
     on: { icon: '#m-assignment-fill', word: 'On duty' },
@@ -105,11 +109,10 @@
   /* One driver's seat on the drivers row: their name, the driving hours they
      have left and a 2px bar under the seat of them, of ten, amber under one;
      app.css shows the hours and the bar for the one at the wheel, and the
-     hours for anyone under one. The one at the wheel goes first, bold, with
-     their status dot, which reads confirmed while Samsara has them in the
-     bus, as data.js saves it near yard-out; anyone else wears their duty's
-     mark. A driver Samsara has in
-     another bus is the red error mark and their name in red with that bus
+     hours for anyone under one. Each wears their duty's mark, the one at the
+     wheel first, bold, behind the steering wheel; with no duty reading,
+     their status mark shows, Confirmed while Samsara has them in the bus,
+     as data.js saves it near yard-out. A driver Samsara has in another bus is the red stop sign and their name in red with that bus
      after it. With no driver, the name as the bar drew it. */
   function crewOn(item, d, elsewhere) {
     for (const part of ['duty', 'hours', 'away', 'left']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
@@ -118,14 +121,16 @@
     // A driver Samsara has in the bus is on the trip: their mark reads
     // confirmed while the bus is out, whatever they answered.
     const statusMark = item.querySelector(':scope > .scheduler-crew__mark');
+    const statusUse = statusMark?.classList.contains('scheduler-crew__mark--dot') ? statusMark.querySelector('use') : null;
     if (statusMark?.dataset.baseClass != null) { statusMark.className = statusMark.dataset.baseClass; delete statusMark.dataset.baseClass; }
+    if (statusUse && statusMark.dataset.baseIcon != null) { statusUse.setAttribute('href', statusMark.dataset.baseIcon); delete statusMark.dataset.baseIcon; }
     item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
     delete item.dataset.baseDeclined;
     if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
     if (elsewhere) {
       item.dataset.baseTitle = item.title;
       const m = el('span', 'scheduler-crew__duty scheduler-crew__duty--away');
-      m.appendChild(svgUse('#m-error-fill', '16', '0 0 16 16'));
+      m.appendChild(svgUse('#m-report-fill', '16', '0 0 16 16'));
       item.prepend(m);
       item.dataset.duty = 'away';
       item.classList.add('scheduler-crew--away', 'scheduler-crew--seat');
@@ -139,11 +144,19 @@
     if (statusMark) {
       statusMark.dataset.baseClass = statusMark.className;
       statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|error|success)\b/, 'scheduler-crew__mark--success');
+      if (statusUse) {
+        statusMark.dataset.baseIcon = statusUse.getAttribute('href');
+        statusUse.setAttribute('href', CONFIRMED_ICON);
+      }
     }
     item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
     item.classList.remove('scheduler-crew--declined');
     if (d.duty) item.dataset.duty = d.duty;
-    if (d.duty && d.duty !== 'driving') item.prepend(mark(d.duty));
+    if (d.duty) {
+      const m = mark(d.duty);
+      m.classList.toggle('scheduler-crew__duty--low', d.duty === 'driving' && d.left_ms != null && d.left_ms < HOUR);
+      item.prepend(m);
+    }
     item.classList.toggle('scheduler-crew--wheel', d.wheel);
     if (d.left_ms != null) item.append(hoursEl(d.left_ms), leftBar(d.left_ms));
     item.title = `${item.title}\nSamsara: ${words(d)}`;
@@ -226,10 +239,10 @@
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
     const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
-    // A plain dot in the slot every driver has, so the name lines up: this
-    // driver has no status on the trip to colour it.
+    // Not sent's broken ring in the slot every driver has, so the name lines
+    // up: this driver has no status on the trip to colour it.
     const mark = el('span', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
-    mark.appendChild(el('span', 'scheduler-crew__dot'));
+    mark.appendChild(svgUse(NOT_SENT_ICON, '16', '0 0 32 32'));
     who.append(mark, el('span', 'scheduler-crew__name', short(wheel.name)));
     if (wheel.left_ms != null) who.append(hoursEl(wheel.left_ms), leftBar(wheel.left_ms));
     who.title = `${wheel.name}, not on this trip\nSamsara: ${words(wheel)}`;

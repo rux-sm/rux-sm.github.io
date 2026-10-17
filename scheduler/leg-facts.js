@@ -155,16 +155,17 @@
     { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
     { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
   ];
-  /* The five states `trip_driver_statuses` holds, and the tone each paints.
-     Not sent is grey rather than no disc at all: it is the first step of the
-     run, not the absence of one. Its stored value stays `off`, which is what
-     rux-ui writes. */
+  /* The five states `trip_driver_statuses` holds, the tone each paints and
+     the shape it is drawn as, on the bar and in the editor alike, each its own
+     so the colour is never the only signal. Not sent is the broken ring rather
+     than nothing: it is the first step of the run, not the absence of one. Its
+     stored value stays `off`, which is what rux-ui writes. */
   const DRIVER_STATUSES = [
-    { value: 'off', label: 'Not sent', tone: 'off' },
-    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error' },
-    { value: 'pending-response', label: 'Pending response', tone: 'warning' },
-    { value: 'confirmed', label: 'Confirmed', tone: 'success' },
-    { value: 'declined', label: 'Declined', tone: 'error' },
+    { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-motion_photos_on' },
+    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-do_not_disturb_on-fill' },
+    { value: 'pending-response', label: 'Pending response', tone: 'warning', icon: '#m-warning-fill' },
+    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
+    { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
   ];
   // A status row's identity, as rux-ui keys it: trip, driver, leg and role.
   const statusKey = (tripId, driverId, leg, role) =>

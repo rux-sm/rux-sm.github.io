@@ -206,25 +206,25 @@ expect('each light', ['At highway speed', 'At a crawl', 'Idling', 'Resting', 'En
 const tone = b => card(b).classes().find(c => /--(error|warning|rest|scan)$/.test(c))?.split('--')[1] ?? null;
 const card = b => b.querySelector('.scheduler-road__card');
 const row = b => b.querySelector('.scheduler-road__times');
-const say = b => { const x = row(b).querySelector('.scheduler-road__say'); return x ? [x.classes().find(c => c.startsWith('scheduler-road__say--'))?.slice(21), x.textContent] : null; };
-const lit8 = b => card(b).querySelectorAll('.scheduler-road__pill--on').length;
+const say = b => { const x = row(b).querySelector(':scope > .scheduler-road__say'); return x ? [x.classes().find(c => c.startsWith('scheduler-road__say--'))?.slice(21), x.textContent] : null; };
+const lit5 = b => card(b).querySelectorAll('.scheduler-road__bar--on').length;
 expect('the times and the instruments sit before the drivers row, after the rows they hide',
   lit('At highway speed').children.map(c => c.classes().find(x => /__(dest|client|contact|time|update|drivers)$|road__(times|card)$/.test(x))).filter(Boolean),
   ['scheduler-bar__dest', 'scheduler-bar__client', 'scheduler-bar__contact', 'scheduler-bar__time', 'scheduler-bar__update', 'scheduler-road__times', 'scheduler-road__card', 'scheduler-bar__drivers']);
 expect('the times: out, an arrow and back', [!!text(row(lit('At highway speed')), '.scheduler-road__when'), text(row(lit('At highway speed')), '.scheduler-road__arrow')], [true, '→']);
 expect('late: the minutes late after the times, in amber', [text(row(lit('Late, two drivers')), '.scheduler-road__late'), has(row(lit('At highway speed')), '.scheduler-road__late')], ['+22m', false]);
-expect('moving: the speed, eight pills with one lit for every 10 mph, green, the tank',
-  [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__pills > i').length,
-    lit8(lit('At highway speed')), tone(lit('At highway speed')), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],
-  ['64', 'mph', 8, 6, null, '72%', null]);
+expect('moving: the speed, five bars with one lit for every 16 mph, green, a rule, the tank',
+  [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
+    lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],
+  ['64', 'mph', 5, 4, null, true, '72%', null]);
 expect('where the bus is goes on the tooltip', card(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
-expect('each warning its colour on the pills and its name in place of the times',
+expect('each warning its colour on the bars and its name in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [tone(b), ...say(b)]; }), [
     ['error', 'error', 'Stop lamp'], ['error', 'error', 'Not rolling'], ['error', 'error', 'Wrong bus'],
     ['warning', 'warning', 'Late to spot'], ['warning', 'warning', 'Short on hours']]);
 expect('an engine warning lamp is said on the tooltip only',
   [say(lit('Engine warning lamp')), card(lit('Engine warning lamp')).title.includes('Engine warning lamp on')], [null, true]);
-expect('only a problem gives the instruments words to fold in', ['At highway speed', 'Not rolling', 'No signal'].map(n => card(lit(n)).classList.contains('scheduler-road__card--says')), [false, true, true]);
+expect('only a problem gives the speed\'s half words to show when the times are hidden', ['At highway speed', 'Not rolling', 'No signal'].map(n => card(lit(n)).classList.contains('scheduler-road__card--says')), [false, true, true]);
 expect('a red warning blinks for its first minute', lit('Not rolling').hasAttribute('data-alarm'), true);
 const wrong = lit('Wrong bus').querySelector('.scheduler-crew');
 expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.duty, text(wrong, '.scheduler-crew__away')], ['away', 'in 119']);
@@ -235,12 +235,12 @@ expect('the one at the wheel wears no mark, anyone else their duty',
 expect('two drivers: both in the row, the one at the wheel bold',
   [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
-expect('resting turns the pills purple, and idling lights none', [tone(lit('Resting')), lit8(lit('Resting'))], ['rest', 0]);
+expect('resting turns the bars purple, and idling lights none', [tone(lit('Resting')), lit5(lit('Resting'))], ['rest', 0]);
 expect('no signal: a grey dash and how long since, and the words in place of the times',
   [tone(lit('No signal')), text(lit('No signal'), '.scheduler-road__big'), text(lit('No signal'), '.scheduler-road__unit'), say(lit('No signal'))], ['scan', '–', '25m', ['quiet', 'No signal 25m']]);
 expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long time'].map(n => [text(lit(n), '.scheduler-road__big'), has(lit(n), '.scheduler-road__speed--long')]),
   [['Idle', false], ['Idle', true]]);
-expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__tank--low'), has(lit('At highway speed'), '.scheduler-road__tank--low')], [true, false]);
+expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
 expect('a bus no longer out takes its times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false]);
 

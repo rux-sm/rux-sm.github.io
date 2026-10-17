@@ -1813,16 +1813,21 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -4px calc(-1 * var(--scheduler-row-h) - 2px); }
 .scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
 
-/* THE SEATS on a live bar's drivers row: the one at the wheel first, their
-   hours at the seat's end over a 2px bar of them; anyone else after, with
-   their hours only under one. */
+/* THE SEATS on a live bar's drivers row: the lead seat first, their hours
+   at the seat's end over a 2px bar of them; anyone else after, with their
+   hours only under one. */
 .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; }
 .scheduler-crew--seat { position: relative; flex: 0 1 auto; align-self: stretch; align-items: flex-start; line-height: calc(var(--scheduler-row-h) - 3px); }
-.scheduler-crew--seat.scheduler-crew--wheel { order: -1; flex: 1 1 auto; }
+/* The lead seat is the one at the wheel, or with nobody at the wheel, as
+   while the bus stands with its engine off, the first driver: their hours
+   and their bar show whatever their duty, so a parked bus still says how
+   long its driver may drive, and a full bar once their clock resets. */
+.scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
+.scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) { flex: 1 1 auto; }
 .scheduler-crew--seat > .scheduler-crew__mark { display: none; }
 .scheduler-crew--seat > .scheduler-crew__duty svg { inline-size: 12px; block-size: 12px; }
 .scheduler-crew--seat > .scheduler-crew__hours { display: none; margin-inline-start: auto; }
-.scheduler-crew--seat.scheduler-crew--wheel > .scheduler-crew__hours,
+.scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) > .scheduler-crew__hours,
 .scheduler-crew--seat > .scheduler-crew__hours--low { display: block; }
 .scheduler-crew__left {
   position: absolute;
@@ -1834,7 +1839,7 @@ button.scheduler-row-head__num::after {
     linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat,
     color-mix(in srgb, currentColor 20%, transparent);
 }
-.scheduler-crew--seat:not(.scheduler-crew--wheel, .scheduler-crew--away) > .scheduler-crew__left { display: none; }
+.scheduler-crew--seat:not(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child, .scheduler-crew--away) > .scheduler-crew__left { display: none; }
 .scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 .scheduler-crew__left--away { background: var(--scheduler-mark-error); }
 

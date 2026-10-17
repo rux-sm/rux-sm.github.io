@@ -1686,12 +1686,18 @@ button.scheduler-row-head__num::after {
 /* A LIVE BAR, road-bar.js's: the destination and the customer, then the
    leg in the contact row's place, the cluster in the time and update rows'
    place, and the drivers row as seats. The cluster's shade is a layer
-   behind it that also takes in the drivers row, 2px in from the bar's
-   sides, so the words still line up with the destination. */
+   behind it that also takes in the drivers row, an even step past them on
+   every side, so the words still line up with the destination. */
 .scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
 /* On a bar longer than a day, the leg, the cluster and the drivers keep to
-   the first day, as the alert count does, so every live bar reads alike. */
-.scheduler-bar--road > :is(.scheduler-road__leg, .scheduler-road__card, .scheduler-bar__drivers) { margin-inline-end: var(--scheduler-day-one-end); }
+   the width a one-day bar gives them: one day of this bar, worked out as
+   the bar's own width is, less the gap and the two default paddings. So
+   every live bar's rows are one size. */
+.scheduler-bar--road > :is(.scheduler-road__leg, .scheduler-road__card, .scheduler-bar__drivers) {
+  max-inline-size: calc((100% + var(--scheduler-pad-start) + var(--scheduler-pad-end) + var(--scheduler-gap) + var(--scheduler-gap-clear)
+    + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span)
+    - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-03));
+}
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
 
 /* THE LEG: out, the line with its stops and the bus, back. */
@@ -1746,20 +1752,24 @@ button.scheduler-row-head__num::after {
   grid-template-areas: "dial tank" "dial say";
   column-gap: var(--rux-spacing-03);
   line-height: var(--scheduler-row-h);
+  /* The shade reaches this far past the cluster and the drivers row on
+     every side: into the bar's top and bottom padding, and as far into
+     its side padding, so the space round the words is even. */
+  --scheduler-road-pad: 3px;
 }
 .scheduler-road__card::before {
   content: '';
   position: absolute;
   z-index: -1;
-  inset-block: 0 calc(-1 * var(--scheduler-row-h));
-  inset-inline: calc(2px - var(--scheduler-pad-start)) calc(2px - var(--scheduler-pad-end));
+  inset-block: calc(-1 * var(--scheduler-road-pad)) calc(-1 * var(--scheduler-row-h) - var(--scheduler-road-pad));
+  inset-inline: calc(-1 * var(--scheduler-road-pad));
   border-radius: 2px;
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
 /* The drivers row is painted over the shade, which reaches under it. */
 .scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
-.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: 0; }
+.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: calc(-1 * var(--scheduler-road-pad)); }
 .scheduler-road__line { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__tank { grid-area: tank; display: flex; align-items: center; gap: var(--rux-spacing-02); font-variant-numeric: tabular-nums; }
 .scheduler-road__pump { display: flex; flex: none; }

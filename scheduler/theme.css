@@ -145,10 +145,9 @@
    dark green, orange and red, each lightened to make 4.7 to 1 on its
    brightest bar, the amber.
    Geist's green and amber marks are already its text steps, and its red is
-   lifted a tenth toward white to clear the teal bar. No green, amber and
-   red reads as words on every one of rux-dark's deep containers, so there
-   the words keep the bar's own colour and the age is a 2px line at their
-   start, in its marks' colours. Ant's bars are bright
+   lifted a tenth toward white to clear the teal bar. rux-dark's green and
+   amber marks read as words on all its deep containers, 5.2 to 1 at the
+   least, and its red is lifted to make 4.9 on the green bar. Ant's bars are bright
    enough that white itself holds only 4.5 to 5.2 on four of them, so its
    words take the palest tints that still show a hue, 3.7 to 1 at the least,
    on the green bar. */
@@ -184,16 +183,8 @@
 [data-theme="rux-dark"] {
   --scheduler-age-new: var(--scheduler-mark-success);
   --scheduler-age-week: var(--scheduler-mark-warning);
-  --scheduler-age-old: var(--scheduler-mark-error);
+  --scheduler-age-old: oklch(0.85 0.11 25);
 }
-[data-theme="rux-dark"] .scheduler-bar__update:is(.scheduler-bar__update--new, .scheduler-bar__update--week, .scheduler-bar__update--old) {
-  padding-inline-start: calc(2px + var(--rux-spacing-02));
-  color: inherit;
-  box-shadow: inset 2px 0 0 var(--scheduler-age);
-}
-[data-theme="rux-dark"] .scheduler-bar__update--new { --scheduler-age: var(--scheduler-age-new); }
-[data-theme="rux-dark"] .scheduler-bar__update--week { --scheduler-age: var(--scheduler-age-week); }
-[data-theme="rux-dark"] .scheduler-bar__update--old { --scheduler-age: var(--scheduler-age-old); }
 [data-theme="ant-dark"] {
   --scheduler-age-new: #d9f7be;
   --scheduler-age-week: #fff1b8;

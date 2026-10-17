@@ -176,7 +176,7 @@ The pictures:
 - **A part of the map, the fog, the character and the switch's two pictures
   have a placeholder first, made by a script,** which is also rux's
   template: the canvas at its size with its spots marked.
-  `pixels/docs/drawing-the-map.md` is how a part and the fog are drawn.
+  `pixels/docs/drawing-the-art.md` is how each is drawn, in Aseprite.
 - **While its two pictures are placeholders the switch is the owner's
   alone,** as the map is, and every other player has the two keys. So is
   the character while it is one, with its armour, the armour's hearts and

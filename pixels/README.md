@@ -18,7 +18,7 @@ found; then its rank and name, such as E · The Undergrowth, or More where it ha
 how many sprites are found; and a bar of that. A rift of the course from the sixth on is locked until
 enough sprites are found, which `app.js`'s `locks` counts: its tile is dim and no link, its page shows
 no puzzle, and both say how many of those sprites are found. The owner is drawn the course as a map in
-place of its tiles, their character by their rift (`docs/drawing-the-map.md`). Continue opens the next
+place of its tiles, their character by their rift (`docs/drawing-the-art.md`). Continue opens the next
 puzzle to play. Leaderboard: today's ranking by time, and the all-time one by puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first

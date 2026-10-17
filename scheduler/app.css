@@ -1522,6 +1522,10 @@ button.scheduler-row-head__num::after {
   background: var(--scheduler-dot) padding-box;
 }
 .scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
+/* Alone at the row's end, the dot stands on the alert count's centre, 2px
+   in from where the count's 16px disc would end, so a dot and a count down
+   one column line up and the dot keeps an even 6px from the top and side. */
+.scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: calc(var(--scheduler-day-one-end) + 2px); }
 .scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
 .scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
 .scheduler-road__dot--rest { --scheduler-dot: var(--scheduler-mark-rest); }

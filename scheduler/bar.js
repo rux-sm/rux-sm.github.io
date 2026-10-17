@@ -198,11 +198,13 @@
      many it left out: "Raul +1". Only a first name that does not fit alone is
      cut short. It is measured, so it runs again whenever the bar's width
      changes; the bar is watched rather than the crew, whose own width is what
-     this sets. */
+     this sets. Two seats on a live bar share the row and each cuts its own
+     name short instead, so both drivers stay on it; a third gives way. */
   const fitCrew = crew => {
     const items = [...crew.children].filter(n => n.classList.contains('scheduler-crew'));
     crew.querySelector(':scope > .scheduler-bar__more')?.remove();
     for (const item of items) item.style.removeProperty('display');
+    if (items.length <= 2 && items.every(item => item.classList.contains('scheduler-crew--seat'))) return;
     const cut = () => items.some(item => {
       const name = item.style.display ? null : item.querySelector('.scheduler-crew__name');
       return name && name.scrollWidth > name.clientWidth;

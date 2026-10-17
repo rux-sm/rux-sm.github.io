@@ -281,7 +281,7 @@
     const one = (name, note, b, more = {}) => ({ name, note, days: 3, rows: [row('101', b)], ...more });
     const road = {
       id: 'road', title: 'Out on the road',
-      intro: 'While its bus is out, a bar lights from Samsara: the leg as a line, a dial of the bus, its tank and engine, and a seat for each driver. Motion above sets how much it moves.',
+      intro: 'While its bus is out, a bar lights from Samsara: the leg as a line, a dial of the bus beside its tank, and a seat for each driver. Motion above sets how much it moves.',
       samples: [
         one('At highway speed', 'The dial is the speed, green, and the bus a square on the leg\'s line.', live('Lakeview High School')),
         one('One day wide', 'The narrowest a bar gets: the rows are laid out for it.', live('Northside Band', { span: 1 })),

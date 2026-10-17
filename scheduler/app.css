@@ -1749,7 +1749,7 @@ button.scheduler-row-head__num::after {
   display: grid;
   grid-template-columns: calc(2 * var(--scheduler-row-h)) minmax(0, 1fr);
   grid-template-rows: repeat(2, var(--scheduler-row-h));
-  grid-template-areas: "dial tank" "dial say";
+  grid-template-areas: "dial say" "dial tank";
   column-gap: var(--rux-spacing-03);
   line-height: var(--scheduler-row-h);
   /* The shade reaches this far past the cluster and the drivers row on
@@ -1772,6 +1772,17 @@ button.scheduler-row-head__num::after {
 .scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: calc(-1 * var(--scheduler-road-pad)); }
 .scheduler-road__line { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__tank { grid-area: tank; display: flex; align-items: center; gap: var(--rux-spacing-02); font-variant-numeric: tabular-nums; }
+/* With nothing to say, the gauge fills the space beside the dial: the pump
+   and the percent on one line, the bar under them. */
+.scheduler-road__card:not(.scheduler-road__card--says) > .scheduler-road__tank {
+  grid-row: 1 / 3;
+  flex-wrap: wrap;
+  align-content: center;
+  row-gap: var(--rux-spacing-02);
+  line-height: 1;
+}
+.scheduler-road__card:not(.scheduler-road__card--says) > .scheduler-road__tank > .scheduler-road__pct { margin-inline-start: auto; }
+.scheduler-road__card:not(.scheduler-road__card--says) > .scheduler-road__tank > .scheduler-road__meter { order: 1; flex: 1 0 100%; }
 .scheduler-road__pump { display: flex; flex: none; }
 .scheduler-road__pump svg { inline-size: 13px; block-size: 13px; }
 .scheduler-road__meter {
@@ -1824,24 +1835,22 @@ button.scheduler-row-head__num::after {
 .scheduler-road__dial--scan .scheduler-road__read { color: var(--scheduler-road-scan); }
 
 /* FEWER ROWS, as the view's toggles leave among contact, time and update.
-   With two, the leg row goes and its line takes the say line's place
-   beside the dial, unless a warning or No signal holds it. With one, the
-   speed in words, or the warning, beside the gauge. With none, no cluster. */
-.scheduler-road__route { grid-area: say; display: none; align-items: center; }
-.scheduler-road__route > .scheduler-road__rail { margin-inline: var(--rux-spacing-02); }
+   With two, the leg row goes. With one, the speed in words, or the
+   problem, beside the gauge on one line. With none, no cluster. */
 :is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__leg { display: none; }
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card:not(:has(> .scheduler-road__say--alert)) > .scheduler-road__say { display: none; }
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card:not(:has(> .scheduler-road__say--alert)) > .scheduler-road__route { display: flex; }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card {
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-rows: var(--scheduler-row-h);
   grid-template-areas: "speed tank";
 }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card > :is(.scheduler-road__dial, .scheduler-road__say, .scheduler-road__route) { display: none; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card > :is(.scheduler-road__dial, .scheduler-road__say) { display: none; }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__speed { display: block; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card:has(> .scheduler-road__say--alert) { grid-template-areas: "say tank"; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card:has(> .scheduler-road__say--alert) > .scheduler-road__say { display: block; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card:has(> .scheduler-road__say--alert) > .scheduler-road__speed { display: none; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card > .scheduler-road__tank { grid-row: auto; flex-wrap: nowrap; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card > .scheduler-road__tank > .scheduler-road__pct { margin-inline-start: 0; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card > .scheduler-road__tank > .scheduler-road__meter { order: 0; flex: 1 1 auto; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card--says { grid-template-areas: "say tank"; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__say { display: block; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__speed { display: none; }
 .scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
 
 /* THE SEATS on a live bar's drivers row: the one at the wheel first, each

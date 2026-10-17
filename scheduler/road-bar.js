@@ -13,8 +13,9 @@
      Idle or Off and how long, Idle amber past IDLE_MS, or grey and dashed
      with no signal; amber or red under the worst warning, purple while a
      driver rests. Beside it the tank as a gauge, amber under a quarter, and
-     one line: the worst of live-trip.js's warnings by name in its colour,
-     or No signal and how long, or where the bus is now.
+     only for a problem, its words over the gauge: the worst of
+     live-trip.js's warnings by name in its colour, or No signal and how
+     long.
    - The drivers row, a seat for each driver: the one at the wheel first and
      bold with no mark, since the dial says the bus moves, anyone else with
      their duty's mark; under each name a bar of the driving hours left of
@@ -22,9 +23,9 @@
      error mark, their name red with that bus after it. A driver at the
      wheel the bar does not name joins the end of the row.
    The bar wears no edge, border or light of its own: how the bus is doing
-   is the dial's colour and the cluster's words. With fewer rows on the
-   board the leg moves beside the dial, then the cluster comes down to one
-   line; app.css does that from the view's toggles.
+   is the dial's colour and the cluster's words. With a row fewer on the
+   board the leg goes, with two fewer the cluster comes down to one line;
+   app.css does that from the view's toggles.
 
    `draw(bar, bus, live)` draws it on a bar bar.js drew, or takes it off
    with no `bus`. `bus` is one bus of samsara-now's answer, and `live` what
@@ -309,14 +310,14 @@
     row.replaceChildren(out, rail(bar, bus, next), back);
   }
 
-  /* THE CLUSTER in place of the time and update rows: the dial, and beside it
-     the tank as a gauge and one line, the worst warning's name in its
-     colour, or No signal and how long, or where the bus is now. With a row
-     fewer on the board, the leg takes that line's place unless a warning or
-     No signal holds it; with two fewer, the speed in words, or the warning,
-     beside the gauge. app.css picks from the view's classes. An engine
-     warning lamp is said on the tooltip and the live card, since one can
-     stay lit for days; the red stop lamp is a warning. */
+  /* THE CLUSTER in place of the time and update rows: the dial, and beside
+     it the tank as a gauge, the pump and the percent over a bar. Only a
+     problem adds words: the worst warning's name in its colour, or No signal
+     and how long, over the gauge drawn on one line. Where the bus is goes on
+     the tooltip. On a board with one row for the cluster, the speed in
+     words, or the problem, beside the gauge; app.css picks from the view's
+     classes. An engine warning lamp is said on the tooltip and the live
+     card, since one can stay lit for days; the red stop lamp is a warning. */
   function card(bar, bus, next, said, worst, at) {
     let box = bar.querySelector(':scope > .scheduler-road__card');
     if (!bus) { box?.remove(); return; }
@@ -324,20 +325,17 @@
       box = el('div', 'scheduler-road__card');
       bar.insertBefore(box, bar.querySelector(':scope > .scheduler-bar__drivers'));
     }
-    box.className = 'scheduler-road__card';
+    const say = worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null;
+    box.className = `scheduler-road__card${say ? ' scheduler-road__card--says' : ''}`;
     const tank = el('span', 'scheduler-road__line scheduler-road__tank');
     if (bus.fuel != null) tank.append(...gauge(bus.fuel));
-    const say = el('span', 'scheduler-road__line scheduler-road__say');
-    if (worst) { say.classList.add(`scheduler-road__say--${worst.tone}`, 'scheduler-road__say--alert'); say.textContent = worst.title; }
-    else if (bus.engine == null) { say.classList.add('scheduler-road__say--quiet', 'scheduler-road__say--alert'); say.textContent = bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal'; }
-    else if (bus.place) { say.classList.add('scheduler-road__say--quiet'); say.textContent = bus.place; }
-    const route = el('span', 'scheduler-road__line scheduler-road__route');
-    route.appendChild(rail(bar, bus, next));
     // The speed in words, which app.css shows only where the dial has no room.
     const speed = el('span', 'scheduler-road__line scheduler-road__speed', bus.engine == null ? 'No signal' : bus.engine === 'idle'
       ? `Idle${bus.engine_at ? ` ${ago(bus.engine_at)}` : ''}` : bus.engine === 'off' ? `Off${bus.engine_at ? ` ${ago(bus.engine_at)}` : ''}`
       : bus.mph != null ? `${bus.mph} mph` : 'Running');
-    box.replaceChildren(dial(bus, worst?.tone ?? (bar.dataset.light === 'rest' ? 'rest' : null)), tank, say, route, speed);
+    const parts = [dial(bus, worst?.tone ?? (bar.dataset.light === 'rest' ? 'rest' : null)), tank, speed];
+    if (say) parts.push(el('span', `scheduler-road__line scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say));
+    box.replaceChildren(...parts);
     const arrives = next?.stop && !next.at && next.arrival != null
       ? `${next.stop.name}: arrives ${hhmm(Road.clockOf(next.arrival), true)}${next.stop.due != null ? `, due ${hhmm(Road.clockOf(next.stop.due), true)}` : ''}${next.late ? `, ${next.late} min late` : ''}` : null;
     // Every warning heads the tooltip, each in a sentence.

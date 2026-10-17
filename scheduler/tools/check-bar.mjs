@@ -206,7 +206,7 @@ expect('each light', ['At highway speed', 'At a crawl', 'Idling', 'Resting', 'En
 const tone = b => b.querySelector('.scheduler-road__dial').classes().find(c => /--(error|warning|rest)$/.test(c))?.split('--')[1] ?? null;
 const card = b => b.querySelector('.scheduler-road__card');
 const line = (b, which) => text(b, `.scheduler-road__card > .scheduler-road__${which}`);
-const say = b => { const x = b.querySelector('.scheduler-road__say'); return [x.classes().find(c => c.startsWith('scheduler-road__say--'))?.slice(21), x.textContent]; };
+const say = b => { const x = b.querySelector('.scheduler-road__say'); return x ? [x.classes().find(c => c.startsWith('scheduler-road__say--'))?.slice(21), x.textContent] : null; };
 expect('the leg and the cluster sit before the drivers row, after the rows they hide',
   lit('At highway speed').children.map(c => c.classes().find(x => /__(dest|client|contact|time|update|drivers)$|road__(leg|card)$/.test(x))).filter(Boolean),
   ['scheduler-bar__dest', 'scheduler-bar__client', 'scheduler-bar__contact', 'scheduler-bar__time', 'scheduler-bar__update', 'scheduler-road__leg', 'scheduler-road__card', 'scheduler-bar__drivers']);
@@ -215,16 +215,17 @@ expect('the leg: out and back at its ends, a dot for each stop, the first reache
     return [!!text(l, '.scheduler-road__out'), !!text(l, '.scheduler-road__back'), l.querySelectorAll('.scheduler-road__stop').map(d => d.classList.contains('scheduler-road__stop--past'))]; })(),
   [true, true, [true, false]]);
 expect('late, the leg is amber', [has(lit('Late, two drivers'), '.scheduler-road__rail--late'), has(lit('At highway speed'), '.scheduler-road__rail--late')], [true, false]);
-expect('moving: the speed in the dial, green, the tank as a gauge, where the bus is',
+expect('moving: the speed in the dial, green, the tank as a gauge, no words',
   [text(lit('At highway speed'), '.scheduler-road__big'), tone(lit('At highway speed')), line(lit('At highway speed'), 'tank'), say(lit('At highway speed'))],
-  ['64', null, '72%', ['quiet', 'I-37 N near Three Rivers']]);
+  ['64', null, '72%', null]);
+expect('where the bus is goes on the tooltip', card(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its colour on the dial and its name on the cluster',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [tone(b), ...say(b)]; }), [
     ['error', 'error', 'Stop lamp'], ['error', 'error', 'Not rolling'], ['error', 'error', 'Wrong bus'],
     ['warning', 'warning', 'Late to spot'], ['warning', 'warning', 'Short on hours']]);
 expect('an engine warning lamp is said on the tooltip, not the cluster',
-  [say(lit('Engine warning lamp'))[0], card(lit('Engine warning lamp')).title.includes('Engine warning lamp on')], ['quiet', true]);
-expect('the leg moves beside the dial for a board one row short', has(lit('At highway speed'), '.scheduler-road__card > .scheduler-road__route > .scheduler-road__rail'), true);
+  [say(lit('Engine warning lamp')), card(lit('Engine warning lamp')).title.includes('Engine warning lamp on')], [null, true]);
+expect('only a problem gives the cluster words', ['At highway speed', 'Not rolling', 'No signal'].map(n => card(lit(n)).classList.contains('scheduler-road__card--says')), [false, true, true]);
 expect('a red warning blinks for its first minute', lit('Not rolling').hasAttribute('data-alarm'), true);
 const wrong = lit('Wrong bus').querySelector('.scheduler-crew');
 expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.duty, text(wrong, '.scheduler-crew__away')], ['away', 'in 119']);

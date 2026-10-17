@@ -1689,6 +1689,9 @@ button.scheduler-row-head__num::after {
    behind it that also takes in the drivers row, 2px in from the bar's
    sides, so the words still line up with the destination. */
 .scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
+/* On a bar longer than a day, the leg, the cluster and the drivers keep to
+   the first day, as the alert count does, so every live bar reads alike. */
+.scheduler-bar--road > :is(.scheduler-road__leg, .scheduler-road__card, .scheduler-bar__drivers) { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
 
 /* THE LEG: out, the line with its stops and the bus, back. */

@@ -3,7 +3,8 @@
    --------------------------------------------------------------------------
    While a bus is out on its trip, its bar keeps its destination and
    customer, and the rows under them say what Samsara says, laid out for the
-   narrowest bar, a one-day trip on the board's narrowest day.
+   narrowest bar, a one-day trip on the board's narrowest day, and kept to
+   the first day on a longer bar.
    - The leg, in the contact row's place: when it left the yard, a line to
      when it is due back with each stop a dot and the bus a square on it,
      green, or amber while the bus will reach its next stop late.

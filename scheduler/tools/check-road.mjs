@@ -146,10 +146,12 @@ expect('and it is at the pickup when it gets there', near([...heldUp, [...at(4.4
 
 // Late.
 expect('an instant reads on the office\'s clock', [clockOf(T('2026-10-15', '17:05')), clockOf(T('2026-12-15', '00:40'))], ['17:05', '00:40']);
-expect('ten minutes after it is due is on time', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:40')), 0);
-expect('eleven minutes after is late by eleven', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:41')), 11);
-expect('early is on time', lateBy(T('2026-10-15', '17:30'), T('2026-10-15', '17:00')), 0);
-expect('no time due is never late', lateBy(null, T('2026-10-15', '17:00')), 0);
+const pickup = due => ({ type: 'pickup', due });
+expect('ten minutes after its spot is on time', lateBy(pickup(T('2026-10-15', '17:30')), T('2026-10-15', '17:40')), 0);
+expect('eleven minutes after is late by eleven', lateBy(pickup(T('2026-10-15', '17:30')), T('2026-10-15', '17:41')), 11);
+expect('early is on time', lateBy(pickup(T('2026-10-15', '17:30')), T('2026-10-15', '17:00')), 0);
+expect('no spot is never late', lateBy(pickup(null), T('2026-10-15', '17:00')), 0);
+expect('only a pickup is ever late', lateBy({ type: 'dropoff', due: T('2026-10-15', '17:30') }, T('2026-10-15', '20:30')), 0);
 expect('a pickup reached at its Spot is on time', pickupLate(T('2026-10-15', '16:30'), T('2026-10-15', '16:30')), 0);
 expect('a pickup reached a minute after is a minute late', pickupLate(T('2026-10-15', '16:30'), T('2026-10-15', '16:31')), 1);
 expect('a pickup with no time due or no arrival says nothing', [pickupLate(null, 1), pickupLate(1, null)], [null, null]);

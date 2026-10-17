@@ -1751,7 +1751,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__row.scheduler-road__times { justify-content: flex-start; gap: var(--rux-spacing-02); }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__arrow { margin-inline: var(--rux-spacing-02); opacity: .55; }
-.scheduler-road__late { flex: none; color: var(--scheduler-age-week); font-variant-numeric: tabular-nums; }
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__say--error { color: var(--scheduler-age-old); font-weight: 600; }
 .scheduler-road__say--warning { color: var(--scheduler-age-week); font-weight: 600; }
@@ -1812,8 +1811,6 @@ button.scheduler-row-head__num::after {
 .scheduler-road__bars > i:nth-child(4) { block-size: 10px; }
 .scheduler-road__bars > i:nth-child(5) { block-size: 12px; }
 .scheduler-road__bars > .scheduler-road__bar--on { background: var(--scheduler-road-tone); }
-/* A bus standing still lights none, so the bars give Idle or Off and how long the room. */
-.scheduler-road__speed--still + .scheduler-road__bars { display: none; }
 .scheduler-road__pump { display: flex; flex: none; }
 .scheduler-road__pump svg { inline-size: 12px; block-size: 12px; }
 .scheduler-road__meter {

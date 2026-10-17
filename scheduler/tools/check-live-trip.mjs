@@ -78,7 +78,7 @@ const nextOn = (path, now, min) => {
   if (where.at) return { stops, where, stop: stops[where.reached], at: true };
   if (where.next < 0) return { stops, where, stop: null };
   const stop = stops[where.next], arrival = now + min * MIN;
-  return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop.due, arrival) };
+  return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop, arrival) };
 };
 const pin = stops[0].point;
 const MI = 1 / 69.05;

@@ -8,8 +8,7 @@
    - A dot at the destination row's end, before the alert count, in the
      bus's colour, so a scan down the board finds the buses out.
    - The times, in the contact row's place: out, a dimmed arrow and back,
-     and the minutes late to the next stop in amber; a problem's words in
-     its colour instead, the worst of live-trip.js's warnings or No signal.
+     a problem's words in its colour instead, Late to spot among them, the worst of live-trip.js's warnings or No signal.
    - The instruments, in the time and update rows' place: one row, the
      speed with five rising bars in the bus's colour, a 1px rule, then the
      pump, a short tank bar and its percent; the second row's room is air
@@ -228,7 +227,7 @@
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
     liveDot(bar, bus, worst);
-    times(bar, bus, next, worst);
+    times(bar, bus, worst);
     card(bar, bus, next, said, worst, live.at);
   }
 
@@ -279,10 +278,9 @@
   }
 
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard,
-     a dimmed arrow, and when it is due back, then how late the bus will be
-     at its next stop, in amber. A problem takes the row instead, its words
-     in its colour. */
-  function times(bar, bus, next, worst) {
+     a dimmed arrow, and when it is due back. A problem takes the row
+     instead, its words in its colour. */
+  function times(bar, bus, worst) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
     if (!bus) { row?.remove(); return; }
     if (!row) {
@@ -296,7 +294,6 @@
     if (bar.dataset.depart && bar.dataset.back) when.appendChild(el('span', 'scheduler-road__arrow', '→'));
     if (bar.dataset.back) when.append(clockEl(bar.dataset.back));
     row.replaceChildren(when);
-    if (next?.late) row.appendChild(el('span', 'scheduler-road__late', `+${next.late}m`));
   }
 
   /* THE INSTRUMENTS in place of the time and update rows, one 16px row in

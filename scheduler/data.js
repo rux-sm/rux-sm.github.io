@@ -639,7 +639,7 @@
     if (where.next < 0) return { stops, where, stop: null };
     const stop = stops[where.next];
     const arrival = roadEta.get(bus.bus_id, stop, here);
-    return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop.due, arrival) };
+    return { stops, where, stop, at: false, arrival, late: Road.lateBy(stop, arrival) };
   }
 
   async function askRoad() {

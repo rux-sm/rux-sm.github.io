@@ -216,7 +216,6 @@ expect('the times and the instruments sit before the drivers row, after the rows
   lit('At highway speed').children.map(c => c.classes().find(x => /__(dest|client|contact|time|update|drivers)$|road__(times|card)$/.test(x))).filter(Boolean),
   ['scheduler-bar__dest', 'scheduler-bar__client', 'scheduler-bar__contact', 'scheduler-bar__time', 'scheduler-bar__update', 'scheduler-road__times', 'scheduler-road__card', 'scheduler-bar__drivers']);
 expect('the times: out, an arrow and back', [!!text(row(lit('At highway speed')), '.scheduler-road__when'), text(row(lit('At highway speed')), '.scheduler-road__arrow')], [true, '→']);
-expect('late: the minutes late after the times, in amber', [text(row(lit('Late, two drivers')), '.scheduler-road__late'), has(row(lit('At highway speed')), '.scheduler-road__late')], ['+22m', false]);
 expect('moving: the speed, five bars with one lit for every 16 mph, green, a rule, the tank',
   [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
     lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],
@@ -238,10 +237,10 @@ expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.du
 expect('under an hour left, the bar and the hours are amber',
   [has(lit('Short on hours'), '.scheduler-crew__left--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50']);
 expect('every driver wears their duty, the one at the wheel the steering wheel',
-  [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => useOf(c.querySelector('.scheduler-crew__duty'))),
+  [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => useOf(c.querySelector('.scheduler-crew__duty'))),
   ['#m-search_hands_free-fill', '#m-bedtime-fill']);
 expect('two drivers: both in the row, the one at the wheel bold',
-  [...lit('Late, two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
+  [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
 expect('resting turns the bars purple, and idling lights none', [tone(lit('Resting')), lit5(lit('Resting'))], ['rest', 0]);
 expect('no signal: a grey dash and how long since, and the words in place of the times',

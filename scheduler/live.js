@@ -131,7 +131,7 @@
     else if (s.where.next >= 0) {
       s.stop = s.stops[s.where.next];
       s.arrival = arrivals.get(bus.bus_id, s.stop, here);
-      s.late = Road.lateBy(s.stop.due, s.arrival);
+      s.late = Road.lateBy(s.stop, s.arrival);
     }
     return s;
   }

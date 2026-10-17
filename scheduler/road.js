@@ -27,7 +27,9 @@
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
    Geoapify's drive slowed by the office's percent, asked at most once every
    five minutes for each bus, and again sooner only for another stop.
-   A bus is late when it gets there more than 10 minutes after it is due.
+   A bus is late only to a pickup, when it gets there more than 10 minutes
+   after its spot; every other stop moves with the day, so nobody is told
+   how late the bus is to it.
 
    `pickupLate(due, at)` says whether a bus that reached its pickup at `at`,
    as samsara-miles finds it in the GPS history, was on time: at or before it
@@ -182,10 +184,11 @@
   const clockOf = ms => new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
     hour: '2-digit', minute: '2-digit' }).format(new Date(ms));
 
-  // How many minutes late a bus that gets there at `arrival` is, or 0.
-  const lateBy = (due, arrival) => {
-    if (due == null || arrival == null) return 0;
-    const min = Math.round((arrival - due) / 60e3);
+  // How many minutes late to `stop` a bus that gets there at `arrival` is:
+  // 0 on time, or for any stop but a pickup.
+  const lateBy = (stop, arrival) => {
+    if (stop?.type !== 'pickup' || stop.due == null || arrival == null) return 0;
+    const min = Math.round((arrival - stop.due) / 60e3);
     return min > LATE_MIN ? min : 0;
   };
 

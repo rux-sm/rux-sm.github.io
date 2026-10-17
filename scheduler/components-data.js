@@ -285,12 +285,12 @@
       samples: [
         one('At highway speed', 'The speed, and a green bar lit for every 16 mph, rising like a phone\'s signal.', live('Lakeview High School')),
         one('One day wide', 'The narrowest a bar gets: the rows are laid out for it.', live('Northside Band', { span: 1 })),
-        one('Late, two drivers', 'Gets to its next stop after it is due: the minutes late after the times. Both drivers in the row half and half, each over their own hours bar, the one at the wheel first.', live('Riverbend Seniors', {
+        one('Two drivers', 'Both drivers in the row half and half, each over their own hours bar, the one at the wheel first.', live('Riverbend Seniors', {
           span: 1, crew: [['d2', 'driver', 'confirmed'], ['d3', 'co-driver', 'confirmed']],
           bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR })] },
-          next: toStop({ arrival: now + 2 * HOUR + 22 * MIN, late: 22 }) })),
+          next: toStop({ arrival: now + 2 * HOUR + 22 * MIN }) })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
-        one('Idling', 'Engine running and the bus still, at a stop: Idle and how long in place of the bars.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
+        one('Idling', 'Engine running and the bus still, at a stop: Idle and how long, beside the bars, all empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
         one('Resting', 'A driver in the sleeper and none driving: purple bars when the bus moves on.', live('Riverbend Seniors', {
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),

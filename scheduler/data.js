@@ -616,7 +616,7 @@
   const Live = window.SchedulerLiveTrip;
   const LiveMap = window.SchedulerLiveMap;
   const RoadBar = window.SchedulerRoadBar;
-  const { HOUR: ROAD_HOUR, DUTY: ROAD_DUTY, LOW_FUEL: ROAD_LOW_FUEL, hours: roadHours, mark: roadMark,
+  const { HOUR: ROAD_HOUR, DUTY: ROAD_DUTY, hours: roadHours, mark: roadMark,
     ago: roadAgo, short: roadShort } = RoadBar;
   const roadOut = bar => {
     const now = Date.now();
@@ -14576,19 +14576,19 @@
     const holder = el('div', 'scheduler-card__live-map-box');
     const links = el('div', 'scheduler-card__live-links');
     const link = (words, href, away) => {
-      const a = el('a', 'rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
+      const a = el('a', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       return a;
     };
-    // Short words, so the two sit side by side in Carbon's button padding.
+    // Short words, so the two sit side by side as Carbon's ghost buttons, in the link colour.
     if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
     links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
     mapRow.append(holder, links);
     card.appendChild(mapRow);
     liveMapInto(holder, bar, bus, next, hueFor(trip));
-    /* The stops still to come, each with the time it is due, the next with
-       when the bus gets there and how late. */
+    /* The stops still to come, each a dot, its name and the time it is due,
+       the next with a green dot and when the bus gets there and how late. */
     const toCome = next ? next.stops.filter((st, i) => i > next.where.reached || (next.at && i === next.where.reached)) : [];
     if (toCome.length) {
       const part = row('scheduler-card__road');
@@ -14597,7 +14597,7 @@
       for (const st of toCome) {
         const isNext = st === next.stop;
         const item = el('li', `scheduler-card__road-stop${isNext ? ' scheduler-card__road-stop--next' : ''}`);
-        item.append(el('span', 'scheduler-card__road-name', st.name || 'Stop'));
+        item.append(el('span', 'scheduler-card__road-dot'), el('span', 'scheduler-card__road-name', st.name || 'Stop'));
         const when = el('span', 'scheduler-card__road-words');
         if (isNext && next.at) when.textContent = 'Here now';
         else {
@@ -14623,15 +14623,21 @@
         const who = el('div', `scheduler-card__road-driver${d.wheel ? ' scheduler-card__road-driver--wheel' : ''}`);
         who.append(d.duty ? roadMark(d.duty) : el('span', 'scheduler-crew__duty'), el('span', 'scheduler-card__road-name', d.name),
           el('span', 'scheduler-card__road-words', [ROAD_DUTY[d.duty]?.word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')));
+        /* The three clocks side by side, each its name and the hours left
+           over a meter of them, amber under an hour. */
         const clocks = el('div', 'scheduler-card__live-clocks');
         for (const [name, field, most] of LIVE_CLOCKS) {
           const ms = d[field];
           if (ms == null) continue;
           const low = ms < ROAD_HOUR;
-          const meter = el('span', `scheduler-card__live-meter${low ? ' scheduler-card__live-meter--low' : ''}`);
+          const clock = el('div', `scheduler-card__live-clock${low ? ' scheduler-card__live-clock--low' : ''}`);
+          clock.title = `${name}: ${roadHours(ms)} left`;
+          const top = el('span', 'scheduler-card__live-clock-top');
+          top.append(el('span', 'scheduler-card__live-clock-name', name), el('span', 'scheduler-card__live-left', roadHours(ms)));
+          const meter = el('span', 'scheduler-card__live-meter');
           meter.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, ms / most) * 100)}%`);
-          clocks.append(el('span', 'scheduler-card__live-clock', name), meter,
-            el('span', `scheduler-card__live-left${low ? ' scheduler-card__live-left--low' : ''}`, `${roadHours(ms)} left`));
+          clock.append(top, meter);
+          clocks.appendChild(clock);
         }
         item.appendChild(who);
         if (clocks.children.length) item.appendChild(clocks);
@@ -14651,19 +14657,11 @@
       part.appendChild(lamps);
       card.appendChild(part);
     }
-    // The tank, what the engine is doing, and when Samsara last heard.
+    /* Where the bus is and when Samsara last heard from it; the speed and
+       the tank are on the bar just above. */
     const foot = row('scheduler-card__live-foot');
-    if (bus.fuel != null) {
-      const low = bus.fuel < ROAD_LOW_FUEL;
-      const gauge = el('span', `scheduler-road__fuel${low ? ' scheduler-road__fuel--low' : ''}`);
-      gauge.style.setProperty('--scheduler-fuel', `${bus.fuel}%`);
-      foot.append(el('span', 'scheduler-card__live-fuel', 'Fuel'), gauge,
-        el('span', `scheduler-road__fuel-pct${low ? ' scheduler-road__fuel-pct--low' : ''}`, `${bus.fuel}%`));
-    }
-    foot.appendChild(el('span', 'scheduler-card__live-motion', bus.engine === 'idle' ? `Idle${bus.engine_at ? ` ${roadAgo(bus.engine_at)}` : ''}`
-      : bus.engine === 'off' ? `Engine off${bus.engine_at ? ` ${roadAgo(bus.engine_at)}` : ''}` : bus.engine == null ? 'No engine reading'
-      : bus.mph != null ? `${bus.mph} mph` : 'Engine on'));
-    foot.appendChild(el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
+    foot.append(el('span', 'scheduler-card__live-place', bus.place || (bus.lat != null ? 'Place unknown' : 'No position')),
+      el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
     card.appendChild(foot);
     return card;
   }

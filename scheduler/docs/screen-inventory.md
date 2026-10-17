@@ -239,8 +239,9 @@ the bar and the list it counts read as one; they stand in a box of their own und
 layer up at an update's hover corner, plain rows with no tint and no rule between: a bus that does
 not fit behind a red bell, then the follow-up reminder, Trip contact missing, and each need still to
 do, Hotel booking pending or HOS form pending, each a line of its own behind a bell in its disc's
-colour. Once the trip is back, `close-out.js`'s list takes their place: Bus missing, Driver missing,
-Actual miles missing, Driver pay missing, Invoice missing and Balance due where no PO covers it. A warning is a press that goes to its fix:
+colour. Once the trip is back it raises none of them on the bar or the card, and its update keeps the bar's
+ink: what its record still lacks, `close-out.js`'s list, is read on the editor's Billing tab and the
+Trips page's To close. A warning is a press that goes to its fix:
 the Itinerary slot, Forms, or the editor on Buses, Details or Billing with the cursor in the field
 it names. No warning has a dismiss; each stays until it is put right. Needs that are met are not
 shown. Then the updates: Updates in Carbon's 14px heading, its count in the alert set's grey disc,

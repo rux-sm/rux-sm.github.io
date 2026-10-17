@@ -154,7 +154,7 @@
         { name: 'Either side of the week', note: 'A trip from last week runs off the start, one into next week off the end.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
-        { name: 'Back at the yard', note: 'A trip whose bus is back stays where it is, asking only for what its record lacks.', days: 3,
+        { name: 'Back at the yard', note: 'A trip whose bus is back stays where it is and asks nothing on the board; what its record lacks is on its Billing tab.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
             buses: [{ bus: 'b102', crew: [['d2', 'driver', 'confirmed', { pay: null }]] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },

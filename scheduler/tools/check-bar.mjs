@@ -169,8 +169,8 @@ expect('three buses: counted, and the third needs a bus',
 expect('either side of the week', drawn('trip-bar', 'Either side of the week').map(b => [b.classList.contains('scheduler-bar--from-prev'), b.classList.contains('scheduler-bar--to-next')]),
   [[true, false], [false, true]]);
 const [back] = drawn('trip-bar', 'Back at the yard');
-expect('a trip back asks what its record lacks', [back.classList.contains('scheduler-bar--back'), mark(back)],
-  [true, 'amber Actual miles missing · Driver pay missing · Invoice missing']);
+expect('a trip back stays put and raises no alert, though its record lacks miles and pay', [back.classList.contains('scheduler-bar--back'), mark(back)],
+  [true, null]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
   ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
 expect('an open trip\'s update takes its age\'s colour, a settled one none',

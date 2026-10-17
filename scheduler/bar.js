@@ -245,12 +245,9 @@
      job, the hotel to book or the hours-of-service form to print; a need the
      bus falls short of is already a misfit, and one that is met is no alert. */
   function alertsOf(trip, facts) {
-    /* A trip that is back asks only what its record lacks, close-out.js's
-       list, in place of everything asked before it left. */
-    const CloseOut = window.SchedulerCloseOut;
-    if (CloseOut.isBack(trip)) {
-      return CloseOut.asks(trip).map(id => ({ row: 'scheduler-card__warn', go: CloseOut.GO[id], spot: id, words: CloseOut.WORDS[id] }));
-    }
+    /* A trip that is back asks nothing on the board: what its record still
+       lacks is the editor's Billing tab's Closed list and the Trips page's. */
+    if (window.SchedulerCloseOut.isBack(trip)) return [];
     const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
     if (asksFollowUp(trip)) {
       for (const w of waitsOf(trip)) {
@@ -468,9 +465,8 @@
     let tone = '';
     if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
-      const open = window.SchedulerCloseOut.isBack(trip) ? window.SchedulerCloseOut.asks(trip).length > 0
-        : waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-          || (!dayOfContact(trip) && !trip.contact_not_needed);
+      const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
+          || (!dayOfContact(trip) && !trip.contact_not_needed));
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }

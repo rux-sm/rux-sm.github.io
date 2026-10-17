@@ -21,7 +21,7 @@ and paged fifty at a time. A row opens the trip on the board through
 `./?trip=<id>&date=<day>`, and a cancelled one opens its cancelled dialog
 there. Its Follow-ups dialog sets the wait and the chase window; `follow-up.js`
 and `close-out.js` hold the rules the list and the board share, on `billing.js`;
-a trip that is back stops moving on the board and asks only what it lacks.
+a trip that is back stops moving and asks nothing on the board, only on Billing.
 
 `history.html` lists what changed on trips and who changed it, newest first;
 `docs/screen-inventory.md` says what it shows and where it opens from.

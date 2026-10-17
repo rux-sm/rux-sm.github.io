@@ -1845,6 +1845,9 @@ button.scheduler-row-head__num::after {
    hours only under one. */
 .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; }
 .scheduler-crew--seat { position: relative; flex: 0 1 auto; align-self: stretch; align-items: flex-start; line-height: calc(var(--scheduler-row-h) - 3px); }
+/* A seat's line is shorter than the type, to leave the hours bar its room,
+   so a name is cut short only along the line and its g or y hangs whole. */
+.scheduler-crew--seat > .scheduler-crew__name { overflow-x: clip; overflow-y: visible; }
 /* The lead seat is the one at the wheel, or with nobody at the wheel, as
    while the bus stands with its engine off, the first driver: their hours
    and their bar show whatever their duty, so a parked bus still says how

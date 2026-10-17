@@ -285,7 +285,7 @@
       samples: [
         one('At highway speed', 'The speed, and a green bar lit for every 16 mph, rising like a phone\'s signal.', live('Lakeview High School')),
         one('One day wide', 'The narrowest a bar gets: the rows are laid out for it.', live('Northside Band', { span: 1 })),
-        one('Late, two drivers', 'Gets to its next stop after it is due: the minutes late after the times. Both drivers in the row, the one at the wheel first.', live('Riverbend Seniors', {
+        one('Late, two drivers', 'Gets to its next stop after it is due: the minutes late after the times. Both drivers in the row half and half, each over their own hours bar, the one at the wheel first.', live('Riverbend Seniors', {
           span: 1, crew: [['d2', 'driver', 'confirmed'], ['d3', 'co-driver', 'confirmed']],
           bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR })] },
           next: toStop({ arrival: now + 2 * HOUR + 22 * MIN, late: 22 }) })),

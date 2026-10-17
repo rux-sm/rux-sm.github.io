@@ -22,7 +22,8 @@
      them in the bus. A
      driver Samsara has in another bus is the red stop sign, their name red
      with that bus after it. A driver at the wheel the bar does not name
-     joins the end of the row.
+     joins the end of the row. Two drivers share the row half and half,
+     each over their own bar, the hours in words on the tooltip alone.
    The bar wears no edge, border or light of its own: how the bus is doing
    is the bars' colour and the words. With a row fewer on the board the
    times go, with two fewer the air goes too; app.css

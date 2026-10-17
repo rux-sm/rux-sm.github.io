@@ -1873,6 +1873,12 @@ button.scheduler-row-head__num::after {
     color-mix(in srgb, currentColor 20%, transparent);
 }
 .scheduler-crew--seat:not(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child, .scheduler-crew--away) > .scheduler-crew__left { display: none; }
+/* Two drivers share the row half and half, each with their own hours bar
+   under them and no hours in words, so both names have room; the hours are
+   on the tooltip. */
+.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat { flex: 1 1 0; }
+.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > .scheduler-crew__hours { display: none; }
+.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > .scheduler-crew__left { display: block; }
 .scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 .scheduler-crew__left--away { background: var(--scheduler-mark-error); }
 

@@ -10533,11 +10533,11 @@
      app.css: the week never goes narrower than its own controls, which is what
      makes it a derived number rather than a chosen one. `SCHEDULE_FLOOR` is a
      different question -- whether the board can show three readable days,
-     three of app.css's 9rem day floor and the bus column --
+     three of app.css's 10rem day floor and the bus column --
      and only the compact week asks it. A toolbar under 30rem is one `Today`
      will not fit in beside its week's months, measured in app.css's terms. */
   const WEEK_MIN = 19.5;
-  const SCHEDULE_FLOOR = 30;
+  const SCHEDULE_FLOOR = 33;
   const TOOLBAR_TIGHT = 30;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');

@@ -212,7 +212,11 @@
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
     const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
-    who.appendChild(el('span', 'scheduler-crew__name', short(wheel.name)));
+    // A plain dot in the slot every driver has, so the name lines up: this
+    // driver has no status on the trip to colour it.
+    const mark = el('span', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
+    mark.appendChild(el('span', 'scheduler-crew__dot'));
+    who.append(mark, el('span', 'scheduler-crew__name', short(wheel.name)));
     if (wheel.left_ms != null) who.append(hoursEl(wheel.left_ms), leftBar(wheel.left_ms));
     who.title = `${wheel.name}, not on this trip\nSamsara: ${words(wheel)}`;
     row.appendChild(who);

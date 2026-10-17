@@ -1646,24 +1646,27 @@ button.scheduler-row-head__num::after {
 /* The role glyph alone, in its status colour: the bar's own for still to send,
    amber sent and waiting, green confirmed, red declined.
    The disc each sat on is gone, as every block on this bar is -- see the
-   contrast note above, which is the same trade and the same choice. */
+   contrast note above, which is the same trade and the same choice.
+   EVERY DRIVER'S MARK HAS ONE 12px SLOT, 4px before the name, a dot, a
+   relief's arrows or a live seat's duty, so every name on the board starts
+   16px in. */
 .scheduler-crew__mark {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--scheduler-row-h);
+  inline-size: 12px;
   block-size: var(--scheduler-row-h);
 }
 .scheduler-crew__mark svg {
   display: block;
-  inline-size: var(--scheduler-mark-glyph);
-  block-size: var(--scheduler-mark-glyph);
+  inline-size: 12px;
+  block-size: 12px;
 }
-/* A driver's dot: 7px in the status colour, its box only as wide as itself
-   so the name sits close. In a menu the box keeps the menu icon's size. */
-.scheduler-crew__mark--dot { inline-size: auto; }
-.scheduler-crew__dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: currentColor; }
+/* A driver's dot: 8px in the status colour, centred in the slot. A seat
+   still to fill is the same circle drawn dashed and empty. */
+.scheduler-crew__dot { inline-size: 8px; block-size: 8px; border-radius: 50%; background: currentColor; }
+.scheduler-crew__mark--empty > .scheduler-crew__dot { box-sizing: border-box; background: none; border: 1.5px dashed currentColor; }
 
 /* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says so in
    the rows under the customer. The bar wears no edge, border or light of
@@ -1854,7 +1857,7 @@ button.scheduler-row-head__num::after {
    long its driver may drive, and a full bar once their clock resets. */
 .scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
 .scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) { flex: 1 1 auto; }
-.scheduler-crew--seat > .scheduler-crew__mark { display: none; }
+.scheduler-crew--seat:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
 .scheduler-crew--seat > .scheduler-crew__duty svg { inline-size: 12px; block-size: 12px; }
 .scheduler-crew--seat > .scheduler-crew__hours { display: none; margin-inline-start: auto; }
 .scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) > .scheduler-crew__hours,
@@ -1880,8 +1883,8 @@ button.scheduler-row-head__num::after {
    clipboard on duty, the moon in the sleeper and the power button off duty,
    each its own shape so the colour is never the only signal. Ringed, the
    ring is the hours they may still drive, of ten, amber under one. */
-.scheduler-crew[data-duty] > .scheduler-crew__mark { display: none; }
-.scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
+.scheduler-crew[data-duty]:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
+.scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: 12px; }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty--ring {
   --scheduler-ring: var(--scheduler-mark-success);

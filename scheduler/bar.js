@@ -182,7 +182,8 @@
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
-    const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot'].filter(Boolean).join(' '));
+    const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
+      c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
     mark.appendChild(dot ? el('span', 'scheduler-crew__dot') : svgUse(c.icon, '16', c.box));
     item.appendChild(mark);
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',

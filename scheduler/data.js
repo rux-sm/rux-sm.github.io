@@ -9997,16 +9997,12 @@
     const gone = box.bottom <= ceiling || box.top >= pane.bottom
       || box.right <= first - TIP_GAP || box.left >= pane.right;
     barShortcuts.toggleAttribute('data-out', gone && !barShortcuts.contains(document.activeElement));
-    /* THE CARD'S HEIGHT IS SIZED TO THE WEEK, two buses tall, and a trip
-       with more updates than that holds grows it to five, so the list under
-       the warnings shows several updates before it scrolls; never taller than
-       the board. Its width is app.css's, the same on every week. */
+    /* THE CARD IS ONE SIZE, app.css's 33rem, and never taller than the
+       board's room, where its content scrolls inside it. */
     const INSET = 16;
     const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
-    const rowH = bar.parentElement.getBoundingClientRect().height;
     const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
-    barShortcuts.style.setProperty('--scheduler-card-min-h', `${Math.min(2 * rowH, roomH)}px`);
-    barShortcuts.style.setProperty('--scheduler-card-max-h', `${Math.min(5 * rowH - 2 * INSET, roomH)}px`);
+    barShortcuts.style.setProperty('--scheduler-card-h', `${Math.min(33 * parseFloat(getComputedStyle(document.documentElement).fontSize), roomH)}px`);
     const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
     list?.style.removeProperty('max-block-size');
     tip.width = barShortcuts.offsetWidth;

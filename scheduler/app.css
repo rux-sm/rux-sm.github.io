@@ -1012,18 +1012,20 @@ button.scheduler-row-head__num::after {
    week's sticky bands and under the trip panel. It is a raised card a step
    lighter than the board inside a hairline, so it stands off the week on a
    dark theme, where a shadow does not show, as well as on a light one.
-   It is 18rem wide on every week, and data.js sizes its height to the
-   week, between two and five buses tall; the updates take what height is
-   left and scroll past it. A trip with no card leaves it empty, and an empty
+   EVERY CARD IS ONE SIZE, 22rem by 33rem, a trip's card or an out trip's
+   two tabs, full or nearly empty, so changing tab or trip moves no edge.
+   data.js shortens it to the board's room on a short screen. What does not
+   fit scrolls inside it: the updates list on a trip's card, the panel under
+   the tabs on an out trip's. A trip with no card leaves it empty, and an empty
    one is not drawn. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   position: fixed;
   z-index: 996;
   box-sizing: border-box;
-  inline-size: min(18rem, calc(100vw - 2 * var(--rux-spacing-05)));
-  min-block-size: var(--scheduler-card-min-h, 0);
-  max-block-size: var(--scheduler-card-max-h, none);
-  align-content: flex-start;
+  inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
+  block-size: var(--scheduler-card-h, 33rem);
+  flex-direction: column;
+  flex-wrap: nowrap;
   --card-surface: var(--rux-layer-02);
   --card-hover: var(--rux-layer-hover-02);
   --card-rule: var(--rux-border-subtle-02);
@@ -1032,13 +1034,22 @@ button.scheduler-row-head__num::after {
   /* The selected trip's own lift, so the card stands as high as the trip. */
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > :is(.scheduler-card, .scheduler-card-tabs) { flex: 1 1 auto; min-block-size: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;
-  max-block-size: calc(var(--scheduler-card-max-h, 100vh) - 2 * var(--scheduler-shortcut-pad, 0px));
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 0 1 auto; min-block-size: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; }
+/* With no updates, No updates and Add stand in the middle of the room. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:not(:has(> .scheduler-card__update-list)) { justify-content: center; }
+/* An out trip's tabs stay at the top and the panel under them scrolls; a
+   trip's card inside its panel fills it, so its own updates list scrolls as
+   it does with no tabs. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card-tabs { display: flex; flex-direction: column; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__tabs { flex: none; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:not([hidden]) { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel > .scheduler-card:not(.scheduler-card--live) { flex: 1 1 auto; min-block-size: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { flex: 0 1 auto; min-block-size: 0; max-block-size: none; overflow-y: auto; }
 /* THE CARD'S ARROW is a 14px square of the card's surface turned 45deg and
    centred on the edge facing the trip, so it stands about 10px out and its
@@ -1241,8 +1252,8 @@ button.scheduler-row-head__num::after {
 .scheduler-card__road-fault { color: var(--rux-text-secondary); }
 /* AN OUT TRIP'S CARD is two tabs over its two cards, data.js's
    drawRoadCard: On the road, the live card, and Updates, the trip card, its
-   Needs counted on its tab. It stands in the card's place and is as wide as
-   the live card's map asks, both tabs alike so the card does not jump. */
+   Needs counted on its tab. It stands in the card's place at the card's one
+   size, both tabs alike so the card does not jump. */
 .scheduler-card-tabs { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-card-tabs__tabs { padding-inline: var(--rux-spacing-03); }
 .scheduler-card-tabs__tabs .scheduler-card__count { margin-inline-start: var(--rux-spacing-02); }
@@ -1251,12 +1262,6 @@ button.scheduler-row-head__num::after {
    each driver's clocks are three meters side by side, filled to what is left
    of what the rule allows, amber under an hour; where the bus is and when
    Samsara last heard close it. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card-tabs) {
-  inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]):has(> .scheduler-card-tabs > .scheduler-card-tabs__panel:not([hidden]) > .scheduler-card--live) {
-  overflow-y: auto;
-}
 .scheduler-card__live-warn {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -3473,6 +3478,21 @@ button.scheduler-row-head__num::after {
    there, so the sheet grows upward and the trip and its slots keep one place
    at the foot on every trip. The needs at the top need no rule above them. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-card { display: contents; }
+/* A trip's card with no tabs is one box of the same 40%, its needs over its
+   updates, scrolling inside. */
+.scheduler-bar-shortcuts[data-docked] > .scheduler-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 100%;
+  order: -1;
+  min-inline-size: 0;
+  block-size: 40dvh;
+  overflow-y: auto;
+  background: var(--rux-layer-02);
+}
+/* Named twice to outrank the sheet's own rule that stretches each row. */
+.scheduler-bar-shortcuts[data-docked] > .scheduler-card.scheduler-card > * { flex: none; }
+.scheduler-bar-shortcuts[data-docked] > .scheduler-card.scheduler-card > .scheduler-card__updates { flex: 1 0 auto; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card > * { flex: 1 0 100%; min-inline-size: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__needs { order: -3; border-block-start: 0; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-card__updates { order: -1; }
@@ -3513,9 +3533,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }
 /* A live trip says its times on its own times row, so the bar's is left off. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip:has(> .scheduler-road__times) > .scheduler-bar__time { display: none; }
-/* The live card scrolls inside the sheet past 40% of the screen, so the
-   trip and its slots stay in view under it. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-card-tabs__panel:not([hidden]) > .scheduler-card--live { display: block; max-block-size: 40dvh; overflow-y: auto; }
+/* On a phone the card is 40% of the screen, whichever tab, full or not,
+   and scrolls inside it, so the trip and its slots keep one place under it. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-card-tabs__panel:not([hidden]) { block-size: 40dvh; overflow-y: auto; }
 /* The phone number dials, drawn as a link in the trip's own ink. */
 .scheduler-bar__phone--call { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 /* A trip the sheet comes up over scrolls clear of it by the sheet's height. */

@@ -15,7 +15,8 @@
      pump, a short tank bar and its percent; the second row's room is air
      round them and the drivers.
    - The drivers row, a seat for each driver: the one at the wheel first and
-     bold with no mark, since the speed says the bus moves, their driving
+     bold with their status dot, confirmed since Samsara has them in the
+     bus, their driving
      hours left at the seat's end over a 2px bar of them, amber under one;
      anyone else with their duty's mark, and their hours only under one. A
      driver Samsara has in another bus is the red error mark, their name red
@@ -104,15 +105,22 @@
   /* One driver's seat on the drivers row: their name, the driving hours they
      have left and a 2px bar under the seat of them, of ten, amber under one;
      app.css shows the hours and the bar for the one at the wheel, and the
-     hours for anyone under one. The one at the wheel goes first, bold and
-     with no mark, since the speed says the bus moves; anyone else wears
-     their duty's mark. A driver Samsara has in
+     hours for anyone under one. The one at the wheel goes first, bold, with
+     their status dot, which reads confirmed while Samsara has them in the
+     bus, as data.js saves it near yard-out; anyone else wears their duty's
+     mark. A driver Samsara has in
      another bus is the red error mark and their name in red with that bus
      after it. With no driver, the name as the bar drew it. */
   function crewOn(item, d, elsewhere) {
     for (const part of ['duty', 'hours', 'away', 'left']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
     item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
     delete item.dataset.duty;
+    // A driver Samsara has in the bus is on the trip: their mark reads
+    // confirmed while the bus is out, whatever they answered.
+    const statusMark = item.querySelector(':scope > .scheduler-crew__mark');
+    if (statusMark?.dataset.baseClass != null) { statusMark.className = statusMark.dataset.baseClass; delete statusMark.dataset.baseClass; }
+    item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
+    delete item.dataset.baseDeclined;
     if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
     if (elsewhere) {
       item.dataset.baseTitle = item.title;
@@ -128,6 +136,12 @@
     if (!d) return;
     item.dataset.baseTitle = item.title;
     item.classList.add('scheduler-crew--seat');
+    if (statusMark) {
+      statusMark.dataset.baseClass = statusMark.className;
+      statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|error|success)\b/, 'scheduler-crew__mark--success');
+    }
+    item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
+    item.classList.remove('scheduler-crew--declined');
     if (d.duty) item.dataset.duty = d.duty;
     if (d.duty && d.duty !== 'driving') item.prepend(mark(d.duty));
     item.classList.toggle('scheduler-crew--wheel', d.wheel);

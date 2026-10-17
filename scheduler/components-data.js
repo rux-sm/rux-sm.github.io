@@ -310,6 +310,8 @@
         one('Low fuel', 'Under a quarter of a tank, the tank amber.', live('Northside Band', { bus: { fuel: 18 } })),
         one('Engine warning lamp', 'Said only on the tooltip and the live card, since a warning lamp can stay lit for days.', live('Coastal Youth Choir', { bus: { fault: 'check', faults: ['Check engine lamp'] } })),
         one('Stop lamp', 'Red: the engine\'s stop lamp is a warning, its codes on the tooltip.', live('Riverbend Seniors', { bus: { fault: 'stop', faults: ['Coolant temperature high'], mph: 0, engine: 'idle' }, next: atStop() }), { replay: true }),
+        one('In the bus, not yet confirmed', 'Samsara has the driver in the bus, so the bar reads them confirmed; near yard-out the board saves it.', live('Northside Band', {
+          crew: [['d1', 'driver', 'pending-response']] })),
         one('Someone else at the wheel', 'A driver the bar does not name joins the end of the drivers row.', live('Harbor Tours', { bus: { drivers: [driver('d9', { name: 'Omar Diaz', left_ms: 6 * HOUR })] } })),
       ],
     };

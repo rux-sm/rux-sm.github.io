@@ -244,6 +244,8 @@ expect('no signal: a grey dash and how long since, and the words in place of the
 expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long time'].map(n => [text(lit(n), '.scheduler-road__big'), has(lit(n), '.scheduler-road__speed--long')]),
   [['Idle', false], ['Idle', true]]);
 expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
+expect('a driver Samsara has in the bus reads confirmed whatever they answered',
+  lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), 'scheduler-crew__mark--success');
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
 expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 

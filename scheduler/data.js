@@ -714,6 +714,47 @@
       at: roadAnswer?.at,
       motion: view.motion,
     });
+    if (bus) confirmFromSamsara(bar, bus);
+  }
+
+  /* A DRIVER SAMSARA HAS IN THE BUS IS ON THE TRIP. The bar shows them
+     confirmed while the bus is out, road-bar.js's; and when Samsara has them
+     logged into this leg's bus within CONFIRM_NEAR of its yard-out, their
+     status is saved Confirmed, as the office would, with a history line
+     saying Samsara saw them. Once a page load each, so several office
+     screens on the board save it once each at most, and a save that fails
+     is left for the next page load. */
+  const CONFIRM_NEAR = 60 * 60e3;
+  const confirming = new Set();
+  async function confirmFromSamsara(bar, bus) {
+    const yardOut = Number(bar.dataset.roadFrom) + Road.MARGIN;
+    if (!Number.isFinite(yardOut) || Math.abs(Date.now() - yardOut) > CONFIRM_NEAR) return;
+    const found = barCrew(bar);
+    if (!found) return;
+    const inBus = new Set(bus.drivers.map(d => d.driver_id).filter(Boolean).map(String));
+    const due = found.crew.filter(c => !c.needed && inBus.has(String(c.driverId)) && c.status.value !== 'confirmed'
+      && !confirming.has(`${found.trip.id}:${c.driverId}:${c.leg}:${c.role}`));
+    if (!due.length) return;
+    const { trip } = found;
+    for (const c of due) confirming.add(`${trip.id}:${c.driverId}:${c.leg}:${c.role}`);
+    const picked = c => due.some(x => x.driverId === c.driverId && x.leg === c.leg && x.role === c.role);
+    const list = (trip.trip_assignments || []).flatMap(a =>
+      crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => (
+        { driverId: c.driverId, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c) })));
+    const number = panelIndex.buses.get(bar.dataset.busId)?.number ?? 'the bus';
+    try {
+      const { error } = await withTimeout(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));
+      if (error) throw new Error(error.message);
+      for (const c of due) {
+        const was = DRIVER_STATUSES.find(x => x.value === c.status.value)?.label ?? null;
+        const who = `${histDriverName(c.driverId)}, ${c.leg === 'return' ? 'inbound' : 'outbound'} ${(HISTORY_ROLES[c.role] || 'Driver').toLowerCase()}`;
+        recordHistory(trip.id, 'driver_status_changed', [{
+          field: 'driver_status', label: 'Driver status',
+          before: was ? `${who}: ${was}` : null, after: `${who}: Confirmed, logged into ${number} in Samsara`,
+        }]);
+      }
+      await show();
+    } catch { /* left for the next page load */ }
   }
 
   setInterval(askRoad, ROAD_EVERY);

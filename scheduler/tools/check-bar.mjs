@@ -217,6 +217,9 @@ expect('moving: the speed, five bars with one lit for every 16 mph, green, a rul
   [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
     lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],
   ['64', 'mph', 5, 4, null, true, '72%', null]);
+const dot = b => { const d = b.querySelector('.scheduler-bar__dest > .scheduler-road__dot'); return d ? d.classes().find(c => /--(error|warning|rest|scan)$/.test(c))?.split('--')[1] ?? 'ok' : null; };
+expect('a dot at the destination row\'s end in the bus\'s colour',
+  ['At highway speed', 'Late to spot', 'Not rolling', 'Resting', 'No signal'].map(n => dot(lit(n))), ['ok', 'warning', 'error', 'rest', 'scan']);
 expect('where the bus is goes on the tooltip', card(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its colour on the bars and its name in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [tone(b), ...say(b)]; }), [
@@ -242,7 +245,7 @@ expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long 
   [['Idle', false], ['Idle', true]]);
 expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
-expect('a bus no longer out takes its times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false]);
+expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

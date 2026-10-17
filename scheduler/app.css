@@ -1504,6 +1504,24 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
+/* A live bus's dot: 8px in its colour inside a faint ring of it, 6px
+   before the alert count. */
+.scheduler-road__dot {
+  --scheduler-dot: var(--scheduler-mark-success);
+  flex: none;
+  align-self: center;
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: 50%;
+  background: var(--scheduler-dot);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--scheduler-dot) 30%, transparent);
+}
+.scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: 6px; }
+.scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
+.scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
+.scheduler-road__dot--rest { --scheduler-dot: var(--scheduler-mark-rest); }
+.scheduler-road__dot--scan { --scheduler-dot: var(--scheduler-road-scan); }
+.scheduler-page[data-board="compact"] .scheduler-road__dot { display: none; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
    tab's name while it holds. */
@@ -1653,9 +1671,9 @@ button.scheduler-row-head__num::after {
 /* A red warning's bars blink for the first minute the page has seen it,
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
-.scheduler-bar--road[data-alarm] .scheduler-road__card--error .scheduler-road__bars { animation: scheduler-road-alarm 1.4s linear infinite; }
+.scheduler-bar--road[data-alarm] :is(.scheduler-road__card--error .scheduler-road__bars, .scheduler-road__dot--error) { animation: scheduler-road-alarm 1.4s linear infinite; }
 :is([data-motion="calm"], [data-motion="off"]) :is(
-  .scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low, .scheduler-road__bars) { animation: none; }
+  .scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low, .scheduler-road__bars, .scheduler-road__dot) { animation: none; }
 
 /* THE LEGEND, the view menu's What the colours mean: the speed's five bars
    in each colour they take. */

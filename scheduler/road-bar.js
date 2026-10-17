@@ -5,6 +5,8 @@
    customer, and the rows under them say what Samsara says, laid out for the
    narrowest bar, a one-day trip on the board's 10rem day, and kept to the
    first day on a longer bar.
+   - A dot at the destination row's end, before the alert count, in the
+     bus's colour, so a scan down the board finds the buses out.
    - The times, in the contact row's place: out, a dimmed arrow and back,
      and the minutes late to the next stop in amber; a problem's words in
      its colour instead, the worst of live-trip.js's warnings or No signal.
@@ -197,6 +199,7 @@
     }
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
+    liveDot(bar, bus, worst);
     times(bar, bus, next, worst);
     card(bar, bus, next, said, worst, live.at);
   }
@@ -221,6 +224,27 @@
 
   // What the bar says of a problem: the worst warning's name, or No signal and how long.
   const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
+
+  /* THE LIVE DOT at the destination row's end, before the alert count: an
+     8px dot in the bus's colour, green on the road, the worst warning's
+     amber or red, purple while a driver rests, grey with no signal, so a
+     scan down the board finds the buses out. Its title says which. */
+  function liveDot(bar, bus, worst) {
+    const row = bar.querySelector(':scope > .scheduler-bar__dest');
+    let dot = row?.querySelector(':scope > .scheduler-road__dot');
+    if (!bus || !row) { dot?.remove(); return; }
+    if (!dot) {
+      dot = el('span', 'scheduler-road__dot');
+      dot.setAttribute('role', 'img');
+      row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__msg'));
+    }
+    const tone = worst?.tone ?? (bus.engine == null ? 'scan' : bar.dataset.light === 'rest' ? 'rest' : null);
+    dot.className = `scheduler-road__dot${tone ? ` scheduler-road__dot--${tone}` : ''}`;
+    const words = worst ? `Out on the road: ${worst.title}` : tone === 'scan' ? 'Out on the road: no signal'
+      : tone === 'rest' ? 'Out on the road: resting' : 'Out on the road';
+    dot.title = words;
+    dot.setAttribute('aria-label', words);
+  }
 
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard,
      a dimmed arrow, and when it is due back, then how late the bus will be

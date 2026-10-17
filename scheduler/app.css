@@ -1506,19 +1506,21 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* A live bus's dot: 8px in its colour inside a faint ring of it, 6px
-   before the alert count. */
+/* A live bus's dot: 8px in its colour inside a 2px faint ring of it, the
+   ring drawn as the dot's own border so the row, which clips what spills
+   past it, never cuts it; 4px before the alert count. */
 .scheduler-road__dot {
   --scheduler-dot: var(--scheduler-mark-success);
   flex: none;
   align-self: center;
-  inline-size: 8px;
-  block-size: 8px;
+  box-sizing: border-box;
+  inline-size: 12px;
+  block-size: 12px;
+  border: 2px solid color-mix(in srgb, var(--scheduler-dot) 30%, transparent);
   border-radius: 50%;
-  background: var(--scheduler-dot);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--scheduler-dot) 30%, transparent);
+  background: var(--scheduler-dot) padding-box;
 }
-.scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: 6px; }
+.scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
 .scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
 .scheduler-road__dot--rest { --scheduler-dot: var(--scheduler-mark-rest); }

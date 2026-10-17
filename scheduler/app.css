@@ -617,17 +617,19 @@ button.scheduler-row-head__num::after {
   --scheduler-pad-start: var(--rux-spacing-03);
   --scheduler-pad-end: var(--rux-spacing-03);
   padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
-  /* WHAT DAY ONE LEAVES, for the attention mark at a bar's end. A bar is
-     `span` days wide less the clear space and the gap, so one day inside it
-     is that width plus what was taken off, divided by the span; day one's
-     edge is then that, less the clear space and the padding this side.
-     `max()` holds it at zero on a one-day bar, where the sum is the bar
-     itself and the arithmetic would push the mark out into the gap. */
-  --scheduler-day-one-end: max(0px, calc(100% + var(--scheduler-pad-start) - (100%
+  /* WHAT DAY ONE LEAVES, for the marks at a bar's top right end: the room
+     past where a one-day bar's content would end, so a longer bar's dot and
+     alert count stand where a one-day bar's do. A bar is `span` days wide
+     less the clear space, the gap and its cuts, so one day is that width
+     plus what was taken off, divided by the span; a one-day bar's content
+     ends a day in, less the gap and its own end padding. `max()` holds it at
+     zero on a one-day bar. */
+  --scheduler-day-one-end: max(0px, calc(100% + var(--scheduler-pad-start) + var(--scheduler-pad-end)
+    + var(--scheduler-gap) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px) - (100%
     + var(--scheduler-pad-start) + var(--scheduler-pad-end)
     + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px))
-    / var(--scheduler-span) + var(--scheduler-gap-clear) - var(--scheduler-cut-start, 0px)));
+    / var(--scheduler-span)));
   /* Square unless the theme rounds its controls, as ant-dark does. */
   border-radius: var(--scheduler-bar-radius, 0);
   background: var(--scheduler-bg);

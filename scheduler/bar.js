@@ -157,7 +157,7 @@
     if (value === 'off') {
       parts.push(label);
     } else {
-      parts.push(c.row?.source === 'driver' ? `${label} by the driver` : `${label}, set by dispatch`);
+      parts.push(c.row?.source === 'driver' ? `${label} by the driver` : c.row?.source === 'samsara' ? `${label} by Samsara` : `${label}, set by dispatch`);
       const at = setAt((value === 'confirmed' && c.row?.acceptedAt)
         || (value === 'declined' && c.row?.declinedAt) || c.row?.updatedAt);
       if (at) parts.push(at);

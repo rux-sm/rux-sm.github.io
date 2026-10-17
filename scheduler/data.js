@@ -740,7 +740,7 @@
     const picked = c => due.some(x => x.driverId === c.driverId && x.leg === c.leg && x.role === c.role);
     const list = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => (
-        { driverId: c.driverId, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c) })));
+        { driverId: c.driverId, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c), ...(picked(c) && { source: 'samsara' }) })));
     const number = panelIndex.buses.get(bar.dataset.busId)?.number ?? 'the bus';
     try {
       const { error } = await withTimeout(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));

@@ -236,7 +236,7 @@ its title, its button and its rows, 16px from the card's sides and top and 8px a
 filling the card to 16px off its foot and scrolling inside, its words 16px in, Add's box ending where
 the ages do and outlined where the theme outlines its buttons, its rows lit across its whole width;
 docked on a phone they are the sheet's own bands. Each warning is a 32px row in 14px regular type, and each one-line update a 40px row with a quiet
-hairline between it and the next, Add's box 16px in from the tile's top and side, as the map's buttons are, the first row 8px clear of it or of the quick update's box, and that box 8px under Add's, or a 32px row docked; a warning's leave day drops under its words where both do not
+hairline between it and the next, Add's box 16px in from the tile's top and side, as the map's buttons are, a hairline 16px under it over the first update, or the quick update's box 16px under it and the hairline 16px under that, or a 32px row docked; a warning's leave day drops under its words where both do not
 fit one line. The card opens with its warnings under a title, Needs, in Carbon's 14px heading with
 the bar's own alert disc beside it, its count in the same colour, so the disc on the bar and the list
 it counts read as one; plain rows with no tint and no rule between: a bus that does

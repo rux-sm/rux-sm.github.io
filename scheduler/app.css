@@ -903,18 +903,17 @@ button.scheduler-row-head__num::after {
    shows. */
 .scheduler-bar--same-trip { outline: 1px solid var(--rux-layer-selected-inverse); outline-offset: -1px; }
 
-/* EVERY BAR OF THE TRIP IN YOUR EDITOR wears the selection's ring with a
-   brighter stretch running round it at one speed, so the open trip is found
-   at a glance and told apart from a trip merely selected, whose ring stands
-   still. Those bars are locked: they do not drag, and their bus, colour and
-   hotel are the editor's to change. data.js draws the ring as three strokes
-   of one rectangle, whose edge is 100 long: the whole ring faint, a tail, and
-   a head at the tail's front. The stroke is twice the ring and centred on the
-   bar's edge, so the bar clips it to 1px inside. It stands over the still
-   selection ring it replaces, and over the rule a trip someone else has open
-   wears, because this one is yours. */
-@keyframes scheduler-open-tail { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -100; } }
-@keyframes scheduler-open-head { from { stroke-dashoffset: -16; } to { stroke-dashoffset: -116; } }
+/* EVERY BAR OF THE TRIP IN YOUR EDITOR wears the selection's 1px ring
+   breathing, fading slowly from a third of its strength to the whole of it
+   and back, never out, so the open trip is found at a glance and told apart
+   from a trip merely selected, whose ring stands still. Those bars are
+   locked: they do not drag, and their bus, colour and hotel are the editor's
+   to change. data.js draws the ring as one stroke of a rectangle, twice the
+   ring and centred on the bar's edge, so the bar clips it to 1px inside. It
+   stands over the still selection ring it replaces, and over the rule a trip
+   someone else has open wears, because this one is yours. With less motion,
+   by the view menu or the system, it stands still at full strength. */
+@keyframes scheduler-open-breathe { 0%, 100% { stroke-opacity: .35; } 50% { stroke-opacity: 1; } }
 .scheduler-bar.scheduler-bar--open { box-shadow: var(--scheduler-lift); }
 .scheduler-bar__open-ring {
   position: absolute;
@@ -927,14 +926,10 @@ button.scheduler-row-head__num::after {
   stroke: var(--rux-layer-selected-inverse);
   stroke-width: 2px;
 }
-.scheduler-bar__open-ring rect { rx: var(--scheduler-bar-radius, 0); }
-.scheduler-bar__open-base { stroke-opacity: .5; }
-.scheduler-bar__open-tail { stroke-opacity: .75; stroke-dasharray: 30 70; animation: scheduler-open-tail 2s linear infinite; }
-.scheduler-bar__open-head { stroke-dasharray: 14 86; animation: scheduler-open-head 2s linear infinite; }
+.scheduler-bar__open-ring rect { rx: var(--scheduler-bar-radius, 0); animation: scheduler-open-breathe 3s ease-in-out infinite; }
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar__open-ring rect { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-bar__open-base { stroke-opacity: 1; }
-  .scheduler-bar__open-tail,
-  .scheduler-bar__open-head { display: none; }
+  .scheduler-bar__open-ring rect { animation: none; }
 }
 
 /* The selected trip's shortcuts: a row of square slots floating clear of the
@@ -1325,7 +1320,14 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-link.rux--btn { max-inline-size: none; inline-size: 100%; justify-content: center; padding-inline: var(--rux-spacing-03); }
 .scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
-.scheduler-card__live-driver + .scheduler-card__live-driver { margin-block-start: var(--rux-spacing-02); }
+/* In the live card's tile the drivers are rows parted by the quiet hairline
+   the updates take, running to the tile's sides with their words 16px in:
+   the first 16px under the title, the last 16px off the tile's foot, 12px
+   either side of each hairline. */
+.scheduler-card__live-tile .scheduler-card__road-list:has(> .scheduler-card__live-driver) { gap: 0; margin-inline: calc(-1 * var(--rux-spacing-05)); margin-block-end: calc(-1 * var(--rux-spacing-04)); }
+.scheduler-card__live-tile .scheduler-card__live-driver { padding: var(--rux-spacing-04) var(--rux-spacing-05); }
+.scheduler-card__live-tile .scheduler-card__live-driver:first-child { padding-block-start: var(--rux-spacing-03); }
+.scheduler-card__live-tile .scheduler-card__live-driver + .scheduler-card__live-driver { border-block-start: 1px solid var(--rux-border-subtle-01); }
 /* A driver's three clocks side by side under their name, across the tile's
    whole width, each its name and the hours left over a 3px meter of them,
    amber under an hour. */

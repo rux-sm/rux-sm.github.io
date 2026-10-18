@@ -10109,23 +10109,17 @@
      and every bar of the trip in the editor, ringed as app.css draws them, so a
      trip's buses are found together on a busy day. The editor's are also
      locked. */
-  /* The open trip's ring is drawn in SVG, because a stroke's dashes travel
-     along the edge at one speed, where a turning gradient races along the
-     ends and crawls along the sides. `pathLength` makes the edge 100 long on
-     any bar, so app.css sizes the dashes and their run in percent of it. */
+  /* The open trip's ring is one SVG stroke round the bar, over the rings
+     drawn under the bar's own content, which app.css breathes. */
   const SVG_NS = 'http://www.w3.org/2000/svg';
   function openRing() {
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('class', 'scheduler-bar__open-ring');
     svg.setAttribute('aria-hidden', 'true');
-    for (const part of ['base', 'tail', 'head']) {
-      const rect = document.createElementNS(SVG_NS, 'rect');
-      rect.setAttribute('class', `scheduler-bar__open-${part}`);
-      rect.setAttribute('width', '100%');
-      rect.setAttribute('height', '100%');
-      rect.setAttribute('pathLength', '100');
-      svg.append(rect);
-    }
+    const rect = document.createElementNS(SVG_NS, 'rect');
+    rect.setAttribute('width', '100%');
+    rect.setAttribute('height', '100%');
+    svg.append(rect);
     return svg;
   }
 

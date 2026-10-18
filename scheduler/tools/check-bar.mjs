@@ -171,9 +171,9 @@ expect('either side of the week', drawn('trip-bar', 'Either side of the week').m
 const [back] = drawn('trip-bar', 'Back at the yard');
 expect('a trip back stays put and raises no alert, though its record lacks miles and pay', [back.classList.contains('scheduler-bar--back'), mark(back)],
   [true, null]);
-expect('a trip back says Complete, then Paid or what is due, or Complete alone with no price',
-  drawn('trip-bar', 'Back at the yard').map(b => b.querySelector('.scheduler-bar__complete')?.textContent ?? null),
-  ['Complete', 'Complete·Paid', 'Complete·$1,240 due']);
+expect('a trip back wears a Complete pill, its update row the miles, then Paid or what is due',
+  drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest > .scheduler-bar__done'), b.querySelector('.scheduler-bar__complete')?.textContent ?? null]),
+  [['Complete', ''], ['Complete', '412 mi·Paid'], ['Complete', '$1,240 due']]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
   ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
 expect('an open trip\'s update takes its age\'s colour, a settled one none',

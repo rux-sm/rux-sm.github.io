@@ -599,6 +599,9 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
 }
+/* apple-light's bar ink is the faintest that reads, so its Complete pill
+   is not dimmed further. */
+[data-theme="apple-light"] .scheduler-bar__done { opacity: 1; }
 /* A RUX-DARK TRIP BAR HAS A 1px EDGE a step lighter than its fill, drawn
    inside it, so a bar reads as a card on the dark board. The selected bar's
    white ring, the open trip's ring, the rule a trip somebody else has open

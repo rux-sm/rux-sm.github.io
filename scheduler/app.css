@@ -877,7 +877,7 @@ button.scheduler-row-head__num::after {
 /* A trip that is back: Complete and Paid in the green an update's first two
    days take, what is still due in its amber, a dimmed dot between. */
 .scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
-.scheduler-bar__complete-word, .scheduler-bar__complete-paid { color: var(--scheduler-age-new); }
+.scheduler-bar__complete-paid { color: var(--scheduler-age-new); }
 .scheduler-bar__complete-sep { opacity: .55; }
 .scheduler-bar__complete-due { color: var(--scheduler-age-week); white-space: nowrap; }
 .scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
@@ -1642,6 +1642,26 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-road__dot--scan .scheduler-road__ping::after { content: none; }
 .scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
+/* A trip that is back: Complete in the Live pill's shape, in the bar's own
+   ink inside a quiet outline of it, no dot and no colour, neutral as the
+   trip now is. A bar still lit from Samsara shows Live instead. */
+.scheduler-bar__done {
+  flex: none;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  block-size: 16px;
+  padding-inline: 6px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 35%, transparent);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: .2px;
+  opacity: .85;
+}
+.scheduler-bar--road .scheduler-bar__done { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar__done { display: none; }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
 .scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
@@ -1682,7 +1702,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-01);
   pointer-events: none;
 }
-.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__msg) { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__done, .scheduler-bar__msg) { margin-inline-start: var(--rux-spacing-02); }
 /* OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears
    their face alone; one they have open wears the face and this rule round
    the whole bar, in the selection ring's own colour, so the state that

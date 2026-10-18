@@ -165,22 +165,29 @@
     return parts.join(' · ');
   }
 
-  /* A trip that is back, in the update row's words: Complete, then Paid or
-     the balance due, and the same in a sentence for the tooltip. */
+  /* A trip that is back, in the update row's words: the miles driven once
+     they are in, then Paid or the balance due, a dimmed dot between, and the
+     same in a sentence for the tooltip. */
   const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
   function completeEl(trip) {
     const { price, paid, remaining } = window.SchedulerBilling.of(trip);
     const item = el('span', 'scheduler-bar__complete');
-    item.append(el('span', 'scheduler-bar__complete-word', 'Complete'));
-    let said = 'Trip complete';
-    if (price > 0 && remaining > 0) {
-      item.append(el('span', 'scheduler-bar__complete-sep', '·'), el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
-      said += `, ${money(remaining)} of ${money(price)} still due`;
-    } else if (price > 0 && paid > 0) {
-      item.append(el('span', 'scheduler-bar__complete-sep', '·'), el('span', 'scheduler-bar__complete-paid', 'Paid'));
-      said += ', paid in full';
+    const parts = [];
+    const said = ['Trip complete'];
+    const miles = Number(trip.actual_miles) || 0;
+    if (miles > 0) {
+      parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
+      said.push(`${Math.round(miles).toLocaleString('en-US')} miles`);
     }
-    item.title = said;
+    if (price > 0 && remaining > 0) {
+      parts.push(el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
+      said.push(`${money(remaining)} of ${money(price)} still due`);
+    } else if (price > 0 && paid > 0) {
+      parts.push(el('span', 'scheduler-bar__complete-paid', 'Paid'));
+      said.push('paid in full');
+    }
+    parts.forEach((p, i) => item.append(...(i ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
+    item.title = said.join(', ');
     return item;
   }
 
@@ -425,10 +432,16 @@
     const alerts = alertsOf(trip, facts);
     const attention = alerts.length
       ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
+    /* A trip that is back says so in the same place a bus out says Live: a
+       pill, Complete in the bar's own ink inside a quiet outline of it, as
+       neutral as the trip now is. A back trip raises no alert, so the two
+       never stand together. */
+    const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    const doneMark = isDone ? el('span', 'scheduler-bar__done', 'Complete') : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
-    addRow(bar, 'scheduler-bar__dest', dest, attention);
+    addRow(bar, 'scheduler-bar__dest', dest, doneMark, attention);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. When both do not fit, the
@@ -480,12 +493,13 @@
        balance not in. A settled trip's update stays in the bar's ink, since
        its age asks for nothing. A trip with none leaves the row empty, so
        every bar on the board is one height.
-       ONCE THE TRIP IS BACK the row says so instead, since the last update
-       is no longer news and the money is all that is left open: Complete in
-       green, then Paid, or what is still due in amber; a trip with no price
-       says Complete alone. The update stays on the tooltip and the card. */
+       ONCE THE TRIP IS BACK, which the Complete pill says, the row gives its
+       facts instead, since the last update is no longer news: the miles
+       driven, once they are in, then Paid in green, or what is still due in
+       amber; a trip with neither leaves the row empty. The update stays on
+       the tooltip and the card. */
     const latest = updatesOf(trip)[0] ?? null;
-    const done = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    const done = isDone;
     const news = done ? completeEl(trip) : el('span', null, latest?.body || '');
     let tone = done ? ' scheduler-bar__update--complete' : '';
     if (latest && done) news.title = `${news.title}\n${latest.body}\n${updateStamp(latest)}`;

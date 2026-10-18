@@ -1304,7 +1304,10 @@ button.scheduler-row-head__num::after {
    keeps as much of its line as it can. */
 .scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); padding: var(--rux-spacing-03); }
 .scheduler-card--live > .scheduler-card__live-tile { flex: none; min-block-size: 0; min-inline-size: 0; margin: 0; padding: var(--rux-spacing-04); }
-.scheduler-card__live-map { display: grid; gap: var(--rux-spacing-03); }
+.scheduler-card.scheduler-card--live > .scheduler-card__live-tile > .scheduler-card__title { margin-block-end: 0; }
+/* One column held to the tile, so the map's attribution, which does not
+   wrap, cannot push the map and the line under it past the tile's padding. */
+.scheduler-card__live-map { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-03); }
 .scheduler-card__live-map-box { block-size: 12rem; background: var(--rux-layer-01); }
 .scheduler-card__live-map-box.leaflet-container { font: inherit; }
 /* The two links are ghost buttons in the link colour, their padding taken

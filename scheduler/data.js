@@ -10069,8 +10069,12 @@
     };
     /* Beside the first day: over the two days after it, 16px in from their
        first edge, or over the two days before it where the two after are not
-       both on screen, as at the week's end or on a board scrolled sideways. */
-    const start = Math.max(0, Math.min(days.length - 1, Number(bar.dataset.start) || 0));
+       both on screen, as at the week's end or on a board scrolled sideways.
+       A bar out on the road stands its rows in today's column, road-bar.js's
+       `--scheduler-today`, so the card goes beside that day instead, clear of
+       what it says. */
+    const lit = Number(bar.style.getPropertyValue('--scheduler-today')) || 0;
+    const start = Math.max(0, Math.min(days.length - 1, (Number(bar.dataset.start) || 0) + lit));
     const shown = (a, b) => !!days[a] && !!days[b] && days[a].left + INSET >= first && days[b].right - INSET <= pane.right;
     const side = shown(start + 1, start + 2) ? 'right' : shown(start - 2, start - 1) ? 'left' : null;
     if (side && days.length) {
@@ -10096,11 +10100,13 @@
     barShortcuts.style.setProperty('--scheduler-open-top',
       `${(above ? box.top - height - TIP_GAP : box.bottom + TIP_GAP) - host.top}px`);
     const last = pane.right - tip.width - TIP_GAP;
-    const x = Math.max(first, Math.min(box.left, last));
+    // The edge the bar's writing starts at: its own, or today's column's.
+    const edge = lit && days[start] ? Math.max(box.left, days[start].left) : box.left;
+    const x = Math.max(first, Math.min(edge, last));
     barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
-    // Half a slot in from the trip's own start edge, wherever the bar ended up.
+    // Half a slot in from where the trip's writing starts, wherever the bar ended up.
     barShortcuts.style.setProperty('--scheduler-open-tip',
-      `${Math.max(8, Math.min(tip.width - 20, box.left - x + 16))}px`);
+      `${Math.max(8, Math.min(tip.width - 20, edge - x + 16))}px`);
     fadeUpdates();
     pop();
   }

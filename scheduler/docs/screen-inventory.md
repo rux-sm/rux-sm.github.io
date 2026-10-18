@@ -230,7 +230,7 @@ back inside the board at either edge with its arrow still pointing at the trip. 
 buttons: what a phone's docked sheet offers as slots is on the bar's right-click menu. The card is a
 raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
 theme as well as a light one. It is one size, 22rem by 33rem, full or nearly empty, with or without
-tabs, shortened only to the board's room, and centred on the trip; what does not fit scrolls inside
+tabs, shortened only to the board's room, and centred on the trip, beside its first day, or beside today on a bar out on the road whose rows stand there; what does not fit scrolls inside
 it, and an empty card's Updates tile, only as tall as it needs, says No updates yet under its title and Add, as the Prep panel's empty day does. Floating, the card is tiles, as the live card is: the Needs and the Updates each a tile holding
 its title, its button and its rows, 16px from the card's sides and top and 8px apart, the Updates
 filling the card to 16px off its foot and scrolling inside, its words 16px in, Add's box ending where

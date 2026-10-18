@@ -14,7 +14,10 @@
 // placeholders build-placeholders.mjs writes, with a layer over each, Keep
 // clear, that marks where the game draws a portal and its words.
 // `rift-01.aseprite` to `rift-12.aseprite` are a rift's world, 120 by 40,
-// blank. A FILE THAT IS THERE IS LEFT ALONE, because it may be a drawing.
+// blank. `icons.aseprite` is the game's icons, 12 a side, a frame to each,
+// named by a tag, with a Guide layer that marks the middle 10 by 10 where
+// the drawing goes; the game draws an icon in the words' colour, so one ink
+// is enough. A FILE THAT IS THERE IS LEFT ALONE, because it may be a drawing.
 //
 // INTO THE GAME. The character's layers and the switch's two pictures are
 // written into app.js as the strings it keeps them in, an ink a square. The
@@ -53,6 +56,8 @@ if (!INKS.length || INKS.length !== Object.keys(HEX).length || INKS.some(id => !
 const PARTS = [['skin', 'skin'], ['eyes', 'eyes'], ['hair', 'hair'], ['helmet', 'helmet'], ['body', 'body'], ['body armour', 'armour'],
   ['hands and feet', 'ends'], ['shield', 'shield'], ['sword', 'sword']];
 const SWITCH = [['sword', 'SWORD'], ['shield', 'SHIELD']];
+// The icons Pixels shows, each a frame of icons.aseprite, by what it is for.
+const ICONS = ['back', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me'];
 
 // A picture in app.js: HERO's parts are `  key: [rows].join(''),` and the
 // switch's `const NAME = [rows].join('');`.
@@ -170,6 +175,28 @@ if (process.argv[2] === 'templates') {
     job(`map-${n + 1}.aseprite`, file => fromPng(file, png, keepClear(n)));
   }
   job('fog.aseprite', file => fromPng(file, join(ART, 'fog.png'), null));
+  job('icons.aseprite', file => `do
+  local names = ${lua(JSON.stringify(ICONS))}
+  local list = json.decode(names)
+  local spr = Sprite(12, 12, ColorMode.INDEXED)
+  spr:setPalette(pal)
+  spr.transparentColor = 0
+  spr.gridBounds = Rectangle(0, 0, 1, 1)
+  spr.layers[1].name = 'icon'
+  local guide = spr:newLayer()
+  guide.name = 'Guide'
+  guide.opacity = 96
+  local ring = Image(spr.spec)
+  for i = 1, 10 do ring:drawPixel(i, 1, ink('8')) ring:drawPixel(i, 10, ink('8')) ring:drawPixel(1, i, ink('8')) ring:drawPixel(10, i, ink('8')) end
+  for n = 2, #list do spr:newFrame() end
+  for n = 1, #list do
+    spr:newCel(guide, n, ring, Point(0, 0))
+    local tag = spr:newTag(n, n)
+    tag.name = list[n]
+  end
+  spr:saveAs(${lua(file)})
+  spr:close()
+end`);
   for (let n = 1; n <= RIFTS; n++) job(`rift-${pad(n)}.aseprite`, file => sprite(file, 120, 40, [['world', null]], 10));
   if (jobs.length) run(jobs.join('\n'));
   process.exit(0);

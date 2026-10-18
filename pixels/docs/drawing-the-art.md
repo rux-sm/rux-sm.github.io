@@ -15,6 +15,7 @@ sixty inks, so a colour from anywhere else cannot be painted.
 | `map-1.aseprite` to `map-6.aseprite` | 120 × 80 | a part of the map, one to a rank, `map-1` at the foot |
 | `fog.aseprite` | 120 × 24 | the band over the highest part that shows |
 | `rift-01.aseprite` to `rift-12.aseprite` | 120 × 40 | a rift's world, over its puzzles |
+| `icons.aseprite` | 12 × 12 | the game's icons, a frame to each, named by its tag |
 
 An enemy is drawn in the Pixelator, in its frame on Manage, not here.
 
@@ -60,6 +61,14 @@ and sword.
   rifts outside the course.
 - The fog's last 8 rows lie over the top of the part below, so they thin out
   to nothing, and a part's top 8 rows are drawn knowing fog covers them.
+
+## The icons
+
+Each icon is a frame, and its name is the tag over it in the timeline. Draw
+inside the pink ring of the Guide layer, the middle 10 × 10, so icons keep a
+pixel of room round them. Use one ink: the game draws an icon in the words'
+colour. Keep lines a whole pixel thick and shapes simple, because at 12 × 12
+one pixel is a tenth of the icon.
 
 ## A rift's world
 

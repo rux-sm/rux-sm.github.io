@@ -74,9 +74,9 @@
   // found from it, so a page at any depth asks for the same two files.
   const HERE = document.currentScript?.src;
   const NAME = /^[a-z][a-z0-9-]*$/;
-  // Carbon's four compiled themes, then the six css/rux-theme.css adds.
+  // Carbon's four compiled themes, then the seven css/rux-theme.css adds.
   const CARBON = new Set(['white', 'g10', 'g90', 'g100']);
-  const KNOWN = new Set([...CARBON, 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark']);
+  const KNOWN = new Set([...CARBON, 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark']);
   // The shell's zone, and the side nav sits inside it, so one element themes
   // both. The attribute is part of the selector on purpose — see the head.
   const SHELL = '.rux--header[data-theme]';
@@ -178,8 +178,8 @@
   // words in Geist Sans (css/rux-overrides.css names the family), and no page
   // links a stylesheet for it: this file already runs in the head of every
   // page before the first paint and already knows the theme, so it writes the
-  // two faces and preloads the one every page uses. Another theme asks for
-  // nothing; rux-dark wears Plex, as Carbon's own themes do. The face is `swap`, where Plex's is `optional`: someone who
+  // two faces and preloads the one every page uses. Every theme but these two
+  // asks for nothing; rux-dark wears Plex, as Carbon's own themes do. The face is `swap`, where Plex's is `optional`: someone who
   // picks this theme in the account panel sees it arrive on that page, and
   // the preload keeps every later page from painting in Plex first. Geist
   // Sans is one variable file covering the 400, 500 and 600 the theme uses.
@@ -196,24 +196,33 @@
   // through to Plex and then the machine's own face, as it does in Plex.
   // Geist is OFL-1.1 and names no reserved font name, so a cut file keeps the
   // name; LICENSE-Geist.txt sits beside them.
-  const FACES = [
-    ['Geist', '100 900', 'Geist-Variable-Latin1.woff2'],
-    ['Geist Mono', '400', 'GeistMono-Regular-Latin1.woff2'],
-  ];
-  const GEIST_FACED = new Set(['geist-dark']);
+  //
+  // SILKSCREEN, FOR PIXEL-DARK, the same way. Google Fonts' own,
+  // github.com/google/fonts ofl/silkscreen/Silkscreen-Regular.ttf, cut to the
+  // same range with the same command. It is drawn on an 8-pixel grid in
+  // capitals and has one weight; LICENSE-Silkscreen.txt sits beside it, and
+  // it too names no reserved font name.
+  const FACES = {
+    'geist-dark': [
+      ['Geist', '100 900', 'Geist-Variable-Latin1.woff2'],
+      ['Geist Mono', '400', 'GeistMono-Regular-Latin1.woff2'],
+    ],
+    'pixel-dark': [['Silkscreen', '400', 'Silkscreen-Regular-Latin1.woff2']],
+  };
   const dressFaces = () => {
-    if (!HERE || !GEIST_FACED.has(document.documentElement.dataset.theme)) return;
-    if (document.getElementById('rux-geist-faces')) return;
+    const theme = document.documentElement.dataset.theme, faces = FACES[theme];
+    if (!HERE || !faces) return;
+    if (document.getElementById(`rux-${theme}-faces`)) return;
     const url = file => new URL(`../assets/fonts/${file}`, HERE).href;
     const preload = document.createElement('link');
     preload.rel = 'preload';
     preload.as = 'font';
     preload.type = 'font/woff2';
     preload.crossOrigin = 'anonymous';
-    preload.href = url(FACES[0][2]);
+    preload.href = url(faces[0][2]);
     const style = document.createElement('style');
-    style.id = 'rux-geist-faces';
-    style.textContent = FACES.map(([family, weight, file]) =>
+    style.id = `rux-${theme}-faces`;
+    style.textContent = faces.map(([family, weight, file]) =>
       `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};font-display:swap;src:url('${url(file)}') format('woff2')}`).join('');
     document.head.append(preload, style);
   };
@@ -221,6 +230,15 @@
   const resolve = () => {
     const html = document.documentElement;
     const shells = document.querySelectorAll(SHELL);
+    // A PAGE MAY LOCK ITS THEME with `data-theme-lock` on <html>, as a game
+    // does. It wears that theme whatever the saved one is, and the saved one
+    // is left as it is for every other app.
+    const lock = html.dataset.themeLock;
+    if (lock && KNOWN.has(lock)) {
+      wear(html, lock);
+      for (const el of shells) dressShell(el, CARBON.has(lock) ? 'g100' : lock);
+      return lock;
+    }
     const t = read()?.theme;
     if (typeof t !== 'string' || !NAME.test(t)) {
       // No preference: clear anything inline and leave both elements on the

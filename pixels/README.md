@@ -34,8 +34,8 @@ and their friends, each to remove. A player's own puzzles are made in the Pixela
 friend's published rifts stand after the owner's on the front page, saying who made them, and New until
 opened. A bar holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom
 on a phone, along the top on a wider one, and in a header from 66rem; not where a puzzle is played or
-drawn. Me's list holds How to play, Add to home screen, Theme and, for an account, the way to Rux Home.
-`docs/profiles.md` is the whole of it: the door, profiles, friends, mana, and who is sent a rift.
+drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
+page is in Design's `pixel-dark`, locked. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X,

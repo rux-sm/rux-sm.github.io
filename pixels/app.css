@@ -132,15 +132,16 @@
    THEY ALWAYS FIT. app.js gives a line `--units`, how wide its numbers are
    in ems, a digit being .6 and a gap .3, and `--count`, how many it has. A
    row's are drawn at `--num` or at the size that fits them in the room
-   across, whichever is less, and a column's the same in the room down, a
-   whole number of pixels either way. */
+   across, whichever is less, and a column's the same in the room down, in
+   whole steps of Silkscreen's 8-pixel grid either way, 8px at least, so the
+   numbers stay sharp. */
 .pixels-clue {
   display: flex;
   gap: .3em;
   justify-content: end;
   align-items: center;
   padding-inline: 2px 6px;
-  font-size: round(down, min(var(--num), calc((var(--clue-w) - 8px) / var(--units, 1))), 1px);
+  font-size: max(8px, round(down, min(var(--num), calc((var(--clue-w) - 8px) / var(--units, 1))), 8px));
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -149,7 +150,7 @@
   flex-direction: column;
   gap: 0;
   padding: 2px 0;
-  font-size: round(down, min(var(--num), calc((var(--clue-h) - 4px) / var(--count, 1))), 1px);
+  font-size: max(8px, round(down, min(var(--num), calc((var(--clue-h) - 4px) / var(--count, 1))), 8px));
 }
 .pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
 .pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }

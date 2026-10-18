@@ -35,24 +35,26 @@ What it is:
 
 The pixel look:
 
-- **No round corners and no soft shadows.** A raised thing has a 1px light
-  edge on its top and left and a 1px dark edge on its bottom and right; a
-  sunken field the reverse. A box's corner is cut by one pixel, as a pixel
-  drawing's would be.
-- **Pressed is pushed in:** a button's edges swap and its face drops 1px.
+- **No round corners and no soft shadows.** Edges are chunky: a 2px black
+  outline with its corner pixel cut, and a thick dark lip along the bottom
+  of anything raised. A field is a flat dark well with a dark lip at its
+  top.
+- **Pressed is pushed in:** a button drops 3px into its lip.
 - **Focus is a 2px ring of the accent,** square, with no glow.
 - **Movement steps.** A change happens in two or three steps, not a smooth
   fade, and with motion turned down it happens at once.
-- **The pixel font is used everywhere,** running text too, so it is picked
-  for how easily it reads at body size as much as for its look.
+- **The font is Silkscreen, everywhere,** running text too. It is drawn on
+  an 8-pixel grid in capitals, so it reads as pixel art; labels are kept
+  short because it is wide.
 
 Sharp, not blurry:
 
 - **Everything lands on whole pixels.** Aseprite's look blurs because it
   scales its pixel art by uneven amounts. Here every border, edge and gap is
   a whole CSS pixel, and the font is set only at whole multiples of the size
-  it was drawn at, so on a phone each of its pixels is exactly 3 screen
-  pixels.
+  it was drawn at: 16px for text and 24px or 32px for headings, so each of
+  its pixels is 2, 3 or 4 CSS pixels and a whole number of screen pixels on
+  every screen.
 - **The font is one drawn on a pixel grid,** with an open licence so it can
   be kept in `design/assets/fonts/` beside Plex and Geist.
 - **Dark only.** A light version waits until the dark one is in use.
@@ -72,20 +74,11 @@ None open.
 
 ## Tasks
 
-- [ ] Build a page in Design with invented content showing three pixel
-      fonts and two edge styles on a button, a field, a tile, tabs and a
-      modal, at phone width; screenshot it for rux to pick from.
-- [ ] Add the chosen font to `design/assets/fonts/` with its licence, and
-      load it in `js/theme.js` for `pixel-dark` alone.
-- [ ] Write the `pixel-dark` token block from the Pixels inks, and its token
-      map in `design/docs/`, as `rux-dark-token-map.md` is for rux-dark.
-- [ ] Write the edges, the pressed state, focus and stepped movement in
-      `rux-overrides.css`, and the same for the `game-` parts in
-      `design/css/rux-game.css`.
-- [ ] Add `pixel-dark` to every list of themes: `js/theme.js`, the account
-      panel, the Theme Creator and the checks that walk every theme.
-- [ ] Measure that every text and control colour meets contrast, and that
-      the font and edges land on whole pixels at 1×, 2× and 3×, in Chrome
-      and in the iPhone simulator.
-- [ ] Lock Pixels to it: every page sets `pixel-dark`, Me's list loses
-      Theme, and the saved theme is left as it is.
+- [ ] Set Pixels' own words on the grid on its signed-in pages: a rift's
+      tile, the map's labels, a puzzle's name and time, the Pixelator's
+      keys and the play strip, each at 8, 16 or 24px, and check that long
+      names still fit at 390px wide, since Silkscreen is wide.
+- [ ] Measure contrast across the kitchen sink and every template in
+      pixel-dark in Chrome on :8641, which needs the log-in.
+- [ ] Look at a signed-in Pixels page in the iPhone simulator at 3× for
+      blur, and at the bar of places at 8px.

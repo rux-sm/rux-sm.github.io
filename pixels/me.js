@@ -26,10 +26,10 @@
    it.
 
    THE LIST UNDER THE PLAYER is what a header would hold, since a game has
-   none: How to play, Add to home screen where the browser can, Theme, and
-   for an account the way to Rux Home; the owner has Manage and Players
-   too. It is Carbon's contained list. Theme is a select in its row, the
-   same choice as the header's panel holds.
+   none: How to play, Add to home screen where the browser can, and for an
+   account the way to Rux Home; the owner has Manage and Players too. It is
+   Carbon's contained list. It has no Theme, because Pixels is always in
+   pixel-dark, which every page sets with `data-theme-lock`.
    ========================================================================== */
 (() => {
   'use strict';
@@ -54,33 +54,6 @@
      screen from the front page, since its icon opens the address it was
      made from, so its row leads there; another browser opens its own
      install window here. A guest has no account for Home to open to. */
-  /* THE THEME'S ROW, a select: the same choice the header's panel holds,
-     which a phone is drawn no header to reach. It takes the panel's options,
-     saved custom themes among them, and each follows the other through
-     Design's js/profile.js. It is made once and moved into each list drawn. */
-  let theme = null;
-  const themeRow = () => {
-    if (theme) return theme;
-    theme = document.createElement('li');
-    theme.className = 'rux--contained-list-item';
-    theme.innerHTML = `<div class="rux--contained-list-item__content"><div class="rux--form-item"><div class="rux--select rux--select--inline rux--layout--size-md">
-      <label class="rux--label" for="pixels-theme">Theme</label>
-      <div class="rux--select-input--inline__wrapper"><div class="rux--select-input__wrapper">
-        <select id="pixels-theme" class="rux--select-input"></select>
-        <svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--down"/></svg>
-      </div></div></div></div></div>`;
-    const mine = theme.querySelector('select'), theirs = document.getElementById('rux-profile-theme'), kept = window.Rux?.profile;
-    if (!theirs || !kept) return theme;
-    const follow = () => {
-      mine.replaceChildren(...[...theirs.options].map(o => o.cloneNode(true)));
-      mine.value = theirs.value;
-    };
-    follow();
-    mine.addEventListener('change', () => kept.set({ theme: mine.value }));
-    kept.onChange(follow);
-    addEventListener('rux:customthemeschange', () => setTimeout(follow));
-    return theme;
-  };
 
   const more = () => {
     document.getElementById('pixels-more')?.remove();
@@ -110,7 +83,6 @@
       offer = () => { if (install) first.after(add.parentElement); else add.parentElement.remove(); };
       offer();
     }
-    ul.append(themeRow());
     if (owner) {
       row('Manage', { href: 'manage.html' });
       row('Players', { href: 'players.html' });

@@ -2870,3 +2870,256 @@
 [data-theme^="apple-"] .rux--edit-in-place__warning-text {
   color: var(--rux-text-error);
 }
+
+
+/* PIXEL-DARK, THE GAMES' THEME: every word in Silkscreen and every edge
+   drawn a pixel at a time. css/rux-theme.css holds its colours.
+   - The face is Silkscreen, which js/theme.js loads for this theme alone,
+     everywhere, the code face too. It is drawn on an 8-pixel grid with one
+     weight, so every style is 400 with no tracking, and nothing is made
+     bold or slanted by the browser.
+   - Its sizes are whole multiples of that grid, so each of its pixels is 2,
+     3, 4, 5 or 6 CSS pixels and a whole number of screen pixels on every
+     screen: 16px for every style Carbon sets at 16px or less, 24px for 20,
+     32px for 28 and 32, 40px for 42 and 48px for 54, each on a line 8px
+     taller.
+   - Edges are chunky: a 2px black outline with its corner pixel cut, drawn
+     as an inset shadow in place of the border, so a fill never shows round it, and on what is pressed a dark lip
+     6px deep along the bottom that a press sinks 3px into. A field is a
+     well: the outline and a dark lip along its top. The cut is a clip-path
+     of square steps, so it stays sharp.
+   - Movement steps: a change happens in two steps, not a fade. */
+[data-theme="pixel-dark"] {
+  font-family: 'Silkscreen', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-synthesis: none;
+  -webkit-font-smoothing: none;
+  text-rendering: optimizeSpeed;
+  --rux-body-01-font-size: 16px;
+  --rux-body-01-line-height: 24px;
+  --rux-body-02-font-size: 16px;
+  --rux-body-02-line-height: 24px;
+  --rux-body-compact-01-font-size: 16px;
+  --rux-body-compact-01-line-height: 24px;
+  --rux-body-compact-02-font-size: 16px;
+  --rux-body-compact-02-line-height: 24px;
+  --rux-body-long-01-font-size: 16px;
+  --rux-body-long-01-line-height: 24px;
+  --rux-body-long-02-font-size: 16px;
+  --rux-body-long-02-line-height: 24px;
+  --rux-body-short-01-font-size: 16px;
+  --rux-body-short-01-line-height: 24px;
+  --rux-body-short-02-font-size: 16px;
+  --rux-body-short-02-line-height: 24px;
+  --rux-caption-01-font-size: 16px;
+  --rux-caption-01-line-height: 24px;
+  --rux-caption-02-font-size: 16px;
+  --rux-caption-02-line-height: 24px;
+  --rux-code-01-font-size: 16px;
+  --rux-code-01-line-height: 24px;
+  --rux-code-02-font-size: 16px;
+  --rux-code-02-line-height: 24px;
+  --rux-expressive-heading-01-font-size: 16px;
+  --rux-expressive-heading-01-line-height: 24px;
+  --rux-expressive-heading-02-font-size: 16px;
+  --rux-expressive-heading-02-line-height: 24px;
+  --rux-heading-01-font-size: 16px;
+  --rux-heading-01-line-height: 24px;
+  --rux-heading-02-font-size: 16px;
+  --rux-heading-02-line-height: 24px;
+  --rux-heading-03-font-size: 24px;
+  --rux-heading-03-line-height: 32px;
+  --rux-heading-04-font-size: 32px;
+  --rux-heading-04-line-height: 40px;
+  --rux-heading-05-font-size: 32px;
+  --rux-heading-05-line-height: 40px;
+  --rux-heading-06-font-size: 40px;
+  --rux-heading-06-line-height: 48px;
+  --rux-heading-07-font-size: 48px;
+  --rux-heading-07-line-height: 56px;
+  --rux-heading-compact-01-font-size: 16px;
+  --rux-heading-compact-01-line-height: 24px;
+  --rux-heading-compact-02-font-size: 16px;
+  --rux-heading-compact-02-line-height: 24px;
+  --rux-helper-text-01-font-size: 16px;
+  --rux-helper-text-01-line-height: 24px;
+  --rux-helper-text-02-font-size: 16px;
+  --rux-helper-text-02-line-height: 24px;
+  --rux-label-01-font-size: 16px;
+  --rux-label-01-line-height: 24px;
+  --rux-label-02-font-size: 16px;
+  --rux-label-02-line-height: 24px;
+  --rux-legal-01-font-size: 16px;
+  --rux-legal-01-line-height: 24px;
+  --rux-legal-02-font-size: 16px;
+  --rux-legal-02-line-height: 24px;
+  --rux-productive-heading-01-font-size: 16px;
+  --rux-productive-heading-01-line-height: 24px;
+  --rux-productive-heading-02-font-size: 16px;
+  --rux-productive-heading-02-line-height: 24px;
+  --rux-productive-heading-03-font-size: 24px;
+  --rux-productive-heading-03-line-height: 32px;
+  --rux-productive-heading-04-font-size: 32px;
+  --rux-productive-heading-04-line-height: 40px;
+  --rux-productive-heading-05-font-size: 32px;
+  --rux-productive-heading-05-line-height: 40px;
+  --rux-productive-heading-06-font-size: 40px;
+  --rux-productive-heading-06-line-height: 48px;
+  --rux-productive-heading-07-font-size: 48px;
+  --rux-productive-heading-07-line-height: 56px;
+  --rux-body-01-font-weight: 400;
+  --rux-body-02-font-weight: 400;
+  --rux-body-compact-01-font-weight: 400;
+  --rux-body-compact-02-font-weight: 400;
+  --rux-body-long-01-font-weight: 400;
+  --rux-body-long-02-font-weight: 400;
+  --rux-body-short-01-font-weight: 400;
+  --rux-body-short-02-font-weight: 400;
+  --rux-caption-01-font-weight: 400;
+  --rux-caption-02-font-weight: 400;
+  --rux-code-01-font-weight: 400;
+  --rux-code-02-font-weight: 400;
+  --rux-display-01-font-weight: 400;
+  --rux-display-02-font-weight: 400;
+  --rux-display-03-font-weight: 400;
+  --rux-display-04-font-weight: 400;
+  --rux-expressive-heading-01-font-weight: 400;
+  --rux-expressive-heading-02-font-weight: 400;
+  --rux-expressive-heading-03-font-weight: 400;
+  --rux-expressive-heading-04-font-weight: 400;
+  --rux-expressive-heading-05-font-weight: 400;
+  --rux-expressive-heading-06-font-weight: 400;
+  --rux-expressive-paragraph-01-font-weight: 400;
+  --rux-fluid-display-01-font-weight: 400;
+  --rux-fluid-display-02-font-weight: 400;
+  --rux-fluid-display-03-font-weight: 400;
+  --rux-fluid-display-04-font-weight: 400;
+  --rux-fluid-heading-03-font-weight: 400;
+  --rux-fluid-heading-04-font-weight: 400;
+  --rux-fluid-heading-05-font-weight: 400;
+  --rux-fluid-heading-06-font-weight: 400;
+  --rux-fluid-paragraph-01-font-weight: 400;
+  --rux-fluid-quotation-01-font-weight: 400;
+  --rux-fluid-quotation-02-font-weight: 400;
+  --rux-heading-01-font-weight: 400;
+  --rux-heading-02-font-weight: 400;
+  --rux-heading-03-font-weight: 400;
+  --rux-heading-04-font-weight: 400;
+  --rux-heading-05-font-weight: 400;
+  --rux-heading-06-font-weight: 400;
+  --rux-heading-07-font-weight: 400;
+  --rux-heading-compact-01-font-weight: 400;
+  --rux-heading-compact-02-font-weight: 400;
+  --rux-helper-text-02-font-weight: 400;
+  --rux-label-01-font-weight: 400;
+  --rux-label-02-font-weight: 400;
+  --rux-legal-01-font-weight: 400;
+  --rux-legal-02-font-weight: 400;
+  --rux-productive-heading-01-font-weight: 400;
+  --rux-productive-heading-02-font-weight: 400;
+  --rux-productive-heading-03-font-weight: 400;
+  --rux-productive-heading-04-font-weight: 400;
+  --rux-productive-heading-05-font-weight: 400;
+  --rux-productive-heading-06-font-weight: 400;
+  --rux-productive-heading-07-font-weight: 400;
+  --rux-quotation-01-font-weight: 400;
+  --rux-quotation-02-font-weight: 400;
+  --rux-body-01-letter-spacing: 0;
+  --rux-body-02-letter-spacing: 0;
+  --rux-body-compact-01-letter-spacing: 0;
+  --rux-body-compact-02-letter-spacing: 0;
+  --rux-body-long-01-letter-spacing: 0;
+  --rux-body-long-02-letter-spacing: 0;
+  --rux-body-short-01-letter-spacing: 0;
+  --rux-body-short-02-letter-spacing: 0;
+  --rux-caption-01-letter-spacing: 0;
+  --rux-caption-02-letter-spacing: 0;
+  --rux-code-01-letter-spacing: 0;
+  --rux-code-02-letter-spacing: 0;
+  --rux-display-01-letter-spacing: 0;
+  --rux-display-02-letter-spacing: 0;
+  --rux-display-03-letter-spacing: 0;
+  --rux-display-04-letter-spacing: 0;
+  --rux-expressive-heading-01-letter-spacing: 0;
+  --rux-expressive-heading-02-letter-spacing: 0;
+  --rux-expressive-heading-03-letter-spacing: 0;
+  --rux-expressive-heading-04-letter-spacing: 0;
+  --rux-expressive-heading-05-letter-spacing: 0;
+  --rux-expressive-heading-06-letter-spacing: 0;
+  --rux-expressive-paragraph-01-letter-spacing: 0;
+  --rux-fluid-display-01-letter-spacing: 0;
+  --rux-fluid-display-02-letter-spacing: 0;
+  --rux-fluid-display-03-letter-spacing: 0;
+  --rux-fluid-display-04-letter-spacing: 0;
+  --rux-fluid-heading-03-letter-spacing: 0;
+  --rux-fluid-heading-04-letter-spacing: 0;
+  --rux-fluid-heading-05-letter-spacing: 0;
+  --rux-fluid-heading-06-letter-spacing: 0;
+  --rux-fluid-paragraph-01-letter-spacing: 0;
+  --rux-fluid-quotation-01-letter-spacing: 0;
+  --rux-fluid-quotation-02-letter-spacing: 0;
+  --rux-heading-01-letter-spacing: 0;
+  --rux-heading-02-letter-spacing: 0;
+  --rux-heading-03-letter-spacing: 0;
+  --rux-heading-04-letter-spacing: 0;
+  --rux-heading-05-letter-spacing: 0;
+  --rux-heading-06-letter-spacing: 0;
+  --rux-heading-07-letter-spacing: 0;
+  --rux-heading-compact-01-letter-spacing: 0;
+  --rux-heading-compact-02-letter-spacing: 0;
+  --rux-helper-text-01-letter-spacing: 0;
+  --rux-helper-text-02-letter-spacing: 0;
+  --rux-label-01-letter-spacing: 0;
+  --rux-label-02-letter-spacing: 0;
+  --rux-legal-01-letter-spacing: 0;
+  --rux-legal-02-letter-spacing: 0;
+  --rux-productive-heading-01-letter-spacing: 0;
+  --rux-productive-heading-02-letter-spacing: 0;
+  --rux-productive-heading-03-letter-spacing: 0;
+  --rux-productive-heading-04-letter-spacing: 0;
+  --rux-productive-heading-05-letter-spacing: 0;
+  --rux-productive-heading-06-letter-spacing: 0;
+  --rux-productive-heading-07-letter-spacing: 0;
+  --rux-quotation-01-letter-spacing: 0;
+  --rux-quotation-02-letter-spacing: 0;
+  --rux-code-01-font-family: 'Silkscreen', ui-monospace, 'SF Mono', Menlo, monospace;
+  --rux-code-02-font-family: 'Silkscreen', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="pixel-dark"] body,
+[data-theme="pixel-dark"] :is(input[type=number], input[type=text].rux--number, .rux--number input, .rux--content-switcher-btn, .rux--snippet .rux--popover-container, .rux--snippet-btn--expand, .rux--type-sans, .rux--date-picker__input, .rux--time-picker__input-field, code, .rux--type-mono) {
+  font-family: 'Silkscreen', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="pixel-dark"] * {
+  font-style: normal;
+  transition-timing-function: steps(2, end);
+}
+/* Raised: a button that is filled, a tile, a dialog, a notification and a
+   menu. */
+[data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger, .rux--tile, .rux--modal-container, .rux--inline-notification, .rux--toast-notification, .rux--actionable-notification, .rux--overflow-menu-options, .rux--popover-content, .rux--content-switcher-btn.rux--content-switcher--selected, .rux--tabs--contained .rux--tabs__nav-item--selected) {
+  border-width: 0;
+  border-radius: 0;
+  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  box-shadow: inset 0 0 0 2px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45);
+}
+[data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):focus {
+  box-shadow: inset 0 0 0 2px var(--rux-focus), inset 0 0 0 4px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45);
+}
+[data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):active {
+  transform: translateY(3px);
+  box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45);
+}
+/* A tag is a small raised plate, with no lip. */
+[data-theme="pixel-dark"] .rux--tag {
+  border-radius: 0;
+  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  box-shadow: inset 0 0 0 1px #000000;
+}
+/* Sunken: every field, and a progress bar's track. */
+[data-theme="pixel-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--search-input, .rux--number input[type=number], .rux--number input[type=text], .rux--date-picker__input, .rux--time-picker__input-field, .rux--list-box__field, .rux--progress-bar__track) {
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  box-shadow: inset 0 0 0 2px #000000, inset 0 4px 0 rgba(0, 0, 0, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):active { transform: none; }
+}

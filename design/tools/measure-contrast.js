@@ -3,7 +3,7 @@
 //
 // For every piece of text on the page, in each theme, the ratio of its colour
 // to the surface behind it, and every one under WCAG's 4.5 to 1 (3 to 1 for
-// text 24px and up, or 18.66px and bold). One run reads all ten themes
+// text 24px and up, or 18.66px and bold). One run reads all eleven themes
 // without touching the stored preference, and puts the page's own theme back
 // when it is done.
 //
@@ -21,7 +21,7 @@
 //
 // Options, set before loading it:
 //   window.MEASURE_CONTRAST = { themes: ['geist-dark'], scope: '#scheduler-panel' }
-// `themes` defaults to all ten; `scope` to the whole body.
+// `themes` defaults to all eleven; `scope` to the whole body.
 //
 // HOW IT READS A COLOUR. Every computed colour is painted into a 1px canvas
 // and read back, so oklch(), color-mix() and color(srgb …) all come out as
@@ -45,7 +45,7 @@
 (function () {
   'use strict';
   const opts = window.MEASURE_CONTRAST || {};
-  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
+  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
   const scope = opts.scope ? document.querySelector(opts.scope) : document.body;
   if (!scope) throw new Error(`measure-contrast: nothing matches ${opts.scope}`);
 
@@ -101,7 +101,7 @@
 
   // theme.js corrects a stored name that resolves to nothing by writing
   // 'white' over it, so only a name it knows is ever handed to it.
-  const KNOWN = ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark'];
+  const KNOWN = ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
   const KEY = window.Rux?.theme?.KEY;
   const root = document.documentElement;
   for (const t of THEMES) {

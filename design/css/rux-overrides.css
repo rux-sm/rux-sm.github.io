@@ -3109,6 +3109,22 @@
   transform: translateY(3px);
   box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45);
 }
+/* A button's words are in its middle both ways, as a game's are, where
+   Carbon starts them at the left and leaves room on the right for an
+   icon; a button with an icon keeps that room. On a raised button the
+   middle is the face's, above its 6px lip, so the words sit 6px higher
+   than the box's middle. Every button's words are 16px on a 24px line. */
+[data-theme="pixel-dark"] .rux--btn:not(.rux--btn--icon-only) {
+  justify-content: center;
+  padding-inline: 1rem;
+  text-align: center;
+}
+[data-theme="pixel-dark"] .rux--btn:not(.rux--btn--icon-only):has(> .rux--btn__icon) {
+  padding-inline-end: calc(var(--rux-layout-density-padding-inline-local) + 1rem + .5rem);
+}
+[data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):not(.rux--btn--icon-only) {
+  padding-block: calc((var(--rux-layout-size-height-local) - 6px - 24px) / 2) calc((var(--rux-layout-size-height-local) + 6px - 24px) / 2);
+}
 /* An outlined button has no fill in Carbon, and with an edge and a lip that
    reads as a hole, so it takes the secondary button's face under its blue
    words until it is hovered or pressed, when Carbon fills it. */

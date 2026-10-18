@@ -14779,13 +14779,12 @@
        and the list it counts read as one thing, and the list in a box of its
        own under it, apart from the updates. */
     const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
-    /* Floating, each part is its title over a tile of its rows, as the trip
-       editor's sections are; docked on a phone the parts are the sheet's own
-       bands. */
+    /* Floating, each part is a tile holding its title, its button and its
+       rows, as the live card's are; docked on a phone the parts are the
+       sheet's own bands. */
     const floating = pageEl?.getAttribute('data-board') !== 'compact';
-    const TILE = floating ? ' rux--tile scheduler-card__tile' : '';
-    const needsList = el('div', `scheduler-card__needs-list${TILE}`);
-    const part = cls => row(cls);
+    const needsList = el('div', 'scheduler-card__needs-list');
+    const part = cls => row(floating ? `${cls} rux--tile scheduler-card__tile` : cls);
     if (alerts.length) {
       const needs = part('scheduler-card__needs');
       needs.append(cardTitle('Needs', alerts.length, null,
@@ -14815,7 +14814,7 @@
        whole section is one press that opens every update in full and a
        second press closes; Add is its own button. Two updates that fit their
        lines have nothing more to show, which fitUpdates works out once they
-       are drawn. With none, floating, Updates and Add over a tile saying
+       are drawn. With none, floating, Updates and Add over a line saying
        there are none; docked, No updates and Add. */
     const all = updatesOf(trip);
     const open = all.length > 0 && (floating || updatesOpenFor === trip.id);
@@ -14852,9 +14851,8 @@
     /* Docked, with any updates, the title's words are the section's toggle, a
        real button with an arrow, so a keyboard and a screen reader reach what
        a press anywhere on the section does. */
-    /* Floating, the title is Updates at the card's top whatever there is,
-       and with none a tile under it says so, as the Prep panel's empty day
-       does. */
+    /* Floating, the title is Updates whatever there is, and with none a line
+       under it in its tile says so, as the Prep panel's empty day does. */
     const title = cardTitle(all.length || floating ? 'Updates' : 'No updates', all.length, add);
     if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
@@ -14880,9 +14878,9 @@
       quick.appendChild(quickInput);
       updates.appendChild(quick);
     }
-    if (!all.length && floating) updates.appendChild(el('p', `scheduler-card__none${TILE}`, 'No updates yet.'));
+    if (!all.length && floating) updates.appendChild(el('p', 'scheduler-card__none', 'No updates yet.'));
     if (all.length) {
-      const list = el('ol', `scheduler-card__update-list${TILE}`);
+      const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...shown.map(updateItem));
       updates.appendChild(list);

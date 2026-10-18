@@ -1902,11 +1902,12 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
 .scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -2px; }
 /* On a one-day bar the shade runs out to the bar's sides and foot, across
-   its 4px padding, its lower corners the bar's own; a longer bar's shade
-   ends inside it, so it keeps its 2px off. */
+   its 4px padding, its lower corners the bar's own and its top a straight
+   line across the bar; a longer bar's shade ends inside it, so it keeps its
+   2px off. */
 .scheduler-bar--road[data-span="1"] > .scheduler-road__card::before {
   inset: 4px -4px calc(-1 * var(--scheduler-row-h) - 4px);
-  border-radius: 4px 4px var(--scheduler-bar-radius, 0px) var(--scheduler-bar-radius, 0px);
+  border-radius: 0 0 var(--scheduler-bar-radius, 0px) var(--scheduler-bar-radius, 0px);
 }
 .scheduler-week--no-drivers .scheduler-bar--road[data-span="1"] > .scheduler-road__card::before { inset-block-end: -4px; }
 .scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }

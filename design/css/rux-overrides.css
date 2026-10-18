@@ -2878,11 +2878,12 @@
      everywhere, the code face too. It is drawn on an 8-pixel grid with one
      weight, so every style is 400 with no tracking, and nothing is made
      bold or slanted by the browser.
-   - Its sizes are whole multiples of that grid, so each of its pixels is 2,
-     3, 4, 5 or 6 CSS pixels and a whole number of screen pixels on every
-     screen: 16px for every style Carbon sets at 16px or less, 24px for 20,
-     32px for 28 and 32, 40px for 42 and 48px for 54, each on a line 8px
-     taller.
+   - It has two sizes, as a pixel-art game's words do, so a letter's pixel
+     is one size on the page: 16px, where each of its pixels is 2 CSS
+     pixels, for every style Carbon sets at 16px or less, and 32px, exactly
+     double, for every heading above that, on lines of 24px and 40px. Both
+     are whole multiples of the 8-pixel grid, so a pixel is a whole number
+     of screen pixels on every screen.
    - Edges are chunky: a 2px black outline with its corner pixel cut, drawn
      as an inset shadow in place of the border, so a fill never shows round it, and on what is pressed a dark lip
      6px deep along the bottom that a press sinks 3px into. A field is a
@@ -2926,16 +2927,16 @@
   --rux-heading-01-line-height: 24px;
   --rux-heading-02-font-size: 16px;
   --rux-heading-02-line-height: 24px;
-  --rux-heading-03-font-size: 24px;
-  --rux-heading-03-line-height: 32px;
+  --rux-heading-03-font-size: 32px;
+  --rux-heading-03-line-height: 40px;
   --rux-heading-04-font-size: 32px;
   --rux-heading-04-line-height: 40px;
   --rux-heading-05-font-size: 32px;
   --rux-heading-05-line-height: 40px;
-  --rux-heading-06-font-size: 40px;
-  --rux-heading-06-line-height: 48px;
-  --rux-heading-07-font-size: 48px;
-  --rux-heading-07-line-height: 56px;
+  --rux-heading-06-font-size: 32px;
+  --rux-heading-06-line-height: 40px;
+  --rux-heading-07-font-size: 32px;
+  --rux-heading-07-line-height: 40px;
   --rux-heading-compact-01-font-size: 16px;
   --rux-heading-compact-01-line-height: 24px;
   --rux-heading-compact-02-font-size: 16px;
@@ -2956,16 +2957,16 @@
   --rux-productive-heading-01-line-height: 24px;
   --rux-productive-heading-02-font-size: 16px;
   --rux-productive-heading-02-line-height: 24px;
-  --rux-productive-heading-03-font-size: 24px;
-  --rux-productive-heading-03-line-height: 32px;
+  --rux-productive-heading-03-font-size: 32px;
+  --rux-productive-heading-03-line-height: 40px;
   --rux-productive-heading-04-font-size: 32px;
   --rux-productive-heading-04-line-height: 40px;
   --rux-productive-heading-05-font-size: 32px;
   --rux-productive-heading-05-line-height: 40px;
-  --rux-productive-heading-06-font-size: 40px;
-  --rux-productive-heading-06-line-height: 48px;
-  --rux-productive-heading-07-font-size: 48px;
-  --rux-productive-heading-07-line-height: 56px;
+  --rux-productive-heading-06-font-size: 32px;
+  --rux-productive-heading-06-line-height: 40px;
+  --rux-productive-heading-07-font-size: 32px;
+  --rux-productive-heading-07-line-height: 40px;
   --rux-body-01-font-weight: 400;
   --rux-body-02-font-weight: 400;
   --rux-body-compact-01-font-weight: 400;

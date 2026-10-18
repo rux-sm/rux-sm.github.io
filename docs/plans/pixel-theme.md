@@ -52,9 +52,11 @@ Sharp, not blurry:
 - **Everything lands on whole pixels.** Aseprite's look blurs because it
   scales its pixel art by uneven amounts. Here every border, edge and gap is
   a whole CSS pixel, and the font is set only at whole multiples of the size
-  it was drawn at: 16px for text and 24px or 32px for headings, so each of
-  its pixels is 2, 3 or 4 CSS pixels and a whole number of screen pixels on
-  every screen.
+  it was drawn at: 16px for every word and 32px, exactly double, for a
+  heading, so each of its pixels is 2 or 4 CSS pixels and a whole number of
+  screen pixels on every screen. A sprite is drawn at the same 2 CSS pixels
+  a pixel, or 4 for a big one, so words and art are one drawing. Where a
+  word does not fit at 16px on a phone, its key shows its icon alone.
 - **The font is one drawn on a pixel grid,** with an open licence so it can
   be kept in `design/assets/fonts/` beside Plex and Geist.
 - **Dark only.** A light version waits until the dark one is in use.
@@ -74,11 +76,11 @@ None open.
 
 ## Tasks
 
-- [ ] Set Pixels' own words on the grid on its signed-in pages: a rift's
-      tile, the map's labels, a puzzle's name and time, the Pixelator's
-      keys and the play strip, each at 8, 16 or 24px, and check that long
-      names still fit at 390px wide, since Silkscreen is wide.
+- [ ] Look at Pixels' signed-in pages at 390px wide now every word is
+      16px: a rift's tile, the map's labels, a puzzle's name, the
+      Pixelator's corner check, and long names that Silkscreen's width may
+      cut.
 - [ ] Measure contrast across the kitchen sink and every template in
       pixel-dark in Chrome on :8641, which needs the log-in.
 - [ ] Look at a signed-in Pixels page in the iPhone simulator at 3× for
-      blur, and at the bar of places at 8px.
+      blur.

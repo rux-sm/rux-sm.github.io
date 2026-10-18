@@ -172,14 +172,14 @@
 .game-finish-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .game-finish > .game-tiles { grid-template-columns: minmax(0, 24rem); justify-content: center; justify-self: stretch; text-align: start; }
 
-/* PIXEL-DARK. The games' theme sets every word in Silkscreen at whole
-   multiples of its 8-pixel grid and draws edges chunky, a 2px black outline
-   with its corner pixel cut and a dark lip along the bottom that a press
-   sinks into; css/rux-overrides.css has the reasons. Here the same is done
-   for these parts: their small words go to 16px, the smallest size that
-   keeps the grid, the score to 32px, and a game key is raised. On a phone
-   the bar of places and the game keys are 8px, the grid's own size,
-   because four places or six keys share its width. */
+/* PIXEL-DARK. The games' theme sets every word in Silkscreen at 16px, or
+   32px for a heading, and draws edges chunky, a 2px black outline with its
+   corner pixel cut and a dark lip along the bottom that a press sinks
+   into; css/rux-overrides.css has the reasons. Here the same is done for
+   these parts: their words go to 16px, the score to 32px, and a game key is raised. On a phone
+   four places or six keys share the width and their words do not fit at
+   16px, so they are their icons alone; a word is never made smaller than
+   the rest, and it stays in the page for a screen reader. */
 [data-theme="pixel-dark"] :is(.game-place, .game-key, .game-tile-note) { font-size: 16px; line-height: 24px; }
 [data-theme="pixel-dark"] .game-finish-score { font-size: 32px; line-height: 40px; }
 [data-theme="pixel-dark"] .game-place[aria-current] { font-weight: 400; }
@@ -192,7 +192,7 @@
 [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45); }
 [data-theme="pixel-dark"] .game-key:focus-visible { outline: 0; box-shadow: inset 0 0 0 2px var(--rux-focus), inset 0 0 0 4px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45); }
 @media (max-width: 41.99rem) {
-  [data-theme="pixel-dark"] :is(.game-place, .game-key) { font-size: 8px; line-height: 16px; }
+  [data-theme="pixel-dark"] :is(.game-place, .game-key) { font-size: 0; line-height: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: none; }

@@ -269,7 +269,7 @@
 }
 /* A player's picture: small beside their name, large on their own page. */
 .pixels-face { --px: 2px; flex: none; }
-.pixels-face--lg { --px: 8px; }
+.pixels-face--lg { --px: 4px; }
 .pixels-picture > [data-on] { background: var(--rux-text-primary); }
 .pixels-picture > [data-ink] { background: var(--ink); }
 /* A small picture is about 5rem across, whatever its puzzle's size. */
@@ -389,8 +389,8 @@
 .pixels-today:hover { background: var(--rux-layer-hover-01); }
 .pixels-today:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-today-text { display: grid; gap: .125rem; }
-.pixels-today-name { font-size: 1.125rem; font-weight: 600; }
-.pixels-today-go { display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 1.25rem; }
+.pixels-today-name { font-size: 16px; font-weight: 600; }
+.pixels-today-go { display: grid; place-items: center; inline-size: 2.5rem; block-size: 2.5rem; background: var(--rux-background-inverse); color: var(--rux-text-inverse); font-size: 16px; }
 .pixels-today > .pixels-picture--sm { --px: round(down, calc(4rem / var(--size, 10)), 1px); }
 .pixels-today > .pixels-blank { inline-size: 4rem; block-size: 4rem; }
 
@@ -448,8 +448,8 @@
 .pixels-map-rift > .pixels-portal { --px: var(--map-px); }
 .pixels-map-side { inline-size: calc(15 * var(--map-px)); block-size: calc(15 * var(--map-px)); }
 .pixels-map-words { display: grid; justify-items: center; inline-size: max-content; max-inline-size: calc(56 * var(--map-px)); padding: .125rem .375rem; background: var(--rux-layer-01); text-align: center; }
-.pixels-map-name { font-size: .875rem; font-weight: 600; line-height: 1.25; }
-.pixels-map-note { color: var(--rux-text-secondary); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.pixels-map-name { font-size: 16px; font-weight: 600; line-height: 24px; }
+.pixels-map-note { color: var(--rux-text-secondary); font-size: 16px; line-height: 24px; font-variant-numeric: tabular-nums; }
 a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-01); }
 .pixels-map-rift:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-map-rift.is-locked > .pixels-portal { opacity: .3; }
@@ -496,11 +496,11 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
   inset: 0 auto auto 0;
   display: grid;
   place-items: center;
-  inline-size: 1.125rem;
-  block-size: 1.125rem;
+  inline-size: 24px;
+  block-size: 24px;
   background: var(--rux-background-inverse);
   color: var(--rux-text-inverse);
-  font-size: .75rem;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1;
 }
@@ -523,14 +523,14 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
 .pixels-puzzle > .pixels-blank { inline-size: 50cqi; block-size: 50cqi; }
 .pixels-puzzle-name {
   max-inline-size: 100%;
-  font-size: .8125rem;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.pixels-puzzle > .pixels-meta { font-size: .75rem; line-height: 1.2; }
+.pixels-puzzle > .pixels-meta { font-size: 16px; line-height: 24px; }
 /* THE PUZZLE TO PLAY NEXT, the first of a rift not yet solved: its question
    mark is drawn as the primary button is, the colour of every way on. */
 .pixels-puzzle.is-next > .pixels-blank { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
@@ -548,7 +548,7 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
    container query. */
 .pixels-tile { display: flex; flex-direction: column; gap: .25rem; min-inline-size: 0; }
 .pixels-tile-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .125rem .375rem; }
-.pixels-tile-edit { font-size: .75rem; }
+.pixels-tile-edit { font-size: 16px; }
 .pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; cursor: pointer; }
 /* The heading's box takes the room of the box alone. */
 .pixels-level-head > .rux--checkbox-wrapper { margin: 0; }
@@ -577,7 +577,7 @@ a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-
   block-size: 5rem;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-secondary);
-  font-size: 1.5rem;
+  font-size: 32px;
   font-weight: 600;
 }
 .pixels-meta { color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
@@ -644,7 +644,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-corner { min-inline-size: 0; }
 .pixels-info {
   display: grid;
-  grid-template-rows: 20px 1fr 24px;
+  grid-template-rows: 24px 1fr 24px;
   justify-items: center;
   align-items: center;
   inline-size: var(--clue-w);
@@ -660,19 +660,15 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   padding: 0 .25rem;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-secondary);
-  font-size: .6875rem;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .pixels-clock { align-self: center; font-variant-numeric: tabular-nums; }
 .pixels-info .pixels-clock { font-size: 16px; line-height: 24px; }
-@media (min-width: 48rem) {
-  .pixels-info { grid-template-rows: 20px 1fr 32px; }
-  .pixels-info .pixels-clock { font-size: 24px; line-height: 32px; }
-}
 .pixels-clock[data-charged] { color: var(--rux-text-error); }
 .pixels-thumb { --px: calc(var(--pixels-thumb) / var(--size, 10)); background: var(--rux-background); }
 @media (max-width: 47.99rem) {
@@ -701,7 +697,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    it a row of eight inks for its skin and one for its eyes, the Pixelator's
    swatches at 1.5rem, and the way to draw on its helmet. */
 .pixels-me-hero { display: flex; align-items: start; gap: 1rem; }
-.pixels-me-hero > .pixels-hero { --px: 6px; }
+.pixels-me-hero > .pixels-hero { --px: 4px; }
 .pixels-me-hero-picks { display: grid; justify-items: start; gap: .5rem; }
 .pixels-tones { display: grid; grid-template-columns: repeat(8, 1.5rem); gap: .25rem; }
 .pixels-hearts { display: flex; gap: 2px; }
@@ -729,7 +725,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   background: var(--rux-layer-01);
   color: var(--rux-text-primary);
   font: inherit;
-  font-size: 1.125rem;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -775,7 +771,8 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    in pixels of 2px, and beside her how many the player has. With none she
    is dim, as a locked rift's portal is. */
 .pixels-fairy { --px: 2px; background: none; }
-.pixels-key-fairy { display: flex; align-items: center; gap: .25rem; block-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+/* The fairies' count keeps its size where a phone shows the key's icon alone. */
+.pixels-key-fairy { display: flex; align-items: center; gap: .25rem; block-size: 20px; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .pixels-key-fairy[data-none] > .pixels-fairy { opacity: .3; }
 
 /* Each view's display would outrank the hidden attribute. What is shown
@@ -847,7 +844,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   background: transparent;
   color: var(--rux-text-primary);
   font: inherit;
-  font-size: .875rem;
+  font-size: 16px;
   letter-spacing: .16px;
   text-decoration: none;
   cursor: pointer;
@@ -918,7 +915,8 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   gap: .125rem;
   padding: 0 .5rem .5rem 0;
   color: var(--rux-text-secondary);
-  font-size: .75rem;
+  font-size: 16px;
+  line-height: 20px;
   pointer-events: none;
 }
 .pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
@@ -942,9 +940,8 @@ button:disabled > .pixels-ink-now { opacity: .35; }
   .pixels-toolbar-group { flex: var(--keys) 1 0; min-inline-size: 0; margin: 0; background: var(--rux-layer-01); }
   .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
   .pixels-toolbar-group > * { flex: 1; min-inline-size: 0; }
-  .pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; font-size: .6875rem; letter-spacing: 0; }
+  .pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; letter-spacing: 0; }
   .pixels-bar-key > svg { inline-size: 1.125rem; block-size: 1.125rem; }
-  .pixels-bar-word { display: block; }
   .pixels-toolbar-back { order: 1; --keys: 1; }
   .pixels-toolbar-history { order: 2; --keys: 2; }
   .pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }

@@ -14815,7 +14815,8 @@
        whole section is one press that opens every update in full and a
        second press closes; Add is its own button. Two updates that fit their
        lines have nothing more to show, which fitUpdates works out once they
-       are drawn. With none, No updates and Add. */
+       are drawn. With none, floating, Updates and Add over a tile saying
+       there are none; docked, No updates and Add. */
     const all = updatesOf(trip);
     const open = all.length > 0 && (floating || updatesOpenFor === trip.id);
     const shown = open ? all : all.slice(0, 2);
@@ -14851,7 +14852,10 @@
     /* Docked, with any updates, the title's words are the section's toggle, a
        real button with an arrow, so a keyboard and a screen reader reach what
        a press anywhere on the section does. */
-    const title = cardTitle(all.length ? 'Updates' : 'No updates', all.length, add);
+    /* Floating, the title is Updates at the card's top whatever there is,
+       and with none a tile under it says so, as the Prep panel's empty day
+       does. */
+    const title = cardTitle(all.length || floating ? 'Updates' : 'No updates', all.length, add);
     if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
       toggle.type = 'button';
@@ -14876,6 +14880,7 @@
       quick.appendChild(quickInput);
       updates.appendChild(quick);
     }
+    if (!all.length && floating) updates.appendChild(el('p', `scheduler-card__none${TILE}`, 'No updates yet.'));
     if (all.length) {
       const list = el('ol', `scheduler-card__update-list${TILE}`);
       list.setAttribute('aria-label', 'Updates, newest first');

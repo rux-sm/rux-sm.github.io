@@ -231,7 +231,7 @@ buttons: what a phone's docked sheet offers as slots is on the bar's right-click
 raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
 theme as well as a light one. It is one size, 22rem by 33rem, full or nearly empty, with or without
 tabs, shortened only to the board's room, and centred on the trip; what does not fit scrolls inside
-it, and No updates on an empty card stands in its middle. Floating, each part is its title over a tile of its rows, as the trip editor's sections are: the
+it, and an empty card has Updates and Add at its top over a tile that says No updates yet, as the Prep panel's empty day does. Floating, each part is its title over a tile of its rows, as the trip editor's sections are: the
 Needs and the Updates 16px from the card's sides and top, 16px under their titles and 16px apart,
 the updates' tile scrolling inside to 16px off the card's foot, its rows lit across its whole width
 with their words 16px in, and Add outlined where the theme outlines its buttons; docked on a phone

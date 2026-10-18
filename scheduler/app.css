@@ -1065,8 +1065,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > * { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; }
-/* With no updates, No updates and Add stand in the middle of the room. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:not(:has(> .scheduler-card__update-list)) { justify-content: center; }
 /* An out trip's tabs stay at the top and the panel under them scrolls; a
    trip's card inside its panel fills it, so its own updates list scrolls as
    it does with no tabs. */
@@ -1501,6 +1499,14 @@ button.scheduler-row-head__num::after {
   min-inline-size: 0;
   margin: 0;
   padding: 0;
+}
+/* With no updates the part's tile says so in the quiet ink, 16px in. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__none.scheduler-card__tile.scheduler-card__tile {
+  padding: var(--rux-spacing-05);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__needs-list.scheduler-card__tile > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list.scheduler-card__tile.scheduler-card__tile { margin-inline: 0; }

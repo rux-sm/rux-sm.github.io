@@ -165,18 +165,31 @@
     return parts.join(' · ');
   }
 
-  /* A trip that is back, in the update row's words: the miles driven once
-     they are in, then Paid or the balance due, a dimmed dot between, and the
-     same in a sentence for the tooltip. */
+  /* A trip that is back, in the update row's words: when this bus got back
+     to the yard, in amber when more than ten minutes past its planned
+     yard-back, or with no time the miles driven once they are in, then Paid
+     or the balance due, a dimmed dot between: two facts, which fit the
+     narrowest bar. The tooltip says every one in a sentence. */
   const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
-  function completeEl(trip) {
+  const LATE_BACK_MS = 10 * 60e3;
+  function completeEl(trip, assign, leg) {
     const { price, paid, remaining } = window.SchedulerBilling.of(trip);
     const item = el('span', 'scheduler-bar__complete');
     const parts = [];
     const said = ['Trip complete'];
+    const backAt = assign?.actual_yard_return_at ? Date.parse(assign.actual_yard_return_at) : NaN;
+    if (Number.isFinite(backAt)) {
+      const clock = hhmm(window.SchedulerRoad.clockOf(backAt), true);
+      const planned = leg ? window.SchedulerWeek.backAt(leg) : null;
+      const late = planned != null && backAt - planned > LATE_BACK_MS;
+      const back = el('span', `scheduler-bar__complete-back${late ? ' scheduler-bar__complete-back--late' : ''}`);
+      back.append('Back ', clockEl(clock));
+      parts.push(back);
+      said.push(`back at the yard ${clock}${late ? `, ${Math.round((backAt - planned) / 60e3)} minutes late` : ''}`);
+    }
     const miles = Number(trip.actual_miles) || 0;
     if (miles > 0) {
-      parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
+      if (!parts.length) parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
       said.push(`${Math.round(miles).toLocaleString('en-US')} miles`);
     }
     if (price > 0 && remaining > 0) {
@@ -494,13 +507,14 @@
        its age asks for nothing. A trip with none leaves the row empty, so
        every bar on the board is one height.
        ONCE THE TRIP IS BACK, which the Complete pill says, the row gives its
-       facts instead, since the last update is no longer news: the miles
-       driven, once they are in, then Paid in green, or what is still due in
-       amber; a trip with neither leaves the row empty. The update stays on
+       facts instead, since the last update is no longer news: when this bus
+       got back to the yard, the miles driven, once they are in, then Paid in
+       green, or what is still due in amber; a trip with none leaves the row
+       empty. The update stays on
        the tooltip and the card. */
     const latest = updatesOf(trip)[0] ?? null;
     const done = isDone;
-    const news = done ? completeEl(trip) : el('span', null, latest?.body || '');
+    const news = done ? completeEl(trip, assign, leg) : el('span', null, latest?.body || '');
     let tone = done ? ' scheduler-bar__update--complete' : '';
     if (latest && done) news.title = `${news.title}\n${latest.body}\n${updateStamp(latest)}`;
     else if (latest) {

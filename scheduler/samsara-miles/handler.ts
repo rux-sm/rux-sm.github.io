@@ -3,7 +3,8 @@
 // sends it sample trips. The trip editor's Get from Samsara sends a trip's id
 // and gets back how far each of its buses went on each leg, by Samsara's
 // odometer, who drove each one on each leg and in all, when each reached each
-// leg's pickup, and the farthest bus's total for the Actual miles box.
+// leg's pickup, when each left the yard and got back, and the farthest bus's
+// total for the Actual miles box.
 //
 // A LEG'S WINDOW is its planned yard-out to yard-back, from its stops, widened
 // by two hours each side to catch an early start or a late return; a parked
@@ -21,6 +22,15 @@
 // opens; one standing at a yard near the pickup has not. It is read across
 // the leg's window, to twelve hours past the due time at most, and while the
 // leg is still out.
+//
+// A BUS'S ACTUAL YARD DEPART AND RETURN are read from the same points against
+// the yard's place, the `yard-location-v1` settings row: the depart is the
+// last point within a quarter mile of the yard before the bus goes two miles
+// off on its way to the pickup, so a run out for fuel and back is passed
+// over; the return is the first point of the stay within a quarter mile of
+// the yard that the leg's points end in. A bus that was never in the yard
+// across the window, as on a leg starting from a hotel, has no depart, and
+// one not back by the window's end, or on a leg still out, no return.
 //
 // TIMES ARE THE OFFICE'S. The stops keep McAllen wall-clock times with no zone,
 // and each is turned into an instant with that date's offset.
@@ -46,7 +56,7 @@ export type Stop = {
   lat?: number | string | null
   lng?: number | string | null
 }
-export type Assignment = { bus_id: string | null; leg: string | null }
+export type Assignment = { id?: string; bus_id: string | null; leg: string | null }
 export type Trip = {
   id: string
   start_date: string | null
@@ -93,6 +103,8 @@ export type Deps = {
   samsaraDrivers(): Promise<SamsaraDriver[]>
   // A vehicle's GPS points between two instants.
   gps(vehicleId: string, fromMs: number, toMs: number): Promise<Fix[]>
+  // The yard's place, or null when none is set.
+  yard(): Promise<[number, number] | null>
   // Whether a Samsara key is set.
   keyed: boolean
   now(): number
@@ -110,6 +122,10 @@ export type BusLeg = {
   // When the bus reached the leg's pickup, or null when it did not, the
   // pickup has no map point, or Samsara could not say.
   pickup_at: string | null
+  // When it left the yard and got back, or null where it did not or Samsara
+  // could not say.
+  yard_depart_at: string | null
+  yard_return_at: string | null
 }
 // A driver Samsara saw drive the bus, matched to the scheduler's where it can
 // be, or nobody logged in when `name` is null.
@@ -282,6 +298,34 @@ export function arrivalAt(point: [number, number], due: number | null, fixes: Fi
   return null
 }
 
+// How far a bus goes from the yard before it has set out from it.
+const LEFT_MILES = 2
+
+// When the bus left the yard and got back, as instants or null, from its
+// points across the leg's window; `reached`, its pickup arrival, ends where
+// the depart is looked for, and `finished` says the leg is over, so a return
+// may be read.
+export function yardTimes(yard: [number, number], fixes: Fix[], reached: number | null, finished: boolean):
+  { depart: number | null; back: number | null } {
+  const pts = fixes.map(f => ({ at: Date.parse(f.time), d: crow(yard, [f.latitude, f.longitude]) }))
+    .filter(f => Number.isFinite(f.at) && Number.isFinite(f.d)).sort((a, b) => a.at - b.at)
+  let depart: number | null = null
+  let lastIn: number | null = null
+  for (const f of pts) {
+    if (reached != null && f.at > reached) break
+    if (f.d <= NEAR_MILES) lastIn = f.at
+    else if (f.d > LEFT_MILES && lastIn != null) { depart = lastIn; lastIn = null }
+  }
+  let back: number | null = null
+  if (finished && pts.length && pts[pts.length - 1].d <= NEAR_MILES) {
+    const from = Math.max(depart ?? -Infinity, reached ?? -Infinity)
+    let i = pts.length - 1
+    while (i > 0 && pts[i - 1].d <= NEAR_MILES) i--
+    if (i > 0 && pts[i].at > from && pts.slice(0, i).some(f => f.at >= from && f.d > NEAR_MILES)) back = pts[i].at
+  }
+  return { depart, back }
+}
+
 const legOfAssignment = (a: Assignment): 'outbound' | 'return' => (a.leg === 'return' ? 'return' : 'outbound')
 
 // ── miles ───────────────────────────────────────────────────────────────────
@@ -391,21 +435,32 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const read = new Map<number, Readings>()
   await Promise.all([...wanted].map(async ([at, ids]) => { read.set(at, await deps.readings([...ids], iso(at))) }))
 
-  // Each bus's arrival at each leg's pickup, from its GPS points; a vehicle
-  // whose points do not come has none.
+  // Each bus's arrival at each leg's pickup, and when it left the yard and
+  // got back, from its GPS points across the leg's window; a vehicle whose
+  // points do not come has none of them.
+  const yard = await deps.yard().catch(() => null)
   const arrived = new Map<string, number | null>()
+  const yardAt = new Map<string, { depart: number | null; back: number | null }>()
   await Promise.all(asks.map(async a => {
-    if (!a.vehicle || (a.note && a.note !== 'not-finished')) return
+    if (!a.vehicle || (a.note && a.note !== 'not-finished') || a.to <= a.from) return
     const pickup = pickupOf(trip, a.leg)
-    if (!pickup) return
-    const to = pickup.due != null ? Math.min(a.to, pickup.due + AFTER_DUE_MS) : a.to
-    if (to <= a.from) return
-    const fixes = await deps.gps(a.vehicle, a.from, to).catch(() => [] as Fix[])
-    arrived.set(`${a.bus}|${a.leg}`, arrivalAt(pickup.point, pickup.due, fixes))
+    if (!pickup && !yard) return
+    const fixes = await deps.gps(a.vehicle, a.from, a.to).catch(() => [] as Fix[])
+    let reached: number | null = null
+    if (pickup) {
+      const cut = pickup.due != null ? pickup.due + AFTER_DUE_MS : Infinity
+      reached = arrivalAt(pickup.point, pickup.due, fixes.filter(f => Date.parse(f.time) <= cut))
+      arrived.set(`${a.bus}|${a.leg}`, reached)
+    }
+    if (yard) yardAt.set(`${a.bus}|${a.leg}`, yardTimes(yard, fixes, reached, a.note !== 'not-finished'))
   }))
   const pickupAt = (bus: string, leg: string) => {
     const at = arrived.get(`${bus}|${leg}`)
     return at == null ? null : iso(at)
+  }
+  const yardTimesOf = (bus: string, leg: string) => {
+    const t = yardAt.get(`${bus}|${leg}`)
+    return { yard_depart_at: t?.depart == null ? null : iso(t.depart), yard_return_at: t?.back == null ? null : iso(t.back) }
   }
 
   /* Who drove each bus: Samsara's own trips for it that start inside each
@@ -448,11 +503,12 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
     const mine: BusLeg[] = asks.filter(a => a.bus === bus).map(a => {
       const drivers = droveFor(bus, a.leg)
       const pickup_at = pickupAt(bus, a.leg)
-      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers, pickup_at }
+      const times = yardTimesOf(bus, a.leg)
+      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers, pickup_at, ...times }
       const got = between(read.get(a.from)?.[a.vehicle], read.get(a.to)?.[a.vehicle], a.from)
       return got
-        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers, pickup_at }
-        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers, pickup_at }
+        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers, pickup_at, ...times }
+        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers, pickup_at, ...times }
     })
     const whole = mine.length > 0 && mine.every(l => l.miles != null)
     return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null,
@@ -463,6 +519,70 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
     legs: legs.map(l => ({ leg: l.leg, from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })),
     buses: out,
     actual: totals.length ? Math.max(...totals) : null,
+  }
+}
+
+// ── each night ──────────────────────────────────────────────────────────────
+
+// What the nightly run reads and writes besides what a trip's answer needs:
+// the trips not cancelled whose dates touch the range, each bus row with its
+// id, and the rows' yard times, saved where a time was found.
+export type NightDeps = Deps & {
+  tripsBetween(from: string, to: string): Promise<Trip[]>
+  save(rows: YardRow[]): Promise<void>
+}
+export type YardRow = { id: string; actual_yard_depart_at?: string; actual_yard_return_at?: string }
+
+// The longest range one run reads, so a run stays inside the function's time.
+const NIGHT_DAYS = 31
+
+/* EACH NIGHT a schedule inside Supabase asks for the day before and the day
+   itself, and every trip whose dates touch them is answered as Get from
+   Samsara answers it; each bus row's actual yard depart and return that were
+   found are saved, and a time not found leaves the one saved. Run over past
+   days with `write` false it says what it would save and saves nothing. A
+   Samsara list read once serves every trip in the run. */
+export async function night(deps: NightDeps, from: string, to: string, write: boolean): Promise<{ trips: number; rows: YardRow[] }> {
+  const once = <T>(f: () => Promise<T>) => { let p: Promise<T> | null = null; return () => (p ??= f()) }
+  const shared: NightDeps = { ...deps, vehicles: once(deps.vehicles), drivers: once(deps.drivers),
+    samsaraDrivers: once(deps.samsaraDrivers), yard: once(deps.yard) }
+  const trips = await deps.tripsBetween(from, to)
+  const rows: YardRow[] = []
+  for (const trip of trips) {
+    const answer = await milesFor(trip, shared)
+    for (const bus of answer.buses) {
+      for (const leg of bus.legs) {
+        const a = (trip.trip_assignments || []).find(x => x.bus_id === bus.bus_id && legOfAssignment(x) === leg.leg && x.id)
+        if (!a?.id || (!leg.yard_depart_at && !leg.yard_return_at)) continue
+        rows.push({ id: a.id, ...(leg.yard_depart_at ? { actual_yard_depart_at: leg.yard_depart_at } : {}),
+          ...(leg.yard_return_at ? { actual_yard_return_at: leg.yard_return_at } : {}) })
+      }
+    }
+  }
+  if (write && rows.length) await deps.save(rows)
+  return { trips: trips.length, rows }
+}
+
+// The run's request: the shared key in `x-night-key`, and a body of `from` and
+// `to` dates, the day before and today by default, and `write`, true unless
+// it says false.
+export async function handleNight(req: Request, deps: NightDeps, key: string): Promise<Response> {
+  const reply = (status: number, body: unknown) =>
+    new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
+  if (req.method !== 'POST') return reply(405, { error: 'method' })
+  if (!key || req.headers.get('x-night-key') !== key) return reply(401, { error: 'key' })
+  if (!deps.keyed) return reply(503, { error: 'no-key' })
+  let body: { from?: unknown; to?: unknown; write?: unknown } = {}
+  try { body = await req.json() } catch { /* an empty body takes the defaults */ }
+  const today = day(deps.now())
+  const to = typeof body.to === 'string' ? body.to : today
+  const from = typeof body.from === 'string' ? body.from : day(deps.now() - DAY_MS)
+  if (!DATE.test(from) || !DATE.test(to) || from > to
+    || (Date.parse(to) - Date.parse(from)) / DAY_MS >= NIGHT_DAYS) return reply(400, { error: 'range' })
+  try {
+    return reply(200, await night(deps, from, to, body.write !== false))
+  } catch {
+    return reply(502, { error: 'samsara' })
   }
 }
 

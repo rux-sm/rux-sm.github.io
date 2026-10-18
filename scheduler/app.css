@@ -878,6 +878,8 @@ button.scheduler-row-head__num::after {
    days take, what is still due in its amber, a dimmed dot between. */
 .scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-bar__complete-paid { color: var(--scheduler-age-new); }
+.scheduler-bar__complete-back { white-space: nowrap; }
+.scheduler-bar__complete-back--late { color: var(--scheduler-age-week); }
 .scheduler-bar__complete-sep { opacity: .55; }
 .scheduler-bar__complete-due { color: var(--scheduler-age-week); white-space: nowrap; }
 .scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }

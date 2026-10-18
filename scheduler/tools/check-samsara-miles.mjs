@@ -1,7 +1,7 @@
 // Runs samsara-miles's handler, the trip editor's door to Samsara's odometer,
 // against sample trips with invented readings: the window each leg is read
 // across, the miles each bus gets or why it gets none, when each reached its
-// pickup, the farthest bus's total, and what a caller who should not get an answer is told. The handler
+// pickup, when each left the yard and got back, the farthest bus's total, and what a caller who should not get an answer is told. The handler
 // is TypeScript with no imports; its types are taken off and the rest is run
 // as a module.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-miles/handler.ts', import.meta.u
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-miles-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { arrivalAt, handle, instant, legWindow, milesFor, pickupOf } = await import(pathToFileURL(file).href);
+const { arrivalAt, handle, handleNight, instant, legWindow, milesFor, night, pickupOf, yardTimes } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -97,7 +97,7 @@ const SEGMENTS = {
     { startMs: Date.parse('2026-10-10T04:00:00Z'), driverId: 11, distanceMeters: Math.round(70 * MILE) },
   ],
 };
-function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false, segments = SEGMENTS, fixes = {} } = {}) {
+function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer, keyed = true, found = day, tripsFail = false, segments = SEGMENTS, fixes = {}, yard = null } = {}) {
   const asked = [];
   let samsaraCalls = 0;
   return {
@@ -122,6 +122,7 @@ function parts({ others = [], now = Date.parse('2026-10-20T00:00:00Z'), odometer
         return (fixes[v] ?? []).filter(f => Date.parse(f.time) >= from && Date.parse(f.time) <= to);
       },
       samsaraDrivers: async () => [{ id: '11', name: 'Ana Ruiz Jr' }, { id: '12', name: 'Dee Moss' }],
+      yard: async () => yard,
     },
   };
 }
@@ -269,7 +270,7 @@ const FIXES = { v101: [fix('2026-10-10T09:00:00Z', YARD), fix('2026-10-10T12:04:
 p = parts({ odometer, found: placed, fixes: FIXES });
 a = await milesFor(placed, p.deps);
 expect('each leg says when its bus reached the pickup', a.buses[0].legs.map(l => l.pickup_at), ['2026-10-10T12:04:00.000Z']);
-expect('read from the window\'s start to twelve hours past due at most', p.asked.find(x => x[0] === 'gps'),
+expect('read across the leg\'s whole window', p.asked.find(x => x[0] === 'gps'),
   ['gps', 'v101', '2026-10-10T09:00:00.000Z', '2026-10-10T19:00:00.000Z']);
 p = parts({ odometer, found: placed, fixes: FIXES, now: Date.parse('2026-10-10T13:00:00Z') });
 a = await milesFor(placed, p.deps);
@@ -279,6 +280,68 @@ p = parts({ found: placed, odometer: (v, at) => ({ obdOdometerMeters: reading(at
 p.deps.gps = async () => { throw new Error('403'); };
 a = await milesFor(placed, p.deps);
 expect('points that do not come leave the arrival empty and the miles whole', [a.buses[0].legs[0].pickup_at, a.actual], [null, 100]);
+
+// ── the yard ────────────────────────────────────────────────────────────────
+const off = mi => [YARD[0] + mi / 69, YARD[1]];
+const at = (t, p) => fix(`2026-10-10T${t}:00Z`, p);
+const yt = (fixes, reached = null, finished = true) => {
+  const t = yardTimes(YARD, fixes, reached == null ? null : Date.parse(`2026-10-10T${reached}:00Z`), finished);
+  return [iso(t.depart), iso(t.back)];
+};
+const DAYOUT = [at('09:00', YARD), at('10:55', off(0.1)), at('11:05', off(3)), at('12:04', PICK),
+  at('16:00', off(4)), at('16:58', off(0.1)), at('18:00', YARD)];
+expect('it left the yard at its last point there before going two miles off, and got back at the first point of its last stay',
+  yt(DAYOUT, '12:04'), ['2026-10-10T10:55:00.000Z', '2026-10-10T16:58:00.000Z']);
+expect('a run out for fuel and back before the trip is passed over', yt([at('09:00', YARD), at('09:30', off(3)), at('09:50', off(0.1)),
+  at('10:40', YARD), at('10:50', off(3)), at('12:04', PICK), at('17:00', YARD)], '12:04'),
+  ['2026-10-10T10:40:00.000Z', '2026-10-10T17:00:00.000Z']);
+expect('a bus that was never in the yard, as on a leg from a hotel, has no depart', yt([at('09:00', off(40)), at('12:04', PICK),
+  at('17:00', YARD)], '12:04'), [null, '2026-10-10T17:00:00.000Z']);
+expect('a bus not back by the window\'s end has no return', yt(DAYOUT.slice(0, 5), '12:04'), ['2026-10-10T10:55:00.000Z', null]);
+expect('a leg still out has no return', yt(DAYOUT, '12:04', false), ['2026-10-10T10:55:00.000Z', null]);
+expect('a bus that never left has neither', yt([at('09:00', YARD), at('12:00', off(0.1)), at('18:00', YARD)]), [null, null]);
+p = parts({ odometer, found: placed, fixes: { v101: DAYOUT }, yard: YARD });
+a = await milesFor(placed, p.deps);
+expect('each leg says when its bus left the yard and got back', [a.buses[0].legs[0].yard_depart_at, a.buses[0].legs[0].yard_return_at],
+  ['2026-10-10T10:55:00.000Z', '2026-10-10T16:58:00.000Z']);
+p = parts({ odometer, found: placed, fixes: { v101: DAYOUT } });
+a = await milesFor(placed, p.deps);
+expect('with no yard set it says neither', [a.buses[0].legs[0].yard_depart_at, a.buses[0].legs[0].yard_return_at], [null, null]);
+
+// ── each night ──────────────────────────────────────────────────────────────
+const rowed = { ...placed, trip_assignments: [{ id: 'row-1', bus_id: 'b1', leg: 'outbound' }] };
+const nightParts = (more = {}) => {
+  const q = parts({ odometer, found: placed, fixes: { v101: DAYOUT }, yard: YARD, ...more });
+  const saved = [];
+  let ranged = null;
+  q.deps.tripsBetween = async (from, to) => { ranged = [from, to]; return [rowed]; };
+  q.deps.save = async rows => { saved.push(...rows); };
+  return { deps: q.deps, saved, get ranged() { return ranged; }, get calls() { return q.samsaraCalls; } };
+};
+let n = nightParts();
+let got = await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('each night saves each bus row\'s yard times', [got.trips, n.saved],
+  [1, [{ id: 'row-1', actual_yard_depart_at: '2026-10-10T10:55:00.000Z', actual_yard_return_at: '2026-10-10T16:58:00.000Z' }]]);
+n = nightParts();
+got = await night(n.deps, '2026-10-01', '2026-10-11', false);
+expect('a run that may not write says what it found and saves nothing', [got.rows.length, n.saved.length], [1, 0]);
+n = nightParts({ fixes: { v101: DAYOUT.slice(0, 5) } });
+await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('a time not found is left as it was', n.saved, [{ id: 'row-1', actual_yard_depart_at: '2026-10-10T10:55:00.000Z' }]);
+const nightPost = async (body, headers = { 'x-night-key': 'k' }, key = 'k') => {
+  n = nightParts({ now: Date.parse('2026-10-11T10:00:00Z') });
+  const res = await handleNight(new Request('https://example.supabase.co/functions/v1/samsara-miles', {
+    method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) }), n.deps, key);
+  return { status: res.status, body: await res.json(), ranged: n.ranged, saved: n.saved.length };
+};
+let r = await nightPost({}, {});
+expect('a run without the key is turned away', [r.status, r.ranged], [401, null]);
+r = await nightPost({}, { 'x-night-key': 'k' }, '');
+expect('with no key set nothing runs', r.status, 401);
+r = await nightPost({});
+expect('a run with no dates reads the day before and today, and saves', [r.status, r.ranged, r.saved], [200, ['2026-10-10', '2026-10-11'], 1]);
+r = await nightPost({ from: '2026-08-01', to: '2026-10-11' });
+expect('a range past a month is refused', [r.status, r.body], [400, { error: 'range' }]);
 
 // ── who is answered ─────────────────────────────────────────────────────────
 async function post(body, { auth = 'Bearer staff', method = 'POST', origin = 'http://localhost:8641', ...opts } = {}) {
@@ -293,7 +356,7 @@ async function post(body, { auth = 'Bearer staff', method = 'POST', origin = 'ht
   return { status: res.status, body: text ? JSON.parse(text) : null, calls: q.samsaraCalls, allow: res.headers.get('access-control-allow-origin') };
 }
 
-let r = await post(null, { method: 'OPTIONS' });
+r = await post(null, { method: 'OPTIONS' });
 expect('the log-in preview may ask', [r.status, r.allow], [204, 'http://localhost:8641']);
 r = await post({ trip_id: id(1) }, { origin: 'https://example.org' });
 expect('another page is not let read the answer', r.allow, 'https://rux-sm.github.io');

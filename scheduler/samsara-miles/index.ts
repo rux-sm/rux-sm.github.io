@@ -5,21 +5,27 @@
 // the public site, so the editor asks here.
 //
 // The trip is read on the caller's own log-in, so only staff can read one
-// through it, as through the connector. Its one secret, SAMSARA_API_TOKEN, is
-// a read-only Samsara key (Read Vehicles, Read Vehicle Statistics, Read
-// Vehicle Trips for who drove, and the Compliance hours permission for the
-// drivers' names), set in the dashboard.
+// through it, as through the connector. SAMSARA_API_TOKEN is a read-only
+// Samsara key (Read Vehicles, Read Vehicle Statistics, Read Vehicle Trips for
+// who drove, and the Compliance hours permission for the drivers' names), set
+// in the dashboard.
+//
+// The nightly run is the one request that carries no log-in: it sends
+// SAMSARA_NIGHT_KEY in `x-night-key`, the same value the schedule reads from
+// the database's vault, and is read and saved on the service role, which
+// Supabase gives every function.
 
 // Each import names one exact version, as check-connector.mjs holds it to;
 // supabase-js is the version the site's pages load.
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Fix, type Readings, type Trip, type Vehicle, type VehicleTrip } from './handler.ts'
+import { handle, handleNight, type Deps, type Fix, type NightDeps, type Readings, type Trip, type Vehicle, type VehicleTrip, type YardRow } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+const NIGHT_KEY = Deno.env.get('SAMSARA_NIGHT_KEY') ?? ''
 
 const STOPS = 'trip_stops(leg,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
 const TRIP = `id,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,${STOPS}`
@@ -44,13 +50,11 @@ async function samsara<T>(path: string, params: Record<string, string>): Promise
   return rows
 }
 
-Deno.serve(req => {
-  // The caller's own session, with the page's publishable key it sent.
-  const db = createClient(SUPABASE_URL, req.headers.get('apikey') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
-    global: { headers: { Authorization: req.headers.get('authorization') ?? '' } },
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
-  return handle(req, {
+// What both requests read: the trip, the buses, the drivers and the yard on
+// the given connection, and Samsara.
+// deno-lint-ignore no-explicit-any
+function depsOn(db: any): Deps {
+  return {
     keyed: !!TOKEN,
     now: () => Date.now(),
     async trip(id) {
@@ -79,6 +83,13 @@ Deno.serve(req => {
         .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`)
       if (error) throw error
       return (data ?? []) as Trip[]
+    },
+    // The yard's place, from rux-ui's `yard-location-v1` settings row.
+    async yard() {
+      const { data, error } = await db.from('settings').select('value').eq('key', 'yard-location-v1').maybeSingle()
+      if (error) throw error
+      const v = data?.value
+      return v?.lat != null && v?.lng != null ? [Number(v.lat), Number(v.lng)] as [number, number] : null
     },
     async vehicles() {
       const rows = await samsara<Vehicle>('/fleet/vehicles', { limit: '512' })
@@ -115,5 +126,38 @@ Deno.serve(req => {
       const rows = await samsara<{ driver?: { id?: string; name?: string } }>('/fleet/hos/clocks', { limit: '512' })
       return rows.map(c => ({ id: String(c.driver?.id ?? ''), name: String(c.driver?.name ?? '') })).filter(d => d.id)
     },
+  }
+}
+
+Deno.serve(req => {
+  if (req.headers.has('x-night-key')) {
+    const db = createClient(SUPABASE_URL, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '', {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+    const deps: NightDeps = {
+      ...depsOn(db),
+      async tripsBetween(from, to) {
+        const { data, error } = await db.from('trips')
+          .select(`${TRIP},trip_assignments(id,bus_id,leg)`)
+          .is('cancelled_at', null)
+          .lte('start_date', to)
+          .or(`end_date.gte.${from},return_end_date.gte.${from}`)
+        if (error) throw error
+        return (data ?? []) as Trip[]
+      },
+      async save(rows: YardRow[]) {
+        for (const { id, ...times } of rows) {
+          const { error } = await db.from('trip_assignments').update(times).eq('id', id)
+          if (error) throw error
+        }
+      },
+    }
+    return handleNight(req, deps, NIGHT_KEY)
+  }
+  // The caller's own session, with the page's publishable key it sent.
+  const db = createClient(SUPABASE_URL, req.headers.get('apikey') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+    global: { headers: { Authorization: req.headers.get('authorization') ?? '' } },
+    auth: { persistSession: false, autoRefreshToken: false },
   })
+  return handle(req, depsOn(db))
 })

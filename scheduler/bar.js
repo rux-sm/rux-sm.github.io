@@ -167,8 +167,8 @@
 
   /* A trip that is back, in the update row's words: when this bus got back
      to the yard, in amber when more than ten minutes past its planned
-     yard-back, or with no time the miles driven once they are in, then Paid
-     or the balance due, a dimmed dot between: two facts, which fit the
+     yard-back, or with no time the miles driven once they are in, then Paid,
+     the balance due or No price, a dimmed dot between: two facts, which fit the
      narrowest bar. The tooltip says every one in a sentence. */
   const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
   const LATE_BACK_MS = 10 * 60e3;
@@ -198,6 +198,10 @@
     } else if (price > 0 && paid > 0) {
       parts.push(el('span', 'scheduler-bar__complete-paid', 'Paid'));
       said.push('paid in full');
+    } else if (price <= 0) {
+      // A trip run with no price is billing still to do, so it says so.
+      parts.push(el('span', 'scheduler-bar__complete-due', 'No price'));
+      said.push('no price yet');
     }
     parts.forEach((p, i) => item.append(...(i ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
     item.title = said.join(', ');

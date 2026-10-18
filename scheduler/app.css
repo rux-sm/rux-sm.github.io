@@ -639,7 +639,9 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--scheduler-ls);
   line-height: var(--scheduler-row-h);
   font-weight: 400;
-  overflow: hidden;
+  /* Clipped rather than hidden, which cuts the same but is no scroll pane of
+     its own, so its rows can stick to the board's edge as it scrolls. */
+  overflow: clip;
   cursor: pointer;
   z-index: 1;
   /* A finger holds a bar before it moves, and a hold is also the browser's own
@@ -1860,22 +1862,30 @@ button.scheduler-row-head__num::after {
    rows' place, and the drivers row as seats. On the narrowest bar every
    edge lands on a whole pixel: two 68px halves and a 1px rule. */
 .scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
-/* On a bar longer than a day, every row keeps to the width a one-day bar
+/* ON A BAR LONGER THAN A DAY every row keeps to the width a one-day bar
    gives it: one day of this bar, worked out as the bar's own width is, less
-   the gap and the two default paddings. So every live bar's rows are one
-   size, and they stand in today's column, `--scheduler-today` days in, which
-   road-bar.js sets while the bus is out; the marks at the destination row's
-   end go with them. */
-.scheduler-bar--road {
+   the gap and the two default paddings, with the marks at the destination
+   row's end. So every bar's writing is one size. A live bar's stands in
+   today's column, `--scheduler-today` days in, which road-bar.js sets while
+   the bus is out. And as the board scrolls sideways the rows stick to the
+   edge of the bus column, where a bar starting on the week's first day has
+   its words, so a trip whose
+   first day has scrolled out of sight still says what it is; the bar holds
+   them, so they stop at its end. */
+.scheduler-bar {
   --scheduler-live-day: calc((100% + var(--scheduler-pad-start) + var(--scheduler-pad-end) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
 }
-.scheduler-bar--road > :is(.scheduler-bar__row, .scheduler-road__card) {
+.scheduler-bar > :is(.scheduler-bar__row, .scheduler-road__card) {
+  position: sticky;
+  inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--rux-spacing-02));
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
+}
+.scheduler-bar--road > :is(.scheduler-bar__row, .scheduler-road__card) {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
-.scheduler-bar--road > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
-.scheduler-bar--road > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
+.scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
+.scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
 .scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
 
 /* THE TIMES: out, a dimmed arrow and back, then the minutes late in amber;
@@ -1952,9 +1962,10 @@ button.scheduler-row-head__num::after {
   background: var(--scheduler-road-band, rgb(0 0 0 / .22));
   pointer-events: none;
 }
-/* The drivers row is painted over the shade, which reaches under it. */
+/* The drivers row, positioned as every row is to stick, is painted over
+   the shade, which reaches under it. */
 .scheduler-bar--road { --scheduler-road-lift: 3px; }
-.scheduler-bar--road > .scheduler-bar__drivers { position: relative; block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift)); }
+.scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift)); }
 .scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -4px; }
 .scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .scheduler-road__rule { align-self: stretch; background: color-mix(in srgb, currentColor 18%, transparent); }

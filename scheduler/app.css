@@ -1328,13 +1328,13 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
 .scheduler-card__live-driver + .scheduler-card__live-driver { margin-block-start: var(--rux-spacing-02); }
-/* A driver's three clocks side by side under their name, each its name and
-   the hours left over a 3px meter of them, amber under an hour. */
+/* A driver's three clocks side by side under their name, across the tile's
+   whole width, each its name and the hours left over a 3px meter of them,
+   amber under an hour. */
 .scheduler-card__live-clocks {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--rux-spacing-04);
-  padding-inline-start: calc(16px + var(--rux-spacing-03));
 }
 .scheduler-card__live-clock { display: grid; gap: var(--rux-spacing-01); min-inline-size: 0; }
 .scheduler-card__live-clock-top { display: flex; justify-content: space-between; gap: var(--rux-spacing-02); white-space: nowrap; }

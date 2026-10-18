@@ -47,15 +47,8 @@ and the office can set the real day beside the planned one.
 
 ## Tasks
 
-- [ ] Show rux the migration adding the two columns, and apply it on his yes.
-- [ ] Teach `samsara-miles` to find each bus's actual yard depart and return,
-  with cases in `scheduler/tools/check-samsara-miles.mjs` from sample tracks.
-- [ ] Deploy `samsara-miles` with the Supabase CLI.
-- [ ] Save the two times from Get from Samsara on the Billing tab, as
-  `pickup_at` is saved.
 - [ ] Show rux the nightly schedule that calls `samsara-miles` for the day's
-  returned legs and saves their times, and apply it on his yes.
-- [ ] Fill in the legs back since October 1, read-only first, written on his
-  yes.
-- [ ] Show "Back" in a finished bar's update row and both times on the Route
-  summary, with the database inventory and the screen inventory updated.
+  returned legs and saves their times, with its key set on the function and
+  in the vault, and apply it on his yes.
+- [ ] Fill in the legs back since October 1 through the same route, read-only
+  first, written on his yes.

@@ -599,6 +599,12 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
 }
+/* A light theme's bars are pale, so a live bar's band darkens toward the
+   bar's own ink rather than toward black. */
+:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--road { --scheduler-road-band: color-mix(in srgb, currentColor 7%, transparent); }
+/* apple-light's bar ink is already the faintest that reads, so its band is
+   fainter still, keeping the words over it at 4.5 to 1. */
+[data-theme="apple-light"] .scheduler-bar--road { --scheduler-road-band: color-mix(in srgb, currentColor 3%, transparent); }
 /* apple-light's bar ink is the faintest that reads, so its Complete pill
    is not dimmed further. */
 [data-theme="apple-light"] .scheduler-bar__done { opacity: 1; }

@@ -1922,7 +1922,10 @@ button.scheduler-row-head__num::after {
    to its foot, whatever day the rows stand on: it reaches far past both
    sides, and the bar, which clips what it holds, cuts it at its own sides
    and its own lower corners, so the bar is two bands, the trip over the
-   bus. */
+   bus. The band is darker than the bar, a screen set into it as a dash's
+   cluster is, so the gauges stand out and the trip's own rows above stay
+   the brighter; a light theme darkens it toward the bar's ink, in
+   theme.css. */
 .scheduler-road__card {
   --scheduler-road-tone: var(--scheduler-mark-success);
   position: relative;
@@ -1946,7 +1949,7 @@ button.scheduler-row-head__num::after {
   position: absolute;
   z-index: -1;
   inset: 4px -100vw calc(-1 * (var(--scheduler-row-h) + var(--scheduler-road-lift)) - 4px);
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  background: var(--scheduler-road-band, rgb(0 0 0 / .22));
   pointer-events: none;
 }
 /* The drivers row is painted over the shade, which reaches under it. */

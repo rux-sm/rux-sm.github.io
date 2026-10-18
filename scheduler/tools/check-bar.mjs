@@ -223,8 +223,9 @@ expect('the times: out and back either end of a track filled as far as the trip 
   [2, true]);
 expect('late back: the expected return in amber in place of the plan, or how long past it',
   [[...row(lit('Late back to the yard')).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late')),
-    text(row(lit('Past its return')), '.scheduler-road__over'), has(row(lit('At highway speed')), '.scheduler-road__over')],
-  [[false, true], '+45m', false]);
+    // 45 minutes over when drawn, or 46 when the draw falls into the next minute.
+    /^\+4[56]m$/.test(text(row(lit('Past its return')), '.scheduler-road__over') ?? ''), has(row(lit('At highway speed')), '.scheduler-road__over')],
+  [[false, true], true, false]);
 expect('moving: the speed, five bars with one lit for every 16 mph, green, a rule, the tank',
   [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
     lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],

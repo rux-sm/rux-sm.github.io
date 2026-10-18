@@ -123,9 +123,11 @@
   /* THE CHARACTER, for the owner while it is a placeholder: who stands on
      the map and fights, drawn large, with an ink to pick for its skin and
      one for its eyes, each kept as it is picked, and the way to the
-     Pixelator to draw on its helmet once five sprites have earned it. The
-     first ink of each row is the one the character starts in. */
-  const SKIN = ['B', 'd', 'h', 'H', '7', 'R', 'r', 'A'], EYES = ['0', '7', '6', '5', 'a', '9', 'y', '2'];
+     Pixelator to draw on its helmet once five sprites have earned it. Skin
+     is the five skin inks and then a light green, blue and purple, for a
+     character who is no person. The first ink of each row is the one the
+     character starts in. */
+  const SKIN = ['x', 'U', 'V', 'W', 'X', 'f', 'g', 'j'], EYES = ['0', '7', '6', '5', 'a', '9', 'y', '2'];
   const character = me => {
     const el = document.createElement('section');
     el.className = 'pixels-me-hero';

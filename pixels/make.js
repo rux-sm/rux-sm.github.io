@@ -6,7 +6,7 @@
    player can solve it by logic alone, how hard that is and how much of the
    board is filled; squares that would need a guess are outlined. COLOUR:
    the toolbar's last button shows the colour in hand and opens the
-   fifty-five inks; pick one and paint any square, filled or not; that is
+   sixty inks; pick one and paint any square, filled or not; that is
    the picture the puzzle finishes as. The paintbrush colours the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
@@ -98,6 +98,7 @@
     ['F', 'Pale purple'], ['j', 'Light purple'], ['9', 'Purple'], ['P', 'Deep purple'], ['t', 'Dark purple'],
     ['G', 'Pale pink'], ['i', 'Light pink'], ['8', 'Pink'], ['Q', 'Deep pink'], ['s', 'Dark pink'],
     ['H', 'Pale brown'], ['h', 'Light brown'], ['7', 'Brown'], ['R', 'Deep brown'], ['r', 'Dark brown'],
+    ['x', 'Pale skin'], ['U', 'Light skin'], ['V', 'Skin'], ['W', 'Deep skin'], ['X', 'Dark skin'],
     ['I', 'Pale teal'], ['k', 'Light teal'], ['a', 'Teal'], ['S', 'Deep teal'], ['u', 'Dark teal'],
     ['J', 'Pale sky blue'], ['l', 'Light sky blue'], ['b', 'Sky blue'], ['T', 'Deep sky blue'], ['v', 'Dark sky blue'],
     ['1', 'White'], ['w', 'Pale grey'], ['y', 'Grey'], ['z', 'Dark grey'], ['0', 'Black'],

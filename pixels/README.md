@@ -79,7 +79,7 @@ at `make.html?own`, which cost none. `make.html?me` draws a player's picture, an
 helmet of the owner's character. It checks as you draw whether the numbers alone can solve the picture
 and how hard that is, outlines each square that would need a guess, and saves only a picture with one
 answer. Size starts a blank board of 5, 10 or 15 a side, 20 in the course. Its Colour step paints the
-picture the puzzle finishes as, from fifty-five inks, and Save asks which rift it goes in; a rift shows
+picture the puzzle finishes as, from sixty inks, and Save asks which rift it goes in; a rift shows
 fifteen, the list counts how many of each one's are on, and a puzzle saved into one with fifteen on is
 saved off. A rift just started is named there and hidden until Manage's switch publishes it. No rift
 yet keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle,
@@ -101,7 +101,7 @@ new one or Unsorted, or deleted; a rift left empty goes too.
 | `data.js` | who is playing, the door a guest meets, and where puzzles and results are kept |
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour |
 | `app.css` | the board, the picture, the tiles and Manage, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
-| `theme.css` | the fifty-five inks a colour picture is painted from |
+| `theme.css` | the sixty inks a colour picture is painted from |
 | `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 
 ## Data

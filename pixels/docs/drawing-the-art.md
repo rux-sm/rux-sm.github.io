@@ -6,7 +6,7 @@ type: how-to
 
 Every picture rux draws for Pixels has a file ready in Aseprite, in
 `pixels/art/source/`. Each is the right size and holds only the game's
-fifty-five inks, so a colour from anywhere else cannot be painted.
+sixty inks, so a colour from anywhere else cannot be painted.
 
 | File | Squares | What it is |
 | :--- | :--- | :--- |

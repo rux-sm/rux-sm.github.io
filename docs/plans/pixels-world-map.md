@@ -164,7 +164,7 @@ The pictures:
   of armour, the sword and the shield of the switch, nine squares a side,
   and a world for a rift where one is wanted.** They are pixel
   art, drawn one pixel to a square and painted from the game's own
-  fifty-five inks, so they sit with the sprites.
+  sixty inks, so they sit with the sprites.
 - **The map and the worlds are PNGs in `pixels/art/`:** `map-1.png` to
   `map-6.png` from the foot up, `fog.png`, and `rift-01.png` to
   `rift-12.png`.

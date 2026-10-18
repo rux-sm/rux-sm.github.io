@@ -71,9 +71,9 @@ has a next move, and the picture comes out bit by bit.
 
 Once the tag is green, Colour paints the picture the player sees at the
 finish. The toolbar's last button shows the colour in hand; press it for the
-fifty-five inks, pick one and paint any square, filled or empty. The inks
-are ten colours, each in five tones from pale to dark, then five greys from
-white to black.
+sixty inks, pick one and paint any square, filled or empty. The inks
+are ten colours and a row of skin, each in five tones from pale to dark,
+then five greys from white to black.
 
 - **The toolbar over the board** holds every button, each an icon that
   names itself when you rest on it. At its start are Back and Save, with

@@ -2,7 +2,7 @@
 //
 // THE PICTURES rux DRAWS, between Aseprite and the game. Each picture has an
 // Aseprite file in pixels/art/source/, the size it is drawn at and painted
-// from the game's fifty-five inks alone, since the file is indexed to them.
+// from the game's sixty inks alone, since the file is indexed to them.
 //
 //   node pixels/tools/build-art.mjs templates   writes the Aseprite files that are not there
 //   node pixels/tools/build-art.mjs             puts every Aseprite file into the game
@@ -24,6 +24,8 @@
 //
 // THE PALETTE is the inks in the Pixelator's order, read from make.js, in
 // the colours theme.css gives them, after one clear colour, which is no ink.
+// `templates` also writes it as art/source/pixels.gpl, which Aseprite loads
+// as a palette for a new file.
 //
 import { existsSync, mkdirSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -44,7 +46,7 @@ if (!existsSync(ASEPRITE)) fail(`Aseprite is not at ${ASEPRITE}; set ASEPRITE to
 const make = readFileSync(join(PIXELS, 'make.js'), 'utf8'), theme = readFileSync(join(PIXELS, 'theme.css'), 'utf8');
 const INKS = [...(make.match(/const INKS = \[([\s\S]*?)\n {2}\];/) || fail('make.js has no INKS'))[1].matchAll(/\['(\w)', '[^']*'\]/g)].map(m => m[1]);
 const HEX = Object.fromEntries([...theme.matchAll(/--pixels-ink-(\w): #([0-9a-f]{6});/g)].map(m => [m[1], m[2]]));
-if (INKS.length !== 55 || INKS.some(id => !HEX[id])) fail('make.js and theme.css do not agree on the fifty-five inks.');
+if (!INKS.length || INKS.length !== Object.keys(HEX).length || INKS.some(id => !HEX[id])) fail('make.js and theme.css do not agree on the inks.');
 
 // The character's layers from the foot of Aseprite's list up, which is the
 // order app.js draws them in; each is the layer's name and its key in HERO.
@@ -145,6 +147,11 @@ const pad = n => String(n).padStart(2, '0');
 
 if (process.argv[2] === 'templates') {
   mkdirSync(SOURCE, { recursive: true });
+  writeFileSync(join(SOURCE, 'pixels.gpl'), `GIMP Palette\nName: Pixels\nColumns: 5\n#\n${INKS.map(id => {
+    const [r, g, b] = [0, 2, 4].map(i => parseInt(HEX[id].slice(i, i + 2), 16));
+    return `${String(r).padStart(3)} ${String(g).padStart(3)} ${String(b).padStart(3)}\t${id}`;
+  }).join('\n')}\n`);
+  console.log('  written  art/source/pixels.gpl');
   const jobs = [];
   const job = (name, script) => {
     const file = join(SOURCE, name);

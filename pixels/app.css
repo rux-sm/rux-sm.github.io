@@ -252,6 +252,11 @@
 [data-ink="R"] { --ink: var(--pixels-ink-R); }
 [data-ink="S"] { --ink: var(--pixels-ink-S); }
 [data-ink="T"] { --ink: var(--pixels-ink-T); }
+[data-ink="x"] { --ink: var(--pixels-ink-x); }
+[data-ink="U"] { --ink: var(--pixels-ink-U); }
+[data-ink="V"] { --ink: var(--pixels-ink-V); }
+[data-ink="W"] { --ink: var(--pixels-ink-W); }
+[data-ink="X"] { --ink: var(--pixels-ink-X); }
 .pixels-game.is-done .pixels-cell[data-ink],
 .pixels-maker .pixels-cell[data-ink] { background: var(--ink); }
 
@@ -929,7 +934,7 @@ button:disabled > .pixels-ink-now { opacity: .35; }
    start, Undo and Redo in the middle, and Delete and Save at the end, Save
    last; then the step's key, the three tools and Clear, which is at the end
    away from Undo. Each key is its icon over its word, as the game's keys
-   are. The inks stand open under it, eleven across, so a colour is one tap; make.js moves them there, and the button
+   are. The inks stand open under it, twelve across, so a colour is one tap; make.js moves them there, and the button
    that opens them elsewhere is not shown. `--keys` is how many keys a group
    has, which is its share of its line. */
 .pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }

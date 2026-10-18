@@ -1869,8 +1869,11 @@ button.scheduler-row-head__num::after {
 
 /* THE INSTRUMENTS: one 16px row, two halves either side of a 1px rule,
    in the room of two rows: 8px above it and 8px below it to the drivers
-   row. Their shade starts 4px under the times and stands 2px off the bar's
-   sides and bottom, or on a one-day bar runs to them. */
+   row. Their shade is a band across the whole bar from 4px under the times
+   to its foot, whatever day the rows stand on: it reaches far past both
+   sides, and the bar, which clips what it holds, cuts it at its own sides
+   and its own lower corners, so the bar is two bands, the trip over the
+   bus. */
 .scheduler-road__card {
   --scheduler-road-tone: var(--scheduler-mark-success);
   position: relative;
@@ -1893,23 +1896,13 @@ button.scheduler-row-head__num::after {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: 4px -2px calc(-1 * var(--scheduler-row-h) - 2px);
-  border-radius: 4px;
+  inset: 4px -100vw calc(-1 * var(--scheduler-row-h) - 4px);
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
 /* The drivers row is painted over the shade, which reaches under it. */
 .scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
-.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -2px; }
-/* On a one-day bar the shade runs out to the bar's sides and foot, across
-   its 4px padding, its lower corners the bar's own and its top a straight
-   line across the bar; a longer bar's shade ends inside it, so it keeps its
-   2px off. */
-.scheduler-bar--road[data-span="1"] > .scheduler-road__card::before {
-  inset: 4px -4px calc(-1 * var(--scheduler-row-h) - 4px);
-  border-radius: 0 0 var(--scheduler-bar-radius, 0px) var(--scheduler-bar-radius, 0px);
-}
-.scheduler-week--no-drivers .scheduler-bar--road[data-span="1"] > .scheduler-road__card::before { inset-block-end: -4px; }
+.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -4px; }
 .scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .scheduler-road__rule { align-self: stretch; background: color-mix(in srgb, currentColor 18%, transparent); }
 .scheduler-road__half > .scheduler-road__say { display: none; }

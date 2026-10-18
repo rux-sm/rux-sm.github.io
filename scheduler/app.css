@@ -1503,6 +1503,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(+ .scheduler-card__none) { margin-block-end: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile:has(> .scheduler-card__none) { flex: none; }
+/* The quick update's box stands 12px under the title, and the first update's
+   words 16px under the box, as they stand under the title without it. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(+ .scheduler-card__quick) { margin-block-end: var(--rux-spacing-04); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__quick:has(+ .scheduler-card__update-list) { margin-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > .scheduler-card__action { margin-inline-end: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
   margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);

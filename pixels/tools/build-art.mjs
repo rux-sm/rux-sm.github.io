@@ -20,7 +20,8 @@
 // is enough. A FILE THAT IS THERE IS LEFT ALONE, because it may be a drawing.
 //
 // INTO THE GAME. The character's layers and the switch's two pictures are
-// written into app.js as the strings it keeps them in, an ink a square. The
+// written into app.js as the strings it keeps them in, an ink a square, and
+// each icon drawn as twelve rows with a 1 a square. The
 // map and the fog are saved over their PNGs in pixels/art/ without Keep
 // clear, and a rift's world as `rift-01.png` and on once anything is drawn
 // on it.
@@ -250,6 +251,27 @@ for (const [name, CONST] of SWITCH) {
   if (layer.w !== 9 || layer.h !== 9) fail(`${name}.aseprite must stay 9 by 9.`);
   const all = rows.filter(r => r.file === layer.file).reduce((a, r) => [...r.squares].map((s, i) => (s === '.' ? a[i] : s)).join(''), '.'.repeat(81));
   if (rowsOf(app.match(constAt(CONST))) !== all) { app = app.replace(constAt(CONST), `$1${written(all, 9)};`); changed.push(`${name} key`); }
+}
+// The icons: each tag's frame, every layer but the Guide, a 1 where drawn.
+const ICONS_AT = /(\n {2}const ICONS = \{)[\s\S]*?(\n {2}\};)/;
+if (!missing('icons.aseprite')) {
+  const drawnIcons = run(`local s = Sprite{ fromFile = ${lua(join(SOURCE, 'icons.aseprite'))} }
+for _, t in ipairs(s.tags) do
+  local out = {}
+  for i = 1, s.width * s.height do out[i] = '.' end
+  for _, l in ipairs(s.layers) do
+    local c = l.name ~= 'Guide' and l:cel(t.fromFrame.frameNumber)
+    if c then for px in c.image:pixels() do
+      local x, y = px.x + c.position.x, px.y + c.position.y
+      if px() > 0 and x >= 0 and y >= 0 and x < s.width and y < s.height then out[y * s.width + x + 1] = '1' end
+    end end
+  end
+  print(json.encode{ icon = t.name, squares = table.concat(out) })
+end
+s:close()`).split('\n').filter(l => l.startsWith('{')).map(l => JSON.parse(l)).filter(r => r.squares.includes('1'));
+  const block = drawnIcons.map(r => `\n    '${r.icon}': ${written(r.squares, 12)},`).join('');
+  const now = app.replace(ICONS_AT, `$1${block}$2`);
+  if (now !== app) { app = now; changed.push(`icons ${drawnIcons.map(r => r.icon).join(', ')}`); }
 }
 if (changed.length) writeFileSync(APP, app);
 console.log(changed.length ? `  app.js   ${changed.join(', ')}` : '  app.js   as it was');

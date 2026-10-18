@@ -84,6 +84,3 @@ None open.
       pixel-dark in Chrome on :8641, which needs the log-in.
 - [ ] Look at a signed-in Pixels page in the iPhone simulator at 3× for
       blur.
-- [ ] Put the icons rux draws in `pixels/art/source/icons.aseprite` into
-      Pixels in place of Carbon's, each drawn at 2px a pixel in the words'
-      colour, through `pixels/tools/build-art.mjs`.

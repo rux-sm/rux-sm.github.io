@@ -766,6 +766,9 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 /* THE ROW OF KEYS under them, Design's game keys: back, restart, hint,
    undo, redo and sound. Sound stays pressed while on, and shows the speaker
    crossed out, dimmed, while off. */
+/* An icon rux drew: twelve squares at 2px, in its words' colour. */
+.pixels-picture.pixels-icon { --px: 2px; flex: none; background: none; }
+.pixels-picture.pixels-icon > [data-on] { background: currentColor; }
 [aria-pressed="true"] > .pixels-sound-off,
 [aria-pressed="false"] > .pixels-sound-on { display: none; }
 /* THE HINT KEY'S FAIRY, where the other keys have an icon: the fairy, drawn

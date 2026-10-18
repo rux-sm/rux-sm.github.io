@@ -238,6 +238,21 @@
   const sword = () => drawn(SWORD, 'pixels-tool-art');
   const shield = () => drawn(SHIELD, 'pixels-tool-art');
 
+  /* THE ICONS rux draws, in art/source/icons.aseprite, twelve squares a
+     side with a 1 for each square drawn, which tools/build-art.mjs writes
+     here. Each takes the place of the Carbon icon a game key, a place or a
+     Pixelator key names, at 2px a square in its words' colour, as every
+     pixel in pixel-dark is 2px; an icon not drawn yet leaves Carbon's. */
+  const ICONS = {
+    'back': ['............', '.......11...', '......111...', '.....111....', '....111.....', '...111......', '...111......', '....111.....', '.....111....', '......111...', '.......11...', '............'].join(''),
+    'me': ['............', '....1111....', '...111111...', '...111111...', '...111111...', '...111111...', '....1111....', '.....11.....', '..11111111..', '.1111111111.', '.1111111111.', '............'].join(''),
+  };
+  const ICON_OF = { 'm-arrow_back': 'back', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me' };
+  document.querySelectorAll(':is(.game-key, .game-place, .pixels-bar-key) > svg').forEach(svg => {
+    const name = ICON_OF[svg.querySelector('use')?.getAttribute('href')?.slice(1)];
+    if (ICONS[name]) svg.replaceWith(drawn(ICONS[name], `pixels-icon ${svg.getAttribute('class') || ''}`.trim()));
+  });
+
   /* THE CHARACTER, fifteen squares a side, facing the enemy on its right,
      in seven layers drawn one over another: skin, eyes, head, body, hands
      and feet, shield and sword. Each layer is a picture of its own, so the

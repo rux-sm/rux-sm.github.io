@@ -149,53 +149,57 @@
      tools/build-placeholders.mjs reads both to mark them on a part's
      template, so a spot moves here and that is run again.
 
-     A rift on the map is its portal with its words under it: its rank and
-     name, and how many sprites are found. A locked one is dim and no link
-     and says how many open it, a cleared one is shut, and one not yet
-     opened pulses. `map` returns the map and where each rift is on it.
+     A rift on the map is its portal alone, a button named by its words:
+     its rank and name, and how many sprites are found. A locked one is dim
+     and its words say how many open it, a cleared one is shut, and one not
+     yet opened pulses. `map` returns the map, each rift's button and what
+     the panel says of each.
 
-     THE CHARACTER stands beside the player's rift, app.js's `hero` in what
-     the player has. A tap on another open rift hops it there in half a
-     second and then opens the rift; a tap while it hops opens the rift at
-     once, and so does every tap for a player who has asked for less
+     THE PANEL under the map says the chosen rift's words, with Play for an
+     open one, and starts on the player's own. THE CHARACTER stands beside
+     the player's rift, app.js's `hero` in what the player has. A tap on a
+     rift chooses it, and on an open one hops the character there in half a
+     second, or puts it there at once for a player who has asked for less
      movement. */
   const MAP = owner;
-  const SPOTS = [[23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11], [23, 43], [83, 11]];
-  const SIDE = [87, 51];
+  const SPOTS = [[17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8]];
+  const SIDE = [66, 38];
   const put = (el, [x, y]) => {
     el.style.setProperty('--x', x);
     el.style.setProperty('--y', y);
     return el;
   };
-  const sign = (name, note) => {
-    const text = document.createElement('span');
-    text.className = 'pixels-map-words';
-    text.append(words('pixels-map-name', name), words('pixels-map-note', note));
-    return text;
+  // What the panel says of a place on the map: its name, a note, and where
+  // its key goes and what the key says, or no key for a locked rift.
+  const button = (cls, says) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = cls;
+    b.setAttribute('aria-label', `${says.name}, ${says.note}`);
+    return b;
   };
   const place = (c, found) => {
     const all = c.puzzles.length, locked = c.short > 0, cleared = !locked && found === all, unopened = !locked && !found && !seen(c);
-    const a = document.createElement(locked ? 'div' : 'a');
-    a.className = `pixels-map-rift${locked ? ' is-locked' : ''}${unopened ? ' is-new' : ''}`;
-    if (!locked) a.href = where(c);
-    a.append(portal(c, cleared), sign(`${c.rank} · ${heading(c)}`,
-      locked ? `${c.need - c.short} of ${c.need} sprites to open` : cleared ? 'Rift cleared' : unopened ? `New · ${all} sprites` : `${found} of ${all} sprites`));
-    return put(a, SPOTS[c.number - 1]);
+    const says = { name: `${c.rank} · ${heading(c)}`, locked,
+      note: locked ? `${c.need - c.short} of ${c.need} sprites to open` : cleared ? 'Rift cleared' : unopened ? `New · ${all} sprites` : `${found} of ${all} sprites`,
+      href: locked ? null : where(c), key: 'Play' };
+    const b = button(`pixels-map-rift${locked ? ' is-locked' : ''}${unopened ? ' is-new' : ''}`, says);
+    b.append(portal(c, cleared));
+    return [put(b, SPOTS[c.number - 1]), says];
   };
   // The side place is drawn on the part's picture, so here it is only the
-  // square to press and its words.
+  // square to press.
   const sidePlace = (count, unopened) => {
-    const a = document.createElement('a');
-    a.className = 'pixels-map-rift';
-    a.href = '#pixels-more';
+    const says = { name: 'More rifts', note: `${unopened ? 'New · ' : ''}${count} rift${count === 1 ? '' : 's'}`, href: '#pixels-more', key: 'See them' };
+    const b = button('pixels-map-rift', says);
     const square = document.createElement('span');
     square.className = 'pixels-map-side';
-    a.append(square, sign('More rifts', `${unopened ? 'New · ' : ''}${count} rift${count === 1 ? '' : 's'}`));
-    return put(a, SIDE);
+    b.append(square);
+    return [put(b, SIDE), says];
   };
   const map = (course, more, results) => {
     const count = c => c.puzzles.filter(p => results.has(p.id)).length;
-    const el = document.createElement('nav'), places = new Map();
+    const el = document.createElement('nav'), places = new Map(), says = new Map();
     el.className = 'pixels-map';
     el.setAttribute('aria-label', 'Rifts');
     for (let n = 0; n * 2 < course.length; n++) {
@@ -203,16 +207,22 @@
       part.className = 'pixels-map-part';
       part.style.backgroundImage = `url(art/map-${n + 1}.png)`;
       course.slice(n * 2, n * 2 + 2).forEach(c => {
-        places.set(c, place(c, count(c)));
-        part.append(places.get(c));
+        const [b, words] = place(c, count(c));
+        places.set(c, b);
+        says.set(b, words);
+        part.append(b);
       });
-      if (!n && more.length) part.append(sidePlace(more.length, more.some(c => !count(c) && !seen(c))));
+      if (!n && more.length) {
+        const [b, words] = sidePlace(more.length, more.some(c => !count(c) && !seen(c)));
+        says.set(b, words);
+        part.append(b);
+      }
       el.append(part);
     }
     const fog = document.createElement('div');
     fog.className = 'pixels-map-fog';
     el.append(fog);
-    return { el, places };
+    return { el, places, says };
   };
 
   // Nothing is published. The owner is shown the way to where that is done.
@@ -323,7 +333,28 @@
     // every rift with no number, keeps its tile under the map.
     const course = cats.filter(c => c.number && c.number <= SPOTS.length), more = cats.filter(c => !course.includes(c));
     const land = course.length ? map(course, more, results) : null;
-    if (land) host.appendChild(land.el);
+    // The panel, which says the chosen place's words and leads into it.
+    const panel = document.createElement('div');
+    panel.className = 'pixels-map-panel';
+    panel.setAttribute('aria-live', 'polite');
+    const show = b => {
+      const s = land.says.get(b);
+      land.says.forEach((_, other) => other.removeAttribute('aria-current'));
+      b.setAttribute('aria-current', 'true');
+      const text = document.createElement('div');
+      text.className = 'pixels-map-panel-words';
+      text.append(words('pixels-map-name', s.name), words('pixels-map-note', s.note));
+      const parts = [text];
+      if (s.href) {
+        const go = document.createElement('a');
+        go.className = 'rux--btn rux--btn--primary';
+        go.href = s.href;
+        go.textContent = s.key;
+        parts.push(go);
+      }
+      panel.replaceChildren(...parts);
+    };
+    if (land) host.append(land.el, panel);
     if (more.length) {
       const h2 = document.createElement('h2');
       h2.className = 'rux--type-productive-heading-03';
@@ -336,6 +367,7 @@
     const mine = course.find(stood) || course.find(c => !c.short && c.puzzles.some(p => !results.has(p.id))) || course[0];
     if (!land) return;
     land.places.get(mine).scrollIntoView({ block: 'center' });
+    show(land.places.get(mine));
     // The character stands a square clear of its rift's portal, on its left.
     const who = hero(worn(me.found || 0), me.gear), beside = el => el.getBoundingClientRect().left - who.offsetWidth * 16 / 15;
     who.classList.add('pixels-map-hero');
@@ -343,23 +375,20 @@
     land.places.get(mine).parentElement.append(put(who, [x - 16, y]));
     let at = land.places.get(mine), moved = [0, 0], hopping = false;
     land.el.addEventListener('click', e => {
-      const to = e.target.closest('a.pixels-map-rift');
-      // The side place, the rift it stands by, a second tap and a tap that
-      // opens a new window are the browser's to follow.
-      if (!to || to === at || hopping || ![...land.places.values()].includes(to)) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      e.preventDefault();
-      hopping = true;
+      const to = e.target.closest('.pixels-map-rift');
+      if (!to || !land.says.has(to)) return;
+      show(to);
+      // The character goes only to an open rift of the course, and not
+      // while it is already on its way.
+      if (to === at || hopping || land.says.get(to).locked || ![...land.places.values()].includes(to)) return;
       const from = who.getBoundingClientRect(), there = to.getBoundingClientRect();
       const next = [moved[0] + beside(to) - from.left, moved[1] + there.top - from.top];
       const shift = ([dx, dy], up = 0) => ({ transform: `translate(${dx}px, ${dy - up}px)` });
+      const settle = () => { who.style.transform = shift(next).transform; [at, moved, hopping] = [to, next, false]; };
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { settle(); return; }
+      hopping = true;
       who.animate([shift(moved), shift([(moved[0] + next[0]) / 2, (moved[1] + next[1]) / 2], who.offsetHeight / 2), shift(next)], { duration: 500, easing: 'ease-in-out' })
-        .finished.then(() => {
-          // It stays where it landed, for a player who comes back to this page.
-          who.style.transform = shift(next).transform;
-          [at, moved, hopping] = [to, next, false];
-          location.href = to.href;
-        });
+        .finished.then(settle);
     });
   })();
 })();

@@ -405,56 +405,62 @@
 
 /* THE MAP, the course on the owner's front page: a picture in parts, one
    over another from the foot up, with the fog over the highest. A part is
-   120 squares by 80 and the fog 24 deep, and `--map-px` is a square: a
-   whole number of pixels, three on a phone and four at most, so the
-   pictures stay sharp. The map stands in the middle of the page's column,
-   and where the column is narrower than the map it runs out to the
+   90 squares by 60 and the fog 18 deep, and `--map-px` is a square: 4px,
+   double the font's pixel as every big picture is, or 3px on a screen
+   narrower than the map. The map stands in the middle of the page's
+   column, and where the column is narrower than the map it runs out to the
    screen's edges, which is what lets a phone 360px wide show it whole.
-   The fog's last 8 squares lie over the part below it. */
+   The fog's last 6 squares lie over the part below it. */
 .pixels-map {
-  --map-px: round(down, min(100vw / 120, 4px), 1px);
+  --map-px: round(down, min(100vw / 90, 4px), 1px);
   display: flex;
   flex-direction: column-reverse;
-  inline-size: calc(120 * var(--map-px));
-  margin-inline: calc((100% - 120 * var(--map-px)) / 2);
+  inline-size: calc(90 * var(--map-px));
+  margin-inline: calc((100% - 90 * var(--map-px)) / 2);
 }
-.pixels-map-part { position: relative; block-size: calc(80 * var(--map-px)); background-size: 100% 100%; image-rendering: pixelated; }
+.pixels-map-part { position: relative; block-size: calc(60 * var(--map-px)); background-size: 100% 100%; image-rendering: pixelated; }
 .pixels-map-fog {
   position: relative;
   z-index: 1;
-  block-size: calc(24 * var(--map-px));
-  margin-block-end: calc(-8 * var(--map-px));
+  block-size: calc(18 * var(--map-px));
+  margin-block-end: calc(-6 * var(--map-px));
   background: url(art/fog.png) 0 0 / 100% 100%;
   image-rendering: pixelated;
   pointer-events: none;
 }
-/* A RIFT ON THE MAP stands at its spot, `--x` and `--y` squares into its
-   part: its portal, fifteen of the map's squares a side, and its words on a
-   plate under it, in the page's own colours so they are read over any
-   picture. The plate is as wide as its words and stands in the middle of
-   the portal: the one column is the portal's width, so the plate runs out
-   of it by the same on both sides. */
+/* A RIFT ON THE MAP is its portal alone, fifteen of the map's squares a
+   side, at its spot, `--x` and `--y` squares into its part. It is a button
+   named by its words, which the panel under the map shows. */
 .pixels-map-rift {
   position: absolute;
   inset-inline-start: calc(var(--x) * var(--map-px));
   inset-block-start: calc(var(--y) * var(--map-px));
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  gap: var(--map-px);
+  display: block;
   inline-size: calc(15 * var(--map-px));
-  color: var(--rux-text-primary);
-  text-decoration: none;
+  block-size: calc(15 * var(--map-px));
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
 }
 .pixels-map-rift > .pixels-portal { --px: var(--map-px); }
-.pixels-map-side { inline-size: calc(15 * var(--map-px)); block-size: calc(15 * var(--map-px)); }
-.pixels-map-words { display: grid; justify-items: center; inline-size: max-content; max-inline-size: calc(56 * var(--map-px)); padding: .125rem .375rem; background: var(--rux-layer-01); text-align: center; }
-.pixels-map-name { font-size: 16px; font-weight: 600; line-height: 24px; }
-.pixels-map-note { color: var(--rux-text-secondary); font-size: 16px; line-height: 24px; font-variant-numeric: tabular-nums; }
-a.pixels-map-rift:hover > .pixels-map-words { background: var(--rux-layer-hover-01); }
 .pixels-map-rift:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-map-rift.is-locked > .pixels-portal { opacity: .3; }
-.pixels-map-rift.is-locked .pixels-map-name { color: var(--rux-text-secondary); }
+.pixels-map-side { display: block; inline-size: 100%; block-size: 100%; }
+/* THE PANEL under the map: the chosen rift's rank and name, how many
+   sprites are found, and Play, which opens it. */
+.pixels-map-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem 1rem;
+  margin-block-start: 1rem;
+  padding: 1rem;
+  background: var(--rux-layer-01);
+}
+.pixels-map-panel-words { display: grid; flex: 1 1 12rem; min-inline-size: 0; }
+.pixels-map-name { font-size: 16px; line-height: 24px; }
+.pixels-map-note { color: var(--rux-text-secondary); font-size: 16px; line-height: 24px; font-variant-numeric: tabular-nums; }
 /* THE CHARACTER ON THE MAP stands at a spot of its own, as a rift does, in
    the map's squares, over the picture and under a finger: a tap goes
    through it to what it stands on. */

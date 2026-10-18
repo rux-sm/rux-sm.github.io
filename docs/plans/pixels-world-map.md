@@ -28,24 +28,25 @@ The world map:
   tabs over it and the bar of places are as they are.
 - **The map is tall, and its path climbs.** Rift 1 is at the foot and rift 12
   at the top, because a phone is tall and a thumb scrolls up.
-- **It is drawn in six parts, one to a rank, each 120 squares wide and 80
+- **It is drawn in six parts, one to a rank, each 90 squares wide and 60
   tall with two rifts on it.** rux draws a part as its rifts are drawn, so
   the map never waits on a picture of the whole land.
 - **A part shows once one of its rifts is published,** on its placeholder if
   its picture is not drawn yet. Over the highest part shown lies one band of
   fog, and the map ends there, so with one rank published it is one screen.
-- **Each square is a whole number of screen pixels.** Three to a square is
-  360px, which a phone 360px wide or more shows whole, and a wide screen
-  takes four; a whole number keeps the squares sharp.
+- **A square is 4px, double the font's pixel,** as every big picture in
+  pixel-dark is, so the map is 360px wide and a phone 360px wide or more
+  shows it whole; a narrower one takes 3px.
 - **A part's two rifts stand at two spots its template fixes,** so the
   picture is drawn round them. A spot moves by changing its two numbers.
 - **A rift on the map is its portal, as `app.js` draws it now:** in its
   rank's colour while open, shut in grey once cleared, and dim while locked.
   It needs no drawing.
-- **Beside each portal are its words:** its rank and name and how many
-  sprites are found, or for a locked one how many sprites open it. The
-  portal and its words are one link, so a screen reader reads the map as a
-  list of its rifts.
+- **The map has no words on it.** A panel under the map says the chosen
+  rift's rank and name and how many sprites are found, or for a locked one
+  how many sprites open it, with Play for an open one. It starts on the
+  player's own rift. Each portal is a button named by those words, so a
+  screen reader reads the map as a list of its rifts.
 - **A rift not yet published, on a part that shows, is a still place on the
   path,** with no portal and no words, so a rift opens on the map on the day
   it is published.
@@ -78,8 +79,8 @@ Inside a rift:
   that is not out, and the page holds it, as it holds a rift's lock.
 - **A custom rift has no boss rule,** since it holds from three puzzles to
   fifteen.
-- **A rift's world is one picture at the head of its page, 120 squares wide
-  and 40 tall, with the grid under it.** Behind the grid it would not show,
+- **A rift's world is one picture at the head of its page, 90 squares wide
+  and 30 tall, with the grid under it,** at the map's 4px a square. Behind the grid it would not show,
   because a tile is not seen through. It has no spots to place, so it needs
   no template, and a rift without one has none.
 
@@ -138,10 +139,10 @@ The character:
   character and only the piece's squares take paint.
 - **The player's picture stays what stands beside their name.** The
   character is who walks the map and stands on Me.
-- **A tap on an open rift hops the character there, in half a second, and
-  then the rift opens.** A second tap opens it at once. There is no
-  steering, and with motion turned down in the phone's settings there is no
-  hop.
+- **A tap on a rift hops the character there, in half a second, and the
+  panel tells of it;** Play in the panel opens it. There is no steering, and
+  with motion turned down in the phone's settings the character is simply
+  there.
 - **The hop is one standing drawing moved straight from rift to rift.**
   Walking frames would need the base and every piece of armour drawn again
   for each frame, and a player's own drawing fits only one; and a walk
@@ -149,7 +150,8 @@ The character:
 - **A player's character is seen by that player alone, on the map and on
   Me,** since a store asks for a way to report what one player draws and
   another sees.
-- **A tap on a locked rift says what opens it and goes nowhere.**
+- **A tap on a locked rift says in the panel what opens it,** and the
+  character stays where it is.
 - **It stands on the puzzle's page too, in the strip over the board, facing
   the enemy,** which is a shadow there, since its picture is the answer.
 - **Its moves are the player's:** a drag of fills is a slash, one fill a

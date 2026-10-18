@@ -12,8 +12,8 @@
 // `sword.aseprite` and `shield.aseprite` are the switch's two halves, 9 a
 // side. `map-1.aseprite` to `map-6.aseprite` and `fog.aseprite` start as the
 // placeholders build-placeholders.mjs writes, with a layer over each, Keep
-// clear, that marks where the game draws a portal and its words.
-// `rift-01.aseprite` to `rift-12.aseprite` are a rift's world, 120 by 40,
+// clear, that marks where the game draws a portal. `rift-01.aseprite` to
+// `rift-12.aseprite` are a rift's world, 90 by 30,
 // blank. `icons.aseprite` is the game's icons, 12 a side, a frame to each,
 // named by a tag, with a Guide layer that marks the middle 10 by 10 where
 // the drawing goes; the game draws an icon in the words' colour, so one ink
@@ -41,7 +41,7 @@ const PIXELS = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ART = join(PIXELS, 'art'), SOURCE = join(ART, 'source');
 const APP = join(PIXELS, 'app.js');
 const ASEPRITE = process.env.ASEPRITE || '/Applications/Aseprite.app/Contents/MacOS/aseprite';
-const MAPS = 6, RIFTS = 12, PORTAL = 15, WORDS = [56, 12];
+const MAPS = 6, RIFTS = 12, PORTAL = 15;
 
 const fail = text => { console.error(`  ${text}`); process.exit(1); };
 if (!existsSync(ASEPRITE)) fail(`Aseprite is not at ${ASEPRITE}; set ASEPRITE to where it is.`);
@@ -130,10 +130,10 @@ const fromPng = (file, png, marks) => `do
   spr:close()
 end`;
 
-// Keep clear on a part: a pink square where each portal stands and a box
-// where its words lie, dashed for the side place on the first part.
+// Keep clear on a part: a pink square where each portal stands, dashed for
+// the side place on the first part.
 const keepClear = n => {
-  const w = 120, h = 80, at = new Array(w * h).fill('.');
+  const w = 90, h = 60, at = new Array(w * h).fill('.');
   const dot = (x, y) => { if (x >= 0 && y >= 0 && x < w && y < h) at[y * w + x] = '8'; };
   const frame = (x, y, fw, fh, dashed) => {
     for (let i = 0; i < fw; i++) if (!dashed || i % 2 === 0) { dot(x + i, y); dot(x + i, y + fh - 1); }
@@ -142,7 +142,7 @@ const keepClear = n => {
   const puzzles = readFileSync(join(PIXELS, 'puzzles.js'), 'utf8');
   const read = name => JSON.parse((puzzles.match(new RegExp(`const ${name} = (\\[[^;]*\\]);`)) || fail(`puzzles.js has no ${name}`))[1]);
   const SPOTS = read('SPOTS'), SIDE = read('SIDE');
-  const stand = ([x, y], dashed) => { frame(x, y, PORTAL, PORTAL, dashed); frame(x + 7 - WORDS[0] / 2, y + PORTAL + 1, WORDS[0], WORDS[1], dashed); };
+  const stand = ([x, y], dashed) => frame(x, y, PORTAL, PORTAL, dashed);
   stand(SPOTS[n * 2]);
   stand(SPOTS[n * 2 + 1]);
   if (n === 0) stand(SIDE, true);
@@ -198,7 +198,7 @@ if (process.argv[2] === 'templates') {
   spr:saveAs(${lua(file)})
   spr:close()
 end`);
-  for (let n = 1; n <= RIFTS; n++) job(`rift-${pad(n)}.aseprite`, file => sprite(file, 120, 40, [['world', null]], 10));
+  for (let n = 1; n <= RIFTS; n++) job(`rift-${pad(n)}.aseprite`, file => sprite(file, 90, 30, [['world', null]], 10));
   if (jobs.length) run(jobs.join('\n'));
   process.exit(0);
 }

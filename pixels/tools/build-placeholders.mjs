@@ -15,13 +15,13 @@
 // these pictures: its SPOTS and its SIDE. So a spot is moved there, the
 // part's placeholder is deleted, and this is run again.
 //
-// A PART is 120 squares wide and 80 tall: plain ground, a path three squares
+// A PART is 90 squares wide and 60 tall: plain ground, a path three squares
 // wide from the middle of its foot to the middle of its top through its two
-// rifts, a square marking where each portal stands, and under it a box
-// marking where the rift's words lie, so a drawing keeps both clear. The first part also
-// marks the side place, where the rifts outside the course are reached.
+// rifts, and a square marking where each portal stands, so a drawing keeps
+// it clear. The first part also marks the side place, where the rifts
+// outside the course are reached.
 //
-// THE FOG is 120 wide and 24 tall. Its last 8 rows thin out to nothing,
+// THE FOG is 90 wide and 18 tall. Its last 6 rows thin out to nothing,
 // because they lie over the top of the part below.
 //
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -31,7 +31,7 @@ import { fileURLToPath } from 'node:url';
 
 const PIXELS = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ART = join(PIXELS, 'art');
-const W = 120, H = 80, FOG = 24, MELT = 8, PORTAL = 15, WORDS = [56, 12];
+const W = 90, H = 60, FOG = 18, MELT = 6, PORTAL = 15;
 
 const source = readFileSync(join(PIXELS, 'puzzles.js'), 'utf8');
 const read = name => {
@@ -80,14 +80,13 @@ const part = n => {
   const c = canvas(W, H), ground = GROUND[n];
   fill(c, 0, 0, W, H, ground);
   const [a, b] = [SPOTS[n * 2], SPOTS[n * 2 + 1]].map(([x, y]) => [x + 7, y + 7]);
-  // The path turns square corners, so no box of words lies on it.
+  // The path turns square corners.
   const road = (x1, y1, x2, y2) => fill(c, Math.min(x1, x2) - 1, Math.min(y1, y2) - 1, Math.abs(x2 - x1) + 3, Math.abs(y2 - y1) + 3, PATH);
-  [[60, H - 1, 60, a[1]], [60, a[1], a[0], a[1]], [a[0], a[1], a[0], b[1]], [a[0], b[1], b[0], b[1]], [b[0], b[1], b[0], 5], [b[0], 5, 60, 5], [60, 5, 60, 0]]
+  [[W / 2, H - 1, W / 2, a[1]], [W / 2, a[1], a[0], a[1]], [a[0], a[1], a[0], b[1]], [a[0], b[1], b[0], b[1]], [b[0], b[1], b[0], 4], [b[0], 4, W / 2, 4], [W / 2, 4, W / 2, 0]]
     .forEach(leg => road(...leg));
   const stand = ([x, y], solid) => {
     fill(c, x, y, PORTAL, PORTAL, shade(ground, .78));
     frame(c, x, y, PORTAL, PORTAL, shade(ground, .5), !solid);
-    frame(c, x + 7 - WORDS[0] / 2, y + PORTAL + 1, WORDS[0], WORDS[1], shade(ground, 1.35), true);
   };
   stand(SPOTS[n * 2], true);
   stand(SPOTS[n * 2 + 1], true);

@@ -12,9 +12,9 @@ sixty inks, so a colour from anywhere else cannot be painted.
 | :--- | :--- | :--- |
 | `character.aseprite` | 15 × 15 | the character, a layer to each part |
 | `sword.aseprite`, `shield.aseprite` | 9 × 9 | the two halves of the fill and X switch |
-| `map-1.aseprite` to `map-6.aseprite` | 120 × 80 | a part of the map, one to a rank, `map-1` at the foot |
-| `fog.aseprite` | 120 × 24 | the band over the highest part that shows |
-| `rift-01.aseprite` to `rift-12.aseprite` | 120 × 40 | a rift's world, over its puzzles |
+| `map-1.aseprite` to `map-6.aseprite` | 90 × 60 | a part of the map, one to a rank, `map-1` at the foot |
+| `fog.aseprite` | 90 × 18 | the band over the highest part that shows |
+| `rift-01.aseprite` to `rift-12.aseprite` | 90 × 30 | a rift's world, over its puzzles |
 | `icons.aseprite` | 12 × 12 | the game's icons, a frame to each, named by its tag |
 
 An enemy is drawn in the Pixelator, in its frame on Manage, not here.
@@ -52,15 +52,14 @@ and sword.
 ## The map
 
 - Draw on the **ground** layer. **Keep clear** lies over it: a pink square
-  where the game draws a portal, and a box under it where the rift's name
-  and count go. Keep the square empty and the box calm. Keep clear is left
+  where the game draws a portal. Keep the square empty. Keep clear is left
   out of the picture the game shows.
 - The path enters at the foot and leaves at the top in the middle, so one
   part joins the next.
 - On `map-1`, draw the side place in the **dashed square**. It leads to the
   rifts outside the course.
-- The fog's last 8 rows lie over the top of the part below, so they thin out
-  to nothing, and a part's top 8 rows are drawn knowing fog covers them.
+- The fog's last 6 rows lie over the top of the part below, so they thin out
+  to nothing, and a part's top 6 rows are drawn knowing fog covers them.
 
 ## The icons
 

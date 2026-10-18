@@ -1320,11 +1320,11 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-map { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--rux-spacing-03); }
 .scheduler-card__live-map-box { block-size: 12rem; background: var(--rux-layer-01); }
 .scheduler-card__live-map-box.leaflet-container { font: inherit; }
-/* The two links are ghost buttons in the link colour, their padding taken
-   back at the start so the first one's words line up with the card's. */
-.scheduler-card__live-links { display: flex; flex-wrap: wrap; margin-inline-start: calc(-1 * var(--rux-spacing-05)); }
-.scheduler-card__live-link.rux--btn--ghost { color: var(--rux-link-primary); }
-.scheduler-card__live-link.rux--btn--ghost:hover { color: var(--rux-link-primary-hover); }
+/* The two links are secondary buttons, the outlined one in rux-dark as the
+   editor's Cancel trip is, side by side in equal halves of the tile, each
+   word centred. */
+.scheduler-card__live-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: var(--rux-spacing-03); }
+.scheduler-card__live-link.rux--btn { max-inline-size: none; inline-size: 100%; justify-content: center; padding-inline: var(--rux-spacing-03); }
 .scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
 .scheduler-card__live-driver + .scheduler-card__live-driver { margin-block-start: var(--rux-spacing-02); }

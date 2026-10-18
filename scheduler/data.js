@@ -14626,12 +14626,12 @@
     const holder = el('div', 'scheduler-card__live-map-box');
     const links = el('div', 'scheduler-card__live-links');
     const link = (words, href, away) => {
-      const a = el('a', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
+      const a = el('a', 'rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm scheduler-card__live-link', words);
       a.href = href;
       if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       return a;
     };
-    // Short words, so the two sit side by side as Carbon's ghost buttons, in the link colour.
+    // Two secondary buttons sharing the tile's width, outlined in this app's own theme.
     if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
     links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
     const foot = el('div', 'scheduler-card__live-foot');

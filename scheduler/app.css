@@ -1478,8 +1478,10 @@ button.scheduler-row-head__num::after {
    Updates each a tile 16px from the card's sides and top, a step apart, the
    Updates filling the rest of the card to 16px off its foot and scrolling
    inside. A tile holds its title and words 16px in; its rows run out to its
-   sides, so a row's light fills the tile's width, and the last update's 32px
-   row ends 16px off the tile's foot. A theme that holds the card 12px from
+   sides, so a row's light fills the tile's width. An update is Carbon's 40px
+   row with a quiet hairline between it and the next, since the tile has the
+   room, the first one's words 16px under the title and the last one ending
+   16px off the tile's foot. A theme that holds the card 12px from
    its edge gives the 4px more in theme.css. The parts are named four times
    to outrank each part's padding that the card and the themes set for rows. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); }
@@ -1492,10 +1494,13 @@ button.scheduler-row-head__num::after {
   border-block-start: 0;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile:has(> .scheduler-card__update-list) {
-  padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+  padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
   margin-block-end: calc(var(--rux-spacing-03) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
+  margin-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
   margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
@@ -1505,7 +1510,11 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list.scheduler-card__update-list { margin-inline: calc(-1 * var(--rux-spacing-05)); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update[data-update-id].scheduler-card__update { padding-inline: var(--rux-spacing-05); border-radius: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update[data-update-id].scheduler-card__update {
+  padding: calc((var(--rux-layout-size-height-md) - 1.125rem) / 2) var(--rux-spacing-05);
+  border-radius: 0;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update + .scheduler-card__update { border-block-start: 1px solid var(--rux-border-subtle-01); }
 /* The age keeps its cell at the end of the first line, where Add's word
    above ends. */
 .scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; justify-self: end; }

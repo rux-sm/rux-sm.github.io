@@ -792,6 +792,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
+  /* The clear space the bar gives up at its start, given back inside it, so
+     its words start where every other bar's in that day do. */
+  --scheduler-pad-start: calc(var(--rux-spacing-02) + var(--scheduler-gap-clear));
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }

@@ -1300,13 +1300,17 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-why { grid-column: 2; color: var(--card-ink); }
 /* THE LIVE CARD IS A STACK OF TILES, as the Prep panel is: each warning,
    the map with where the bus is, the stops, the drivers and the engine
-   lamp, a step apart and a step in from the card's sides, so a stop's name
-   keeps as much of its line as it can. */
-.scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); margin: 0; padding: var(--rux-spacing-03); }
+   lamp, a step apart. As the Prep panel's and the trip editor's tiles,
+   each is 16px from the card's sides and holds its words 16px in; the tabs
+   are 16px over the first, and the panel scrolls under a 16px foot, so the
+   edge is the one 16px all round. A theme that already holds the card 12px
+   from its edge gives the 4px more in theme.css. */
+.scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); margin: 0; padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:has(> .scheduler-card--live) { margin-block-end: var(--rux-spacing-05); }
 /* Its tab panel adds no padding of its own, Carbon's 16px, so the tiles
    stand 8px in, in line with the tabs over them. */
 .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card--live) { padding: 0; }
-.scheduler-card--live > .scheduler-card__live-tile { flex: none; min-block-size: 0; min-inline-size: 0; margin: 0; padding: var(--rux-spacing-04); }
+.scheduler-card--live > .scheduler-card__live-tile { flex: none; min-block-size: 0; min-inline-size: 0; margin: 0; padding: var(--rux-spacing-05); }
 .scheduler-card.scheduler-card--live > .scheduler-card__live-tile > .scheduler-card__title { margin-block-end: 0; }
 /* One column held to the tile, so the map's attribution, which does not
    wrap, cannot push the map and the line under it past the tile's padding. */

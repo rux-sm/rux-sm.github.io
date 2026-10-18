@@ -165,45 +165,47 @@
     return parts.join(' · ');
   }
 
-  /* A trip that is back, in the update row's words: when this bus got back
-     to the yard, in amber when more than ten minutes past its planned
-     yard-back, or with no time the miles driven once they are in, then Paid,
-     the balance due or No price, a dimmed dot between: two facts, which fit the
-     narrowest bar. The tooltip says every one in a sentence. */
+  /* A trip that is back, in the update row's words: when this bus reached
+     its pickup, Spot and the time, in amber when after the Spot, as the
+     on-time pay counts it, then when it got back to the yard, Back and the
+     time, in amber when more than ten minutes past its planned yard-back, a
+     dimmed dot between: two facts, which fit the narrowest bar. With neither
+     time yet, the miles driven once they are in. The money is the pill's to
+     say, Paid or Complete; the tooltip says every fact in a sentence, the
+     balance with them. */
   const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
   const LATE_BACK_MS = 10 * 60e3;
+  const paidInFull = trip => { const { price, paid, remaining } = window.SchedulerBilling.of(trip); return price > 0 && paid > 0 && remaining <= 0; };
   function completeEl(trip, assign, leg) {
+    const Road = window.SchedulerRoad;
     const { price, paid, remaining } = window.SchedulerBilling.of(trip);
     const item = el('span', 'scheduler-bar__complete');
     const parts = [];
     const said = ['Trip complete'];
-    const backAt = assign?.actual_yard_return_at ? Date.parse(assign.actual_yard_return_at) : NaN;
-    if (Number.isFinite(backAt)) {
-      const clock = hhmm(window.SchedulerRoad.clockOf(backAt), true);
-      const planned = leg ? window.SchedulerWeek.backAt(leg) : null;
-      const late = planned != null && backAt - planned > LATE_BACK_MS;
-      const back = el('span', `scheduler-bar__complete-back${late ? ' scheduler-bar__complete-back--late' : ''}`);
-      back.append('Back ', clockEl(clock));
-      parts.push(back);
-      said.push(`back at the yard ${clock}${late ? `, ${Math.round((backAt - planned) / 60e3)} minutes late` : ''}`);
-    }
+    const time = (label, iso, cls, lateBy, words) => {
+      const at = iso ? Date.parse(iso) : NaN;
+      if (!Number.isFinite(at)) return;
+      const clock = hhmm(Road.clockOf(at), true);
+      const late = lateBy(at);
+      const part = el('span', `scheduler-bar__complete-time${late ? ' scheduler-bar__complete-time--late' : ''} ${cls}`);
+      part.append(`${label} `, clockEl(clock));
+      parts.push(part);
+      said.push(`${words} ${clock}${late ? `, ${late} minutes late` : ''}`);
+    };
+    const spot = leg ? Road.stopsOf(trip, leg.leg)[0]?.due ?? null : null;
+    time('Spot', assign?.pickup_at, 'scheduler-bar__complete-spot', at => Road.pickupLate(spot, at) || 0, 'at the pickup');
+    const planned = leg ? window.SchedulerWeek.backAt(leg) : null;
+    time('Back', assign?.actual_yard_return_at, 'scheduler-bar__complete-back',
+      at => (planned != null && at - planned > LATE_BACK_MS ? Math.round((at - planned) / 60e3) : 0), 'back at the yard');
     const miles = Number(trip.actual_miles) || 0;
     if (miles > 0) {
       if (!parts.length) parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
       said.push(`${Math.round(miles).toLocaleString('en-US')} miles`);
     }
-    if (price > 0 && remaining > 0) {
-      parts.push(el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
-      said.push(`${money(remaining)} of ${money(price)} still due`);
-    } else if (price > 0 && paid > 0) {
-      parts.push(el('span', 'scheduler-bar__complete-paid', 'Paid'));
-      said.push('paid in full');
-    } else if (price <= 0) {
-      // A trip run with no price is billing still to do, so it says so.
-      parts.push(el('span', 'scheduler-bar__complete-due', 'No price'));
-      said.push('no price yet');
-    }
-    parts.forEach((p, i) => item.append(...(i ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
+    if (price > 0 && remaining > 0) said.push(`${money(remaining)} of ${money(price)} still due`);
+    else if (price > 0 && paid > 0) said.push('paid in full');
+    else if (price <= 0) said.push('no price yet');
+    parts.forEach((p, k) => item.append(...(k ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
     item.title = said.join(', ');
     return item;
   }
@@ -451,10 +453,11 @@
       ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
     /* A trip that is back says so in the same place a bus out says Live: a
        pill, Complete in the bar's own ink inside a quiet outline of it, as
-       neutral as the trip now is. A back trip raises no alert, so the two
+       neutral as the trip now is, or Paid inside a green one once it is paid
+       in full. A back trip raises no alert, so the two
        never stand together. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
-    const doneMark = isDone ? el('span', 'scheduler-bar__done', 'Complete') : null;
+    const doneMark = isDone ? el('span', `scheduler-bar__done${paidInFull(trip) ? ' scheduler-bar__done--paid' : ''}`, paidInFull(trip) ? 'Paid' : 'Complete') : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));

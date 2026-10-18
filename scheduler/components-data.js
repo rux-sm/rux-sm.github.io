@@ -83,6 +83,7 @@
         id: `a${++ids}`, leg: b.leg ?? 'outbound', position: b.position ?? i, bus_id: b.bus ?? null,
         vehicle_type: b.type ?? null, needs: b.needs ?? {}, active_roles: b.roles,
         actual_yard_return_at: b.backAt ? new Date(window.SchedulerWeek.officeInstant(...b.backAt)).toISOString() : null,
+        pickup_at: b.spotAt ? new Date(window.SchedulerWeek.officeInstant(...b.spotAt)).toISOString() : null,
         trip_drivers: (b.crew ?? []).map(([driver_id, role = 'driver', , more]) => ({ driver_id, role, pay: 180, ...more })),
       }));
       t.trip_assignments.forEach((a, i) => {
@@ -155,7 +156,7 @@
         { name: 'Either side of the week', note: 'A trip from last week runs off the start, one into next week off the end.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
-        { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: a Complete pill at its corner, and its update row when its bus got back to the yard, amber when late, or else its miles once they are in, then Paid or what is still due.', days: 3,
+        { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: a Complete pill at its corner, or Paid once paid in full, and its update row when its bus reached the pickup and got back to the yard, each amber when late, or else its miles once they are in.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
             buses: [{ bus: 'b102', crew: [['d2', 'driver', 'confirmed', { pay: null }]] }] }))),
             row('103', bar(trip({ customer: 'Harbor Tours', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850, actual_miles: 412,
@@ -163,7 +164,7 @@
             row('104', bar(trip({ customer: 'Mesa Robotics Club', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
               trip_payments: [{ amount: 610, date: day(-9) }], buses: [{ bus: 'b104', backAt: [day(-1), '17:40'], crew: [['d6', 'driver', 'confirmed']] }] }))),
             row('105', bar(trip({ customer: 'Coastal Youth Choir', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
-              trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, buses: [{ bus: 'b105', backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
+              trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
         { name: 'Update ages', note: "While a trip has anything open, the newest update takes its age's colour; a settled trip's stays in ink.", days: 3, rows: aged },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,

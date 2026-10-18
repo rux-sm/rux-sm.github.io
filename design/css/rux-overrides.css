@@ -2881,7 +2881,8 @@
    - It has two sizes, as a pixel-art game's words do, so a letter's pixel
      is one size on the page: 16px, where each of its pixels is 2 CSS
      pixels, for every style Carbon sets at 16px or less, and 32px, exactly
-     double, for every heading above that, on lines of 24px and 40px. Both
+     double, for every heading above that, on lines of 24px and 40px,
+     written 1.5 and 1.25 because Carbon multiplies a line by the size. Both
      are whole multiples of the 8-pixel grid, so a pixel is a whole number
      of screen pixels on every screen.
    - Edges are chunky: a 2px black outline with its corner pixel cut, drawn
@@ -2896,77 +2897,77 @@
   -webkit-font-smoothing: none;
   text-rendering: optimizeSpeed;
   --rux-body-01-font-size: 16px;
-  --rux-body-01-line-height: 24px;
+  --rux-body-01-line-height: 1.5;
   --rux-body-02-font-size: 16px;
-  --rux-body-02-line-height: 24px;
+  --rux-body-02-line-height: 1.5;
   --rux-body-compact-01-font-size: 16px;
-  --rux-body-compact-01-line-height: 24px;
+  --rux-body-compact-01-line-height: 1.5;
   --rux-body-compact-02-font-size: 16px;
-  --rux-body-compact-02-line-height: 24px;
+  --rux-body-compact-02-line-height: 1.5;
   --rux-body-long-01-font-size: 16px;
-  --rux-body-long-01-line-height: 24px;
+  --rux-body-long-01-line-height: 1.5;
   --rux-body-long-02-font-size: 16px;
-  --rux-body-long-02-line-height: 24px;
+  --rux-body-long-02-line-height: 1.5;
   --rux-body-short-01-font-size: 16px;
-  --rux-body-short-01-line-height: 24px;
+  --rux-body-short-01-line-height: 1.5;
   --rux-body-short-02-font-size: 16px;
-  --rux-body-short-02-line-height: 24px;
+  --rux-body-short-02-line-height: 1.5;
   --rux-caption-01-font-size: 16px;
-  --rux-caption-01-line-height: 24px;
+  --rux-caption-01-line-height: 1.5;
   --rux-caption-02-font-size: 16px;
-  --rux-caption-02-line-height: 24px;
+  --rux-caption-02-line-height: 1.5;
   --rux-code-01-font-size: 16px;
-  --rux-code-01-line-height: 24px;
+  --rux-code-01-line-height: 1.5;
   --rux-code-02-font-size: 16px;
-  --rux-code-02-line-height: 24px;
+  --rux-code-02-line-height: 1.5;
   --rux-expressive-heading-01-font-size: 16px;
-  --rux-expressive-heading-01-line-height: 24px;
+  --rux-expressive-heading-01-line-height: 1.5;
   --rux-expressive-heading-02-font-size: 16px;
-  --rux-expressive-heading-02-line-height: 24px;
+  --rux-expressive-heading-02-line-height: 1.5;
   --rux-heading-01-font-size: 16px;
-  --rux-heading-01-line-height: 24px;
+  --rux-heading-01-line-height: 1.5;
   --rux-heading-02-font-size: 16px;
-  --rux-heading-02-line-height: 24px;
+  --rux-heading-02-line-height: 1.5;
   --rux-heading-03-font-size: 32px;
-  --rux-heading-03-line-height: 40px;
+  --rux-heading-03-line-height: 1.25;
   --rux-heading-04-font-size: 32px;
-  --rux-heading-04-line-height: 40px;
+  --rux-heading-04-line-height: 1.25;
   --rux-heading-05-font-size: 32px;
-  --rux-heading-05-line-height: 40px;
+  --rux-heading-05-line-height: 1.25;
   --rux-heading-06-font-size: 32px;
-  --rux-heading-06-line-height: 40px;
+  --rux-heading-06-line-height: 1.25;
   --rux-heading-07-font-size: 32px;
-  --rux-heading-07-line-height: 40px;
+  --rux-heading-07-line-height: 1.25;
   --rux-heading-compact-01-font-size: 16px;
-  --rux-heading-compact-01-line-height: 24px;
+  --rux-heading-compact-01-line-height: 1.5;
   --rux-heading-compact-02-font-size: 16px;
-  --rux-heading-compact-02-line-height: 24px;
+  --rux-heading-compact-02-line-height: 1.5;
   --rux-helper-text-01-font-size: 16px;
-  --rux-helper-text-01-line-height: 24px;
+  --rux-helper-text-01-line-height: 1.5;
   --rux-helper-text-02-font-size: 16px;
-  --rux-helper-text-02-line-height: 24px;
+  --rux-helper-text-02-line-height: 1.5;
   --rux-label-01-font-size: 16px;
-  --rux-label-01-line-height: 24px;
+  --rux-label-01-line-height: 1.5;
   --rux-label-02-font-size: 16px;
-  --rux-label-02-line-height: 24px;
+  --rux-label-02-line-height: 1.5;
   --rux-legal-01-font-size: 16px;
-  --rux-legal-01-line-height: 24px;
+  --rux-legal-01-line-height: 1.5;
   --rux-legal-02-font-size: 16px;
-  --rux-legal-02-line-height: 24px;
+  --rux-legal-02-line-height: 1.5;
   --rux-productive-heading-01-font-size: 16px;
-  --rux-productive-heading-01-line-height: 24px;
+  --rux-productive-heading-01-line-height: 1.5;
   --rux-productive-heading-02-font-size: 16px;
-  --rux-productive-heading-02-line-height: 24px;
+  --rux-productive-heading-02-line-height: 1.5;
   --rux-productive-heading-03-font-size: 32px;
-  --rux-productive-heading-03-line-height: 40px;
+  --rux-productive-heading-03-line-height: 1.25;
   --rux-productive-heading-04-font-size: 32px;
-  --rux-productive-heading-04-line-height: 40px;
+  --rux-productive-heading-04-line-height: 1.25;
   --rux-productive-heading-05-font-size: 32px;
-  --rux-productive-heading-05-line-height: 40px;
+  --rux-productive-heading-05-line-height: 1.25;
   --rux-productive-heading-06-font-size: 32px;
-  --rux-productive-heading-06-line-height: 40px;
+  --rux-productive-heading-06-line-height: 1.25;
   --rux-productive-heading-07-font-size: 32px;
-  --rux-productive-heading-07-line-height: 40px;
+  --rux-productive-heading-07-line-height: 1.25;
   --rux-body-01-font-weight: 400;
   --rux-body-02-font-weight: 400;
   --rux-body-compact-01-font-weight: 400;
@@ -3107,6 +3108,12 @@
 [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):active {
   transform: translateY(3px);
   box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45);
+}
+/* An outlined button has no fill in Carbon, and with an edge and a lip that
+   reads as a hole, so it takes the secondary button's face under its blue
+   words until it is hovered or pressed, when Carbon fills it. */
+[data-theme="pixel-dark"] .rux--btn--tertiary:not(:hover, :active, :disabled) {
+  background-color: var(--rux-button-secondary);
 }
 /* A tag is a small raised plate, with no lip. */
 [data-theme="pixel-dark"] .rux--tag {

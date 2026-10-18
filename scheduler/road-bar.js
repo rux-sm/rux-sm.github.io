@@ -7,8 +7,9 @@
    first day on a longer bar.
    - A dot at the destination row's end, before the alert count, in the
      bus's colour, so a scan down the board finds the buses out.
-   - The times, in the contact row's place: out, a dimmed arrow and back,
-     a problem's words in its colour instead, Late to spot among them, the worst of live-trip.js's warnings or No signal.
+   - The times, in the contact row's place: out and back either end of a
+     track filled to now; a problem's words in its colour instead, Late to
+     spot among them, the worst of live-trip.js's warnings or No signal.
    - The instruments, in the time and update rows' place: one row, the
      speed with five rising bars in the bus's colour, a 1px rule, then the
      pump, a short tank bar and its percent; the second row's room is air
@@ -277,8 +278,9 @@
     dot.setAttribute('aria-label', words);
   }
 
-  /* THE TIMES ROW, in the contact row's place: when the leg left the yard,
-     a dimmed arrow, and when it is due back. A problem takes the row
+  /* THE TIMES ROW, in the contact row's place: when the leg left the yard
+     and when it is due back, at either end of a track filled as far as the
+     time between them has gone, with a dot at now. A problem takes the row
      instead, its words in its colour. */
   function times(bar, bus, worst) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
@@ -289,11 +291,19 @@
     }
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
-    const when = el('span', 'scheduler-road__when');
-    if (bar.dataset.depart) when.append(clockEl(bar.dataset.depart));
-    if (bar.dataset.depart && bar.dataset.back) when.appendChild(el('span', 'scheduler-road__arrow', '→'));
-    if (bar.dataset.back) when.append(clockEl(bar.dataset.back));
-    row.replaceChildren(when);
+    const clock = at => { const w = el('span', 'scheduler-road__when'); w.append(clockEl(at)); return w; };
+    const parts = [];
+    if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
+    if (bar.dataset.depart && bar.dataset.back) {
+      const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
+      const back = Number(bar.dataset.roadTo) - Road.MARGIN;
+      const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
+      const track = el('span', 'scheduler-road__track');
+      track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
+      parts.push(track);
+    }
+    if (bar.dataset.back) parts.push(clock(bar.dataset.back));
+    row.replaceChildren(...parts);
   }
 
   /* THE INSTRUMENTS in place of the time and update rows, one 16px row in

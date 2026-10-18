@@ -15723,21 +15723,14 @@
     presenceDraw();
   }
 
-  /* Drawn after every render too, because `render` replaces every bar. A bar
-     too narrow to lie a face over is left alone: the compact board shrinks a
-     trip to a two-letter code, and a face there would be the whole bar. */
-  /* The square is Carbon's md avatar, 32px, which on a six-row bar is about a
-     third of its height -- the size rux drew. A narrow bar takes Carbon's
-     smaller avatar rather than none: opening the editor squeezes the board, and
-     one fixed size meant the squares vanished from the whole week the moment a
-     trip was opened beside it. Nothing is drawn only where even the small one
-     would take half the bar, which leaves the rule to say it alone. */
-  // Full class names, never built from parts, so the check can see each one.
-  const PRESENCE_SIZES = [
-    { name: 'md', px: 32, cls: 'rux--user-avatar--md' },
-    { name: 'sm', px: 24, cls: 'rux--user-avatar--sm' },
-  ];
-  const PRESENCE_FACES = 3;
+  /* Drawn after every render too, because `render` replaces every bar. Each
+     person is a 16px face at the end of the destination row, the alert
+     count's size, before the live dot and the count, so the corner marks
+     stay in view; past PRESENCE_FACES the rest are a count. A bar too narrow
+     for a face beside its name, as on the compact board, shows none and
+     leaves the rule to say an open one alone. */
+  const PRESENCE_FACES = 2;
+  const PRESENCE_MIN_WIDTH = 64;
   function presenceDraw() {
     presenceNote();
     if (!gridEl) return;
@@ -15748,28 +15741,23 @@
       const here = presenceOthers.get(bar.dataset.tripId);
       if (!here?.length) continue;
       /* The rule is for a trip somebody has OPEN, whatever the bar's width: the
-         state nothing turns on says it with its square alone, and this one is
+         state nothing turns on says it with its face alone, and this one is
          worth seeing from across the week and on a bar too narrow to hold a
-         square. */
+         face. */
       if (here.some(who => who.state === 'open')) bar.classList.add('scheduler-bar--watched');
-      const width = bar.getBoundingClientRect().width;
-      // The largest square that takes no more than half the bar, and as many
-      // of them as that half holds.
-      const fit = PRESENCE_SIZES.find(size => width >= size.px * 2);
-      if (!fit) continue;
-      const room = Math.max(1, Math.floor(width / 2 / fit.px));
+      const row = bar.querySelector(':scope > .scheduler-bar__dest');
+      if (!row || bar.getBoundingClientRect().width < PRESENCE_MIN_WIDTH) continue;
       const box = el('span', 'scheduler-presence');
       box.setAttribute('aria-hidden', 'true');
-      const shown = Math.min(here.length, PRESENCE_FACES, room);
+      const shown = Math.min(here.length, PRESENCE_FACES);
       for (const who of here.slice(0, shown)) {
-        const face = el('span', `rux--user-avatar ${fit.cls} scheduler-presence__face${who.state === 'open' ? ' scheduler-presence__face--open' : ''}`);
+        const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-presence__face');
         face.title = who.name ? `${who.name} has this trip ${who.state === 'open' ? 'open' : 'selected'}` : '';
-        window.Rux?.account?.drawAvatar?.(face, who, fit.name);
+        window.Rux?.account?.drawAvatar?.(face, who, 'sm');
         box.appendChild(face);
       }
-      // Anyone past the last square is a count, not another square.
       if (here.length > shown) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - shown}`));
-      bar.appendChild(box);
+      row.insertBefore(box, row.querySelector(':scope > :is(.scheduler-road__dot, .scheduler-bar__msg)'));
     }
   }
 

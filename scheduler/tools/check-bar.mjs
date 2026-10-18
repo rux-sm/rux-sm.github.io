@@ -215,7 +215,9 @@ const lit5 = b => card(b).querySelectorAll('.scheduler-road__bar--on').length;
 expect('the times and the instruments sit before the drivers row, after the rows they hide',
   lit('At highway speed').children.map(c => c.classes().find(x => /__(dest|client|contact|time|update|drivers)$|road__(times|card)$/.test(x))).filter(Boolean),
   ['scheduler-bar__dest', 'scheduler-bar__client', 'scheduler-bar__contact', 'scheduler-bar__time', 'scheduler-bar__update', 'scheduler-road__times', 'scheduler-road__card', 'scheduler-bar__drivers']);
-expect('the times: out, an arrow and back', [!!text(row(lit('At highway speed')), '.scheduler-road__when'), text(row(lit('At highway speed')), '.scheduler-road__arrow')], [true, '→']);
+expect('the times: out and back either end of a track filled as far as the trip has gone',
+  [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
+  [2, true]);
 expect('moving: the speed, five bars with one lit for every 16 mph, green, a rule, the tank',
   [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
     lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],

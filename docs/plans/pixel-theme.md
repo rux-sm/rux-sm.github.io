@@ -43,8 +43,8 @@ The pixel look:
 - **Focus is a 2px ring of the accent,** square, with no glow.
 - **Movement steps.** A change happens in two or three steps, not a smooth
   fade, and with motion turned down it happens at once.
-- **Running text stays readable.** A pixel font is for what is short, and
-  longer text keeps a plain font, if the question below is answered so.
+- **The pixel font is used everywhere,** running text too, so it is picked
+  for how easily it reads at body size as much as for its look.
 
 Sharp, not blurry:
 
@@ -55,17 +55,20 @@ Sharp, not blurry:
   pixels.
 - **The font is one drawn on a pixel grid,** with an open licence so it can
   be kept in `design/assets/fonts/` beside Plex and Geist.
+- **Dark only.** A light version waits until the dark one is in use.
+
+Pixels:
+
+- **Pixels is locked to `pixel-dark`.** Every Pixels page wears it whatever
+  theme the player keeps elsewhere, and Theme leaves Me's list.
+- **Pixels never writes the saved theme.** It is kept with the account and
+  shared by every app, so Pixels sets the theme on its own pages only.
 - **Pictures already draw sharp,** with `image-rendering: pixelated`; the
   theme does not change them.
 
 ## Questions
 
-1. Should the pixel font be used for everything, or only for headings,
-   buttons, tabs and labels, with a plain font for longer text? The second
-   is easier to read; the first looks more like a game.
-2. Should Pixels open in this theme for every player, with the theme list
-   still able to change it, or only for someone who picks it?
-3. Dark only for now, or a light version too?
+None open.
 
 ## Tasks
 
@@ -84,4 +87,5 @@ Sharp, not blurry:
 - [ ] Measure that every text and control colour meets contrast, and that
       the font and edges land on whole pixels at 1×, 2× and 3×, in Chrome
       and in the iPhone simulator.
-- [ ] Wear it in Pixels, by the answer to question 2.
+- [ ] Lock Pixels to it: every page sets `pixel-dark`, Me's list loses
+      Theme, and the saved theme is left as it is.

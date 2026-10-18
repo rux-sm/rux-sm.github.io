@@ -20,9 +20,9 @@ and the office can set the real day beside the planned one.
 - **Read the way `pickup_at` is read,** by `scheduler/samsara-miles/handler.ts`
   across the leg's window, the planned yard-out to yard-back with its two
   hours' margin, against the yard point in the `yard-location-v1` settings row:
-  out is the last GPS point within a quarter mile of the yard before the bus
-  leaves it for good, and back is the first point of the last stay within a
-  quarter mile of it after the leg's last stop.
+  the depart is the last GPS point within a quarter mile of the yard before the
+  bus leaves it for good, and the return the first point of the last stay
+  within a quarter mile of it after the leg's last stop.
 - **A bus parked away from the yard has neither,** and a leg still out has no
   return, so nothing guesses.
 - **Fetched with the miles,** by the Billing tab's Get from Samsara, which
@@ -45,8 +45,8 @@ and the office can set the real day beside the planned one.
 ## Tasks
 
 - [ ] Show rux the migration adding the two columns, and apply it on his yes.
-- [ ] Teach `samsara-miles` to find each bus's actual yard depart and return, with
-  cases in `scheduler/tools/check-samsara-miles.mjs` from sample GPS tracks.
+- [ ] Teach `samsara-miles` to find each bus's actual yard depart and return,
+  with cases in `scheduler/tools/check-samsara-miles.mjs` from sample tracks.
 - [ ] Deploy `samsara-miles` with the Supabase CLI.
 - [ ] Save the two times from Get from Samsara on the Billing tab, as
   `pickup_at` is saved.

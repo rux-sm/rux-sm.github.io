@@ -1754,6 +1754,9 @@ button.scheduler-row-head__num::after {
    or a problem's words. */
 .scheduler-bar__row.scheduler-road__times { justify-content: flex-start; gap: var(--rux-spacing-02); }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
+/* Running late back: the expected return, or the time past the plan, amber. */
+.scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
+.scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }
 /* The track between out and back: 2px, filled as far as the trip has gone,
    with a 6px dot at now, all in the row's ink so it reads as the times do. */
 .scheduler-road__track {

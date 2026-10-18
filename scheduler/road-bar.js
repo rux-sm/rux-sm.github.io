@@ -195,7 +195,8 @@
     const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
     const key = bus ? JSON.stringify([bus.engine, bus.engine_at && ago(bus.engine_at), bus.mph, bus.heading, bus.place,
       bus.fuel, bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
-      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase]) : '';
+      next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase,
+      overBy(bar, Date.now())]) : '';
     if ((bar.dataset.road ?? '') === key) return;
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);
@@ -228,7 +229,7 @@
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
     liveDot(bar, bus, worst);
-    times(bar, bus, worst);
+    times(bar, bus, next, worst);
     card(bar, bus, next, said, worst, live.at);
   }
 
@@ -278,11 +279,26 @@
     dot.setAttribute('aria-label', words);
   }
 
+  // When the leg is due back at the yard, as an instant.
+  const plannedBack = bar => Number(bar.dataset.roadTo) - Road.MARGIN;
+  // Whole minutes past the planned return, or 0.
+  const overBy = (bar, now) => (bar.dataset.roadTo ? Math.max(0, Math.floor((now - plannedBack(bar)) / 60e3)) : 0);
+  // "+45m" under a hundred minutes, then "+2h", so it fits the narrowest bar.
+  const overWords = min => (min < 100 ? `+${min}m` : `+${Math.floor(min / 60)}h`);
+  /* When the bus is now expected back: Geoapify's drive to the yard while
+     the yard is its next stop, if that is more than LATE_MIN past the plan;
+     else null. */
+  const expectedBack = (bar, next) => (next?.stop?.type === 'return' && !next.at && next.arrival != null
+    && next.arrival - plannedBack(bar) > Road.LATE_MIN * 60e3 ? next.arrival : null);
+
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, at either end of a track filled as far as the
-     time between them has gone, with a dot at now. A problem takes the row
+     time between them has gone, with a dot at now. A bus running late back
+     says so in amber: when it is now expected, in place of the planned
+     return, while it is heading for the yard, or else, once the planned
+     return has passed, how long it is over. A problem takes the row
      instead, its words in its colour. */
-  function times(bar, bus, worst) {
+  function times(bar, bus, next, worst) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
     if (!bus) { row?.remove(); return; }
     if (!row) {
@@ -291,20 +307,30 @@
     }
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
-    const clock = at => { const w = el('span', 'scheduler-road__when'); w.append(clockEl(at)); return w; };
+    const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
     const parts = [];
     if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
     if (bar.dataset.depart && bar.dataset.back) {
       const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
-      const back = Number(bar.dataset.roadTo) - Road.MARGIN;
+      const back = plannedBack(bar);
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
       const track = el('span', 'scheduler-road__track');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
       parts.push(track);
     }
-    if (bar.dataset.back) parts.push(clock(bar.dataset.back));
+    const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
+    const over = overBy(bar, Date.now());
+    if (expected != null) {
+      const when = clock(hhmm(Road.clockOf(expected), true), 'scheduler-road__when scheduler-road__when--late');
+      when.title = bar.dataset.back ? `Expected back ${hhmm(Road.clockOf(expected), true)}, planned ${bar.dataset.back}` : '';
+      parts.push(when);
+    } else if (bar.dataset.back) {
+      parts.push(clock(bar.dataset.back));
+      if (over > 0) parts.push(el('span', 'scheduler-road__over', overWords(over)));
+    }
     row.replaceChildren(...parts);
   }
+
 
   /* THE INSTRUMENTS in place of the time and update rows, one 16px row in
      two whole-pixel halves either side of a 1px rule, with the room the
@@ -354,7 +380,9 @@
         : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
       bus.fuel != null ? `Fuel ${bus.fuel}%` : null,
       next?.at ? `At ${next.stop.name}` : arrives,
-      bar.dataset.depart || bar.dataset.back ? [bar.dataset.depart && `Out ${bar.dataset.depart}`, bar.dataset.back && `back ${bar.dataset.back}`].filter(Boolean).join(' · ') : null,
+      bar.dataset.depart || bar.dataset.back ? [bar.dataset.depart && `Out ${bar.dataset.depart}`, bar.dataset.back && `back ${bar.dataset.back}`,
+        bar.dataset.roadTo && expectedBack(bar, next) != null ? `now expected back ${hhmm(Road.clockOf(expectedBack(bar, next)), true)}`
+          : bar.dataset.roadTo && overBy(bar, Date.now()) > 0 ? `${overBy(bar, Date.now())} min past it` : null].filter(Boolean).join(' · ') : null,
       ...bus.drivers.map(d => `${d.name}: ${words(d)}`),
       at ? `Samsara, ${new Date(at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : null,
     ].filter(Boolean).join('\n');

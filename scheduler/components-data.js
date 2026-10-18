@@ -269,8 +269,9 @@
     });
     function live(customer, o = {}) {
       const out = o.yardOut ?? now - 3 * HOUR;
+      const back = o.back ?? now + 5 * HOUR;
       const t = trip({
-        customer, start_date: dateAt(out), end_date: dateAt(now + 5 * HOUR), depart: clockAt(out), back: clockAt(now + 5 * HOUR),
+        customer, start_date: dateAt(out), end_date: dateAt(back), depart: clockAt(out), back: clockAt(back),
         buses: [{ bus: 'b101', crew: o.crew ?? [['d1', 'driver', 'confirmed']] }],
       });
       // Each sample its own bus to Samsara, since the brake lights compare a bus with its last answer.
@@ -293,6 +294,9 @@
           span: 1, crew: [['d2', 'driver', 'confirmed'], ['d3', 'co-driver', 'confirmed']],
           bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR })] },
           next: toStop({ arrival: now + 2 * HOUR + 22 * MIN }) })),
+        one('Late back to the yard', 'Heading for the yard and due there more than ten minutes after the plan: when it is now expected, in amber, in place of the planned return.', live('Harbor Tours', {
+          span: 1, back: now + 20 * MIN, next: (() => { const stops = liveStops(); return { stops, where: { reached: 1, at: false, next: 2 }, stop: stops[2], at: false, arrival: now + 65 * MIN, late: 0 }; })() })),
+        one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
         one('Idling', 'Engine running and the bus still, at a stop: Idle and how long, beside the bars, all empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
         one('Resting', 'A driver in the sleeper and none driving: purple bars when the bus moves on.', live('Riverbend Seniors', {

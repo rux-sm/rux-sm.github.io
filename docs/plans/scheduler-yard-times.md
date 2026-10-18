@@ -34,14 +34,16 @@ and the office can set the real day beside the planned one.
 - **Shown on a trip that is back,** in its bar's update row ahead of the miles
   and the money, "Back 7:52p", and on the editor's Route summary as Actual
   yard depart and Actual yard return beside the planned times.
+- **A late return is amber,** "Back 9:10p" when it is past the planned
+  yard-back by more than ten minutes, as the live bar's lateness is.
+- **Trips since October 1 are filled in,** read first and written on rux's
+  yes, by the same nightly path run over those days.
 - **The database change is its own step,** SQL shown to rux and applied on his
   yes before the code that reads it is pushed.
 
 ## Questions
 
-- Should the trips already back be filled in, and from what date?
-- Should the bar say a late return in amber, "Back 9:10p" when it is past the
-  plan by more than ten minutes, or the time alone?
+- None open.
 
 ## Tasks
 
@@ -53,5 +55,7 @@ and the office can set the real day beside the planned one.
   `pickup_at` is saved.
 - [ ] Show rux the nightly schedule that calls `samsara-miles` for the day's
   returned legs and saves their times, and apply it on his yes.
+- [ ] Fill in the legs back since October 1, read-only first, written on his
+  yes.
 - [ ] Show "Back" in a finished bar's update row and both times on the Route
   summary, with the database inventory and the screen inventory updated.

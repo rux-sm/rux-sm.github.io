@@ -17,8 +17,10 @@ sixty inks, so a colour from anywhere else cannot be painted.
 | `fog.aseprite` | 90 × 18 | the band over the highest part that shows |
 | `rift-01.aseprite` to `rift-12.aseprite` | 90 × 30 | a rift's world, over its puzzles |
 | `icons.aseprite` | 12 × 12 | the game's icons, a frame to each, named by its tag |
+| `puzzles.aseprite` | a row to each rift | every puzzle of the course, a cell to each |
 
-An enemy is drawn in the Pixelator, in its frame on Manage, not here.
+An enemy is drawn on the puzzle sheet, below, or one at a time in the
+Pixelator, in its frame on Manage.
 
 ## Draw
 
@@ -82,6 +84,30 @@ one pixel is a tenth of the icon.
 
 A rift's file starts blank. It reaches the game once anything is drawn on
 it, and a rift left blank has no world.
+
+## The puzzle sheet
+
+`puzzles.aseprite` holds the whole course, a row to each rift with its
+number and name over it, fifteen cells at the rift's size, and the boss's
+cell framed in red. Hover a cell to see its enemy's name.
+
+- Draw the answer on the **squares** layer, in any ink: every square with
+  ink is one to fill.
+- Paint the finished picture on the **picture** layer, every square of the
+  cell, or leave it empty for a puzzle that ends in black and white.
+- Keep inside a cell's frame. The **Guide** layer is never read.
+
+To put the sheet in the game, ask for an import. It reads the course from
+the database into a file, then runs:
+
+    node pixels/tools/check-puzzle-sheet.mjs <course.json> --sql <file>
+
+It lists every cell that differs from the database: those that pass, with
+how hard they are, and those held back, with why. Nothing is written until
+you say yes; then the one statement it wrote saves them over their
+placeholders, switched on or off as they were. A cell emptied on the sheet
+never erases a drawn puzzle. `build-puzzle-sheet.mjs` makes the sheet
+again from the database, if the file is ever lost.
 
 ## Move a spot
 

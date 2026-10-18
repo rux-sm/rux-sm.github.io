@@ -10,7 +10,8 @@ sixty inks, so a colour from anywhere else cannot be painted.
 
 | File | Squares | What it is |
 | :--- | :--- | :--- |
-| `character.aseprite` | 15 × 15 | the character, a layer to each part |
+| `character.aseprite` | 24 × 32 | the character, a layer to each part, for fights and Me |
+| `character-map.aseprite` | 15 × 15 | its small version, for the map, the same layers |
 | `sword.aseprite`, `shield.aseprite` | 9 × 9 | the two halves of the fill and X switch |
 | `map-1.aseprite` to `map-6.aseprite` | 90 × 60 | a part of the map, one to a rank, `map-1` at the foot |
 | `fog.aseprite` | 90 × 18 | the band over the highest part that shows |
@@ -30,7 +31,8 @@ An enemy is drawn in the Pixelator, in its frame on Manage, not here.
 
 5. Look at it on :8641, then commit and push.
 
-View › Show › Grid draws a line every 5 squares on the character, every 3
+View › Show › Grid draws a line every 8 squares on the character, 5 on its
+map version, every 3
 on the switch, and every 10 on the big pictures.
 
 ## The character
@@ -48,6 +50,12 @@ and sword.
   it back to yours.
 - **The sword and the shield move by themselves** in a fight, so keep each to
   its own layer.
+- **Draw it facing right,** toward the enemy it fights.
+- **Draw the big one first, then the map version** from it: the same
+  colours and pieces, cut down to 15 squares. A player draws on the big
+  one, and the map version wears each piece in your colours.
+- **The game draws the map version for now.** The big one goes in once it
+  is drawn and the game can show it.
 
 ## The map
 

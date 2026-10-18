@@ -7,8 +7,10 @@
 //   node pixels/tools/build-art.mjs templates   writes the Aseprite files that are not there
 //   node pixels/tools/build-art.mjs             puts every Aseprite file into the game
 //
-// THE TEMPLATES. `character.aseprite` is the character, 15 squares a side, a
-// layer to each of its parts, starting as the placeholder app.js draws.
+// THE TEMPLATES. `character.aseprite` is the character, 24 squares wide and
+// 32 tall, a layer to each of its parts, blank. `character-map.aseprite` is
+// its map version, 15 squares a side, the same layers, starting as the
+// placeholder app.js draws.
 // `sword.aseprite` and `shield.aseprite` are the switch's two halves, 9 a
 // side. `map-1.aseprite` to `map-6.aseprite` and `fog.aseprite` start as the
 // placeholders build-placeholders.mjs writes, with a layer over each, Keep
@@ -19,7 +21,7 @@
 // the drawing goes; the game draws an icon in the words' colour, so one ink
 // is enough. A FILE THAT IS THERE IS LEFT ALONE, because it may be a drawing.
 //
-// INTO THE GAME. The character's layers and the switch's two pictures are
+// INTO THE GAME. The map version's layers and the switch's two pictures are
 // written into app.js as the strings it keeps them in, an ink a square, and
 // each icon drawn as twelve rows with a 1 a square. The
 // map and the fog are saved over their PNGs in pixels/art/ without Keep
@@ -165,7 +167,8 @@ if (process.argv[2] === 'templates') {
     jobs.push(script(file));
     console.log(`  written  art/source/${name}`);
   };
-  job('character.aseprite', file => sprite(file, 15, 15, PARTS.map(([name, key]) => {
+  job('character.aseprite', file => sprite(file, 24, 32, PARTS.map(([name]) => [name, null]), 8));
+  job('character-map.aseprite', file => sprite(file, 15, 15, PARTS.map(([name, key]) => {
     const found = app.match(heroAt(key));
     return [name, found ? rowsOf(found) : null];
   }), 5));
@@ -228,15 +231,15 @@ const read = files => {
   return rows;
 };
 const missing = name => !existsSync(join(SOURCE, name));
-if (missing('character.aseprite')) fail('art/source/ has no templates; run this with templates first.');
+if (missing('character-map.aseprite')) fail('art/source/ has no templates; run this with templates first.');
 
 // The character and the switch, into app.js.
 let changed = [];
-const rows = read([join(SOURCE, 'character.aseprite'), ...SWITCH.map(([name]) => join(SOURCE, `${name}.aseprite`))]);
+const rows = read([join(SOURCE, 'character-map.aseprite'), ...SWITCH.map(([name]) => join(SOURCE, `${name}.aseprite`))]);
 for (const [name, key] of PARTS) {
-  const layer = rows.find(r => r.file.endsWith('character.aseprite') && r.layer === name);
-  if (!layer) fail(`character.aseprite has no layer named ${name}.`);
-  if (layer.w !== 15 || layer.h !== 15) fail('character.aseprite must stay 15 by 15.');
+  const layer = rows.find(r => r.file.endsWith('character-map.aseprite') && r.layer === name);
+  if (!layer) fail(`character-map.aseprite has no layer named ${name}.`);
+  if (layer.w !== 15 || layer.h !== 15) fail('character-map.aseprite must stay 15 by 15.');
   const now = `$1${written(layer.squares, 15)},`;
   if (heroAt(key).test(app)) {
     if (rowsOf(app.match(heroAt(key))) !== layer.squares) { app = app.replace(heroAt(key), now); changed.push(name); }

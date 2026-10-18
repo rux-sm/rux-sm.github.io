@@ -109,11 +109,15 @@ Playing:
 
 The character:
 
-- **Every player starts as one base character, which rux draws.** It is 15
-  squares a side, as a player's picture and a portal are, so the Pixelator's
-  board draws it and it stands on the map at a rift's size.
-- **It has three pieces of armour: a helmet, body armour and a shield.** At
-  15 squares a side those are the pieces with room to draw on.
+- **Every player starts as one base character, which rux draws, at two
+  sizes.** The character is 24 squares wide and 32 tall, with room for a
+  face, hair and armour worth looking at; it fights over the board at 2px a
+  square and stands on Me at 4px. The map version is 15 squares a side, a
+  portal's size, as a game's walking sprite is smaller than its fighting
+  one, and it stands on the map at the map's 4px.
+- **It has three pieces of armour: a helmet, body armour and a shield,**
+  drawn at both sizes. A player draws on the big one, and the map version
+  wears each piece in the colours rux drew it.
 - **It is seven layers, one item to each:** skin and eyes are colours
   picked; the head, the body and the shield are drawn on; hands and feet
   follow the body; and the sword is fixed.
@@ -136,7 +140,7 @@ The character:
   as their gear, so they come back on any phone with their name and PIN.
 - **Me picks the skin's and the eyes' colour, from eight inks each, and
   leads to the Pixelator to draw on a piece,** where the board is the whole
-  character and only the piece's squares take paint.
+  big character, 24 by 32, and only the piece's squares take paint.
 - **The player's picture stays what stands beside their name.** The
   character is who walks the map and stands on Me.
 - **A tap on a rift hops the character there, in half a second, and the
@@ -162,8 +166,9 @@ The character:
 
 The pictures:
 
-- **rux draws the six parts of the map, the base character, its three pieces
-  of armour, the sword and the shield of the switch, nine squares a side,
+- **rux draws the six parts of the map, the base character and its three
+  pieces of armour at both sizes, the sword and the shield of the switch,
+  nine squares a side,
   and a world for a rift where one is wanted.** They are pixel
   art, drawn one pixel to a square and painted from the game's own
   sixty inks, so they sit with the sprites.
@@ -197,6 +202,11 @@ None open.
 
 ## Tasks
 
+- [ ] Draw the big character, 24 by 32, in the fight strip and on Me, and
+      the map version on the map, each from its own Aseprite file.
+- [ ] Let a player's drawing on a piece be the big character's: the
+      Pixelator's armour board at 24 by 32, and `pixels_set_gear` taking
+      768 squares where it takes 225, in a migration shown to rux first.
 - [ ] Say the story's line at the door, which `pixels/data.js` draws.
 - [ ] Step 4, the rest of the armour: the body armour, and drawing on the
       shield, each at what unlocks it.

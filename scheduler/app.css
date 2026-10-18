@@ -797,21 +797,24 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
-/* The cut edge sinks under the week's edge, a 12px shade fading into the bar.
-   It is drawn over the bar's fill and under its rows, so nothing moves and
-   no word is covered, and it leaves the bar's shadow to the selection ring. */
+/* The cut edge sinks under the week's edge: a 2px line of the shade at the
+   edge, then a 20px fade into the bar, which still shows on the brightest
+   bars. It is drawn over the bar's fill and under its rows, so nothing moves
+   and no word is covered, and it leaves the bar's shadow to the selection
+   ring. */
 .scheduler-bar:is(.scheduler-bar--from-prev, .scheduler-bar--to-next)::before {
+  --scheduler-run-fade: color-mix(in srgb, var(--scheduler-run-shade) 50%, transparent);
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to right, var(--scheduler-run-shade), transparent 12px) no-repeat,
-    linear-gradient(to left, var(--scheduler-run-shade), transparent 12px) no-repeat;
+  background: linear-gradient(to right, var(--scheduler-run-shade) 0 2px, var(--scheduler-run-fade) 6px, transparent 20px) no-repeat,
+    linear-gradient(to left, var(--scheduler-run-shade) 0 2px, var(--scheduler-run-fade) 6px, transparent 20px) no-repeat;
   background-size: var(--scheduler-run-start, 0px) 100%, var(--scheduler-run-end, 0px) 100%;
   background-position: left, right;
 }
-.scheduler-bar--from-prev { --scheduler-run-start: 12px; }
-.scheduler-bar--to-next { --scheduler-run-end: 12px; }
+.scheduler-bar--from-prev { --scheduler-run-start: 20px; }
+.scheduler-bar--to-next { --scheduler-run-end: 20px; }
 
 /* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill at the time row's
    end, in the Complete pill's shape: the arrow and the word in the bar's own

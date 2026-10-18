@@ -165,6 +165,25 @@
     return parts.join(' · ');
   }
 
+  /* A trip that is back, in the update row's words: Complete, then Paid or
+     the balance due, and the same in a sentence for the tooltip. */
+  const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
+  function completeEl(trip) {
+    const { price, paid, remaining } = window.SchedulerBilling.of(trip);
+    const item = el('span', 'scheduler-bar__complete');
+    item.append(el('span', 'scheduler-bar__complete-word', 'Complete'));
+    let said = 'Trip complete';
+    if (price > 0 && remaining > 0) {
+      item.append(el('span', 'scheduler-bar__complete-sep', '·'), el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
+      said += `, ${money(remaining)} of ${money(price)} still due`;
+    } else if (price > 0 && paid > 0) {
+      item.append(el('span', 'scheduler-bar__complete-sep', '·'), el('span', 'scheduler-bar__complete-paid', 'Paid'));
+      said += ', paid in full';
+    }
+    item.title = said;
+    return item;
+  }
+
   /* One crew member on the drivers row: a mark in the status's tone, then the
      short name. A driver or co-driver's mark is their status's own shape, the
      one the editor shows, and a relief driver's the two opposite arrows, so a
@@ -460,11 +479,17 @@
        to do, nobody to call on the day, or a confirmation, PO, itinerary or
        balance not in. A settled trip's update stays in the bar's ink, since
        its age asks for nothing. A trip with none leaves the row empty, so
-       every bar on the board is one height. */
+       every bar on the board is one height.
+       ONCE THE TRIP IS BACK the row says so instead, since the last update
+       is no longer news and the money is all that is left open: Complete in
+       green, then Paid, or what is still due in amber; a trip with no price
+       says Complete alone. The update stays on the tooltip and the card. */
     const latest = updatesOf(trip)[0] ?? null;
-    const news = el('span', null, latest?.body || '');
-    let tone = '';
-    if (latest) {
+    const done = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    const news = done ? completeEl(trip) : el('span', null, latest?.body || '');
+    let tone = done ? ' scheduler-bar__update--complete' : '';
+    if (latest && done) news.title = `${news.title}\n${latest.body}\n${updateStamp(latest)}`;
+    else if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
       const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
           || (!dayOfContact(trip) && !trip.contact_not_needed));

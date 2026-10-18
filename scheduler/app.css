@@ -860,6 +860,13 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__update--new { color: var(--scheduler-age-new); }
 .scheduler-bar__update--week { color: var(--scheduler-age-week); }
 .scheduler-bar__update--old { color: var(--scheduler-age-old); }
+/* A trip that is back: Complete and Paid in the green an update's first two
+   days take, what is still due in its amber, a dimmed dot between. */
+.scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
+.scheduler-bar__complete-word, .scheduler-bar__complete-paid { color: var(--scheduler-age-new); }
+.scheduler-bar__complete-sep { opacity: .55; }
+.scheduler-bar__complete-due { color: var(--scheduler-age-week); white-space: nowrap; }
+.scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its update keeps the bar's own. */
 .scheduler-bar--amber .scheduler-bar__update { color: inherit; }

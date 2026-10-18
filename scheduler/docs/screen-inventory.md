@@ -231,10 +231,11 @@ buttons: what a phone's docked sheet offers as slots is on the bar's right-click
 raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
 theme as well as a light one. It is one size, 22rem by 33rem, full or nearly empty, with or without
 tabs, shortened only to the board's room, and centred on the trip; what does not fit scrolls inside
-it, and No updates on an empty card stands in its middle. Floating, the card is tiles, as the live card and the Prep panel are: the Needs and the Updates
-each a tile 16px from the card's sides and top and 8px apart, the Updates filling the card to 16px
-off its foot and scrolling inside, each tile holding its words 16px in with its rows lit across its
-whole width; docked on a phone they are the sheet's own bands. Each warning is a 32px row in 14px regular type, and each one-line update a 40px row with a quiet
+it, and No updates on an empty card stands in its middle. Floating, each part is its title over a tile of its rows, as the trip editor's sections are: the
+Needs and the Updates 16px from the card's sides and top, 16px under their titles and 16px apart,
+the updates' tile scrolling inside to 16px off the card's foot, its rows lit across its whole width
+with their words 16px in, and Add outlined where the theme outlines its buttons; docked on a phone
+they are the sheet's own bands. Each warning is a 32px row in 14px regular type, and each one-line update a 40px row with a quiet
 hairline between it and the next, its words 16px under the Updates title, or a 32px row docked; a warning's leave day drops under its words where both do not
 fit one line. The card opens with its warnings under a title, Needs, in Carbon's 14px heading with
 the bar's own alert disc beside it, its count in the same colour, so the disc on the bar and the list

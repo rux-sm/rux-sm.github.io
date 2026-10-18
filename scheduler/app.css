@@ -1219,11 +1219,14 @@ button.scheduler-row-head__num::after {
 .scheduler-card__needs-list {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+/* Docked, where it is not a tile, the box is drawn here. */
+.scheduler-card__needs-list:not(.scheduler-card__tile) {
   margin-block-start: var(--rux-spacing-03);
   padding-block: var(--rux-spacing-02);
   border-radius: var(--scheduler-shortcut-radius, 0);
   background: var(--rux-layer-03);
-  overflow: hidden;
 }
 .scheduler-card__needs-list > .scheduler-card__row {
   display: flex;
@@ -1474,42 +1477,30 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* THE FLOATING TRIP CARD IS TILES, as the live card is: the Needs and the
-   Updates each a tile 16px from the card's sides and top, a step apart, the
-   Updates filling the rest of the card to 16px off its foot and scrolling
-   inside. A tile holds its title and words 16px in; its rows run out to its
-   sides, so a row's light fills the tile's width. An update is Carbon's 40px
-   row with a quiet hairline between it and the next, since the tile has the
-   room, the first one's words 16px under the title and the last one ending
-   16px off the tile's foot. A theme that holds the card 12px from
-   its edge gives the 4px more in theme.css. The parts are named four times
-   to outrank each part's padding that the card and the themes set for rows. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); }
+/* THE FLOATING TRIP CARD'S PARTS ARE A TITLE OVER A TILE, as the trip
+   editor's sections are: the Needs' rows in one tile and the updates in
+   another, 16px from the card's sides and top, 16px under their title and
+   16px between the parts, the updates' tile scrolling inside to 16px off the
+   card's foot. A tile's rows run to its sides, so a row's light fills it,
+   their words 16px in; an update is Carbon's 40px row with a quiet hairline
+   between it and the next. A theme that holds the card 12px from its edge
+   gives the 4px more in theme.css. A part is named four times to outrank the
+   padding the card and the themes set for its rows. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(.scheduler-card__tile) { gap: var(--rux-spacing-05); padding: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card) { padding: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile {
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(.scheduler-card__tile) > :is(.scheduler-card__needs, .scheduler-card__updates).scheduler-card__row.scheduler-card__row.scheduler-card__row {
+  padding: 0;
+  border-block-start: 0;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(.scheduler-card__tile) .scheduler-card__title.scheduler-card__title:not(:last-child) { margin-block-end: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile.scheduler-card__tile {
   min-block-size: 0;
   min-inline-size: 0;
   margin: 0;
-  padding: var(--rux-spacing-05);
-  border-block-start: 0;
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile:has(> .scheduler-card__update-list) {
-  padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
-  margin-block-end: calc(var(--rux-spacing-03) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
-  margin-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
-  margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
   padding: 0;
-  border-radius: 0;
-  background: none;
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list.scheduler-card__update-list { margin-inline: calc(-1 * var(--rux-spacing-05)); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__needs-list.scheduler-card__tile > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list.scheduler-card__tile.scheduler-card__tile { margin-inline: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update[data-update-id].scheduler-card__update {
   padding: calc((var(--rux-layout-size-height-md) - 1.125rem) / 2) var(--rux-spacing-05);
   border-radius: 0;

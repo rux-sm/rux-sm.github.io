@@ -14779,11 +14779,13 @@
        and the list it counts read as one thing, and the list in a box of its
        own under it, apart from the updates. */
     const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
-    const needsList = el('div', 'scheduler-card__needs-list');
-    /* Floating, each part is a tile, as the live card's and the Prep panel's
-       are; docked on a phone the parts are the sheet's own bands. */
+    /* Floating, each part is its title over a tile of its rows, as the trip
+       editor's sections are; docked on a phone the parts are the sheet's own
+       bands. */
     const floating = pageEl?.getAttribute('data-board') !== 'compact';
-    const part = cls => row(floating ? `${cls} rux--tile scheduler-card__tile` : cls);
+    const TILE = floating ? ' rux--tile scheduler-card__tile' : '';
+    const needsList = el('div', `scheduler-card__needs-list${TILE}`);
+    const part = cls => row(cls);
     if (alerts.length) {
       const needs = part('scheduler-card__needs');
       needs.append(cardTitle('Needs', alerts.length, null,
@@ -14875,7 +14877,7 @@
       updates.appendChild(quick);
     }
     if (all.length) {
-      const list = el('ol', 'scheduler-card__update-list');
+      const list = el('ol', `scheduler-card__update-list${TILE}`);
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...shown.map(updateItem));
       updates.appendChild(list);

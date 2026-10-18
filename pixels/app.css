@@ -86,14 +86,15 @@
 .pixels-cell {
   position: relative;
   background: var(--rux-layer-01);
-  border-inline-end: 1px solid var(--line);
-  border-block-end: 1px solid var(--line);
+  border-inline-end: 2px solid var(--line);
+  border-block-end: 2px solid var(--line);
   cursor: pointer;
 }
 /* A stronger line round the edge, and inside it a warm one after every fifth
-   square, so squares are counted in fives. */
-.pixels-cell.is-west { border-inline-start: 1px solid var(--guide); }
-.pixels-cell.is-north { border-block-start: 1px solid var(--guide); }
+   square, so squares are counted in fives. Every line is 2px, one of the
+   font's pixels, as every edge in pixel-dark is. */
+.pixels-cell.is-west { border-inline-start: 2px solid var(--guide); }
+.pixels-cell.is-north { border-block-start: 2px solid var(--guide); }
 .pixels-cell.is-east { border-inline-end-color: var(--guide); }
 .pixels-cell.is-south { border-block-end-color: var(--guide); }
 .pixels-cell.is-fifth-east { border-inline-end-color: var(--fifth); }

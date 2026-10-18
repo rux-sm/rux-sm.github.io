@@ -174,9 +174,10 @@
 
 /* PIXEL-DARK. The games' theme sets every word in Silkscreen at 16px, or
    32px for a heading, and draws edges chunky, a 2px black outline with its
-   corner pixel cut and a dark lip along the bottom that a press sinks
-   into; css/rux-overrides.css has the reasons. Here the same is done for
-   these parts: their words go to 16px, the score to 32px, and a game key is raised. On a phone
+   corners rounded a pixel in and a dark lip along the bottom that a press
+   sinks into; css/rux-overrides.css has the reasons. Here the same is done
+   for these parts: their words go to 16px, the score to 32px, and a game
+   key is raised. On a phone
    four places or six keys share the width and their words do not fit at
    16px, so they are their icons alone; a word is never made smaller than
    the rest, and it stays in the page for a screen reader. */
@@ -185,8 +186,12 @@
 [data-theme="pixel-dark"] .game-place[aria-current] { font-weight: 400; }
 [data-theme="pixel-dark"] .game-key {
   border: 0;
-  background: var(--rux-layer-01);
-  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  background-color: var(--rux-layer-01);
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  background-image: linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000);
+  background-position: 2px 2px, right 2px top 2px, left 2px bottom 2px, right 2px bottom 2px;
+  background-repeat: no-repeat;
+  background-size: 2px 2px;
   box-shadow: inset 0 0 0 2px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45);
 }
 [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45); }

@@ -2885,11 +2885,13 @@
      written 1.5 and 1.25 because Carbon multiplies a line by the size. Both
      are whole multiples of the 8-pixel grid, so a pixel is a whole number
      of screen pixels on every screen.
-   - Edges are chunky: a 2px black outline with its corner pixel cut, drawn
+   - Edges are chunky: a 2px black outline, one of the font's pixels, drawn
      as an inset shadow in place of the border, so a fill never shows round it, and on what is pressed a dark lip
      6px deep along the bottom that a press sinks 3px into. A field is a
-     well: the outline and a dark lip along its top. The cut is a clip-path
-     of square steps, so it stays sharp.
+     well: the outline and a dark lip along its top. A corner is rounded as
+     a pixel artist rounds one: its 2px square is cut away by a clip-path of
+     square steps, and a 2px black square painted inside it, so the outline
+     turns the corner one pixel in.
    - Movement steps: a change happens in two steps, not a fade. */
 [data-theme="pixel-dark"] {
   font-family: 'Silkscreen', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -3099,7 +3101,11 @@
 [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger, .rux--tile, .rux--modal-container, .rux--inline-notification, .rux--toast-notification, .rux--actionable-notification, .rux--overflow-menu-options, .rux--popover-content, .rux--content-switcher-btn.rux--content-switcher--selected, .rux--tabs--contained .rux--tabs__nav-item--selected) {
   border-width: 0;
   border-radius: 0;
-  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  background-image: linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000);
+  background-position: 2px 2px, right 2px top 2px, left 2px bottom 2px, right 2px bottom 2px;
+  background-repeat: no-repeat;
+  background-size: 2px 2px;
   box-shadow: inset 0 0 0 2px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45);
 }
 [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):focus {
@@ -3141,14 +3147,22 @@
 /* A tag is a small raised plate, with no lip. */
 [data-theme="pixel-dark"] .rux--tag {
   border-radius: 0;
-  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
-  box-shadow: inset 0 0 0 1px #000000;
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  background-image: linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000);
+  background-position: 2px 2px, right 2px top 2px, left 2px bottom 2px, right 2px bottom 2px;
+  background-repeat: no-repeat;
+  background-size: 2px 2px;
+  box-shadow: inset 0 0 0 2px #000000;
 }
 /* Sunken: every field, and a progress bar's track. */
 [data-theme="pixel-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--search-input, .rux--number input[type=number], .rux--number input[type=text], .rux--date-picker__input, .rux--time-picker__input-field, .rux--list-box__field, .rux--progress-bar__track) {
   border: 0;
   border-radius: 0;
-  clip-path: polygon(1px 0, calc(100% - 1px) 0, calc(100% - 1px) 1px, 100% 1px, 100% calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 100%, 1px 100%, 1px calc(100% - 1px), 0 calc(100% - 1px), 0 1px, 1px 1px);
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  background-image: linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000);
+  background-position: 2px 2px, right 2px top 2px, left 2px bottom 2px, right 2px bottom 2px;
+  background-repeat: no-repeat;
+  background-size: 2px 2px;
   box-shadow: inset 0 0 0 2px #000000, inset 0 4px 0 rgba(0, 0, 0, 0.45);
 }
 @media (prefers-reduced-motion: reduce) {

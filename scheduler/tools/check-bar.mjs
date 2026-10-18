@@ -136,7 +136,7 @@ function drawn(sectionId, name) {
       const { bus, look, before } = spec.live;
       const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
       if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now });
-      RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now });
+      RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, day: look.day });
     }
     return bar;
   });
@@ -261,6 +261,8 @@ expect('a driver Samsara has in the bus reads confirmed whatever they answered',
   [lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), icon(lit('In the bus, not yet confirmed').querySelector('.scheduler-crew'))],
   ['scheduler-crew__mark--success', '#m-check_circle-fill']);
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
+expect('a longer bar out stands its rows in today\'s column, and a one-day one on its own',
+  [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);
 expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');

@@ -92,7 +92,7 @@
       const { bus, look, before } = spec.live;
       const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
       if (before) RoadBar.draw(bar, before, { next: look.next, said: said({ ...look, bus: before }), at: look.now, motion: view.motion });
-      RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, motion: view.motion });
+      RoadBar.draw(bar, bus, { next: look.next, said: said(look), at: look.now, motion: view.motion, day: look.day });
     }
     return bar;
   }

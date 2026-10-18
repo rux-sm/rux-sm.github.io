@@ -279,7 +279,7 @@
       const bus = samsara({ bus_id: busId, ...o.bus });
       const look = {
         bus, next: o.next ?? toStop(), named: (o.crew ?? [['d1']]).map(c => c[0]), now, yard, yardOut: out,
-        others: o.others ?? [], numberOf: id => busesById.get(id)?.number ?? null, drives: o.drives ?? [],
+        others: o.others ?? [], numberOf: id => busesById.get(id)?.number ?? null, drives: o.drives ?? [], day: o.day ?? 0,
       };
       return bar(t, { span: o.span ?? 2, live: { bus, look, before: o.before ? samsara({ bus_id: busId, ...o.bus, ...o.before }) : null } });
     }
@@ -297,6 +297,7 @@
         one('Late back to the yard', 'Heading for the yard and due there more than ten minutes after the plan: when it is now expected, in amber, in place of the planned return.', live('Harbor Tours', {
           span: 1, back: now + 20 * MIN, next: (() => { const stops = liveStops(); return { stops, where: { reached: 1, at: false, next: 2 }, stop: stops[2], at: false, arrival: now + 65 * MIN, late: 0 }; })() })),
         one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
+        one('On its second day', 'A trip longer than a day stands its rows in today\'s column while the bus is out, and on its first day before and after.', live('Coastal Youth Choir', { span: 3, day: 1 })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
         one('Idling', 'Engine running and the bus still, at a stop: Idle and how long, beside the bars, all empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
         one('Resting', 'A driver in the sleeper and none driving: purple bars when the bus moves on.', live('Riverbend Seniors', {

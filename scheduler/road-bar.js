@@ -3,8 +3,8 @@
    --------------------------------------------------------------------------
    While a bus is out on its trip, its bar keeps its destination and
    customer, and the rows under them say what Samsara says, laid out for the
-   narrowest bar, a one-day trip on the board's 10rem day, and kept to the
-   first day on a longer bar.
+   narrowest bar, a one-day trip on the board's 10rem day, and kept to one
+   day's width on a longer bar, in today's column, every row moving there.
    - A dot at the destination row's end, before the alert count, in the
      bus's colour, so a scan down the board finds the buses out.
    - The times, in the contact row's place: out and back either end of a
@@ -33,8 +33,9 @@
    with no `bus`. `bus` is one bus of samsara-now's answer, and `live` what
    the board worked out around it: `next`, road.js's reading of where the
    bus is on its leg; `said`, live-trip.js's `{ warnings, phase }` for it;
-   `at`, when Samsara answered; and `motion`, the view's Motion, since a
-   bar starts as a bus does only at Full. data.js draws the board's out bars
+   `at`, when Samsara answered; `motion`, the view's Motion, since a bar
+   starts as a bus does only at Full; and `day`, today's column counted
+   from the bar's first day, where a longer bar's rows stand while out. data.js draws the board's out bars
    with it, and components.html its samples.
 
    `HOUR`, `DUTY`, `LOW_FUEL`, `IDLE_MS`, `hours(ms)`, `mark(duty, left)`,
@@ -197,6 +198,9 @@
       bus.fuel, bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
       next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase,
       overBy(bar, Date.now())]) : '';
+    // The day the rows stand on, counted from the bar's first: today while out.
+    if (bus && live.day > 0) bar.style.setProperty('--scheduler-today', live.day);
+    else bar.style.removeProperty('--scheduler-today');
     if ((bar.dataset.road ?? '') === key) return;
     if (key) bar.dataset.road = key; else delete bar.dataset.road;
     bar.classList.toggle('scheduler-bar--road', !!bus);

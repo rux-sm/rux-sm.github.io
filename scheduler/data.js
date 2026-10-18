@@ -705,11 +705,22 @@
     return { warnings: Live.warningsOf(look), phase: Live.phaseOf(look) };
   }
 
+  /* Today's column counted from the bar's first day, held to the bar, so a
+     longer bar's live rows stand under today; 0 off the week. */
+  function roadDay(bar) {
+    const days = [...(bar.closest('.scheduler-week')?.querySelectorAll('.scheduler-day') ?? [])];
+    const today = days.findIndex(d => d.classList.contains('scheduler-day--today'));
+    if (today < 0) return 0;
+    const span = Math.max(1, Math.ceil(Number(bar.dataset.span) || 1));
+    return Math.min(span - 1, Math.max(0, Math.floor(today - (Number(bar.dataset.start) || 0))));
+  }
+
   // An out bar's live line, or none, drawn by road-bar.js from the board's answer.
   function roadBar(bar, bus) {
     const next = bus ? roadNext(bar, bus) : null;
     RoadBar.draw(bar, bus, {
       next,
+      day: bus ? roadDay(bar) : 0,
       said: bus ? roadLook(bar, bus, next, roadNamed(bar)) : null,
       at: roadAnswer?.at,
       motion: view.motion,

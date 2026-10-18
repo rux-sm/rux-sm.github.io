@@ -599,6 +599,14 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
 }
+/* A RUX-DARK TRIP BAR HAS A 1px EDGE a step lighter than its fill, drawn
+   inside it, so a bar reads as a card on the dark board. The selected bar's
+   white ring, the open trip's ring, the rule a trip somebody else has open
+   wears and the focus ring each stand in its place. */
+:where([data-theme="rux-dark"]) .scheduler-bar:not([aria-pressed="true"], .scheduler-bar--same-trip, .scheduler-bar--open, .scheduler-bar--watched, :focus-visible) {
+  outline: 1px solid rgb(255 255 255 / .16);
+  outline-offset: -1px;
+}
 /* Its rows start and end on that 12px edge. A row gives up its 16px sides,
    so its words stand on the edge; a row that lights under
    the pointer carries the light 6px past each side, where the row itself

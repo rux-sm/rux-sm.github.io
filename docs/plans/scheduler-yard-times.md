@@ -25,8 +25,12 @@ and the office can set the real day beside the planned one.
   within a quarter mile of it after the leg's last stop.
 - **A bus parked away from the yard has neither,** and a leg still out has no
   return, so nothing guesses.
-- **Fetched with the miles,** by the Billing tab's Get from Samsara, which
-  already saves `pickup_at` and each seat's miles.
+- **Saved by itself each night and on demand.** A job inside Supabase, on a
+  schedule in the small hours, asks `samsara-miles` for every leg whose bus
+  came back that day and saves its two times, whether or not anyone had the
+  board open; the Billing tab's Get from Samsara, which already saves
+  `pickup_at` and each seat's miles, fetches them again whenever it is
+  pressed, and its answer replaces the night's.
 - **Shown on a trip that is back,** in its bar's update row ahead of the miles
   and the money, "Back 7:52p", and on the editor's Route summary as Actual
   yard depart and Actual yard return beside the planned times.
@@ -35,9 +39,6 @@ and the office can set the real day beside the planned one.
 
 ## Questions
 
-- Should the times also be saved without anyone pressing Get from Samsara: by
-  the board when a live bar goes out, or by a job each night for the day's
-  trips?
 - Should the trips already back be filled in, and from what date?
 - Should the bar say a late return in amber, "Back 9:10p" when it is past the
   plan by more than ten minutes, or the time alone?
@@ -50,5 +51,7 @@ and the office can set the real day beside the planned one.
 - [ ] Deploy `samsara-miles` with the Supabase CLI.
 - [ ] Save the two times from Get from Samsara on the Billing tab, as
   `pickup_at` is saved.
+- [ ] Show rux the nightly schedule that calls `samsara-miles` for the day's
+  returned legs and saves their times, and apply it on his yes.
 - [ ] Show "Back" in a finished bar's update row and both times on the Route
   summary, with the database inventory and the screen inventory updated.

@@ -1474,6 +1474,38 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
+/* THE FLOATING TRIP CARD IS TILES, as the live card is: the Needs and the
+   Updates each a tile 16px from the card's sides and top, a step apart, the
+   Updates filling the rest of the card to 16px off its foot and scrolling
+   inside. A tile holds its title and words 16px in; its rows run out to its
+   sides, so a row's light fills the tile's width, and the last update's 32px
+   row ends 16px off the tile's foot. A theme that holds the card 12px from
+   its edge gives the 4px more in theme.css. The parts are named four times
+   to outrank each part's padding that the card and the themes set for rows. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card) { padding: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile {
+  min-block-size: 0;
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--rux-spacing-05);
+  border-block-start: 0;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile:has(> .scheduler-card__update-list) {
+  padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
+  margin-block-end: calc(var(--rux-spacing-03) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
+  margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list.scheduler-card__update-list { margin-inline: calc(-1 * var(--rux-spacing-05)); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update[data-update-id].scheduler-card__update { padding-inline: var(--rux-spacing-05); border-radius: 0; }
 /* The age keeps its cell at the end of the first line, where Add's word
    above ends. */
 .scheduler-card__update > .scheduler-card__when { grid-row: 1; grid-column: 3; justify-self: end; }

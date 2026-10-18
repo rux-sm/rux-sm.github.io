@@ -14780,8 +14780,12 @@
        own under it, apart from the updates. */
     const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
     const needsList = el('div', 'scheduler-card__needs-list');
+    /* Floating, each part is a tile, as the live card's and the Prep panel's
+       are; docked on a phone the parts are the sheet's own bands. */
+    const floating = pageEl?.getAttribute('data-board') !== 'compact';
+    const part = cls => row(floating ? `${cls} rux--tile scheduler-card__tile` : cls);
     if (alerts.length) {
-      const needs = row('scheduler-card__needs');
+      const needs = part('scheduler-card__needs');
       needs.append(cardTitle('Needs', alerts.length, null,
         alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'), needsList);
       card.appendChild(needs);
@@ -14811,13 +14815,12 @@
        lines have nothing more to show, which fitUpdates works out once they
        are drawn. With none, No updates and Add. */
     const all = updatesOf(trip);
-    const floating = pageEl?.getAttribute('data-board') !== 'compact';
     const open = all.length > 0 && (floating || updatesOpenFor === trip.id);
     const shown = open ? all : all.slice(0, 2);
-    const part = row('scheduler-card__updates');
-    part.dataset.count = String(all.length);
-    part.dataset.shown = String(shown.length);
-    part.toggleAttribute('data-open', open);
+    const updates = part('scheduler-card__updates');
+    updates.dataset.count = String(all.length);
+    updates.dataset.shown = String(shown.length);
+    updates.toggleAttribute('data-open', open);
     /* While the quick update's box is open, Add reads Save: it adds what is
        typed, as Enter does, and with nothing typed closes the box. */
     const quickOpen = quickOpenFor === trip.id || (quickDraft.tripId === trip.id && !!quickDraft.text);
@@ -14855,7 +14858,7 @@
       heading.replaceWith(toggle);
       toggle.append(heading, svgUse('#m-keyboard_arrow_down', '16', '0 0 16 16'));
     }
-    part.appendChild(title);
+    updates.appendChild(title);
     /* A quick update is typed into the card itself, in a box that Add opens
        under the title: Save or Enter adds it to the trip at once, as the
        Updates window's Add update does, and Escape clears it, or with nothing
@@ -14869,15 +14872,15 @@
       quickInput.dataset.tripId = trip.id;
       if (quickDraft.tripId === trip.id) quickInput.value = quickDraft.text;
       quick.appendChild(quickInput);
-      part.appendChild(quick);
+      updates.appendChild(quick);
     }
     if (all.length) {
       const list = el('ol', 'scheduler-card__update-list');
       list.setAttribute('aria-label', 'Updates, newest first');
       list.append(...shown.map(updateItem));
-      part.appendChild(list);
+      updates.appendChild(list);
     }
-    card.appendChild(part);
+    card.appendChild(updates);
     return card;
   }
 

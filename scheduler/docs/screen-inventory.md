@@ -231,12 +231,14 @@ buttons: what a phone's docked sheet offers as slots is on the bar's right-click
 raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
 theme as well as a light one. It is one size, 22rem by 33rem, full or nearly empty, with or without
 tabs, shortened only to the board's room, and centred on the trip; what does not fit scrolls inside
-it, and No updates on an empty card stands in its middle. Each warning and each one-line update is a 32px row in 14px regular type, 16px in from
-the card's sides, as a Carbon popover's content is; a warning's leave day drops under its words
-where both do not fit one line. The card opens with its warnings under a title, Needs, in Carbon's
-14px heading with the bar's own alert disc beside it, its count in the same colour, so the disc on
-the bar and the list it counts read as one; they stand in a box of their own under it, the next
-layer up at an update's hover corner, plain rows with no tint and no rule between: a bus that does
+it, and No updates on an empty card stands in its middle. Floating, the card is tiles, as the live card and the Prep panel are: the Needs and the Updates
+each a tile 16px from the card's sides and top and 8px apart, the Updates filling the card to 16px
+off its foot and scrolling inside, each tile holding its words 16px in with its rows lit across its
+whole width; docked on a phone they are the sheet's own bands. Each warning and each one-line update
+is a 32px row in 14px regular type; a warning's leave day drops under its words where both do not
+fit one line. The card opens with its warnings under a title, Needs, in Carbon's 14px heading with
+the bar's own alert disc beside it, its count in the same colour, so the disc on the bar and the list
+it counts read as one; plain rows with no tint and no rule between: a bus that does
 not fit behind a red bell, then the follow-up reminder, Trip contact missing, and each need still to
 do, Hotel booking pending or HOS form pending, each a line of its own behind a bell in its disc's
 colour. Once the trip is back it raises none of them on the bar or the card, and its update row says

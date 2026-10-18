@@ -160,12 +160,19 @@ const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
   ['No times', ['Ben'], null]);
-expect('one way is striped at its end', drawn('trip-bar', 'One way').map(b => b.classList.contains('scheduler-bar--stripe-end')), [true]);
-expect('a split\'s drop-off is striped at its end and its pickup at its start',
-  drawn('trip-bar', 'Drop-off and pickup').map(b => b.classes().find(c => c.startsWith('scheduler-bar--stripe-'))), ['scheduler-bar--stripe-end', 'scheduler-bar--stripe-start']);
+const kindOf = b => { const k = b.querySelector('.scheduler-bar__time > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
+expect('one way wears its pill at the time row\'s end, an arrow across', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
+expect('a split\'s drop-off points down and its pickup up; a round trip wears none',
+  [...drawn('trip-bar', 'Drop-off and pickup'), ...drawn('trip-bar', 'Colours').slice(0, 1)].map(kindOf),
+  [['#m-download', 'Drop-off'], ['#m-upload', 'Pickup'], null]);
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
   [['×3', 'Marco'], ['×3', 'Lena'], ['×3', 'Needs a bus']]);
+// The samples are dated from today, so the weekday is whichever it falls on.
+expect('a time outside the week says its weekday: the departure from last week, the return into next',
+  drawn('trip-bar', 'Either side of the week').map(b => /^[A-Z][a-z]{2} /.test(text(b, '.scheduler-bar__time > span'))
+    ? 'departure' : /\s[A-Z][a-z]{2} \d{1,2}:\d\d[ap]$/.test(text(b, '.scheduler-bar__time > span')) ? 'return' : text(b, '.scheduler-bar__time > span')),
+  ['departure', 'return']);
 expect('either side of the week', drawn('trip-bar', 'Either side of the week').map(b => [b.classList.contains('scheduler-bar--from-prev'), b.classList.contains('scheduler-bar--to-next')]),
   [[true, false], [false, true]]);
 const [back] = drawn('trip-bar', 'Back at the yard');

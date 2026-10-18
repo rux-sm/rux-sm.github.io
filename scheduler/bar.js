@@ -23,7 +23,8 @@
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due)` is one crew member as the drivers row draws
    them, `crewText(c)` and `crewName(c)` the same in words, and `fitCrew`
-   gives a crew row's names way when they do not fit. `hhmm(t, short)`,
+   gives a crew row's names way when they do not fit. `fitKind(bar)` drops
+   the word from a one-way or split leg's pill when the times would be cut. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
    and its card say them.
 
@@ -61,6 +62,9 @@
   const showPhone = n => window.SchedulerPhone.format(n);
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const parseDay = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+  // "Tue", of an ISO day or a date.
+  const weekday = d => (d instanceof Date ? d : parseDay(d)).toLocaleDateString('en-US', { weekday: 'short' });
   // The days after the last it takes a leg comes back, before the office's
   // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
   // return +1.
@@ -83,6 +87,30 @@
       .filter(w => w && !CODE_SKIP.has(w.toLowerCase()));
     if (!words.length) return '';
     return (words.length > 1 ? words.map(w => w[0]).join('') : words[0]).slice(0, 3).toUpperCase();
+  };
+
+  /* The pill a one-way trip and each leg of a split wear at the time row's
+     end: an arrow the way the bus goes and the word, in the bar's own ink
+     inside a quiet outline of it. `fitKind` drops the word when the times
+     beside it would be cut, and the tooltip keeps it. */
+  const KINDS = {
+    'one way': { icon: '#m-arrow_forward', word: 'One way' },
+    'drop-off': { icon: '#m-download', word: 'Drop-off' },
+    pickup: { icon: '#m-upload', word: 'Pickup' },
+  };
+  const kindEl = kind => {
+    const { icon, word } = KINDS[kind];
+    const pill = el('span', 'scheduler-bar__kind');
+    pill.title = word;
+    pill.append(svgUse(icon, '12', '0 0 12 12'), el('span', 'scheduler-bar__kind-word', word));
+    return pill;
+  };
+  const fitKind = bar => {
+    const pill = bar.querySelector(':scope > .scheduler-bar__time > .scheduler-bar__kind');
+    if (!pill) return;
+    pill.classList.remove('scheduler-bar__kind--icon');
+    const times = pill.parentElement.firstElementChild;
+    if (times.scrollWidth > times.clientWidth) pill.classList.add('scheduler-bar__kind--icon');
   };
 
   /* The bar's attention mark: how many alerts the trip has, in a disc of
@@ -270,6 +298,7 @@
     for (const { target } of entries) {
       const crew = target.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
       if (crew) fitCrew(crew);
+      fitKind(target);
     }
   }) : null;
 
@@ -362,14 +391,12 @@
        no missing bus; a driver someone has named still shows. */
     const placeholder = window.SchedulerBilling.placeholder(trip);
 
-    /* A leg that leaves the group or fetches it is striped at one end, as
-       app.css draws it: a one-way trip and a split's drop-off where the group
-       is let off, a split's pickup where it is collected. The stripe says
-       which leg of a split this is, so the reference is only its count. */
+    /* A leg that leaves the group or fetches it says so in a pill at the time
+       row's end, its arrow pointing the way the bus does: across for a
+       one-way trip, down for a split's drop-off, where the group is set down,
+       up for its pickup. The pill says which leg of a split this is, so the
+       reference is only its count. */
     const split = trip.trip_type === SPLIT;
-    const stripe = trip.trip_type === 'one_way' || (split && leg.leg !== 'return') ? 'end'
-      : split ? 'start' : null;
-    if (stripe) bar.classList.add(`scheduler-bar--stripe-${stripe}`);
     const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
     /* How many buses the leg takes, written after the destination on a leg of
        more than one: `×3`. Which of them a bar is goes unsaid, because its row
@@ -479,13 +506,19 @@
     const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
     // "No times" is dimmed, quieter than a time, as app.css draws it.
     const none = !dep && !back;
+    /* A time on a day outside this week says its weekday first, "Fri 12:40p",
+       since the bar does not reach that day: the departure of a leg from last
+       week, the return of one into next week. The weekday says the day, so a
+       return into next week has no +1. */
+    const depart = (place.fromPrev ? [`${weekday(leg.from)} `] : []).concat(dep ? [clockEl(dep)] : []);
+    const ret = (place.toNext ? [`${weekday(addDays(parseDay(leg.to), daysBack(leg)))} `] : []).concat(back ? [clockEl(back)] : []);
     // Thin spaces either side of the dash, so the two times read as two.
     const when = el('span', none ? 'scheduler-bar__none' : null);
-    if (dep && back) when.append(clockEl(dep), '\u2009\u2013\u2009', clockEl(back));
-    else if (dep) when.append('Dep ', clockEl(dep));
-    else if (back) when.append('Ret ', clockEl(back));
+    if (dep && back) when.append(...depart, '\u2009\u2013\u2009', ...ret);
+    else if (dep) when.append('Dep ', ...depart);
+    else if (back) when.append('Ret ', ...ret);
     else when.append('No times');
-    if (daysBack(leg)) {
+    if (daysBack(leg) && !(place.toNext && back)) {
       const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
       when.appendChild(mark);
@@ -498,7 +531,7 @@
     if (dep) whenDep.append(clockEl(dep));
     else if (back) whenDep.append('Ret ', clockEl(back));
     else whenDep.append('No times');
-    addRow(bar, 'scheduler-bar__time', when, whenDep);
+    addRow(bar, 'scheduler-bar__time', when, whenDep, kind ? kindEl(kind) : null);
 
     /* The newest update's words on one line, the last thing anyone said
        about the trip, as the card's list starts with it. While the trip has
@@ -570,6 +603,6 @@
   }
 
   window.SchedulerBar = {
-    draw, alertsOf, crewEl, crewText, crewName, fitCrew, hhmm, clockEl, setAt, updateStamp,
+    draw, alertsOf, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp,
   };
 })();

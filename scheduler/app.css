@@ -58,7 +58,7 @@
      is on `1fr` and never sees this figure. */
   --scheduler-day-min: max(10rem, calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear)));
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
-  /* One day's width, which every bar, stripe and day rule is placed from. A
+  /* One day's width, which every bar, out-of-service span and day rule is placed from. A
      percentage of the track by default, so the stylesheet stands alone; app.js
      replaces it with the whole pixels it floored the columns to, because a
      percentage of seven lands on Blink's 1/64px and paints a bar edge across
@@ -612,8 +612,8 @@ button.scheduler-row-head__num::after {
     - var(--scheduler-cut-start, 0px) - var(--scheduler-cut-end, 0px));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
-  /* Each side's padding is its own property, so a striped end can widen its
-     side and the arithmetic below still finds day one's edge. */
+  /* Each side's padding is its own property, which the arithmetic below
+     reads to find day one's edge. */
   --scheduler-pad-start: var(--rux-spacing-02);
   --scheduler-pad-end: var(--rux-spacing-02);
   /* 4px on every side, so the words stand as far from each edge. */
@@ -785,55 +785,41 @@ button.scheduler-row-head__num::after {
    `hueFor` in data.js, so a trip with a picked colour does not show whether it
    is confirmed. Billing is not one either: it is the payment chip, which names
    the amount a border could not. */
-/* A continuing edge takes no gap, since the trip runs off the week there. Only
-   the gap at its other end is subtracted, so the bar ends where every other
-   bar in that day ends.
-
-   The edge is a column of 3px squares 3px apart, drawn as a border image
-   because a `dotted` border draws round dots, which blur at 3px. One square
-   sits on the bar's middle, so the two ends are cut by the same amount. The
-   slice takes nothing from the top and bottom, which keeps the image
-   unstretched and every square the same 3px. */
-.scheduler-bar--from-prev,
-.scheduler-bar--to-next {
-  border-image: repeating-linear-gradient(to bottom,
-    var(--scheduler-border) calc(50% - 1.5px) calc(50% + 1.5px),
-    transparent calc(50% + 1.5px) calc(50% + 4.5px)) 0 1;
-}
+/* A continuing edge takes no gap, since the trip runs off the week there, and
+   no mark: the bar runs square to the week's edge, and its time row names the
+   day outside the week. Only the gap at its other end is subtracted, so the
+   bar ends where every other bar in that day ends. */
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
-  border-inline-start: 3px solid transparent;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
-.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-inline-end: 3px solid transparent; border-start-end-radius: 0; border-end-end-radius: 0; }
+.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
-/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, is striped at one end: a one-way
-   trip and a split trip's drop-off at the end, where the group is let off, and
-   the split's pickup at the start, where it is collected. A round trip has no
-   stripe. The strip is 8px of 45° stripes, each 4px along the edge, in the
-   bar's own text colour faded; the writing moves in by the strip, so nothing
-   sits on it. On a continuing edge it lies inside the column of squares. */
-.scheduler-bar--stripe-start,
-.scheduler-bar--stripe-end { --scheduler-stripe: var(--rux-spacing-03); }
-.scheduler-bar--stripe-start { --scheduler-pad-start: calc(var(--scheduler-stripe) + var(--rux-spacing-02)); }
-.scheduler-bar--stripe-end { --scheduler-pad-end: calc(var(--scheduler-stripe) + var(--rux-spacing-02)); }
-.scheduler-bar--stripe-start::before,
-.scheduler-bar--stripe-end::before {
-  content: '';
-  position: absolute;
-  inset-block: 0;
-  inline-size: var(--scheduler-stripe);
-  pointer-events: none;
-  /* 2.828px across is 4px along the edge at 45°. */
-  background: repeating-linear-gradient(var(--scheduler-stripe-angle),
-    color-mix(in srgb, var(--scheduler-fg) 45%, transparent) 0 2.828px,
-    transparent 2.828px 5.657px);
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill at the time row's
+   end, in the Complete pill's shape: the arrow and the word in the bar's own
+   ink inside a quiet outline of it. With the times cut beside it, bar.js
+   leaves the arrow alone in a 16px circle. */
+.scheduler-bar__row > .scheduler-bar__kind {
+  flex: none;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  block-size: 16px;
+  padding-inline: 3px 6px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 45%, transparent);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: .2px;
 }
-.scheduler-bar--stripe-start::before { inset-inline-start: 0; --scheduler-stripe-angle: 45deg; }
-.scheduler-bar--stripe-end::before { inset-inline-end: 0; --scheduler-stripe-angle: -45deg; }
+.scheduler-bar__kind > svg { flex: none; }
+.scheduler-bar__row > .scheduler-bar__kind--icon { justify-content: center; inline-size: 16px; padding: 0; }
+.scheduler-bar__kind--icon > .scheduler-bar__kind-word { display: none; }
 
 /* The rows the view menu can turn off. `display: none` rather than
    `visibility: hidden`, so the height comes back: `--scheduler-bar-rows` drops
@@ -3483,9 +3469,6 @@ button.scheduler-row-head__num::after {
   font-weight: var(--rux-heading-compact-01-font-weight);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
-/* The code stays centred in what the stripe leaves. */
-.scheduler-page[data-board="compact"] .scheduler-bar--stripe-start > .scheduler-bar__code { inset-inline-start: var(--scheduler-stripe); }
-.scheduler-page[data-board="compact"] .scheduler-bar--stripe-end > .scheduler-bar__code { inset-inline-end: var(--scheduler-stripe); }
 
 /* The foot of the board clears the docked sheet, which stands over it. The
    spacer is the sheet's own height and nothing else, so the last bus scrolls

@@ -93,7 +93,7 @@
   /* A trip's bar, its crew and its alerts, and the times as they say them:
      bar.js, which the components page draws its samples with too. */
   const Bar = window.SchedulerBar;
-  const { alertsOf, crewEl, crewName, fitCrew, hhmm, clockEl, setAt, updateStamp } = Bar;
+  const { alertsOf, crewEl, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
 
@@ -13886,6 +13886,7 @@
     barShortcuts.prepend(head);
     // The copy is fitted to the sheet's width, not the bar's.
     for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
+    fitKind(head);
   }
 
   // The trip whose card shows all its updates, kept until the card leaves it.

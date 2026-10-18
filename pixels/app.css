@@ -41,12 +41,8 @@
    pinch and slide.
 
    The numbers keep the corner's measure both ways, `--clue-w` and
-   `--clue-h`, so the corner is a square of one size on every board. `--num`
-   is the size a number is drawn, larger on larger squares, and never more
-   than two thirds of a square, so two digits and the gap after them keep
-   inside a column: 10px on a board of twenty's 15px squares, and 13px again
-   once it is zoomed. A line with more numbers than fit at that size draws
-   them smaller, below. */
+   `--clue-h`, so the corner is a square of one size on every board. A
+   number's size is below, with its line's. */
 .pixels-game, .pixels-maker {
   --step: 30px;
   --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), 100dvh - var(--chrome) - var(--pixels-corner)), var(--most)), var(--step));
@@ -58,7 +54,6 @@
   --clue-h: var(--pixels-corner);
   --base: calc(var(--side) / var(--cols, 10));
   --cell: round(calc(var(--base) * var(--zoom, 1)), 1px);
-  --num: min(clamp(13px, round(down, calc(var(--base) * .45), 1px), 20px), max(9px, round(down, calc(var(--cell) / 1.5), 1px)));
   --line: var(--rux-border-subtle-01);
   --guide: var(--rux-border-strong-01);
   --fifth: var(--rux-support-caution-major);
@@ -129,19 +124,20 @@
    squares and fading out to the edge of the room the numbers keep, so the
    eye keeps to its line.
 
-   THEY ALWAYS FIT. app.js gives a line `--units`, how wide its numbers are
-   in ems, a digit being .6 and a gap .3, and `--count`, how many it has. A
-   row's are drawn at `--num` or at the size that fits them in the room
-   across, whichever is less, and a column's the same in the room down, in
-   whole steps of Silkscreen's 8-pixel grid either way, 8px at least, so the
-   numbers stay sharp. */
+   THEY ALWAYS FIT, ALL AT ONE SIZE. app.js gives the board `--units`, how
+   wide its widest row's numbers are in ems, a digit being .75 and a gap .25
+   in Silkscreen, and `--count`, how many numbers its longest column has.
+   Every number is drawn at 16px, or two thirds of a square, or the size at
+   which that row fits the room across and that column the room down,
+   whichever is least, in whole steps of Silkscreen's 8-pixel grid, 8px at
+   least, so the numbers stay sharp. */
 .pixels-clue {
   display: flex;
-  gap: .3em;
+  gap: .25em;
   justify-content: end;
   align-items: center;
   padding-inline: 2px 6px;
-  font-size: max(8px, round(down, min(var(--num), calc((var(--clue-w) - 8px) / var(--units, 1))), 8px));
+  font-size: max(8px, round(down, min(16px, calc(var(--cell) / 1.5), calc((var(--clue-w) - 8px) / var(--units, 1)), calc((var(--clue-h) - 4px) / var(--count, 1))), 8px));
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1;
@@ -150,7 +146,7 @@
   flex-direction: column;
   gap: 0;
   padding: 2px 0;
-  font-size: max(8px, round(down, min(var(--num), calc((var(--clue-h) - 4px) / var(--count, 1))), 8px));
+  font-size: max(8px, round(down, min(16px, calc(var(--cell) / 1.5), calc((var(--clue-w) - 8px) / var(--units, 1)), calc((var(--clue-h) - 4px) / var(--count, 1))), 8px));
 }
 .pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
 .pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }
@@ -633,7 +629,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-how-step { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; }
 .pixels-how-step p { margin: .25rem 0 0; }
 .pixels-how-art { display: grid; justify-items: end; gap: .375rem; }
-.pixels-how .pixels-board { --clue-w: 36px; --clue-h: 36px; --base: 20px; --num: 13px; margin: 0; pointer-events: none; }
+.pixels-how .pixels-board { --clue-w: 36px; --clue-h: 36px; --base: 20px; margin: 0; pointer-events: none; }
 .pixels-how-keys { margin: 1.5rem 0 0; color: var(--rux-text-secondary); }
 
 /* THE CORNER'S TILE fills the corner exactly, edge to edge with the numbers'
@@ -671,11 +667,11 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.pixels-clock { align-self: center; font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; }
+.pixels-clock { align-self: center; font-variant-numeric: tabular-nums; }
 .pixels-info .pixels-clock { font-size: 16px; line-height: 24px; }
 @media (min-width: 48rem) {
-  .pixels-info { grid-template-rows: 20px 1fr 28px; }
-  .pixels-info .pixels-clock { font-size: 20px; line-height: 28px; }
+  .pixels-info { grid-template-rows: 20px 1fr 32px; }
+  .pixels-info .pixels-clock { font-size: 24px; line-height: 32px; }
 }
 .pixels-clock[data-charged] { color: var(--rux-text-error); }
 .pixels-thumb { --px: calc(var(--pixels-thumb) / var(--size, 10)); background: var(--rux-background); }

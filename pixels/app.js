@@ -393,10 +393,11 @@
 
      Every board has one footprint, which app.css sizes: the squares
      together are one width whatever the puzzle, and the numbers keep one
-     room. A line is told how wide its numbers are, as `--units`, in ems, a
-     digit being .6 and the gap between two numbers .3, and how many it
-     has, as `--count`, and app.css draws them smaller where they would not
-     fit that room. */
+     room. The board is told how wide its widest row's numbers are, as
+     `--units`, in ems, a digit being .75 and the gap between two numbers
+     .25, as Silkscreen draws them, and how many its longest column has, as
+     `--count`, and app.css draws every number at the one size that fits
+     both. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -415,10 +416,13 @@
     const cols = part('pixels-slide', part('pixels-cols', el));
     const rows = part('pixels-slide', part('pixels-rows', el));
     const squares = part('pixels-slide', part('pixels-squares', el));
-    const numbers = (target, line) => {
+    // Every number on a board is one size, so the board's widest row and
+    // longest column set it: `--units` and `--count` are theirs.
+    let units = 0, count = 0;
+    const numbers = (target, line, across) => {
       const runs = runsOf(line), all = clues(line);
-      target.style.setProperty('--units', (all.join('').length * .6 + (all.length - 1) * .3).toFixed(1));
-      target.style.setProperty('--count', all.length);
+      if (across) units = Math.max(units, all.join('').length * .75 + (all.length - 1) * .25);
+      else count = Math.max(count, all.length);
       all.forEach((n, i) => {
         const span = document.createElement('span');
         span.textContent = n;
@@ -431,12 +435,12 @@
     for (let x = 0; x < W; x++) {
       const c = part(`pixels-clue pixels-clue--col${band(x)}`, cols);
       c.dataset.col = x;
-      numbers(c, column(answer, x));
+      numbers(c, column(answer, x), false);
     }
     for (let y = 0; y < H; y++) {
       const c = part(`pixels-clue${band(y)}`, rows);
       c.dataset.row = y;
-      numbers(c, answer[y]);
+      numbers(c, answer[y], true);
       for (let x = 0; x < W; x++) {
         // A stronger line round the edge, and a warm one after every fifth
         // square inside it.
@@ -449,6 +453,8 @@
         s.setAttribute('role', 'gridcell');
       }
     }
+    el.style.setProperty('--units', units.toFixed(2));
+    el.style.setProperty('--count', count);
     paint(el, answer, state, options);
     host.replaceChildren(el);
     return el;

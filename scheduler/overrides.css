@@ -329,6 +329,12 @@
 #scheduler-panel-body .rux--tab--list {
   flex: 1 1 auto;
 }
+/* The out trip card's two tabs share its strip as the editor's do: each an
+   equal part, its word centred. */
+.scheduler-card-tabs__tabs .rux--tab--list { flex: 1 1 auto; }
+.scheduler-card-tabs__tabs .rux--tabs__nav-item { flex: 1 1 0; }
+.scheduler-card-tabs__tabs .rux--tabs__nav-link { padding-inline: var(--rux-spacing-01); justify-content: center; text-align: center; }
+.scheduler-card-tabs__tabs .rux--tabs__nav-item-label-wrapper { justify-content: center; }
 /* The week picker's input is never seen: the week label is its trigger, and
    Design's `.rux--date-picker__input[hidden]` hides the input. This hides its
    container too, whose label and wrapper would otherwise leave an empty row.

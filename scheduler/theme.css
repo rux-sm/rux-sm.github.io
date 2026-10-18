@@ -484,6 +484,16 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tab--list {
   padding-inline-start: 0;
 }
+/* The out trip card's two tabs take the same equal halves, the gap, the
+   inset and Design's as-wide-as-its-words taken back as for the editor's. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-card-tabs__tabs.rux--tabs .rux--tab--list > .rux--tabs__nav-link {
+  flex: 1 1 0;
+  margin-inline-start: 0;
+  padding-inline: var(--rux-spacing-01);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-card-tabs__tabs.rux--tabs .rux--tab--list {
+  padding-inline-start: 0;
+}
 /* Design draws this theme's tile with a 1px ring inside its edge, and the
    Summary's table and Billing's foot run flush to the tile's sides, over the
    ring. They stop a pixel short of each, so the ring closes round them, and

@@ -1279,7 +1279,10 @@ button.scheduler-row-head__num::after {
    Needs counted on its tab. It stands in the card's place at the card's one
    size, both tabs alike so the card does not jump. */
 .scheduler-card-tabs { flex: 1 0 100%; min-inline-size: 0; }
-.scheduler-card-tabs__tabs { padding-inline: var(--rux-spacing-03); }
+/* The strip runs edge to edge, across the card's own padding where a theme
+   gives it one, so its rule meets the card's sides as the trip editor's
+   meets the panel's; overrides.css shares it between the tabs. */
+.scheduler-card-tabs__tabs { padding-inline: 0; margin-inline: calc(-1 * var(--scheduler-shortcut-pad, 0px)); inline-size: auto; }
 .scheduler-card-tabs__tabs .scheduler-card__count { margin-inline-start: var(--rux-spacing-02); }
 /* THE LIVE CARD, data.js's drawLiveCard, the On the road tab. Each warning is a band tinted its colour, its mark and name over
    the sentence that says why; the map stands under them with its two links;

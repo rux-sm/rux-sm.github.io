@@ -182,6 +182,9 @@ expect('a trip back wears Complete, or Paid once paid in full, its update row wh
   drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest > .scheduler-bar__done'), b.querySelector('.scheduler-bar__complete')?.textContent ?? null,
     has(b, '.scheduler-bar__complete-time--late')]),
   [['Complete', '', false], ['Paid', '412 mi', false], ['Complete', 'Back 5:40p', true], ['Paid', 'Spot 6:52a·Back 4:52p', false]]);
+expect('a trip back keeps each driver\'s slot, the confirmed check whatever they last said',
+  drawn('trip-bar', 'Back at the yard').map(b => [...b.querySelectorAll('.scheduler-crew__mark use')].map(u => u.getAttribute('href'))),
+  [['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill']]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
   ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
 expect('an open trip\'s update takes its age\'s colour, a settled one none',

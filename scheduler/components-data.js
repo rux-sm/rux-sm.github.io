@@ -158,7 +158,7 @@
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
         { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: a Complete pill at its corner, or Paid once paid in full, and its update row when its bus reached the pickup and got back to the yard, each amber when late, or else its miles once they are in.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
-            buses: [{ bus: 'b102', crew: [['d2', 'driver', 'confirmed', { pay: null }]] }] }))),
+            buses: [{ bus: 'b102', crew: [['d2', 'driver', 'pending-response', { pay: null }]] }] }))),
             row('103', bar(trip({ customer: 'Harbor Tours', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850, actual_miles: 412,
               trip_payments: [{ amount: 1850, date: day(-3) }], buses: [{ bus: 'b103', crew: [['d4', 'driver', 'confirmed']] }] }))),
             row('104', bar(trip({ customer: 'Mesa Robotics Club', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,

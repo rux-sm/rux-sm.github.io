@@ -675,10 +675,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-hover) 55%, var(--rux-layer)); }
 .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road)[aria-pressed="true"]:hover,
 .scheduler-week--static .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
-/* Its drivers are plain names: whether they said yes no longer matters once
-   the trip is run, which leaves the row's green to Complete and Paid. A
-   relief keeps its arrows, which say the role, in the bar's ink. */
-.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-crew__mark--dot { display: none; }
+/* Its drivers keep their slot, so names line up and stay apart as before and
+   during the trip: each wears the confirmed check bar.js draws, and a relief
+   its arrows, in the bar's own ink, since whether they said yes no longer
+   matters once the trip is run, which leaves the row's green to Paid. */
 .scheduler-bar--back:not(.scheduler-bar--road) .scheduler-crew__mark { color: inherit; }
 
 .scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }

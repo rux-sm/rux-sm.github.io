@@ -21,7 +21,7 @@
    overSeated, driverAlerts, tells }`, which the trip's card reads.
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
-   bar counts. `crewEl(c, due)` is one crew member as the drivers row draws
+   bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
    them, `crewText(c)` and `crewName(c)` the same in words, and `fitCrew`
    gives a crew row's names way when they do not fit. `fitKind(bar)` drops
    the word from a one-way or split leg's pill when the times would be cut. `hhmm(t, short)`,
@@ -249,7 +249,10 @@
      colour instead, mark and words, because it is the one that needs filling
      now. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
-  function crewEl(c, due) {
+  // A trip that is back: every driver who did not decline wears the
+  // confirmed check, which app.css draws in the bar's own ink.
+  const DONE_ICON = '#m-check_circle-fill';
+  function crewEl(c, due, back) {
     const tone = c.needed ? 'off' : c.status.tone;
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
@@ -257,7 +260,7 @@
     const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
       c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
     mark.appendChild(c.needed && dot ? el('span', 'scheduler-crew__dot')
-      : dot ? svgUse(c.status.icon, '16', '0 0 32 32') : svgUse(c.icon, '16', c.box));
+      : dot ? svgUse(back && c.status.value !== 'declined' ? DONE_ICON : c.status.icon, '16', '0 0 32 32') : svgUse(c.icon, '16', c.box));
     item.appendChild(mark);
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
@@ -577,7 +580,7 @@
     /* A leg is due from today to the end of the stretch the office staffs:
        it has not finished, and it starts before that stretch ends. */
     const due = leg.to >= iso(new Date()) && leg.from < (board.staffedUntil ?? staffedUntilNow());
-    crewBox.append(...crew.map(c => crewEl(c, due)));
+    crewBox.append(...crew.map(c => crewEl(c, due, isDone)));
     // Who drives this bar, for the driver grid to pick out.
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
     // An empty seat, which app.css outlines while a driver is carried.

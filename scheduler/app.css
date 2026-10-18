@@ -1915,8 +1915,10 @@ button.scheduler-row-head__num::after {
 .scheduler-road__say--quiet { opacity: .7; }
 
 /* THE INSTRUMENTS: one 16px row, two halves either side of a 1px rule,
-   in the room of two rows: 8px above it and 8px below it to the drivers
-   row. Their shade is a band across the whole bar from 4px under the times
+   in the room of two rows: 8px above it and 5px below it to the drivers
+   row, which takes the 3px more, `--scheduler-road-lift`, so its names stand
+   that far clear of the hours bars under them while the bars keep their
+   place. Their shade is a band across the whole bar from 4px under the times
    to its foot, whatever day the rows stand on: it reaches far past both
    sides, and the bar, which clips what it holds, cuts it at its own sides
    and its own lower corners, so the bar is two bands, the trip over the
@@ -1931,7 +1933,7 @@ button.scheduler-row-head__num::after {
   grid-template-rows: var(--scheduler-row-h);
   column-gap: 4px;
   align-items: center;
-  block-size: calc(2 * var(--scheduler-row-h));
+  block-size: calc(2 * var(--scheduler-row-h) - var(--scheduler-road-lift));
   padding-block-start: 8px;
   align-content: start;
   line-height: var(--scheduler-row-h);
@@ -1943,12 +1945,13 @@ button.scheduler-row-head__num::after {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: 4px -100vw calc(-1 * var(--scheduler-row-h) - 4px);
+  inset: 4px -100vw calc(-1 * (var(--scheduler-row-h) + var(--scheduler-road-lift)) - 4px);
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
 /* The drivers row is painted over the shade, which reaches under it. */
-.scheduler-bar--road > .scheduler-bar__drivers { position: relative; }
+.scheduler-bar--road { --scheduler-road-lift: 3px; }
+.scheduler-bar--road > .scheduler-bar__drivers { position: relative; block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift)); }
 .scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -4px; }
 .scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .scheduler-road__rule { align-self: stretch; background: color-mix(in srgb, currentColor 18%, transparent); }
@@ -1993,11 +1996,12 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__times { display: none; }
 :is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__half--speed > :is(.scheduler-road__speed, .scheduler-road__bars) { display: none; }
 :is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__half--speed > .scheduler-road__say { display: block; overflow: hidden; text-overflow: ellipsis; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar--road { --scheduler-road-lift: 0px; }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card {
   block-size: var(--scheduler-row-h);
   padding-block-start: 0;
 }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -2px calc(-1 * var(--scheduler-row-h) - 2px); }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -100vw calc(-1 * var(--scheduler-row-h) - 4px); }
 .scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
 
 /* THE SEATS on a live bar's drivers row: the lead seat first, their hours

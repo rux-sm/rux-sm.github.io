@@ -509,19 +509,20 @@
     const dep = hhmm(leg.depart, true), back = hhmm(leg.back, true);
     // "No times" is dimmed, quieter than a time, as app.css draws it.
     const none = !dep && !back;
-    /* A time on a day outside this week says its weekday first, "Fri 12:40p",
-       since the bar does not reach that day: the departure of a leg from last
-       week, the return of one into next week. The weekday says the day, so a
-       return into next week has no +1. */
-    const depart = (place.fromPrev ? [`${weekday(leg.from)} `] : []).concat(dep ? [clockEl(dep)] : []);
-    const ret = (place.toNext ? [`${weekday(addDays(parseDay(leg.to), daysBack(leg)))} `] : []).concat(back ? [clockEl(back)] : []);
+    /* A leg that crosses the week's edge names the day of both its times,
+       "Thu 3:53a – Mon 1:53a", since the bar does not reach one of them and a
+       weekday beside a bare time reads as that same day. The weekday says the
+       day, so such a leg has no +1. */
+    const crosses = place.fromPrev || place.toNext;
+    const depart = (crosses ? [`${weekday(leg.from)} `] : []).concat(dep ? [clockEl(dep)] : []);
+    const ret = (crosses ? [`${weekday(addDays(parseDay(leg.to), daysBack(leg)))} `] : []).concat(back ? [clockEl(back)] : []);
     // Thin spaces either side of the dash, so the two times read as two.
     const when = el('span', none ? 'scheduler-bar__none' : null);
     if (dep && back) when.append(...depart, '\u2009\u2013\u2009', ...ret);
     else if (dep) when.append('Dep ', ...depart);
     else if (back) when.append('Ret ', ...ret);
     else when.append('No times');
-    if (daysBack(leg) && !(place.toNext && back)) {
+    if (daysBack(leg) && !(crosses && back)) {
       const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
       when.appendChild(mark);

@@ -168,11 +168,11 @@ expect('a split\'s drop-off points down and its pickup up; a round trip wears no
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
   [['×3', 'Marco'], ['×3', 'Lena'], ['×3', 'Needs a bus']]);
-// The samples are dated from today, so the weekday is whichever it falls on.
-expect('a time outside the week says its weekday: the departure from last week, the return into next',
-  drawn('trip-bar', 'Either side of the week').map(b => /^[A-Z][a-z]{2} /.test(text(b, '.scheduler-bar__time > span'))
-    ? 'departure' : /\s[A-Z][a-z]{2} \d{1,2}:\d\d[ap]$/.test(text(b, '.scheduler-bar__time > span')) ? 'return' : text(b, '.scheduler-bar__time > span')),
-  ['departure', 'return']);
+// The samples are dated from today, so the weekdays are whichever they fall on.
+expect('a leg crossing the week\'s edge names both its days, with no +1',
+  drawn('trip-bar', 'Either side of the week').map(b => /^[A-Z][a-z]{2} \d{1,2}:\d\d[ap]\s\u2013\s[A-Z][a-z]{2} \d{1,2}:\d\d[ap]$/.test(text(b, '.scheduler-bar__time > span'))
+    || text(b, '.scheduler-bar__time > span')),
+  [true, true]);
 expect('either side of the week', drawn('trip-bar', 'Either side of the week').map(b => [b.classList.contains('scheduler-bar--from-prev'), b.classList.contains('scheduler-bar--to-next')]),
   [[true, false], [false, true]]);
 const [back] = drawn('trip-bar', 'Back at the yard');

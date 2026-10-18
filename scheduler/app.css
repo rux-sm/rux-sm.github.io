@@ -785,10 +785,10 @@ button.scheduler-row-head__num::after {
    `hueFor` in data.js, so a trip with a picked colour does not show whether it
    is confirmed. Billing is not one either: it is the payment chip, which names
    the amount a border could not. */
-/* A continuing edge takes no gap, since the trip runs off the week there, and
-   no mark: the bar runs square to the week's edge, and its time row names the
-   day outside the week. Only the gap at its other end is subtracted, so the
-   bar ends where every other bar in that day ends. */
+/* A continuing edge takes no gap, since the trip runs off the week there:
+   the bar runs square to the week's edge, and its time row names the day
+   outside the week. Only the gap at its other end is subtracted, so the bar
+   ends where every other bar in that day ends. */
 .scheduler-bar--from-prev {
   inset-inline-start: 0;
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
@@ -797,6 +797,21 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-start-end-radius: 0; border-end-end-radius: 0; }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
+/* The cut edge sinks under the week's edge, a 12px shade fading into the bar.
+   It is drawn over the bar's fill and under its rows, so nothing moves and
+   no word is covered, and it leaves the bar's shadow to the selection ring. */
+.scheduler-bar:is(.scheduler-bar--from-prev, .scheduler-bar--to-next)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--scheduler-run-shade), transparent 12px) no-repeat,
+    linear-gradient(to left, var(--scheduler-run-shade), transparent 12px) no-repeat;
+  background-size: var(--scheduler-run-start, 0px) 100%, var(--scheduler-run-end, 0px) 100%;
+  background-position: left, right;
+}
+.scheduler-bar--from-prev { --scheduler-run-start: 12px; }
+.scheduler-bar--to-next { --scheduler-run-end: 12px; }
 
 /* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill at the time row's
    end, in the Complete pill's shape: the arrow and the word in the bar's own

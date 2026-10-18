@@ -45,6 +45,24 @@
   --scheduler-on-warning: var(--rux-text-inverse);
   --scheduler-mark-blank: var(--rux-text-primary);
 }
+/* THE SHADE AT A BAR'S CUT EDGE, where a trip runs into the week before or
+   after: deeper on a dark board, where a bar is dark already, and fainter on
+   a light one, where black reads as dirt. */
+:root,
+[data-theme="white"],
+[data-theme="g10"],
+[data-theme="apple-light"] {
+  --scheduler-run-shade: rgb(0 0 0 / .18);
+}
+[data-theme="g90"],
+[data-theme="g100"],
+[data-theme="geist-dark"],
+[data-theme="rux-dark"],
+[data-theme="ant-dark"],
+[data-theme="spotify-dark"],
+[data-theme="apple-dark"] {
+  --scheduler-run-shade: rgb(0 0 0 / .5);
+}
 /* THE LIGHT A LIVE MAP PIN CASTS: strong on a dark board, where light
    shows, and fainter on a light one. The grey is a bus with no signal, on a
    pin and on a live bar's dial. */

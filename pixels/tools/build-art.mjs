@@ -29,7 +29,10 @@
 // on it.
 //
 // THE PALETTE is the inks in the Pixelator's order, read from make.js, in
-// the colours theme.css gives them, after one clear colour, which is no ink.
+// the colours theme.css gives them, and last one clear colour, which is no
+// ink, so Aseprite shows the inks five to a row, a colour to a row. A file
+// says the clear colour is its see-through one, and a pixel is the place
+// in the palette, so the palette is never reordered in a drawing.
 // `templates` also writes it as art/source/pixels.gpl, which Aseprite loads
 // as a palette for a new file.
 //
@@ -72,15 +75,17 @@ const written = (squares, side) => `[${Array.from({ length: side }, (_, y) => `'
 
 // A Lua string, and the Lua that runs it in Aseprite with no window.
 const lua = s => JSON.stringify(s);
-const PALETTE = `local pal = Palette(${INKS.length + 1})
-pal:setColor(0, Color{ r = 0, g = 0, b = 0, a = 0 })
+const PALETTE = `local CLEAR = ${INKS.length}
+local pal = Palette(CLEAR + 1)
 local ids = ${lua(INKS.join(''))}
-${INKS.map((id, n) => `pal:setColor(${n + 1}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
-local function ink(id) if id == '.' then return 0 end return ids:find(id, 1, true) end
+${INKS.map((id, n) => `pal:setColor(${n}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
+pal:setColor(CLEAR, Color{ r = 0, g = 0, b = 0, a = 0 })
+local function ink(id) if id == '.' then return CLEAR end local at = ids:find(id, 1, true) return at and at - 1 end
+local function blank(spr) local img = Image(spr.spec) img:clear(CLEAR) return img end
 local function paint(img, squares, w)
   for i = 1, #squares do
     local n = ink(squares:sub(i, i))
-    if n and n > 0 then img:drawPixel((i - 1) % w, (i - 1) // w, n) end
+    if n and n ~= CLEAR then img:drawPixel((i - 1) % w, (i - 1) // w, n) end
   end
 end`;
 const run = script => {
@@ -97,13 +102,13 @@ const run = script => {
 const sprite = (file, w, h, layers, grid) => `do
   local spr = Sprite(${w}, ${h}, ColorMode.INDEXED)
   spr:setPalette(pal)
-  spr.transparentColor = 0
+  spr.transparentColor = CLEAR
   spr.gridBounds = Rectangle(0, 0, ${grid}, ${grid})
 ${layers.map(([name, squares, opacity = 255], n) => `  do
     local layer = ${n ? 'spr:newLayer()' : 'spr.layers[1]'}
     layer.name = ${lua(name)}
     layer.opacity = ${opacity}
-    local img = Image(spr.spec)
+    local img = blank(spr)
     ${squares ? `paint(img, ${lua(squares)}, ${w})` : ''}
     ${n ? 'spr:newCel(layer, 1, img, Point(0, 0))' : 'spr.cels[1].image = img'}
   end`).join('\n')}
@@ -114,18 +119,19 @@ end`;
 // A part of the map, or the fog, from its PNG, its colours each made the
 // nearest ink, with Keep clear over it.
 const fromPng = (file, png, marks) => `do
-  local spr = Sprite{ fromFile = ${lua(png)} }
+  local spr = Sprite{ fromFile = ${lua(png)}, oneFrame = true }
   app.activeSprite = spr
   if spr.colorMode ~= ColorMode.RGB then app.command.ChangePixelFormat{ format = 'rgb' } end
   spr:setPalette(pal)
+  spr.transparentColor = CLEAR
   app.command.ChangePixelFormat{ format = 'indexed', dithering = 'none' }
-  spr.transparentColor = 0
+  spr.transparentColor = CLEAR
   spr.gridBounds = Rectangle(0, 0, 10, 10)
   spr.layers[1].name = 'ground'
   ${marks ? `local layer = spr:newLayer()
   layer.name = 'Keep clear'
   layer.opacity = 160
-  local img = Image(spr.spec)
+  local img = blank(spr)
   paint(img, ${lua(marks)}, spr.width)
   spr:newCel(layer, 1, img, Point(0, 0))` : ''}
   spr:saveAs(${lua(file)})
@@ -184,13 +190,13 @@ if (process.argv[2] === 'templates') {
   local list = json.decode(names)
   local spr = Sprite(12, 12, ColorMode.INDEXED)
   spr:setPalette(pal)
-  spr.transparentColor = 0
+  spr.transparentColor = CLEAR
   spr.gridBounds = Rectangle(0, 0, 1, 1)
   spr.layers[1].name = 'icon'
   local guide = spr:newLayer()
   guide.name = 'Guide'
   guide.opacity = 96
-  local ring = Image(spr.spec)
+  local ring = blank(spr)
   for i = 1, 10 do ring:drawPixel(i, 1, ink('8')) ring:drawPixel(i, 10, ink('8')) ring:drawPixel(1, i, ink('8')) ring:drawPixel(10, i, ink('8')) end
   for n = 2, #list do spr:newFrame() end
   for n = 1, #list do
@@ -217,7 +223,7 @@ const READ = `local function read(file)
       for px in cel.image:pixels() do
         local x, y = px.x + cel.position.x, px.y + cel.position.y
         local n = px()
-        if n > 0 and x >= 0 and y >= 0 and x < spr.width and y < spr.height then out[y * spr.width + x + 1] = ids:sub(n, n) end
+        if n ~= CLEAR and n < CLEAR and x >= 0 and y >= 0 and x < spr.width and y < spr.height then out[y * spr.width + x + 1] = ids:sub(n + 1, n + 1) end
       end
     end
     print(json.encode{ file = file, layer = layer.name, w = spr.width, h = spr.height, squares = table.concat(out) })
@@ -266,7 +272,7 @@ for _, t in ipairs(s.tags) do
     local c = l.name ~= 'Guide' and l:cel(t.fromFrame.frameNumber)
     if c then for px in c.image:pixels() do
       local x, y = px.x + c.position.x, px.y + c.position.y
-      if px() > 0 and x >= 0 and y >= 0 and x < s.width and y < s.height then out[y * s.width + x + 1] = '1' end
+      if px() ~= CLEAR and x >= 0 and y >= 0 and x < s.width and y < s.height then out[y * s.width + x + 1] = '1' end
     end end
   end
   print(json.encode{ icon = t.name, squares = table.concat(out) })

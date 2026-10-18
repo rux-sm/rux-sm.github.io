@@ -60,12 +60,12 @@ local function read(l, r)
   local out = {}
   local c = l and l:cel(1)
   for y = r.y, r.y + r.height - 1 do for x = r.x, r.x + r.width - 1 do
-    local n = 0
+    local n = ${INKS.length}
     if c then
       local ix, iy = x - c.position.x, y - c.position.y
       if ix >= 0 and iy >= 0 and ix < c.image.width and iy < c.image.height then n = c.image:getPixel(ix, iy) end
     end
-    out[#out + 1] = n > 0 and ids:sub(n, n) or '.'
+    out[#out + 1] = n < ${INKS.length} and ids:sub(n + 1, n + 1) or '.'
   end end
   return table.concat(out)
 end

@@ -75,14 +75,14 @@ for (const [n, rift] of course.rifts.entries()) {
 const height = y - GAP + EDGE;
 
 const lua = s => JSON.stringify(s);
-const ink = id => INKS.indexOf(id) + 1;
+const ink = id => INKS.indexOf(id), CLEAR = INKS.length;
 const script = `
 local spr = Sprite(${width}, ${height}, ColorMode.INDEXED)
-local pal = Palette(${INKS.length + 1})
-pal:setColor(0, Color{ r = 0, g = 0, b = 0, a = 0 })
-${INKS.map((id, n) => `pal:setColor(${n + 1}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
+local pal = Palette(${CLEAR + 1})
+${INKS.map((id, n) => `pal:setColor(${n}, Color{ r = ${parseInt(HEX[id].slice(0, 2), 16)}, g = ${parseInt(HEX[id].slice(2, 4), 16)}, b = ${parseInt(HEX[id].slice(4), 16)} })`).join('\n')}
+pal:setColor(${CLEAR}, Color{ r = 0, g = 0, b = 0, a = 0 })
 spr:setPalette(pal)
-spr.transparentColor = 0
+spr.transparentColor = ${CLEAR}
 spr.gridBounds = Rectangle(0, 0, 5, 5)
 local picture = spr.layers[1]
 picture.name = 'picture'
@@ -93,6 +93,7 @@ local guide = spr:newLayer()
 guide.name = 'Guide'
 guide.opacity = 192
 local pi, si, gi = Image(spr.spec), Image(spr.spec), Image(spr.spec)
+pi:clear(${CLEAR}) si:clear(${CLEAR}) gi:clear(${CLEAR})
 local function put(img, x, y, n) img:drawPixel(x, y, n) end
 ${rows.map(r => {
   const out = [];

@@ -8,6 +8,11 @@ Every picture rux draws for Pixels has a file ready in Aseprite, in
 `pixels/art/source/`. Each is the right size and holds only the game's
 sixty inks, so a colour from anywhere else cannot be painted.
 
+The palette is the sixty inks, five to a row, a colour to a row, and last
+the clear colour. **Never drag a colour to a new place in it.** A pixel
+remembers its place in the palette, not its colour, so a moved colour
+repaints every pixel that used that place.
+
 | File | Squares | What it is |
 | :--- | :--- | :--- |
 | `character.aseprite` | 24 × 32 | the character, a layer to each part, for fights and Me |

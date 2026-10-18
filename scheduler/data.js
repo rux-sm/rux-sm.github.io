@@ -14607,20 +14607,22 @@
   function drawLiveCard(trip, bar) {
     const card = el('div', 'scheduler-card scheduler-card--live');
     card.dataset.tripId = trip.id;
-    const row = cls => el('div', `scheduler-card__row ${cls}`);
+    // Each part of the live card is a tile of its own, as the Prep panel's are.
+    const tile = cls => el('div', `rux--tile scheduler-card__live-tile ${cls}`);
     const bus = roadBusOf(bar);
     if (!bus) { card.appendChild(el('p', 'scheduler-card__row scheduler-card__live-none', 'Samsara has no reading for this bus now.')); return card; }
     const next = roadNext(bar, bus);
     const said = roadLook(bar, bus, next, roadNamed(bar));
     // Each warning in a band of its colour: its mark, its name and why.
     for (const w of said.warnings) {
-      const band = row(`scheduler-card__live-warn scheduler-card__live-warn--${w.tone}`);
+      const band = tile(`scheduler-card__live-warn scheduler-card__live-warn--${w.tone}`);
       band.append(svgUse(w.tone === 'error' ? '#m-report-fill' : '#m-warning-fill', '16', '0 0 16 16'),
         el('strong', 'scheduler-card__live-warn-name', w.title), el('span', 'scheduler-card__live-why', w.sentence));
       card.appendChild(band);
     }
-    // The map of the leg, then where to see more of it.
-    const mapRow = row('scheduler-card__live-map');
+    /* The map of the leg, where the bus is and when Samsara last heard from
+       it, then where to see more of it. */
+    const mapRow = tile('scheduler-card__live-map');
     const holder = el('div', 'scheduler-card__live-map-box');
     const links = el('div', 'scheduler-card__live-links');
     const link = (words, href, away) => {
@@ -14632,14 +14634,17 @@
     // Short words, so the two sit side by side as Carbon's ghost buttons, in the link colour.
     if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
     links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
-    mapRow.append(holder, links);
+    const foot = el('div', 'scheduler-card__live-foot');
+    foot.append(el('span', 'scheduler-card__live-place', bus.place || (bus.lat != null ? 'Place unknown' : 'No position')),
+      el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
+    mapRow.append(holder, foot, links);
     card.appendChild(mapRow);
     liveMapInto(holder, bar, bus, next, hueFor(trip));
     /* The stops still to come, each a dot, its name and the time it is due,
        the next with a green dot and when the bus gets there and how late. */
     const toCome = next ? next.stops.filter((st, i) => i > next.where.reached || (next.at && i === next.where.reached)) : [];
     if (toCome.length) {
-      const part = row('scheduler-card__road');
+      const part = tile('scheduler-card__road');
       part.appendChild(cardTitle('Stops'));
       const list = el('ul', 'scheduler-card__road-list');
       for (const st of toCome) {
@@ -14663,7 +14668,7 @@
     }
     // Each driver in the bus, the one at the wheel first, with their three clocks.
     if (bus.drivers.length) {
-      const part = row('scheduler-card__road');
+      const part = tile('scheduler-card__road');
       part.appendChild(cardTitle('Drivers'));
       const list = el('ul', 'scheduler-card__road-list');
       for (const d of [...bus.drivers].sort((a, b) => b.wheel - a.wheel)) {
@@ -14696,7 +14701,7 @@
     }
     // An engine lamp that is on, with what each of its codes says.
     if (bus.fault) {
-      const part = row('scheduler-card__road');
+      const part = tile('scheduler-card__road');
       const lamps = el('ul', 'scheduler-card__road-list');
       const item = el('li', `scheduler-card__road-lamp scheduler-card__road-lamp--${bus.fault}`);
       item.append(el('span', 'scheduler-card__road-name', bus.fault === 'stop' ? 'Engine stop lamp on' : 'Engine warning lamp on'));
@@ -14705,12 +14710,6 @@
       part.appendChild(lamps);
       card.appendChild(part);
     }
-    /* Where the bus is and when Samsara last heard from it; the speed and
-       the tank are on the bar just above. */
-    const foot = row('scheduler-card__live-foot');
-    foot.append(el('span', 'scheduler-card__live-place', bus.place || (bus.lat != null ? 'Place unknown' : 'No position')),
-      el('span', 'scheduler-card__live-seen', bus.seen ? `Seen ${roadAgo(bus.seen)} ago` : 'Not seen'));
-    card.appendChild(foot);
     return card;
   }
 

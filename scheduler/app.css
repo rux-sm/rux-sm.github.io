@@ -1251,7 +1251,7 @@ button.scheduler-row-head__num::after {
    is due, the next one bold with when the bus gets there; then a line for
    each driver Samsara has in the bus, their duty's mark, their name, bold at
    the wheel, and their duty and hours. */
-.scheduler-card__road { padding-block: var(--rux-spacing-03); }
+.scheduler-card__road { display: grid; gap: var(--rux-spacing-03); }
 .scheduler-card__road-list { display: grid; gap: var(--rux-spacing-02); margin: 0; padding: 0; list-style: none; }
 .scheduler-card__road-driver { display: flex; align-items: center; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-card__road-name { flex: none; }
@@ -1298,7 +1298,13 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-warn--error > svg { color: var(--rux-support-error); }
 .scheduler-card__live-warn--warning > svg { color: var(--scheduler-mark-warning); }
 .scheduler-card__live-why { grid-column: 2; color: var(--card-ink); }
-.scheduler-card__live-map { display: grid; gap: var(--rux-spacing-02); padding-block: var(--rux-spacing-03); }
+/* THE LIVE CARD IS A STACK OF TILES, as the Prep panel is: each warning,
+   the map with where the bus is, the stops, the drivers and the engine
+   lamp, a step apart and a step in from the card's sides, so a stop's name
+   keeps as much of its line as it can. */
+.scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); padding: var(--rux-spacing-03); }
+.scheduler-card--live > .scheduler-card__live-tile { flex: none; min-block-size: 0; min-inline-size: 0; margin: 0; padding: var(--rux-spacing-04); }
+.scheduler-card__live-map { display: grid; gap: var(--rux-spacing-03); }
 .scheduler-card__live-map-box { block-size: 12rem; background: var(--rux-layer-01); }
 .scheduler-card__live-map-box.leaflet-container { font: inherit; }
 /* The two links are ghost buttons in the link colour, their padding taken

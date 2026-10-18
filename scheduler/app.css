@@ -666,16 +666,18 @@ button.scheduler-row-head__num::after {
 .scheduler-bar[aria-pressed="true"]:hover { background-color: var(--scheduler-bg); }
 /* A TRIP THAT IS BACK is its colour mixed half way to the board, so the eye
    passes over it to the trips still to run, while its words keep their full
-   ink and stay as easy to read. Hover and the selected bar mix the same. */
-.scheduler-bar.scheduler-bar--back { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
-.scheduler-bar.scheduler-bar--back:hover { background-color: color-mix(in srgb, var(--scheduler-hover) 55%, var(--rux-layer)); }
-.scheduler-bar.scheduler-bar--back[aria-pressed="true"]:hover,
-.scheduler-week--static .scheduler-bar.scheduler-bar--back:hover { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
+   ink and stay as easy to read. Hover and the selected bar mix the same. A
+   bar still lit from Samsara is not back, whatever its planned return says:
+   the bus is still out. */
+.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
+.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-hover) 55%, var(--rux-layer)); }
+.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road)[aria-pressed="true"]:hover,
+.scheduler-week--static .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
 /* Its drivers are plain names: whether they said yes no longer matters once
    the trip is run, which leaves the row's green to Complete and Paid. A
    relief keeps its arrows, which say the role, in the bar's ink. */
-.scheduler-bar--back .scheduler-crew__mark--dot { display: none; }
-.scheduler-bar--back .scheduler-crew__mark { color: inherit; }
+.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-crew__mark--dot { display: none; }
+.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-crew__mark { color: inherit; }
 
 .scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }
 .scheduler-bar--blue      { --scheduler-bg: var(--rux-tag-background-blue);      --scheduler-fg: var(--rux-tag-color-blue);      --scheduler-hover: var(--rux-tag-hover-blue);      --scheduler-border: var(--rux-tag-border-blue); }

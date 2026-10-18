@@ -3109,6 +3109,13 @@
   transform: translateY(3px);
   box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45);
 }
+/* One height for every button and every field, 48px, Carbon's large size
+   and a whole step of the font's grid, so a field and the button beside it
+   line up and every control is the same target for a thumb. A page's
+   smaller size class is overruled here. */
+[data-theme="pixel-dark"] :is(.rux--btn, .rux--text-input, .rux--select-input, .rux--search-input, .rux--number input[type=number], .rux--number input[type=text], .rux--date-picker__input, .rux--time-picker__input-field, .rux--list-box) {
+  --rux-layout-size-height: var(--rux-layout-size-height-lg);
+}
 /* A button's words are in its middle both ways, as a game's are, where
    Carbon starts them at the left and leaves room on the right for an
    icon; a button with an icon keeps that room. On a raised button the

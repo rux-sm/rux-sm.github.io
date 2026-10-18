@@ -1493,6 +1493,9 @@ button.scheduler-row-head__num::after {
   border-block-start: 0;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(.scheduler-card__tile) .scheduler-card__title.scheduler-card__title:not(:last-child) { margin-block-end: var(--rux-spacing-05); }
+/* Over a tile, Add's box ends at the tile's edge, as the outlined Add does in
+   a theme that rings it, rather than running into the card's padding. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(.scheduler-card__tile) .scheduler-card__title > .scheduler-card__action { margin-inline-end: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile.scheduler-card__tile {
   min-block-size: 0;
   min-inline-size: 0;

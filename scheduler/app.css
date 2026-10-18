@@ -1524,6 +1524,8 @@ button.scheduler-row-head__num::after {
   border-radius: 0;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update + .scheduler-card__update { border-block-start: 1px solid var(--rux-border-subtle-01); }
+/* The same hairline parts the title, with Add, from the first update. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list { border-block-start: 1px solid var(--rux-border-subtle-01); }
 .scheduler-card__none {
   margin: 0;
   color: var(--rux-text-secondary);

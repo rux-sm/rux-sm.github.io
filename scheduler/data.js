@@ -14289,7 +14289,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar)] : []));
+    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
@@ -14799,6 +14799,23 @@
   /* A part's own button, at its title's end: the note's Edit or Add, the
      updates' Add. A word in the link colour, with the whole action as its
      accessible name. */
+  /* THE FLOATING CARD'S HEAD, as the trip panel's is: the trip's
+     destination, and Close at its end, since the card stays until it is put
+     away. The docked sheet on a phone heads itself with the trip's rows. */
+  function cardHead(trip) {
+    const head = el('div', 'scheduler-card__top');
+    const title = el('div', 'scheduler-card__top-title', trip.destination || 'No destination');
+    title.title = title.textContent;
+    const close = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-card__close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Close card');
+    close.title = 'Close';
+    close.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
+    close.lastChild.setAttribute('class', 'rux--btn__icon');
+    head.append(title, close);
+    return head;
+  }
+
   function cardAction(action, words, label) {
     /* Carbon's small ghost button, its word alone: on a card this small the
        word says the whole action, and an icon beside it is a second colour. */
@@ -15191,6 +15208,12 @@
 
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    // Close puts the card away and hands focus back to its trip.
+    if (e.target.closest('.scheduler-card__close')) {
+      const bar = selectedBar();
+      if (bar) { askCard(bar, false); bar.focus(); }
+      return;
+    }
     // The quick update's box takes its own clicks.
     if (e.target.closest('.scheduler-card__quick')) return;
     // Add opens the quick update's box under the title, and Save adds what

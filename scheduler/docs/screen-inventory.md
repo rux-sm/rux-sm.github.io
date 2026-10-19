@@ -226,15 +226,17 @@ opens on the tab the last one was on. New trip is the toolbar's last button, its
 words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the
 selected trip and opens on Details. The trip's card opens only when asked: a press on the bar's
 alert count, its update line or, out on the road, its Live pill, each lit under the pointer and an
-empty update line saying No updates, or Space on the bar, which selects it first; the same press, Space or Escape puts it away, Escape before the selection, and so does
+empty update line saying No updates, or Space on the bar, which selects it first; the same press, Space, Escape or its Close puts it away, Escape before the selection, and so does
 selecting another trip. It never stands beside the trip's own editor. On a phone the docked sheet
 still comes up with the selection, because it carries the trip's actions. The card floats clear of
 the trip, placed the way a calendar's event popover is: beside the trip's first day, where everything the trip says is
 written, over the two days after it, the trip's own or the board's, with its arrow at that day's
 middle; over the two days before it where the two after are not both on screen, as at the week's end
 or on a board scrolled sideways; and above or below the trip only where neither side has room, slid
-back inside the board at either edge with its arrow still pointing at the trip. It carries no
-buttons: what a phone's docked sheet offers as slots is on the bar's right-click menu. The card is a
+back inside the board at either edge with its arrow still pointing at the trip. It is headed, as
+the trip panel is, by the trip's destination with Close at its end, over the tabs where it has them,
+and carries no other buttons: what a phone's docked sheet offers as slots is on the bar's
+right-click menu. The card is a
 raised surface a step lighter than the board inside a hairline, so it stands off the week on a dark
 theme as well as a light one. It is one size, 22rem by 33rem, full or nearly empty, with or without
 tabs, shortened only to the board's room, and centred on the trip, beside its first day, or beside today on a bar out on the road whose rows stand there; what does not fit scrolls inside

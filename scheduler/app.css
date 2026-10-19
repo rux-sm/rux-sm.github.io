@@ -1095,6 +1095,38 @@ button.scheduler-row-head__num::after {
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) > :is(.scheduler-card, .scheduler-card-tabs) { flex: 1 1 auto; min-block-size: 0; }
+/* THE HEAD IS THE TRIP PANEL'S: the trip's destination in the panel
+   title's 16px heading, 16px from the card's edge, and Close at its end, the
+   control height, in the corner where the card holds nothing in from its
+   edge and that inset in from the top and the end where a theme holds it in,
+   as the panel's close stands. It spans the card, out over that inset, so
+   its hairline, the card's own edge, runs side to side as the panel's does,
+   drawn inside it so the head is the panel's height. The parts under it
+   start 16px below it, and the tabs straight under it. */
+.scheduler-card__top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  min-block-size: var(--rux-layout-size-height-md);
+  margin: calc(-1 * var(--scheduler-shortcut-pad, 0px)) calc(-1 * var(--scheduler-shortcut-pad, 0px)) 0;
+  padding: var(--scheduler-shortcut-pad, 0px) var(--scheduler-shortcut-pad, 0px) var(--scheduler-shortcut-pad, 0px) var(--rux-spacing-05);
+  box-shadow: inset 0 -1px 0 var(--card-edge);
+}
+.scheduler-card__top + .scheduler-card { margin-block-start: var(--scheduler-shortcut-pad, 0px); }
+.scheduler-card__top-title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--card-ink);
+  font-size: var(--rux-heading-compact-02-font-size);
+  font-weight: var(--rux-heading-compact-02-font-weight);
+  line-height: var(--rux-heading-compact-02-line-height);
+  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
+}
+.scheduler-card__close { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;

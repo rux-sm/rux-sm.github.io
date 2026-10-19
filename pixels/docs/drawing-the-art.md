@@ -98,7 +98,7 @@ it, and a rift left blank has no world.
 
 ## The puzzle sheet
 
-`puzzles.aseprite` holds the whole course, a row to each rift with its
+`puzzles.aseprite` holds the whole course and then Masterpieces, a row to each rift with its
 number and name over it, fifteen cells at the rift's size, and the boss's
 cell framed in red. Hover a cell to see its enemy's name.
 
@@ -108,7 +108,9 @@ cell framed in red. Hover a cell to see its enemy's name.
   cell, or leave it empty for a puzzle that ends in black and white.
 - Keep inside a cell's frame. The **Guide** layer is never read.
 
-To put the sheet in the game, ask for an import. It reads the course from
+A cell is a puzzle the game already has, so a new puzzle is started in the
+Pixelator, or asked for, before it has a cell. To put the sheet in the game,
+ask for an import. It reads the course from
 the database into a file, then runs:
 
     node pixels/tools/check-puzzle-sheet.mjs <course.json> --sql <file>

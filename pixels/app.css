@@ -6,15 +6,12 @@
    cover and the finish panel. */
 
 /* ONE GRID OF 6PX. Every size below is chosen so that what is divided comes
-   out in whole pixels with nothing rounded: the corner is 84px on a phone and
-   120px on a wide screen, the small picture in it 30px and 60px, the squares
+   out in whole pixels with nothing rounded: the corner is 84px, since the
+   game is a phone's column on every screen, the small picture in it 30px, the squares
    together a multiple of 30px, or of 20px on a board of twenty, and the
    keys' gaps 6px. They are pixels and not rems because they are a drawing's
    measures, not text's. */
 :root { --pixels-corner: 84px; --pixels-thumb: 30px; }
-@media (min-width: 48rem) {
-  :root { --pixels-corner: 120px; --pixels-thumb: 60px; }
-}
 
 /* THE FRAME is what the game or the maker sits in, and the width its sizes
    are worked out from, as 100cqi. On a phone it takes back all but .5rem of
@@ -283,16 +280,11 @@
 #pixels-made[hidden] { display: none; }
 #pixels-made { margin-block-start: 2.5rem; }
 .pixels-mine { padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
-/* A rift's own row: its name, what it holds, and its two keys. On a phone
-   the name has a line to itself and the rest sit under it, the keys at the
-   far end; on a wide screen they are one line. */
+/* A rift's own row: its name, what it holds, and its two keys. The name has
+   a line to itself and the rest sit under it, the keys at the far end. */
 .pixels-mine-head { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .5rem; align-items: center; }
 .pixels-mine-head > input { grid-column: 1 / -1; }
 .pixels-mine-head > .pixels-meta { white-space: nowrap; }
-@media (min-width: 42rem) {
-  .pixels-mine-head { grid-template-columns: minmax(8rem, 14rem) minmax(0, 1fr) auto auto; gap: .5rem 1rem; }
-  .pixels-mine-head > input { grid-column: auto; }
-}
 .pixels-me { display: grid; gap: 1.5rem; max-inline-size: 24rem; }
 .pixels-me-head { display: flex; align-items: center; gap: 1rem; }
 .pixels-me-name { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }
@@ -354,21 +346,18 @@
    does. */
 .pixels-tabs[hidden] { display: none; }
 .pixels-panel { padding: 1.5rem 0 0; }
-/* CONTINUE, the way on to the next puzzle. On a phone it lies over the bar
-   of places, by the thumb, as wide as the page less its margins, and the
-   panel keeps room for it under its last tile; on a wider screen it stands
-   over the puzzles. */
+/* CONTINUE, the way on to the next puzzle. It lies over the bar of places,
+   by the thumb, as wide as the column less its margins, and the panel keeps
+   room for it under its last tile. */
 .pixels-continue { margin-block-end: 1.5rem; }
-@media (max-width: 41.99rem) {
-  .pixels-continue {
-    position: fixed;
-    inset: auto 1rem calc(4.25rem + env(safe-area-inset-bottom, 0px));
-    z-index: 1;
-    margin: 0;
-  }
-  .pixels-continue-key { inline-size: 100%; max-inline-size: none; }
-  .pixels-panel:has(.pixels-continue) { padding-block-end: 4rem; }
+.pixels-continue {
+  position: fixed;
+  inset: auto max(1rem, (100vw - var(--game-column)) / 2 + 1rem) calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 1;
+  margin: 0;
 }
+.pixels-continue-key { inline-size: 100%; max-inline-size: none; }
+.pixels-panel:has(.pixels-continue) { padding-block-end: 4rem; }
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
 .pixels-steps { display: grid; gap: .5rem; margin: 1rem 0 0 1.25rem; }
 
@@ -480,12 +469,10 @@
 }
 @keyframes pixels-pulse { 50% { transform: scale(1.12); } }
 
-/* A CATEGORY'S PUZZLES: three tiles across on a phone, so a category of
-   fifteen is five rows of three, and five across where there is room, three
-   rows of five as Picross DS lays a level out. Each tile is a square,
-   whatever it holds, with its letter on a tab in its corner, and its
-   picture is half as wide as it is. Manage's, `--desk`, are eight across
-   there, or five where the open rift stands beside the list. */
+/* A CATEGORY'S PUZZLES: three tiles across, so a category of fifteen is
+   five rows of three. Each tile is a square, whatever it holds, with its
+   letter on a tab in its corner, and its picture is half as wide as it is.
+   Manage's are `--desk`. */
 /* A heading's count is at its far end. On Manage, `--desk`, the heading
    starts with the box that ticks the category, the size and the count stand
    beside the name, and the far end has the keys; the Published switch is in
@@ -497,16 +484,12 @@
 .pixels-shown { display: flex; align-items: center; gap: .5rem; }
 .pixels-moves { display: flex; }
 .pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
-@media (min-width: 66rem) {
-  .pixels-list { grid-template-columns: repeat(5, minmax(0, 1fr)); max-inline-size: 50rem; }
-  .pixels-list--desk { grid-template-columns: repeat(8, minmax(0, 1fr)); max-inline-size: none; }
-}
-/* MANAGE: a row to each place, then the open place. On a phone the open
-   place stands under its row, which the order manage.js gives each says;
-   from 66rem it stands beside the list, which stays in view. A row is a
-   raised plate, the open one marked, and its button opens it. */
+/* MANAGE: a row to each place, and the open place under its row, which the
+   order manage.js gives each says. A row is a raised plate, the open one
+   marked, and its button opens and closes it; a row scrolled to keeps
+   clear of the bar of ticks over it. */
 .pixels-manage { display: flex; flex-direction: column; gap: .5rem; }
-.pixels-place { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; padding: .5rem .75rem; background: var(--rux-layer-01); }
+.pixels-place { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; padding: .5rem .75rem; background: var(--rux-layer-01); scroll-margin-block-start: 7.5rem; }
 .pixels-place[aria-current] { background: var(--rux-layer-02); box-shadow: inset 0 0 0 2px var(--rux-focus); }
 .pixels-place-open {
   display: grid;
@@ -528,12 +511,6 @@
 .pixels-strip { display: flex; flex-wrap: wrap; gap: 2px; }
 .pixels-picture.pixels-strip-pic { --px: max(1px, round(down, calc(20px / var(--size, 10)), 1px)); }
 .pixels-open { padding-block: .5rem 1rem; }
-@media (min-width: 66rem) {
-  .pixels-manage { display: grid; grid-template-columns: minmax(18rem, 24rem) minmax(0, 1fr); gap: .5rem 1.5rem; align-items: start; }
-  .pixels-place { grid-column: 1; }
-  .pixels-open { grid-column: 2; grid-row: 1 / span var(--places); padding-block: 0; }
-  .pixels-open .pixels-list--desk { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-}
 .pixels-letter {
   position: absolute;
   inset: 0 auto auto 0;
@@ -679,11 +656,11 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 
 /* THE CORNER'S TILE fills the corner exactly, edge to edge with the numbers'
    bands, a square of one size on every board: the puzzle's name on a strip
-   20px deep, the clock on a line 24px deep, or 28px on a wide screen, which
+   20px deep, the clock on a line 24px deep, which
    is red from a mistake or a hint until the next move, and between them the
    picture so far, small. That picture is `--pixels-thumb` across on every
    board, which fives, tens and fifteens all divide, and it sits in the
-   middle on whole pixels. A board of twenty has it 40px across on a phone,
+   middle on whole pixels. A board of twenty has it 40px across,
    the whole of its room, where 30px would halve a pixel. Its empty squares
    are the page's colour so it shows on the tile. */
 .pixels-corner { min-inline-size: 0; }
@@ -716,9 +693,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-info .pixels-clock { font-size: 16px; line-height: 24px; }
 .pixels-clock[data-charged] { color: var(--rux-text-error); }
 .pixels-thumb { --px: calc(var(--pixels-thumb) / var(--size, 10)); background: var(--rux-background); }
-@media (max-width: 47.99rem) {
-  .pixels-game[data-side="20"] { --pixels-thumb: 40px; }
-}
+.pixels-game[data-side="20"] { --pixels-thumb: 40px; }
 
 /* THE FIGHT, a strip over the board, one row: the player's hearts, then
    the enemy's health, a bar as long as the share of its picture still to
@@ -848,9 +823,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   inline-size: var(--foot);
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
-@media (max-width: 47.99rem) {
-  .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
-}
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
@@ -971,7 +944,7 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 /* THE SAVED NOTICE floats at the page's top corner, so it moves nothing. */
 .pixels-saved { position: fixed; inset-block-start: 1rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
 
-/* THE MAKER ON A PHONE, where the width is short and the height is free.
+/* THE MAKER, in a column a phone wide, where the width is short and the height is free.
    The toolbar is under the board, by the thumb, in two lines of keys at
    Carbon's large height, each line's keys sharing its width: Back at the
    start, Undo and Redo in the middle, and Delete and Save at the end, Save
@@ -982,22 +955,20 @@ button:disabled > .pixels-ink-now { opacity: .35; }
    has, which is its share of its line. */
 .pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }
 .pixels-inks[inert] { opacity: .35; }
-@media (max-width: 47.99rem) {
-  .pixels-maker-work { display: flex; flex-direction: column; }
-  .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
-  .pixels-toolbar-group { flex: var(--keys) 1 0; min-inline-size: 0; margin: 0; background: var(--rux-layer-01); }
-  .pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
-  .pixels-toolbar-group > * { flex: 1; min-inline-size: 0; }
-  .pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; letter-spacing: 0; }
-  .pixels-bar-key > svg { inline-size: 1.125rem; block-size: 1.125rem; }
-  .pixels-toolbar-back { order: 1; --keys: 1; }
-  .pixels-toolbar-history { order: 2; --keys: 2; }
-  .pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }
-  .pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 2; }
-  .pixels-toolbar-break { order: 4; display: block; flex: 0 0 100%; block-size: .375rem; }
-  .pixels-toolbar-step { order: 5; --keys: 1; }
-  .pixels-toolbar-tools { order: 6; --keys: 3; }
-  .pixels-toolbar-clear { order: 7; --keys: 1; }
-  .pixels-toolbar-group.pixels-toolbar-ink { display: none; }
-  .pixels-inks-slot { order: 2; }
-}
+.pixels-maker-work { display: flex; flex-direction: column; }
+.pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
+.pixels-toolbar-group { flex: var(--keys) 1 0; min-inline-size: 0; margin: 0; background: var(--rux-layer-01); }
+.pixels-toolbar-group + .pixels-toolbar-group { box-shadow: none; }
+.pixels-toolbar-group > * { flex: 1; min-inline-size: 0; }
+.pixels-bar-key { flex-direction: column; gap: .125rem; padding: 0; letter-spacing: 0; }
+.pixels-bar-key > svg { inline-size: 1.125rem; block-size: 1.125rem; }
+.pixels-toolbar-back { order: 1; --keys: 1; }
+.pixels-toolbar-history { order: 2; --keys: 2; }
+.pixels-toolbar-file { order: 3; --keys: 1; flex-direction: row-reverse; }
+.pixels-toolbar-file:has(#pixels-delete:not([hidden])) { --keys: 2; }
+.pixels-toolbar-break { order: 4; display: block; flex: 0 0 100%; block-size: .375rem; }
+.pixels-toolbar-step { order: 5; --keys: 1; }
+.pixels-toolbar-tools { order: 6; --keys: 3; }
+.pixels-toolbar-clear { order: 7; --keys: 1; }
+.pixels-toolbar-group.pixels-toolbar-ink { display: none; }
+.pixels-inks-slot { order: 2; }

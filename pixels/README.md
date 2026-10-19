@@ -33,8 +33,8 @@ who has found sprites in it, and a guest's Delete my player. `friends.html` is t
 and their friends, each to remove. A player's own puzzles are made in the Pixelator, for mana, and a
 friend's published rifts stand after the owner's on the front page, saying who made them, and New until
 opened. A bar holds the places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players: along
-the bottom on a phone, the top on a wider one, and in a header from 66rem; not where a puzzle is played
-or drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
+the foot of the page, which is one phone-wide column on every screen; not where a puzzle is played or
+drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
 page is in Design's `pixel-dark`, locked. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
@@ -86,8 +86,8 @@ yet keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day mak
 in no rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
 `manage.html` is the owner's desk: a row to each rift, then Unsorted and Dailies, with a strip of its
-pictures and a rift's Published switch. A tap opens one, under its row or, on a wide screen, beside
-the list; `?rift=3` keeps it on a reload. An open rift has arrows that move it, a key that keeps it
+pictures and a rift's Published switch. A tap opens one under its row and a second tap closes it;
+`?rift=3` keeps it on a reload. An open rift has arrows that move it, a key that keeps it
 for picked players, a pencil that renames it and a bin that deletes it into Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle no player is sent, and a
 switch that sends it to no player when off; a rift has at most fifteen on. Add puzzle, after a rift's
 tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are moved, to a rift, a

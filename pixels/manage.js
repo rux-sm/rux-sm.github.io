@@ -7,10 +7,10 @@
    no player is sent; then Dailies where a day's puzzle is drawn. A row has
    its place and name, its size and how many are on, at most fifteen, a
    strip of its pictures, and for a rift the switch that hides it from
-   every player. Pressing a row opens that place and closes the one open,
-   so one place's tiles are drawn at a time; the open one is `?rift=` in
-   the address, so a reload or Back comes back to it. The page stands it
-   under its row on a phone and beside the list on a wide screen.
+   every player. Pressing a row opens that place under it and closes the
+   one open, and pressing the open row closes it, so one place's tiles at
+   most are drawn at a time; the open one is `?rift=` in the address, so a
+   reload or Back comes back to it.
 
    AN OPEN RIFT'S HEADING has the box that ticks it, its name, size and
    count, and arrows that move it up or down among the others; a key that
@@ -268,19 +268,20 @@
      in the owner's order, then Unsorted and Dailies, and the one place that
      is open. A row is the place's name, its size and how many are on, a
      strip of its pictures, and for a rift its Published switch; pressing it
-     opens that place, which `?rift=` keeps in the address. The open place
-     is its heading, with its box, its keys and its tiles; it stands beside
-     the list on a wide screen and under its row on a phone. `focus` is the
+     opens that place under it, or closes it when it is open, which `?rift=`
+     keeps in the address. The open place is its heading, with its box, its
+     keys and its tiles, and the page scrolls its row to the top. `focus` is the
      ids of what to put the focus on, the first that is there and can take
      it. */
   let moving = false;
   let open = new URLSearchParams(location.search).get('rift');
   const choose = (to, focus = []) => {
-    open = String(to);
+    open = to == null ? null : String(to);
     const at = new URL(location.href);
-    at.searchParams.set('rift', open);
+    if (open == null) at.searchParams.delete('rift'); else at.searchParams.set('rift', open);
     history.replaceState(null, '', at);
     draw(focus);
+    if (open != null) $(`pixels-place-${open}`)?.parentElement.scrollIntoView({ block: 'start' });
   };
   // A place's pictures, small, in a strip under its name.
   const strip = list => {
@@ -382,9 +383,8 @@
           return a;
         }))]);
     }
-    if (!places.some(([k]) => k === open)) open = places[0][0];
+    if (!places.some(([k]) => k === open)) open = null;
     const at = places.findIndex(([k]) => k === open);
-    host.style.setProperty('--places', places.length);
     places.forEach(([k, title, meta, list, shown], i) => {
       const row = document.createElement('div');
       row.className = 'pixels-place';
@@ -394,22 +394,24 @@
       b.className = 'pixels-place-open';
       b.id = `pixels-place-${k}`;
       b.setAttribute('aria-expanded', k === open);
-      b.setAttribute('aria-controls', 'pixels-open');
+      if (k === open) b.setAttribute('aria-controls', 'pixels-open');
       const text = document.createElement('span');
       text.className = 'pixels-place-words';
       text.append(words('pixels-place-name', title), words('pixels-meta', meta));
       b.append(text, strip(list));
-      b.addEventListener('click', () => { if (k !== open) choose(k, [b.id]); });
+      b.addEventListener('click', () => choose(k === open ? null : k, [b.id]));
       row.append(b, ...(shown ? [shown] : []));
       if (k === open) row.setAttribute('aria-current', 'true');
       host.append(row);
     });
-    const panel = document.createElement('div');
-    panel.className = 'pixels-open';
-    panel.id = 'pixels-open';
-    panel.style.order = at * 2 + 1;
-    panel.append(places[at][5]());
-    host.append(panel);
+    if (at >= 0) {
+      const panel = document.createElement('div');
+      panel.className = 'pixels-open';
+      panel.id = 'pixels-open';
+      panel.style.order = at * 2 + 1;
+      panel.append(places[at][5]());
+      host.append(panel);
+    }
     showTicked();
     focus.map($).find(el => el && !el.disabled)?.focus();
   }

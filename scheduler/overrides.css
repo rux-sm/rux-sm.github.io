@@ -135,7 +135,7 @@
   display: none;
 }
 /* Below md there is nothing beside a panel to leave room for, so the one in
-   front takes all the inset leaves rather than its 20rem. */
+   front takes all the inset leaves rather than its own width. */
 @media (max-width: 41.98rem) {
   .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
   .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
@@ -311,9 +311,9 @@
 #scheduler-panel > .rux--side-panel__actions-container { grid-row: 4; }
 
 /* The tabs take `spacing-01` inline padding in place of `spacing-05`, so all
-   five fit the panel's 20rem without scrolling, three of them with a done
-   mark after the word, and the list fills the strip so its rule runs to the
-   panel's edge. Every tab takes an equal share of it, from a zero basis where
+   five fit the editor on a 375px phone without scrolling, three of them with
+   a done mark after the word, and the list fills the strip so its rule runs
+   to the panel's edge. Every tab takes an equal share of it, from a zero basis where
    Carbon grows each from its word, and its word is centred in it. */
 #scheduler-panel-body .rux--tabs__nav-item {
   flex: 1 1 0;
@@ -377,29 +377,30 @@
 }
 /* The fields and the trip's name stand Carbon's 16px off the panel's edge at
    every width, as the To do pane's tiles do, so the two panels share one
-   inset and one 286px column, while the head, the shortcut row, the tabs and
-   the rules between sections run edge to edge. */
+   inset, while the head, the shortcut row, the tabs and the rules between
+   sections run edge to edge. */
 
 
 /* The editor's action buttons divide the bar evenly. Carbon pads a filled
-   button's trailing edge for an optional icon, which raises Reset's and Save's
-   minimum width above Cancel's; one symmetric padding lets the equal flex
-   basis decide, and 12px of it is what three words leave of the panel's
-   20rem. Scoped to the panel's bar, so modal footers keep Carbon's spacing.
-   The geist-dark theme ends the bar instead, giving each button its own width
-   and the same padding, so this changes nothing there. */
+   button's trailing edge 63px for an optional icon, which on a phone makes
+   Cancel trip wider than a third of the bar; one symmetric padding lets the
+   equal flex basis decide, and 12px of it is what Cancel trip leaves of a
+   third on a 320px phone. Scoped to the panel's bar, so modal footers keep
+   Carbon's spacing. Design's rounded themes end the bar instead and pad each
+   button themselves, so this changes nothing there. */
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-04);
 }
 /* A count beside its field keeps a narrow box: Passengers' 7rem holds any
    count and leaves Type the rest. */
 #scheduler-panel .scheduler-pair--count { grid-template-columns: minmax(0, 1fr) 7rem; }
-/* The Route tab's Summary has five columns, which Carbon's 16px a side would
-   run 50px past the editor's 20rem. A group in the editor's stack may be
-   narrower than its widest line, so the tile stays inside the panel; the
-   table's cells keep 4px between them and the tile's own inset at its two
-   edges, in the label size, and a row still too wide scrolls inside the tile
-   rather than pushing it out. */
+/* The Route tab's Summary has five columns, which at Carbon's 16px a side
+   and body size need 388px, more than the 307px its tile holds on a 375px
+   phone. A group in the editor's stack may be narrower than its widest line,
+   so the tile stays inside the panel; the table's cells keep 4px between them
+   and the tile's own inset at its two edges, in the label size, and a row
+   still too wide, as on a 320px phone, scrolls inside the tile rather than
+   pushing it out. */
 #scheduler-panel .rux--stack-vertical > .rux--layer-two { min-inline-size: 0; }
 .scheduler-summary__table { overflow-x: auto; }
 .scheduler-summary__table .rux--data-table :is(th, td) {
@@ -1225,16 +1226,16 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
 
 /* A notice that offers a choice puts its actions under its words, and so
    does every notice in the trip editor. Carbon lays an action beside them,
-   which in the editor's 20rem left the words a column three words wide. The
+   which in the editor on a phone leaves the words a column 20px wide. The
    actions start 32px in, so the first one's label stands under the title. */
 :is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) { flex-wrap: wrap; }
 :is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__details { flex-basis: 100%; }
 :is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__text-wrapper { padding-block-end: 0; }
 :is(.rux--actionable-notification.scheduler-note--choice, #scheduler-panel .rux--actionable-notification) .rux--actionable-notification__button-wrapper { margin-inline-start: var(--rux-spacing-07); }
-/* Carbon holds a notice to 18rem, wider than the editor's column once the
-   panel's padding is off it, and in a stack the notice widened the column
+/* Carbon gives a notice a minimum of 18rem, wider than the editor's column on
+   a phone under 352px wide, where in a stack the notice would widen the column
    and the Route summary's tile above it into the padding. In the editor a
-   notice takes the column's width. */
+   notice is never wider than the column. */
 #scheduler-panel :is(.rux--inline-notification, .rux--actionable-notification) { min-inline-size: 0; }
 
 /* A task and a leg on Prep are each a one-item accordion inside a tile, in

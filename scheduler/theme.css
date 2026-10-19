@@ -493,8 +493,8 @@
 /* GEIST'S, ANT'S AND APPLE'S TABS ARE AS WIDE AS THEIR WORDS in Design, 24px
    and 32px apart. The editor's five keep the equal shares overrides.css deals
    them instead: with a done mark on three of them their words and Design's
-   gaps are wider than the panel's 20rem, and a tab scrolled out of sight is
-   one nobody opens. The gap and the list's inset Design gives these themes
+   gaps are wider than the editor on a phone, and a tab scrolled out of sight
+   is one nobody opens. The gap and the list's inset Design gives these themes
    are taken back, so each share is a fifth. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) #scheduler-panel-body .rux--tabs__nav-link {
   margin-inline-start: 0;

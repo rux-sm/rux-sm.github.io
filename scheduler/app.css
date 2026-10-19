@@ -2613,8 +2613,9 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-heading-compact-02-line-height);
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
-  /* A time keeps one line: three fit the 20rem editor with their AM and PM
-     at the board's smaller size, and a wider theme font runs into the gap. */
+  /* A time keeps one line: three fit the editor on a 320px phone with their
+     AM and PM at the board's smaller size, and a wider theme font runs into
+     the gap. */
   white-space: nowrap;
 }
 

@@ -143,9 +143,10 @@
 .game-tile-tag { flex: none; margin: 0; }
 .game-tile.is-locked > .game-tile-art { opacity: .3; }
 .game-tile.is-locked .game-tile-name { color: var(--rux-text-secondary); }
-/* The tile the game goes on to, marked is-current, is ringed inside its
-   edge in the interactive colour. */
-.game-tile.is-current { box-shadow: inset 0 0 0 2px var(--rux-border-interactive); }
+/* WHAT IS DONE, a tile or the page of what it stands for, carries
+   game-done, and its progress bar is drawn in the warm colour, so a thing
+   finished reads apart from one under way. */
+.game-done .rux--progress-bar__bar { background-color: var(--rux-support-caution-minor); }
 
 /* THE START COVER. The stage holds the board, and the cover lies over it
    until play begins: a panel in its middle with Carbon's buttons, each as
@@ -170,10 +171,11 @@
    corners rounded a pixel in and a dark lip along the bottom that a press
    sinks into; css/rux-overrides.css has the reasons. Here the same is done
    for these parts: their words go to 16px, the score to 32px, and a game
-   key is raised. In a column a phone wide
-   four places or six keys share the width and their words do not fit at
-   16px, so they are their icons alone; a word is never made smaller than
-   the rest, and it stays in the page for a screen reader. */
+   key is raised. In a column a phone wide a row of keys, or a bar of five
+   places or more, shares the width too finely for words at 16px, so they
+   are their icons alone; a word is never made smaller than the rest, and
+   it stays in the page for a screen reader. A bar of four places or fewer
+   keeps its words under its icons. */
 [data-theme="pixel-dark"] :is(.game-place, .game-key, .game-tile-note) { font-size: 16px; line-height: 24px; }
 [data-theme="pixel-dark"] .game-finish-score { font-size: 32px; line-height: 40px; }
 [data-theme="pixel-dark"] .game-place[aria-current] { font-weight: 400; }
@@ -190,9 +192,7 @@
 [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45); }
 [data-theme="pixel-dark"] .game-key:focus-visible { outline: 0; box-shadow: inset 0 0 0 2px var(--rux-focus), inset 0 0 0 4px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45); }
 [data-theme="pixel-dark"] :is(.game-place, .game-key) { font-size: 0; line-height: 0; }
-/* The current tile's ring sits inside the raised edge's black outline and
-   above its lip. */
-[data-theme="pixel-dark"] .game-tile.is-current { box-shadow: inset 0 0 0 2px #000000, inset 0 0 0 4px var(--rux-border-interactive), inset 0 -6px 0 rgba(0, 0, 0, 0.45); }
+[data-theme="pixel-dark"] .game-places:not(:has(> :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]))) > .game-place { font-size: 16px; line-height: 24px; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
   [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: none; }
 }

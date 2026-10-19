@@ -37,8 +37,6 @@ done and how.
 - `pixels/me.js` loads the page again after a rift fails to delete, so the
   error is never read.
 - An unticked tile on Manage shows a grey check that reads as ticked.
-- Nothing tests the line solver in `pixels/app.js`, which decides whether a
-  puzzle may be saved.
 - The leaderboard cannot go on as it is: a time, a solve and so mana are the
   browser's word, Restart zeroes the clock, and it runs on an idle page.
 

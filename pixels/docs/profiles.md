@@ -83,8 +83,8 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 
 - **Delete my player, on Me, is a guest's.** It asks twice, then the player
   and all that is theirs are gone: results, friendships, keys, rifts and
-  puzzles. What the browser kept for them goes too, and the door is what is
-  left.
+  puzzles. Everything the browser kept for Pixels goes too, a drawing not
+  yet saved among it, but the Sound switch, and the door is what is left.
 
 ## Who is sent a rift
 

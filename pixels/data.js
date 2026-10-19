@@ -355,23 +355,34 @@
     async rename(name) {
       const me = await call('pixels_rename', { p_key: key(), p_name: name });
       const kept = readGuest();
-      if (!me.error && kept) localStorage.setItem(GUEST, JSON.stringify({ ...kept, name: me.name }));
+      try {
+        if (!me.error && kept) localStorage.setItem(GUEST, JSON.stringify({ ...kept, name: me.name }));
+      } catch { /* the name kept here is only a copy */ }
       return me;
     },
     // The door, for a browser with no player: a new name makes one with
     // that PIN, and a name already playing is let in by its PIN. The key is
-    // made here and kept only if the database takes it.
+    // made here and kept only if the database takes it. A browser that
+    // keeps nothing, as a private window may, is told so: the player is
+    // made all the same, and the name and PIN bring them back elsewhere.
     async door(name, pin) {
       const made = crypto.randomUUID() + crypto.randomUUID();
       const player = await call('pixels_door', { p_name: name, p_pin: pin, p_key: made });
-      if (!player.error) localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name }));
+      if (player.error) return player;
+      try { localStorage.setItem(GUEST, JSON.stringify({ key: made, name: player.name })); } catch { return { error: 'storage' }; }
       return player;
     },
     // A guest's player and all that is theirs, gone for good, and with it
-    // what this browser kept for them.
+    // everything this browser kept for Pixels, their drawings not yet saved
+    // among it, so the next player on this phone starts clean. The Sound
+    // switch is the phone's, and stays.
     async leave() {
       await call('pixels_leave', { p_key: key() });
-      for (const kept of [GUEST, 'pixels-progress', 'pixels-last', 'pixels-seen']) localStorage.removeItem(kept);
+      for (const kept of [localStorage, sessionStorage]) {
+        try {
+          Object.keys(kept).filter(k => k.startsWith('pixels-') && k !== 'pixels-sound').forEach(k => kept.removeItem(k));
+        } catch { /* storage refused, so nothing was kept */ }
+      }
     },
     // What a player is sent, the owner too: the puzzles of the levels the
     // owner has not hidden, but for those switched off or in no category,
@@ -618,6 +629,7 @@
       closed: 'Pixels is not taking new players just now.',
       busy: 'Pixels is full for the moment. Try again in a little while.',
       slow: 'Too many tries from here. Try again in an hour.',
+      storage: 'You are in, but this browser will not keep you. Close private browsing, then come in with the same name and PIN.',
     }[error] || 'That did not go through. Try again.');
     const form = document.createElement('form');
     form.className = 'pixels-join rux--stack-vertical rux--stack-scale-6';

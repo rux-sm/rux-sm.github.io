@@ -60,9 +60,10 @@
    A board wider than ten squares zooms under two fingers where its squares
    are too fine for one; app.js's `drag` says how.
 
-   BACK goes to the puzzle's category, and so does the category's own tile
-   once it is solved, which stands under the time with the sprite counted.
-   Next is the next unsolved puzzle of that category, then the first
+   EXIT, from the Back key and from Pause, goes back where the player came
+   from in this tab, or to the puzzle's category where there is no such
+   page. Once it is solved, the category's own tile stands under the time
+   with the sprite counted and goes to the category. Next is the next unsolved puzzle of that category, then the first
    unsolved of the category after it, and so round to the first, passing by
    a rift that is still locked and a boss still held back. A boss held
    back, by app.js's `holds`, is not played by its address either.

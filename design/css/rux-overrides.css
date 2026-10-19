@@ -1551,11 +1551,13 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher-btn::before {
   display: none;
 }
+/* The hovered and chosen options name the end options too, so they outweigh
+   the secondary grey the rule above gives `:first-child` and `:last-child`. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected) {
   background-color: transparent;
-  color: var(--rux-text-primary);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected {
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:hover:not(.rux--content-switcher--selected):is(:first-child, :last-child, :nth-child(n)),
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn.rux--content-switcher--selected:is(:first-child, :last-child, :nth-child(n)) {
   color: var(--rux-text-primary);
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher-btn.rux--content-switcher--selected::after {

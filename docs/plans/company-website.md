@@ -146,7 +146,8 @@ the last one forwarded came in March 2026.
       and on a yes put a line or two of it on the pages in both languages.
 - [ ] Put photos of the team on the pages once rux has them.
 - [ ] Put the site's Turnstile widget's site key in its `app.js` once rux has
-      made the widget, set its secret and deployed `quote-request`; check a
+      made the widget, set its secret and deployed `quote-request`, and take
+      the thank-you pages' `data-no-request` preview sentence out; check a
       failed send, then send the test request and close it.
 - [ ] Add `CNAME` to the site's repository, point `www` and the bare domain
       at GitHub Pages at GoDaddy, keeping every Microsoft 365 record, verify

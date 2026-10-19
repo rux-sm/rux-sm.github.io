@@ -544,6 +544,16 @@
            list pages' toolbars. The action bar below is outside this, and
            keeps its own size. -->
       <div class="rux--side-panel__inner-content rux--side-panel--scrolls rux--layout--size-md" id="scheduler-panel-body">
+        <!-- A SPLIT TRIP'S TWO LEGS, over the tabs and shown only on a split.
+             Choosing the other opens the editor on that leg, as pressing its
+             bar does, so the Route and Buses tabs and the trip contacts are
+             the leg's; data.js names each by its day and keeps the choice. -->
+        <div class="scheduler-panel-legs" id="scheduler-panel-legs" hidden>
+          <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" id="scheduler-leg-switch" aria-label="Leg">
+            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-leg="outbound"><span class="rux--content-switcher__label">Drop-off</span></button>
+            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-leg="return"><span class="rux--content-switcher__label">Pickup</span></button>
+          </div>
+        </div>
         <!-- Line tabs, 40px like the fields under them, so the selected tab's
              line sits at its foot, clear of the grey shortcut row above. -->
         <div class="rux--tabs rux--layout--size-md">
@@ -1354,6 +1364,8 @@
         <fieldset class="rux--radio-button-group rux--radio-button-group--label-right rux--radio-button-group--vertical" id="scheduler-file-type-group">
           <legend class="rux--label">Type</legend>
         </fieldset>
+        <!-- On a split trip, which leg an itinerary goes to: the one on screen. -->
+        <p class="rux--form__helper-text" id="scheduler-file-type-leg" hidden></p>
         <div class="rux--form-item rux--text-input-wrapper" id="scheduler-file-type-other" hidden>
           <div class="rux--text-input__label-wrapper">
             <label class="rux--label" for="scheduler-file-type-label">Name</label>
@@ -1777,6 +1789,7 @@
 <script src="/design/js/date-picker.js"></script>
 <script src="/design/js/copy-button.js"></script>
 <script src="/design/js/tabs.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/accordion.js"></script>
 <script src="/design/js/data-table.js"></script>
 <script src="/design/js/form-controls.js"></script>

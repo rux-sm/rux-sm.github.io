@@ -560,15 +560,16 @@
   const { stopsOfLeg, timesOf, legsOf, takes, clip, assignLanes } = window.SchedulerWeek;
 
   // The contact columns as the editor shows them on opening, so an untouched
-  // panel has nothing to save. Day-of rows are drawn without gaps, so they are.
+  // panel has nothing to save. Each day-of contact stays in its own slot.
   function contactColumnsOf(trip) {
     const b = tripContact(trip, 0);
     const out = { booking_contact_name: b?.name || null, booking_contact_phone: b?.phone || null,
                   booking_contact_email: b?.email || null };
-    const days = [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).filter(Boolean);
     for (let n = 1; n <= 5; n++) {
-      out[`trip_contact_${n}_name`] = days[n - 1]?.name || null;
-      out[`trip_contact_${n}_phone`] = days[n - 1]?.phone || null;
+      const c = tripContact(trip, n);
+      out[`trip_contact_${n}_name`] = c?.name || null;
+      out[`trip_contact_${n}_phone`] = c?.phone || null;
+      out[`trip_contact_${n}_leg`] = trip[`trip_contact_${n}_leg`] ?? null;
     }
     return out;
   }
@@ -2146,6 +2147,13 @@
     .map(r => (bus.seats[r.role].status !== 'off' ? `${r.role}:${bus.seats[r.role].status}` : r.role));
 
   const fleetSplit = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
+  /* THE LEG ON SCREEN. A trip saved as a split opens on the leg of the bar
+     pressed, and the switch over the tabs moves between its two; the Route
+     tab, the Buses tab, the trip contacts and a new itinerary are that leg's.
+     Null where the editor shows the whole trip: any other trip, and one not
+     saved as a split yet, whose pickup leg its first save makes. */
+  const legOnScreen = () => (editing && !editing.creating && editing.before.trip_type === SPLIT && fleetSplit()
+    ? editing.route.leg : null);
   const fleetLegs = () => (fleetSplit() ? ['outbound', 'return'] : ['outbound']);
 
   /* THE TRIP-WIDE NEEDS SUM UP ITS VEHICLES, the ones on the legs it has, so
@@ -2865,7 +2873,7 @@
       const short = seatsShort(buses);
       if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
       sec.dataset.fleetSection = leg;
-      sec.hidden = leg === 'return' && !split;
+      sec.hidden = (leg === 'return' && !split) || (!!legOnScreen() && leg !== legOnScreen());
       panelFleet.appendChild(sec);
     }
     // Done stays the tab's last section.
@@ -3163,6 +3171,15 @@
   const fileTypeOther = document.getElementById('scheduler-file-type-other');
   const fileTypeInput = document.getElementById('scheduler-file-type-label');
   const fileTypeAdd = document.getElementById('scheduler-file-type-add');
+  const fileTypeLeg = document.getElementById('scheduler-file-type-leg');
+  // An itinerary added on a split trip is the leg on screen's, and the dialog says which.
+  const drawFileTypeLeg = () => {
+    if (!fileTypeLeg) return;
+    const leg = pickedFileType() === 'Itinerary' ? legOnScreen() : null;
+    fileTypeLeg.hidden = !leg;
+    fileTypeLeg.textContent = leg === 'return' ? 'This itinerary goes to the pickup, the leg on screen.'
+      : 'This itinerary goes to the drop-off, the leg on screen. The pickup is handed it too until it has its own.';
+  };
   let fileTypeDone = null;
   for (const [value, name] of [...DOC_TYPES, [DOC_OTHER, 'Something else']]) {
     const id = `scheduler-file-type-${value.toLowerCase().replace(/\W+/g, '-')}`;
@@ -3181,6 +3198,7 @@
   if (fileTypeInput) fileTypeInput.maxLength = DOC_LABEL_MAX;
   const pickedFileType = () => fileTypeGroup?.querySelector('input:checked')?.value ?? '';
   fileTypeGroup?.addEventListener('change', () => {
+    drawFileTypeLeg();
     fileTypeAdd.disabled = !pickedFileType();
     fileTypeOther.hidden = pickedFileType() !== DOC_OTHER;
     nameError(fileTypeInput, '');
@@ -3193,6 +3211,7 @@
     for (const input of fileTypeGroup.querySelectorAll('input')) input.checked = false;
     fileTypeAdd.disabled = true;
     fileTypeOther.hidden = true;
+    drawFileTypeLeg();
     fileTypeInput.value = '';
     nameError(fileTypeInput, '');
     window.Rux?.modal?.open?.(fileTypeModal);
@@ -3232,7 +3251,7 @@
       }
       askFileType(file.name, async label => {
         add.btn.disabled = true;
-        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name)); }
+        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name), legOnScreen()); }
         finally { add.btn.disabled = false; }
       });
     };
@@ -4282,11 +4301,7 @@
        rather than `f`, which keeps them out of `readForm`'s required ids; a
        getter returns undefined when its control is not on screen. */
     { key: 'booking_contact_id', get: () => linkId('scheduler-f-cfind') },
-    { key: 'trip_contact_1_id', get: () => dayLink(1) },
-    { key: 'trip_contact_2_id', get: () => dayLink(2) },
-    { key: 'trip_contact_3_id', get: () => dayLink(3) },
-    { key: 'trip_contact_4_id', get: () => dayLink(4) },
-    { key: 'trip_contact_5_id', get: () => dayLink(5) },
+    ...[1, 2, 3, 4, 5].map(n => ({ key: `trip_contact_${n}_id`, get: () => dayField(n, `trip_contact_${n}_id`, () => linkId(`scheduler-f-d${n}`) ?? null) })),
     /* The trip's own copy of each contact, which rux-ui reads and writes: the
        name, phone and email as this trip has them. `undefined` when the field
        is not on screen, as above. The ids are settled at save by
@@ -4296,8 +4311,10 @@
     { key: 'booking_contact_email', get: () => fieldVal('scheduler-f-cemail') },
     { key: 'booking_contact_missive_url', get: () => fieldVal('scheduler-f-cthread') },
     ...[1, 2, 3, 4, 5].flatMap(n => [
-      { key: `trip_contact_${n}_name`, get: () => dayVal(`scheduler-f-d${n}`) },
-      { key: `trip_contact_${n}_phone`, get: () => dayVal(`scheduler-f-dphone${n}`) },
+      { key: `trip_contact_${n}_name`, get: () => dayField(n, `trip_contact_${n}_name`, () => fieldVal(`scheduler-f-d${n}`) ?? null) },
+      { key: `trip_contact_${n}_phone`, get: () => dayField(n, `trip_contact_${n}_phone`, () => fieldVal(`scheduler-f-dphone${n}`) ?? null) },
+      // The leg a split trip's contact is for, as leg-papers.js reads it.
+      { key: `trip_contact_${n}_leg`, get: () => dayField(n, `trip_contact_${n}_leg`, () => editing.days[n - 1].leg ?? null) },
     ]),
   ];
 
@@ -4310,23 +4327,20 @@
     return e.value.trim() ? (e.dataset.contactId || null) : null;
   };
 
-  /* A day-of contact link. Row one's name field stands for the block: when it
-     is absent the getter returns undefined, which writes nothing, where null
-     would clear the link. */
-  const dayLink = n => {
-    if (!document.getElementById('scheduler-f-d1')) return undefined;
-    return linkId(`scheduler-f-d${n}`) ?? null;
+  /* A day-of slot's column: what its field says while it is drawn, null once
+     it is taken off in this edit, and as it opened while it is not drawn, as
+     a split trip's other leg's slot is, so a leg's view saves only its own.
+     Undefined while the contacts are not built at all. */
+  const dayField = (n, key, fromField) => {
+    if (!document.getElementById('scheduler-f-days')) return undefined;
+    if (document.getElementById(`scheduler-f-d${n}`)) return fromField();
+    return editing?.days?.[n - 1]?.removed ? null : editing?.before[key] ?? null;
   };
 
   // A contact field's text: null when blank, undefined when not on screen.
   const fieldVal = id => {
     const e = document.getElementById(id);
     return e ? (e.value.trim() || null) : undefined;
-  };
-  // A day-of field, null for a row not drawn while the rows are, as `dayLink`.
-  const dayVal = id => {
-    if (!document.getElementById('scheduler-f-d1')) return undefined;
-    return fieldVal(id) ?? null;
   };
 
   /* Linking a trip's contacts, as rux-ui does it. A contact picked from the
@@ -6517,6 +6531,53 @@
      replay hands back the untouched draft. */
   let panelArgs = null;
 
+  /* THE LEG SWITCH over the editor's tabs, shown while the trip is typed as
+     a split. Each option names its leg by its first day; Pickup waits for the
+     trip's first save as a split, which makes the pickup leg. Choosing the
+     other leg asks about unsaved changes, as opening its bar does, and then
+     opens the editor on it; until then the switch stays on the leg shown. */
+  const legSwitchHost = document.getElementById('scheduler-panel-legs');
+  const legSwitch = document.getElementById('scheduler-leg-switch');
+  const legDay = iso => (iso ? parseISO(iso).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : '');
+  function drawLegSwitch() {
+    if (!legSwitchHost || !legSwitch || !editing) return;
+    legSwitchHost.hidden = !fleetSplit();
+    if (legSwitchHost.hidden) return;
+    const trip = editing.trip;
+    const ready = !!legOnScreen();
+    for (const btn of legSwitch.querySelectorAll('[data-leg]')) {
+      const pickup = btn.dataset.leg === 'return';
+      const day = legDay(pickup ? trip?.return_start_date : trip?.start_date);
+      btn.querySelector('.rux--content-switcher__label').textContent = [pickup ? 'Pickup' : 'Drop-off', day].filter(Boolean).join(' · ');
+      btn.disabled = pickup && !ready;
+      btn.title = btn.disabled ? 'The pickup opens once the trip is saved as a split' : '';
+    }
+    const on = legSwitch.querySelector(`[data-leg="${legOnScreen() || 'outbound'}"]`);
+    window.Rux?.contentSwitcher?.select?.(legSwitch, on, { focus: false, silent: true });
+  }
+  // The editor on the other leg, from its bar where the week shows one.
+  function openLeg(leg) {
+    const trip = panelIndex.trips.get(String(editing?.id)) ?? panelArgs?.trip;
+    if (!trip) return;
+    const bar = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(String(trip.id))}"]`)]
+      .find(b => (b.dataset.leg || 'outbound') === leg);
+    if (bar) { selectBar(bar); openPanel(bar); }
+    else {
+      const first = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))[0];
+      openPanel(null, null, { ref: { tripId: String(trip.id), leg, busId: first?.bus_id != null ? String(first.bus_id) : null,
+        assignmentId: first?.id != null ? String(first.id) : null }, trip });
+    }
+    legSwitch?.querySelector(`[data-leg="${leg}"]`)?.focus();
+  }
+  legSwitch?.addEventListener('rux:content-switcher-selected', e => {
+    const leg = e.detail?.option?.dataset.leg;
+    const from = legOnScreen();
+    drawLegSwitch();
+    if (!leg || !from || leg === from) return;
+    whenSafe(() => openLeg(leg));
+  });
+
   // `bar` opens a trip from the board; `again` replays an earlier `panelArgs`.
   function openPanel(bar, draft, again) {
     const creating = !!draft;
@@ -6683,6 +6744,12 @@
         endOpen: hhmmOrNull(back?.depart_prev),
       };
     })();
+    /* The five day-of slots: the leg each is for and, once the Details tab
+       draws them, whether it holds a row here; `removed` is a slot taken off
+       in this edit, which saves empty. */
+    editing.days = [1, 2, 3, 4, 5].map(n => ({ n, leg: creating ? null : trip[`trip_contact_${n}_leg`] ?? null,
+      open: false, fresh: false, removed: false }));
+
     // The places as they opened, so `routeWanted` can tell a new pick.
     editing.route.pickupOpen = editing.route.pickupPlace = placeOf(editing.route.pickup);
     editing.route.dropOpen = editing.route.dropPlace = placeOf(editing.route.drop);
@@ -6893,46 +6960,79 @@
          contact when it has none, and the section's menu adds one up to the
          schema's five or removes the last. Each stays in its own slot, up to
          the last one filled, with an empty slot before it drawn as an empty
-         row, so a trip saved elsewhere with a gap opens unchanged. */
-      const slots = [1, 2, 3, 4, 5].map(i => tripContact(trip, i));
-      const dayRows = creating ? [] : slots.slice(0, slots.findLastIndex(Boolean) + 1);
+         row, so a trip saved elsewhere with a gap opens unchanged.
+
+         A SPLIT TRIP SHOWS THE LEG ON SCREEN'S, as leg-papers.js hands them to
+         its drivers: the drop-off's, or the pickup's own, a slot added on the
+         pickup being the pickup's. A pickup with none of its own shows the
+         drop-off's, to read, under Same as drop-off, and Add pickup contact
+         starts its own. Both legs share the five slots, and a slot the other
+         leg holds is never drawn here, so it saves as it opened. */
+      const view = legOnScreen();
+      const savedIn = n => !creating && !!tripContact(trip, n);
+      const lastHeld = [1, 2, 3, 4, 5].filter(savedIn).at(-1) ?? 0;
+      // A slot is the pickup's or else the drop-off's, as leg-papers.js reads it.
+      const onView = d => !view || (view === 'return') === (d.leg === 'return');
+      for (const d of editing.days) d.open = view ? savedIn(d.n) && onView(d) : d.n <= lastHeld;
+      // The slots this view draws, in slot order.
+      const shown = () => editing.days.filter(d => d.open && onView(d));
+      // A pickup with none of its own draws none: it shows the drop-off's.
+      const borrowed = () => view === 'return' && !shown().length;
+      // The first slot no leg savedIn, or one emptied in this edit.
+      const freeSlot = () => editing.days.find(d => !d.open && !savedIn(d.n)) ?? editing.days.find(d => !d.open && d.removed);
+      const openSlot = d => Object.assign(d, { open: true, fresh: true, removed: false, leg: view === 'return' ? 'return' : null });
+      if (!shown().length && !borrowed() && freeSlot()) openSlot(freeSlot());
       /* A stack, 24px between contacts, each contact one row of its name
          beside its phone. */
       const rowsHost = el('div', 'rux--stack-vertical rux--stack-scale-3');
+      rowsHost.id = 'scheduler-f-days';
 
-      // What the drawn contacts hold, in `tripContact`'s shape.
-      const readContacts = () => [...rowsHost.children].map((_, i) => {
-        const box = document.getElementById(`scheduler-f-d${i + 1}`);
-        const name = box?.value.trim() || '';
-        return { id: name ? (box.dataset.contactId || null) : null, name,
-                 phone: document.getElementById(`scheduler-f-dphone${i + 1}`)?.value.trim() || null };
-      });
+      // What a slot savedIn now: its fields while drawn, else as it opened, or
+      // nothing for a slot opened or emptied in this edit.
+      const held = d => {
+        const box = document.getElementById(`scheduler-f-d${d.n}`);
+        if (box) {
+          const name = box.value.trim();
+          return { id: name ? (box.dataset.contactId || null) : null, name,
+                   phone: document.getElementById(`scheduler-f-dphone${d.n}`)?.value.trim() || null };
+        }
+        return d.fresh || d.removed ? null : tripContact(trip, d.n);
+      };
 
       /* Each contact is a tile, Name beside Phone, as a group named
-         Contact 1 to 5, which a screen reader says before its labels, so the
-         tab needs no heading between the section title and the fields. Adding
-         and removing are on the overflow menu at the end of the section's title
-         line, out of the rows: Add contact, up to five, and Remove last
-         contact, down to one; a contact in the middle is emptied by clearing
-         its fields. The fields keep positional ids, `scheduler-f-d2` for the
-         second contact, which `EDITS` and `linkContacts` read, so a redraw
-         fills them from what they held. */
-      const drawContacts = list => {
+         Contact 1 to 5 in the order drawn, which a screen reader says before
+         its labels, so the tab needs no heading between the section title and
+         the fields. Adding and removing are on the overflow menu at the end of
+         the section's title line, out of the rows: Add contact, up to five
+         across both legs, and Remove last contact, down to one, or on the
+         pickup to none; a contact in the middle is emptied by clearing its
+         fields. The fields carry their slot's number, `scheduler-f-d2` for
+         slot 2, which `EDITS` and `linkContacts` read, so a redraw fills them
+         from what they held. */
+      const drawContacts = () => {
+        const rows = shown().map(d => [d, held(d)]);
         rowsHost.replaceChildren();
-        list.forEach((c, i) => {
-          const n = i + 1;
+        rows.forEach(([d, c], i) => {
+          const n = d.n;
           const row = pair(
             withSaved(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
-              `scheduler-f-d${n}`, `Contact ${n} name`), `scheduler-f-d${n}`, 'contact'),
+              `scheduler-f-d${n}`, `Contact ${i + 1} name`), `scheduler-f-d${n}`, 'contact'),
             withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
-              `scheduler-f-dphone${n}`, `Contact ${n} phone`),
+              `scheduler-f-dphone${n}`, `Contact ${i + 1} phone`),
           );
           row.setAttribute('role', 'group');
-          row.setAttribute('aria-label', `Contact ${n}`);
+          row.setAttribute('aria-label', `Contact ${i + 1}`);
           rowsHost.appendChild(fieldTile(row));
         });
+        if (borrowed()) {
+          const theirs = PAPERS.contactsFor(trip, 'outbound', tripContact);
+          const note = el('p', 'rux--form__helper-text', theirs.length
+            ? `Same as drop-off: ${theirs.map(c => [c.name, c.phone && showPhone(c.phone)].filter(Boolean).join(', ')).join('; ')}.`
+            : 'Same as drop-off, which has no trip contact yet.');
+          rowsHost.appendChild(note);
+        }
       };
-      drawContacts(dayRows.length ? dayRows : [null]);
+      drawContacts();
 
       const menuBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
       menuBtn.type = 'button';
@@ -6944,21 +7044,24 @@
       menuBtn.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       menuBtn.lastChild.setAttribute('class', 'rux--btn__icon');
       menuBtn.addEventListener('click', () => {
-        const count = readContacts().length;
+        const count = shown().length;
+        const free = freeSlot();
         openRowMenu(menuBtn, {
-          editText: 'Add contact', editDisabled: count >= 5,
+          editText: view === 'return' && !count ? 'Add pickup contact' : 'Add contact', editDisabled: !free,
           edit: () => {
-            const kept = readContacts();
-            if (kept.length >= 5) return;
-            drawContacts([...kept, null]);
+            if (!free) return;
+            openSlot(free);
+            drawContacts();
             syncCopy();
-            document.getElementById(`scheduler-f-d${kept.length + 1}`)?.focus();
+            refreshDirty();
+            document.getElementById(`scheduler-f-d${free.n}`)?.focus();
           },
-          removeText: 'Remove last contact', removeDisabled: count <= 1,
+          removeText: 'Remove last contact', removeDisabled: view === 'return' ? count < 1 : count <= 1,
           remove: () => {
-            const kept = readContacts();
-            if (kept.length <= 1) return;
-            drawContacts(kept.slice(0, -1));
+            const last = shown().at(-1);
+            if (!last || (view !== 'return' && shown().length <= 1)) return;
+            Object.assign(last, { open: false, removed: true, fresh: false });
+            drawContacts();
             syncCopy();
             refreshDirty();
             menuBtn.focus();
@@ -6967,10 +7070,11 @@
       });
 
       /* The section is a group named by its title, not a fieldset, because the
-         title line also holds the menu, and a legend must be the fieldset's
+         title line also savedIn the menu, and a legend must be the fieldset's
          first child and nothing beside it. */
       const days = el('div', 'scheduler-panel-section');
-      const dayTitle = el('div', 'scheduler-panel-section__title', 'Trip contacts');
+      const dayTitle = el('div', 'scheduler-panel-section__title',
+        view === 'return' ? 'Pickup contacts' : view ? 'Drop-off contacts' : 'Trip contacts');
       dayTitle.id = 'scheduler-f-dgroup';
       const dayHead = el('div', 'scheduler-group__head');
       dayHead.append(dayTitle, menuBtn);
@@ -6994,7 +7098,7 @@
        back -- are worked out from those and never typed; they and the day's
        totals are one grey line on the Stops heading. The panel
        opens from one bar, so the fields are that leg's; a drop-off and
-       pick-up trip shows its other leg from the other bar. `editing.route`
+       pick-up trip shows its other leg from the other bar or the leg switch. `editing.route`
        holds the rows and what has been picked since. */
     panelRoute.replaceChildren();
     {
@@ -8914,10 +9018,12 @@
       returnDates.hidden = !split;
       setOutLabels(split);
       drawFleet();
+      drawLegSwitch();
       refreshDirty();
     });
 
     syncSaved();
+    drawLegSwitch();
     refreshDirty();
     loadFleetClashes();
 
@@ -11556,7 +11662,7 @@
 
     if (item.id === 'scheduler-bar-menu-upload') {
       const tripId = bar.dataset.tripId;
-      pickFile(file => uploadFrom(tripId, 'Itinerary', file));
+      pickFile(file => uploadFrom(tripId, 'Itinerary', file, null, barLeg(bar)));
       return;
     }
 
@@ -13400,6 +13506,17 @@
     ['trip_contact_1_phone', 'Trip phone'],
     ['trip_contact_2_name', 'Alternate trip contact'],
     ['trip_contact_2_phone', 'Alternate trip phone'],
+    ['trip_contact_3_name', 'Trip contact 3'],
+    ['trip_contact_3_phone', 'Trip contact 3 phone'],
+    ['trip_contact_4_name', 'Trip contact 4'],
+    ['trip_contact_4_phone', 'Trip contact 4 phone'],
+    ['trip_contact_5_name', 'Trip contact 5'],
+    ['trip_contact_5_phone', 'Trip contact 5 phone'],
+    ['trip_contact_1_leg', 'Trip contact day', 'leg'],
+    ['trip_contact_2_leg', 'Alternate trip contact day', 'leg'],
+    ['trip_contact_3_leg', 'Trip contact 3 day', 'leg'],
+    ['trip_contact_4_leg', 'Trip contact 4 day', 'leg'],
+    ['trip_contact_5_leg', 'Trip contact 5 day', 'leg'],
     ['notes', 'Notes'],
     ['contract_status', 'Contract status'],
     ['contract_signed_on', 'Contract signed on'],
@@ -13462,6 +13579,7 @@
     if (kind === 'boolean') return v ? 'Yes' : 'No';
     if (kind === 'inverseBoolean') return v ? 'No' : 'Yes';
     if (kind === 'billingType') return v ? 'Ticketed' : 'Charter';
+    if (kind === 'leg') return v === 'return' ? 'Pickup' : 'Drop-off';
     if (kind === 'money' || kind === 'number') {
       const n = Number(v);
       if (!Number.isFinite(n)) return String(v);
@@ -13670,8 +13788,8 @@
     recordHistory(tripId, action, [{ field: 'document', label: 'Document', before, after }], null, metadata);
 
   // Stores the file and adds its row. A row that fails takes the stored file
-  // back out, so nothing is left behind.
-  async function storeDocument(tripId, label, file) {
+  // back out, so nothing is left behind. `leg` is a split trip's pickup's, or null.
+  async function storeDocument(tripId, label, file, leg = null) {
     const fileName = await documentName(tripId, label);
     const path = `${tripId}/${Date.now()}/${fileName}`;
     const bucket = client.storage.from(DOC_BUCKET);
@@ -13679,7 +13797,7 @@
     if (upErr) throw new Error(upErr.message);
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
-        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size })
+        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size, leg })
         .select('id,label,created_at,file_name,file_path,file_size,leg').single().then(r => r));
       if (error) throw new Error(error.message);
       return data;
@@ -13703,8 +13821,8 @@
     }
   }
 
-  async function uploadDocument(tripId, label, file) {
-    const doc = await storeDocument(tripId, label, file);
+  async function uploadDocument(tripId, label, file, leg = null) {
+    const doc = await storeDocument(tripId, label, file, leg);
     await recordFileHistory(tripId, 'document_uploaded', null, `${label} uploaded`,
       { documentId: doc.id, fileName: doc.file_name });
     return doc;
@@ -13743,6 +13861,9 @@
       { documentId: doc.id, fileName: doc.file_name });
     return doc;
   }
+
+  // The leg a bar's upload goes to: its own on a split trip.
+  const barLeg = bar => (PAPERS.isSplit(panelIndex.trips.get(bar.dataset.tripId)) ? bar.dataset.leg || 'outbound' : null);
 
   // A split trip's itinerary moved to the other leg, at once, as a replace is.
   const LEG_WORDS = { outbound: 'Drop-off', return: 'Pickup' };
@@ -13810,8 +13931,11 @@
   /* An upload from any entry point. `item` is the Files tab's Carbon file item
      when the upload started there; elsewhere the toasts say how it went. A PO
      turns the Billing tab's PO received switch on in the open editor, which
-     Save then writes, as rux-ui does. */
-  async function uploadFrom(tripId, label, file, item) {
+     Save then writes, as rux-ui does. An itinerary goes to `leg`, the leg on
+     screen or the bar's: the pickup's is kept as its own, and any other is
+     the drop-off's. */
+  async function uploadFrom(tripId, label, file, item, leg = null) {
+    const pickup = label === 'Itinerary' && leg === 'return';
     if (!(await isPdf(file))) {
       if (item) item.fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
       else toast('error', 'Only PDF files can be added. Export it as a PDF first.');
@@ -13819,7 +13943,7 @@
     }
     if (!item) toast('working', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
     try {
-      await uploadDocument(tripId, label, file);
+      await uploadDocument(tripId, label, file, pickup ? 'return' : null);
     } catch (err) {
       if (item) item.fail('The file was not added', `${err.message} Try again.`);
       else toast('error', `The file was not added. ${err.message}`);
@@ -13832,7 +13956,7 @@
       refreshDirty();
     }
     await refreshDocuments(tripId);
-    toast('success', `${file.name} was added to the trip.`);
+    toast('success', `${file.name} was added to the ${pickup ? 'pickup' : 'trip'}.`);
     return true;
   }
 
@@ -13902,7 +14026,7 @@
       icon_for: bar => (bar.dataset.itineraryId ? '#m-attachment' : '#m-upload'),
       blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
-        : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file))) },
+        : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file, null, barLeg(bar)))) },
     // The trip's list of forms.
     { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
       blocked: () => null, run: bar => openForms(bar) },

@@ -35,7 +35,7 @@ days is entered once and works as it does now.
   Carbon's content switcher, opening on the leg of the bar pressed.
 - **Everything that is one leg's follows it:** the Route tab, the Buses
   tab's vehicles, the Details tab's trip contacts, and which leg an itinerary
-  is added for. The customer, the booking contact, Billing and the updates
+  is added for. A trip not saved as a split yet lists both legs' vehicles. The customer, the booking contact, Billing and the updates
   are the trip's and look the same under both.
 - **The dates stay together on the Details tab,** because they make the two
   legs and a new split trip needs both before its first save.
@@ -107,8 +107,8 @@ days is entered once and works as it does now.
 
 - **Each day has its own set of contacts.** The Details tab's trip contacts
   are the leg on screen's, titled Drop-off contacts or Pickup contacts on a
-  split trip, and each is saved with that leg. Both legs share the five
-  slots.
+  split trip; one added on the pickup is saved as the pickup's, and any other
+  with no leg, the drop-off's. Both legs share the five slots.
 - **Pickup with none of its own shows the drop-off's under Same as
   drop-off,** to read and not to edit, with Add pickup contact to start its
   own; removing the last of its own goes back to the drop-off's.
@@ -151,30 +151,10 @@ None open.
 
 ## Tasks
 
-- [ ] Read `hasItinerary` in `scheduler/checklist.js` and
-      `scheduler/follow-up.js`, and the card's Trip contact missing in
-      `scheduler/bar.js`, by the leg, with their checks.
-- [ ] Add the Drop-off and Pickup switch above the editor's tabs in
-      `scheduler/index.html` and `scheduler/data.js`: shown on a split trip,
-      opening on the bar's leg, asking Save changes first, Pickup disabled
-      until the first save, and the Buses tab showing the leg on screen.
-- [ ] Make the Details tab's trip contacts the leg on screen's, with Same as
-      drop-off and Add pickup contact, each slot saved with its leg, moved
-      with its contact when the slots are packed, and named in the trip's
-      history.
-- [ ] File an added itinerary under the leg on screen, or the bar's from its
-      Upload itinerary, and say which in the What is this file? dialog, in
-      `scheduler/data.js` and `scheduler/index.html`.
-- [ ] Add the legs to `get_trip` and `read_trip_document` in
-      `scheduler/connector/index.ts` and all five contact slots with their
-      legs to `scheduler/draft-fields.js` and
-      `scheduler/tools/check-draft-fields.mjs`, run `npm run build`, and hand
-      rux the connector's deploy, which carries the rules already rebuilt.
-- [ ] Describe the switch, the Details tab and the bar's Contact list in
-      `scheduler/docs/screen-inventory.md`, and in the trips skill that a
-      day's own paper and contacts are entered with that day switched on.
-- [ ] Check in Chrome on :8641 with the page's writes recorded and not sent:
-      a split trip switched to Pickup and given its own file and contacts, a
-      split trip with one file and one set of contacts reading the same on
-      both days, and a round trip unchanged; the report says what only a
-      real save proves.
+- [ ] Give a draft all five contact slots, each with its leg, in
+      `scheduler/draft-fields.js` and `scheduler/tools/check-draft-fields.mjs`,
+      laid onto the editor's slots whichever leg the link opens, and rebuild
+      the connector's rules with `scheduler/tools/build-connector-rules.mjs`.
+- [ ] Hand rux the connector's deploy, which carries the legs `get_trip` and
+      `read_trip_document` answer and the rebuilt rules, then call `get_trip`
+      on a split trip and read each document's and contact's leg back.

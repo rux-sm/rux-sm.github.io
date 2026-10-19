@@ -51,7 +51,10 @@ const TRIP_DETAIL = [
   'trip_contact_1_name', 'trip_contact_1_phone', 'trip_contact_2_name',
   'trip_contact_2_phone', 'trip_contact_3_name', 'trip_contact_3_phone',
   'trip_contact_4_name', 'trip_contact_4_phone', 'trip_contact_5_name',
-  'trip_contact_5_phone', 'req_sleeper', 'req_56pax', 'req_ada',
+  'trip_contact_5_phone',
+  // The leg of a split trip each trip contact is for, null being the drop-off's.
+  'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg',
+  'trip_contact_4_leg', 'trip_contact_5_leg', 'req_sleeper', 'req_56pax', 'req_ada',
   'need_hotel', 'need_fuel_card', 'trip_reqs', 'itinerary_confirmed',
   'is_self_organized', 'cancellation_reason', 'updated_at',
   // What a save writes to the Details and Billing tabs and the three Done
@@ -347,7 +350,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, and the day it was added; read_trip_document reads one. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. On a split trip (trip_type dropoff_pickup) a document\'s leg and each trip_contact_<n>_leg say which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -390,7 +393,7 @@ Deno.serve(
 
             // The Files tab, newest first, so the customer's latest paper leads.
             const documents = orThrow(await supabase.from('trip_documents')
-              .select('id, label, file_name, file_size, created_at')
+              .select('id, label, file_name, file_size, created_at, leg')
               .eq('trip_id', trip.id).order('created_at', { ascending: false }))
 
             return answer({
@@ -411,10 +414,10 @@ Deno.serve(
           },
           async ({ document_id }) => {
             const doc = orThrow(await supabase.from('trip_documents')
-              .select('id, trip_id, label, file_name, file_path, file_size, created_at')
+              .select('id, trip_id, label, file_name, file_path, file_size, created_at, leg')
               .eq('id', document_id).maybeSingle())
             if (!doc) throw new Error('No such file, or it is not one you can see.')
-            const about = { id: doc.id, trip_id: doc.trip_id, label: doc.label, file_name: doc.file_name, added: doc.created_at }
+            const about = { id: doc.id, trip_id: doc.trip_id, label: doc.label, file_name: doc.file_name, added: doc.created_at, leg: doc.leg }
             // The bucket is private and staff-only, so the download is the caller's own.
             const { data: blob, error } = await supabase.storage.from('trip-documents').download(doc.file_path)
             if (error || !blob) {

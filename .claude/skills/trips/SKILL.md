@@ -145,7 +145,9 @@ reads only the ones before it. Nothing is written until step 10.
 
 - **Details:** dates, destination, type, Passengers (the headcount, which
   the Buses tab holds against the buses' seats), booking contact (Add
-  email thread follows its Email label), trip contacts.
+  email thread follows its Email label), trip contacts. On a split trip the
+  switch over the tabs picks the leg: a day's own contacts and itinerary are
+  entered with that day on, and a pickup with none takes the drop-off's.
 - **Updates:** the trip has no notes; what has been said about it is its
   updates, newest first on its card, `updates` in `get_trip`. Add one with
   the card's Add, which opens a box that adds what is typed on Enter, or in

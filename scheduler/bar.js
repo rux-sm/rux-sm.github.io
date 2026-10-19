@@ -332,7 +332,7 @@
         list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w] });
       }
     }
-    if (!dayOfContact(trip) && !trip.contact_not_needed) {
+    if (!dayOfContact(trip, facts?.leg) && !trip.contact_not_needed) {
       list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
     }
     if (facts?.overSeated) list.push({ row: 'scheduler-card__warn', go: 'fleet', spot: 'seats', words: `More passengers than seats: ${facts.overSeated}` });
@@ -471,7 +471,7 @@
       return [`Tell ${name}: ${lines.join(', ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    const facts = { needs, misfits, overSeated, driverAlerts, tells };
+    const facts = { leg: leg.leg, needs, misfits, overSeated, driverAlerts, tells };
 
     /* The one mark, at the destination row's end: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
@@ -564,7 +564,7 @@
     else if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
       const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-          || (!dayOfContact(trip) && !trip.contact_not_needed));
+          || (!dayOfContact(trip, leg.leg) && !trip.contact_not_needed));
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }

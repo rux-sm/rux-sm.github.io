@@ -32,7 +32,8 @@
   const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms', itinerary: 'itinerary' };
 
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
-  const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
+  // The drop-off's itinerary, by leg-papers.js, which a split trip's pickup is handed too until it has its own.
+  const hasItinerary = trip => !!window.SchedulerLegPapers.itineraryFor(trip, 'outbound');
   // A requirement the trip carries, from its tags, or the old column before it had them.
   const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
   // A trip's legs: the drop-off and pickup of a split trip, or its one leg.

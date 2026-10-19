@@ -1762,6 +1762,12 @@ button.scheduler-row-head__num::after {
   user-select: all;
 }
 
+/* A split trip's leg switch, the full width of the fields over the tabs,
+   8px clear of the head above and the tabs below. */
+.scheduler-panel-legs {
+  padding-block: var(--rux-spacing-03);
+}
+
 /* The same news in words, under the editor's header: the faces sit on bars
    this panel covers, and a face is not read aloud. */
 .scheduler-presence-note {

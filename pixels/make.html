@@ -204,9 +204,11 @@
             </div>
             <div class="pixels-maker-board">
               <div id="pixels-board"></div>
-              <!-- Over the board's empty corner: whether the numbers solve the picture, how hard, and how much is filled. -->
+              <!-- Over the board's empty corner: whether the numbers solve the picture, and how hard. -->
               <div class="pixels-maker-check" id="pixels-check" aria-live="polite"></div>
             </div>
+            <!-- Under the board: how much the first look decides, and how much is filled. -->
+            <p class="pixels-meta pixels-maker-stats" id="pixels-stats"></p>
             <!-- The inks, open under the board on every screen; make.js fills them. -->
             <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></div>
           </div>

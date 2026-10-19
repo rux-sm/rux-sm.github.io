@@ -26,8 +26,8 @@ filled squares and let the extra room go to detail, not to a bigger blob.
 ## What the maker holds you to
 
 - **One answer.** Save stays off until the tag in the board's corner is green
-  and says Solvable. A square outlined in yellow is one the numbers cannot
-  decide, so the player would have to guess, and the tag counts them.
+  and says Ready. A square outlined in yellow is one the numbers cannot
+  decide, so the player would have to guess, and the red tag counts them.
 - **A name**, up to 40 letters. It is hidden until the puzzle is solved, so it
   is the reward: name the thing, in one or two words.
 
@@ -133,7 +133,7 @@ look at every row and every column, filling in what each can now decide.
 | normal | 4 or 5 | a few lines wait for their neighbours |
 | hard | 6 or more | the picture comes out one corner at a time |
 
-Under that the corner says how much the first look gives, such as 66% first
+Under the board a line says how much the first look gives, such as 66% first
 look: the share of the board that one look at every row and column decides
 before any square is known. A puzzle that gives more is quicker to solve,
 and this follows a player's time more closely than the rounds do.

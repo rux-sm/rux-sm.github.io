@@ -48,18 +48,16 @@ the game's rows alone.
 
 In a game:
 
-- **A game takes this header on a wide screen,** from 66rem, where Carbon
-  shows a header's links, holding the game's places and the menu, so an
-  account can leave for another app from any game as it can from any app. On a phone a game keeps its bar of places and no
+- **A game takes this header on a wide screen,** from 66rem, holding the
+  menu and no links, since the game's places are its bar on every screen,
+  so an account can leave for another app from any game as it can from any app. On a phone a game keeps its bar of places and no
   header, and shows no picture button: Me is one tap away in the bar and
   holds the menu's rows.
-- **On a wide screen Me is not a place:** it is the first of the game's own
-  rows in the menu, as the picture button is the player.
-- **A game adds its own rows to the menu** through `Rux.profile.rows`: Me,
-  How to play, and for Pixels' owner Manage and Players. Add to home screen
-  stays on Me, where a phone finds it.
+- **Me is a place in the bar,** and Pixels adds no rows to the menu: How to
+  play opens from Me and the ? key, and the owner's Manage and Players are
+  places in the bar. Add to home screen stays on Me, where a phone finds it.
 - **A player with no account has the same button, with the picture they
-  drew,** and their menu is who is playing, the game's rows and Theme. They
+  drew,** and their menu is who is playing. They
   have no Profile, no Log out and no apps, since they have no account to
   open another app with.
 - **An account's button is its own picture in a game too,** so the button

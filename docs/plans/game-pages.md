@@ -34,10 +34,9 @@ The shapes:
 
 One bar:
 
-- **A game has no header on a phone.** One bar along the bottom holds its
-  places. On a wide screen it takes the shell's header, which holds its
-  places and the account menu, as `docs/plans/account-menu.md` plans; until
-  that is built its bar of places stands along the top.
+- **A game is one column a phone wide on every screen.** One bar along its
+  foot holds its places. On a wide screen it also takes the shell's header,
+  with no links, for the account menu.
 - **Play shows no bar,** only its own keys and a way back, as Pixels' puzzle
   and Pixelator do now.
 - **On a phone what a header would hold is on the Player page,** as a list

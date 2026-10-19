@@ -38,10 +38,11 @@ the second column is the suggestion.
 | `game-play` | a game being played: the board, its keys and the finish |
 | `game-player` | who is playing a game, and what they can set |
 
-The three game pages are copied together. On a phone they have no header, and
-one bar of places is the way round. From 66rem the hub and the player's page
-take the header, with the places and the account's panel in it, and a game
-being played has neither.
+The three game pages are copied together. Each is one column a phone wide,
+centred on every screen, and one bar of places along its foot is the way
+round. From 66rem the hub and the player's page take the header too, with
+only the game's name and the account's panel in it, and a game being played
+has neither.
 
 ## UI shell — one, with parts
 

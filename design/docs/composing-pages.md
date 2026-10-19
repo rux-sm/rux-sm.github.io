@@ -34,9 +34,9 @@ what you do not need.
 | something went wrong | `templates/error-state.html` |
 | a game: tiles to pick from, the board, and the player | `templates/game-hub.html`, `templates/game-play.html` and `templates/game-player.html`, together |
 
-**A game's three pages have no side nav, and no header on a phone.** One bar
-of places is their way round there, and from 66rem the hub and the player's
-page take the header. `css/rux-game.css` holds the parts Carbon lacks, under
+**A game's three pages have no side nav, and are one column a phone wide on
+every screen.** One bar of places along its foot is their way round, and
+from 66rem the hub and the player's page take a header with no links. `css/rux-game.css` holds the parts Carbon lacks, under
 `game-`; the comment at the head of `templates/game-hub.html` says what each
 page is for.
 

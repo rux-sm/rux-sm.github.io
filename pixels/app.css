@@ -275,6 +275,7 @@
 .pixels-picture > [data-ink] { background: var(--ink); }
 /* A small picture is about 5rem across, whatever its puzzle's size. */
 .pixels-picture--sm { --px: round(down, calc(5rem / var(--size, 10)), 1px); }
+.pixels-picture.pixels-canvas { display: block; inline-size: calc(var(--size, 10) * var(--px)); block-size: calc(var(--size, 10) * var(--px)); image-rendering: pixelated; }
 
 /* ME: the player's picture beside their username, then what they have done,
    then the rifts they have made, a block each. */

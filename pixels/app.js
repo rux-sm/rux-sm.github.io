@@ -805,11 +805,31 @@
     el.textContent = text;
     return el;
   };
+  // A tile's picture is one canvas, a pixel to a square, which CSS draws
+  // at a whole number of screen pixels a square. A page of tiles holds
+  // hundreds of pictures, and an element to a square made it tens of
+  // thousands of elements, each laid out again as the page settled.
+  const inks = {};
+  const inkOf = id => (inks[id] ??= getComputedStyle(document.documentElement).getPropertyValue(`--pixels-ink-${id}`).trim());
+  const canvas = (squares, colours) => {
+    const n = Math.sqrt(squares.length), el = document.createElement('canvas');
+    el.width = el.height = n;
+    el.style.setProperty('--size', n);
+    const ctx = el.getContext('2d'), page = getComputedStyle(document.documentElement);
+    ctx.fillStyle = page.getPropertyValue('--rux-layer-01').trim();
+    ctx.fillRect(0, 0, n, n);
+    [...squares].forEach((c, i) => {
+      if (!colours && c !== '1') return;
+      ctx.fillStyle = colours ? inkOf(colours[i]) : page.getPropertyValue('--rux-text-primary').trim();
+      ctx.fillRect(i % n, Math.floor(i / n), 1, 1);
+    });
+    return el;
+  };
   const art = (puzzle, solved) => {
-    const el = document.createElement('div');
+    let el = document.createElement('div');
     if (solved) {
-      el.className = 'pixels-picture pixels-picture--sm';
-      picture(el, puzzle.squares, puzzle.colours);
+      el = canvas(puzzle.squares, puzzle.colours);
+      el.className = 'pixels-picture pixels-picture--sm pixels-canvas';
     } else {
       el.className = 'pixels-blank';
       el.textContent = '?';

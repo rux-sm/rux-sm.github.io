@@ -35,8 +35,9 @@ what you do not need.
 | a game: tiles to pick from, the board, and the player | `templates/game-hub.html`, `templates/game-play.html` and `templates/game-player.html`, together |
 
 **A game's three pages have no side nav, and are one column a phone wide on
-every screen.** One bar of places along its foot is their way round, and
-from 66rem the hub and the player's page take a header with no links. `css/rux-game.css` holds the parts Carbon lacks, under
+every screen.** Below 66rem one bar of places along its foot is their way
+round; from 66rem every page takes the header instead, the places as its
+links. `css/rux-game.css` holds the parts Carbon lacks, under
 `game-`; the comment at the head of `templates/game-hub.html` says what each
 page is for.
 

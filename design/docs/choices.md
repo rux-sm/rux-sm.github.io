@@ -39,10 +39,9 @@ the second column is the suggestion.
 | `game-player` | who is playing a game, and what they can set |
 
 The three game pages are copied together. Each is one column a phone wide,
-centred on every screen, and one bar of places along its foot is the way
-round. From 66rem the hub and the player's page take the header too, with
-only the game's name and the account's panel in it, and a game being played
-has neither.
+centred on every screen. Below 66rem one bar of places along its foot is the
+way round, and a game being played has none; from 66rem every page takes the
+header instead, the places as its links, as every other app has.
 
 ## UI shell — one, with parts
 

@@ -33,14 +33,13 @@
   .game-page { margin: -1rem -2rem 0; }
 }
 
-/* THE HEADER, which a game takes on a wide screen only: Carbon's own, with
-   the game's name and the account action at its end, so whoever is logged
-   in can leave for another app. Its links are not drawn, because the bar of
-   places is the way round on every screen. Carbon shows a header from
-   66rem, so that is where a game's header starts; below it the page starts
-   at its top. A header a script has not shown yet, as while nobody is
-   playing, takes no room. */
-.game-header .rux--header__nav { display: none; }
+/* THE HEADER, which a game takes on a wide screen only, on every page, as
+   every other app does: Carbon's own, with the game's name, its places as
+   the header's links, and the account action at its end, so whoever is
+   logged in can leave for another app. Carbon shows a header's links from
+   66rem, so that is where a game's header starts and its bar of places
+   stops; below it the page starts at its top. A header a script has not
+   shown yet, as while nobody is playing, takes no room. */
 @media (max-width: 65.99rem) {
   .game-header { display: none; }
   .game-header ~ .rux--content.game-main { margin-block-start: 0; }
@@ -50,10 +49,11 @@
   .game-header[hidden] ~ .rux--content.game-main { margin-block-start: 0; }
 }
 
-/* THE BAR OF PLACES, fixed along the foot of the column on every screen,
-   each place its icon over its word, clear of the home bar. The place the
-   page is, marked by aria-current, carries a line on the edge that meets
-   the page. */
+/* THE BAR OF PLACES, a phone's way round, where a header makes less sense:
+   fixed along the foot of the column below 66rem, each place its icon over
+   its word, clear of the home bar. From 66rem the header's links are the
+   places, and the bar is not drawn. The place the page is, marked by
+   aria-current, carries a line on the edge that meets the page. */
 .game-places {
   position: fixed;
   inset: auto 0 0;
@@ -82,7 +82,12 @@
 .game-place:hover { color: var(--rux-text-primary); background: var(--rux-layer-hover-01); }
 .game-place:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 .game-place[aria-current] { color: var(--rux-text-primary); font-weight: 600; border-block-start-color: var(--rux-border-interactive); }
-.game-main:has(.game-places) { padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 65.99rem) {
+  .game-main:has(.game-places) { padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (min-width: 66rem) {
+  .game-places { display: none; }
+}
 
 /* THE GAME KEY, an icon over its word, 3.5rem to press. A row of them shares
    the row's width. A key that is a switch says so with aria-pressed and is

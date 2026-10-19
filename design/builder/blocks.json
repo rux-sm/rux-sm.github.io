@@ -985,7 +985,7 @@
           "id": "lanterns-how"
         }
       ],
-      "line": 394,
+      "line": 463,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1004,7 +1004,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 430,
+      "line": 499,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1023,7 +1023,7 @@
       "follows": null,
       "deps": [],
       "frameDeps": [],
-      "line": 447,
+      "line": 516,
       "provenance": "PROVENANCE: rendered-dom · components-modal--default, components-tile--clickable, components-tag--default and components-progressbar--default, as sink/modal.html, sink/tile.html, sink/tags.html and sink/progress-bar.html record them, 2026-08-28. The `game-` parts are no capture, because Carbon ships none of them: they are this system's own, in css/rux-game.css, and were measured on a game built from them.",
       "grid": "rux--css-grid",
       "column": "rux--col-span-100 rux--css-grid-column",
@@ -1687,8 +1687,8 @@
         {
           "name": "body",
           "line": 453,
-          "start": 104734,
-          "end": 109071,
+          "start": 104780,
+          "end": 109117,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",
@@ -1712,9 +1712,9 @@
       "slots": [
         {
           "name": "body",
-          "line": 392,
-          "start": 100528,
-          "end": 106448,
+          "line": 461,
+          "start": 105072,
+          "end": 110992,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",
@@ -1741,8 +1741,8 @@
         {
           "name": "body",
           "line": 460,
-          "start": 105109,
-          "end": 107910,
+          "start": 105155,
+          "end": 107956,
           "container": {
             "grid": "rux--css-grid",
             "column": "rux--col-span-100 rux--css-grid-column",

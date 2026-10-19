@@ -16,6 +16,9 @@
    number may take are `--pixels-clue-step` apart, 8px on a screen of one
    pixel to the CSS pixel, 4px on one of two, and 8/3px on one of three. */
 :root { --pixels-corner: 84px; --pixels-thumb: 30px; --pixels-clue-step: 8px; }
+/* THE HEADER'S HEIGHT, which the game and the maker leave out of the
+   window's: Carbon's 3rem from 66rem, once data.js shows it. */
+@media (min-width: 66rem) { :root:has(.game-header:not([hidden])) { --pixels-head: 3rem; } }
 @media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) { :root { --pixels-clue-step: 4px; } }
 @media (min-resolution: 3dppx), (-webkit-min-device-pixel-ratio: 3) { :root { --pixels-clue-step: calc(8px / 3); } }
 
@@ -344,7 +347,9 @@
 /* A name stays wide enough to read and type in; on a phone the table slides. */
 .pixels-player-name { min-inline-size: 8rem; max-inline-size: 14rem; }
 .pixels-player-who { display: flex; align-items: center; gap: .5rem; }
-.pixels-scroll { overflow-x: auto; }
+/* A wide table scrolls inside its own box, which holds its hidden words
+   too, so the page never scrolls sideways. */
+.pixels-scroll { position: relative; overflow-x: auto; }
 .pixels-scroll[hidden] { display: none; }
 
 /* THE FRONT PAGE AND A CATEGORY'S. The tabs' panels start where the page
@@ -352,8 +357,9 @@
 .pixels-tabs[hidden] { display: none; }
 .pixels-panel { padding: 1.5rem 0 0; }
 /* CONTINUE, the way on to the next puzzle. It lies over the bar of places,
-   by the thumb, as wide as the column less its margins, and the panel keeps
-   room for it under its last tile. */
+   by the thumb, or at the foot of the window from 66rem, where the header
+   holds the places, as wide as the column less its margins, and the panel
+   keeps room for it under its last tile. */
 .pixels-continue { margin-block-end: 1.5rem; }
 .pixels-continue {
   position: fixed;
@@ -361,6 +367,7 @@
   z-index: 1;
   margin: 0;
 }
+@media (min-width: 66rem) { .pixels-continue { inset-block-end: 1.5rem; } }
 .pixels-continue-key { inline-size: 100%; max-inline-size: none; }
 .pixels-panel:has(.pixels-continue) { padding-block-end: 4rem; }
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
@@ -643,7 +650,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
      are 64px and 72px at least, for the corner's picture and clock.
    - `--side` is what the frame's width leaves beside the numbers, or what
      the window's height leaves once `--chrome`, the height the rest of the
-     page takes, is taken away, from 150px up to `--most`, and down to a
+     page takes, and the header's are taken away, from 150px up to `--most`, and down to a
      multiple of the puzzle's size. The height never takes a square under
      18px: a window too short for that scrolls instead.
    - `--foot` is the game's width, the numbers' room and the squares.
@@ -657,14 +664,14 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   --clue: clamp(var(--clue-least), round(down, min(16px, (100cqi - 8px - var(--fewest)) / var(--units, 5), (100cqi - 9px - 3px * var(--cols, 15)) / (var(--units, 5) + var(--cols, 15))) + .01px, var(--pixels-clue-step)), 16px);
   --clue-w: max(64px, round(up, var(--units, 5) * var(--clue) + 8px, 1px));
   --clue-h: max(72px, round(up, var(--count, 5) * var(--clue) + 4px, 1px));
-  --side: round(down, clamp(150px, min(100cqi - var(--clue-w), max(100dvh - var(--chrome) - var(--clue-h), var(--cols, 15) * 18px)), var(--most)), var(--cols, 15) * 1px);
+  --side: round(down, clamp(150px, min(100cqi - var(--clue-w), max(100dvh - var(--pixels-head, 0px) - var(--chrome) - var(--clue-h), var(--cols, 15) * 18px)), var(--most)), var(--cols, 15) * 1px);
   --foot: calc(var(--side) + var(--clue-w));
   --pixels-thumb: round(down, 45px, var(--cols, 15) * 1px);
   display: grid;
   gap: 1rem;
   inline-size: var(--foot);
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
-  padding-block-start: max(0px, round(down, (100dvh - var(--chrome) - var(--clue-h) - var(--side)) / 2, 1px));
+  padding-block-start: max(0px, round(down, (100dvh - var(--pixels-head, 0px) - var(--chrome) - var(--clue-h) - var(--side)) / 2, 1px));
   touch-action: manipulation;
 }
 @media (pointer: fine) { .pixels-game { --fewest: 240px; } }
@@ -853,11 +860,11 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    Its board is the game's, set in by a whole number of pixels as the game
    is. `--chrome` is the height everything but the board takes, so the board
    takes what the window leaves and the whole maker is in view without
-   scrolling. On a phone the inks stand under the board and are as wide as
-   it is, so their height grows with it, five elevenths of its width: there
-   `--side` is what is left of the window's height after the 253px the head
-   and the toolbar's two lines take, shared eleven parts to the board and
-   five to the inks.
+   scrolling. The inks stand under the board and are as wide as it is, so
+   their height grows with it, five elevenths of its width: `--side` is
+   what is left of the window's height after the header and the 253px the
+   head and the toolbar's two lines take, shared eleven parts to the board
+   and five to the inks.
    ITS BOARD HAS ONE FOOTPRINT, whatever its size, so a new size does not
    move the page: `--side` is taken down to a multiple of `--step`, 30px,
    which fives, tens and fifteens all divide, or 20px for a board of twenty,
@@ -876,7 +883,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   inline-size: var(--foot);
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
-.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - var(--pixels-head, 0px) - 253px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
@@ -952,21 +959,10 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   .pixels-toolbar-step > .pixels-bar-key { inline-size: 5.75rem; padding-inline: .625rem; }
   .pixels-toolbar-step .pixels-bar-word { display: inline; }
 }
-/* THE COLOUR IN HAND, on the toolbar's last button, with the corner mark
-   Carbon gives a button that opens a menu. */
-.pixels-ink-now { position: relative; display: block; inline-size: 1rem; block-size: 1rem; border: 1px solid var(--rux-border-strong-01); background: var(--ink); }
-.pixels-ink-now::after {
-  content: '';
-  position: absolute;
-  inset: auto -.4375rem -.4375rem auto;
-  border: .1875rem solid transparent;
-  border-inline-end-color: var(--rux-icon-primary);
-  border-block-end-color: var(--rux-icon-primary);
-}
-button:disabled > .pixels-ink-now { opacity: .35; }
-/* THE INKS, in the menu that button opens: a colour to a row, from pale to
-   dark, and last the greys from white to black; the chosen one is ringed. */
-.pixels-inks { display: grid; grid-template-columns: repeat(5, 1.75rem); gap: .25rem; padding: .5rem; }
+/* THE INKS, open under the board on every screen, twelve across: a colour
+   to a column, from pale to dark, and last the greys from white to black;
+   the chosen one is ringed. */
+.pixels-inks { order: 2; display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; margin-block-start: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
   padding: 0;
@@ -1004,10 +1000,8 @@ button:disabled > .pixels-ink-now { opacity: .35; }
    start, Undo and Redo in the middle, and Delete and Save at the end, Save
    last; then the step's key, the three tools and Clear, which is at the end
    away from Undo. Each key is its icon over its word, as the game's keys
-   are. The inks stand open under it, twelve across, so a colour is one tap; make.js moves them there, and the button
-   that opens them elsewhere is not shown. `--keys` is how many keys a group
-   has, which is its share of its line. */
-.pixels-inks-slot > .pixels-inks { grid-template-columns: none; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; padding: 0; margin-block-start: .5rem; }
+   are. The inks stand open under it, so a colour is one tap. `--keys` is
+   how many keys a group has, which is its share of its line. */
 .pixels-inks[inert] { opacity: .35; }
 .pixels-maker-work { display: flex; flex-direction: column; }
 .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
@@ -1024,5 +1018,4 @@ button:disabled > .pixels-ink-now { opacity: .35; }
 .pixels-toolbar-step { order: 5; --keys: 1; }
 .pixels-toolbar-tools { order: 6; --keys: 3; }
 .pixels-toolbar-clear { order: 7; --keys: 1; }
-.pixels-toolbar-group.pixels-toolbar-ink { display: none; }
-.pixels-inks-slot { order: 2; }
+

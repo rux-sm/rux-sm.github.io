@@ -65,7 +65,7 @@
   const host = $('pixels-board'), check = $('pixels-check'), name = $('pixels-name'), level = $('pixels-level'), save = $('pixels-save');
   const saveNow = $('pixels-save-now');
   const day = $('pixels-day'), theme = $('pixels-theme');
-  const inks = $('pixels-inks'), inkKey = $('pixels-ink'), inkMenu = $('pixels-ink-menu');
+  const inks = $('pixels-inks');
   const tools = $('pixels-tool'), stepKey = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const maker = document.querySelector('.pixels-maker');
@@ -249,9 +249,8 @@
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
-    [...tools.querySelectorAll('button'), inkKey].forEach(b => { b.disabled = step !== 'colour'; });
+    tools.querySelectorAll('button').forEach(b => { b.disabled = step !== 'colour'; });
     inks.inert = step !== 'colour';
-    if (step !== 'colour') window.Rux.popover?.close(inkMenu);
     showStep();
     render();
   };
@@ -283,33 +282,18 @@
     return b;
   };
   inks.replaceChildren(...INKS.map(swatch));
-  // The colour in hand: ringed among the inks, and shown and named on the
-  // toolbar's button that opens them.
+  // The colour in hand, ringed among the inks, which stand open under the
+  // board so a colour is one tap.
   const setInk = to => {
     ink = to;
     const id = CHARS[ink];
     inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
-    inkKey.firstElementChild.dataset.ink = id;
-    inkKey.title = `Colour: ${INKS.find(([i]) => i === id)[1]}`;
-    inkKey.setAttribute('aria-label', inkKey.title);
   };
   setInk(ink);
-  // On a phone the inks stand open under the toolbar, since there the height
-  // is free; elsewhere they are the menu the toolbar's colour opens.
-  const narrow = matchMedia('(max-width: 47.99rem)'), inkHome = inks.parentElement;
-  const placeInks = () => {
-    (narrow.matches ? $('pixels-inks-slot') : inkHome).append(inks);
-    if (narrow.matches) window.Rux.popover?.close(inkMenu);
-  };
-  narrow.addEventListener('change', placeInks);
-  placeInks();
   inks.inert = true;
-  // Picking one closes the menu, and the board is ready for it.
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
-    if (!picked) return;
-    setInk(CHARS.indexOf(picked.dataset.ink));
-    window.Rux.popover?.close(inkMenu, { restoreFocus: true });
+    if (picked) setInk(CHARS.indexOf(picked.dataset.ink));
   });
   // The tool the colour step works with: paint, fill or erase.
   let tool = 'paint';

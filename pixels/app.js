@@ -1010,14 +1010,13 @@
   tint();
   new MutationObserver(tint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
-  /* THE PLACES every player has, in one bar on the pages that carry it:
-     along the bottom on a phone and along the top on a wider screen, and
-     from 66rem as the links of the header in the bar's place. This marks
-     the place the page is, in both; a rift's page is one of Puzzles'. The
-     owner's two, Manage and Players, are places too, shown to the owner
-     alone by `shell`. */
+  /* THE PLACES every player has: a bar along the foot of a phone, on the
+     pages that carry it, and from 66rem the header's links on every page in
+     its place. This marks the place the page is, in both; a rift's page and
+     a puzzle's are Puzzles'. The owner's two, Manage and Players, are places
+     too, shown to the owner alone by `shell`. */
   const here = location.pathname.split('/').pop() || 'index.html';
-  const place = { 'category.html': 'index.html' }[here] || here;
+  const place = { 'category.html': 'index.html', 'play.html': 'index.html' }[here] || here;
   document.querySelectorAll('.game-place, .game-header .rux--header__menu-item').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
     if (to !== place) return;

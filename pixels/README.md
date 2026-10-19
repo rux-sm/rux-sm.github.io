@@ -22,20 +22,21 @@ place of its tiles, their character by their rift (`docs/drawing-the-art.md`). C
 puzzle to play. Leaderboard: today's ranking by time, and the all-time one by puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
-and then easy to hard, each tile a square with its letter in the rift, A to O, three across on a phone,
-five on a wide one. A solved puzzle shows its picture, name and best time, an unsolved one a question
-mark over its size, with Boss for the last, and the first, the one to play next, has its mark in the
-primary button's colours. A course rift holds its boss back, dim, until the rest are found.
+and then easy to hard, each tile a square with its letter in the rift, A to O, three across. A solved
+puzzle shows its picture, name and best time, an unsolved one a question mark over its size, with Boss
+for the last, and the first, the one to play next, has its mark in the primary button's colours. A
+course rift holds its boss back, dim, until the rest are found.
 
 `me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
 that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
 who has found sprites in it, and a guest's Delete my player. `friends.html` is the player's friend link
 and their friends, each to remove. A player's own puzzles are made in the Pixelator, for mana, and a
 friend's published rifts stand after the owner's on the front page, saying who made them, and New until
-opened. A bar holds the places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players: along
-the foot of the page, which is one phone-wide column on every screen; not where a puzzle is played or
-drawn. Me's list holds How to play, the Sound switch, Add to home screen and, for an account, the way to Rux Home. Every
-page is in Design's `pixel-dark`, locked. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
+opened. Every page is one phone-wide column on every screen, in Design's `pixel-dark`, locked. The
+places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players, are the header's links from
+66rem and a bar along the foot below that, but for a puzzle being played or drawn. Me's list holds How
+to play, the Sound switch, Add to home screen and, for an account, the way to Rux Home.
+`docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
@@ -64,13 +65,12 @@ itself for a player who has solved none and has not closed it in this browser. T
 meanwhile. Each move plays a tone, which Me's Sound switch turns off and an iPhone's silent switch does
 not, and a phone ticks on each fill. A game in progress is kept in the browser for a reload.
 
-The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking,
-and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page
-shows it, the leaderboard ranks all time only, and the maker still dates puzzles so they can be
-drawn ahead. With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for
-that day, with its name and colours, or where there is none, one the browser makes from the date,
-the same for everyone. Only it counts toward the days in a row. A player is never sent a day's
-puzzle before its day.
+The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
+results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
+it, the leaderboard ranks all time only, and the maker still dates puzzles so they can be drawn ahead.
+With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for that day, with its
+name and colours, or where there is none, one the browser makes from the date, the same for everyone.
+Only it counts toward the days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
 owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in the header and the bar; a

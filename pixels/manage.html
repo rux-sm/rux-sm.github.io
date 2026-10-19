@@ -59,9 +59,9 @@
 </svg>
 <!-- SPRITE:END -->
 
-<!-- The header a wide screen has, from 66rem: the places as its links, but for Me, and the account action with its panel.
-     Design's rux-game.css draws it there and nowhere narrower. data.js shows it once there is a player, and app.js marks the
-     place the page is and writes the game's own rows into the panel. -->
+<!-- The header a wide screen has, from 66rem, on every page: the places as its links, in the bar's place, and the account
+     action with its panel. Design's rux-game.css draws it there and nowhere narrower. data.js shows it once there is a player,
+     and app.js marks the place the page is and writes the game's own rows into the panel. -->
 <header class="rux--header game-header" data-theme="g100" aria-label="Rux Pixels" hidden>
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
   <a class="rux--header__name" href="./"><img src="/brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Pixels</a>
@@ -129,7 +129,7 @@
   </nav>
   <div class="rux--css-grid">
     <div class="rux--css-grid-column rux--col-span-100">
-      <div class="rux--stack-vertical rux--stack-scale-6" id="pixels-manage">
+      <div class="game-page rux--stack-vertical rux--stack-scale-6" id="pixels-manage">
         <h1 class="rux--type-productive-heading-04">Manage</h1>
         <div id="pixels-error" hidden>
         <div class="rux--inline-notification rux--inline-notification--error" role="alert">

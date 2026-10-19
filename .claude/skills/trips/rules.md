@@ -61,6 +61,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 ## Updates
 
 - An update is a few general words, such as Updated itinerary or Bus assignment changed, never the details, because the bar and its card show the update whole and the details already sit on the trip's tabs and files.
+- Every email, call or text with a customer gets an update on its trip, such as Will follow up Monday, unless an update already says it, because the trip's bar is where the office sees what the customer was last told.
 
 ## Placeholders
 

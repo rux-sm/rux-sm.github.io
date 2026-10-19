@@ -20,8 +20,11 @@ The list:
 - **The page opens on the list.** A row is a rift in the owner's order:
   its rank and name, its size, how many of its fifteen are on, how many
   are drawn and how many are placeholders, and its Published switch.
+- **Under its words, a row shows a strip of its fifteen pictures,** small,
+  so a rift is known at a glance and its drawn and undrawn puzzles show.
 - **A tap on a row opens that rift** and closes the one that was open, so
-  one rift's pictures are drawn at a time. The open rift is kept in the
+  one rift's tiles are drawn at a time. On a wide screen it opens beside
+  the list, which stays in view; on a phone it opens under its row. The open rift is kept in the
   address, `manage.html?rift=3`, so a reload or Back comes back to it.
 - **Unsorted and Dailies are rows too,** at the foot of the list, opened
   the same way.
@@ -49,17 +52,10 @@ What it does not change:
 
 ## Questions
 
-1. Should the list show a small strip of each rift's fifteen pictures in
-   its row, so a rift is recognised before it is opened, or words alone,
-   which load fastest?
-2. On a wide screen, should the open rift stand beside the list, so the
-   list stays in view, or under its row, as on a phone?
+None open.
 
 ## Tasks
 
-- [ ] Build an options page with invented rows and tiles: the list with and
-      without a strip of pictures, and an open rift beside and under the
-      list, at phone and wide widths, for rux to pick from.
 - [ ] Rebuild `pixels/manage.js` and its markup as the list and the open
       rift, with every tool of today in its new place.
 - [ ] Keep the open rift in the address, and the ticks across rifts.

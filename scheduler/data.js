@@ -6580,6 +6580,8 @@
 
   // `bar` opens a trip from the board; `again` replays an earlier `panelArgs`.
   function openPanel(bar, draft, again) {
+    // The editor says what the card would, so a card asked for is forgotten.
+    cardOpenFor = null;
     const creating = !!draft;
     const ref = creating ? null : (again?.ref ?? (bar ? barRef(bar) : null));
     const trip = draft ?? again?.trip ?? (ref ? panelIndex.trips.get(ref.tripId) : null);
@@ -10113,9 +10115,10 @@
     return !panelEl.hidden && !!panelArgs?.ref && !panelArgs.draft && bar.dataset.tripId === panelArgs.ref.tripId;
   }
 
-  /* The shortcut bar follows the selection, onto the trip open in the editor
-     too, so its updates can be read and added beside the editor. It is placed the way a calendar's
-     event popover is: beside the trip's first day, where everything the trip
+  /* The shortcut bar follows the selection on a phone, where it docks as a
+     sheet carrying the trip's actions. On the floating board it is the trip's
+     card and shows only when asked for, never beside the trip's own editor.
+     It is placed the way a calendar's event popover is: beside the trip's first day, where everything the trip
      says is written, over the trip's own later days or the board after it,
      with its arrow at the first day's middle; on the first day's left where
      the right has no room. Where neither side has room it goes above or below
@@ -10136,6 +10139,24 @@
      card does not stand over what the action opened. Selecting another trip,
      or this one again after letting it go, brings the card back. */
   let cardAwayFor = null;
+  /* THE FLOATING CARD OPENS WHEN ASKED. A click on a bar only selects it,
+     since a click is also how a trip is double-clicked open, dragged or
+     picked to move by key. The card opens from a part of the bar marked
+     `data-card-opener`, its alert count, its update line or a live bar's
+     Live pill, or from Space on the bar, and the same press, Space or Escape
+     puts it away, as selecting another trip does. It never stands beside the
+     trip's own editor, and opening the editor forgets it was asked for. */
+  let cardOpenFor = null;
+  const floatingCard = () => pageEl?.getAttribute('data-board') !== 'compact';
+  const cardAsked = bar => barKey(bar) === cardOpenFor;
+  // Whether this bar's card is on screen now, which a press toggles.
+  const cardShowing = bar => bar === selectedBar() && cardAsked(bar) && !barShortcuts?.hidden;
+  // Asking again brings back a card put away by one of its actions.
+  function askCard(bar, open) {
+    cardOpenFor = open ? barKey(bar) : null;
+    if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
+    placeBarOpen();
+  }
   function putCardAway(bar) {
     cardAwayFor = barKey(bar);
     const focused = barShortcuts?.contains(document.activeElement);
@@ -10145,9 +10166,11 @@
   }
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
+    const docked = !floatingCard();
     // A board set aside behind a panel in front of it has no trip to point at.
     const none = !bar?.dataset.tripId || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging')
-      || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor;
+      || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor
+      || (!docked && (!cardAsked(bar) || isEditorTrip(bar)));
     barShortcuts.hidden = none;
     // The Contacts window goes with its trip when it is put down.
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
@@ -10181,7 +10204,6 @@
        where it was put in the track, because app.css fixes it to the window
        from there and that is what keeps the board's tokens inherited. None of
        the placing below applies to a bar that is not pointing at anything. */
-    const docked = pageEl?.getAttribute('data-board') === 'compact';
     barShortcuts.toggleAttribute('data-docked', docked);
     fitUpdates();
     if (docked) {
@@ -10325,6 +10347,7 @@
   function syncSelection() {
     const bar = selectedBar();
     if (!bar || barKey(bar) !== cardAwayFor) cardAwayFor = null;
+    if (!bar || !cardAsked(bar)) cardOpenFor = null;
     placeBarOpen(bar);
     markTripBars();
     /* Selecting one of the picked driver's own trips keeps them picked, to
@@ -10727,6 +10750,22 @@
   // only selects that bar, even while a different one is selected.
   gridEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-pressed="true"]')) openSelected();
+    /* Space shows the bar's card or puts it away. On a bar not selected yet
+       the card is asked for here and app.js's Space then selects the bar,
+       which keeps a card asked for it. */
+    if (e.key === ' ' && e.target.matches?.('.scheduler-bar[data-trip-id]')) {
+      e.preventDefault();
+      const bar = e.target;
+      askCard(bar, !cardShowing(bar));
+    }
+  });
+  /* A press on a card opener shows the card or puts it away, and on a bar
+     not selected yet app.js's click then selects it. A double-click's second
+     press is the double-click's. */
+  gridEl.addEventListener('click', e => {
+    const bar = e.target.closest('[data-card-opener]')?.closest('.scheduler-bar[data-trip-id]');
+    if (!bar || e.detail > 1) return;
+    askCard(bar, !cardShowing(bar));
   });
   // A double-click on a trip opens it, as Enter does; its first click selected it.
   gridEl.addEventListener('dblclick', e => {
@@ -15427,7 +15466,16 @@
       return;
     }
     const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);
-    if (!inEditor && selectedBar()) { e.preventDefault(); clearSelection(); return; }
+    // An open card goes first, and the selection with the next press.
+    const picked = selectedBar();
+    if (!inEditor && picked && floatingCard() && cardAsked(picked)) {
+      e.preventDefault();
+      const inCard = barShortcuts?.contains(document.activeElement);
+      askCard(picked, false);
+      if (inCard) picked.focus();
+      return;
+    }
+    if (!inEditor && picked) { e.preventDefault(); clearSelection(); return; }
     if (!panelEl.hidden) { e.preventDefault(); whenSafe(() => closePanel()); }
   });
 

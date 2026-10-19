@@ -2,8 +2,10 @@
 // No network, no drag and no editing here.
 //
 // A bar is a role=button whose aria-pressed is the selection; no class mirrors
-// it. A click or Space toggles it. Enter only selects, because data.js takes
-// Enter on a selected bar as "open this trip", and so does a double-click, whose
+// it. A click toggles it, except on a part of the selected bar marked
+// `data-card-opener`, which data.js takes as "show or put away its card".
+// Space and Enter only select, because data.js takes Space on a selected bar
+// as its card and Enter as "open this trip", and so does a double-click, whose
 // second click leaves the bar selected rather than toggling it back off.
 (() => {
   'use strict';
@@ -12,14 +14,14 @@
     const bar = e.target.closest('.scheduler-bar');
     if (!bar || e.detail > 1) return;
     const on = bar.getAttribute('aria-pressed') === 'true';
+    if (on && e.target.closest('[data-card-opener]')) return;
     for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
     bar.setAttribute('aria-pressed', on ? 'false' : 'true');
   });
 
   document.addEventListener('keydown', e => {
     if (!e.target.matches('.scheduler-bar')) return;
-    if (e.key === ' ') { e.preventDefault(); e.target.click(); }
-    if (e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-pressed') !== 'true') e.target.click(); }
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-pressed') !== 'true') e.target.click(); }
   });
 
   /* Whole-pixel day columns. Bars are placed by percentage across a track of

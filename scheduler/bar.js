@@ -114,9 +114,11 @@
   };
 
   /* The bar's attention mark: how many alerts the trip has, in a disc of
-     `tone`, saying in `words` what they are. */
+     `tone`, saying in `words` what they are. A press on it opens the trip's
+     card, which lists them, so it is one of the bar's card openers. */
   const attentionMark = (tone, words) => {
     const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`, String(words.length));
+    m.dataset.cardOpener = '';
     m.setAttribute('role', 'img');
     m.setAttribute('aria-label', words.join(' · '));
     m.title = words.join(' · ');
@@ -131,6 +133,7 @@
     const r = el('div', `scheduler-bar__row ${cls}`);
     for (const p of parts) if (p != null) r.appendChild(p);
     bar.appendChild(r);
+    return r;
   };
   // Twelve-hour, "7:50am", or "7:50a" with `short`. `|| 12` turns hour 0 and
   // hour 12 into 12.
@@ -568,7 +571,8 @@
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }
-    addRow(bar, `scheduler-bar__update${tone}`, news);
+    // The update line opens the card, whose Updates it begins, empty or not.
+    addRow(bar, `scheduler-bar__update${tone}`, news).dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.

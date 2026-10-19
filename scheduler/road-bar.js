@@ -266,13 +266,15 @@
      Live behind a dot sending out a ring, in the bus's colour, green on the
      road, the worst warning's amber or red, purple while a driver rests,
      grey and still with no signal, so a scan down the board finds the buses
-     out. Its title says which. */
+     out. Its title says which. A press on it opens the live card, since the
+     update line it stands in for is not drawn while the bus is out. */
   function liveDot(bar, bus, worst) {
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
     let dot = row?.querySelector(':scope > .scheduler-road__dot');
     if (!bus || !row) { dot?.remove(); return; }
     if (!dot) {
       dot = el('span', 'scheduler-road__dot');
+      dot.dataset.cardOpener = '';
       dot.setAttribute('role', 'img');
       dot.append(el('i', 'scheduler-road__ping'), 'Live');
       row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__msg'));

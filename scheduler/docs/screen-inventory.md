@@ -219,13 +219,17 @@ same size selected or not.
 ### Selecting is not opening
 
 A click selects a trip bar, its outline and its days in the driver grid, kept through any read of
-the same week, such as a save or a live change. A right-click selects it too, its card waiting until
-the menu shuts. A double-click, Enter, the bar's right-click menu, or on a phone the docked sheet's
+the same week, such as a save or a live change, and opens nothing more. A right-click selects it
+too, an open card waiting until the menu shuts. A double-click, Enter, the bar's right-click menu, or on a phone the docked sheet's
 Open loads it into the panel, and the board scrolls across to show that trip whole beside it. A trip
 opens on the tab the last one was on. New trip is the toolbar's last button, its + alone where the
 words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the
-selected trip and opens on Details. The selected trip's card floats clear of the trip, placed the
-way a calendar's event popover is: beside the trip's first day, where everything the trip says is
+selected trip and opens on Details. The trip's card opens only when asked: a press on the bar's
+alert count, its update line or, out on the road, its Live pill, or Space on the bar, which selects
+it first; the same press, Space or Escape puts it away, Escape before the selection, and so does
+selecting another trip. It never stands beside the trip's own editor. On a phone the docked sheet
+still comes up with the selection, because it carries the trip's actions. The card floats clear of
+the trip, placed the way a calendar's event popover is: beside the trip's first day, where everything the trip says is
 written, over the two days after it, the trip's own or the board's, with its arrow at that day's
 middle; over the two days before it where the two after are not both on screen, as at the week's end
 or on a board scrolled sideways; and above or below the trip only where neither side has room, slid

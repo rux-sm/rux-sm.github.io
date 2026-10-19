@@ -47,7 +47,9 @@ differs.
    says so.
 4. Open the trip: `/scheduler/?trip=<id>&date=<start_date>`. Read
    Route, Buses, Billing, Details and Files, and the bar's card for what
-   the trip still lacks.
+   the trip still lacks: the card opens from the bar's alert count or
+   update line, or Space on the bar, and never beside the trip's own
+   editor, so read it with the editor closed.
 5. List each difference with both values, the trip's and the customer's, and
    where the customer said it: a stop, a time, a day, the headcount, the bus
    count, the price. Then what else disagrees: a typed Estimated miles against

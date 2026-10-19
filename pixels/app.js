@@ -406,13 +406,13 @@
      behind it, so a zoomed board moves its squares both ways while the
      numbers move one way each and stay in view.
 
-     Every board has one footprint, which app.css sizes: the squares
-     together are one width whatever the puzzle, and the numbers keep one
-     room. The board is told how wide its widest row's numbers are, as
-     `--units`, in ems, a digit being .75 and the gap between two numbers
-     .25, as Silkscreen draws them, and how many its longest column has, as
-     `--count`, and app.css draws every number at the one size that fits
-     both. */
+     app.css sizes it. The board is told how wide its widest row's numbers
+     are, as `--units`, in ems, a digit being .75, or .625 for a 1, and the
+     gap between two numbers .25, as Silkscreen draws them, and how many its
+     longest column has, as `--count`, and app.css draws every number at the
+     one size that fits both, and gives the game's numbers just that room. A
+     column's number of two digits is marked `is-wide`, since a narrow
+     square holds it only a size smaller. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -436,11 +436,12 @@
     let units = 0, count = 0;
     const numbers = (target, line, across) => {
       const runs = runsOf(line), all = clues(line);
-      if (across) units = Math.max(units, all.join('').length * .75 + (all.length - 1) * .25);
+      if (across) units = Math.max(units, [...all.join('')].reduce((u, d) => u + (d === '1' ? .625 : .75), 0) + (all.length - 1) * .25);
       else count = Math.max(count, all.length);
       all.forEach((n, i) => {
         const span = document.createElement('span');
         span.textContent = n;
+        if (!across && n > 9) span.className = 'is-wide';
         if (runs[i]) [span.dataset.from, span.dataset.length] = runs[i];
         target.appendChild(span);
       });
@@ -512,7 +513,11 @@
      `paint(y, x)` on each square the finger crosses. In the game the drag
      keeps to the first row or column it moves along; `free` lets the maker
      draw in any direction. A mouse moving with no button down calls
-     `hover(y, x)`. Where `right` is set a mouse's right button drags too,
+     `hover(y, x)`, and so does a finger resting on a board that fills as
+     it lifts, so the line under it shows before it fills. Along a line,
+     `reach(y, x, n)` is told the square the drag has reached and how many
+     squares it spans, and `reach()` that it has ended. Where `right` is set
+     a mouse's right button drags too,
      with no menu, and `start` is told so by a third argument. Listeners sit
      on the host, which outlives redraws.
 
@@ -529,7 +534,7 @@
      nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
      the host are what app.css sizes and slides the board by. `reset()`
      takes the board back to its whole. */
-  const drag = (host, { start, paint, hover, free = false, right = false, zoom = () => false }) => {
+  const drag = (host, { start, paint, hover, reach, free = false, right = false, zoom = () => false }) => {
     let from = null, axis = null, last = null, pen = null;
     const FINE = 32;
     const fingers = new Map();
@@ -549,7 +554,7 @@
       const [a, b] = [...fingers.values()];
       return { gap: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     };
-    const begin = (p, other = false) => { from = last = p; axis = null; start(...p, other); };
+    const begin = (p, other = false) => { from = last = p; axis = null; start(...p, other); reach?.(...p, 1); };
     // Too fine for a finger: measured without the zoom, which a board whose
     // squares have since grown, on a turned screen, is taken out of.
     const fine = () => {
@@ -575,8 +580,9 @@
       if (fingers.size === 2) {
         const view = host.querySelector('.pixels-squares').getBoundingClientRect(), now = span(), size = square();
         pinch = { gap: now.gap, z, x: (now.x - view.x - tx) / size, y: (now.y - view.y - ty) / size };
+        if (from) reach?.();
         waiting = from = null;
-      } else if (fingers.size === 1 && !spent) { waiting = p; pen = e.pointerId; }
+      } else if (fingers.size === 1 && !spent) { waiting = p; pen = e.pointerId; hover?.(...p); }
     });
     host.addEventListener('contextmenu', e => { if (right && at(e)) e.preventDefault(); });
     host.addEventListener('pointermove', e => {
@@ -613,6 +619,7 @@
         paint(axis === 'row' ? from[0] : n, axis === 'row' ? n : from[1]);
       }
       last = axis === 'row' ? [from[0], to] : [to, from[1]];
+      reach?.(...last, Math.abs(to - from[i]) + 1);
     });
     const end = e => {
       fingers.delete(e.pointerId);
@@ -621,6 +628,7 @@
       else if (e.pointerId !== pen) { if (!fingers.size) spent = false; return; }
       // A tap: the finger lifted on the square it landed on.
       if (waiting && e.type === 'pointerup') start(...waiting);
+      if (from) reach?.();
       waiting = from = pen = null;
       if (!fingers.size) spent = false;
     };
@@ -678,7 +686,7 @@
      and with none left it is lost until a fairy brings them back or it is
      started again. The clock is the score and only a hint adds to it, HINT
      seconds; `added` writes such a cost as the clock would, +0:30. */
-  const HEARTS = 3, HINT = 30;
+  const HEARTS = 5, HINT = 30;
   const added = seconds => `+${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 
   /* A TICK IN THE HAND. Android vibrates for `ms`. An iPhone has no vibration
@@ -732,7 +740,7 @@
   let audio, held = null;
   /* An iPhone plays a page's tones as ambient sound, which its silent switch
      mutes; asked for the playback kind, the kind music apps use, it plays
-     them whatever the switch says, and the game's own Sound switch is then
+     them whatever the switch says, and Me's Sound switch is then
      the way to quiet it. It has to be asked before the sound is made. */
   const make = () => {
     const Context = window.AudioContext || window.webkitAudioContext;

@@ -26,15 +26,15 @@
    it.
 
    THE LIST UNDER THE PLAYER holds what has no place in the bar: How to
-   play, Add to home screen where the browser can, and for an account the
-   way to Rux Home. Manage and Players are the owner's places in the bar. It is
-   Carbon's contained list. It has no Theme, because Pixels is always in
+   play, the Sound switch, Add to home screen where the browser can, and
+   for an account the way to Rux Home. Manage and Players are the owner's
+   places in the bar. It is Carbon's contained list. It has no Theme, because Pixels is always in
    pixel-dark, which every page sets with `data-theme-lock`.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time, sounds } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -50,10 +50,12 @@
   addEventListener('appinstalled', () => { install = null; offer(); });
 
   /* THE LIST UNDER THE PLAYER. A row opens a window, by Design's
-     `data-rux-open`, or leads to a page. An iPhone adds Pixels to its home
-     screen from the front page, since its icon opens the address it was
-     made from, so its row leads there; another browser opens its own
-     install window here. A guest has no account for Home to open to. */
+     `data-rux-open`, or leads to a page; Sound is a switch, on while a
+     puzzle's moves play tones, which this browser keeps. An iPhone adds
+     Pixels to its home screen from the front page, since its icon opens
+     the address it was made from, so its row leads there; another browser
+     opens its own install window here. A guest has no account for Home to
+     open to. */
 
   const more = () => {
     document.getElementById('pixels-more')?.remove();
@@ -75,6 +77,22 @@
       return key;
     };
     const first = row('How to play', { open: 'pixels-how' }).parentElement;
+    const sound = document.createElement('li'), on = sounds();
+    sound.className = 'rux--contained-list-item rux--contained-list-item--with-action';
+    sound.innerHTML = `
+      <div class="rux--contained-list-item__content" id="pixels-sound-name">Sound</div>
+      <div class="rux--contained-list-item__action">
+        <div class="rux--toggle">
+          <button type="button" class="rux--toggle__button" id="pixels-sound" role="switch" aria-checked="${on}" aria-labelledby="pixels-sound-name"></button>
+          <label class="rux--toggle__label" for="pixels-sound">
+            <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+              <div class="rux--toggle__switch${on ? ' rux--toggle__switch--checked' : ''}"><svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg></div>
+            </div>
+          </label>
+        </div>
+      </div>`;
+    sound.addEventListener('rux:toggle', e => sounds(e.detail.on));
+    ul.append(sound);
     if (iphone && !installed) row('Add to home screen', { href: './#add' });
     else if (!installed) {
       // The row is in the list only while the browser offers to install.

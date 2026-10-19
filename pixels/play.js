@@ -11,16 +11,19 @@
 
    THE PUZZLE IS A FIGHT. Over the board stand the player's hearts, app.js's
    HEARTS of them, and the enemy's health, a bar of the picture's squares
-   still to fill. At no hearts the board takes no touch and a cover over it
-   asks which: a fairy, where the player has one and the database takes it,
-   brings every heart back, or the puzzle starts again as Restart starts it.
+   still to fill, which a finished line strikes: the bar shakes and flashes
+   and the line's numbers light. At no hearts the board takes no touch and
+   a cover over it asks which: a fairy, where the player has one and the
+   database takes it, brings every heart back, or the puzzle starts again
+   as Restart starts it.
 
    THE CHARACTER stands at the strip's start and the enemy's shadow at its
    end, for the owner while both are placeholders. It wears the armour the
    owner has, app.js's `worn`, and each piece is one more heart. It moves by
    its one drawing: the sword jabs for one fill and swings for a drag of
-   them, the shield lifts for an X, a mistake shakes it as the shadow
-   lunges, and at no hearts it lies down until it is brought back.
+   them, the shield lifts for an X, a finished line knocks the shadow back,
+   a mistake shakes it as the shadow lunges, and at no hearts it lies down
+   until it is brought back.
 
    THE SWITCH. The owner's two tool keys are one switch while its pictures
    are placeholders: the sword, which fills, on its left and the shield,
@@ -73,10 +76,11 @@
 
    Each fill, X, finished line, mistake, fall, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
-   one. The Sound key keeps its choice in this browser.
+   one. Me's Sound switch keeps its choice in this browser.
 
    THE PICTURE SO FAR is drawn small in the board's corner, over the clock:
-   the filled squares only, as they are filled.
+   the filled squares only, as they are filled. While a drag runs along a
+   line, how many squares it spans stands over the square it has reached.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
    phone that reloads the page picks up where it was. It is dropped once the
@@ -85,9 +89,9 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how } = window.Pixels;
   const $ = id => document.getElementById(id);
-  const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock');
+  const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
   const PROGRESS = 'pixels-progress';
   // How long the finished picture takes to fill in before the name shows.
@@ -161,8 +165,6 @@
     // date, and the owner's trial its name.
     const heading = isDaily ? (results.has(key) ? puzzle.name : puzzle.date) : trial ? puzzle.name : title(puzzle, index, results.has(key), !!home && boss(home, index));
     const answer = grid(puzzle.squares, puzzle.width), H = answer.length, W = answer[0].length;
-    // app.css sizes a board of twenty by a step of its own.
-    game.dataset.side = W;
     // An empty board: a line with no square of the picture starts crossed out.
     const bare = { rows: answer.map(r => !r.includes(1)), cols: answer[0].map((_, x) => !column(answer, x).includes(1)) };
     const blank = () => answer.map((r, y) => r.map((_, x) => (bare.rows[y] || bare.cols[x] ? 2 : 0)));
@@ -203,6 +205,9 @@
 
     const keep = () => saveProgress(puzzle.id, { squares: puzzle.squares, state, seconds, mistakes, hints, hearts, fairies: spent });
     const el = board(boardHost, answer, state, { done: true, label: 'Puzzle' });
+    // app.css sizes the game by the puzzle: its size, its widest row's
+    // numbers and its longest column's.
+    for (const v of ['--cols', '--units', '--count']) game.style.setProperty(v, el.style.getPropertyValue(v));
     // The name, the picture so far and the clock sit in the board's corner.
     el.querySelector('.pixels-corner').appendChild($('pixels-info'));
     $('pixels-info').hidden = false;
@@ -257,6 +262,7 @@
       if (kind === 'slash') sway(of('sword'), [rest, { transform: 'rotate(120deg)' }, rest], 240);
       if (kind === 'block') sway(of('shield'), [rest, { transform: 'translate(60%, -7%)' }, rest], 260);
       if (kind === 'stab' || kind === 'slash') sway(shadow, [rest, { transform: 'translateX(13%)' }, rest], 180);
+      if (kind === 'strike') sway(shadow, [rest, { transform: 'translateX(33%)' }, rest], 300);
       if (kind === 'hurt') {
         sway(shadow, [rest, { transform: 'translateX(-40%)' }, rest], 240);
         sway(champion, [rest, { transform: 'translateX(-13%)' }, { transform: 'translateX(7%)' }, rest], 300);
@@ -387,14 +393,28 @@
     const isSolved = () => answer.every((r, y) => r.every((c, x) => !c || state[y][x] === 1));
 
     // A line whose picture squares are all filled crosses out what is left,
-    // and says whether the square at (y, x) finished one.
+    // and says whether the square at (y, x) finished its row and its column.
     const closeLines = (y, x) => {
       const row = answer[y].every((c, i) => !c || state[y][i] === 1);
       const col = answer.every((r, i) => !r[x] || state[i][x] === 1);
       for (let i = 0; i < W; i++) if (row && state[y][i] === 0) state[y][i] = 2;
       for (let i = 0; i < H; i++) if (col && state[i][x] === 0) state[i][x] = 2;
-      return row || col;
+      return [row, col];
     };
+
+    // A finished line strikes the enemy: app.css shakes and flashes its bar
+    // and lights the line's numbers, and the shadow is knocked back. Each
+    // starts again if it is still going.
+    const strike = (y, x) => {
+      const hit = [foe, el.querySelector(`.pixels-clue[data-row="${y}"]`), el.querySelector(`.pixels-clue[data-col="${x}"]`)].filter(Boolean);
+      hit.forEach(e => {
+        e.classList.remove('is-struck');
+        void e.offsetWidth;
+        e.classList.add('is-struck');
+      });
+      move('strike');
+    };
+    game.addEventListener('animationend', e => e.target.classList.remove('is-struck'));
 
     const act = (y, x) => {
       if (!started || settling || solved || asking || down) return;
@@ -403,12 +423,13 @@
       if (action === 'fill' && v === 0) {
         if (answer[y][x]) {
           state[y][x] = 1;
-          const closed = closeLines(y, x);
+          const [row, col] = closeLines(y, x), closed = row || col;
           // The last square has the finish's tick and tone, not a line's on
           // top of them.
           if (!isSolved()) {
             buzz(closed ? 30 : 10);
             sound(closed ? 'line' : 'fill', closed ? 0 : climb++);
+            if (closed) strike(row ? y : null, col ? x : null);
           }
           move(++strokes > 1 ? 'slash' : 'stab');
           tell('');
@@ -580,6 +601,14 @@
       start: (y, x, other) => begin(y, x, other ? 'x' : tool),
       paint: act,
       hover: (y, x) => { cursor = [y, x]; highlight(el, y, x); },
+      reach: (y, x, n) => {
+        if (!(n > 1)) { tally.hidden = true; return; }
+        const square = el.querySelector(`.pixels-cell[data-y="${y}"][data-x="${x}"]`).getBoundingClientRect(), box = tally.parentElement.getBoundingClientRect();
+        tally.textContent = n;
+        tally.style.setProperty('--at-x', `${Math.round(square.left - box.left + square.width / 2)}px`);
+        tally.style.setProperty('--at-y', `${Math.round(square.top - box.top)}px`);
+        tally.hidden = false;
+      },
       right: true,
       zoom: () => W > 10,
     });
@@ -724,13 +753,6 @@
     });
     cover.focus({ preventScroll: true });
     if (!results.size && !how.seen()) window.Rux.modal.open(guide, $('pixels-how-open'));
-    const soundKey = $('pixels-sound');
-    soundKey.setAttribute('aria-pressed', sounds());
-    soundKey.addEventListener('click', () => {
-      soundKey.setAttribute('aria-pressed', sounds(!sounds()));
-      sound('fill');
-    });
-
     tick();
     showHearts();
     draw();

@@ -102,9 +102,6 @@ everything has played a whole game.
   the sheet is imported.
 - **The front page counts the whole course,** and says so when every sprite
   is found, in place of the empty page a finished player has now.
-- **A 10×10 has 30px squares on a phone 390px wide,** from a narrower corner
-  and gutters. They are 27px now, and 30px is the most that width gives
-  beside the numbers.
 - **The puzzle of the day and the leaderboard stay off.** This plan does not
   touch them.
 
@@ -211,6 +208,4 @@ None open.
 - [ ] Offer the free hint as a puzzle starts: one row and one column filled
       in, with nothing added to the clock.
 - [ ] Count the course on the front page, and say when all of it is found.
-- [ ] Give a 10×10 its 30px squares at 390px, with every line's numbers
-      still in their room, and look at each size in Chrome at that width.
 - [ ] Publish rifts 1 to 12 in order, each as its fifteenth puzzle is drawn.

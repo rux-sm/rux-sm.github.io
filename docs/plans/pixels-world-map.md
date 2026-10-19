@@ -94,7 +94,7 @@ Playing:
   mark each leaves.
 - **How to play says it as a fight:** strike the squares that are the
   monster, and guard the ones that are not.
-- **The character has three hearts, and a mistake takes one.** The clock
+- **The character has five hearts, and a mistake takes one.** The clock
   only counts up and is the score, so nobody loses by thinking slowly. A
   hint adds time as it does now.
 - **At no hearts the puzzle is lost, gently.** The player picks: a fairy

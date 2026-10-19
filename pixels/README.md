@@ -34,35 +34,35 @@ and their friends, each to remove. A player's own puzzles are made in the Pixela
 friend's published rifts stand after the owner's on the front page, saying who made them, and New until
 opened. A bar holds the places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players: along
 the foot of the page, which is one phone-wide column on every screen; not where a puzzle is played or
-drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
+drawn. Me's list holds How to play, the Sound switch, Add to home screen and, for an account, the way to Rux Home. Every
 page is in Design's `pixel-dark`, locked. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
-start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X,
-by tap, by dragging along a row or column, with a mouse's right button, which always crosses out, or
-with the arrow keys, Z and X. On a phone a board of 15 or 20 zooms under two fingers, its numbers
-staying in view, and there a touch fills as it lifts. A number greys out when its run of squares is
-filled, a line with no square of the picture starts crossed out, and a finished line crosses out its
-own empty squares. Filling a square not in the picture is a mistake, crossed out in red, and costs one
-of three hearts, drawn over the board by the enemy's health, a bar of the picture left to fill; with
-none left a fairy brings them back or the puzzle starts again. The clock is the score: a hint adds 30
-seconds, or spends a fairy and adds none, and the best time is the one kept. For the owner the two tool
-keys are one switch, a sword and a shield, and a character faces the enemy's shadow, with a helmet and
-a heart more at five sprites. Hint, or H, lights the line where the numbers decide the most, and a
-fairy finishes it, as `docs/profiles.md` says. Undo, or U, takes back the last tap or drag, and Redo,
-or R, puts it back, but neither touches a mistake, and a tap that was only a mistake is no move to take
-back. Restart empties the board, and Undo straight after brings it back. Every board has one footprint,
-in whole pixels a square; `app.css` has its measures. A tile fills the board's corner: the puzzle's
-name, the picture so far and the clock. A warm line rules off each fifth square. When the picture is
-complete the squares fill in as the picture, in its colours if it has them, and its name shows with the
-time, the mistakes and the hints. Under them the rift's tile counts the sprite, says +1 mana where the
-find earned one and +3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the
-sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to
-the next open rift. How to play is three steps in a modal, each with a small board: the numbers,
-filling and crossing out, and what a mistake costs. It opens from Me's list, the ? key under the map, the button under
-Start, and by itself for a player who has solved none and has not closed it in this browser. The clock
-stands meanwhile. Each move plays a tone, which the Sound key turns off and an iPhone's silent switch
-does not, and a phone ticks on each fill. A game in progress is kept in the browser for a reload.
+start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
+tap, by dragging along a row or column, with a mouse's right button, which always crosses out, or with
+the arrow keys, Z and X. On a phone a board of 15 or 20 zooms under two fingers, its numbers staying in
+view, and there a touch fills as it lifts and a resting finger lights its row and column. A drag along a
+line counts its squares. A number greys out when its run of squares is filled, a line with no square of
+the picture starts crossed out, and a finished line crosses out its own empty squares and strikes the
+enemy. Filling a square not in the picture is a mistake, crossed out in red, and costs one of five
+hearts, drawn over the board by the enemy's health, a bar of the picture left to fill; with none left a
+fairy brings them back or the puzzle starts again. The clock is the score: a hint adds 30 seconds, or
+spends a fairy and adds none, and the best time is the one kept. For the owner the two tool keys are one
+switch, a sword and a shield, and a character faces the enemy's shadow, with a helmet and a heart more
+at five sprites. Hint, or H, lights the line where the numbers decide the most, and a fairy finishes it,
+as `docs/profiles.md` says. Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back,
+but neither touches a mistake, and a tap that was only a mistake is no move to take back. Restart
+empties the board, and Undo straight after brings it back. A tile fills the board's corner: the picture
+so far and the clock. A warm line rules off each fifth square. When the picture is complete the squares
+fill in as the picture, in its colours if it has them, and its name shows with the time, the mistakes
+and the hints. Under them the rift's tile counts the sprite, says +1 mana where the find earned one and
++3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the sprite opened stands
+under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to the next open rift. How
+to play is three steps in a modal, each with a small board: the numbers, filling and crossing out, and
+what a mistake costs. It opens from Me's list, the ? key under the map, the button under Start, and by
+itself for a player who has solved none and has not closed it in this browser. The clock stands
+meanwhile. Each move plays a tone, which Me's Sound switch turns off and an iPhone's silent switch does
+not, and a phone ticks on each fill. A game in progress is kept in the browser for a reload.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking,
 and results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page

@@ -22,7 +22,7 @@ What it is:
   `design/css/rux-overrides.css` for the shapes, and a font `js/theme.js`
   loads for this theme alone, as it loads Geist for geist-dark. Any Design
   page can wear it, and so can the account panel's theme list.
-- **Inspired by Aseprite, not copied.** It borrows the ideas: cool dark
+- **Inspired by Aseprite, not copied.** It borrows the ideas: dark
   greys, a raised edge on what is pressed, a sunken edge on what is typed
   in, and one bright highlight for what is chosen. No Aseprite artwork,
   icon or font is used.

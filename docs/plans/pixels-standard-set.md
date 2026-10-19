@@ -115,8 +115,8 @@ What each rift is for, and the level of Picross DS it stands for.
 | Rift | Picross DS's | Size | Portal | World | What it teaches |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | Easy | 5×5, then 10×10 | The Undergrowth | bugs | what a number is, a line that fills itself, two numbers and their gap; then a number over half the line gives its middle squares |
-| 2 | Level 1 | 15×15 | The Playroom | toys | the first 15×15, the zoom; arms, ears and wheels: two and three numbers in a line, and X where no run can reach |
-| 3 | Level 2 | 15×15 | The Howling Wood | forest | long runs, counting by the fifth lines |
+| 2 | Level 1 | 15×15 | The Howling Wood | forest | the first 15×15, the zoom; long runs, counting by the fifth lines |
+| 3 | Level 2 | 15×15 | The Playroom | toys | arms, ears and wheels: two and three numbers in a line, and X where no run can reach |
 | 4 | Level 3 | 15×15 | The Lost Valley | dinosaurs | big round bodies worked in from the edges, and a first hole |
 | 5 | Level 4 | 15×15 | The Deep Dark | cave | wings, tails and legs: thin parts, so lines of 1s and 2s |
 | 6 | Level 5 | 15×15 | Midnight Manor | haunted house | eyes and mouths: holes in a shape, a picture that comes slowly |
@@ -158,11 +158,11 @@ its name:
 1. **The Undergrowth:** snail, worm, bee, beetle and dragonfly at 5×5 and
    two beetles, pill bug and tick at 10×10, which are drawn, then ant,
    ladybird, caterpillar, spider, centipede and scorpion at 10×10.
-2. **The Playroom:** bouncy ball, building block, spinning top, rubber duck,
+2. **The Howling Wood:** fox, crow, owl, snake, hedgehog, badger, hawk,
+   boar, stag, wolf, bear, mushroom man, elf archer, werewolf, walking tree.
+3. **The Playroom:** bouncy ball, building block, spinning top, rubber duck,
    toy car, kite, drum, toy boat, teddy bear, rag doll, toy train, rocking
    horse, toy soldier, puppet, jack-in-the-box.
-3. **The Howling Wood:** fox, crow, owl, snake, hedgehog, badger, hawk,
-   boar, stag, wolf, bear, mushroom man, elf archer, werewolf, walking tree.
 4. **The Lost Valley:** dino egg, hatchling, pterodactyl, raptor, sail-back,
    duck-bill, bone-head, stegosaurus, club-tail, triceratops, long-neck,
    sabre-tooth cat, mammoth, spinosaurus, T. rex.

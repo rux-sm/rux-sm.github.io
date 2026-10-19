@@ -85,10 +85,10 @@ saved off. A rift just started is named there and hidden until Manage's switch p
 yet keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle,
 in no rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
-`manage.html` is the owner's desk: every rift on one page, in order, then Unsorted. A rift's heading
-has its place and name, a Published or Hidden switch, arrows that move it among the others, a key that
-keeps it for picked players, a pencil that renames it and a bin that deletes it and leaves its puzzles
-in Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle no player is sent, and a
+`manage.html` is the owner's desk: a row to each rift, then Unsorted and Dailies, with a strip of its
+pictures and a rift's Published switch. A tap opens one, under its row or, on a wide screen, beside
+the list; `?rift=3` keeps it on a reload. An open rift has arrows that move it, a key that keeps it
+for picked players, a pencil that renames it and a bin that deletes it into Unsorted. Under each tile are Edit, Play, which keeps no time for a puzzle no player is sent, and a
 switch that sends it to no player when off; a rift has at most fifteen on. Add puzzle, after a rift's
 tiles, opens the Pixelator for it. Pressing a tile ticks it, and the ticked are moved, to a rift, a
 new one or Unsorted, or deleted; a rift left empty goes too.

@@ -18,8 +18,8 @@ deletion, ticking to move or delete, Add puzzle, Unsorted and Dailies.
 The list:
 
 - **The page opens on the list.** A row is a rift in the owner's order:
-  its rank and name, its size, how many of its fifteen are on, how many
-  are drawn and how many are placeholders, and its Published switch.
+  its rank and name, its size, how many of its fifteen are on, and its
+  Published switch.
 - **Under its words, a row shows a strip of its fifteen pictures,** small,
   so a rift is known at a glance and its drawn and undrawn puzzles show.
 - **A tap on a row opens that rift** and closes the one that was open, so
@@ -56,10 +56,6 @@ None open.
 
 ## Tasks
 
-- [ ] Rebuild `pixels/manage.js` and its markup as the list and the open
-      rift, with every tool of today in its new place.
-- [ ] Keep the open rift in the address, and the ticks across rifts.
-- [ ] Say the new page in `pixels/manage.js`'s header and `pixels/README.md`.
 - [ ] Measure Manage's load in Chrome before and after, and prove each tool
       on :8641: a switch, Published, an arrow, the key, rename, delete, a
       move between rifts and Add puzzle, with a write shown before it is

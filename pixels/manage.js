@@ -2,17 +2,20 @@
    manage.js — the owner's page: every puzzle, by category, and what is done
    to them
    --------------------------------------------------------------------------
-   EVERY RIFT ON ONE PAGE, in the owner's order, which is the order the
-   players meet them in; then Unsorted, the puzzles in no category, which no player is sent; then
-   Dailies where a day's puzzle is drawn.
+   A ROW TO EACH RIFT, in the owner's order, which is the order the
+   players meet them in; then Unsorted, the puzzles in no category, which
+   no player is sent; then Dailies where a day's puzzle is drawn. A row has
+   its place and name, its size and how many are on, at most fifteen, a
+   strip of its pictures, and for a rift the switch that hides it from
+   every player. Pressing a row opens that place and closes the one open,
+   so one place's tiles are drawn at a time; the open one is `?rift=` in
+   the address, so a reload or Back comes back to it. The page stands it
+   under its row on a phone and beside the list on a wide screen.
 
-   A CATEGORY'S HEADING has its place among the rifts every player is sent,
-   and its name, and beside them its size and how many of its puzzles are
-   on, at most fifteen. At the far end are a switch that says Published or
-   Hidden, which hides it from every player; arrows that move it up or down
-   among the others; a key that keeps it for picked players; a pencil
-   that renames it; and a bin that deletes it and leaves its puzzles in
-   Unsorted.
+   AN OPEN RIFT'S HEADING has the box that ticks it, its name, size and
+   count, and arrows that move it up or down among the others; a key that
+   keeps it for picked players; a pencil that renames it; and a bin that
+   deletes it and leaves its puzzles in Unsorted.
 
    A TILE always shows its puzzle's picture and name, its size and how hard it is.
    Under it are Edit, which opens it in the maker, Play, which tries it, and
@@ -21,9 +24,11 @@
    board of the category's size, with the category chosen for Save.
 
    TICKS. A tile is ticked by pressing it, and the box in a heading ticks
-   its whole category. A bar over the categories stays in view with how many
-   are ticked, and Move, Delete and Clear, which wait for a tick; it is
-   there before any tile is ticked, so the first tick moves nothing. Move asks where: a category,
+   its whole category. A tick stays when another place opens, so puzzles
+   from two rifts move together. A bar over the list stays in view with
+   how many are ticked in all, and Move, Delete and Clear, which wait for
+   a tick; it is there before any tile is ticked, so the first tick moves
+   nothing. Move asks where: a category,
    Unsorted, or a new category, which is named there and starts hidden.
    Puzzles that come into a category arrive on while it has fewer than fifteen
    on, and off after that. A category a move or a delete empties is deleted,
@@ -259,9 +264,36 @@
     return el;
   };
 
-  /* THE PAGE, drawn again after every change. `focus` is the ids of what to
-     put the focus on, the first that is there and can take it. */
+  /* THE PAGE, drawn again after every change: a list of places, each rift
+     in the owner's order, then Unsorted and Dailies, and the one place that
+     is open. A row is the place's name, its size and how many are on, a
+     strip of its pictures, and for a rift its Published switch; pressing it
+     opens that place, which `?rift=` keeps in the address. The open place
+     is its heading, with its box, its keys and its tiles; it stands beside
+     the list on a wide screen and under its row on a phone. `focus` is the
+     ids of what to put the focus on, the first that is there and can take
+     it. */
   let moving = false;
+  let open = new URLSearchParams(location.search).get('rift');
+  const choose = (to, focus = []) => {
+    open = String(to);
+    const at = new URL(location.href);
+    at.searchParams.set('rift', open);
+    history.replaceState(null, '', at);
+    draw(focus);
+  };
+  // A place's pictures, small, in a strip under its name.
+  const strip = list => {
+    const el = document.createElement('span');
+    el.className = 'pixels-strip';
+    el.setAttribute('aria-hidden', 'true');
+    el.append(...list.slice(0, PER_LEVEL).map(p => {
+      const pic = art(p, true);
+      pic.classList.add('pixels-strip-pic');
+      return pic;
+    }));
+    return el;
+  };
   function draw(focus = []) {
     host.replaceChildren();
     const cats = levels(), strays = order(kept().filter(loose));
@@ -275,16 +307,24 @@
       make.textContent = 'Make one';
       wrap.append(words('rux--type-productive-heading-03', 'No puzzles yet'), make);
       host.append(wrap);
+      showTicked();
+      return;
     }
+    // Every place, as [key, name, what it says, its pictures, its switch,
+    // and how its open view is made].
+    const places = [];
     // A rift every player is sent has a place among those; one kept for
     // picked players has none.
     let nth = 0;
     cats.forEach(c => {
       const id = `pixels-level-${c.level}`, name = called(c), width = sizes(c)[0];
       const on = c.puzzles.filter(p => !p.off).length, off = c.puzzles.length - on;
+      const title = c.picked.length ? name : `${++nth} · ${name}`;
+      const meta = `${sizes(c).map(side).join(', ')} · ${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}${c.picked.length ? ` · for ${count(c.picked.length, 'player')}` : ''}`;
       /* A move swaps the category with the one before or after it: the
          database is given every level in the new order and numbers them by
-         it, and the puzzles held here are numbered the same. */
+         it, and the puzzles held here are numbered the same. The rift moved
+         stays open. */
       const at = cats.indexOf(c);
       const shift = by => async () => {
         if (moving) return;
@@ -298,52 +338,78 @@
           moving = false;
           // The arrow pressed, or the other where the category has reached the end.
           const now = `pixels-level-${at + by + 1}`;
-          draw(by < 0 ? [`${now}-up`, `${now}-down`] : [`${now}-down`, `${now}-up`]);
+          choose(at + by + 1, by < 0 ? [`${now}-up`, `${now}-down`] : [`${now}-down`, `${now}-up`]);
         } catch {
           moving = false;
           say('The rift did not move', 'Try again.');
         }
       };
-      host.append(section(id, c.picked.length ? name : `${++nth} · ${name}`, h2 => [
-        tickAll(`${id}-all`, `Tick all of ${name}`), h2,
-        words('pixels-meta', `${sizes(c).map(side).join(', ')} · ${on} of ${PER_LEVEL} on${off ? `, ${off} off` : ''}${c.picked.length ? ` · for ${count(c.picked.length, 'player')}` : ''}`),
-        // The switch, the word for what it has done, and the keys, which
-        // stay together where the heading wraps.
-        (() => {
-          const shown = document.createElement('div');
-          shown.className = 'pixels-shown';
-          const word = words('pixels-meta', c.hidden ? 'Hidden' : 'Published');
-          word.setAttribute('aria-hidden', 'true');
-          const keys = document.createElement('div');
-          keys.className = 'pixels-moves';
-          keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
-            key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)),
-            ...(data.share ? [key(`${id}-share`, `Who sees ${name}`, '#m-groups', from => sharing(c, from))] : []),
-            key(`${id}-rename`, `Rename ${name}`, '#m-edit', from => naming(c, from)),
-            key(`${id}-remove`, `Delete ${name}`, '#m-delete', from => removing(c, from)));
-          shown.append(toggle(`${id}-shown`, 'Published', !c.hidden, async to => {
-            await data.setHidden(width, c.level, !to);
-            c.puzzles.forEach(p => { p.hidden = !to; });
-            word.textContent = to ? 'Published' : 'Hidden';
-          }, { text: false, failed: ['The rift did not change', 'Try again.'] }), word, keys);
-          return shown;
-        })(),
-      ], [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]));
+      // The Published switch and the word for what it has done.
+      const shown = document.createElement('div');
+      shown.className = 'pixels-shown';
+      const word = words('pixels-meta', c.hidden ? 'Hidden' : 'Published');
+      word.setAttribute('aria-hidden', 'true');
+      shown.append(toggle(`${id}-shown`, `${name} published`, !c.hidden, async to => {
+        await data.setHidden(width, c.level, !to);
+        c.puzzles.forEach(p => { p.hidden = !to; });
+        word.textContent = to ? 'Published' : 'Hidden';
+      }, { text: false, failed: ['The rift did not change', 'Try again.'] }), word);
+      places.push([String(c.level), title, meta, c.puzzles, shown, () => {
+        const keys = document.createElement('div');
+        keys.className = 'pixels-moves';
+        keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
+          key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)),
+          ...(data.share ? [key(`${id}-share`, `Who sees ${name}`, '#m-groups', from => sharing(c, from))] : []),
+          key(`${id}-rename`, `Rename ${name}`, '#m-edit', from => naming(c, from)),
+          key(`${id}-remove`, `Delete ${name}`, '#m-delete', from => removing(c, from)));
+        return section(id, title, h2 => [tickAll(`${id}-all`, `Tick all of ${name}`), h2, words('pixels-meta', meta), keys],
+          [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]);
+      }]);
     });
     // Unsorted has no switch, place or name of its own.
     if (strays.length) {
-      host.append(section('pixels-unsorted', 'Unsorted', h2 => [tickAll('pixels-unsorted-all', 'Tick all of Unsorted'), h2, words('pixels-meta', count(strays.length, 'puzzle'))],
-        strays.map(p => puzzleTile(p))));
+      places.push(['unsorted', 'Unsorted', count(strays.length, 'puzzle'), strays, null,
+        () => section('pixels-unsorted', 'Unsorted', h2 => [tickAll('pixels-unsorted-all', 'Tick all of Unsorted'), h2, words('pixels-meta', count(strays.length, 'puzzle'))],
+          strays.map(p => puzzleTile(p)))]);
     }
     // A day's puzzle opens in the maker, and is not ticked.
     if (dated.length) {
-      host.append(section('pixels-days', 'Dailies', h2 => [h2, words('pixels-meta', `${dated.length} drawn`)], dated.map(p => {
-        const when = new Date(`${p.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-        const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { seconds: 0 });
-        a.lastElementChild.replaceWith(words('pixels-meta', p.name));
-        return a;
-      })));
+      places.push(['days', 'Dailies', `${dated.length} drawn`, dated, null,
+        () => section('pixels-days', 'Dailies', h2 => [h2, words('pixels-meta', `${dated.length} drawn`)], dated.map(p => {
+          const when = new Date(`${p.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+          const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { seconds: 0 });
+          a.lastElementChild.replaceWith(words('pixels-meta', p.name));
+          return a;
+        }))]);
     }
+    if (!places.some(([k]) => k === open)) open = places[0][0];
+    const at = places.findIndex(([k]) => k === open);
+    host.style.setProperty('--places', places.length);
+    places.forEach(([k, title, meta, list, shown], i) => {
+      const row = document.createElement('div');
+      row.className = 'pixels-place';
+      row.style.order = i * 2;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pixels-place-open';
+      b.id = `pixels-place-${k}`;
+      b.setAttribute('aria-expanded', k === open);
+      b.setAttribute('aria-controls', 'pixels-open');
+      const text = document.createElement('span');
+      text.className = 'pixels-place-words';
+      text.append(words('pixels-place-name', title), words('pixels-meta', meta));
+      b.append(text, strip(list));
+      b.addEventListener('click', () => { if (k !== open) choose(k, [b.id]); });
+      row.append(b, ...(shown ? [shown] : []));
+      if (k === open) row.setAttribute('aria-current', 'true');
+      host.append(row);
+    });
+    const panel = document.createElement('div');
+    panel.className = 'pixels-open';
+    panel.id = 'pixels-open';
+    panel.style.order = at * 2 + 1;
+    panel.append(places[at][5]());
+    host.append(panel);
     showTicked();
     focus.map($).find(el => el && !el.disabled)?.focus();
   }

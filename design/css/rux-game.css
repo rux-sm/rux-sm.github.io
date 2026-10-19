@@ -132,6 +132,9 @@
   padding: .75rem;
 }
 .game-tile > :not(.game-tile-art) { grid-column: 2; }
+/* A tile with no picture is one column, its words from its edge. */
+.game-tiles .game-tile:not(:has(> .game-tile-art)) { grid-template-columns: minmax(0, 1fr); }
+.game-tile:not(:has(> .game-tile-art)) > * { grid-column: 1; }
 .game-tile-art { grid-column: 1; grid-row: 1 / span 3; align-self: center; }
 .game-tile-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-inline-size: 0; }
 .game-tile-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

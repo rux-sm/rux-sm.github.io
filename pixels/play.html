@@ -48,7 +48,6 @@
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 <symbol id="m-pause_circle-fill" viewBox="0 -960 960 960"><path d="M370-320h60v-320h-60v320Zm160 0h60v-320h-60v320ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></symbol>
 <symbol id="m-redo" viewBox="0 -960 960 960"><path d="M392-200q-95 0-163.5-64T160-422q0-94 68.5-158T392-644h294L572-758l42-42 186 186-186 186-42-42 114-114H391q-70 0-120.5 46.5T220-422q0 69 50.5 115.5T391-260h310v60H392Z"/></symbol>
-<symbol id="m-restart_alt" viewBox="0 -960 960 960"><path d="M451-122q-123-10-207-101t-84-216q0-77 35.5-145T295-695l43 43q-56 33-87 90.5T220-439q0 100 66 173t165 84v60Zm60 0v-60q100-12 165-84.5T741-439q0-109-75.5-184.5T481-699h-20l60 60-43 43-133-133 133-133 43 43-60 60h20q134 0 227 93.5T801-439q0 125-83.5 216T511-122Z"/></symbol>
 <symbol id="m-undo" viewBox="0 -960 960 960"><path d="M259-200v-60h310q70 0 120.5-46.5T740-422q0-69-50.5-115.5T569-584H274l114 114-42 42-186-186 186-186 42 42-114 114h294q95 0 163.5 64T800-422q0 94-68.5 158T568-200H259Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
@@ -129,16 +128,16 @@
           </div>
         </div>
         </div>
-        <!-- play.js moves this into the board's corner: the picture so far and the clock, with the puzzle's name for a screen reader. -->
+        <!-- play.js moves this into the board's corner: the picture so far, with the puzzle's name for a screen reader. -->
         <div class="pixels-info" id="pixels-info" hidden>
           <h1 class="rux--visually-hidden" id="pixels-title">Puzzle</h1>
           <div class="pixels-picture pixels-thumb" id="pixels-thumb" aria-hidden="true"></div>
-          <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
-        <!-- The fight, which play.js draws: the player's hearts, and the enemy's health, the share of its picture still to fill. For the owner it stands the character before them and the enemy's shadow after. -->
+        <!-- The status row: the player's hearts, then the clock at its end. With WORLD on, play.js shows the enemy's health between them, the share of its picture still to fill, and stands the character before the hearts and the enemy's shadow after the bar. -->
         <div class="pixels-fight">
           <div class="pixels-hearts" id="pixels-hearts" role="img" aria-label="Hearts"></div>
-          <div class="pixels-foe" id="pixels-foe" role="meter" aria-label="Enemy health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="pixels-foe-bar"></div></div>
+          <div class="pixels-foe" id="pixels-foe" role="meter" aria-label="Enemy health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" hidden><div class="pixels-foe-bar"></div></div>
+          <span class="pixels-clock" id="pixels-clock" role="timer" aria-label="Time">00:00</span>
         </div>
         <!-- The board waits behind Start: play.js shows it, and starts the clock, on the tap. -->
         <div class="game-stage pixels-stage">
@@ -153,11 +152,12 @@
               <button type="button" class="rux--btn rux--btn--ghost game-cover-key" id="pixels-again">Start again</button>
             </div>
           </div>
-          <!-- Paused, shown by play.js: the clock stands and the board is bare until Resume. -->
+          <!-- Paused, shown by play.js: the clock stands and the board is bare until Resume. Restart is here, away from the keys a finger is on. -->
           <div class="game-cover" id="pixels-paused" hidden>
             <div class="game-cover-panel">
               <p class="pixels-fallen-words">Paused</p>
               <button type="button" class="rux--btn rux--btn--primary game-cover-key" id="pixels-resume">Resume</button>
+              <button type="button" class="rux--btn rux--btn--ghost game-cover-key" id="pixels-restart">Restart</button>
               <a class="rux--btn rux--btn--ghost game-cover-key" id="pixels-exit" href="./">Exit</a>
             </div>
           </div>
@@ -175,14 +175,13 @@
             <button type="button" role="radio" aria-checked="true" aria-label="Fill" data-tool="fill"><span class="pixels-mark pixels-mark--fill" aria-hidden="true"></span></button>
             <button type="button" role="radio" aria-checked="false" aria-label="Cross out" data-tool="x"><span class="pixels-mark pixels-mark--x" aria-hidden="true"></span></button>
           </div>
-          <!-- Exit and Pause first, Restart last and away from them. Sound is a switch in Me's list. -->
+          <!-- Exit and Pause first. Restart is on the Pause cover, and Sound is a switch in Me's list. -->
           <div class="game-keys">
             <a class="game-key" id="pixels-back" href="./"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Exit</a>
             <button type="button" class="game-key" id="pixels-pause"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-pause_circle-fill"/></svg>Pause</button>
             <!-- play.js draws a fairy here, and how many the player has. --><button type="button" class="game-key" id="pixels-hint"><span class="pixels-key-fairy" id="pixels-fairies"></span>Hint</button>
             <button type="button" class="game-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
             <button type="button" class="game-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
-            <button type="button" class="game-key" id="pixels-restart"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg>Restart</button>
           </div>
         </div>
         <!-- Shown under the finished picture, which is the board itself. play.js puts the puzzle's rift between the time and the keys, in place of the way out. -->

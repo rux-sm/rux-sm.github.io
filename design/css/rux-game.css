@@ -171,11 +171,13 @@
    corners rounded a pixel in and a dark lip along the bottom that a press
    sinks into; css/rux-overrides.css has the reasons. Here the same is done
    for these parts: their words go to 16px, the score to 32px, and a game
-   key is raised. In a column a phone wide a row of keys, or a bar of five
-   places or more, shares the width too finely for words at 16px, so they
-   are their icons alone; a word is never made smaller than the rest, and
-   it stays in the page for a screen reader. A bar of four places or fewer
-   keeps its words under its icons. */
+   key is raised. In a column a phone wide a row of six keys or more, or a
+   bar of five places or more, shares the width too finely for words at
+   16px, so they are their icons alone; a word is never made smaller than
+   the rest, and it stays in the page for a screen reader. A bar of four
+   places or fewer keeps its words under its icons, and so does a row of
+   five keys or fewer on a screen 360px wide or more, where a word of five
+   letters fits a key. */
 [data-theme="pixel-dark"] :is(.game-place, .game-key, .game-tile-note) { font-size: 16px; line-height: 24px; }
 [data-theme="pixel-dark"] .game-finish-score { font-size: 32px; line-height: 40px; }
 [data-theme="pixel-dark"] .game-place[aria-current] { font-weight: 400; }
@@ -193,6 +195,9 @@
 [data-theme="pixel-dark"] .game-key:focus-visible { outline: 0; box-shadow: inset 0 0 0 2px var(--rux-focus), inset 0 0 0 4px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45); }
 [data-theme="pixel-dark"] :is(.game-place, .game-key) { font-size: 0; line-height: 0; }
 [data-theme="pixel-dark"] .game-places:not(:has(> :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]))) > .game-place { font-size: 16px; line-height: 24px; white-space: nowrap; }
+@media (min-width: 22.5rem) {
+  [data-theme="pixel-dark"] .game-keys:not(:has(> :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]))) > .game-key { font-size: 16px; line-height: 24px; white-space: nowrap; }
+}
 /* The bar of places is drawn as the theme draws every edge: a 2px black
    edge along its top in place of the quiet line, 4px of room round its
    places and 6px between them, and the place the page is a raised key, as

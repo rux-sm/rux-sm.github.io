@@ -54,8 +54,9 @@
    crossed out for it, as far back as the puzzle's start, and REDO puts it
    back until a new move is made. Neither touches a mistake: the red X stays
    and so does the heart it cost, and a tap that was only a mistake is no move
-   to take back. Restart empties the board, zeroes the clock and fills the
-   hearts, and Undo straight after it brings everything back.
+   to take back. Restart, on the Pause cover, empties the board, zeroes the
+   clock and fills the hearts, and Undo straight after it brings everything
+   back.
 
    A board wider than ten squares zooms under two fingers where its squares
    are too fine for one; app.js's `drag` says how.
@@ -80,8 +81,10 @@
    ticks the phone, and an X taken off or a move undone plays a falling
    one. Me's Sound switch keeps its choice in this browser.
 
-   THE PICTURE SO FAR is drawn small in the board's corner, over the clock:
-   the filled squares only, as they are filled. While a drag runs along a
+   THE STATUS ROW over the board is the hearts and, at its end, the clock;
+   the enemy's health stands between them only with WORLD on, since without
+   it no enemy is drawn. THE PICTURE SO FAR is drawn small in the board's
+   corner: the filled squares only, as they are filled. While a drag runs along a
    line, how many squares it spans stands over the square it has reached.
 
    A game in progress is kept in this browser under `pixels-progress`, so a
@@ -270,6 +273,7 @@
       life.before(champion);
       foe.after(shadow);
     }
+    foe.hidden = !world;
     const sway = (part, frames, ms) => { if (!still && !part.getAnimations().length) part.animate(frames, { duration: ms, easing: 'ease-out' }); };
     const move = kind => {
       if (!champion) return;
@@ -691,7 +695,7 @@
       else if (key === 'x') begin(...cursor, 'x');
     });
 
-    // Restart is one tap among the keys, so Undo takes it back whole.
+    // Restart is one tap on the Pause cover, so Undo takes it back whole.
     const restart = () => {
       past = [{ state, seconds, mistakes, hints, spent, hearts, past }];
       ahead = [];
@@ -708,7 +712,7 @@
       showHearts();
       draw();
     };
-    $('pixels-restart').addEventListener('click', () => { if (started && !solved && !paused) restart(); });
+    $('pixels-restart').addEventListener('click', () => { if (paused) { restart(); resume(); } });
 
     /* A PAUSE stands the clock and lies Design's cover over the board, bare
        as before Start, with Resume and Exit, until Resume. It changes

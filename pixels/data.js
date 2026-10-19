@@ -11,7 +11,8 @@
    database functions that first find the player, from the log-in or from the
    key: `pixels_door`, `pixels_me`, `pixels_puzzles`, `pixels_results`,
    `pixels_days`, `pixels_record`, `pixels_record_day`, `pixels_board`,
-   `pixels_set_picture`, `pixels_rename`, `pixels_set_pin`, `pixels_use_fairy`, `pixels_leave`,
+   `pixels_set_picture`, `pixels_set_gear`, `pixels_rename`, `pixels_set_pin`,
+   `pixels_use_fairy`, `pixels_leave`,
    `pixels_people`, `pixels_friend_offer`, `pixels_add_friend`,
    `pixels_unfriend`, `pixels_renew_invite`, and for a player's own puzzles
    and rifts `pixels_mine`, `pixels_keep_puzzle`, `pixels_drop_puzzle`,

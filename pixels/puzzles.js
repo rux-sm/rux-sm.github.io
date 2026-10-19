@@ -15,16 +15,18 @@
    one to a row, drawn by app.js's `riftTile`: the way into it, with the
    sprite last found in it, its number and name, and how many sprites are
    found, against a star and in a bar. A player's rift says who made it in
-   place of its number, one not yet opened says New, and the one Continue
-   goes into is ringed. A tile opens its category in category.html, but
+   place of its number, and one not yet opened says New. A tile opens its category in category.html, but
    for a locked one, a rift of the course that waits for more sprites,
    which is one dim line saying how many. A player reads a category as a
    rift.
 
-   CONTINUE is one primary button that opens the next puzzle to play: the
-   first not found in the rift the player last went into, or in the first
-   open rift with one left. It is over the bar of places on a phone and over
-   the puzzles on a wider screen, and is not there once everything is found.
+   CONTINUE is a card under the logo, over the rifts, that plays the next
+   puzzle: the first not found in the rift the player last went into, or in
+   the first open rift with one left. It is drawn as a rift's tile is, with
+   the puzzle's letter in place of a picture, a Continue tag, the puzzle's
+   size, and its rift's name and bar; a boss says Boss by its size. The
+   rift's count is on its own tile under it. It is not there
+   once everything is found.
 
    ADD TO HOME SCREEN is a row of Me's list. An iPhone is sent here by it,
    as `#add`, and shown the steps in a modal, because its icon opens the
@@ -39,7 +41,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, boss, letter, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, boss, letter, side, bar, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -310,25 +312,29 @@
     const onward = [cats.find(stood), ...cats].map(c => c && left(c)).find(Boolean);
     const here = onward && cats.find(c => c.puzzles.includes(onward));
     if (onward) {
-      const at = here.puzzles.indexOf(onward), which = boss(here, at) ? 'Boss' : letter(at);
-      const wrap = document.createElement('div');
-      wrap.className = 'pixels-continue';
-      const a = document.createElement('a');
-      a.className = 'rux--btn rux--btn--primary pixels-continue-key';
-      a.href = `play.html?id=${encodeURIComponent(onward.id)}`;
-      a.setAttribute('aria-label', `Continue with ${which === 'Boss' ? 'the boss' : `puzzle ${which}`} of ${heading(here)}`);
-      a.append(words('pixels-continue-words', `Continue ${which} · ${heading(here)}`));
-      wrap.append(a);
-      host.before(wrap);
+      const at = here.puzzles.indexOf(onward), which = boss(here, at) ? 'Boss' : `Puzzle ${letter(at)}`;
+      const have = here.puzzles.filter(p => results.has(p.id)).length, all = here.puzzles.length;
+      const card = document.createElement('a');
+      card.className = 'rux--link rux--tile rux--tile--clickable game-tile pixels-rift pixels-continue';
+      card.href = `play.html?id=${encodeURIComponent(onward.id)}`;
+      card.setAttribute('aria-label', `Continue with ${which === 'Boss' ? 'the boss' : which}, ${side(onward)}, of ${heading(here)}, ${have} of ${all} sprites found`);
+      const art = words('game-tile-art pixels-rift-art', letter(at));
+      art.setAttribute('aria-hidden', 'true');
+      const head = words('game-tile-head', ''), line = words('pixels-rift-line', '');
+      line.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', 'Continue'), words('', which === 'Boss' ? `Boss · ${side(onward)}` : side(onward)));
+      head.append(line);
+      card.append(art, head, words('game-tile-name', heading(here)), bar(have, all));
+      const list = document.createElement('div');
+      list.className = 'game-tiles pixels-continue-list';
+      list.append(card);
+      host.before(list);
     }
-    // The rift Continue goes on into says Next, where the map would stand
-    // the character, and a rift not yet opened, with nothing found in it,
-    // says New, unless it is locked, which its tile says for itself.
+    // A rift not yet opened, with nothing found in it, says New, unless it
+    // is locked, which its tile says for itself, or Continue goes into it.
     const tiles = rifts => {
       const list = document.createElement('div');
       list.className = 'game-tiles';
       list.append(...rifts.map(c => riftTile(c, results, {
-        next: c === here,
         tag: c !== here && !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '',
       })));
       return list;

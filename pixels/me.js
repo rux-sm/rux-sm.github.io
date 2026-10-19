@@ -26,9 +26,10 @@
    it.
 
    THE LIST UNDER THE PLAYER holds what has no place in the bar: How to
-   play, the Sound switch, Add to home screen where the browser can, and
-   for an account the way to Rux Home. Manage and Players are the owner's
-   places in the bar. It is Carbon's contained list. It has no Theme, because Pixels is always in
+   play, the Sound switch, Add to home screen where the browser can, the
+   owner's Manage and Players, and for an account the way to Rux Home. The
+   bar keeps the four places every player has, so each shows its word; a
+   wide screen's header names Manage and Players too. It is Carbon's contained list. It has no Theme, because Pixels is always in
    pixel-dark, which every page sets with `data-theme-lock`.
    ========================================================================== */
 (() => {
@@ -100,6 +101,10 @@
       add.addEventListener('click', () => install?.prompt());
       offer = () => { if (install) first.after(add.parentElement); else add.parentElement.remove(); };
       offer();
+    }
+    if (owner) {
+      row('Manage', { href: 'manage.html' });
+      row('Players', { href: 'players.html' });
     }
     if (!guest) row('Rux Home', { href: '/' });
     el.append(ul);

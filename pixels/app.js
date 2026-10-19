@@ -929,7 +929,7 @@
      line of its own.
      A LOCKED RIFT'S, one `locks` left short, is one line and no link: a
      lock, its name, and how many more sprites open it. */
-  const riftTile = (c, found, { tag, under, featured, next } = {}) => {
+  const riftTile = (c, found, { tag, under, featured } = {}) => {
     const all = c.puzzles.length, have = c.puzzles.filter(p => found.has(p.id)).length;
     const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast game-tile-tag', text);
     const head = document.createElement('span');
@@ -960,14 +960,13 @@
       by.append(portrait(c.by), c.by.name);
       line.append(by);
     } else if (c.number) line.append(words('', `Rift ${c.number}`));
-    if (next) line.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', 'Next'));
     if (tag) line.append(pill(tag));
     const count = words('pixels-rift-count', `${have}/${all}`);
     const star = document.createElement('span');
     star.className = 'pixels-star';
     count.append(star);
     head.append(line, count);
-    a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${next ? ', next' : ''}${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
+    a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
     a.append(picture, head, words('game-tile-name', heading(c)), bar(have, all));
     if (under) {
       const line = document.createElement('span');

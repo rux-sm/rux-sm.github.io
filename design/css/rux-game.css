@@ -17,7 +17,7 @@
    panel. */
 
 /* Each part's display would outrank the hidden attribute. */
-.game-places[hidden], .game-keys[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
+.game-places[hidden], .game-place[hidden], .game-keys[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
 
 /* THE PAGE, on the game's <main> beside Carbon's content class. Its last row
    keeps clear of a phone's home bar, and of the bar of places where the page

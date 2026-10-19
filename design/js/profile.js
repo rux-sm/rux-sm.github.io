@@ -10,7 +10,8 @@
 
    THE THEME IS PICKED FROM `#rux-profile-theme`: a select in the header's
    panel, and a group of radios named `rux-theme` in a page that still
-   carries one. Both are kept in step the same way.
+   carries one. Both are kept in step the same way. A page that locks its
+   theme with `data-theme-lock` hides the picker's row.
 
    THIS IS THE LOCAL PROFILE, the layer that is not password-protected and
    needs no network: what the gates can drive, and what keeps an app usable
@@ -68,6 +69,8 @@
   const picker = panel.querySelector('#rux-profile-theme');
   const select = picker?.tagName === 'SELECT' ? picker : null;
   const fieldset = select ? null : picker;
+  // A page that locks its theme has none to choose, so its picker's row is hidden.
+  if (picker && document.documentElement.dataset.themeLock) (picker.closest('li') || picker).hidden = true;
   const signIn = panel.querySelector('#rux-profile-sign-in');
   const listeners = new Set();
   const getRadios = () => [...panel.querySelectorAll('input[name="rux-theme"]')];

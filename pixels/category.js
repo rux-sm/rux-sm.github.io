@@ -8,16 +8,16 @@
    says so.
 
    A player reads a category as a rift. The page is its name, after its
-   number for one of the owner's, its size and how many sprites are found, or Rift
-   cleared, a bar of that, and its puzzles easy to hard, three across on a
-   phone and five on a wide screen, each tile a square. Each
-   has its letter in the rift, A to O, in its corner. A solved tile shows
-   its picture, name and best time; an unsolved one a question mark over
-   its board's size, with Boss for the last, and the first of them, the one
-   to play next, has its question mark in the primary button's colours.
-   The boss of a rift of the course is held back until the others are
-   found, by app.js's `holds`: its tile is dim, no link, and says how many
-   are still to find.
+   number for one of the owner's, how many sprites are found against a
+   star, a bar of that, and its collection: its puzzles easy to hard in
+   rows of five, A to O, each a square showing its picture once found and
+   else its letter. The first not found, the one to play next, is in the
+   primary button's colours, and the last, the boss, is ringed red. The
+   boss of a rift of the course is held back until the others are found,
+   by app.js's `holds`, and is dim. A square chosen, the next one at first,
+   is told under the collection: its name, or its letter or Boss, its size
+   and best time, and Play, or how many are still to find for a boss held
+   back. A sprite found since the page last showed it turns into view.
    A rift of the course that is locked, by app.js's `locks`, shows no
    puzzle: its name, how many of the sprites it opens at are found, and a
    bar of that.
@@ -29,7 +29,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, sprites, boss, holds, title, letter, words, tile, bar } = window.Pixels;
+  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, boss, holds, title, letter, words, art, bar, time, arrived, turn } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -86,7 +86,7 @@
     stand(category);
     const solved = all.filter(p => results.has(p.id)).length;
     const el = document.createElement('section');
-    el.className = 'rux--stack-vertical rux--stack-scale-4';
+    el.className = `rux--stack-vertical rux--stack-scale-4 pixels-rift${solved === all.length ? ' is-cleared' : ''}`;
     el.setAttribute('aria-labelledby', 'pixels-category-name');
     const head = document.createElement('div');
     head.className = 'pixels-level-head';
@@ -94,30 +94,65 @@
     h1.className = 'rux--type-productive-heading-04';
     h1.id = 'pixels-category-name';
     h1.textContent = category.number ? `Rift ${category.number} · ${name}` : name;
-    head.append(h1, words('pixels-meta', `${side(category)} · ${sprites(solved, all.length)}`));
-    const list = document.createElement('div');
-    list.className = 'pixels-list';
-    // The first puzzle not yet solved is the one to play next.
-    const next = all.find(p => !results.has(p.id));
-    // The boss held back says how many sprites are still to find before it.
-    const before = holds(category, results) ? all.length - 1 - solved : 0;
-    list.append(...all.map((p, i) => {
-      // An unsolved puzzle shows its letter, or Boss, over its board's size,
-      // and is read out as Puzzle C, 5×5.
-      const best = results.get(p.id), last = boss(category, i), out = !(last && before);
-      const a = tile(p, best ? p.name : last ? 'Boss' : '', out ? `play.html?id=${encodeURIComponent(p.id)}` : '', best, letter(i), out ? side(p) : `after ${before} more`);
-      if (!out) a.setAttribute('aria-label', `Boss, out after ${before} more sprite${before === 1 ? '' : 's'}`);
-      else if (!best) a.setAttribute('aria-label', `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
-      if (p === next) a.classList.add('is-next');
-      return a;
-    }));
+    const count = words('pixels-rift-count', `${solved}/${all.length}`);
+    const star = document.createElement('span');
+    star.className = 'pixels-star';
+    count.append(star);
+    count.setAttribute('aria-label', `${solved} of ${all.length} sprites found`);
+    head.append(h1, count);
     // A player's rift says who made it.
     if (category.by) {
       const made = words('pixels-meta pixels-by', '');
       made.append(portrait(category.by), category.by.name);
       head.append(made);
     }
-    el.append(head, bar(solved, all.length), list);
+
+    // THE COLLECTION, and under it what the chosen square is.
+    const next = all.find(p => !results.has(p.id));
+    // The boss held back says how many sprites are still to find before it.
+    const before = holds(category, results) ? all.length - 1 - solved : 0;
+    const out = n => `${n} more sprite${n === 1 ? '' : 's'}`;
+    const album = document.createElement('div');
+    album.className = 'pixels-album';
+    album.setAttribute('role', 'group');
+    album.setAttribute('aria-label', 'Sprites');
+    const panel = document.createElement('div');
+    panel.className = 'rux--tile pixels-album-panel';
+    panel.setAttribute('aria-live', 'polite');
+    const choose = i => {
+      squares.forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+      const p = all[i], best = results.get(p.id), held = boss(category, i) && before > 0;
+      const text = document.createElement('div');
+      text.append(words('pixels-album-name', title(p, i, !!best, boss(category, i))),
+        words('pixels-meta', held ? `Out after ${out(before)}` : `${side(p)} · ${best ? `best ${time(best.seconds)}` : 'not found yet'}`));
+      const parts = [text];
+      if (!held) {
+        const go = document.createElement('a');
+        go.className = 'rux--btn rux--btn--primary';
+        go.href = `play.html?id=${encodeURIComponent(p.id)}`;
+        go.textContent = best ? 'Play again' : 'Play';
+        parts.push(go);
+      }
+      panel.replaceChildren(...parts);
+    };
+    const squares = all.map((p, i) => {
+      const best = results.get(p.id), last = boss(category, i);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `pixels-album-square${p === next ? ' is-next' : ''}${last ? ' is-boss' : ''}${last && before ? ' is-held' : ''}`;
+      b.append(best ? art(p, true) : letter(i));
+      b.setAttribute('aria-label', best ? `${letter(i)}, ${p.name}` : last && before ? `Boss, out after ${out(before)}` : `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
+      b.addEventListener('click', () => choose(i));
+      return b;
+    });
+    album.append(...squares);
+    choose(next ? all.indexOf(next) : all.length - 1);
+    el.append(head, bar(solved, all.length), album, panel);
+    // A sprite found since this page last showed it turns into view.
+    const turned = arrived(all.filter(p => results.has(p.id)).map(p => p.id));
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      turned.forEach((id, n) => turn(squares[all.findIndex(p => p.id === id)].querySelector('.pixels-picture'), 300 + n * 150));
+    }
     host.append(el);
   })();
 })();

@@ -90,7 +90,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, arrive, turn, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
@@ -344,9 +344,9 @@
       else $('pixels-next').remove();
       /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
          with this sprite counted, and is the way back to it. A sprite found
-         for the first time arrives in its row, and one in a
-         puzzle somebody else made earns a mana, which the tile says; the
-         owner has no mana to earn. A time that was not saved counts
+         for the first time turns into view on it and is kept for the rift's
+         page to turn too, and one in a puzzle somebody else made earns a
+         mana, which the tile says; the owner has no mana to earn. A time that was not saved counts
          nothing. A rift this sprite cleared says the fairies it freed,
          and one it opened stands under it, saying Opened. */
       if (home) {
@@ -363,7 +363,7 @@
             fairies += freed;
           } catch { /* Me says how many, the next time it is opened */ }
         }
-        const rift = riftTile(home, known, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '');
+        const rift = riftTile(home, known, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '', key);
         const list = document.createElement('div');
         list.className = 'game-tiles';
         list.append(rift, ...opened.map(c => riftTile(c, known, 'Opened')));
@@ -371,9 +371,8 @@
         const keys = $('pixels-solved').querySelector('.game-finish-actions');
         keys.before(list);
         if (!keys.childElementCount) keys.remove();
-        if (first && !still) rift.querySelector(`.pixels-rift-slot[data-id="${CSS.escape(key)}"]`)?.animate(
-          [{ transform: 'scale(0)' }, { transform: 'none' }],
-          { duration: 400, delay: 500, easing: 'ease-out', fill: 'backwards' });
+        if (first) arrive(key);
+        if (first && !still) turn(rift.querySelector('.pixels-rift-art > .pixels-picture'), 500);
       }
       // The numbers and the controls leave, and the picture slides from
       // where the board had it to the middle.

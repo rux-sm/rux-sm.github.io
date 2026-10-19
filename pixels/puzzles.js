@@ -12,12 +12,14 @@
    PUZZLES. Under the logo, today's puzzle is one card across the page: its
    picture once solved, the date, the best time or how hard it is, and the
    days solved in a row. Then a tile for each category, in playing order,
-   one to a row, drawn by app.js's `riftTile`: the way into it, with its
-   name, how many sprites are found, and a row of its puzzles, each found
-   one its picture. A player's rift also says who made it, and one not yet
-   opened says New. A tile opens its category in category.html, but for a
-   locked one, a rift of the course that waits for more sprites, which is
-   dim and says how many. A player reads a category as a rift.
+   one to a row, drawn by app.js's `riftTile`: the way into it, with the
+   sprite last found in it, its number and name, and how many sprites are
+   found, against a star and in a bar. A player's rift says who made it in
+   place of its number, one not yet opened says New, and the one Continue
+   goes into is ringed. A tile opens its category in category.html, but
+   for a locked one, a rift of the course that waits for more sprites,
+   which is one dim line saying how many. A player reads a category as a
+   rift.
 
    CONTINUE is one primary button that opens the next puzzle to play: the
    first not found in the rift the player last went into, or in the first
@@ -317,10 +319,17 @@
     }
     // A rift not yet opened, with nothing found in it, says New, unless it
     // is locked, which its tile says for itself.
+    // The rift Continue goes on into is ringed, where the map would stand
+    // the character.
+    const here = onward && cats.find(c => c.puzzles.includes(onward));
     const tiles = rifts => {
       const list = document.createElement('div');
       list.className = 'game-tiles';
-      list.append(...rifts.map(c => riftTile(c, results, !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '')));
+      list.append(...rifts.map(c => {
+        const t = riftTile(c, results, !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '');
+        if (c === here) t.classList.add('is-current');
+        return t;
+      }));
       return list;
     };
     if (!MAP) { host.appendChild(tiles(cats)); return; }

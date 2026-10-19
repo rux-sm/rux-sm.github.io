@@ -11,21 +11,21 @@ address, `/pixels/`, and types a name and a PIN at the door. A guest's browser k
 they are; one with no key is let in by the name and the PIN. No player is shown another but a friend.
 Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
-`index.html` has the Pixels star and name in the middle at its top, and two tabs. Puzzles: today's
-puzzle on a card with the days solved in a row; then a tile for each rift, which the code calls a
-category, in the owner's order, one to a row. A tile is the way into its rift: its name, or More where
-it has none, how many of its sprites are found, and a row of its puzzles, each found one its picture and
-the next to play ringed. A rift of the course from the sixth on is locked until enough sprites are
-found, which `app.js`'s `locks` counts: its tile is dim, no link and says how many more open it, and its
+`index.html` has the Pixels star and name at its top, and two tabs. Puzzles: today's puzzle on a card
+with the days solved in a row; then a tile for each rift, which the code calls a category, in the
+owner's order. A tile is the way into its rift: the sprite last found in it, its number, its name, how
+many of its sprites are found and a bar of that; once all are, its boss in a gold frame. The rift
+Continue goes into is ringed. A rift of the course from the sixth on is locked until enough sprites are
+found, which `app.js`'s `locks` counts: its tile is one dim line saying how many more open it, and its
 page shows no puzzle. With `WORLD` in `app.js` on, the owner is drawn the course as a map in place of
 its tiles, their character by their rift (`docs/drawing-the-art.md`). Continue opens the next puzzle to
 play. Leaderboard: today's ranking by time, and the all-time one by puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
-and then easy to hard, each tile a square with its letter in the rift, A to O, three across. A solved
-puzzle shows its picture, name and best time, an unsolved one a question mark over its size, with Boss
-for the last, and the first, the one to play next, has its mark in the primary button's colours. A
-course rift holds its boss back, dim, until the rest are found.
+and then easy to hard, in rows of five, A to O, each a square showing its picture once found and else
+its letter; the next to play is in the primary button's colours and the boss, the last, ringed red. A
+course rift holds its boss back, dim, until the rest are found. The square chosen is told under them,
+with its best time and Play, and a sprite just found turns into view.
 
 `me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
 that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with

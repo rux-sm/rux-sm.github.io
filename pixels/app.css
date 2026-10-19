@@ -359,15 +359,19 @@
    colour, and beside it the name at Silkscreen's heading size. */
 .pixels-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; font-size: 32px; font-weight: 400; line-height: 40px; }
 .pixels-logo-mark { flex: none; inline-size: 48px; block-size: 48px; background: var(--rux-support-caution-major); -webkit-mask: url(brand/icon.svg) center / 48px no-repeat; mask: url(brand/icon.svg) center / 48px no-repeat; }
-/* A RIFT'S ROW of puzzles on its tile: a square of 30px each, which a
-   picture of five, ten or fifteen fills in whole pixels and one of twenty
-   sits in the middle of. One not found is a ?, the next to play ringed in
-   the primary button's colour, and a boss held back dim. */
-.pixels-rift-row { display: grid; grid-template-columns: repeat(auto-fill, 30px); gap: 6px; margin-block-start: .375rem; }
-.pixels-rift-slot { display: grid; place-items: center; inline-size: 30px; block-size: 30px; background: var(--rux-layer-accent-01); color: var(--rux-text-secondary); font-size: 16px; line-height: 1; }
-.pixels-rift-slot > .pixels-picture { --px: round(down, calc(30px / var(--size, 10)), 1px); }
-.pixels-rift-slot.is-next { box-shadow: inset 0 0 0 2px var(--rux-button-primary); color: var(--rux-text-primary); }
-.pixels-rift-slot.is-held { opacity: .3; }
+/* A RIFT'S TILE, on the front page and under a solved puzzle: its picture
+   in a square of 64px, a picture of five, ten, fifteen or twenty squares
+   60px across in whole pixels inside a 2px frame, which is gold once every
+   sprite of it is found, or a ? before any is. Its count stands against a
+   star, and both are gold once it is cleared. A locked rift's is one line:
+   its lock, its name and how many more sprites open it. */
+.pixels-rift-art { display: grid; place-items: center; box-sizing: border-box; inline-size: 64px; block-size: 64px; padding: 2px; background: var(--rux-layer-accent-01); color: var(--rux-text-secondary); font-size: 32px; line-height: 1; }
+.pixels-rift-art > .pixels-picture { --px: round(down, calc(60px / var(--size, 10)), 1px); }
+.pixels-rift.is-cleared .pixels-rift-art { background: var(--rux-support-caution-minor); }
+.pixels-rift-count { display: flex; flex: none; align-items: center; gap: 6px; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
+.pixels-rift.is-cleared .pixels-rift-count { color: var(--rux-support-caution-minor); }
+.pixels-star { flex: none; inline-size: 16px; block-size: 16px; background: currentColor; -webkit-mask: url(brand/icon.svg) center / 16px no-repeat; mask: url(brand/icon.svg) center / 16px no-repeat; }
+.pixels-rift .game-tile-head > .pixels-icon { flex: none; color: var(--rux-text-secondary); }
 .pixels-tabs[hidden] { display: none; }
 .pixels-panel { padding: 1.5rem 0 0; }
 /* CONTINUE, the way on to the next puzzle. It lies over the bar of places,
@@ -504,7 +508,23 @@
    beside the name, and the far end has the keys; the Published switch is in
    the rift's row. */
 .pixels-level-head { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; }
-.pixels-level-head > .pixels-meta { margin-inline-start: auto; }
+.pixels-level-head > :is(.pixels-meta, .pixels-rift-count) { margin-inline-start: auto; }
+/* A RIFT'S COLLECTION on its page: its puzzles in rows of five, A to O,
+   each square a fifth of the row, with its picture once found in whole
+   pixels in its middle, and else its letter. The next to play is in the
+   primary button's colours, the boss is ringed in the error colour and dim
+   while it is held back, and the square chosen is ringed in the focus
+   colour. The panel under them tells the chosen square and plays it. */
+.pixels-album { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.pixels-album-square { display: grid; place-items: center; aspect-ratio: 1; min-inline-size: 0; padding: 0; border: 0; background: var(--rux-layer-accent-01); color: var(--rux-text-secondary); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; container-type: inline-size; }
+.pixels-album-square > .pixels-picture { --px: round(down, calc(100cqi / var(--size, 10)), 1px); }
+.pixels-album-square.is-next { background: var(--rux-button-primary); color: var(--rux-text-on-color); }
+.pixels-album-square.is-boss { box-shadow: inset 0 0 0 2px var(--rux-support-error); }
+.pixels-album-square.is-held { opacity: .35; }
+.pixels-album-square[aria-pressed="true"], .pixels-album-square:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.pixels-album-panel { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-block-size: 0; padding: 1rem; }
+.pixels-album-panel > div { min-inline-size: 0; }
+.pixels-album-name { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pixels-level-head--desk > .pixels-meta { margin-inline-start: 0; }
 .pixels-level-head--desk > .pixels-moves { margin-inline-start: auto; }
 .pixels-shown { display: flex; align-items: center; gap: .5rem; }

@@ -25,7 +25,8 @@ same by hand.
   does now.
 - **Details, Billing, Files and the updates stay the trip's.** The customer,
   the contacts, the dates, the price, the PO and the invoice are entered
-  once.
+  once, and a file or a contact names a leg, never a route, as
+  `scheduler-split-trip-days.md` decides.
 - **The dates are the leg's, not the route's.** Routes on one leg share its
   days and differ in places and times.
 - **A route is added as a copy of the one on screen,** so only what differs
@@ -44,7 +45,7 @@ same by hand.
   change the vehicles of the route on screen, not every vehicle on the leg.
 - **A bar shows its own route's times,** and its route's name where the leg
   has more than one, so two groups leaving an hour apart read as two.
-- **Each route prints its own itinerary,** and a driver's envelope, link and
+- **Each route prints its own itinerary sheet,** and a driver's envelope, link and
   reminder carry the route of the bus they are on.
 
 ### The quote

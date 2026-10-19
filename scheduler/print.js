@@ -149,21 +149,20 @@
     email: 'e-escamilla@sbcglobal.net',
   };
 
-  /* The contact the envelope carries is the trip's day-of contact, first
-     filled of the five. The booking contact is the office's and is used only
-     where no day-of contact is set, because this sheet travels with the
+  /* The contacts the envelope carries are the leg's day-of contacts, by
+     leg-papers.js: the first as Contact and the second as Backup, the room a
+     6 by 9 envelope has. The booking contact is the office's and is used only
+     where the leg has no day-of contact, because this sheet travels with the
      driver. */
-  function contactOf(trip) {
-    for (let n = 1; n <= 5; n++) {
-      const name = trip[`trip_contact_${n}_name`] || trip[`c${n}`]?.name;
-      const phone = trip[`trip_contact_${n}_phone`] || trip[`c${n}`]?.phone;
-      if (name || phone) return { name: name || '', phone: showPhone(phone) };
-    }
-    return {
+  function contactsOf(trip, leg) {
+    const day = window.SchedulerLegPapers.contactsFor(trip, leg).slice(0, 2)
+      .map(c => ({ name: c.name, phone: showPhone(c.phone) }));
+    return day.length ? day : [{
       name: trip.booking_contact_name || trip.contacts?.name || '',
       phone: showPhone(trip.booking_contact_phone || trip.contacts?.phone),
-    };
+    }];
   }
+  const contactOf = (trip, leg) => contactsOf(trip, leg)[0];
 
   /* AN ADDRESS AS A FORM CAN CARRY IT. A stop's address is what a map service
      returned, and its last two parts are noise on paper: the country is
@@ -587,15 +586,16 @@
        tells a driver where to write; a rule under a whole row does not, and an
        empty field between two rules reads as nothing rather than as a space
        for an answer. */
-    const contact = contactOf(trip);
+    const [contact, backup] = contactsOf(trip, leg);
     const table = el('div', 'scheduler-envelope__table');
+    const contactRows = () => {
+      table.appendChild(row(cell('Contact', contact.name), cell('Phone', contact.phone)));
+      if (backup) table.appendChild(row(cell('Backup', backup.name), cell('Phone', backup.phone)));
+    };
     table.appendChild(envelopeSchedule(trip, assignment, leg, seat));
 
     if (card.dataset.layout === 'multi-stop') {
-      table.appendChild(row(
-        cell('Contact', contact.name),
-        cell('Phone', contact.phone),
-      ));
+      contactRows();
       card.appendChild(table);
       card.appendChild(envelopeLog());
       card.appendChild(envelopeNeeds(trip, seat));
@@ -604,10 +604,7 @@
     }
 
     table.appendChild(row(cell('Destination', trip.destination || '')));
-    table.appendChild(row(
-      cell('Contact', contact.name),
-      cell('Phone', contact.phone),
-    ));
+    contactRows();
     // Last in the table, because it is the one row filled in after the trip.
     table.appendChild(row(
       cell('Starting odometer', '', true),
@@ -1116,8 +1113,8 @@
      twice is one fact with two homes. The Detailed layout, read at a desk,
      puts where the group is going on the same line, in the same type. */
   function itineraryMeta(subject, detailed = false) {
-    const { trip } = subject;
-    const contact = contactOf(trip);
+    const { trip, leg } = subject;
+    const [contact, backup] = contactsOf(trip, leg);
     const meta = el('dl', 'scheduler-driver-itinerary__meta');
     if (detailed) {
       meta.classList.add('scheduler-driver-itinerary__meta--three');
@@ -1128,6 +1125,7 @@
     meta.appendChild(headField('Client', trip.customer || ''));
     meta.appendChild(headField('Contact',
       [contact.name, contact.phone].filter(Boolean).join(' · ')));
+    if (backup) meta.appendChild(headField('Backup', [backup.name, backup.phone].filter(Boolean).join(' · ')));
     return meta;
   }
 
@@ -2454,11 +2452,11 @@
       /* One sheet for the leg, handed to each of its drivers, so its mark is
          every seat's on the leg at once. It is the driver's sheet that is
          marked, so the Detailed layout, the office's, offers no tick. Nor
-         does a trip whose customer sent an itinerary: that file is the sheet
+         does a leg whose customer sent an itinerary: that file is the sheet
          its drivers are handed, and the board's document panel keeps its
          tick. */
       marks: { table: 'trip_drivers', column: 'itinerary_printed', by: 'crew', layout: 'simple', what: 'itinerary',
-        unless: trip => (trip?.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary') },
+        unless: (trip, leg) => !!trip && !!window.SchedulerLegPapers.itineraryFor(trip, leg) },
       /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
          yard at both ends, each wait and the leg's miles and hours from the
          Route tab. Detailed needs a trip's route, so a blank form is Simple. */
@@ -2469,11 +2467,11 @@
       // The Detailed layout's price: the Billing tab's lines as saved, and
       // the estimated miles a typed price's calculator figure falls back on
       // where the route has none. The trip's files say whether the customer
-      // sent an itinerary.
+      // sent the leg an itinerary.
       columns: [
         'quoted_price', 'est_miles',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
-        'trip_documents(label)',
+        'trip_documents(label,leg,created_at)',
       ],
       /* LETTER, AND NOT `exact`. The envelope must come out on one envelope;
          this runs onto as many sheets as the stops need, and the height is
@@ -2572,7 +2570,7 @@
     },
   ];
 
-  window.SchedulerForms = { FORMS, envelope, itinerary, quote, seatsOf, needsOf, contactOf, roleName, useRequirements };
+  window.SchedulerForms = { FORMS, envelope, itinerary, quote, seatsOf, needsOf, contactsOf, contactOf, roleName, useRequirements };
 
   /* A page that only draws with these, the driver's share/form.html, has no
      forms page around them to run. */
@@ -2621,6 +2619,7 @@
       'trip_contact_3_name', 'trip_contact_3_phone',
       'trip_contact_4_name', 'trip_contact_4_phone',
       'trip_contact_5_name', 'trip_contact_5_phone',
+      'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
       'trip_stops(id,leg,type,address,spot)',
       ...(form.marks?.by === 'leg' ? LEGS.map(leg => `${form.marks.column}_${leg}`) : []),
     ].join(',') + ')',
@@ -3139,7 +3138,7 @@
      `unless` rules out, whose tick is kept somewhere else. */
   function markOf(form, copy, layout) {
     const marks = form?.marks;
-    if (!marks || !copy || (marks.layout && layout !== marks.layout) || marks.unless?.(copy.trip)) return null;
+    if (!marks || !copy || (marks.layout && layout !== marks.layout) || marks.unless?.(copy.trip, copy.leg === 'return' ? 'return' : 'outbound')) return null;
     const leg = copy.leg === 'return' ? 'return' : 'outbound';
     const rows = marks.by === 'crew'
       ? (copy.trip?.crew || []).filter(a => (a.leg || 'outbound') === leg).flatMap(a => seatsOf(a))
@@ -3676,6 +3675,7 @@
     'trip_contact_3_name', 'trip_contact_3_phone',
     'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
+    'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
     'trip_stops(id,position,leg,type,name,address,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,miles,drive,dwell_status,lat,mapbox_id)',
   ];
 

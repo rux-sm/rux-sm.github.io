@@ -18,7 +18,7 @@ const OUT = join(SCHEDULER, 'connector', 'rules.ts');
 
 // In the order index.html loads them, each after the files it reads.
 export const FILES = [
-  'requirements.js', 'leg-facts.js', 'billing.js', 'follow-up.js', 'checklist.js', 'week.js',
+  'requirements.js', 'leg-papers.js', 'leg-facts.js', 'billing.js', 'follow-up.js', 'checklist.js', 'week.js',
   'share/driver-words.js', 'driver-job.js', 'clashes.js', 'to-do.js', 'departures.js', 'draft-fields.js',
 ];
 

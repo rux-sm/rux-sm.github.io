@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../requirements.js', '../leg-facts.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+for (const f of ['../requirements.js', '../leg-papers.js', '../leg-facts.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
 const { seatsOf, overSeats } = window.SchedulerLegFacts;
 
 let failed = 0;

@@ -35,6 +35,10 @@
     ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact,
   } = window.SchedulerLegFacts;
 
+  /* Which itinerary and which day-of contacts each leg of a split trip is
+     handed: leg-papers.js, which every page handing a leg's papers loads. */
+  const PAPERS = window.SchedulerLegPapers;
+
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
   const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse } = window.SchedulerClashes;
@@ -286,7 +290,7 @@
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
-    'trip_documents(id,label,created_at,file_name,file_path,file_size)',
+    'trip_documents(id,label,created_at,file_name,file_path,file_size,leg)',
     // Set from the Checklist or the Files tab; a trip that does not need an
     // itinerary is not marked.
     'itinerary_not_needed',
@@ -310,6 +314,7 @@
     'trip_contact_1_name', 'trip_contact_1_phone', 'trip_contact_2_name', 'trip_contact_2_phone',
     'trip_contact_3_name', 'trip_contact_3_phone', 'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
+    'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     // The price the customer was sent, and when, which the quote lines may move past.
     'quote_sent_price,quote_sent_on',
@@ -586,12 +591,11 @@
      card: bar.js's `facts`, set as the bar is drawn. */
   const barFacts = new WeakMap();
 
-  // The trip's documents labelled Itinerary, newest first. The first is the one
-  // rux-ui picks: a re-uploaded itinerary replaces the one before.
-  const itinerariesOf = trip => (trip.trip_documents || [])
-    .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
-    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-  const latestItinerary = trip => itinerariesOf(trip)[0] ?? null;
+  // The trip's documents labelled Itinerary, newest first, and the one a leg's
+  // drivers are handed: its own newest, or a split trip's pickup with none
+  // the drop-off's, by leg-papers.js.
+  const itinerariesOf = trip => PAPERS.allItineraries(trip);
+  const latestItinerary = (trip, leg = 'outbound') => PAPERS.itineraryFor(trip, leg);
   // Every document the trip holds, newest first, as the Files tab lists them.
   const documentsOf = trip => [...(trip.trip_documents || [])]
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
@@ -3010,6 +3014,12 @@
     return known ? known[0] : name;
   };
   const PREVIOUS_TAG = { code: 'Previous', tone: 'rux--tag--gray', title: 'An earlier itinerary' };
+  // A split trip's itinerary names the leg whose drivers are handed it.
+  const LEG_TAGS = {
+    outbound: { code: 'Drop-off', tone: 'rux--tag--blue', title: 'The drop-off day\'s itinerary, which the pickup is handed too until it has its own' },
+    return: { code: 'Pickup', tone: 'rux--tag--purple', title: 'The pickup day\'s itinerary' },
+  };
+  const docLeg = doc => (doc.leg === 'return' ? 'return' : 'outbound');
 
   const fileSize = n => {
     const bytes = Number(n);
@@ -3017,18 +3027,27 @@
     return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
   };
 
+  /* A split trip's itinerary also names its leg, and its menu moves it to
+     the other one. */
   const fileRow = (trip, doc, previous) => {
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
+    const legged = PAPERS.isSplit(trip) && PAPERS.isItinerary(doc);
+    const other = docLeg(doc) === 'return' ? 'outbound' : 'return';
     const li = listRow({
       name: docTypeName(doc),
-      tag: previous ? PREVIOUS_TAG : null,
+      tag: previous ? PREVIOUS_TAG : legged ? LEG_TAGS[docLeg(doc)] : null,
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
       open: e => openDocument(doc, e.currentTarget, trip),
       editText: 'Replace', edit: () => replaceFrom(trip.id, doc),
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
+      items: legged ? [
+        { label: 'Replace', run: () => replaceFrom(trip.id, doc) },
+        { label: other === 'return' ? 'Move to pickup' : 'Move to drop-off', run: () => moveFrom(trip.id, doc, other) },
+        { label: 'Delete', danger: true, run: () => openDeleteFile(trip.id, doc) },
+      ] : null,
     });
     // Closing the document panel finds the tile by it after the list is redrawn.
     li.querySelector('.scheduler-item__open').dataset.documentId = doc.id;
@@ -3040,13 +3059,13 @@
   let filesAdd = null;
   // The trip whose earlier itineraries are open under its newest, kept so a redraw keeps them open.
   let earlierOpenFor = null;
-  /* Newest first, with a trip's earlier itineraries folded under its newest
-     behind one line that opens them, and Add file last, which is also the
-     empty state. */
+  /* Newest first, with a trip's earlier itineraries, those no leg is handed
+     any more, folded under its newest behind one line that opens them, and
+     Add file last, which is also the empty state. */
   function drawFiles(trip) {
     if (!filesBody || !trip) return;
-    const newest = latestItinerary(trip);
-    const earlier = itinerariesOf(trip).slice(1);
+    const earlier = PAPERS.earlierItineraries(trip);
+    const newest = itinerariesOf(trip).find(d => !earlier.includes(d)) ?? null;
     const open = earlierOpenFor === trip.id;
     const rows = [];
     for (const doc of documentsOf(trip)) {
@@ -6700,11 +6719,32 @@
     const [outFrom, outTo] = outLabels(trip.trip_type === SPLIT);
 
     /* The trip's own fields are one stack, 16px apart: the dates,
-       Destination, Type beside Passengers, then the trip bar's colour. Type
-       names the split type "Split", and the date labels say Drop-off and
-       Pickup. The tab is Details, and its first section is the trip itself,
-       then its people. */
+       Destination, then Type beside Passengers. Type names the split type
+       "Split", and the date labels say Drop-off and Pickup. The tab's first
+       section is the trip itself, titled with a menu on its line as the
+       contacts' sections are, then its people. The trip bar's colour is
+       picked from that menu, as from the bar's own Color item: it is seldom
+       changed and the bar shows it, so its field stays in the page, hidden,
+       for Save to read. */
     const colorItem = colorField('scheduler-f-color', trip);
+    const colorBox = el('div');
+    colorBox.hidden = true;
+    colorBox.appendChild(colorItem);
+    const tripMenu = menuTrigger('scheduler-f-tripmenu', 'Trip information actions');
+    tripMenu.addEventListener('click', () => {
+      const now = colorItem.current();
+      const shown = colorItem.choices.find(c => c.value === now) ?? colorItem.choices[0];
+      openItemsMenu(tripMenu, [{
+        label: 'Trip bar color',
+        icon: colorItem.chip(shown.hue),
+        items: colorItem.choices.map(c => ({
+          label: c.label,
+          checked: c.value === now,
+          icon: colorItem.chip(c.hue),
+          run: () => { colorItem.setColor(c.value); refreshDirty(); tripMenu.focus(); },
+        })),
+      }], 'Trip information actions');
+    });
     /* A one-day trip leaves the end box empty, which Save reads as the start
        day, and the box says Same day. */
     const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date,
@@ -6742,10 +6782,9 @@
         ]),
         passengers,
       ),
-      colorItem,
+      colorBox,
     );
-    // The tab's name heads its first section, the trip's own fields in a tile.
-    panelDetails.appendChild(section(null, fieldTile(topFields)));
+    panelDetails.appendChild(section('Trip information', fieldTile(topFields), tripMenu));
 
     // The Buses tab is its vehicles alone; what the trip needs is on Billing and Route.
     panelFleet.querySelector(':scope > [data-fleet-needs]')?.remove();
@@ -13096,7 +13135,7 @@
   function openLegItinerary({ trip: id, leg, assignment, driver } = {}, opener = null) {
     // The trip in the editor may be off the week showing.
     const trip = panelIndex.trips.get(id) ?? (id && String(editing?.id) === String(id) ? editing.trip : null);
-    const doc = trip ? latestItinerary(trip) : null;
+    const doc = trip ? latestItinerary(trip, leg) : null;
     if (doc) openDocument(doc, opener, trip, itineraryMarkOf(trip, leg));
     else openTripForm({ form: 'driver-itinerary', layout: 'simple', trip: id, assignment, driver }, opener);
   }
@@ -13641,7 +13680,7 @@
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
         .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size })
-        .select('id,label,created_at,file_name,file_path,file_size').single().then(r => r));
+        .select('id,label,created_at,file_name,file_path,file_size,leg').single().then(r => r));
       if (error) throw new Error(error.message);
       return data;
     } catch (err) {
@@ -13685,7 +13724,7 @@
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
         .update({ file_name: fileName, file_path: path, file_size: file.size }).eq('id', old.id)
-        .select('id,label,created_at,file_name,file_path,file_size').single().then(r => r));
+        .select('id,label,created_at,file_name,file_path,file_size,leg').single().then(r => r));
       if (error) throw new Error(error.message);
       doc = data;
     } catch (err) {
@@ -13703,6 +13742,27 @@
     await recordFileHistory(tripId, 'document_replaced', old.label || 'Previous file', `${old.label || 'Document'} replaced`,
       { documentId: doc.id, fileName: doc.file_name });
     return doc;
+  }
+
+  // A split trip's itinerary moved to the other leg, at once, as a replace is.
+  const LEG_WORDS = { outbound: 'Drop-off', return: 'Pickup' };
+  async function moveDocument(tripId, doc, leg) {
+    const { error } = await withTimeout(client.from('trip_documents').update({ leg }).eq('id', doc.id).then(r => r));
+    if (error) throw new Error(error.message);
+    await recordHistory(tripId, 'updated',
+      [{ field: 'document_leg', label: 'Itinerary day', before: LEG_WORDS[docLeg(doc)], after: LEG_WORDS[leg] }],
+      null, { documentId: doc.id, fileName: doc.file_name });
+  }
+  async function moveFrom(tripId, doc, leg) {
+    toast('working', 'Moving the itinerary…');
+    try {
+      await moveDocument(tripId, doc, leg);
+    } catch (err) {
+      toast('error', `The itinerary was not moved. ${err.message}`);
+      return;
+    }
+    await refreshDocuments(tripId);
+    toast('success', `The itinerary is the ${leg === 'return' ? 'pickup' : 'drop-off'}'s now.`);
   }
 
   async function deleteDocument(tripId, doc) {
@@ -13737,7 +13797,7 @@
   async function refreshDocuments(tripId) {
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
-        .select('id,label,created_at,file_name,file_path,file_size').eq('trip_id', tripId).then(r => r));
+        .select('id,label,created_at,file_name,file_path,file_size,leg').eq('trip_id', tripId).then(r => r));
       if (error) throw new Error(error.message);
       for (const trip of [panelArgs?.trip, panelIndex.trips.get(tripId)]) {
         if (trip?.id === tripId) trip.trip_documents = data || [];
@@ -14154,10 +14214,13 @@
     closeContacts();
     const docked = barShortcuts.hasAttribute('data-docked');
 
-    /* The customer's side, one tile per person: the booking contact who is
-       also a day-of contact, by name and number, is one tile under both. */
+    /* The customer's side, one tile per person: the booking contact, then
+       the leg's day-of contacts as leg-papers.js hands them to its drivers.
+       The booking contact who is also a day-of contact, by name and number,
+       is one tile under both. */
     const people = [];
-    for (const [c, day] of [[tripContact(trip, 0), false], ...[1, 2, 3, 4, 5].map(n => [tripContact(trip, n), true])]) {
+    const dayContacts = PAPERS.contactsFor(trip, bar.dataset.leg || 'outbound', tripContact);
+    for (const [c, day] of [[tripContact(trip, 0), false], ...dayContacts.map(c => [c, true])]) {
       if (!c?.name) continue;
       const same = people.find(p => p.name === c.name && dial(p.phone || '') === dial(c.phone || ''));
       if (same) { if (day && !same.day) { same.day = true; same.role = 'Booking and trip contact'; } continue; }
@@ -14194,7 +14257,7 @@
         partner: partner ? (partner.short_name || partner.name) : '',
         from: legPickup.address || legPickup.name,
         to: inbound ? (legBack.address || legBack.name || '') : trip.destination, toYard: inbound,
-        itinerary: latestItinerary(trip)?.id || '',
+        itinerary: latestItinerary(trip, leg)?.id || '',
       };
     };
     const changesOf = (c, lang, keys = false) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,

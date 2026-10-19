@@ -62,6 +62,7 @@
     directionsTo: place => `Directions to ${place}`,
 
     contact: 'Contact',
+    backup: 'Backup',
     noName: 'No name given',
     call: 'Call',
     text: 'Text',
@@ -159,6 +160,7 @@
     directionsTo: place => `Cómo llegar a ${place}`,
 
     contact: 'Contacto',
+    backup: 'Respaldo',
     noName: 'Sin nombre',
     call: 'Llamar',
     text: 'Mensaje',

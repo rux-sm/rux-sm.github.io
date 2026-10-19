@@ -53,7 +53,7 @@
   const LEG_QUERY = 'id,role,report_time,instructions,trip_assignments(id,leg,active_roles,buses(number),'
     + 'trip_drivers(driver_id,role,drivers(name,short_name)),'
     + 'trips(id,destination,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
-    + 'trip_stops(leg,type,name,address,spot,position),trip_documents(id,label,created_at)))';
+    + 'trip_stops(leg,type,name,address,spot,position),trip_documents(id,label,created_at,leg)))';
 
   let driver = null;
   let legs = [];            // [{ key, assignmentId, trip, leg, role, start, end, ... }]
@@ -80,8 +80,7 @@
       const stops = stopsForLeg(trip, leg);
       const pickup = stops.find(s => s.type === 'pickup') || {};
       const back = [...stops].reverse().find(s => s.type === 'return') || {};
-      const itinerary = (trip.trip_documents || []).filter(d => /^itinerary$/i.test(clean(d.label)))
-        .sort((x, y) => new Date(y.created_at || 0) - new Date(x.created_at || 0))[0];
+      const itinerary = window.SchedulerLegPapers.itineraryFor(trip, leg);
       const partner = activeSeats(a).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driver.id));
       return {
         key: `${trip.id}:${leg}`, assignmentId: a.id, trip, leg, role: row.role || 'driver',

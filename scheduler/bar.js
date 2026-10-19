@@ -14,7 +14,7 @@
                               answer is read against `nearby`;
      nearby                   { trips, off, oos } the standing rule reads;
      saving(assignmentId)     true while a move to this bus is unanswered;
-     itineraryOf(trip)        the trip's newest itinerary;
+     itineraryOf(trip, leg)   the itinerary the leg's drivers are handed;
      staffedUntil             the ISO day the office staffs to, exclusive,
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
@@ -361,7 +361,7 @@
     bar.dataset.tripColor = tripColorOf(trip) ?? '';
     bar.dataset.standardHue = standardHueOf(trip);
     // The itinerary shortcut and menu item open this document.
-    const itinerary = board.itineraryOf?.(trip) ?? null;
+    const itinerary = board.itineraryOf?.(trip, leg.leg) ?? null;
     bar.dataset.itineraryId = itinerary?.id ?? '';
     // The bar menu's hotel item reads both: whether the trip needs a hotel, and
     // whether this leg's is booked.

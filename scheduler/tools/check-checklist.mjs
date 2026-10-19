@@ -77,7 +77,7 @@ expect('a missing form is said by driver and kind',
 
 /* The facts behind that item, from leg-facts.js: which form a driver's leg
    takes, and what a leg counts as missing or not printed. */
-for (const file of ['requirements.js', 'leg-facts.js']) {
+for (const file of ['requirements.js', 'leg-papers.js', 'leg-facts.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
 const Facts = window.SchedulerLegFacts;

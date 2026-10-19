@@ -7,7 +7,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 const context = { window, Intl, Date, Math, Number, String, Map, Set, Array, JSON };
-for (const file of ['requirements.js', 'leg-facts.js', 'billing.js', 'week.js', 'close-out.js']) {
+for (const file of ['requirements.js', 'leg-papers.js', 'leg-facts.js', 'billing.js', 'week.js', 'close-out.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context);
 }
 const { FROM, isBack, asks, backAt } = window.SchedulerCloseOut;

@@ -266,8 +266,9 @@
     return s;
   };
 
-  /* WHO TO CALL, each under a one-word label: the trip's contact, then the
-     crew by their role, as Co-driver or Relief. Every one reads the same, the
+  /* WHO TO CALL, each under a one-word label: the leg's contact, then the
+     rest of its contacts as Backup, then the crew by their role, as
+     Co-driver or Relief. Every one reads the same, the
      name in bold and the number under it. */
   const callSection = (label, name, tel) =>
     section(label, person(name || w.noName, tel ? phone(tel) : '', tel, true));
@@ -428,7 +429,7 @@
     if (response) card.appendChild(response);
     const stops = stopsOf(l);
     if (stops) card.appendChild(stops);
-    if (l.contact) card.appendChild(callSection(w.contact, l.contact.name, l.contact.phone));
+    l.contacts.forEach((c, i) => card.appendChild(callSection(i ? w.backup : w.contact, c.name, c.phone)));
 
     // The driver's own bus first; another bus's crew says which bus.
     const crew = l.crew.flatMap(bus => bus.people.map(p => callSection(

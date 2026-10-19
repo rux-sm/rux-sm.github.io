@@ -17,8 +17,8 @@
    and the driver statuses by whoever read them. Two reads take the page's
    client, so every page and the connector ask the same questions:
    `readDriverForms`, and `readBasics`, the buses, the drivers and the
-   office's settings every rule needs set first. Needs requirements.js
-   loaded first.
+   office's settings every rule needs set first. Needs requirements.js and
+   leg-papers.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -227,9 +227,10 @@
     return linked ? { id: linked.id, name: linked.name ?? '', phone: linked.phone ?? null, email: linked.email ?? null } : null;
   }
 
-  /* The trip's day-of contact: the first of the five slots that holds anyone,
-     or null. The card says when there is none. */
-  const dayOfContact = trip => [1, 2, 3, 4, 5].map(n => tripContact(trip, n)).find(Boolean) ?? null;
+  /* A leg's day-of contact: the first of its slots, by leg-papers.js, that
+     holds anyone, or null; a split trip's pickup with none of its own takes
+     the drop-off's. The card says when there is none. */
+  const dayOfContact = (trip, leg = 'outbound') => window.SchedulerLegPapers.contactsFor(trip, leg, tripContact)[0] ?? null;
 
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
      document kept once for each driver, such as a background check form, and

@@ -18,6 +18,8 @@ site.
 ### Order
 
 - **The tasks are in building order,** group by group.
+- **`scheduler-split-trip-days.md` is built now, ahead of the rest,**
+  because the office sends split trips with a different driver each day.
 - **The other plans follow as retiring rux-ui, documents with the customer
   profile, then routes,** each waiting on the one before it.
 - **A rule goes in a small file with sample cases,** never in `data.js`.

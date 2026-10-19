@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../billing.js', '../requirements.js', '../leg-facts.js', '../week.js', '../clashes.js']) {
+for (const f of ['../billing.js', '../requirements.js', '../leg-papers.js', '../leg-facts.js', '../week.js', '../clashes.js']) {
   runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 }
 const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, standing } = window.SchedulerClashes;

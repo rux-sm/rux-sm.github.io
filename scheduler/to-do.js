@@ -176,8 +176,8 @@
     'trip_updates(created_at,kind)'].join(',');
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path)',
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
+    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg)',
+    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
     'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 

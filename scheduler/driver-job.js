@@ -10,13 +10,14 @@
 
    Nothing here reads the page or the database. The words a line is written
    in are the page's, handed in; what Accept keeps is always English. Needs
-   share/driver-words.js loaded first.
+   share/driver-words.js and leg-papers.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
 
   const TZ = 'America/Chicago';
   const WORDS = window.SchedulerDriverWords;
+  const PAPERS = window.SchedulerLegPapers;
   const clean = v => String(v ?? '').trim();
 
   // -- dates and times, as the driver reads them --------------------------------
@@ -90,20 +91,20 @@
     return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
   };
 
-  // The day-of contact first, then the second, then whoever booked.
-  const contactOf = trip => [
-    [trip.trip_contact_1_name, trip.trip_contact_1_phone],
-    [trip.trip_contact_2_name, trip.trip_contact_2_phone],
-    [trip.booking_contact_name, trip.booking_contact_phone],
-  ].map(([name, tel]) => ({ name: clean(name), phone: clean(tel) })).find(c => c.name || c.phone) || null;
+  // The leg's day-of contacts, by leg-papers.js, or with none whoever booked.
+  const contactsOf = (trip, leg) => {
+    const day = PAPERS.contactsFor(trip, leg).map(c => ({ name: c.name, phone: c.phone }));
+    const booked = { name: clean(trip.booking_contact_name), phone: clean(trip.booking_contact_phone) };
+    return day.length ? day : booked.name || booked.phone ? [booked] : [];
+  };
+  const contactOf = (trip, leg) => contactsOf(trip, leg)[0] || null;
 
-  /* The trip's itinerary, by the office's rule: a file whose type is
-     Itinerary and no other, so a file named after one is not one. The newest
-     is the one shown, marked Updated when it replaced another. */
-  const itinerariesOf = trip => {
-    const same = (trip.trip_documents || []).filter(d => clean(d.label).toLowerCase() === 'itinerary');
+  /* The leg's itinerary, by leg-papers.js: the newest is the one shown,
+     marked Updated when it replaced another of the leg's. */
+  const itinerariesOf = (trip, leg) => {
+    const same = PAPERS.itinerariesFor(trip, leg);
     if (!same.length) return [];
-    const newest = same.reduce((a, b) => (new Date(b.created_at || 0) > new Date(a.created_at || 0) ? b : a));
+    const newest = same[0];
     return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
   };
 
@@ -148,9 +149,10 @@
           || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
       } : null,
       requirements: requirementsOf(trip, names),
-      contact: contactOf(trip),
+      contacts: contactsOf(trip, leg),
+      contact: contactOf(trip, leg),
       crew,
-      itineraries: itinerariesOf(trip),
+      itineraries: itinerariesOf(trip, leg),
       activeRoles: mine.active_roles || [],
     };
   }
@@ -282,7 +284,7 @@
 
   window.SchedulerDriverJob = {
     clean, dateOnly, dayFmt, dayText, rangeText, timeText, todayIso,
-    ROLE_KEY, roleKey, roleLabel, isRelief, activeSeats, stopsForLeg, requirementsOf, contactOf, itinerariesOf,
+    ROLE_KEY, roleKey, roleLabel, isRelief, activeSeats, stopsForLeg, requirementsOf, contactsOf, contactOf, itinerariesOf,
     legOf, stopText, jobView, VIEW_KEYS, changesBetween, keyOf, stateOf, changesSince, viewNow,
   };
 })();

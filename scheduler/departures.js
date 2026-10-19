@@ -100,17 +100,16 @@
       ? line('confirmed', 'done', 'Confirmation', { value: confirmedBy(trip) })
       : line('confirmed', 'warn', 'Confirmation', { value: 'Not yet' }));
 
-    const itineraries = (trip.trip_documents || [])
-      .filter(d => String(d.label || '').toLowerCase() === 'itinerary')
-      .sort((a, b) => Date.parse(b.created_at || 0) - Date.parse(a.created_at || 0));
-    if (itineraries.length) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Received', at: itineraries[0].created_at ?? null }));
+    // The leg's own, or a split trip's pickup with none the drop-off's.
+    const itinerary = window.SchedulerLegPapers.itineraryFor(trip, leg);
+    if (itinerary) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Received', at: itinerary.created_at ?? null }));
     else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Not needed' }));
     else lines.push(line('itinerary', 'warn', 'Itinerary', { value: 'Missing' }));
     // Said only while it is true, as what the customer owes is: a leg with times has no line for them.
     if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', 'Times', { value: 'Missing' }));
 
     if (!trip.contact_not_needed) {
-      const contact = Facts.dayOfContact(trip);
+      const contact = Facts.dayOfContact(trip, leg);
       lines.push(contact ? line('contact', 'done', 'Contact', { value: contact.name || null })
         : line('contact', 'warn', 'Contact', { value: 'Missing' }));
     }
@@ -245,11 +244,11 @@
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
+    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
     `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
-    'spot_time', 'trip_documents(id,label,created_at,file_path)',
+    'spot_time', 'trip_documents(id,label,created_at,file_path,leg)',
     // The group's two times, which the To do rules read for a trip read here.
     'departure_time', 'return_time',
     'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');

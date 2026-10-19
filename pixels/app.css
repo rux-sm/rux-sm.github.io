@@ -355,10 +355,11 @@
 /* THE FRONT PAGE AND A CATEGORY'S. The tabs' panels start where the page
    does. */
 /* THE LOGO, in the middle at the top of the front page: the pixel star of
-   brand/icon.svg, which is drawn to be a mask, 3px a square in the warm
-   colour, and beside it the name at Silkscreen's heading size. */
+   brand/icon.svg, which is drawn to be a mask, in the warm colour, and
+   beside it the name at Silkscreen's heading size. The star is 4px a
+   square, the heading's own pixel. */
 .pixels-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; font-size: 32px; font-weight: 400; line-height: 40px; }
-.pixels-logo-mark { flex: none; inline-size: 48px; block-size: 48px; background: var(--rux-support-caution-major); -webkit-mask: url(brand/icon.svg) center / 48px no-repeat; mask: url(brand/icon.svg) center / 48px no-repeat; }
+.pixels-logo-mark { flex: none; inline-size: 64px; block-size: 64px; background: var(--rux-support-caution-major); -webkit-mask: url(brand/icon.svg) center / 64px no-repeat; mask: url(brand/icon.svg) center / 64px no-repeat; }
 /* A RIFT'S TILE, on the front page and under a solved puzzle: its picture
    in a square of 64px, a picture of five, ten, fifteen or twenty squares
    60px across in whole pixels inside a 2px frame, which is gold once every
@@ -381,7 +382,7 @@
 .pixels-continue { margin-block-end: 1.5rem; }
 .pixels-continue {
   position: fixed;
-  inset: auto max(1rem, (100vw - var(--game-column)) / 2 + 1rem) calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  inset: auto max(1rem, (100vw - var(--game-column)) / 2 + 1rem) calc(5.25rem + env(safe-area-inset-bottom, 0px));
   z-index: 1;
   margin: 0;
 }

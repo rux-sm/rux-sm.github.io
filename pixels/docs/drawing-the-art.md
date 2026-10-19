@@ -87,9 +87,10 @@ and sword.
 Each icon is a frame, and its name is the tag over it in the timeline. Draw
 inside the pink ring of the Guide layer, the middle 10 × 10, so icons keep a
 pixel of room round them. Use one ink: the game draws an icon in the words'
-colour, and an icon not drawn yet stays Carbon's. Draw each icon in its own
-frame on the icon layer, since a frame's tag is what names it. Keep lines a whole pixel thick and shapes simple, because at 12 × 12
-one pixel is a tenth of the icon.
+colour, and an icon not drawn yet is a rough draft `app.js` keeps in `ROUGH`, or
+Carbon's where it has none. Draw each icon in its own frame on the icon layer,
+since a frame's tag is what names it. Keep lines a whole pixel thick and shapes
+simple, because at 12 × 12 one pixel is a tenth of the icon.
 
 ## A rift's world
 

@@ -252,15 +252,30 @@
      side with a 1 for each square drawn, which tools/build-art.mjs writes
      here. Each takes the place of the Carbon icon a game key, a place or a
      Pixelator key names, at 2px a square in its words' colour, as every
-     pixel in pixel-dark is 2px; an icon not drawn yet leaves Carbon's. */
+     pixel in pixel-dark is 2px; an icon not drawn yet is ROUGH's draft. */
   const ICONS = {
     'back': ['............', '.......11...', '......111...', '.....111....', '....111.....', '...111......', '...111......', '....111.....', '.....111....', '......111...', '.......11...', '............'].join(''),
     'me': ['............', '....1111....', '...111111...', '...111111...', '...111111...', '...111111...', '....1111....', '.....11.....', '..11111111..', '.1111111111.', '.1111111111.', '............'].join(''),
   };
+  /* THE ICONS rux has not drawn yet, drafted here at the same twelve squares
+     so every key and place is in pixels meanwhile. An icon in ICONS, which
+     tools/build-art.mjs writes from rux's drawing, takes the place of the
+     one here. */
+  const ROUGH = {
+    'puzzles': ['............', '.1111..1111.', '.1111..1..1.', '.1111..1..1.', '.1111..1111.', '............', '............', '.1111..1111.', '.1..1..1111.', '.1..1..1111.', '.1111..1111.', '............'].join(''),
+    'friends': ['............', '..11....11..', '.1111..1111.', '.1111..1111.', '..11....11..', '............', '.1111..1111.', '.1111111111.', '.1111111111.', '.1111111111.', '............', '............'].join(''),
+    'pixelator': ['............', '.........11.', '........111.', '.......111..', '......111...', '.....111....', '....111.....', '...111......', '..111.......', '.11.........', '.1..........', '............'].join(''),
+    'manage': ['............', '.....11.....', '..1.1111.1..', '...111111...', '..11111111..', '.1111..1111.', '.1111..1111.', '..11111111..', '...111111...', '..1.1111.1..', '.....11.....', '............'].join(''),
+    'players': ['............', '.11.1111111.', '.11.1111111.', '............', '............', '.11.1111111.', '.11.1111111.', '............', '............', '.11.1111111.', '.11.1111111.', '............'].join(''),
+    'restart': ['............', '............', '...111111...', '..11....11..', '.11....1111.', '.11.....11..', '.11.........', '.11......11.', '.11......11.', '..11....11..', '...111111...', '............'].join(''),
+    'undo': ['............', '............', '...1........', '..11........', '.11111111...', '.111111111..', '..11.....11.', '...1.....11.', '.........11.', '......1111..', '............', '............'].join(''),
+    'redo': ['............', '............', '........1...', '........11..', '...11111111.', '..111111111.', '.11.....11..', '.11.....1...', '.11.........', '..1111......', '............', '............'].join(''),
+  };
   const ICON_OF = { 'm-arrow_back': 'back', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me', 'm-settings': 'manage', 'm-list': 'players' };
   document.querySelectorAll(':is(.game-key, .game-place, .pixels-bar-key) > svg').forEach(svg => {
     const name = ICON_OF[svg.querySelector('use')?.getAttribute('href')?.slice(1)];
-    if (ICONS[name]) svg.replaceWith(drawn(ICONS[name], `pixels-icon ${svg.getAttribute('class') || ''}`.trim()));
+    const art = ICONS[name] || ROUGH[name];
+    if (art) svg.replaceWith(drawn(art, `pixels-icon ${svg.getAttribute('class') || ''}`.trim()));
   });
 
   /* THE CHARACTER, fifteen squares a side, facing the enemy on its right,

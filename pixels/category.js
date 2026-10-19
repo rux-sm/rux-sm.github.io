@@ -7,17 +7,18 @@
    good until the categories are next reordered; one that names no category
    says so.
 
-   A player reads a category as a rift. The page is its name, after its
+   A player reads a category as a rift. The page is its name, under its
    number for one of the owner's, how many sprites are found against a
-   star, a bar of that, and its collection: its puzzles easy to hard in
-   rows of five, A to O, each a square showing its picture once found and
-   else its letter. The first not found, the one to play next, is in the
-   primary button's colours, and the last, the boss, is ringed red. The
-   boss of a rift of the course is held back until the others are found,
-   by app.js's `holds`, and is dim. A square chosen, the next one at first,
-   is told under the collection: its name, or its letter or Boss, its size
-   and best time, and Play, or how many are still to find for a boss held
-   back. A sprite found since the page last showed it turns into view.
+   star, a bar of that, gold once all are, and its collection: its puzzles
+   easy to hard in rows of five, A to O, each a square showing its picture
+   once found and else its letter. The first not found, the one to play
+   next, is in the primary button's colours, and the last, the boss, is
+   ringed red until it is found. The boss of a rift of the course is held
+   back until the others are found, by app.js's `holds`, and is dim. A
+   square chosen, the next one at first, is told under the collection: its
+   name, or its letter or Boss, its size and best time, and Play, or how
+   many are still to find for a boss held back. A sprite found since the
+   page last showed it turns into view.
    A rift of the course that is locked, by app.js's `locks`, shows no
    puzzle: its name, how many of the sprites it opens at are found, and a
    bar of that.
@@ -76,8 +77,8 @@
       const h1 = document.createElement('h1');
       h1.className = 'rux--type-productive-heading-04';
       h1.id = 'pixels-category-name';
-      h1.textContent = `Rift ${category.number} · ${name}`;
-      head.append(h1, words('pixels-meta', `${have} of ${category.need} sprites to open`));
+      h1.textContent = name;
+      head.append(words('pixels-level-label', `Rift ${category.number}`), h1, words('pixels-meta', `${have} of ${category.need} sprites to open`));
       el.append(head, bar(have, category.need));
       host.append(el);
       return;
@@ -86,19 +87,20 @@
     stand(category);
     const solved = all.filter(p => results.has(p.id)).length;
     const el = document.createElement('section');
-    el.className = `rux--stack-vertical rux--stack-scale-4 pixels-rift${solved === all.length ? ' is-cleared' : ''}`;
+    el.className = `rux--stack-vertical rux--stack-scale-4 pixels-rift${solved === all.length ? ' is-cleared game-done' : ''}`;
     el.setAttribute('aria-labelledby', 'pixels-category-name');
     const head = document.createElement('div');
     head.className = 'pixels-level-head';
     const h1 = document.createElement('h1');
     h1.className = 'rux--type-productive-heading-04';
     h1.id = 'pixels-category-name';
-    h1.textContent = category.number ? `Rift ${category.number} · ${name}` : name;
+    h1.textContent = name;
     const count = words('pixels-rift-count', `${solved}/${all.length}`);
     const star = document.createElement('span');
     star.className = 'pixels-star';
     count.append(star);
     count.setAttribute('aria-label', `${solved} of ${all.length} sprites found`);
+    if (category.number) head.append(words('pixels-level-label', `Rift ${category.number}`));
     head.append(h1, count);
     // A player's rift says who made it.
     if (category.by) {
@@ -139,7 +141,7 @@
       const best = results.get(p.id), last = boss(category, i);
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = `pixels-album-square${p === next ? ' is-next' : ''}${last ? ' is-boss' : ''}${last && before ? ' is-held' : ''}`;
+      b.className = `pixels-album-square${p === next ? ' is-next' : ''}${last && !best ? ' is-boss' : ''}${last && before ? ' is-held' : ''}`;
       b.append(best ? art(p, true) : letter(i));
       b.setAttribute('aria-label', best ? `${letter(i)}, ${p.name}` : last && before ? `Boss, out after ${out(before)}` : `${title(p, i, false, last)}, ${side(p)}${p === next ? ', next' : ''}`);
       b.addEventListener('click', () => choose(i));

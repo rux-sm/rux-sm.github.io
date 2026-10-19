@@ -363,10 +363,10 @@
             fairies += freed;
           } catch { /* Me says how many, the next time it is opened */ }
         }
-        const rift = riftTile(home, known, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '', key);
+        const rift = riftTile(home, known, { tag: earned ? '+1 mana' : '', under: freed ? `+${freed} fairies` : '', featured: key });
         const list = document.createElement('div');
         list.className = 'game-tiles';
-        list.append(rift, ...opened.map(c => riftTile(c, known, 'Opened')));
+        list.append(rift, ...opened.map(c => riftTile(c, known, { tag: 'Opened' })));
         $('pixels-out').remove();
         const keys = $('pixels-solved').querySelector('.game-finish-actions');
         keys.before(list);

@@ -381,12 +381,14 @@
 .pixels-continue { margin-block-end: 1.5rem; }
 .pixels-continue {
   position: fixed;
-  inset: auto max(1rem, (100vw - var(--game-column)) / 2 + 1rem) calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  inset: auto max(1rem, (100vw - var(--game-column)) / 2 + 1rem) calc(4.75rem + env(safe-area-inset-bottom, 0px));
   z-index: 1;
   margin: 0;
 }
 @media (min-width: 66rem) { .pixels-continue { inset-block-end: 1.5rem; } }
 .pixels-continue-key { inline-size: 100%; max-inline-size: none; }
+/* Its words say where it goes, and a long rift's name ends in an ellipsis. */
+.pixels-continue-words { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pixels-panel:has(.pixels-continue) { padding-block-end: 4rem; }
 /* The steps that add Pixels to a home screen: their numbers inside the modal's edge. */
 .pixels-steps { display: grid; gap: .5rem; margin: 1rem 0 0 1.25rem; }
@@ -509,6 +511,8 @@
    the rift's row. */
 .pixels-level-head { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; }
 .pixels-level-head > :is(.pixels-meta, .pixels-rift-count) { margin-inline-start: auto; }
+/* A rift's number, on a line of its own over its name. */
+.pixels-level-label { flex-basis: 100%; color: var(--rux-text-secondary); }
 /* A RIFT'S COLLECTION on its page: its puzzles in rows of five, A to O,
    each square a fifth of the row, with its picture once found in whole
    pixels in its middle, and else its letter. The next to play is in the

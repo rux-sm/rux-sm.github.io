@@ -906,13 +906,13 @@
      sprites are found against a star, its name and a bar of that. The
      picture is the sprite last found in it, in its order, or `featured`
      where that one is found, a ? before any is, and once all are found its
-     boss, framed in gold, with the count gold too. `found` has the ids of
-     the puzzles found, `tag` is a word or two before the count, and
-     `under` one on a line of its own. The front page rings the rift the
-     game goes on to.
+     boss, framed in gold, with the count and the bar gold too. `found` has
+     the ids of the puzzles found; `next` marks the rift the game goes on
+     to with Next, in the interactive colour, `tag` is a word or two before
+     the count, and `under` one on a line of its own.
      A LOCKED RIFT'S, one `locks` left short, is one line and no link: a
      lock, its name, and how many more sprites open it. */
-  const riftTile = (c, found, tag, under, featured) => {
+  const riftTile = (c, found, { tag, under, featured, next } = {}) => {
     const all = c.puzzles.length, have = c.puzzles.filter(p => found.has(p.id)).length;
     const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast game-tile-tag', text);
     const head = document.createElement('span');
@@ -927,7 +927,7 @@
     }
     const cleared = have === all;
     const a = document.createElement('a');
-    a.className = `rux--link rux--tile rux--tile--clickable game-tile pixels-rift${cleared ? ' is-cleared' : ''}`;
+    a.className = `rux--link rux--tile rux--tile--clickable game-tile pixels-rift${cleared ? ' is-cleared game-done' : ''}`;
     a.href = where(c);
     const shown = cleared ? c.puzzles.at(-1) : c.puzzles.find(p => p.id === featured && found.has(p.id)) || c.puzzles.findLast(p => found.has(p.id));
     const picture = document.createElement('span');
@@ -943,8 +943,9 @@
     const star = document.createElement('span');
     star.className = 'pixels-star';
     count.append(star);
-    head.append(label, ...(tag ? [pill(tag)] : []), count);
-    a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
+    const marks = [next && words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', 'Next'), tag && pill(tag)].filter(Boolean);
+    head.append(label, ...marks, count);
+    a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${next ? ', next' : ''}${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
     a.append(picture, head, words('game-tile-name', heading(c)), bar(have, all));
     if (under) {
       const line = document.createElement('span');

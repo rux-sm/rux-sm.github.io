@@ -39,7 +39,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, boss, letter, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -305,31 +305,32 @@
     // Continue: the first puzzle not found, in the player's rift if it has
     // one and else in the first open rift that has. A rift's boss is its
     // last, so the first not found is never one held back.
+    // It says which, as its letter, or Boss, and its rift.
     const left = c => !c.short && c.puzzles.find(p => !results.has(p.id));
     const onward = [cats.find(stood), ...cats].map(c => c && left(c)).find(Boolean);
+    const here = onward && cats.find(c => c.puzzles.includes(onward));
     if (onward) {
+      const at = here.puzzles.indexOf(onward), which = boss(here, at) ? 'Boss' : letter(at);
       const wrap = document.createElement('div');
       wrap.className = 'pixels-continue';
       const a = document.createElement('a');
       a.className = 'rux--btn rux--btn--primary pixels-continue-key';
       a.href = `play.html?id=${encodeURIComponent(onward.id)}`;
-      a.textContent = 'Continue';
+      a.setAttribute('aria-label', `Continue with ${which === 'Boss' ? 'the boss' : `puzzle ${which}`} of ${heading(here)}`);
+      a.append(words('pixels-continue-words', `Continue ${which} · ${heading(here)}`));
       wrap.append(a);
       host.before(wrap);
     }
-    // A rift not yet opened, with nothing found in it, says New, unless it
-    // is locked, which its tile says for itself.
-    // The rift Continue goes on into is ringed, where the map would stand
-    // the character.
-    const here = onward && cats.find(c => c.puzzles.includes(onward));
+    // The rift Continue goes on into says Next, where the map would stand
+    // the character, and a rift not yet opened, with nothing found in it,
+    // says New, unless it is locked, which its tile says for itself.
     const tiles = rifts => {
       const list = document.createElement('div');
       list.className = 'game-tiles';
-      list.append(...rifts.map(c => {
-        const t = riftTile(c, results, !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '');
-        if (c === here) t.classList.add('is-current');
-        return t;
-      }));
+      list.append(...rifts.map(c => riftTile(c, results, {
+        next: c === here,
+        tag: c !== here && !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '',
+      })));
       return list;
     };
     if (!MAP) { host.appendChild(tiles(cats)); return; }

@@ -16,8 +16,8 @@ keeps its size.
 | :--- | :--- |
 | 5×5 | a ten-second puzzle; a symbol, a letter, a face |
 | 10×10 | the main game; one thing drawn as a shape |
-| 15×15 | room for detail; a few minutes each, zoomed with two fingers on a phone |
-| 20×20 | the finale, the course's last two rifts and the owner's alone; a long puzzle, played zoomed on a phone |
+| 15×15 | every rift of the course after the first; room for detail, a few minutes each, zoomed with two fingers on a phone |
+| 20×20 | the owner's alone, for a rift outside the course; a long puzzle, played zoomed on a phone |
 
 The rules below are written for 10×10. On 5×5 nearly every picture is easy,
 so aim for a shape worth guessing. On 15×15 and 20×20 keep the same share of

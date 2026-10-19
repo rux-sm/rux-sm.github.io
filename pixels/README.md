@@ -32,9 +32,9 @@ that brings them back on any phone, and the rifts they have made, each to name, 
 who has found sprites in it, and a guest's Delete my player. `friends.html` is the player's friend link
 and their friends, each to remove. A player's own puzzles are made in the Pixelator, for mana, and a
 friend's published rifts stand after the owner's on the front page, saying who made them, and New until
-opened. A bar holds the places every player has, Puzzles, Friends, Pixelator and Me: along the bottom
-on a phone, along the top on a wider one, and in a header from 66rem; not where a puzzle is played or
-drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
+opened. A bar holds the places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players: along
+the bottom on a phone, the top on a wider one, and in a header from 66rem; not where a puzzle is played
+or drawn. Me's list holds How to play, Add to home screen and, for an account, the way to Rux Home. Every
 page is in Design's `pixel-dark`, locked. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
@@ -59,7 +59,7 @@ time, the mistakes and the hints. Under them the rift's tile counts the sprite, 
 find earned one and +3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the
 sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to
 the next open rift. How to play is three steps in a modal, each with a small board: the numbers,
-filling and crossing out, and what a mistake costs. It opens from Me's list, from the button under
+filling and crossing out, and what a mistake costs. It opens from Me's list, the ? key under the map, the button under
 Start, and by itself for a player who has solved none and has not closed it in this browser. The clock
 stands meanwhile. Each move plays a tone, which the Sound key turns off and an iPhone's silent switch
 does not, and a phone ticks on each fill. A game in progress is kept in the browser for a reload.
@@ -73,7 +73,7 @@ the same for everyone. Only it counts toward the days in a row. A player is neve
 puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
-owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in Me's list; a
+owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in the header and the bar; a
 player's go in rifts of their own, through functions that count their mana, and so do the owner's own
 at `make.html?own`, which cost none. `make.html?me` draws a player's picture, and `?wear=helmet` the
 helmet of the owner's character. It checks as you draw whether the numbers alone can solve the picture

@@ -344,7 +344,14 @@
       const text = document.createElement('div');
       text.className = 'pixels-map-panel-words';
       text.append(words('pixels-map-name', s.name), words('pixels-map-note', s.note));
-      const parts = [text];
+      // The ? key opens How to play, beside the way in.
+      const help = document.createElement('button');
+      help.type = 'button';
+      help.className = 'rux--btn rux--btn--secondary pixels-map-help';
+      help.dataset.ruxOpen = 'pixels-how';
+      help.setAttribute('aria-label', 'How to play');
+      help.textContent = '?';
+      const parts = [text, help];
       if (s.href) {
         const go = document.createElement('a');
         go.className = 'rux--btn rux--btn--primary';

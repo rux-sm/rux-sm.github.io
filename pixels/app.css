@@ -449,7 +449,8 @@
 .pixels-map-rift.is-locked > .pixels-portal { opacity: .3; }
 .pixels-map-side { display: block; inline-size: 100%; block-size: 100%; }
 /* THE PANEL under the map: the chosen rift's rank and name, how many
-   sprites are found, and Play, which opens it. */
+   sprites are found, the ? key that opens How to play, and Play, which
+   opens the rift. */
 .pixels-map-panel {
   display: flex;
   flex-wrap: wrap;
@@ -460,6 +461,7 @@
   background: var(--rux-layer-01);
 }
 .pixels-map-panel-words { display: grid; flex: 1 1 12rem; min-inline-size: 0; }
+.pixels-map-help { justify-content: center; min-inline-size: 48px; padding-inline: 0; }
 .pixels-map-name { font-size: 16px; line-height: 24px; }
 .pixels-map-note { color: var(--rux-text-secondary); font-size: 16px; line-height: 24px; font-variant-numeric: tabular-nums; }
 /* THE CHARACTER ON THE MAP stands at a spot of its own, as a rift does, in

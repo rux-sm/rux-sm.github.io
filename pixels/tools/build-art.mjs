@@ -63,7 +63,7 @@ const PARTS = [['skin', 'skin'], ['eyes', 'eyes'], ['hair', 'hair'], ['helmet', 
   ['hands and feet', 'ends'], ['shield', 'shield'], ['sword', 'sword']];
 const SWITCH = [['sword', 'SWORD'], ['shield', 'SHIELD']];
 // The icons Pixels shows, each a frame of icons.aseprite, by what it is for.
-const ICONS = ['back', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me'];
+const ICONS = ['back', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me', 'manage', 'players'];
 
 // A picture in app.js: HERO's parts are `  key: [rows].join(''),` and the
 // switch's `const NAME = [rows].join('');`.

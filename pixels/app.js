@@ -247,7 +247,7 @@
     'back': ['............', '.......11...', '......111...', '.....111....', '....111.....', '...111......', '...111......', '....111.....', '.....111....', '......111...', '.......11...', '............'].join(''),
     'me': ['............', '....1111....', '...111111...', '...111111...', '...111111...', '...111111...', '....1111....', '.....11.....', '..11111111..', '.1111111111.', '.1111111111.', '............'].join(''),
   };
-  const ICON_OF = { 'm-arrow_back': 'back', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me' };
+  const ICON_OF = { 'm-arrow_back': 'back', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me', 'm-settings': 'manage', 'm-list': 'players' };
   document.querySelectorAll(':is(.game-key, .game-place, .pixels-bar-key) > svg').forEach(svg => {
     const name = ICON_OF[svg.querySelector('use')?.getAttribute('href')?.slice(1)];
     if (ICONS[name]) svg.replaceWith(drawn(ICONS[name], `pixels-icon ${svg.getAttribute('class') || ''}`.trim()));
@@ -1005,10 +1005,11 @@
   /* THE PLACES every player has, in one bar on the pages that carry it:
      along the bottom on a phone and along the top on a wider screen, and
      from 66rem as the links of the header in the bar's place. This marks
-     the place the page is, in both; a rift's page is one of Puzzles', and
-     the owner's two, Manage and Players, are reached from Me and are Me's. */
+     the place the page is, in both; a rift's page is one of Puzzles'. The
+     owner's two, Manage and Players, are places too, shown to the owner
+     alone by `shell`. */
   const here = location.pathname.split('/').pop() || 'index.html';
-  const place = { 'category.html': 'index.html', 'manage.html': 'me.html', 'players.html': 'me.html' }[here] || here;
+  const place = { 'category.html': 'index.html' }[here] || here;
   document.querySelectorAll('.game-place, .game-header .rux--header__menu-item').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
     if (to !== place) return;
@@ -1018,17 +1019,15 @@
 
   /* THE HEADER'S PANEL, on a wide screen. data.js calls `shell` once there is
      a player, with them where it has them, and Design's js/profile.js does
-     the writing. The game's own
-     rows stand over Profile: Me, which the header has no link for, How to
-     play, and for the owner Manage and Players. A player with no account is
+     the writing. The game's places are all in the header, so the panel is
+     the account's alone; this shows the owner's places, Manage and Players,
+     in the header and the bar. A player with no account is
      written there too, their picture on the account action, since a guest
      has no account to say who they are. */
   const shell = me => {
     const panel = window.Rux?.profile;
-    if (!panel?.rows) return;
-    panel.rows([{ text: 'Me', href: 'me.html' }, { text: 'How to play', open: 'pixels-how' },
-      ...(window.Pixels.owner ? [{ text: 'Manage', href: 'manage.html' }, { text: 'Players', href: 'players.html' }] : [])]);
-    if (me && window.Pixels.guest) panel.who({ name: me.name, face: () => portrait(me) });
+    if (window.Pixels.owner) document.querySelectorAll('[data-pixels-owner]').forEach(el => { el.hidden = false; });
+    if (me && window.Pixels.guest && panel?.who) panel.who({ name: me.name, face: () => portrait(me) });
   };
 
   /* A page left for a minute or more loads again as it comes back to the

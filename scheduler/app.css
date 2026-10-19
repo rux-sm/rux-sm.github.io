@@ -902,6 +902,29 @@ button.scheduler-row-head__num::after {
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its update keeps the bar's own. */
 .scheduler-bar--amber .scheduler-bar__update { color: inherit; }
+/* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
+   anywhere else on the bar only selects it: the update line takes a tint of
+   the bar's own ink, run 2px past the line by its shadow so nothing moves,
+   and an empty one says No updates; the alert count takes a 2px ring of the
+   ink; the Live pill fills with its bus's colour. A touch screen has no
+   pointer to wait for, so it shows none of them. */
+@media (hover: hover) {
+  .scheduler-bar__update[data-card-opener]:hover {
+    --scheduler-opener-tint: color-mix(in srgb, var(--scheduler-fg) 14%, transparent);
+    border-radius: 2px;
+    background: var(--scheduler-opener-tint);
+    box-shadow: 0 0 0 2px var(--scheduler-opener-tint);
+  }
+  .scheduler-bar__update[data-card-opener]:not(.scheduler-bar__update--complete):hover > span:empty::before {
+    content: 'No updates';
+    opacity: .7;
+  }
+  .scheduler-bar__msg[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
+  .scheduler-road__dot[data-card-opener]:hover {
+    background: color-mix(in srgb, var(--scheduler-dot) 24%, transparent);
+    box-shadow: inset 0 0 0 1px var(--scheduler-dot);
+  }
+}
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* Two levels of brightness, and the split is what the row is for: bright is

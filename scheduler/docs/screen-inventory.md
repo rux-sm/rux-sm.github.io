@@ -225,8 +225,8 @@ Open loads it into the panel, and the board scrolls across to show that trip who
 opens on the tab the last one was on. New trip is the toolbar's last button, its + alone where the
 words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the
 selected trip and opens on Details. The trip's card opens only when asked: a press on the bar's
-alert count, its update line or, out on the road, its Live pill, or Space on the bar, which selects
-it first; the same press, Space or Escape puts it away, Escape before the selection, and so does
+alert count, its update line or, out on the road, its Live pill, each lit under the pointer and an
+empty update line saying No updates, or Space on the bar, which selects it first; the same press, Space or Escape puts it away, Escape before the selection, and so does
 selecting another trip. It never stands beside the trip's own editor. On a phone the docked sheet
 still comes up with the selection, because it carries the trip's actions. The card floats clear of
 the trip, placed the way a calendar's event popover is: beside the trip's first day, where everything the trip says is

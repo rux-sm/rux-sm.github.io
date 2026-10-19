@@ -34,7 +34,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time, sounds } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time, sounds, WORLD } = window.Pixels;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -106,10 +106,11 @@
     host.parentElement.append(el);
   };
 
-  /* THE CHARACTER, for the owner while it is a placeholder: who stands on
-     the map and fights, drawn large, with an ink to pick for its skin and
-     one for its eyes, each kept as it is picked, and the way to the
-     Pixelator to draw on its helmet once five sprites have earned it. Skin
+  /* THE CHARACTER, for the owner while it is a placeholder, once app.js's
+     WORLD is on: who stands on the map and fights, drawn large, with an ink
+     to pick for its skin and one for its eyes, each kept as it is picked,
+     and the way to the Pixelator to draw on its helmet once five sprites
+     have earned it. Skin
      is the five skin inks and then a light green, blue and purple, for a
      character who is no person. The first ink of each row is the one the
      character starts in. */
@@ -227,7 +228,7 @@
       draw(now);
     });
     host.append(head, drawIt, form, note);
-    if (owner && data.setGear) host.append(character(me));
+    if (owner && WORLD && data.setGear) host.append(character(me));
     if (guest && data.setPin) host.append(pinForm(me));
     more();
     if (guest && data.leave) leave();

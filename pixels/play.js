@@ -18,17 +18,18 @@
    as Restart starts it.
 
    THE CHARACTER stands at the strip's start and the enemy's shadow at its
-   end, for the owner while both are placeholders. It wears the armour the
-   owner has, app.js's `worn`, and each piece is one more heart. It moves by
-   its one drawing: the sword jabs for one fill and swings for a drag of
+   end, for the owner while both are placeholders, once app.js's WORLD is
+   on. It wears the armour the owner has, app.js's `worn`, and each piece is
+   one more heart. It moves by its one drawing: the sword jabs for one fill and swings for a drag of
    them, the shield lifts for an X, a finished line knocks the shadow back,
    a mistake shakes it as the shadow lunges, and at no hearts it lies down
    until it is brought back.
 
    THE SWITCH. The owner's two tool keys are one switch while its pictures
-   are placeholders: the sword, which fills, on its left and the shield,
-   which crosses out, on its right, with no mark beside either. A tap on a
-   half picks it, and so does a finger's slide toward it.
+   are placeholders, once WORLD is on: the sword, which fills, on its left
+   and the shield, which crosses out, on its right, with no mark beside
+   either. A tap on a half picks it, and so does a finger's slide toward
+   it.
 
    THE CLOCK IS THE SCORE. It only counts up, but for a hint, which adds
    app.js's HINT seconds unless a fairy gives it and turns the clock red
@@ -89,7 +90,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
@@ -181,7 +182,7 @@
     // of armour the owner's character wears. Then the hearts left, all of
     // them for a kept game that says none, and whether the character is
     // down, at no hearts, with the cover up.
-    const wear = owner ? worn(me.found || 0) : [], most = HEARTS + wear.length;
+    const world = owner && WORLD, wear = world ? worn(me.found || 0) : [], most = HEARTS + wear.length;
     let hearts = fresh ? Math.min(kept.hearts ?? most, most) : most, down = false;
     // The fairies this game has spent, how many the player has left, and
     // whether the database is being asked for one.
@@ -249,7 +250,7 @@
     // `move` is one of the character's moves, each a layer or the whole of
     // it leaving its place and coming back; one already moving is left to
     // finish, and nothing moves for a player who has asked for less of it.
-    const champion = owner ? hero(wear, me.gear) : null, shadow = owner ? shade() : null;
+    const champion = world ? hero(wear, me.gear) : null, shadow = world ? shade() : null;
     if (champion) {
       life.before(champion);
       foe.after(shadow);
@@ -317,7 +318,7 @@
         parts.push(`${row} day${row === 1 ? '' : 's'} in a row`);
       }
       // The sprite that earns the owner's character its helmet says so.
-      if (owner && home && !lost && !results.has(key) && worn((me.found || 0) + 1).length > wear.length) parts.push('Helmet unlocked');
+      if (world && home && !lost && !results.has(key) && worn((me.found || 0) + 1).length > wear.length) parts.push('Helmet unlocked');
       $('pixels-solved-time').textContent = parts.join(' · ');
       document.title = `${puzzle.name} — Pixels`;
       // The next puzzle not yet solved: the rest of this category, after
@@ -343,14 +344,14 @@
       else $('pixels-next').remove();
       /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
          with this sprite counted, and is the way back to it. A sprite found
-         for the first time fills its bar from where it stood, and one in a
+         for the first time arrives in its row, and one in a
          puzzle somebody else made earns a mana, which the tile says; the
          owner has no mana to earn. A time that was not saved counts
          nothing. A rift this sprite cleared says the fairies it freed,
          and one it opened stands under it, saying Opened. */
       if (home) {
         const first = !results.has(key) && !lost, all = home.puzzles.length;
-        const was = home.puzzles.filter(p => results.has(p.id)).length, found = was + (first ? 1 : 0);
+        const found = home.puzzles.filter(p => results.has(p.id)).length + (first ? 1 : 0);
         const earned = first && !owner && me.mana != null && puzzle.maker !== me.id;
         // A rift of the course just cleared frees three fairies. The
         // database is the one that counts them, so it is asked again.
@@ -362,17 +363,17 @@
             fairies += freed;
           } catch { /* Me says how many, the next time it is opened */ }
         }
-        const rift = riftTile(home, found, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '');
+        const rift = riftTile(home, known, earned ? '+1 mana' : '', freed ? `+${freed} fairies` : '');
         const list = document.createElement('div');
         list.className = 'game-tiles';
-        list.append(rift, ...opened.map(c => riftTile(c, c.puzzles.filter(p => known.has(p.id)).length, 'Opened')));
+        list.append(rift, ...opened.map(c => riftTile(c, known, 'Opened')));
         $('pixels-out').remove();
         const keys = $('pixels-solved').querySelector('.game-finish-actions');
         keys.before(list);
         if (!keys.childElementCount) keys.remove();
-        if (first && !still) rift.querySelector('.rux--progress-bar__bar').animate(
-          [{ transform: `scaleX(${was / all})` }, { transform: `scaleX(${found / all})` }],
-          { duration: 600, delay: 500, easing: 'ease-out', fill: 'backwards' });
+        if (first && !still) rift.querySelector(`.pixels-rift-slot[data-id="${CSS.escape(key)}"]`)?.animate(
+          [{ transform: 'scale(0)' }, { transform: 'none' }],
+          { duration: 400, delay: 500, easing: 'ease-out', fill: 'backwards' });
       }
       // The numbers and the controls leave, and the picture slides from
       // where the board had it to the middle.
@@ -623,7 +624,7 @@
       buzz();
     };
     let from = null, slid = false, lifted = -Infinity;
-    if (owner) {
+    if (world) {
       pick.classList.add('pixels-pick--switch');
       const [fill, cross] = pick.querySelectorAll('button');
       fill.replaceChildren(sword());

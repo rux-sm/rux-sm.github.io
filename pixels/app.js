@@ -35,6 +35,12 @@
      Results are saved as ever, so a ranking is there to show when it is on. */
   const BOARD = false;
 
+  /* THE WORLD IS OFF: the map, the character and its armour, which are
+     still placeholders. While this is false the owner is drawn what every
+     player is: the front page's tiles, a puzzle's plain Fill and X keys with
+     no character and no heart for armour, and no character on Me. */
+  const WORLD = false;
+
   // The characters a square is stored as, in the order of their numbers: a
   // digit, then a letter of either case. A picture's inks are named by them.
   const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -877,43 +883,54 @@
     return el;
   };
 
-  /* A RIFT'S TILE, a link to its page: its portal, then its name, how much
-     is found and a bar of that. One of the owner's rifts says its rank
-     before its name and its number before what is found, and a player's
-     says who made it. `found` is how many of its sprites the player has,
-     and with all of them its portal is shut. `tag` is a word or two at the
-     name's far end, and `under` one at the far end of the line below it.
-     A LOCKED RIFT'S, one `locks` left short, is no link: its portal is dim,
-     and it says how many of the sprites it opens at are found, with a bar
-     of that. */
+  /* A RIFT'S TILE, a link to its page, is the way into the rift: its name,
+     how many of its sprites are found, and a row of its puzzles, each found
+     one its picture, the next to play ringed, and a boss still held back
+     dim. A player's rift says who made it. `found` has the ids of the
+     puzzles found, `tag` is a word or two at the name's far end, and
+     `under` one at the far end of the line below it. Each of the row's
+     squares carries its puzzle's id, so a sprite just found can be shown
+     arriving.
+     A LOCKED RIFT'S, one `locks` left short, is no link and has no row: it
+     is dim, and says how many more sprites open it. */
+  const riftRow = (c, found) => {
+    const row = document.createElement('span');
+    row.className = 'pixels-rift-row';
+    const next = c.puzzles.find(p => !found.has(p.id)), held = holds(c, found);
+    row.append(...c.puzzles.map((p, i) => {
+      const square = document.createElement('span');
+      square.className = `pixels-rift-slot${p === next ? ' is-next' : ''}${held && boss(c, i) ? ' is-held' : ''}`;
+      square.dataset.id = p.id;
+      square.append(found.has(p.id) ? art(p, true) : '?');
+      return square;
+    }));
+    return row;
+  };
   const riftTile = (c, found, tag, under) => {
-    const locked = c.short > 0, have = c.need - c.short;
+    const locked = c.short > 0, all = c.puzzles.length, have = c.puzzles.filter(p => found.has(p.id)).length;
     const pill = text => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast game-tile-tag', text);
     const a = document.createElement(locked ? 'div' : 'a');
     a.className = locked ? 'rux--tile game-tile is-locked' : 'rux--link rux--tile rux--tile--clickable game-tile';
     if (!locked) a.href = where(c);
-    const all = c.puzzles.length;
     const head = document.createElement('span');
     head.className = 'game-tile-head';
-    head.append(words('game-tile-name', c.rank ? `${c.rank} · ${heading(c)}` : heading(c)));
+    head.append(words('game-tile-name', heading(c)));
     if (tag) head.append(pill(tag));
-    const gate = portal(c, !locked && found === all);
-    gate.classList.add('game-tile-art');
-    a.append(gate, head);
+    a.append(head);
     if (c.by) {
       const by = words('game-tile-note pixels-by', '');
       by.append(portrait(c.by), c.by.name);
       a.append(by);
     }
-    const said = words('game-tile-note', locked ? `Rift ${c.number} · ${have} of ${c.need} sprites to open`
-      : c.number ? `Rift ${c.number} · ${found === all ? 'cleared' : `${found} of ${all} sprites`}` : sprites(found, all));
+    const said = words('game-tile-note', locked ? `${c.short} more sprite${c.short === 1 ? '' : 's'} to open`
+      : have === all ? 'All found' : `${have} of ${all} sprites`);
     if (under) {
       const line = document.createElement('span');
       line.className = 'game-tile-head';
       line.append(said, pill(under));
       a.append(line);
     } else a.append(said);
-    a.append(locked ? bar(have, c.need) : bar(found, all));
+    if (!locked) a.append(riftRow(c, found));
     return a;
   };
 
@@ -1050,7 +1067,7 @@
 
   window.Pixels = Object.assign(window.Pixels || {}, {
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
-    SIZES, DAILY, BOARD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
+    SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
     words, art, tile, bar, riftTile, how, switcher, chosen, shell,
   });

@@ -1,25 +1,23 @@
 /* ==========================================================================
    puzzles.js — the front page: two tabs, the categories and the leaderboard
    --------------------------------------------------------------------------
-   The page draws what data.js's `list` is sent and nothing else, the
-   owner's as a map and every other player's as tiles. A guest with no
+   The page draws what data.js's `list` is sent and nothing else, as tiles,
+   or for the owner as a map once app.js's WORLD is on. A guest with no
    player yet gets the door first; data.js's `enter` draws it.
 
    While app.js's DAILY is false the puzzle of the day is not shown: no card
    for it, and one ranking, all time, with no days in a row. While its BOARD
    is false there is no leaderboard and no tabs, only the puzzles.
 
-   PUZZLES. Today's puzzle is one card across the page: its picture once
-   solved, the date, the best time or how hard it is, and the days solved in
-   a row. Then a tile for each category, in playing order, one to a row on
-   a phone, drawn by app.js's `riftTile`: its portal, the way a player
-   enters it, in its rank's colour and shut once every sprite is found; its
-   name, after its rank for one of the owner's; its number and how many
-   sprites are found; and a bar of that. A player's rift also says who made
-   it, and one not yet opened says New. A tile opens its category in
-   category.html, but for a locked one, a rift of the course that waits for
-   more sprites, which is dim and says how many. A player reads a category
-   as a rift.
+   PUZZLES. Under the logo, today's puzzle is one card across the page: its
+   picture once solved, the date, the best time or how hard it is, and the
+   days solved in a row. Then a tile for each category, in playing order,
+   one to a row, drawn by app.js's `riftTile`: the way into it, with its
+   name, how many sprites are found, and a row of its puzzles, each found
+   one its picture. A player's rift also says who made it, and one not yet
+   opened says New. A tile opens its category in category.html, but for a
+   locked one, a rift of the course that waits for more sprites, which is
+   dim and says how many. A player reads a category as a rift.
 
    CONTINUE is one primary button that opens the next puzzle to play: the
    first not found in the rift the player last went into, or in the first
@@ -39,7 +37,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, DAILY, BOARD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -132,10 +130,10 @@
     return el;
   };
 
-  /* THE MAP. The owner is drawn the course as a map in place of its tiles:
-     one land with a path through it, and a rift's portal on the path where
-     a rift of the course is. Every other player is drawn the tiles while the
-     map's first part is a placeholder.
+  /* THE MAP. While app.js's WORLD is on, the owner is drawn the course as a
+     map in place of its tiles: one land with a path through it, and a rift's
+     portal on the path where a rift of the course is. Every other player is
+     drawn the tiles while the map's first part is a placeholder.
 
      The map is drawn in six parts, one to a rank and two rifts to a part,
      each a picture in art/ of 120 squares by 80, `map-1.png` at the foot. A
@@ -161,7 +159,7 @@
      rift chooses it, and on an open one hops the character there in half a
      second, or puts it there at once for a player who has asked for less
      movement. */
-  const MAP = owner;
+  const MAP = owner && WORLD;
   const SPOTS = [[17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8], [17, 32], [62, 8]];
   const SIDE = [66, 38];
   const put = (el, [x, y]) => {
@@ -322,10 +320,7 @@
     const tiles = rifts => {
       const list = document.createElement('div');
       list.className = 'game-tiles';
-      list.append(...rifts.map(c => {
-        const found = c.puzzles.filter(p => results.has(p.id)).length;
-        return riftTile(c, found, !c.short && !found && !seen(c) ? 'New' : '');
-      }));
+      list.append(...rifts.map(c => riftTile(c, results, !c.short && !c.puzzles.some(p => results.has(p.id)) && !seen(c) ? 'New' : '')));
       return list;
     };
     if (!MAP) { host.appendChild(tiles(cats)); return; }

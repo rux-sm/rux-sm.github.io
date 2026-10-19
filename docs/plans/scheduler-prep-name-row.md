@@ -31,8 +31,9 @@ one edge.
   the column exists has no face.
 - **The database change is its own step,** shown to rux as SQL and applied on
   a yes before the code that reads it is pushed.
-- **A small tag is Design's `rux--tag--sm rux--tag--outline`,** so version 4
-  adds no class.
+- **Part-time is a small outlined PT tag,** Design's `rux--tag--sm
+  rux--tag--outline`, its title and its spoken name the whole word, because
+  it kept the whole name longest of five versions drawn at a narrow panel.
 - **The components page's Prep sample carries a long-named part-time
   driver** when its section lands from the
   [components page plan](scheduler-components-page.md), so the row is seen at
@@ -40,16 +41,7 @@ one edge.
 
 ## Questions
 
-- **Which version does the name row take?** Each was drawn in a mock at a
-  narrow panel, and 3 and 4 kept the whole name longest.
-  1. The seat word goes, because the first row under a bus is always its
-     driver; the purple Part-time tag stays.
-  2. No tag: the seat reads Part-time driver, in the seat's grey.
-  3. Two lines: the name, and under it the seat, Part-time driver; the time
-     and the face stay at the row's end.
-  4. A small outlined PT tag in place of Part-time, its title the whole word.
-  5. The row as it is, cut in order: the seat, then the name; under a set
-     width the seat word is dropped.
+None open.
 
 ## Tasks
 
@@ -57,7 +49,7 @@ one edge.
       yes.
 - [ ] Give the confirmed line who confirmed it in `scheduler/departures.js`:
       the staff member as `by`, or the driver when the source was their link.
-- [ ] Draw the name row as the chosen version in
+- [ ] Draw the name row with the PT tag in
       `scheduler/departures-panel.js`, with its face or its empty place, and
       change its rules in `scheduler/app.css`.
 - [ ] Add `confirmed_by` to `trip_driver_statuses` in

@@ -4,32 +4,38 @@ type: how-to
 
 # Drawing the art
 
-Every picture rux draws for Pixels has a file ready in Aseprite, in
-`pixels/art/source/`. Each is the right size and holds only the game's
-sixty inks, so a colour from anywhere else cannot be painted.
+Every puzzle of the course is drawn in Aseprite on one sheet,
+`pixels/art/source/puzzles.aseprite`, below. It holds only the game's sixty
+inks, so a colour from anywhere else cannot be painted.
 
 The palette is the sixty inks, five to a row, a colour to a row, and last
 the clear colour. **Never drag a colour to a new place in it.** A pixel
 remembers its place in the palette, not its colour, so a moved colour
 repaints every pixel that used that place.
 
+The other pictures each get a file of their own when their drawing starts.
+This makes every one that is not there, each the right size, starting as what
+the game shows now, so a drawing already in the game is never lost:
+
+    node pixels/tools/build-art.mjs templates
+
 | File | Squares | What it is |
 | :--- | :--- | :--- |
-| `character.aseprite` | 24 × 32 | the character, a layer to each part, for fights and Me |
-| `character-map.aseprite` | 15 × 15 | its small version, for the map, the same layers |
-| `sword.aseprite`, `shield.aseprite` | 9 × 9 | the two halves of the fill and X switch |
-| `map-1.aseprite` to `map-6.aseprite` | 90 × 60 | a part of the map, one to a rank, `map-1` at the foot |
-| `fog.aseprite` | 90 × 18 | the band over the highest part that shows |
-| `rift-01.aseprite` to `rift-12.aseprite` | 90 × 30 | a rift's world, over its puzzles |
-| `icons.aseprite` | 12 × 12 | the game's icons, a frame to each, named by its tag |
-| `puzzles.aseprite` | a row to each rift | every puzzle of the course, a cell to each |
+| character | 24 × 32 | the character, a layer to each part, for fights and Me |
+| character-map | 15 × 15 | its small version, for the map, the same layers |
+| sword, shield | 9 × 9 | the two halves of the fill and X switch |
+| map-1 to map-6 | 90 × 60 | a part of the map, one to a rank, map-1 at the foot |
+| fog | 90 × 18 | the band over the highest part that shows |
+| rift-01 to rift-12 | 90 × 30 | a rift's world, over its puzzles |
+| icons | 12 × 12 | the game's icons, a frame to each, named by its tag |
 
 An enemy is drawn on the puzzle sheet, below, or one at a time in the
 Pixelator, in its frame on Manage.
 
 ## Draw
 
-1. Open the file in Aseprite. Each starts as its placeholder, to draw over.
+1. Open the file in Aseprite, from `pixels/art/source/`. Each starts as its
+   placeholder, to draw over.
 2. Paint one square to a pixel. Keep the canvas its size.
 3. Save it, with Cmd S, in the same place.
 4. In the repository, put it in the game:

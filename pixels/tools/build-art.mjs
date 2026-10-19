@@ -19,7 +19,8 @@
 // blank. `icons.aseprite` is the game's icons, 12 a side, a frame to each,
 // named by a tag, with a Guide layer that marks the middle 10 by 10 where
 // the drawing goes; the game draws an icon in the words' colour, so one ink
-// is enough. A FILE THAT IS THERE IS LEFT ALONE, because it may be a drawing.
+// is enough, and an icon app.js already has starts drawn in white. A FILE
+// THAT IS THERE IS LEFT ALONE, because it may be a drawing.
 //
 // INTO THE GAME. The map version's layers and the switch's two pictures are
 // written into app.js as the strings it keeps them in, an ink a square, and
@@ -64,6 +65,10 @@ const PARTS = [['skin', 'skin'], ['eyes', 'eyes'], ['hair', 'hair'], ['helmet', 
 const SWITCH = [['sword', 'SWORD'], ['shield', 'SHIELD']];
 // The icons Pixels shows, each a frame of icons.aseprite, by what it is for.
 const ICONS = ['back', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me', 'manage', 'players'];
+// The icons already drawn, as app.js keeps them, so a new icons file starts
+// with them in white and nothing drawn is lost.
+const drawnIcons = () => Object.fromEntries([...(readFileSync(APP, 'utf8').match(/\n {2}const ICONS = \{([\s\S]*?)\n {2}\};/)?.[1] ?? '')
+  .matchAll(/'([\w-]+)': \[([^\]]*)\]/g)].map(m => [m[1], [...m[2].matchAll(/'([.1]+)'/g)].map(r => r[1])]));
 
 // A picture in app.js: HERO's parts are `  key: [rows].join(''),` and the
 // switch's `const NAME = [rows].join('');`.
@@ -187,6 +192,7 @@ if (process.argv[2] === 'templates') {
   job('fog.aseprite', file => fromPng(file, join(ART, 'fog.png'), null));
   job('icons.aseprite', file => `do
   local names = ${lua(JSON.stringify(ICONS))}
+  local drawn = json.decode(${lua(JSON.stringify(drawnIcons()))})
   local list = json.decode(names)
   local spr = Sprite(12, 12, ColorMode.INDEXED)
   spr:setPalette(pal)
@@ -200,7 +206,14 @@ if (process.argv[2] === 'templates') {
   for i = 1, 10 do ring:drawPixel(i, 1, ink('8')) ring:drawPixel(i, 10, ink('8')) ring:drawPixel(1, i, ink('8')) ring:drawPixel(10, i, ink('8')) end
   for n = 2, #list do spr:newFrame() end
   for n = 1, #list do
+    if spr.layers[1]:cel(n) then spr:deleteCel(spr.layers[1], n) end
     spr:newCel(guide, n, ring, Point(0, 0))
+    local rows = drawn[list[n]]
+    if rows then
+      local img = blank(spr)
+      for y = 1, #rows do for x = 1, #rows[y] do if rows[y]:sub(x, x) == '1' then img:drawPixel(x - 1, y - 1, ink('1')) end end end
+      spr:newCel(spr.layers[1], n, img, Point(0, 0))
+    end
     local tag = spr:newTag(n, n)
     tag.name = list[n]
   end

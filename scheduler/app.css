@@ -612,22 +612,23 @@ button.scheduler-row-head__num::after {
     - var(--scheduler-cut-start, 0px) - var(--scheduler-cut-end, 0px));
   block-size: var(--scheduler-bar-h);
   box-sizing: border-box;
-  /* Each side's padding is its own property, which the arithmetic below
-     reads to find day one's edge. */
+  /* Each side's padding is its own property, so an end that runs off the
+     week can pad back the room it gains there. */
   --scheduler-pad-start: var(--rux-spacing-02);
   --scheduler-pad-end: var(--rux-spacing-02);
   /* 4px on every side, so the words stand as far from each edge. */
   padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
   /* WHAT DAY ONE LEAVES, for the marks at a bar's top right end: the room
      past where a one-day bar's content would end, so a longer bar's dot and
-     alert count stand where a one-day bar's do. A bar is `span` days wide
-     less the clear space, the gap and its cuts, so one day is that width
-     plus what was taken off, divided by the span; a one-day bar's content
-     ends a day in, less the gap and its own end padding. `max()` holds it at
-     zero on a one-day bar. */
-  --scheduler-day-one-end: max(0px, calc(100% + var(--scheduler-pad-start) + var(--scheduler-pad-end)
+     alert count stand where a one-day bar's do. A bar's content is `span`
+     days wide less the clear space, the gap, its cuts and the two default
+     paddings, an end that runs off the week padding back what it gains, so
+     one day is that width plus what was taken off, divided by the span; a
+     one-day bar's content ends a day in, less the gap and its own end
+     padding. `max()` holds it at zero on a one-day bar. */
+  --scheduler-day-one-end: max(0px, calc(100% + 2 * var(--rux-spacing-02)
     + var(--scheduler-gap) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px) - (100%
-    + var(--scheduler-pad-start) + var(--scheduler-pad-end)
+    + 2 * var(--rux-spacing-02)
     + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px))
     / var(--scheduler-span)));
@@ -798,7 +799,15 @@ button.scheduler-row-head__num::after {
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
-.scheduler-bar--to-next { inset-inline-end: 0; inline-size: auto; border-start-end-radius: 0; border-end-end-radius: 0; }
+.scheduler-bar--to-next {
+  inset-inline-end: 0;
+  inline-size: auto;
+  /* The gap the bar gives up at its end, given back inside it, so its words
+     and marks end where every other bar's in that day do. */
+  --scheduler-pad-end: calc(var(--rux-spacing-02) + var(--scheduler-gap));
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 /* The cut edge sinks under the week's edge: a 2px line of the shade at the
    edge, then a 20px fade into the bar, which still shows on the brightest
@@ -1881,7 +1890,7 @@ button.scheduler-row-head__num::after {
    first day has scrolled out of sight still says what it is; the bar holds
    them, so they stop at its end. */
 .scheduler-bar {
-  --scheduler-live-day: calc((100% + var(--scheduler-pad-start) + var(--scheduler-pad-end) + var(--scheduler-gap) + var(--scheduler-gap-clear)
+  --scheduler-live-day: calc((100% + 2 * var(--rux-spacing-02) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
 }
 .scheduler-bar > :is(.scheduler-bar__row, .scheduler-road__card) {

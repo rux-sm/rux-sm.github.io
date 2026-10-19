@@ -622,5 +622,7 @@
       return;
     }
     draw();
+    // A rift kept in the address opens scrolled to.
+    if (open != null) $(`pixels-place-${open}`)?.parentElement.scrollIntoView({ block: 'start' });
   })();
 })();

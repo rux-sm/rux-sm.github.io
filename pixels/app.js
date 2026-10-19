@@ -809,18 +809,27 @@
   // at a whole number of screen pixels a square. A page of tiles holds
   // hundreds of pictures, and an element to a square made it tens of
   // thousands of elements, each laid out again as the page settled.
-  const inks = {};
-  const inkOf = id => (inks[id] ??= getComputedStyle(document.documentElement).getPropertyValue(`--pixels-ink-${id}`).trim());
+  // The colours are read from the page once, all together, since reading
+  // one while tiles are being added makes the browser lay the page out
+  // again each time; Pixels keeps one theme, so they do not change.
+  let tones = null;
+  const tone = name => {
+    if (!tones) {
+      const page = getComputedStyle(document.documentElement);
+      tones = Object.fromEntries(['--rux-layer-01', '--rux-text-primary', ...[...CHARS].map(c => `--pixels-ink-${c}`)].map(k => [k, page.getPropertyValue(k).trim()]));
+    }
+    return tones[name];
+  };
   const canvas = (squares, colours) => {
     const n = Math.sqrt(squares.length), el = document.createElement('canvas');
     el.width = el.height = n;
     el.style.setProperty('--size', n);
-    const ctx = el.getContext('2d'), page = getComputedStyle(document.documentElement);
-    ctx.fillStyle = page.getPropertyValue('--rux-layer-01').trim();
+    const ctx = el.getContext('2d');
+    ctx.fillStyle = tone('--rux-layer-01');
     ctx.fillRect(0, 0, n, n);
     [...squares].forEach((c, i) => {
       if (!colours && c !== '1') return;
-      ctx.fillStyle = colours ? inkOf(colours[i]) : page.getPropertyValue('--rux-text-primary').trim();
+      ctx.fillStyle = colours ? tone(`--pixels-ink-${colours[i]}`) : tone('--rux-text-primary');
       ctx.fillRect(i % n, Math.floor(i / n), 1, 1);
     });
     return el;

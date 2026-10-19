@@ -267,11 +267,12 @@
     'pixelator': ['............', '.........11.', '........111.', '.......111..', '......111...', '.....111....', '....111.....', '...111......', '..111.......', '.11.........', '.1..........', '............'].join(''),
     'manage': ['............', '.....11.....', '..1.1111.1..', '...111111...', '..11111111..', '.1111..1111.', '.1111..1111.', '..11111111..', '...111111...', '..1.1111.1..', '.....11.....', '............'].join(''),
     'players': ['............', '.11.1111111.', '.11.1111111.', '............', '............', '.11.1111111.', '.11.1111111.', '............', '............', '.11.1111111.', '.11.1111111.', '............'].join(''),
+    'pause': ['............', '............', '..111..111..', '..111..111..', '..111..111..', '..111..111..', '..111..111..', '..111..111..', '..111..111..', '..111..111..', '............', '............'].join(''),
     'restart': ['............', '............', '...111111...', '..11....11..', '.11....1111.', '.11.....11..', '.11.........', '.11......11.', '.11......11.', '..11....11..', '...111111...', '............'].join(''),
     'undo': ['............', '............', '...1........', '..11........', '.11111111...', '.111111111..', '..11.....11.', '...1.....11.', '.........11.', '......1111..', '............', '............'].join(''),
     'redo': ['............', '............', '........1...', '........11..', '...11111111.', '..111111111.', '.11.....11..', '.11.....1...', '.11.........', '..1111......', '............', '............'].join(''),
   };
-  const ICON_OF = { 'm-arrow_back': 'back', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me', 'm-settings': 'manage', 'm-list': 'players' };
+  const ICON_OF = { 'm-arrow_back': 'back', 'm-pause_circle-fill': 'pause', 'm-restart_alt': 'restart', 'm-undo': 'undo', 'm-redo': 'redo', 'm-volume_up': 'sound-on', 'm-volume_off': 'sound-off', 'm-grid_view': 'puzzles', 'm-groups': 'friends', 'm-edit': 'pixelator', 'm-account_circle': 'me', 'm-settings': 'manage', 'm-list': 'players' };
   document.querySelectorAll(':is(.game-key, .game-place, .pixels-bar-key) > svg').forEach(svg => {
     const name = ICON_OF[svg.querySelector('use')?.getAttribute('href')?.slice(1)];
     const art = ICONS[name] || ROUGH[name];
@@ -923,8 +924,9 @@
      where that one is found, a ? before any is, and once all are found its
      boss, framed in gold, with the count and the bar gold too. `found` has
      the ids of the puzzles found; `next` marks the rift the game goes on
-     to with Next, in the interactive colour, `tag` is a word or two before
-     the count, and `under` one on a line of its own.
+     to with Next, in the interactive colour, and `tag` is a word or two,
+     both beside its number and apart from the count, and `under` one on a
+     line of its own.
      A LOCKED RIFT'S, one `locks` left short, is one line and no link: a
      lock, its name, and how many more sprites open it. */
   const riftTile = (c, found, { tag, under, featured, next } = {}) => {
@@ -949,17 +951,22 @@
     picture.className = 'game-tile-art pixels-rift-art';
     picture.setAttribute('aria-hidden', 'true');
     picture.append(shown ? art(shown, true) : '?');
-    let label;
+    // The rift's number, or who made it, and its marks, on one line apart
+    // from the count at the far end.
+    const line = document.createElement('span');
+    line.className = 'pixels-rift-line';
     if (c.by) {
-      label = words('game-tile-note pixels-by', '');
-      label.append(portrait(c.by), c.by.name);
-    } else label = words('game-tile-note', c.number ? `Rift ${c.number}` : '');
+      const by = words('pixels-by', '');
+      by.append(portrait(c.by), c.by.name);
+      line.append(by);
+    } else if (c.number) line.append(words('', `Rift ${c.number}`));
+    if (next) line.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', 'Next'));
+    if (tag) line.append(pill(tag));
     const count = words('pixels-rift-count', `${have}/${all}`);
     const star = document.createElement('span');
     star.className = 'pixels-star';
     count.append(star);
-    const marks = [next && words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', 'Next'), tag && pill(tag)].filter(Boolean);
-    head.append(label, ...marks, count);
+    head.append(line, count);
     a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${next ? ', next' : ''}${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
     a.append(picture, head, words('game-tile-name', heading(c)), bar(have, all));
     if (under) {

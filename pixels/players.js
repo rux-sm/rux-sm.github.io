@@ -1,16 +1,19 @@
 /* ==========================================================================
    players.js — the owner's page: who has played, and how far
    --------------------------------------------------------------------------
-   A row a player: whether they have done today's puzzle and in what time,
-   their days in a row, how many puzzles they have solved, and
-   when they last played. The name is a field, and a new one is the name the
-   leaderboard shows. Remove takes a player off the leaderboard with all
-   their results; an account that plays again starts a new player.
+   A row a player: their picture and name, and under the name how many
+   puzzles they have solved and when they last played, after whether they
+   have done today's puzzle and their days in a row while it is on. Edit
+   opens the row: a field for the name, a new one being the name the
+   leaderboard shows; Clear picture, where they drew one; and Remove, which
+   takes a player off the leaderboard with all their results; an account
+   that plays again starts a new player.
 
    Under the table is every rift a player has made, to hide or delete.
 
-   A new player joins by any player's invite link. Close joining shuts every
-   link to anyone new; those already in keep playing.
+   A new player joins by any player's invite link. Joining's line says
+   whether it is open, and its one key changes it: Close joining shuts every
+   link to anyone new, and those already in keep playing.
 
    Only the owner's account reads any of this: the database gives nobody else
    a row.
@@ -28,11 +31,12 @@
     box.hidden = false;
   };
 
-  const cell = (text, cls) => {
-    const td = document.createElement('td');
-    if (cls) td.className = cls;
-    td.textContent = text;
-    return td;
+  const key = (cls, text) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = `rux--btn rux--btn--sm rux--layout--size-sm ${cls}`;
+    b.textContent = text;
+    return b;
   };
   const when = stamp => (stamp ? new Date(stamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : 'Never');
 
@@ -45,7 +49,8 @@
       return;
     }
     const day = today();
-    $('pixels-joining-text').textContent = all.joining ? 'New players can join by any player\'s invite link.' : 'Joining is closed. No invite link lets a new player in.';
+    $('pixels-joining-text').textContent = all.joining ? 'Joining is open' : 'Joining is closed';
+    $('pixels-joining-text').title = all.joining ? 'A new player can join by any player\'s invite link.' : 'No invite link lets a new player in.';
     $('pixels-joining').textContent = all.joining ? 'Close joining' : 'Open joining';
     $('pixels-joining').onclick = async () => {
       try {
@@ -71,15 +76,35 @@
     }).sort((a, b) => String(b.last_played_at || '').localeCompare(String(a.last_played_at || '')));
 
     $('pixels-rows').replaceChildren(...rows.map(p => {
-      const tr = document.createElement('tr');
-      // The name is a field: Enter or leaving it saves a new one.
-      const named = document.createElement('td');
+      const li = document.createElement('li');
+      li.className = 'pixels-person pixels-player';
+      const text = document.createElement('span');
+      text.className = 'pixels-player-text';
+      const name = document.createElement('span');
+      name.className = 'pixels-person-name';
+      name.textContent = p.name;
+      const stats = document.createElement('span');
+      stats.className = 'pixels-meta pixels-person-name';
+      // Today's puzzle and the days in a row say nothing while it is off.
+      stats.textContent = [...(DAILY ? [p.today ? `today ${p.today}` : 'not today', `${p.days} in a row`] : []), `${p.solved} solved`, when(p.last_played_at)].join(' · ');
+      text.append(name, stats);
+      const edit = key('rux--btn--ghost', 'Edit');
+      edit.setAttribute('aria-expanded', 'false');
+      edit.setAttribute('aria-label', `Edit ${p.name}`);
+      li.append(portrait({ name: p.name, picture: p.picture, colours: p.picture_colours }), text, edit);
+
+      // EDIT opens the row: the name, a picture to clear, and Remove.
+      const open = document.createElement('div');
+      open.className = 'pixels-player-edit';
+      open.hidden = true;
       const field = document.createElement('input');
       Object.assign(field, { className: 'rux--text-input rux--layout--size-sm pixels-player-name', type: 'text', maxLength: 20, value: p.name });
       field.setAttribute('aria-label', `Name of ${p.name}`);
+      const save = key('rux--btn--primary', 'Save');
       const rename = async () => {
         const to = field.value.trim();
         if (!to || to === p.name) { field.value = p.name; return; }
+        save.disabled = true;
         try {
           await data.renamePlayer(p.id, to);
           $('pixels-error').hidden = true;
@@ -89,19 +114,23 @@
         }
         draw();
       };
-      field.addEventListener('change', rename);
-      field.addEventListener('keydown', e => { if (e.key === 'Enter') field.blur(); });
-      const who = document.createElement('div');
-      who.className = 'pixels-player-who';
-      who.append(portrait({ name: p.name, picture: p.picture, colours: p.picture_colours }), field);
-      named.appendChild(who);
-      // The two columns for the puzzle of the day go when it is off.
-      tr.append(named, ...(DAILY ? [cell(p.today || 'Not yet'), cell(p.days)] : []), cell(p.solved), cell(when(p.last_played_at)));
-      const last = document.createElement('td');
-      const remove = document.createElement('button');
-      remove.type = 'button';
-      remove.className = 'rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm';
-      remove.textContent = 'Remove';
+      save.addEventListener('click', rename);
+      field.addEventListener('keydown', e => { if (e.key === 'Enter') rename(); });
+      const named = document.createElement('div');
+      named.className = 'pixels-player-named';
+      named.append(field, save);
+      open.append(named);
+      // A picture the player drew can be taken away; the one made from their name shows again.
+      if (p.picture) {
+        const clear = key('rux--btn--ghost', 'Clear picture');
+        clear.addEventListener('click', async () => {
+          clear.disabled = true;
+          try { await data.clearPicture(p.id); } catch { say('The picture was not cleared', 'Try again.'); }
+          draw();
+        });
+        open.append(clear);
+      }
+      const remove = key('rux--btn--danger--ghost', 'Remove');
       // A second press within a few seconds does it; the first only asks.
       remove.addEventListener('click', async () => {
         if (remove.dataset.sure == null) {
@@ -114,25 +143,17 @@
         try { await data.removePlayer(p.id); } catch { say('The player was not removed', 'Try again.'); }
         draw();
       });
-      // A picture the player drew can be taken away; the one made from their name shows again.
-      if (p.picture) {
-        const clear = document.createElement('button');
-        clear.type = 'button';
-        clear.className = 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm';
-        clear.textContent = 'Clear picture';
-        clear.addEventListener('click', async () => {
-          clear.disabled = true;
-          try { await data.clearPicture(p.id); } catch { say('The picture was not cleared', 'Try again.'); }
-          draw();
-        });
-        last.appendChild(clear);
-      }
-      last.appendChild(remove);
-      tr.appendChild(last);
-      return tr;
+      open.append(remove);
+      li.append(open);
+      edit.addEventListener('click', () => {
+        open.hidden = !open.hidden;
+        edit.setAttribute('aria-expanded', String(!open.hidden));
+        edit.textContent = open.hidden ? 'Edit' : 'Done';
+        if (!open.hidden) field.focus();
+      });
+      return li;
     }));
-    document.querySelectorAll('[data-daily]').forEach(th => { th.hidden = !DAILY; });
-    $('pixels-table').hidden = false;
+    $('pixels-rows').hidden = false;
 
     // The rifts players have made: who made each, how much it holds, and
     // whether it is published. Hide unpublishes one; Delete, pressed twice,

@@ -95,6 +95,8 @@
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
   const PROGRESS = 'pixels-progress';
+  // Where Exit goes, as this tab came to the puzzles.
+  const FROM = 'pixels-from';
   // How long the finished picture takes to fill in before the name shows.
   const REVEAL = 1100;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -157,8 +159,20 @@
       say('The boss is not out yet', `${left} more sprite${left === 1 ? '' : 's'} to find in this rift first.`);
       return;
     }
-    const back = trial ? 'manage.html' : home ? where(home) : './';
-    $('pixels-back').href = $('pixels-out').href = back;
+    // Exit goes back where the player came from in this tab, a page of
+    // Pixels other than a puzzle, kept across Next so a run of puzzles goes
+    // back to where it began; with none, to the puzzle's rift.
+    const cameFrom = (() => {
+      try {
+        const came = document.referrer && new URL(document.referrer);
+        const page = came && came.origin === location.origin && came.pathname.match(/\/pixels\/([\w-]*\.html)?$/);
+        if (page && page[1] !== 'play.html') sessionStorage.setItem(FROM, came.pathname + came.search);
+        else if (!page) sessionStorage.removeItem(FROM);
+        return sessionStorage.getItem(FROM);
+      } catch { return null; }
+    })();
+    const back = cameFrom || (trial ? 'manage.html' : home ? where(home) : './');
+    $('pixels-back').href = $('pixels-out').href = $('pixels-exit').href = back;
     if (trial) $('pixels-out').textContent = 'Manage';
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
@@ -194,7 +208,7 @@
     // Nothing moves, and the clock stands, until the cover is tapped; and
     // the board takes no touch for a moment after, so a second tap meant for
     // the cover cannot land on the square that was under it.
-    let started = false, settling = false;
+    let started = false, settling = false, paused = false;
     // The board before each tap or drag that changed it, and the board as a
     // tap or drag began, kept only once that one changes something other
     // than by a mistake.
@@ -280,7 +294,7 @@
     // The clock runs only while the page is in front and How to play is shut.
     const guide = how();
     setInterval(() => {
-      if (!started || solved || document.hidden || guide.classList.contains('is-visible')) return;
+      if (!started || solved || paused || document.hidden || guide.classList.contains('is-visible')) return;
       seconds++;
       tick();
       if (seconds % 5 === 0) keep();
@@ -417,7 +431,7 @@
     game.addEventListener('animationend', e => e.target.classList.remove('is-struck'));
 
     const act = (y, x) => {
-      if (!started || settling || solved || asking || down) return;
+      if (!started || settling || solved || asking || down || paused) return;
       const v = state[y][x];
       let missed = false;
       if (action === 'fill' && v === 0) {
@@ -465,7 +479,7 @@
     };
 
     const undo = () => {
-      if (!started || solved || down || !past.length) return;
+      if (!started || solved || down || paused || !past.length) return;
       const entry = past.pop();
       // A Restart taken back: the board, the clock, its mistakes and the
       // hearts as they were, down again if there were none.
@@ -487,7 +501,7 @@
       keep();
     };
     const redo = () => {
-      if (!started || solved || down || !ahead.length) return;
+      if (!started || solved || down || paused || !ahead.length) return;
       past.push(state.map(r => r.slice()));
       state = ahead.pop().map((r, y) => r.map((v, x) => (state[y][x] === 3 ? 3 : v)));
       cursor = [];
@@ -522,7 +536,7 @@
     };
     showFairies();
     const hint = async () => {
-      if (!started || solved || asking || down) return;
+      if (!started || solved || asking || down || paused) return;
       const wrong = [];
       state.forEach((r, y) => r.forEach((v, x) => { if (v === 2 && answer[y][x]) wrong.push([y, x]); }));
       // A line's squares and numbers, and `line`, the one a fairy finishes.
@@ -656,6 +670,9 @@
     addEventListener('keydown', e => {
       if (!started || solved || e.metaKey || e.ctrlKey || e.altKey || guide.classList.contains('is-visible')
         || e.target.closest('input, textarea, select')) return;
+      // P or Escape pauses and resumes, and nothing else reaches a paused board.
+      if (e.key === 'Escape' || e.key.toLowerCase() === 'p') { e.preventDefault(); if (paused) resume(); else pause(); return; }
+      if (paused) return;
       const move = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
       if (move) {
         e.preventDefault();
@@ -690,7 +707,32 @@
       showHearts();
       draw();
     };
-    $('pixels-restart').addEventListener('click', () => { if (started && !solved) restart(); });
+    $('pixels-restart').addEventListener('click', () => { if (started && !solved && !paused) restart(); });
+
+    /* A PAUSE stands the clock and lies Design's cover over the board, bare
+       as before Start, with Resume and Exit, until Resume. It changes
+       nothing of the game. A page sent behind another pauses itself, so
+       the board is not live the moment it is back. */
+    const pausedCover = $('pixels-paused'), resumeKey = $('pixels-resume');
+    function pause() {
+      if (!started || solved || down || paused) return;
+      paused = true;
+      game.classList.add('is-paused');
+      pausedCover.hidden = false;
+      highlight(el);
+      resumeKey.focus({ preventScroll: true });
+    }
+    function resume() {
+      if (!paused) return;
+      paused = false;
+      settling = true;
+      setTimeout(() => { settling = false; }, 350);
+      game.classList.remove('is-paused');
+      pausedCover.hidden = true;
+    }
+    $('pixels-pause').addEventListener('click', pause);
+    resumeKey.addEventListener('click', resume);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
 
     // At no hearts the cover is up until the player picks. With no fairy to
     // spend, or none that came, the one way on is to start again.

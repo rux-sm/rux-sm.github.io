@@ -17,9 +17,9 @@
    and with Shift and Z, or Y, redoes. These are the toolbar over the board,
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
    squares a side, or 20 for the owner's course, which Undo takes back, and
-   a saved puzzle keeps the size it has. Back, the
-   toolbar's first button, leaves for Manage; a new picture is kept as
-   the draft, so nothing is lost by it.
+   a saved puzzle keeps the size it has. Exit, the toolbar's first button,
+   leaves for Manage; a new picture and an edit are kept as drafts, so
+   nothing is lost by it.
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
@@ -39,7 +39,7 @@
    ANY OTHER PLAYER makes puzzles for rifts of their own, by data.js's
    `own`: a new puzzle costs one mana, the Rift field lists their rifts and
    New rift, with no Unsorted and no puzzle of the day, a rift holds fifteen,
-   and Back and Delete leave for Me. A rift just started is hidden until it
+   and Exit and Delete leave for Me. A rift just started is hidden until it
    is published on Me. make.html?own is the same for the owner's own rifts,
    which cost no mana, and keeps its draft under `pixels-own-draft`.
 
@@ -52,10 +52,12 @@
    five sprites have earned it. The board is the whole character, 15 squares
    a side, in the colour step alone, and only the helmet's squares take
    paint; the eraser and Clear put them back as the helmet starts. Save
-   keeps the drawing with the player's gear, and Back leaves, both for Me.
+   keeps the drawing with the player's gear, and Exit leaves, both for Me.
 
    make.html?id= edits a saved puzzle. A new picture not yet saved is kept in
-   this browser under `pixels-draft`, so a reload does not lose it.
+   this browser under `pixels-draft`, and an edit under `pixels-edit-` and
+   the puzzle's id, picked up while the puzzle is still as it was opened, so
+   neither a reload nor leaving loses it.
    ========================================================================== */
 (() => {
   'use strict';
@@ -131,12 +133,19 @@
   const levelOf = () => (loose() ? null : Math.min(99, Math.max(1, parseInt(level.value, 10) || 1)));
   // The Category field's last choice makes it a day's puzzle.
   const daily = () => level.value === 'day';
-  const readDraft = () => { try { return JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch { return null; } };
+  // A DRAFT is kept as the drawing changes, so leaving loses nothing: a new
+  // picture's under DRAFT, and an edit of a saved puzzle under its own id,
+  // with what the puzzle was as it was opened, so it is picked up only while
+  // the puzzle is still that. Saving or deleting drops it.
+  const editKey = id => `pixels-edit-${id}`;
+  const was = p => `${p.squares}|${p.colours || ''}|${p.name}`;
+  const readDraft = (key = DRAFT) => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch { return null; } };
+  const dropDraft = (key = DRAFT) => { try { localStorage.removeItem(key); } catch { /* nothing kept */ } };
   const keepDraft = () => {
-    if (editing) return;
     try {
-      localStorage.setItem(DRAFT, JSON.stringify({
+      localStorage.setItem(editing ? editKey(editing.id) : DRAFT, JSON.stringify({
         squares: squaresOf(draft), name: name.value, level: daily() ? 'day' : loose() ? 'none' : levelOf(), day: daily() ? day.value : '', colours: colours && squaresOf(colours),
+        ...(editing ? { was: was(editing) } : {}),
       }));
     } catch { /* a convenience */ }
   };
@@ -253,7 +262,7 @@
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
     tools.querySelectorAll('button').forEach(b => { b.disabled = step !== 'colour'; });
-    inks.inert = step !== 'colour';
+    inks.hidden = step !== 'colour';
     showStep();
     render();
   };
@@ -293,7 +302,7 @@
     inks.querySelectorAll('.pixels-ink').forEach(b => b.setAttribute('aria-checked', b.dataset.ink === id));
   };
   setInk(ink);
-  inks.inert = true;
+  inks.hidden = true;
   inks.addEventListener('click', e => {
     const picked = e.target.closest('.pixels-ink');
     if (picked) setInk(CHARS.indexOf(picked.dataset.ink));
@@ -464,7 +473,7 @@
         // A piece is kept as an ink for each of its squares and a dot for every other.
         if (wearing) await data.setGear({ ...(player.gear || {}), [wearing]: draft.flat().map((on, i) => (on ? CHARS[colours.flat()[i]] : '.')).join('') });
         else await data.setPicture(squaresOf(draft), colours && squaresOf(colours));
-        try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
+        dropDraft();
         location.href = 'me.html';
       } catch {
         say(wearing ? 'The helmet was not saved' : 'The picture was not saved', 'Try again.');
@@ -516,10 +525,11 @@
       if (!puzzle.day) showLevels(puzzle.level ?? 'none');
       showWhere();
       if (editing) {
+        dropDraft(editKey(editing.id));
         editing = row;
         saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && store.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has fifteen on.` : ''}`);
       } else {
-        try { localStorage.removeItem(DRAFT); } catch { /* nothing kept */ }
+        dropDraft();
         mana -= 1;
         name.value = '';
         clear();
@@ -548,6 +558,7 @@
   $('pixels-delete-confirm').addEventListener('click', async () => {
     try {
       await store.remove(editing.id);
+      dropDraft(editKey(editing.id));
       location.href = home;
     } catch {
       say('The puzzle was not deleted', 'Try again.');
@@ -575,8 +586,8 @@
       check.hidden = true;
       const back = maker.querySelector('a[href="manage.html"]');
       back.href = 'me.html';
-      back.title = 'Back to Me';
-      back.setAttribute('aria-label', 'Back to Me');
+      back.title = 'Exit to Me';
+      back.setAttribute('aria-label', 'Exit to Me');
       setSide(15);
       if (wearing) {
         // The board is the whole character, so the piece is drawn where it
@@ -619,8 +630,8 @@
       if (!owner) mana = got.mana;
       const back = maker.querySelector('a[href="manage.html"]');
       back.href = home;
-      back.title = 'Back to Me';
-      back.setAttribute('aria-label', 'Back to Me');
+      back.title = 'Exit to Me';
+      back.setAttribute('aria-label', 'Exit to Me');
     }
     const id = query.get('id');
     try {
@@ -642,6 +653,15 @@
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;
         $('pixels-delete').hidden = false;
+        // An edit left unsaved is back, while the puzzle is as it was then.
+        const kept = readDraft(editKey(editing.id));
+        if (kept?.was === was(editing) && kept.squares?.length === editing.squares.length) {
+          draft = grid(kept.squares, editing.width);
+          colours = kept.colours ? grid(kept.colours, editing.width) : null;
+          name.value = kept.name || '';
+          showLevels(kept.day ? 'day' : kept.level ?? 'none');
+          day.value = kept.day || '';
+        } else dropDraft(editKey(editing.id));
       } else say('This puzzle is not here', 'It may have been deleted. The board is ready for a new one.');
     }
     if (!editing) {

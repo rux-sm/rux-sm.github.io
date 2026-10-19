@@ -30,13 +30,13 @@ them, with its best time and Play, and a sprite just found turns into view.
 `me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
 that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
 who has found sprites in it, and a guest's Delete my player. `friends.html` is the player's friend link
-and their friends, each to remove. A player's own puzzles are made in the Pixelator, for mana, and a
-friend's published rifts stand after the owner's on the front page, saying who made them, and New until
-opened. Every page is one phone-wide column on every screen, in Design's `pixel-dark`, locked. The
-places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players, are the header's links from
-66rem and a bar along the foot below that, but for a puzzle being played or drawn. Me's list holds How
-to play, the Sound switch, Add to home screen and, for an account, the way to Rux Home.
-`docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
+on a card and their friends, each with a menu to remove them. A player's own puzzles are made in the
+Pixelator, for mana, and a friend's published rifts stand after the owner's on the front page, saying
+who made them, and New until opened. Every page is one phone-wide column on every screen, in Design's
+`pixel-dark`, locked. The places, Puzzles, Friends, Pixelator, Me and the owner's Manage and Players,
+are the header's links from 66rem and a bar along the foot below that, but for a puzzle being played or
+drawn. Me's list holds How to play, the Sound switch, Add to home screen and, for an account, the way to
+Rux Home. `docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
@@ -53,17 +53,18 @@ keys are one switch, a sword and a shield, and a character faces the enemy's sha
 heart more at five sprites. Hint, or H, lights the line where the numbers decide the most, and a fairy
 finishes it, as `docs/profiles.md` says. Undo, or U, takes back the last tap or drag, and Redo, or R,
 puts it back, but neither touches a mistake, and a tap that was only a mistake is no move to take back.
-Restart empties the board, and Undo straight after brings it back. A tile fills the board's corner: the
-picture so far and the clock. A warm line rules off each fifth square. When the picture is complete the
-squares fill in as the picture, in its colours if it has them, and its name shows with the time, the
-mistakes and the hints. Under them the rift's tile counts the sprite, says +1 mana where the find earned
-one and +3 fairies where it cleared the rift, and opens the rift, as Back does; a rift the sprite opened
-stands under it, saying Opened. Next goes to that rift's next unsolved puzzle, then to the next open
-rift. How to play is three steps in a modal, each with a small board: the numbers, filling and crossing
-out, and what a mistake costs. It opens from Me's list, the button under Start, and by itself for a
-player who has solved none and has not closed it in this browser. The clock stands meanwhile. Each move
-plays a tone, which Me's Sound switch turns off and an iPhone's silent switch does not, and a phone
-ticks on each fill. A game in progress is kept in the browser for a reload.
+Restart empties the board, and Undo straight after brings it back. Pause, P or Escape, or leaving the
+page stands the clock under a cover with Resume and Exit, which goes where the player came from. A tile
+fills the board's corner: the picture so far and the clock. When the picture is complete the squares
+fill in as the picture, in its colours if it has them, and its name shows with the time, the mistakes
+and the hints. Under them the rift's tile counts the sprite, says +1 mana where the find earned one and
++3 fairies where it cleared the rift, and opens the rift; a rift the sprite opened stands under it,
+saying Opened. Next goes to that rift's next unsolved puzzle, then to the next open rift. How to play is
+three steps in a modal, each with a small board: the numbers, filling and crossing out, and what a
+mistake costs. It opens from Me's list, the button under Start, and by itself for a player who has
+solved none and has not closed it in this browser. The clock stands meanwhile. Each move plays a tone,
+which Me's Sound switch turns off and an iPhone's silent switch does not, and a phone ticks on each
+fill. A game in progress is kept in the browser for a reload.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
 results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
@@ -72,18 +73,18 @@ With it on, `play.html?daily` plays the puzzle of the day: the one the owner dre
 name and colours, or where there is none, one the browser makes from the date, the same for everyone.
 Only it counts toward the days in a row. A player is never sent a day's puzzle before its day.
 
-`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The
-owner's puzzles go in the owner's rifts, and the owner alone has Manage and Players, in the header and the bar; a
-player's go in rifts of their own, through functions that count their mana, and so do the owner's own
+`make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The owner's
+puzzles go in the owner's rifts, and the owner alone has Manage and Players, in the header and the bar;
+a player's go in rifts of their own, through functions that count their mana, and so do the owner's own
 at `make.html?own`, which cost none. `make.html?me` draws a player's picture, and `?wear=helmet` the
 helmet of the owner's character. It checks as you draw whether the numbers alone can solve the picture
 and how hard that is, outlines each square that would need a guess, and saves only a picture with one
 answer. Size starts a blank board of 5, 10 or 15 a side, 20 in the course. Its Colour step paints the
 picture the puzzle finishes as, from sixty inks, and Save asks which rift it goes in; a rift shows
 fifteen, the list counts how many of each one's are on, and a puzzle saved into one with fifteen on is
-saved off. A rift just started is named there and hidden until Manage's switch publishes it. No rift
-yet keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle,
-in no rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
+saved off. A rift just started is named there and hidden until Manage's switch publishes it. No rift yet
+keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle, in no
+rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
 
 `manage.html` is the owner's desk: a row to each rift, then Unsorted and Dailies, with a strip of its
 pictures and a rift's Published switch. A tap opens one under its row and a second tap closes it;
@@ -136,10 +137,9 @@ in one step, so a move cannot stop half done, and each rift keeps its id. `pixel
 deletes a rift the same way: its puzzles are left in no rift and the rifts after it move up.
 `pixels_name_level` and `pixels_hide_level` name and hide a rift, and make its row if it has none.
 
-`players.html` is the owner's: every player with their picture, today's puzzle, days in a row,
-puzzles solved and when they last played; the name, which can be typed over; Close joining, which
-shuts the door to anyone new; Clear picture; the rifts players have made, each to hide or
-delete; and Remove, which takes a player and their results off the leaderboard.
+`players.html` is the owner's: joining's line and its key, which shuts the door to anyone new; a row a
+player, their picture, name and stats, whose Edit renames them, clears their picture or removes them and
+their results from the leaderboard; and the rifts players have made, each to hide or delete.
 
 The local preview, `npm run serve` on :8640, has no log-in, so there Pixels
 keeps its puzzles and times in the browser instead, starting from the nine in

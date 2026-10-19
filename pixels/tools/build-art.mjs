@@ -64,7 +64,7 @@ const PARTS = [['skin', 'skin'], ['eyes', 'eyes'], ['hair', 'hair'], ['helmet', 
   ['hands and feet', 'ends'], ['shield', 'shield'], ['sword', 'sword']];
 const SWITCH = [['sword', 'SWORD'], ['shield', 'SHIELD']];
 // The icons Pixels shows, each a frame of icons.aseprite, by what it is for.
-const ICONS = ['back', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me', 'manage', 'players'];
+const ICONS = ['back', 'pause', 'restart', 'undo', 'redo', 'sound-on', 'sound-off', 'puzzles', 'friends', 'pixelator', 'me', 'manage', 'players'];
 // The icons already drawn, as app.js keeps them, so a new icons file starts
 // with them in white and nothing drawn is lost.
 const drawnIcons = () => Object.fromEntries([...(readFileSync(APP, 'utf8').match(/\n {2}const ICONS = \{([\s\S]*?)\n {2}\};/)?.[1] ?? '')

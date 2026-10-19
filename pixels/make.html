@@ -177,7 +177,7 @@
             <!-- At the bar's start, the puzzle's own: Back to Manage, then Save, and Delete for a saved one; on a phone Back starts the first line and these two end it. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
             <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
               <div class="pixels-toolbar-group pixels-toolbar-back">
-                <a class="pixels-bar-key" href="manage.html" aria-label="Back to Manage" title="Back to Manage"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg><span class="pixels-bar-word">Back</span></a>
+                <a class="pixels-bar-key" href="manage.html" aria-label="Exit to Manage" title="Exit to Manage"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg><span class="pixels-bar-word">Exit</span></a>
               </div>
               <div class="pixels-toolbar-group pixels-toolbar-file">
                 <button type="submit" class="pixels-bar-key pixels-bar-key--go" id="pixels-save" disabled aria-label="Save" title="Save"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg><span class="pixels-bar-word">Save</span></button>
@@ -209,7 +209,7 @@
             </div>
             <!-- Under the board: how much the first look decides, and how much is filled. -->
             <p class="pixels-meta pixels-maker-stats" id="pixels-stats"></p>
-            <!-- The inks, open under the board on every screen; make.js fills them. -->
+            <!-- The inks, open under the board for the colour step and hidden while drawing; make.js fills them. -->
             <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></div>
           </div>
         </form>

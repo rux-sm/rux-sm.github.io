@@ -326,16 +326,23 @@
 .pixels-rank-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.5; }
 .pixels-rank-value { min-inline-size: 3.5rem; text-align: end; font-variant-numeric: tabular-nums; }
 
-/* THE OWNER'S PAGE: the invite word beside its button, the link under them. */
-.pixels-invite { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem; }
+/* THE OWNER'S PAGE: joining's one line, whether it is open at its start
+   and the key that changes it at its end. */
+.pixels-invite { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1rem; }
 .pixels-invite[hidden] { display: none; }
 .pixels-invite > p { margin: 0; overflow-wrap: anywhere; }
 
-/* FRIENDS: the player's own invite link, then every other player, a row
-   each: picture, username and the key that adds or removes them. */
+/* FRIENDS: the player's own invite link on a card, then every friend, a
+   row each: picture, username and the menu that removes them. */
 .pixels-friends { display: grid; gap: 1.5rem; max-inline-size: 28rem; }
-.pixels-link { display: grid; gap: .5rem; }
+.pixels-link { display: grid; gap: .5rem; padding: 1rem; }
 .pixels-link > p { margin: 0; overflow-wrap: anywhere; }
+/* The link is one line, ending in an ellipsis; Copy and Share hand on the whole of it. */
+.pixels-link > .pixels-link-address { overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; white-space: nowrap; }
+/* A friend's row ends in its menu, or in the key that asks once more. The
+   end holds the menu's list, which Design places under its trigger. */
+.pixels-person-end { position: relative; display: flex; align-items: center; }
+.pixels-person-end > [hidden] { display: none; }
 .pixels-link-keys { display: flex; flex-wrap: wrap; gap: .5rem; }
 .pixels-people { display: grid; margin: 0; padding: 0; list-style: none; }
 .pixels-person { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .75rem; align-items: center; padding: .5rem 0; border-block-end: 1px solid var(--rux-border-subtle-01); }
@@ -344,13 +351,15 @@
 .pixels-share-list { display: grid; gap: .5rem; margin-block-start: 1rem; }
 .pixels-share-list > .rux--checkbox-wrapper { margin: 0; }
 .pixels-share-who { display: inline-flex; align-items: center; gap: .5rem; }
-/* A name stays wide enough to read and type in; on a phone the table slides. */
-.pixels-player-name { min-inline-size: 8rem; max-inline-size: 14rem; }
-.pixels-player-who { display: flex; align-items: center; gap: .5rem; }
-/* A wide table scrolls inside its own box, which holds its hidden words
-   too, so the page never scrolls sideways. */
-.pixels-scroll { position: relative; overflow-x: auto; }
-.pixels-scroll[hidden] { display: none; }
+/* A PLAYER'S ROW on Players is a person's row: picture, name over the
+   stats, and Edit, which opens a line under them across the row: the name
+   to type over with Save, then Clear picture and Remove. */
+.pixels-people[hidden] { display: none; }
+.pixels-player-text { display: grid; min-inline-size: 0; }
+.pixels-player-edit { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.pixels-player-edit[hidden] { display: none; }
+.pixels-player-named { display: flex; flex: 1 1 100%; gap: .5rem; }
+.pixels-player-name { flex: 1; min-inline-size: 0; }
 
 /* THE FRONT PAGE AND A CATEGORY'S. The tabs' panels start where the page
    does. */
@@ -369,6 +378,7 @@
 .pixels-rift-art { display: grid; place-items: center; box-sizing: border-box; inline-size: 64px; block-size: 64px; padding: 2px; background: var(--rux-layer-accent-01); color: var(--rux-text-secondary); font-size: 32px; line-height: 1; }
 .pixels-rift-art > .pixels-picture { --px: round(down, calc(60px / var(--size, 10)), 1px); }
 .pixels-rift.is-cleared .pixels-rift-art { background: var(--rux-support-caution-minor); }
+.pixels-rift-line { display: flex; flex: 1; align-items: center; gap: .5rem; min-inline-size: 0; color: var(--rux-text-secondary); }
 .pixels-rift-count { display: flex; flex: none; align-items: center; gap: 6px; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 .pixels-rift.is-cleared .pixels-rift-count { color: var(--rux-support-caution-minor); }
 .pixels-star { flex: none; inline-size: 16px; block-size: 16px; background: currentColor; -webkit-mask: url(brand/icon.svg) center / 16px no-repeat; mask: url(brand/icon.svg) center / 16px no-repeat; }
@@ -728,10 +738,11 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    squares and leaves the numbers' bands clear, its panel in the middle of
    them. */
 .pixels-stage { --game-cover-inset: var(--clue-h) 0 0 var(--clue-w); }
-.pixels-game.is-waiting .pixels-clue > span { visibility: hidden; }
-.pixels-game.is-waiting .pixels-cell { background: var(--rux-layer-01); }
-.pixels-game.is-waiting .pixels-cell::before,
-.pixels-game.is-waiting .pixels-cell::after { content: none; }
+/* A paused board is bare in the same way, under its own cover. */
+.pixels-game:is(.is-waiting, .is-paused) .pixels-clue > span { visibility: hidden; }
+.pixels-game:is(.is-waiting, .is-paused) .pixels-cell { background: var(--rux-layer-01); }
+.pixels-game:is(.is-waiting, .is-paused) .pixels-cell::before,
+.pixels-game:is(.is-waiting, .is-paused) .pixels-cell::after { content: none; }
 
 /* HOW TO PLAY. The story's line, then three steps down the modal, each a
    small board beside its words. The boards are the game's own at 20px a
@@ -998,9 +1009,10 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   .pixels-toolbar-step > .pixels-bar-key { inline-size: 5.75rem; padding-inline: .625rem; }
   .pixels-toolbar-step .pixels-bar-word { display: inline; }
 }
-/* THE INKS, open under the board on every screen, twelve across: a colour
-   to a column, from pale to dark, and last the greys from white to black;
-   the chosen one is ringed. */
+/* THE INKS, open under the board for the colour step and hidden while
+   drawing, when they cannot be used, twelve across: a colour to a column,
+   from pale to dark, and last the greys from white to black; the chosen
+   one is ringed. */
 .pixels-inks { order: 2; display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: .3125rem; margin-block-start: .5rem; }
 .pixels-ink {
   aspect-ratio: 1;
@@ -1045,7 +1057,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    away from Undo. Each key is its icon over its word, as the game's keys
    are. The inks stand open under it, so a colour is one tap. `--keys` is
    how many keys a group has, which is its share of its line. */
-.pixels-inks[inert] { opacity: .35; }
+.pixels-inks[hidden] { display: none; }
 .pixels-maker-work { display: flex; flex-direction: column; }
 .pixels-toolbar { --rux-layout-size-height: var(--rux-layout-size-height-lg, 3rem); order: 1; column-gap: .375rem; margin-block-start: .5rem; border: 0; background: none; }
 .pixels-toolbar-group { flex: var(--keys) 1 0; min-inline-size: 0; margin: 0; background: var(--rux-layer-01); }

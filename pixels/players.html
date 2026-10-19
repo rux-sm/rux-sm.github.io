@@ -137,27 +137,13 @@
           </div>
         </div>
         </div>
-        <!-- Whether a new player may join by a player's invite link. players.js writes the words and the button. -->
-        <div class="pixels-invite" id="pixels-invite" hidden>
-          <p class="pixels-meta" id="pixels-joining-text"></p>
+        <!-- Whether a new player may join by a player's invite link, and the one way to change it. players.js writes both. -->
+        <div class="pixels-invite pixels-joining" id="pixels-invite" hidden>
+          <p class="pixels-joining-state" id="pixels-joining-text"></p>
           <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm" id="pixels-joining"></button>
         </div>
-        <!-- players.js writes a row a player here, and under the table a row for each rift a player has made. -->
-        <div class="rux--data-table-content pixels-scroll" id="pixels-table" hidden>
-          <table class="rux--data-table rux--data-table--md">
-            <thead>
-              <tr>
-                <th scope="col"><div class="rux--table-header-label">Name</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Today</div></th>
-                <th scope="col" data-daily><div class="rux--table-header-label">Days in a row</div></th>
-                <th scope="col"><div class="rux--table-header-label">Solved</div></th>
-                <th scope="col"><div class="rux--table-header-label">Last played</div></th>
-                <th scope="col"><span class="rux--visually-hidden">Remove</span></th>
-              </tr>
-            </thead>
-            <tbody id="pixels-rows"></tbody>
-          </table>
-        </div>
+        <!-- players.js writes a row a player here, and under them a row for each rift a player has made. -->
+        <ul class="pixels-people" id="pixels-rows" aria-label="Players" hidden></ul>
         <section class="rux--stack-vertical rux--stack-scale-4" id="pixels-made" hidden></section>
       </div>
     </div>

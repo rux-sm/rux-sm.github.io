@@ -40,19 +40,16 @@ driver or a customer already holds still opens.
   rux-ui can write, since the scheduler's editor gives only a relief seat a
   note. No coming trip has a seat with instructions, and every coming
   itinerary is labelled Itinerary exactly, as the scheduler's page reads it.
-- **The repository is archived, not deleted,** once nothing links to it, so
-  its history stays.
-- **Columns and tables only rux-ui used are left in place.** Dropping one is
-  its own change, shown to rux as SQL, after the app is off.
+- **The repository is archived, not deleted,** so its history stays, and
+  GitHub Pages still serves its redirects, the front page's to the board.
+- **Columns and tables only rux-ui used are dropped as their own change,**
+  shown to rux as SQL and applied on a yes.
 
 ## Questions
 
 
 ## Tasks
 
-- [ ] Say rux-ui is retired in `AGENTS.md`, the root `README.md`, the
-      scheduler's inventories and `developer/CLAUDE.md` in `~/claude-config`.
-- [ ] Archive the `rux-ui` repository.
 - [ ] List the tables, columns and triggers only rux-ui used, among them
       `itinerary_confirmed`, `is_self_organized` and `trip_passengers`, which
       no scheduler page reads, and show rux the SQL that drops them.

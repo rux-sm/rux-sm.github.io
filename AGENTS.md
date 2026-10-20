@@ -27,8 +27,8 @@ needs either edits it in the same session, after reading its own
 `AGENTS.md`.
 
 **The database has no repository.** It is the one Supabase project,
-`udnmqhayzhrbltxzzhjw`, named `rux-ui` in the dashboard after the old trips
-app, which still writes its `public` tables. A change to it is SQL shown to
+`udnmqhayzhrbltxzzhjw`, named `rux-ui` in the dashboard after the trips app
+the scheduler replaced, whose repository is archived. A change to it is SQL shown to
 rux and applied on a yes through the Supabase connection, as a named
 migration the project lists; sign-in settings are changed in the dashboard.
 No migration file and no database configuration is committed here. The

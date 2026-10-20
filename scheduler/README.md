@@ -9,11 +9,11 @@ lists what is unfinished here.
 ## What it is
 
 A week board: buses down the side, days across, one bar per assignment, behind
-a staff log-in. It reads and writes the Supabase tables the `rux-ui` app also
-writes — trips and their stops, bus and driver assignments, contacts, payments, POs and
-invoices — and runs beside it; rux-ui stays in use. That database is
-production and shared with `rux-ui`, so nothing here is ever tried with a
-test record.
+a staff log-in. It reads and writes the trip tables in Supabase — trips and
+their stops, bus and driver assignments, contacts, payments, POs and
+invoices. That database is production, so nothing here is ever tried with a
+test record. The retired trips app's addresses forward here, as
+`docs/screen-inventory.md` lists them.
 
 `trips.html` lists every trip, cancelled ones with their reason, searched,
 sorted, filtered to upcoming, needs follow-up, past, to close or cancelled,
@@ -34,7 +34,7 @@ everywhere as its type and number. `buses.html` forwards to it.
 `drivers.html` lists every driver, flags a licence or medical card that has
 run out or will within 45 days, and edits one driver at `drivers.html?id=`:
 details, photo and time off. A driver is set Inactive, never deleted, and the
-driver's schedule link is shown there but still made in rux-ui. A trip in a
+driver's schedule link is shown there and made on `driver-view.html`. A trip in a
 driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
 `contacts.html` lists every contact, the people who book and travel, with
@@ -42,8 +42,7 @@ their customer, phone, email and trips, and edits one at
 `contacts.html?id=`. A contact on any trip is never deleted, and editing one
 never changes a trip, which keeps the phone it was saved with.
 
-`locations.html` lists the saved places a bus goes, which rux-ui's itinerary
-search reads too, and edits one at `locations.html?id=`. An address is picked
+`locations.html` lists the saved places a bus goes, and edits one at `locations.html?id=`. An address is picked
 from the search in `places.js`, or typed and its spot tapped on the map under
 it, so every place has its map point. Search, drives and the map are
 Geoapify's, whose free plan lets a place found be kept. A trip
@@ -54,7 +53,7 @@ pickup is never deleted.
 Locations and a bill-to address only when bills go somewhere else, and edits
 one at `customers.html?id=`. Two customers never share a name, since
 QuickBooks matches on it; renaming one renames the organization text its
-contacts carry, which rux-ui shows.
+contacts carry.
 
 Those five pages save through `pair.js`, which also holds what they show and
 do alike: the notices, search, sort, field errors, the unsaved-changes and
@@ -104,7 +103,7 @@ the office sends, with its estimate number and the trip's quote lines, or its pr
 where it has none, lines of words typed under them, figures that are the trip's and are not typed on the sheet, and a Total that is the sum of the lines the sheet prints;
 and the Terms and Conditions Agreement Form behind it. A rental's wording is `quote-text.js`, which the
 trip editor's Copy for QuickBooks reads too, each leg from its own stops, so the description
-pasted into an estimate and the one printed on the quote read the same. The week schedule is rux-ui's billing report of a week on
+pasted into an estimate and the one printed on the quote read the same. The week schedule is the billing report of a week on
 Legal landscape, five buses a sheet, opened from the board's menu as Print
 week; `week.js` places its trips as it places the board's, and a trip that
 does not fit its row is named above the sheet. The binder covers and spines are the office's own, drawn from today's date and no trip: a Letter cover for each quotes and confirmed binder of this year and the next, and their spine strips in five ring sizes, every word typed over on the sheet. A year split between binders has one added from a cover's own button, and the months each holds are typed under its year, once for its cover and its spines. `print.js` holds the registry every form is an entry in; a

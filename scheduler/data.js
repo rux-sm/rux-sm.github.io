@@ -7425,10 +7425,6 @@
       document.getElementById('scheduler-dropoff-fields')?.replaceChildren(dropFields);
       showDrop(!letOffAtPickup());
 
-      /* The list is named for both of its ends, or on a split trip for what
-         its leg does, as its dates and buses are. */
-      // Only a split trip's list has a title, naming the leg; the days head every other.
-      const routeHeading = () => !splitNow() ? '' : r.leg === 'return' ? 'Pickup leg' : 'Drop-off leg';
       // The worked-out times, kept where Save reads them.
       const routeBox = el('div');
       routeBox.hidden = true;
@@ -8203,11 +8199,8 @@
         summaryFoot.hidden = !driverBox.hasChildNodes() && !fuelBox.hasChildNodes();
       }
 
-      // The title is always built, so a change of type can show or hide it.
-      const routeSection = section('Route', stopsBody);
-      const routeTitle = routeSection.querySelector('.scheduler-panel-section__title');
-      routeTitle.textContent = routeHeading();
-      routeTitle.hidden = !routeTitle.textContent;
+      // The list has no title: its days head it, and a split trip's leg switch names the leg.
+      const routeSection = section(null, stopsBody);
       // The kept times go last, so the Summary is the tab's first section.
       // Its tile is a frame of its own, so app.css draws no rule after it.
       const summarySection = section('Summary', summaryLayer);
@@ -8259,8 +8252,6 @@
           drawStops();
         }
         if (!dropBox.hidden !== !letOffAtPickup()) showDrop(!letOffAtPickup());
-        routeTitle.textContent = routeHeading();
-        routeTitle.hidden = !routeTitle.textContent;
         drawTimeline();
       });
 

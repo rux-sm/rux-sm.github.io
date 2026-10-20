@@ -15,6 +15,8 @@
      get_driver_assignment_statuses  each answer
      get_driver_accepted_views       what each accepted card showed
      confirm_ / decline_trip_assignment, record_driver_accepted_view
+   A leg is named by its id, as trip-shape.js reads the trips, and the
+   functions take it so; a link's older rows name it by its old word too.
 
    WHAT THE DRIVER ACCEPTED IS KEPT. Accept sends, with the answer, the card's
    view of the driver's own job (`jobView`). A later load compares that with
@@ -486,14 +488,18 @@
     card.append(head, el('p', 'rux--type-body-compact-01', w.cancelledText));
     return card;
   }
-  // A cancelled leg's days and destination, as its card shows them.
+  /* A cancelled leg's days and destination, as its card shows them: the
+     leg's own, by its id, on a trip read with its legs. */
   function cancelledOf(ref, trip) {
-    const leg = ref.leg || 'outbound';
-    const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
+    const Shape = window.SchedulerTripShape;
+    const shaped = Array.isArray(trip.trip_legs)
+      ? Shape.legOf(trip, ref.legId) ?? Shape.legOfWord(trip, ref.leg) : null;
+    const leg = shaped?.id ?? ref.leg ?? 'outbound';
+    const inbound = (shaped?.word ?? leg) === 'return' && trip.trip_type === 'dropoff_pickup';
     return {
       cancelled: true, trip, leg,
-      start: inbound ? trip.return_start_date : trip.start_date,
-      end: inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
+      start: shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date,
+      end: shaped ? shaped.end : inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date),
       destination: clean(trip.destination),
     };
   }
@@ -536,9 +542,13 @@
     ]);
     if (trips.error || !trips.data) { clear(); say('error', w.cannotLoad, w.checkConnection, load); return; }
     requirementNames = new Map((Array.isArray(trips.data.requirements) ? trips.data.requirements : []).map(r => [r.id, r.label]));
-    statuses = new Map((answers.data || []).map(a => [keyOf(a.tripId, a.leg, a.role), a]));
+    /* Each answer and kept view under its leg's id, which a card names its
+       leg by, and its old word, for a trip read without its legs. */
+    const byLeg = (rows, value) => new Map(rows.flatMap(x => [
+      ...(x.legId ? [[keyOf(x.tripId, x.legId, x.role), value(x)]] : []), [keyOf(x.tripId, x.leg, x.role), value(x)]]));
+    statuses = byLeg(answers.data || [], a => a);
     // A database without kept views answers with an error; nothing is kept.
-    views = new Map((kept.error ? [] : kept.data || []).map(v => [keyOf(v.tripId, v.leg, v.role), v.view]));
+    views = byLeg(kept.error ? [] : kept.data || [], v => v.view);
 
     const today = todayIso();
     items = (s.assignmentRefs || []).map(ref => {

@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../leg-papers.js', '../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../leg-papers.js', '../trip-shape.js', '../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const { legOf, jobView, changesBetween, stateOf, keyOf } = window.SchedulerDriverJob;
 const en = window.SchedulerDriverWords.en;
 // The English page's words, as share/driver.js hands them in.
@@ -64,6 +64,29 @@ expect('and its pickup driver the pickup\'s, the second as backup',
   [pickup.itineraries[0].path, pickup.contacts.map(c => c.name), pickup.contact.name], ['wed.pdf', ['Sam Ortiz', 'Kim Diaz'], 'Sam Ortiz']);
 expect('a leg with no day-of contact is handed whoever booked',
   legOf(ref, { ...trip, trip_contact_1_name: null, trip_contact_1_phone: null, booking_contact_name: 'Office Desk' }, 'd1').contacts.map(c => c.name), ['Office Desk']);
+
+/* The same split trip read with its legs, as the driver's link reads it:
+   each leg named by its id, with its route, its contacts in trip_contacts
+   and its files by leg_id. Read so, each driver works the same leg. */
+const route = word => (word === 'return' ? 'r2' : 'r1');
+const shaped = { ...split,
+  trip_legs: [{ id: 'l2', leg: 'return', start_date: '2026-11-08', end_date: '2026-11-08', trip_routes: [{ id: 'r2', position: 1 }] },
+    { id: 'l1', leg: 'outbound', start_date: '2026-11-07', end_date: '2026-11-08', trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_contacts: [{ position: 1, name: 'Pat Lee', phone: '5550142', leg_id: null }, { position: 2, name: 'Sam Ortiz', phone: '5550143', leg_id: 'l2' },
+    { position: 3, name: 'Kim Diaz', phone: '5550144', leg_id: 'l2' }],
+  trip_documents: split.trip_documents.map(d => ({ ...d, leg_id: d.leg === 'return' ? 'l2' : 'l1' })),
+  trip_stops: split.trip_stops.map(x => ({ ...x, route_id: route(x.leg) })),
+  trip_assignments: split.trip_assignments.map(x => ({ ...x, route_id: route(x.leg) })) };
+// The leg's own reading, its stops without the route the sample gave them.
+const bare = x => { const { trip, leg, word, ...rest } = x; return { ...rest, stops: rest.stops.map(({ route_id, ...st }) => st) }; };
+const byId = legOf({ tripId: 't1', legId: 'l2', leg: 'return' }, shaped, 'd3');
+expect('a trip read with its legs gives each driver the same leg, named by its id',
+  [bare(legOf({ tripId: 't1', legId: 'l1' }, shaped, 'd1')), bare(byId), [byId.leg, byId.word]],
+  [bare(dropoff), bare(pickup), ['l2', 'return']]);
+expect('an older link or the board names the leg by its word, and is read the same',
+  [bare(legOf({ tripId: 't1', leg: 'return' }, shaped, 'd3')), legOf({ tripId: 't1', leg: 'return' }, shaped, 'd3').leg], [bare(pickup), 'l2']);
+expect('a trip read with its legs but not its papers, as the board reads one, is handed its papers by the old word',
+  bare(legOf({ tripId: 't1', leg: 'return' }, { ...shaped, trip_contacts: undefined, trip_documents: split.trip_documents }, 'd3')), bare(pickup));
 
 const view = jobView(l);
 expect('what Accept keeps, as text the card writes', [view.dates, view.time, view.bus, view.role, view.stops.length, view.itinerary],

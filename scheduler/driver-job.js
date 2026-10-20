@@ -8,9 +8,15 @@
    changed since, one line each; `stateOf` says where the driver stands;
    `changesSince` is the office's reading of the same, from its own rows.
 
+   A LEG IS NAMED BY ITS ID on a trip read with its legs, as trip-shape.js
+   reads them, which the driver's link reads; a page that names it by its
+   old word, or a trip read without its legs, is read by the word. `legOf`
+   hands back the leg's key in `leg`, its id where there is one, and the
+   word in `word`.
+
    Nothing here reads the page or the database. The words a line is written
    in are the page's, handed in; what Accept keeps is always English. Needs
-   share/driver-words.js and leg-papers.js loaded first.
+   share/driver-words.js, leg-papers.js and trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -18,6 +24,7 @@
   const TZ = 'America/Chicago';
   const WORDS = window.SchedulerDriverWords;
   const PAPERS = window.SchedulerLegPapers;
+  const SHAPE = window.SchedulerTripShape;
   const clean = v => String(v ?? '').trim();
 
   // -- dates and times, as the driver reads them --------------------------------
@@ -91,37 +98,53 @@
     return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
   };
 
-  // The leg's day-of contacts, by leg-papers.js, or with none whoever booked.
+  /* A trip read with its papers the new way: its contacts as `trip_contacts`
+     and its files with `leg_id`, as the driver's link and Prep read them.
+     Another, such as the board's, is handed its papers by leg-papers.js and
+     the old word. */
+  const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
+  /* The leg's day-of contacts, or with none whoever booked. */
   const contactsOf = (trip, leg) => {
-    const day = PAPERS.contactsFor(trip, leg).map(c => ({ name: c.name, phone: c.phone }));
+    const day = (papersLeg(trip, leg) ? SHAPE.contactsFor(trip, papersLeg(trip, leg).id) : PAPERS.contactsFor(trip, leg))
+      .map(c => ({ name: c.name, phone: c.phone }));
     const booked = { name: clean(trip.booking_contact_name), phone: clean(trip.booking_contact_phone) };
     return day.length ? day : booked.name || booked.phone ? [booked] : [];
   };
   const contactOf = (trip, leg) => contactsOf(trip, leg)[0] || null;
 
-  /* The leg's itinerary, by leg-papers.js: the newest is the one shown,
-     marked Updated when it replaced another of the leg's. */
+  /* The leg's itinerary, read as its contacts are: the newest is the one
+     shown, marked Updated when it replaced another of the leg's. */
   const itinerariesOf = (trip, leg) => {
-    const same = PAPERS.itinerariesFor(trip, leg);
+    const same = papersLeg(trip, leg) ? SHAPE.itinerariesFor(trip, papersLeg(trip, leg).id) : PAPERS.itinerariesFor(trip, leg);
     if (!same.length) return [];
     const newest = same[0];
     return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
   };
 
-  /* One leg of one trip, as this driver works it. */
+  /* A trip's leg as trip-shape.js reads it, by its id or by the old word a
+     page or an older link names it by; null on a trip read without its legs. */
+  const shapeLeg = (trip, named, word) => (SHAPE && Array.isArray(trip?.trip_legs)
+    ? SHAPE.legOf(trip, named) ?? SHAPE.legOfWord(trip, word || named) : null);
+
+  /* One leg of one trip, as this driver works it. `ref` names the leg by
+     `legId` or `leg`, its id or its old word. */
   function legOf(ref, trip, driverId, names) {
-    const leg = ref.leg || 'outbound';
-    const assignments = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
+    const shaped = shapeLeg(trip, ref.legId || ref.leg, ref.leg);
+    const word = shaped ? shaped.word : ref.leg || 'outbound';
+    const leg = shaped ? shaped.id : word;
+    const routes = new Set((shaped?.routes ?? []).map(r => r.id));
+    const assignments = (trip.trip_assignments || [])
+      .filter(a => (shaped ? routes.has(a.route_id) : (a.leg || 'outbound') === word));
     const mine = assignments.find(a => activeSeats(a).some(d => String(d.driver_id) === String(driverId)));
     if (!mine) return { error: 'notYours' };
     const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
     const role = seat.role || 'driver';
-    const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
-    const stops = stopsForLeg(trip, leg);
+    const inbound = word === 'return' && trip.trip_type === 'dropoff_pickup';
+    const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
-    const start = inbound ? trip.return_start_date : trip.start_date;
-    const end = inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date);
+    const start = shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date;
+    const end = shaped ? shaped.end : inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date);
     const crew = assignments.map(a => ({
       bus: a.buses?.number != null ? String(a.buses.number) : '',
       mine: a === mine,
@@ -132,7 +155,7 @@
       })),
     })).filter(b => b.people.length).sort((a, b) => (a.mine ? -1 : b.mine ? 1 : 0));
     return {
-      trip, leg, role, start, end,
+      trip, leg, word, role, start, end,
       destination: inbound ? (back.name || back.address || 'Yard') : (trip.destination || 'Destination'),
       // Which of the two the page wrote, where the office named no place.
       destinationWord: inbound ? (back.name || back.address ? null : 'yard') : (trip.destination ? null : 'destination'),
@@ -149,10 +172,10 @@
           || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
       } : null,
       requirements: requirementsOf(trip, names),
-      contacts: contactsOf(trip, leg),
-      contact: contactOf(trip, leg),
+      contacts: contactsOf(trip, papersLeg(trip, leg) ? leg : word),
+      contact: contactOf(trip, papersLeg(trip, leg) ? leg : word),
       crew,
-      itineraries: itinerariesOf(trip, leg),
+      itineraries: itinerariesOf(trip, papersLeg(trip, leg) ? leg : word),
       activeRoles: mine.active_roles || [],
     };
   }

@@ -26,7 +26,7 @@
   const TZ = 'America/Chicago';
   const MAX_LEGS = 50;
   // The wording a driver is sent, shared with the board's reminder.
-  const { DRIVER_LINK: PUBLIC, messageDate, messageRange, roleLabel, stopsForLeg, legLines, wordsFor } = window.SchedulerDriverText;
+  const { DRIVER_LINK: PUBLIC, messageDate, messageRange, roleLabel, legLines, wordsFor } = window.SchedulerDriverText;
   const $ = id => document.getElementById(id);
   const client = window.Rux?.account?.client;
   const page = window.SchedulerDriverPage;
@@ -50,18 +50,24 @@
   };
 
   // -- the driver's legs --------------------------------------------------------------
-  const LEG_QUERY = 'id,role,report_time,instructions,trip_assignments(id,leg,active_roles,buses(number),'
+  /* Each trip is read with its legs, routes and papers, as trip-shape.js
+     reads them, and a leg is named by its id; `leg` keeps the old word the
+     message's words are still chosen by. */
+  const LEG_QUERY = 'id,role,report_time,instructions,trip_assignments(id,leg,route_id,active_roles,buses(number),'
     + 'trip_drivers(driver_id,role,drivers(name,short_name)),'
     + 'trips(id,destination,trip_type,start_date,end_date,return_start_date,return_end_date,spot_time,cancelled_at,'
-    + 'trip_stops(leg,type,name,address,spot,position),trip_documents(id,label,created_at,leg)))';
+    + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
+    + 'trip_contacts(id,position,leg_id,contact_id,name,phone),'
+    + 'trip_stops(leg,route_id,type,name,address,spot,position),trip_documents(id,label,created_at,leg,leg_id)))';
+  const Shape = window.SchedulerTripShape;
 
   let driver = null;
-  let legs = [];            // [{ key, assignmentId, trip, leg, role, start, end, ... }]
+  let legs = [];            // [{ key, assignmentId, trip, legId, leg, role, start, end, ... }]
   let ticked = new Set();   // leg keys
   let link = null;          // the driver's active link, or null
-  let statuses = new Map(); // tripId:driverId:leg:role -> status
+  let statuses = new Map(); // tripId:driverId:legId:role -> status
 
-  const statusKey = (tripId, driverId, leg, role) => [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
+  const statusKey = (tripId, driverId, legId, role) => [tripId, driverId, legId, role || 'driver'].join(':');
 
   async function loadLegs() {
     const { data, error } = await client.from('trip_drivers').select(LEG_QUERY).eq('driver_id', driver.id);
@@ -71,19 +77,21 @@
       const a = row.trip_assignments;
       const trip = a?.trips;
       if (!trip || trip.cancelled_at) return null;
-      const leg = a.leg || 'outbound';
+      const shaped = Shape.legOfRoute(trip, a.route_id);
+      if (!shaped) return null;
+      const leg = shaped.word || 'outbound';
       const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
-      const start = inbound ? trip.return_start_date : trip.start_date;
-      const end = (inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date)) || start;
+      const start = shaped.start;
+      const end = shaped.end || start;
       if (!dateOf(start) || String(end).slice(0, 10) < now) return null;
       if (!activeSeats(a).some(d => String(d.driver_id) === String(driver.id) && (d.role || 'driver') === (row.role || 'driver'))) return null;
-      const stops = stopsForLeg(trip, leg);
+      const stops = Shape.stopsOfRoute(trip, a.route_id);
       const pickup = stops.find(s => s.type === 'pickup') || {};
       const back = [...stops].reverse().find(s => s.type === 'return') || {};
-      const itinerary = window.SchedulerLegPapers.itineraryFor(trip, leg);
+      const itinerary = Shape.itineraryFor(trip, shaped.id);
       const partner = activeSeats(a).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driver.id));
       return {
-        key: `${trip.id}:${leg}`, assignmentId: a.id, trip, leg, role: row.role || 'driver',
+        key: `${trip.id}:${shaped.id}`, assignmentId: a.id, trip, legId: shaped.id, leg, role: row.role || 'driver',
         start: dateOf(start), end: dateOf(end) || dateOf(start),
         bus: a.buses?.number != null ? String(a.buses.number) : '',
         spot: pickup.spot || trip.spot_time, swap: row.report_time, instructions: clean(row.instructions),
@@ -103,7 +111,7 @@
     if (!ids.length) return found;
     const r = await client.rpc('get_trip_driver_statuses', { p_trip_ids: ids });
     if (r.error) throw r.error;
-    for (const s of r.data || []) found.set(statusKey(s.tripId, s.driverId, s.leg, s.role), s.status);
+    for (const s of r.data || []) found.set(statusKey(s.tripId, s.driverId, s.legId, s.role), s.status);
     return found;
   }
   // Each trip's crew as it stands now, by trip: its buses, and who is in their seats.
@@ -111,12 +119,12 @@
     const crews = new Map(tripIds.map(id => [id, []]));
     if (!tripIds.length) return crews;
     const { data, error } = await client.from('trip_assignments')
-      .select('trip_id,leg,active_roles,trip_drivers(driver_id,role)').in('trip_id', tripIds);
+      .select('trip_id,leg,active_roles,trip_routes(leg_id),trip_drivers(driver_id,role)').in('trip_id', tripIds);
     if (error) throw error;
     for (const a of data || []) crews.get(a.trip_id)?.push(a);
     return crews;
   }
-  const statusOf = l => statuses.get(statusKey(l.trip.id, driver.id, l.leg, l.role)) || 'off';
+  const statusOf = l => statuses.get(statusKey(l.trip.id, driver.id, l.legId, l.role)) || 'off';
   const STATUS_WORDS = { confirmed: 'Accepted', declined: 'Declined', 'pending-response': 'Pending response' };
 
   // -- the list -------------------------------------------------------------------------
@@ -164,7 +172,7 @@
   }
 
   // -- the link -------------------------------------------------------------------------
-  const refKey = r => `${r.tripId}:${r.leg || 'outbound'}`;
+  const refKey = r => `${r.tripId}:${r.legId}`;
   const matchesLink = () => {
     if (!link) return false;
     const a = [...ticked].sort().join('|');
@@ -290,23 +298,24 @@
       note.textContent = "The trips' crews could not be read, so no trip was marked. Try again.";
       return;
     }
-    const targets = new Set(chosen.map(l => statusKey(l.trip.id, driver.id, l.leg, l.role)));
+    const targets = new Set(chosen.map(l => statusKey(l.trip.id, driver.id, l.legId, l.role)));
     const sent = new Set();   // the targets found in a seat, and so marked dirty
     let failed = false;
     for (const [tripId, crew] of crews) {
       const list = crew.flatMap(a => activeSeats(a).map(d => {
-        const key = statusKey(tripId, d.driver_id, a.leg, d.role);
+        const legId = a.trip_routes?.leg_id ?? null;
+        const key = statusKey(tripId, d.driver_id, legId, d.role);
         const dirty = targets.has(key);
         if (dirty) sent.add(key);
-        return { driverId: d.driver_id, leg: a.leg || 'outbound', role: d.role || 'driver', status: dirty ? 'pending-response' : statuses.get(key) || 'off', dirty };
+        return { driverId: d.driver_id, legId, leg: a.leg || 'outbound', role: d.role || 'driver', status: dirty ? 'pending-response' : statuses.get(key) || 'off', dirty };
       }));
       if (!list.some(s => s.dirty)) continue;
       const r = await client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list });
       if (r.error) failed = true;
-      else for (const s of list) if (s.dirty) statuses.set(statusKey(tripId, s.driverId, s.leg, s.role), 'pending-response');
+      else for (const s of list) if (s.dirty) statuses.set(statusKey(tripId, s.driverId, s.legId, s.role), 'pending-response');
     }
     const marked = sent.size;
-    const gone = chosen.filter(l => !sent.has(statusKey(l.trip.id, driver.id, l.leg, l.role))).length;
+    const gone = chosen.filter(l => !sent.has(statusKey(l.trip.id, driver.id, l.legId, l.role))).length;
     const lost = gone ? ` The driver's seat has changed on ${tripsWord(gone)}, which ${gone === 1 ? 'was' : 'were'} not marked. Reload the page to read their trips again.` : '';
     note.textContent = failed ? 'Some trips could not be marked Pending response. Try again, or set them from the trip.'
       : marked ? `${marked} ${marked === 1 ? 'trip is' : 'trips are'} marked Pending response.${lost}`

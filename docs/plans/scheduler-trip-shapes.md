@@ -157,20 +157,17 @@ None open.
       its legs, though it still reads a leg's times by its word and skips a
       leg with none; the editor and `fromStops` in
       `scheduler/route-figures.js`; the forms and
-      `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
-      `scheduler/share/driver.js`; live and the road. The past-midnight
+      `scheduler/print.js`, which `scheduler/share/form.js` still hands a
+      leg's old word; the words of `scheduler/driver-text.js`, which still
+      name a leg Outbound or Inbound by its word; live and the road. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
       Each reads a trip through `scheduler/trip-shape.js`, with
       `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and
       `scheduler/leg-papers.js` goes with its last reader.
-      A group moves with the database functions its pages read: the driver
-      pages with `get_driver_share_trips`, the share link functions and the
-      driver status functions; the maintenance page with
+      A group moves with the database functions its pages read: the
+      maintenance page with
       `get_maintenance_schedule`; and the editor with `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
-- [ ] Key the driver link, its share rows, cards and form links, by the
-      leg's id as the driver pages move to the shape rule, so a third leg
-      has a key of its own there too.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
@@ -196,6 +193,10 @@ None open.
 - [ ] Return a trip's legs, routes and contacts from `get_trip` in
       `scheduler/connector/index.ts`, let a draft carry them, rebuild the
       connector's rules, and hand rux the deploy.
+- [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
+      its unique key, and let the status functions, which take a leg by id
+      already, answer for a leg with no old word, so a third leg's driver
+      can accept.
 - [ ] Write the SQL that drops the old leg columns and contact slots once
       nothing reads them, show it to rux, and apply it on a yes.
 - [ ] Describe the tables, the ids and the changed screens in the

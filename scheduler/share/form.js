@@ -1,7 +1,7 @@
 /* ==========================================================================
    share/form.js — A DRIVER'S SHEET FOR ONE TRIP LEG
    --------------------------------------------------------------------------
-   form.html?s=<token>&form=envelope&trip=<id>&leg=<leg> shows a driver,
+   form.html?s=<token>&form=envelope&trip=<id>&leg=<leg id> shows a driver,
    without a log-in, the envelope for their seat on one leg, as the forms
    page draws it. The card on their schedule link opens it; the card holds
    the basics and this holds the rest.
@@ -20,7 +20,8 @@
   const params = new URLSearchParams(location.search);
   const token = (params.get('s') ?? '').trim().toLowerCase();
   const tripId = params.get('trip') ?? '';
-  const leg = params.get('leg') === 'return' ? 'return' : 'outbound';
+  // The leg by its id, or by the old word an older link names it by.
+  const named = params.get('leg') || 'outbound';
   const form = forms?.FORMS.find(f => f.id === params.get('form') && f.id === 'envelope');
 
   const back = $('scheduler-sheet-back');
@@ -72,8 +73,14 @@
 
     const trip = (trips.data.trips || []).find(t => String(t.id) === String(tripId));
     const driverId = share.data.driver?.id;
+    /* The leg as trip-shape.js reads it, and its old word, which the forms
+       are still drawn by; a trip read without its legs has only the word. */
+    const Shape = window.SchedulerTripShape;
+    const shaped = trip && Array.isArray(trip.trip_legs) ? Shape.legOf(trip, named) ?? Shape.legOfWord(trip, named) : null;
+    const leg = shaped?.word ?? (named === 'return' ? 'return' : 'outbound');
+    const routes = new Set((shaped?.routes ?? []).map(r => r.id));
     const assignment = trip && (trip.trip_assignments || [])
-      .find(a => (a.leg || 'outbound') === leg && seated(a, driverId));
+      .find(a => (shaped ? routes.has(a.route_id) : (a.leg || 'outbound') === leg) && seated(a, driverId));
     if (!trip || trip.cancelled_at || !assignment) {
       return say('This trip is no longer assigned to you', 'Go back to your schedule for your current trips.');
     }

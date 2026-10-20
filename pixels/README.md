@@ -63,9 +63,9 @@ the rift; a rift the sprite opened stands under it, saying Opened. Next goes to 
 puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
 numbers, filling and crossing out, and what a mistake costs. It opens from Me's list and the button under
 Start, and the clock stands meanwhile. A player who has solved none is sent once to `play.html?lesson`, a
-5×5 heart taught a line at a time. Each move plays a tone, which Me's Sound switch turns off and an
-iPhone's silent switch does not, and a phone ticks on each fill. A game in progress is kept in the
-browser for a reload.
+5×5 heart taught a line at a time. Each move plays a tone and a phone ticks on each fill. A game in
+progress is kept in the browser for a reload. It plays offline, and a solve made offline waits until the
+connection is back.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
 results are saved as ever. The puzzle of the day is on, by `DAILY` in `app.js`; turned off, no page shows
@@ -105,7 +105,7 @@ or Unsorted, or deleted; a rift left empty goes too. `manage.html` sends an old 
 | | |
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
-| `data.js` | who is playing, the door a guest meets, and where puzzles and results are kept |
+| `data.js`, `offline.js` | who is playing, the door a guest meets, and where puzzles and results are kept, a copy of them and of every file too, for offline play |
 | `puzzles.js`, `category.js`, `play.js`, `make.js`, `create.js`, `game.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour; `game.js` is Create's Game view |
 | `app.css` | the board, the picture, the tiles and Create, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
 | `theme.css` | the sixty inks a colour picture is painted from |

@@ -28,6 +28,9 @@
    rift's count is on its own tile under it. It is not there
    once everything is found.
 
+   A LINE says how many solves made offline still wait to reach the
+   database, where there are any.
+
    ADD TO HOME SCREEN is a row of Me's list. An iPhone is sent here by it,
    as `#add`, and shown the steps in a modal, because its icon opens the
    address it was made from and this is the page to open. A guest's key is
@@ -296,6 +299,9 @@
     fresh();
     // With no leaderboard there is one panel and nothing to switch between.
     document.getElementById('pixels-tabs').hidden = !BOARD;
+    // Solves made with no connection, still to reach the database.
+    const held = data.waiting?.() || 0;
+    if (held) host.appendChild(words('pixels-meta', `${held} ${held === 1 ? 'solve' : 'solves'} waiting to save`));
     if (DAILY) {
       const now = daily(today(), puzzles);
       host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));

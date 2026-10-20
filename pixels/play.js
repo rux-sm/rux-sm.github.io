@@ -376,6 +376,7 @@
       if (spent) parts.push(`${spent} ${spent === 1 ? 'fairy' : 'fairies'}`);
       if (hints) parts.push(count(hints, 'hint'), added(hints * HINT));
       if (lost) parts.push('not saved');
+      else if (best.waiting) parts.push('saved once online');
       else if (isLesson) parts.push('lesson done');
       else if (trial) parts.push('a trial, not kept');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);

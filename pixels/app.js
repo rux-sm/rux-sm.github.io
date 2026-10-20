@@ -1176,6 +1176,9 @@
     if (me && window.Pixels.guest && panel?.who) panel.who({ name: me.name, face: () => portrait(me) });
   };
 
+  // Every page keeps its files for offline play; offline.js says how.
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('offline.js').catch(() => {});
+
   /* A page left for a minute or more loads again as it comes back to the
      front, because an app on the home screen has no reload and a phone
      keeps its window open for days. */

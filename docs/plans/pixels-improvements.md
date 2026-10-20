@@ -70,8 +70,6 @@ None open.
 
 ## Tasks
 
-- [ ] The service worker and the queue of solves, offline and failed alike,
-  with Play's line saying how many wait; the lost-solve status item goes.
 - [ ] Design: the pixel theme's dark error message, and Plex for sentences.
 - [ ] `pixels/README.md` and `pixels/docs/` say each change, in the commit
   that makes it, and each is checked in Chrome on :8641 at phone width,

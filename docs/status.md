@@ -27,8 +27,6 @@ done and how.
 - Two leftovers of stars, which nothing reads or writes, are still in the
   database and go: the `p_stars` that `pixels_record` and `pixels_record_day`
   take and ignore, and the `stars` column of the two results tables.
-- A solve that fails to save is lost: `pixels/play.js` drops the kept game
-  before the save and says only that it was not saved, with no way to retry.
 - A guest with no PIN who loses their browser's key has no way back: one
   who joined before the door asked for a PIN, or removed it on Me. The owner
   needs a way, on Players, to hand a player a new key.

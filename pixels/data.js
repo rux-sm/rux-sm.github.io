@@ -529,6 +529,74 @@
     },
   };
 
+  /* WITH NO CONNECTION. What a player is sent, has solved and is, as the
+     database last said, is kept in this browser under `pixels-offline`, and
+     given back when the database cannot be reached, so a puzzle plays
+     offline. A solve the database cannot take is kept under
+     `pixels-waiting` and counts as found here at once; it is sent again as
+     the page loads and whenever the connection comes back, and one the
+     database turns down, not for want of a connection, is dropped.
+     `waiting()` says how many there are. */
+  if (cloud) {
+    const SNAP = 'pixels-offline', QUEUE = 'pixels-waiting';
+    const offline = error => !navigator.onLine || /fetch|network|load failed/i.test(String(error?.message || error));
+    const snaps = () => { try { return JSON.parse(localStorage.getItem(SNAP) || '{}'); } catch { return {}; } };
+    const snap = (name, value) => { try { localStorage.setItem(SNAP, JSON.stringify({ ...snaps(), [name]: value })); } catch { /* not kept for offline */ } };
+    const remembered = (name, fn, out = v => v, back = v => v) => async (...args) => {
+      try {
+        const value = await fn(...args);
+        snap(name, out(value));
+        return value;
+      } catch (error) {
+        const kept = snaps();
+        if (offline(error) && name in kept) return back(kept[name]);
+        throw error;
+      }
+    };
+    const waiting = () => { try { return JSON.parse(localStorage.getItem(QUEUE) || '[]'); } catch { return []; } };
+    const wait = list => { try { localStorage.setItem(QUEUE, JSON.stringify(list)); } catch { /* the solve is lost */ } };
+    const { me, list, results, days, record, recordDay } = cloud;
+    const withWaiting = (map, kind) => {
+      waiting().filter(w => w.kind === kind).forEach(w => {
+        const was = map.get(w.key);
+        if (!was || w.seconds < was.seconds) map.set(w.key, { seconds: w.seconds });
+      });
+      return map;
+    };
+    const toList = m => [...m], toMap = a => new Map(a);
+    cloud.me = remembered(`me:${key() || 'account'}`, me);
+    cloud.list = remembered('list', list);
+    cloud.results = async () => withWaiting(await remembered('results', results, toList, toMap)(), 'puzzle');
+    cloud.days = async () => withWaiting(await remembered('days', days, toList, toMap)(), 'day');
+    const later = (kind, fn) => async (at, seconds) => {
+      try { return await fn(at, seconds); } catch {
+        wait([...waiting(), { kind, key: at, seconds }]);
+        return { best: seconds, isNew: true, waiting: true };
+      }
+    };
+    cloud.record = later('puzzle', record);
+    cloud.recordDay = later('day', recordDay);
+    let sending = false;
+    const send = async () => {
+      if (sending || !navigator.onLine || !waiting().length) return;
+      sending = true;
+      for (const w of waiting()) {
+        const done = () => wait(waiting().filter(x => !(x.kind === w.kind && x.key === w.key && x.seconds === w.seconds)));
+        try {
+          await (w.kind === 'day' ? recordDay : record)(w.key, w.seconds);
+          done();
+        } catch (error) {
+          if (offline(error)) break;
+          done();
+        }
+      }
+      sending = false;
+    };
+    addEventListener('online', send);
+    setTimeout(send, 2000);
+    cloud.waiting = () => waiting().length;
+  }
+
   const store = cloud || (local ? preview : null);
   const guest = !!cloud && !member;
 

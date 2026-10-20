@@ -3221,13 +3221,21 @@ button.scheduler-row-head__num::after {
   padding-inline: 0;
   text-align: center;
 }
-/* The selected trip's days head their band in its tint, in primary text, and
+/* The selected trip's days are underlined in their letters, in primary text,
+   with a 2px bar in the interactive colour the free slots below are drawn
+   in, so the days read as picked even where every driver is booked; and
    today's letter takes the colour the board's own today does. Two classes, to
-   beat the header row's surface and colour; today comes second, so a selected
-   today stays in its colour. */
-.scheduler-avail__days > .scheduler-avail__day--on-day {
-  background: var(--scheduler-avail-day, var(--rux-layer-selected));
-  color: var(--rux-text-primary);
+   beat the header row's colour; today comes second, so a selected today stays
+   in its colour. The cell is sticky, which places the bar. */
+.scheduler-avail__days > .scheduler-avail__day--on-day { color: var(--rux-text-primary); }
+.scheduler-avail__days > .scheduler-avail__day--on-day::after {
+  content: '';
+  position: absolute;
+  inset-inline: var(--rux-spacing-02);
+  inset-block-end: 2px;
+  block-size: 2px;
+  border-radius: 1px;
+  background: var(--rux-border-interactive);
 }
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
 /* The roster's corner, sticky in both axes. */
@@ -3259,13 +3267,19 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-/* A FREE DAY OF THE SELECTED TRIP fills its whole cell, edge to edge, so it is
-   not taken for a mark: drivers free that day read as one band down the
-   column, and a trip over several days as one band across them. The tint is
-   `--rux-layer-selected`, Carbon's selected-surface token, unless the theme
-   names another. A booked or day-off cell takes none, which is what the
-   `transparent` below is for, so nothing rims its mark. */
-.scheduler-avail__cell--on-day { background-color: var(--scheduler-avail-day, var(--rux-layer-selected)); }
+/* A FREE DAY OF THE SELECTED TRIP is an open slot: a dashed outline in the
+   interactive colour, the size and corners of a mark, empty because the day
+   is. It is a kind of mark nothing else in the roster draws, so it cannot be
+   taken for a booking, a header or a band, and a column of them is who can
+   take the trip. A booked or day-off cell keeps its own mark instead. */
+.scheduler-avail__cell--on-day { position: relative; }
+.scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off)::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px dashed var(--rux-border-interactive);
+  border-radius: var(--scheduler-mark-radius, 0);
+}
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
   position: relative;

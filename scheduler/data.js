@@ -10346,9 +10346,9 @@
     nameAvailBand();
   }
 
-  /* Tints the selected trip's days down the roster, so "who is free then" needs
-     no counting; null clears it. Busy and day-off cells take no tint in
-     app.css, so it shows on the free cells, which are the answer. */
+  /* Marks the selected trip's days down the roster, so "who is free then"
+     needs no counting; null clears it. app.css underlines the days' letters
+     and draws an open slot in each free cell, which are the answer. */
   function markAvailDays(start, span) {
     for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
       c.classList.remove('scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day');

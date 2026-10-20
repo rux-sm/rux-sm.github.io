@@ -5339,13 +5339,16 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__tiles { display: flex; flex-direction: column; gap: var(--rux-spacing-03); }
 .scheduler-to-do__tile { min-block-size: 0; padding: 0; overflow: hidden; }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
-/* A task's heading is the closed row. Its first line is who it is about,
-   ended in an ellipsis, with its due day at the line's end, in the error
-   colour once the day is past; a row that names nobody starts with its words
-   there. Its words stand under them on up to two lines, since they are what
+/* A task's heading is the closed row. Its first line is its number, then
+   who it is about, ended in an ellipsis, with its due day at the line's end,
+   in the error colour once the day is past; a row that names nobody starts
+   with its words there. Its words stand under them on up to two lines, since they are what
    is asked. Its last line is its kind's tag, then its trip and its detail's
    first line, ended in an ellipsis: the one line a closed row cuts. */
 .scheduler-to-do__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--rux-spacing-03); }
+/* A task's number leads its first line, in the quiet colour, so a person can
+   name the task aloud; its figures keep one width so the names line up. */
+.scheduler-to-do__number { flex: none; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 .scheduler-to-do__who { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__due { flex: none; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; }
 .scheduler-to-do__due--late { color: var(--rux-text-error); }

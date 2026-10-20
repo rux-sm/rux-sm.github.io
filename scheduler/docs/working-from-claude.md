@@ -101,6 +101,10 @@ and add to it. Ask in plain words:
 - what is on the to-do list
 - add a to-do to call the school about the PO, for Friday
 - close the to-do about the PO, it arrived
+- work on task 112
+
+Every to-do has a number, shown at the start of its tile, that it keeps
+for good, so "task 112" always means the same one.
 
 A to-do Claude adds shows in the list at once, for everyone, made by Ruxbot
 with your name kept beside it. It carries a tag for its kind of work, such

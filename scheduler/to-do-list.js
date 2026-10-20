@@ -12,7 +12,9 @@
    here, where a row is done, edited and deleted.
 
    A row is a tile that opens, Design's tile around an item of its accordion,
-   as a leg is on Prep. Closed, it is who it is about in bold, with its due
+   as a leg is on Prep. Every row has a number the database gives it when it
+   is added and it keeps, so a person can say "task 112". Closed, a row is
+   its number, then who it is about in bold, with its due
    day at the line's end, in the error colour once the day is past; its
    words under them, on up to two lines; and a last line of its kind's tag,
    its trip and its detail's first line, the one line cut where it runs
@@ -47,7 +49,7 @@
   /* The two lists: each one's button, its glyph, filled while its list
      shows, and its name on the pane's head. */
   const LISTS = {
-    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do', due: 'due' },
+    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do list', due: 'due' },
     prep: { button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
   };
   if (!client || !panel || !LISTS.tasks.button) return;
@@ -286,10 +288,16 @@
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
     const title = el('div', 'rux--accordion__title');
-    // The first line is who the row is about, or its words where it names
-    // nobody, and its due day ends the line, with Due said for a reader.
+    // The first line is the row's number, then who the row is about, or its
+    // words where it names nobody, and its due day ends the line, with Task
+    // and Due said for a reader.
     const top = el('span', 'scheduler-to-do__top');
     const what = el('span', 'scheduler-to-do__what', row.body);
+    if (row.number != null) {
+      const number = el('span', 'scheduler-to-do__number');
+      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
+      top.appendChild(number);
+    }
     top.appendChild(row.who ? el('span', 'scheduler-to-do__who', row.who) : what);
     if (dueDay) {
       const words = dayWords(dueDay);

@@ -73,7 +73,7 @@ const ISO_DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'a date as YYYY-MM-DD')
 // A to-do row as a tool answers it: names in place of profile ids, and enough
 // of its trip to recognise it.
 const TO_DO_ROW = [
-  'id', 'kind', 'who', 'body', 'detail', 'source', 'due_on', 'thread_url', 'thread_key', 'created_at',
+  'id', 'number', 'kind', 'who', 'body', 'detail', 'source', 'due_on', 'thread_url', 'thread_key', 'created_at',
   'closed_at', 'closed_reason',
   'owner:owner_id(display_name)', 'made_by:created_by(display_name)',
   'for_session_of:session_of(display_name)', 'closed_by:closed_by(display_name)',
@@ -774,18 +774,20 @@ Deno.serve(
           {
             title: 'List the to-do rows',
             description:
-              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; needs_attention lists those, and get_trip gives one trip\'s. Open rows by default.',
+              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its number, which the list shows and people use to name a row ("task 112"), its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; needs_attention lists those, and get_trip gives one trip\'s. Open rows by default.',
             inputSchema: z.object({
               include_closed: z.boolean().default(false).describe('Also the rows already ticked or closed.'),
               trip_id: z.string().uuid().optional().describe('Only the rows about this trip.'),
               thread_key: z.string().max(200).optional().describe('Only the row about this email thread.'),
+              number: z.number().int().min(1).optional().describe('Only the row with this number, open or closed, as a person names it: "task 112" is 112.'),
               limit: z.number().int().min(1).max(200).default(100),
             }),
             annotations: { readOnlyHint: true },
           },
-          async ({ include_closed, trip_id, thread_key, limit }) => {
+          async ({ include_closed, trip_id, thread_key, number, limit }) => {
             let q = supabase.from('to_dos').select(TO_DO_ROW).order('created_at', { ascending: false }).limit(limit)
-            if (!include_closed) q = q.is('closed_at', null)
+            if (!include_closed && number === undefined) q = q.is('closed_at', null)
+            if (number !== undefined) q = q.eq('number', number)
             if (trip_id) q = q.eq('trip_id', trip_id)
             if (thread_key) q = q.eq('thread_key', thread_key)
             return answer(orThrow(await q))

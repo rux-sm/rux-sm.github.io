@@ -26,10 +26,10 @@ These are the draft's own, so the chat and the Read button both use them.
 - **A drafted stop carries its day,** `date` and `leave_date` as
   YYYY-MM-DD, because a paper for several days says which day each place is.
 - **A draft can carry `purchase_order`,** `{ ref, date, amount }`, laid onto
-  the Billing list marked to check: a purchase order with the same number is
+  the Billing tile marked to check: a purchase order with the same number is
   filled, else the one with no number, else one is added.
 - **A draft can carry `contract`,** `{ signed_on, signed_by }`, which becomes
-  the Billing list's Contract signed row, with who signed as its note, marked
+  the Billing tile's Contract signed row, with who signed as its note, marked
   to check.
 - **A PO amount that differs from the quoted price is said in the notice,**
   with both figures, and the office decides which is right.
@@ -60,7 +60,7 @@ These are the draft's own, so the chat and the Read button both use them.
   The note is the notice at the top of the editor, as a draft's is.
 - **A PO answers** its number, its date, its amount, and the buses and days
   it names. **A contract answers** whether it is signed, by whom and when,
-  which is what the Billing list's Contract signed row holds.
+  which is what the Billing tile's Contract signed row holds.
 - **A file is sent to the API only when someone presses its Read,** and rux
   has agreed that a customer's itinerary, PO or contract may be.
 - **The reading is offered where the gap is,** and waits for a press: a

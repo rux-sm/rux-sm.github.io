@@ -2587,7 +2587,7 @@ const window = {};
      trip        a switch the editor keeps on the trip, under `tripKey`
      buses       empty vehicles added on a leg's Buses tab, up to the count
      billing     a purchase order or a signed contract, laid onto the
-                 Billing list as a row a person adds there
+                 Billing tile as a row a person adds there
      contacts    the trip contacts, up to five, each with the leg of a
                  split trip it is for, laid into the Details tab's slots
      stops       the places between the pickup and the drop-off, each with
@@ -2711,7 +2711,7 @@ const window = {};
     // The group's two times; the bus's own are worked out from them.
     { key: 'departure_time', value: 'time', id: 'scheduler-f-leave', kind: 'time' },
     { key: 'return_time', value: 'time', id: 'scheduler-f-endtrip', kind: 'time' },
-    // A purchase order and a signed contract, rows of the Billing list.
+    // A purchase order and a signed contract, rows of the Billing tile.
     { key: 'purchase_order', value: 'purchaseOrder', kind: 'billing' },
     { key: 'contract', value: 'contract', kind: 'billing' },
     // The places between the pickup and the drop-off; on a change, the opened leg's again.

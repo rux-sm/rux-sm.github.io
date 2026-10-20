@@ -4264,7 +4264,7 @@
        statuses are text columns holding "Pending"/"Signed" and
        "Pending"/"Invoiced", not booleans.
 
-       The milestones are the Billing list's rows: the contract is signed while
+       The milestones are the Billing tile's rows: the contract is signed while
        it has its row, with that row's day and note, and a step the billing
        workflow does not use is off. `invoiced` is written beside
        `invoice_status` so the two always agree. */
@@ -4891,7 +4891,6 @@
      to reach both. */
   let payPending = [];
   let redrawPayments = () => {};
-  let payEditing = null;   // index being edited, or null for a new row
 
   /* POs and invoices are pending rows too, for the reason payments are: the
      list is a render of the array and the array is what Save reads.
@@ -4902,144 +4901,181 @@
   let invPending = [];
   let redrawPos = () => {};
   let redrawInvoices = () => {};
-  let poEditing = null;
-  let invEditing = null;
 
-  /* The dialog builds its fields each time rather than reusing kept inputs:
-     `dateOne` makes a date picker whose calendar the module claims, and
-     claiming the same one twice leaves two calendars. */
-  function openPaymentDialog(index) {
-    const host = document.getElementById('scheduler-payment-fields');
-    if (!host) return;
-    payEditing = index;
-    const p = index === null ? { date: iso(new Date()) } : payPending[index];
-    document.getElementById('scheduler-payment-h').textContent =
-      index === null ? 'Add payment' : 'Edit payment';
-    // Two columns, and Date first: its calendar drops below its field, and from
-    // the first row it has the dialog's height to open into.
-    const grid = el('div', 'scheduler-dialog-grid');
-    grid.append(
-      dateOne('scheduler-f-pdate', 'Date', p.date),
-      moneyField('scheduler-f-pamount', 'Amount', p.amount),
-      selectField('scheduler-f-pmethod', 'Method', p.method ?? '',
-        [['', '—'], ...PAYMENT_METHODS.map(m => [m, m])]),
-      textField('scheduler-f-pref', 'Reference', p.ref),
-    );
-    host.replaceChildren(grid);
-    window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-payment-modal');
+  /* ── The billing entries' window ──
+     The Billing tile's Purchase orders, Invoices and Payments rows each open
+     it on their kind, as the Quote tile opens the quote: every entry of the
+     kind an accordion item, shut to its name, amount and date and open to
+     its fields and Remove, then Add and Done or Cancel for the whole kind.
+     It edits a copy, so Cancel leaves the entries as they were. A date
+     leads each entry's fields, its calendar needing the room below it, and
+     a new entry starts on today. The fields stay in the page while shut, so
+     Done and every redraw read all of them; `dateOne` is built afresh on
+     each draw, since claiming one picker twice leaves two calendars. */
+  const ENTRY_KINDS = {
+    po: {
+      title: 'Purchase orders', add: 'Add purchase order',
+      list: () => poPending, set: rows => { poPending = rows; }, redraw: () => redrawPos(),
+      blank: () => ({ ref: null, amount: null, date: iso(new Date()) }),
+      said: e => ({ name: e.ref ? `PO ${e.ref}` : 'PO, no reference', much: e.amount == null ? '' : usd(Number(e.amount) || 0),
+        meta: e.date ? mdy(e.date) : 'No date' }),
+      /* THE AMOUNT IS TYPED FROM THE PO, NEVER FILLED IN: a PO short of the
+         balance is what puts the trip on PO partial, and a filled-in quote
+         left standing would hide it. What the PO should cover is shown under
+         the field instead: the quote less the payments and the trip's other
+         POs. */
+      fields: (e, id, all) => {
+        const amount = moneyField(id('amount'), 'Amount', e.amount);
+        const { price, paid } = billingNow();
+        if (price > 0) {
+          const others = all.reduce((n, o) => n + (o === e ? 0 : Number(o.amount) || 0), 0);
+          const open = round2(Math.max(0, price - paid - others));
+          amount.querySelector('.rux--text-input__field-outer-wrapper').appendChild(el('div', 'rux--form__helper-text',
+            open === price ? `The quote is ${usdCents(price)}.`
+              : open > 0 ? `The quote is ${usdCents(price)}; ${usdCents(open)} is uncovered by payments and POs.`
+                : `The quote is ${usdCents(price)}, all covered by payments and POs.`));
+        }
+        return [dateOne(id('date'), 'Date', e.date), textField(id('ref'), 'Reference', e.ref), amount];
+      },
+      read: val => ({ ref: val('ref') || null, amount: money(val('amount')), date: isoOrNull(val('date')) }),
+      // Adding a PO is what marks it received, so one is kept with only its date.
+      kept: () => true,
+    },
+    invoice: {
+      title: 'Invoices', add: 'Add invoice',
+      list: () => invPending, set: rows => { invPending = rows; }, redraw: () => redrawInvoices(),
+      blank: () => ({ number: null, date: iso(new Date()) }),
+      said: e => ({ name: e.number ? `Invoice ${e.number}` : 'Invoice, no number', much: '', meta: e.date ? mdy(e.date) : 'No date' }),
+      // An invoice's amount feeds no total, so it is not asked for; one an older row holds is kept.
+      fields: (e, id) => [dateOne(id('date'), 'Date', e.date), textField(id('number'), 'Invoice number', e.number)],
+      read: val => ({ number: val('number') || null, date: isoOrNull(val('date')) }),
+      // Adding an invoice is what marks it sent, so one is kept with only its date.
+      kept: () => true,
+    },
+    payment: {
+      title: 'Payments', add: 'Add payment',
+      list: () => payPending, set: rows => { payPending = rows; }, redraw: () => redrawPayments(),
+      blank: () => ({ method: null, amount: null, date: iso(new Date()), ref: null }),
+      /* The reference is in the tooltip and the fields, not the heading: it is
+         looked up rather than scanned, and it would wrap the line. */
+      said: e => ({ name: e.method ? `${e.method} payment` : 'Payment', much: usd(Number(e.amount) || 0),
+        meta: e.date ? mdy(e.date) : 'No date' }),
+      fields: (e, id) => [
+        dateOne(id('date'), 'Date', e.date),
+        moneyField(id('amount'), 'Amount', e.amount),
+        selectField(id('method'), 'Method', e.method ?? '', [['', '—'], ...PAYMENT_METHODS.map(m => [m, m])]),
+        textField(id('ref'), 'Reference', e.ref),
+      ],
+      read: val => ({ method: val('method') || null, amount: money(val('amount')), date: isoOrNull(val('date')), ref: val('ref') || null }),
+      // A payment with no amount and no method is nothing, as an empty dialog adds nothing.
+      kept: e => e.amount !== null || !!e.method,
+    },
+  };
+  let entriesEdit = null;          // { kind, rows: the copy, open: the keys of the open entries }
+  let entryKeys = 0;
+  const entriesHost = document.getElementById('scheduler-entries-fields');
+
+  function openEntriesDialog(kind, { adding = false } = {}) {
+    if (!entriesHost || !editing) return;
+    const k = ENTRY_KINDS[kind];
+    // In their saved order, which Save keeps as each row's position.
+    const rows = k.list().map(e => ({ ...e, was: e, key: ++entryKeys }));
+    if (adding || !rows.length) rows.push({ ...k.blank(), was: null, key: ++entryKeys });
+    // One entry, or a new one, opens open; several open shut.
+    const open = new Set(adding || rows.length === 1 ? [rows.at(-1).key] : []);
+    entriesEdit = { kind, rows, open, seen: new Set(open) };
+    document.getElementById('scheduler-entries-h').textContent = k.title;
+    drawEntriesFields();
+    window.Rux?.modal?.open?.('scheduler-entries-modal');
   }
 
-  document.getElementById('scheduler-payment-done')?.addEventListener('click', () => {
-    const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = {
-      method: val('scheduler-f-pmethod') || null,
-      amount: money(val('scheduler-f-pamount')),
-      date: isoOrNull(val('scheduler-f-pdate')),
-      ref: val('scheduler-f-pref') || null,
-    };
-    // An empty dialog adds nothing, as `Cancel` would. An existing row emptied
-    // this way is left alone; removing it is Remove on the row's own menu.
-    if (row.amount === null && !row.method) {
-      window.Rux?.modal?.close?.('scheduler-payment-modal');
-      return;
-    }
-    if (payEditing === null) payPending.push(row);
-    else Object.assign(payPending[payEditing], row);
-    window.Rux?.modal?.close?.('scheduler-payment-modal');
-    redrawPayments();
-    refreshDirty();
-  });
-
-  /* The PO dialog: a date, a reference and an amount. Date leads for the
-     reason it leads in the payment dialog: its calendar needs the room below
-     it, and a new PO starts on today, as a new payment does. The fields keep
-     real labels, because a modal headed "Add purchase order" has the room. */
-  function openPoDialog(index) {
-    const host = document.getElementById('scheduler-po-fields');
-    if (!host) return;
-    poEditing = index;
-    const p = index === null ? { date: iso(new Date()) } : poPending[index];
-    document.getElementById('scheduler-po-h').textContent =
-      index === null ? 'Add purchase order' : 'Edit purchase order';
-    const grid = el('div', 'scheduler-dialog-grid');
-    const amount = moneyField('scheduler-f-oamount', 'Amount', p.amount);
-    /* THE AMOUNT IS TYPED FROM THE PO, NEVER FILLED IN: a PO short of the
-       balance is what puts the trip on PO partial, and a filled-in quote
-       left standing would hide it. What the PO should cover is shown under
-       the field instead: the quote less the payments and the trip's other
-       POs. */
-    const { price, paid } = billingNow();
-    if (price > 0) {
-      const others = poPending.reduce((n, o, i) => n + (i === index ? 0 : Number(o.amount) || 0), 0);
-      const open = round2(Math.max(0, price - paid - others));
-      amount.querySelector('.rux--text-input__field-outer-wrapper').appendChild(el('div', 'rux--form__helper-text',
-        open === price ? `The quote is ${usdCents(price)}.`
-          : open > 0 ? `The quote is ${usdCents(price)}; ${usdCents(open)} is uncovered by payments and POs.`
-            : `The quote is ${usdCents(price)}, all covered by payments and POs.`));
-    }
-    grid.append(
-      dateOne('scheduler-f-odate', 'Date', p.date),
-      textField('scheduler-f-oref', 'Reference', p.ref),
-      amount,
-    );
-    host.replaceChildren(grid);
-    window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-po-modal');
+  function readEntry(e) {
+    const val = part => document.getElementById(`scheduler-f-e${e.key}-${part}`)?.value.trim() ?? '';
+    if (!document.getElementById(`scheduler-f-e${e.key}-date`)) return e;
+    return Object.assign(e, ENTRY_KINDS[entriesEdit.kind].read(val));
   }
 
-  document.getElementById('scheduler-po-done')?.addEventListener('click', () => {
-    const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = { ref: val('scheduler-f-oref') || null, amount: money(val('scheduler-f-oamount')),
-                  date: isoOrNull(val('scheduler-f-odate')) };
-    // Adding a PO is what marks it received, so a new one is added with only
-    // its date; an existing row emptied this way is left alone, as in the
-    // payment dialog.
-    if (row.ref === null && row.amount === null && poEditing !== null) {
-      window.Rux?.modal?.close?.('scheduler-po-modal');
-      return;
+  function drawEntriesFields(focusKey) {
+    if (!entriesHost || !entriesEdit) return;
+    const { kind, rows, open, seen } = entriesEdit;
+    const k = ENTRY_KINDS[kind];
+    const redraw = (change, focus) => { rows.forEach(readEntry); change(); drawEntriesFields(focus); };
+    const list = el('ul', 'rux--accordion rux--accordion--end scheduler-quote-lines');
+    rows.forEach((e, i) => {
+      const s = k.said(e);
+      const li = el('li', `rux--accordion__item${open.has(e.key) ? ' rux--accordion__item--active' : ''}${e.drafted ? ' scheduler-drafted' : ''}`);
+      li.dataset.key = String(e.key);
+      const heading = el('button', 'rux--accordion__heading');
+      heading.type = 'button';
+      heading.setAttribute('aria-expanded', String(open.has(e.key)));
+      const arrow = svgUse('#m-keyboard_arrow_right');
+      arrow.classList.add('rux--accordion__arrow');
+      const title = el('div', 'rux--accordion__title scheduler-quote-line');
+      const top = el('span', 'scheduler-item__line');
+      const name = el('span', 'scheduler-item__name', s.name);
+      const much = el('span', 'scheduler-item__much', s.much);
+      top.append(name, much);
+      const meta = el('span', 'scheduler-item__meta', s.meta);
+      title.append(top, meta);
+      heading.append(arrow, title);
+      const wrapper = el('div', 'rux--accordion__wrapper');
+      const content = el('div', 'rux--accordion__content');
+      content.id = `scheduler-entry-${e.key}`;
+      heading.setAttribute('aria-controls', content.id);
+      const grid = el('div', 'scheduler-dialog-grid');
+      grid.append(...k.fields(e, part => `scheduler-f-e${e.key}-${part}`, rows));
+      const actions = el('div', 'scheduler-quote-actions');
+      const remove = el('button', 'rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm', 'Remove');
+      remove.type = 'button';
+      remove.addEventListener('click', () => redraw(() => { rows.splice(i, 1); open.delete(e.key); }));
+      actions.appendChild(remove);
+      content.append(grid, actions);
+      wrapper.appendChild(content);
+      li.append(heading, wrapper);
+      // The heading follows the fields as they are typed in.
+      const follow = () => {
+        const now = k.said(readEntry(e));
+        name.textContent = now.name;
+        much.textContent = now.much;
+        meta.textContent = now.meta;
+      };
+      content.addEventListener('input', follow);
+      content.addEventListener('change', follow);
+      list.appendChild(li);
+    });
+    list.addEventListener('rux:accordion-opened', ev => { const key = Number(ev.target.dataset.key); open.add(key); seen.add(key); });
+    list.addEventListener('rux:accordion-closed', ev => open.delete(Number(ev.target.dataset.key)));
+    const add = rowList();
+    add.body.appendChild(listAddRow({
+      label: k.add, id: 'scheduler-f-entryadd',
+      onClick: () => {
+        const key = ++entryKeys;
+        redraw(() => { rows.push({ ...k.blank(), was: null, key }); open.add(key); seen.add(key); }, key);
+      },
+    }).li);
+    const stack = el('div', 'rux--stack-vertical rux--stack-scale-5');
+    stack.append(...(rows.length ? [list] : []), add.list);
+    entriesHost.replaceChildren(stack);
+    window.Rux?.datePicker?.init?.(entriesHost);
+    if (focusKey != null) {
+      const item = list.querySelector(`[data-key="${focusKey}"]`);
+      item?.querySelector('.rux--accordion__heading')?.focus();
+      item?.scrollIntoView({ block: 'nearest' });
     }
-    if (poEditing === null) poPending.push(row);
-    // Done on a row a draft filled is the check the mark asked for.
-    else Object.assign(poPending[poEditing], row, { drafted: false });
-    window.Rux?.modal?.close?.('scheduler-po-modal');
-    redrawPos();
-    refreshDirty();
-  });
-
-  /* The invoice dialog: a date, today on a new one, and the invoice number.
-     An invoice's amount feeds no total, so it is not asked for, and an amount
-     an older row holds is kept as it is. */
-  function openInvoiceDialog(index) {
-    const host = document.getElementById('scheduler-inv-fields');
-    if (!host) return;
-    invEditing = index;
-    const v = index === null ? { date: iso(new Date()) } : invPending[index];
-    document.getElementById('scheduler-inv-h').textContent =
-      index === null ? 'Add invoice' : 'Edit invoice';
-    const grid = el('div', 'scheduler-dialog-grid');
-    grid.append(
-      dateOne('scheduler-f-idate', 'Date', v.date),
-      textField('scheduler-f-inum', 'Invoice number', v.number),
-    );
-    host.replaceChildren(grid);
-    window.Rux?.datePicker?.init?.(host);
-    window.Rux?.modal?.open?.('scheduler-inv-modal');
   }
 
-  document.getElementById('scheduler-inv-done')?.addEventListener('click', () => {
-    const val = id => document.getElementById(id)?.value.trim() ?? '';
-    const row = { number: val('scheduler-f-inum') || null, date: isoOrNull(val('scheduler-f-idate')) };
-    // Adding an invoice is what marks it sent, so a new one is added with
-    // only its date; an existing row emptied this way is left alone.
-    if (row.number === null && invEditing !== null) {
-      window.Rux?.modal?.close?.('scheduler-inv-modal');
-      return;
-    }
-    if (invEditing === null) invPending.push(row);
-    else Object.assign(invPending[invEditing], row);
-    window.Rux?.modal?.close?.('scheduler-inv-modal');
-    redrawInvoices();
+  /* Done puts the copy in the kind's place. An entry a draft filled that was
+     opened here has been checked, so its mark goes, as Done on its own
+     window cleared it. */
+  document.getElementById('scheduler-entries-done')?.addEventListener('click', () => {
+    if (!entriesEdit) return;
+    const { kind, rows, seen } = entriesEdit;
+    const k = ENTRY_KINDS[kind];
+    rows.forEach(readEntry);
+    k.set(rows.filter(k.kept).map(({ was, key, ...e }) => (e.drafted && seen.has(key) ? { ...e, drafted: false } : e)));
+    entriesEdit = null;
+    window.Rux?.modal?.close?.('scheduler-entries-modal');
+    k.redraw();
     refreshDirty();
   });
 
@@ -5059,6 +5095,20 @@
       textField('scheduler-f-signednote', 'Note', c.note),
     );
     host.replaceChildren(grid);
+    // A signed contract comes off here, its one place, as an entry comes off in its window.
+    if (editing.contract) {
+      const actions = el('div', 'scheduler-quote-actions');
+      const remove = el('button', 'rux--btn rux--btn--danger--ghost rux--btn--sm rux--layout--size-sm', 'Remove the signed contract');
+      remove.type = 'button';
+      remove.addEventListener('click', () => {
+        editing.contract = null;
+        window.Rux?.modal?.close?.('scheduler-contract-modal');
+        redrawContract();
+        refreshDirty();
+      });
+      actions.appendChild(remove);
+      host.appendChild(actions);
+    }
     window.Rux?.datePicker?.init?.(host);
     window.Rux?.modal?.open?.('scheduler-contract-modal');
   }
@@ -8494,7 +8544,7 @@
     {
       // Billing renders on a new trip too, because `readForm` needs its ids on
       // the panel.
-      /* The milestones are the Billing list's rows, below. The contract is
+      /* The milestones are the Billing tile's rows, below. The contract is
          its one row, with the day it was signed and a note, or null. */
       editing.contract = contractSignedOf(trip)
         ? { on: trip.contract_signed_on ?? null, note: trip.contract_note ?? null } : null;
@@ -8514,12 +8564,11 @@
       /* Payments are saved by `id`, not replaced: new rows insert, changed rows
          update, removed rows delete, so a failure touches only its own row.
          `position` is the row's place in the list, since the list is ordered by it.
-         The list is a render of `pending`, which is the array Save diffs. */
-      const pending = (trip.trip_payments || [])
+         The Billing tile is a render of `payPending`, which is the array Save diffs. */
+      payPending = (trip.trip_payments || [])
         .slice().sort((x, y) => (x.position ?? 0) - (y.position ?? 0))
         .map(p => ({ id: String(p.id), method: p.method ?? null, amount: p.amount,
                      date: p.date ?? null, ref: p.ref ?? null }));
-      payPending = pending;
 
       /* The summary is a render, not a stored value: `drawSummary` reads the
          pending rows and the quoted-price input rather than `trip`, so its
@@ -8804,7 +8853,7 @@
       panelBilling.appendChild(section('Quote', linesBody, quoteMenu));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for
-         Save by one press, and the Billing list's first row. The quote lines
+         Save by one press, and the Billing tile's first row. The quote lines
          can move after it, and a warning under them then says by how much,
          with the offer to mark the new price sent. Once the contract is
          signed, it is the price they signed. */
@@ -9071,93 +9120,73 @@
       const milesSection = section('Miles', milesBody, milesMenu ?? undefined);
 
 
-      /* THE BILLING LIST: Quote sent, the contract, each PO, each invoice and
-         each payment, a row each in the ladder's order and each kind by date,
-         so a kind is always in the same place. The rows are the milestones:
-         PO received is on while there is a PO row, Invoice sent while there
-         is an invoice, the contract while it has its row. A step the office's
-         billing workflow does not use is neither shown nor offered. One Add
-         entry row ends it, offering what can be added. */
-      const billList = rowList();
-      // A list's rows with their places in it, earliest first and undated last.
-      const byDate = rows => rows.map((row, i) => [row, i])
-        .sort(([a], [b]) => (a.date || '\uffff').localeCompare(b.date || '\uffff'));
+      /* THE BILLING TILE: a row for each step, in the ladder's order, Quote
+         sent, the contract, purchase orders, invoices and payments, so a step
+         is always in the same place and one not yet taken shows in grey. A
+         step the office's billing workflow does not use is not shown. Quote
+         sent offers its marks; the contract opens its window; the others
+         open the window of their entries. The rows are the milestones: PO
+         received is on while there is a PO, Invoice sent while there is an
+         invoice, the contract while it is signed. */
+      const billLayer = el('div', 'rux--layer-two');
+      const billTile = el('div', 'rux--tile scheduler-billing-steps');
+      billLayer.appendChild(billTile);
+      const step = ({ id, name, done, much = '', meta, drafted, press }) => {
+        const row = el('button', `scheduler-billing-step${drafted ? ' scheduler-drafted' : ''}`);
+        row.type = 'button';
+        row.id = id;
+        const top = el('span', 'scheduler-item__line');
+        top.append(el('span', `scheduler-item__name${done ? '' : ' scheduler-fleet-tile__none'}`, name),
+          el('span', 'scheduler-item__much', much));
+        row.append(top, el('span', 'scheduler-item__meta', meta));
+        row.title = [name, meta, much].filter(Boolean).join(' · ');
+        row.addEventListener('click', () => press(row));
+        return row;
+      };
+      const sumOf = rows => rows.reduce((n, r) => n + (Number(r.amount) || 0), 0);
+      const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
       const drawBilling = () => {
         const rows = [];
         const now = money(quotedInput.value);
         const sent = editing.quoteSent;
-        if (sent) {
-          const said = ['Quote sent', sent.on ? mdy(sent.on) : null, sentPrice(sent.price)].filter(Boolean).join(' · ');
-          const items = [
-            ...(now != null && round2(now) !== round2(sent.price)
-              ? [{ label: `Mark ${sentPrice(now)} sent`, run: () => markSent(now) }] : []),
-            { label: 'Mark not sent', danger: true, run: () => markSent(null) },
-          ];
-          rows.push(listRow({
-            name: 'Quote sent', meta: sent.on ? mdy(sent.on) : 'No date', much: sentPrice(sent.price), title: said,
-            items, open: e => openItemsMenu(e.currentTarget, items, `Actions for ${said}`), openLabel: `Actions for ${said}`,
-          }));
+        const sentItems = sent ? [
+          ...(now != null && round2(now) !== round2(sent.price)
+            ? [{ label: `Mark ${sentPrice(now)} sent`, run: () => markSent(now) }] : []),
+          { label: 'Mark not sent', danger: true, run: () => markSent(null) },
+        ] : [{ label: now == null ? 'Mark sent, once the quote has a price' : `Mark ${sentPrice(now)} sent today`,
+          disabled: now == null, run: () => markSent(now) }];
+        rows.push(step({ id: 'scheduler-f-bill-quotesent', name: 'Quote sent', done: !!sent,
+          much: sent ? sentPrice(sent.price) : '', meta: sent ? (sent.on ? mdy(sent.on) : 'No date') : 'Not sent',
+          press: row => openItemsMenu(row, sentItems, 'Quote sent') }));
+        if (stepOn('contractSigned')) {
+          const contract = contractNow();
+          rows.push(step({ id: 'scheduler-f-bill-contract', name: 'Contract signed', done: !!contract,
+            meta: contract ? [contract.on ? mdy(contract.on) : 'No date', contract.note].filter(Boolean).join(' · ') : 'Not signed',
+            // A contract a draft set is marked to check until its window is Done.
+            drafted: contract?.drafted, press: () => openContractDialog() }));
         }
-        const contract = contractNow();
-        if (contract) {
-          const when = contract.on ? mdy(contract.on) : 'No date';
-          rows.push(listRow({
-            name: 'Contract signed', meta: [when, contract.note].filter(Boolean).join(' · '),
-            title: ['Contract signed', when, contract.note].filter(Boolean).join(' · '),
-            edit: () => openContractDialog(),
-            removeLabel: 'Remove the signed contract',
-            remove: () => { editing.contract = null; drawBilling(); refreshDirty(); },
-          }));
-          // A contract a draft set is marked to check until its window is Done.
-          if (contract.drafted) rows.at(-1).classList.add('scheduler-drafted');
+        if (stepOn('poReceived')) {
+          const n = poPending.length, one = poPending[0];
+          rows.push(step({ id: 'scheduler-f-bill-pos', name: 'Purchase orders', done: n > 0,
+            much: poPending.some(p => p.amount != null) ? usd(sumOf(poPending)) : '',
+            meta: !n ? 'None' : n > 1 ? plural(n, 'PO', 'POs')
+              : [one.ref ? `PO ${one.ref}` : 'No reference', one.date ? mdy(one.date) : 'No date'].join(' · '),
+            drafted: poPending.some(p => p.drafted), press: () => openEntriesDialog('po') }));
         }
-        for (const [p, i] of stepOn('poReceived') ? byDate(poPending) : []) {
-          const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
-          const name = p.ref ? `PO ${p.ref}` : 'PO, no reference';
-          rows.push(listRow({
-            name, meta: p.date ? mdy(p.date) : 'No date', much,
-            title: ['Purchase order', p.ref || 'No reference', p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
-            edit: () => openPoDialog(i),
-            removeLabel: `Remove ${name}`,
-            remove: () => { poPending.splice(i, 1); drawMoney(); refreshDirty(); },
-          }));
-          if (p.drafted) rows.at(-1).classList.add('scheduler-drafted');
+        if (stepOn('invoiced')) {
+          const n = invPending.length, one = invPending[0];
+          rows.push(step({ id: 'scheduler-f-bill-invoices', name: 'Invoices', done: n > 0,
+            meta: !n ? 'None' : n > 1 ? plural(n, 'invoice', 'invoices')
+              : [one.number ? `Invoice ${one.number}` : 'No number', one.date ? mdy(one.date) : 'No date'].join(' · '),
+            press: () => openEntriesDialog('invoice') }));
         }
-        for (const [v, i] of stepOn('invoiced') ? byDate(invPending) : []) {
-          const name = v.number ? `Invoice ${v.number}` : 'Invoice, no number';
-          rows.push(listRow({
-            name, meta: v.date ? mdy(v.date) : 'No date',
-            title: ['Invoice', v.number || 'No number', v.date ? mdy(v.date) : null].filter(Boolean).join(' · '),
-            edit: () => openInvoiceDialog(i),
-            removeLabel: `Remove ${name}`,
-            remove: () => { invPending.splice(i, 1); drawBilling(); refreshDirty(); },
-          }));
-        }
-        for (const [p, i] of byDate(pending)) {
-          const when = p.date ? mdy(p.date) : 'No date';
-          const much = usd(Number(p.amount) || 0);
-          const name = p.method ? `${p.method} payment` : 'Payment';
-          rows.push(listRow({
-            name, meta: when, much,
-            /* The reference is on the tooltip and in the dialog, not the tile: it
-               is looked up rather than scanned, and it would wrap the line. */
-            title: [name, when, much, p.ref ? `Ref ${p.ref}` : null].filter(Boolean).join(' · '),
-            edit: () => openPaymentDialog(i),
-            removeLabel: `Remove the ${name} of ${much}`,
-            remove: () => { pending.splice(i, 1); drawMoney(); refreshDirty(); },
-          }));
-        }
-        const offers = [
-          ...(sent ? [] : [{ label: 'Quote sent', disabled: now == null, run: () => markSent(now) }]),
-          ...(stepOn('contractSigned') && !editing.contract ? [{ label: 'Contract signed', run: () => openContractDialog() }] : []),
-          ...(stepOn('poReceived') ? [{ label: 'Purchase order', run: () => openPoDialog(null) }] : []),
-          ...(stepOn('invoiced') ? [{ label: 'Invoice', run: () => openInvoiceDialog(null) }] : []),
-          { label: 'Payment', run: () => openPaymentDialog(null) },
-        ];
-        // The add row is also the empty state, as in every list.
-        const add = listAddRow({ label: 'Add entry', id: 'scheduler-f-billadd',
-          onClick: () => openItemsMenu(add.btn, offers, 'Add entry') });
-        billList.body.replaceChildren(...rows, add.li);
+        const n = payPending.length, one = payPending[0];
+        rows.push(step({ id: 'scheduler-f-bill-payments', name: 'Payments', done: n > 0,
+          much: n ? usd(sumOf(payPending)) : '',
+          meta: !n ? 'None' : n > 1 ? plural(n, 'payment', 'payments')
+            : [one.method || 'Payment', one.date ? mdy(one.date) : 'No date'].join(' · '),
+          press: () => openEntriesDialog('payment') }));
+        billTile.replaceChildren(...rows);
         drawSummary();
       };
       drawBillingList = drawBilling;
@@ -9171,7 +9200,7 @@
       // What the customer pays, its Done, then what is filled in once the trip is back.
       milesSection.classList.add('scheduler-panel-section--after');
       panelBilling.append(
-        section('Billing', billList.list),
+        section('Billing', billLayer),
         doneSection('billing'),
         milesSection,
         paySection,
@@ -14242,19 +14271,18 @@
     goToWarning(press.dataset.go, press.dataset.spot);
   });
   /* The field a warning's fix starts in, on the tab it opens: the first trip
-     contact, the Contract signed switch an unconfirmed trip waits on, the PO
-     switch, Payments for a balance, the quote lines for a hotel. */
-  const sectionTitled = title => [...document.querySelectorAll('.scheduler-panel-section__title')]
-    .find(h => h.textContent.trim() === title)?.closest('.scheduler-panel-section') ?? null;
+     contact, the Billing tile's Contract signed row an unconfirmed trip waits
+     on, its Purchase orders, Payments for a balance, Invoices, the Quote tile
+     for a hotel. */
   const WARN_SPOT = {
     contact: () => document.querySelector('[aria-labelledby="scheduler-f-dgroup"] :is(input, button)'),
-    confirmation: () => document.getElementById('scheduler-f-billadd'),
-    po: () => document.getElementById('scheduler-f-billadd'),
-    balance: () => sectionTitled('Payments')?.querySelector('button, input'),
-    hotel: () => sectionTitled('Quote')?.querySelector('button, input'),
+    confirmation: () => document.getElementById('scheduler-f-bill-contract') ?? document.getElementById('scheduler-f-bill-pos'),
+    po: () => document.getElementById('scheduler-f-bill-pos'),
+    balance: () => document.getElementById('scheduler-f-bill-payments'),
+    hotel: () => document.getElementById('scheduler-f-quoteopen'),
     miles: () => document.getElementById('scheduler-f-actmiles'),
     pay: () => [...document.querySelectorAll('[id^="scheduler-f-seatpay-"]')].find(i => !i.value.trim()),
-    invoice: () => sectionTitled('Invoice sent')?.querySelector('button, input'),
+    invoice: () => document.getElementById('scheduler-f-bill-invoices'),
   };
   /* Where a warning is put right. The itinerary slot uploads or opens the
      itinerary as its own press does, Forms opens the trip's forms, and the
@@ -16424,7 +16452,7 @@
         unpicked.push(...took.unpicked);
         continue;
       }
-      /* A purchase order, onto the Billing list: the row with its number, or
+      /* A purchase order, onto the Billing tile: the row with its number, or
          else the one with none, or else a new row, each marked to check. Its
          amount against the quoted price is said, and the office decides. */
       if (key === 'purchase_order') {
@@ -16444,7 +16472,7 @@
         }
         continue;
       }
-      // A signed contract, the Billing list's Contract signed row, with who signed as its note.
+      // A signed contract, the Billing tile's Contract signed row, with who signed as its note.
       if (key === 'contract') {
         if (!editing || !stepOn('contractSigned')) { missed.push([key, JSON.stringify(value)]); continue; }
         const was = editing.contract;

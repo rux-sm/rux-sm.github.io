@@ -1113,45 +1113,25 @@
     </li>
   </ul>
 
-  <!-- A payment's fields are entered in this dialog rather than inline in the
-       Billing tab. Its button says Done, not Save: the row joins the editor's
-       pending list and reaches trip_payments only when the editor's Save runs.
-       data.js asks date-picker.js to claim the dialog's picker as it opens. -->
-  <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-payment-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-payment-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+  <!-- A kind of billing entry, purchase orders, invoices or payments: every
+       entry of the kind in one dialog, an accordion item each, and Done
+       rather than Save, because the editor's Save is what writes trip_pos,
+       trip_invoices and trip_payments. data.js names the kind in the heading
+       and asks date-picker.js to claim each entry's picker. -->
+  <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-entries-modal" role="presentation">
+    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-entries-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
       <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="scheduler-payment-h">Add payment</h2>
+        <h2 class="rux--modal-header__heading" id="scheduler-entries-h">Payments</h2>
         <div class="rux--modal-close-button">
           <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
             <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
           </button>
         </div>
       </div>
-      <div class="rux--modal-content" id="scheduler-payment-fields"></div>
+      <div class="rux--modal-content" id="scheduler-entries-fields"></div>
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-payment-done">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Purchase orders and invoices are entered like payments: each row's fields
-       in a dialog, and Done rather than Save, because the editor's Save is what
-       writes trip_pos and trip_invoices. -->
-  <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-po-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-po-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
-      <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="scheduler-po-h">Add purchase order</h2>
-        <div class="rux--modal-close-button">
-          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="rux--modal-content" id="scheduler-po-fields"></div>
-      <div class="rux--modal-footer">
-        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-po-done">Done</button>
+        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-entries-done">Done</button>
       </div>
     </div>
   </div>
@@ -1300,24 +1280,6 @@
       <div class="rux--modal-footer">
         <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
         <button type="button" class="rux--btn rux--btn--primary" id="scheduler-routetimes-save">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="rux--layer-one rux--modal scheduler-modal--has-calendar" id="scheduler-inv-modal" role="presentation">
-    <div role="dialog" aria-modal="true" aria-labelledby="scheduler-inv-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
-      <div class="rux--modal-header">
-        <h2 class="rux--modal-header__heading" id="scheduler-inv-h">Add invoice</h2>
-        <div class="rux--modal-close-button">
-          <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-            <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="rux--modal-content" id="scheduler-inv-fields"></div>
-      <div class="rux--modal-footer">
-        <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-        <button type="button" class="rux--btn rux--btn--primary" id="scheduler-inv-done">Done</button>
       </div>
     </div>
   </div>

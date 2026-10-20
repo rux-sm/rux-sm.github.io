@@ -2916,6 +2916,29 @@ button.scheduler-row-head__num::after {
    the lines 12px apart, and the total in the heading weight under the last. */
 .scheduler-quote-tile__line { display: grid; gap: var(--rux-spacing-02); }
 .scheduler-quote-tile__total .scheduler-item__much { font-weight: var(--rux-heading-compact-01-font-weight); }
+/* The Billing tile: a row per step, each a press that runs to the tile's
+   edges, its name and amount over its state, the first and last 16px from
+   the tile's edge as a tile's content is and 16px between, as the Quote
+   tile's lines. */
+.scheduler-billing-step {
+  display: grid;
+  gap: var(--rux-spacing-02);
+  inline-size: 100%;
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-billing-step:hover { background: var(--rux-layer-hover); }
+/* A row a draft filled keeps its words in line with the others beside the mark. */
+.scheduler-billing-step.scheduler-drafted { padding-inline-start: calc(var(--rux-layout-density-padding-inline-local) - 2px); }
+.scheduler-billing-step:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -2px;
+}
 /* The Quote window: each line's heading reads as the tile's line does, its
    actions in a row under its fields, and the total under Add line. */
 .scheduler-quote-line { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; padding-block: var(--rux-spacing-03); }

@@ -29,7 +29,7 @@ driver or a customer already holds still opens.
   `scheduler/share/driver.html`, `maintenance.html?s=` and its old name
   `m.html` open `scheduler/share/maintenance.html`, both on the same tokens,
   and `doc.html?id=` opens `scheduler/share/document.html`. Each old address
-  becomes a redirect that carries its parameters.
+  is a redirect to its page here that carries its parameters.
 - **`intake.html` is dropped with the app,** because it is a staff page
   behind a log-in, not an address in a sent link.
 - **The scheduler's driver page already does what rux-ui's does, except a
@@ -49,10 +49,6 @@ driver or a customer already holds still opens.
 
 ## Tasks
 
-- [ ] Redirect `driver.html` on rux-ui to `scheduler/share/driver.html`,
-      which every link the scheduler makes or copies already opens.
-- [ ] Redirect `maintenance.html`, `m.html`, `d.html` and `doc.html` on
-      rux-ui to this site's pages.
 - [ ] Add the yard, the bus needs and the billing steps to the scheduler's
       Settings page.
 - [ ] Take out of the scheduler what it does only for rux-ui: the comments

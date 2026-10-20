@@ -73,7 +73,7 @@ them and nothing is entered twice.
 ### A cancelled day
 
 - **A cancelled day is removed from the trip,** because the trip still
-  runs, changed: Remove leg takes it away with its line on the quote, and
+  runs, changed: Remove leg takes it away and off its quote line, and
   the trip's updates and history say which day went.
 - **The drivers of a removed leg are told** as a driver taken off a trip is
   told now.
@@ -109,19 +109,27 @@ them and nothing is entered twice.
 
 ### The quote
 
-- **Each leg's buses are priced at one price a bus on the leg's longest
-  route,** as the office quotes it, so no bus is quoted short, and Estimated
-  miles follow that route too.
-- **The words name each route:** its buses, when it leaves and when it is
-  back, so the customer reads which group goes when.
+- **One Bus rental line per price.** A trip starts with one line for every
+  bus on every leg, its quantity the buses times the legs, such as 5 × 1,400
+  for a week of day trips, as the office bills now.
+- **That line is priced on the trip's longest route,** so no bus is quoted
+  short, and Estimated miles follow that route too.
+- **Price separately gives a leg or a route its own line** at its own
+  price, for one different enough, because only the office can judge that;
+  undoing it puts it back in the trip's line.
+- **The words name what each line covers:** its days, and each route's
+  buses, when it leaves and when it is back, so the customer reads which
+  group goes when.
 
 ### How it is kept
 
 - **A `trip_legs` table holds a row per leg,** with its dates, bus count and
   workflow marks, and a `trip_routes` table a row per route, with its leg
   and its name. Both are staff only, as every table is.
-- **A stop and a vehicle name their route, and a quote line, a file, a
-  contact and a driver's status their leg,** each by its id. Legs are
+- **A stop and a vehicle name their route, and a file, a contact and a
+  driver's status their leg,** each by its id. A rental line names the leg
+  or route it was priced separately for, and none when it is the trip's.
+  Legs are
   ordered by date, so a leg added before the first needs nothing
   renumbered.
 - **It ships reader first.** The tables and ids are filled from the old
@@ -133,16 +141,17 @@ them and nothing is entered twice.
 
 ## Questions
 
-- Does the quote show one Bus rental line per leg, or one line of so many
-  days at one price?
+None open.
 
 ## Tasks
 
 - [ ] Write the SQL for `trip_legs`, `trip_routes` and their access rules, a
       leg row for every leg there is now with one route each, a route id on
-      `trip_stops` and `trip_assignments`, and a leg id on
-      `trip_quote_lines`, `trip_documents` and `trip_driver_statuses`, filled
-      from their `leg`; show it to rux and apply it on a yes.
+      `trip_stops` and `trip_assignments`, a leg id on `trip_documents` and
+      `trip_driver_statuses`, and a leg id and a route id on
+      `trip_quote_lines`, each filled from their `leg`, so a saved line with
+      a leg reads as priced separately for it and no quote changes; show it
+      to rux and apply it on a yes.
 - [ ] Write the SQL for `trip_contacts` and its access rules, a row for
       every filled contact slot there is now with its leg; show it to rux and
       apply it on a yes.
@@ -177,8 +186,10 @@ them and nothing is entered twice.
       of a removed leg the same way.
 - [ ] Draw each bar with its route's times, its route's name and 2 of 3,
       and give the yard gap and the rest between trips the same times.
-- [ ] Price each leg's buses on its longest route, follow Estimated miles on
-      it, and write each route's buses and times in the quote's words.
+- [ ] Make the trip's Bus rental line, buses times legs priced on its
+      longest route, with Estimated miles following it; add Price
+      separately and its undo for a leg or a route; and write each line's
+      days and routes in its words.
 - [ ] Print an itinerary for each route, and give the envelope, the
       driver's page, the driver's reminder and the maintenance schedule the
       leg and route of their bus.

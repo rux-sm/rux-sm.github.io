@@ -48,11 +48,19 @@
   /* A leg's own stops in order, and the two that carry its times: the first
      `pickup` holds the departure in `depart_prev` and the last `return` the
      arrival in `arrive`. The board and the editor both use it, so they pick
-     the same two; `timesOf` falls back to the trip's own time columns. */
+     the same two; `timesOf` falls back to the trip's own time columns.
+
+     A TRIP READ WITH ITS LEGS is read through trip-shape.js: the leg's
+     first route's stops. One read without them, from a page whose query
+     does not ask for them yet, is read by the old word on each stop. */
+  const SHAPE = window.SchedulerTripShape;
+  const shaped = trip => Array.isArray(trip?.trip_legs) && !!SHAPE;
   const stopsOfLeg = (trip, leg) => {
-    const stops = (trip.trip_stops || [])
-      .filter(s => (s.leg || 'outbound') === leg)
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const route = shaped(trip) ? SHAPE.legOfWord(trip, leg)?.routes[0] : null;
+    const stops = route ? SHAPE.stopsOfRoute(trip, route.id)
+      : (trip.trip_stops || [])
+        .filter(s => (s.leg || 'outbound') === leg)
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     return {
       stops,
       pickup: stops.find(s => s.type === 'pickup') ?? stops[0],
@@ -168,14 +176,22 @@
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
   /* A trip's legs, each with the days it takes, `from` to `to`, and `ends`,
-     the last day as saved. */
+     the last day as saved; a trip read with its legs gives each its `legId`
+     and `number` too. Every leg still carries the old word it mirrors, which
+     the bars are keyed by. */
   const legsOf = trip => {
     const legs = [];
-    const add = (leg, from, end, count) => {
+    const add = (leg, from, end, count, more = {}) => {
       const times = timesOf(trip, leg);
       const ends = lastDay(from, end);
-      legs.push({ leg, from, ends, count, ...times, ...takes(from, ends, times) });
+      legs.push({ leg, from, ends, count, ...times, ...takes(from, ends, times), ...more });
     };
+    if (shaped(trip)) {
+      for (const l of SHAPE.legsOf(trip)) {
+        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, number: l.number });
+      }
+      return legs;
+    }
     if (trip.start_date) add('outbound', trip.start_date, trip.end_date, trip.bus_count || 1);
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1);
     return legs;

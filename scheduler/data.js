@@ -285,7 +285,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks.
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
@@ -333,8 +333,10 @@
     'trip_quote_lines(id,position,kind,leg,item,description,quantity,cost,amount,cost_typed,miles,dead_miles,rate)',
     // `miles` sums to the estimate a trip without its own shows. The rest are
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
-    'trip_stops(id,position,leg,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
+    'trip_stops(id,position,leg,route_id,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source,dwell_status)',
+    // The trip's legs and their routes, which week.js reads the bars from through trip-shape.js.
+    'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
     // What was said to the customer, for the bar's follow-up mark and its card.
     'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
   ].join(',');

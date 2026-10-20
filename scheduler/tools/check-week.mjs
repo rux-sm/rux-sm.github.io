@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
+runInNewContext(readFileSync(new URL('../trip-shape.js', import.meta.url), 'utf8'), { window, Date });
 runInNewContext(readFileSync(new URL('../week.js', import.meta.url), 'utf8'), { window });
 const { legsOf, clip, setLateReturn } = window.SchedulerWeek;
 
@@ -69,6 +70,21 @@ setLateReturn({ hour: 0 });
 expect('hour 0 counts no return as the night before', taken(day('00:30', '00:55')), [['2026-10-16', '2026-10-17', '2026-10-16', 0]]);
 setLateReturn(undefined);
 expect('with no row saved the hour is 4', taken(away), [['2026-10-16', '2026-10-17', '2026-10-18', 1]]);
+
+// The same split trip read by its old columns and read with its legs: the same bars, each leg's id and number beside.
+const withRows = { trip_type: 'dropoff_pickup', start_date: '2026-10-13', end_date: '2026-10-13', return_start_date: '2026-10-15',
+  return_end_date: '2026-10-15', bus_count: 2, return_bus_count: 1,
+  trip_stops: [{ leg: 'outbound', route_id: 'r1', position: 0, type: 'pickup', depart_prev: '06:00', spot: '07:00' },
+    { leg: 'outbound', route_id: 'r1', position: 1, type: 'return', arrive: '23:30' },
+    { leg: 'return', route_id: 'r2', position: 2, type: 'pickup', depart_prev: '05:00', spot: '06:00' },
+    { leg: 'return', route_id: 'r2', position: 3, type: 'return', arrive: '02:15' }] };
+const shapedTrip = { ...withRows, trip_legs: [
+  { id: 'l2', leg: 'return', start_date: '2026-10-15', end_date: '2026-10-15', bus_count: 1, trip_routes: [{ id: 'r2', position: 1 }] },
+  { id: 'l1', leg: 'outbound', start_date: '2026-10-13', end_date: '2026-10-13', bus_count: 2, trip_routes: [{ id: 'r1', position: 1 }] }] };
+const bare = l => { const { legId, number, ...rest } = l; return rest; };
+expect('a trip read with its legs gives the bars its columns give, with each leg\'s id and number',
+  [legsOf(shapedTrip).map(bare), legsOf(shapedTrip).map(l => [l.legId, l.number])],
+  [legsOf(withRows), [['l1', 1], ['l2', 2]]]);
 
 console.log(failed ? `\n  week: ${failed} case(s) failed` : '\n  week: every case passed');
 process.exit(failed ? 1 : 0);

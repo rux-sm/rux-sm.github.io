@@ -152,9 +152,9 @@ None open.
 
 - [ ] Move every reader of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
-      contact slots to the shape rule, a group at a time: the board and its
-      bars, including `stopsOfLeg`, `timesOf` and `legsOf` in
-      `scheduler/week.js`; the editor and `fromStops` in
+      contact slots to the shape rule, a group at a time: the board's bars,
+      which `scheduler/week.js` already reads through it on a trip read with
+      its legs; the editor and `fromStops` in
       `scheduler/route-figures.js`; Prep and To do; the forms and
       `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
       `scheduler/share/driver.js`; live and the road. The past-midnight
@@ -167,6 +167,9 @@ None open.
       driver status functions; the maintenance page with
       `get_maintenance_schedule`; and the editor with `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
+- [ ] Key each bar, the editor's leg, a driver's status and the driver link
+      by the leg's id where they use the old word now, so a third leg has a
+      key of its own.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

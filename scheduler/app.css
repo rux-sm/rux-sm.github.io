@@ -4138,6 +4138,9 @@ html:has(.scheduler-page[data-takeover]) {
 /* No toolbar stands over this week to carry its top corners, so it rounds all
    four itself where the theme rounds its surfaces. */
 .scheduler-week--static { border-radius: var(--scheduler-surface-radius, 0); }
+/* No frame stands around this week to draw a theme's region edge, so it draws
+   it on its own sides; its day band and its last row draw the top and bottom. */
+.scheduler-week--static { border-inline: var(--scheduler-region-edge, 0 solid transparent); }
 .scheduler-week--static .scheduler-bar:hover { background-color: var(--scheduler-bg); }
 .scheduler-week--static .scheduler-bar.scheduler-bar--amber:hover { box-shadow: none; }
 /* A list wider than a phone scrolls sideways inside its own box. */

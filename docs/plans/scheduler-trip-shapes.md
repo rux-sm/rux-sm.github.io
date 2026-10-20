@@ -150,10 +150,6 @@ None open.
 
 ## Tasks
 
-- [ ] Put the shape rule in a small file with sample cases: a trip's legs by
-      date, each one's routes, dates and bus count, and its papers and
-      contacts with the first leg's standing in, replacing the two-leg rule
-      in `leg-papers.js`.
 - [ ] Move every reader of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, a group at a time: the board and its
@@ -163,6 +159,9 @@ None open.
       `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
       `scheduler/share/driver.js`; live and the road. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
+      Each reads a trip through `scheduler/trip-shape.js`, with
+      `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and
+      `scheduler/leg-papers.js` goes with its last reader.
       A group moves with the database functions its pages read: the driver
       pages with `get_driver_share_trips`, the share link functions and the
       driver status functions; the maintenance page with

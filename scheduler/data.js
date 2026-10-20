@@ -5565,16 +5565,17 @@
      its item is Bus Rental, so it shows neither; its description left blank
      is written from the trip when the quote is printed, so it follows the
      trip's dates and times. A blank description waits behind Add
-     description. */
+     description. The fields stand two to a row in a fixed order, Kind
+     and Item, the leg, Quantity and Cost, then a rental's rate, so a field a kind does not use
+     leaves the next to close up in pairs. */
   function lineFields(l) {
     const id = part => `scheduler-f-q${l.key}-${part}`;
-    const grid = el('div', 'scheduler-dialog-grid');
+    const grid = el('div', 'scheduler-dialog-grid scheduler-dialog-grid--pairs');
     const kind = selectField(id('kind'), 'Kind', l.kind, LINE_KINDS.map(k => [k.kind, k.label]));
     const leg = splitNow()
       ? selectField(id('leg'), 'Leg', l.leg ?? 'outbound', [['outbound', 'Drop-off'], ['return', 'Pickup']])
       : null;
     const item = textField(id('item'), 'Item', l.item ?? lineKind(l.kind).item);
-    item.classList.add('scheduler-dialog-grid__wide');
 
     const descItem = el('div', 'rux--form-item scheduler-dialog-grid__wide');
     const descLabel = el('div', 'rux--text-area__label-wrapper');
@@ -5605,25 +5606,30 @@
        picked from the calculator's list. Dead miles, the drive from the yard
        and back, are left out until they are typed in; the route's figure is
        the field's hint. */
-    const basis = lineBasis(l);
     const rateField = selectField(id('rate'), 'Mileage rate', String(l.rate ?? defaultRate() ?? ''),
       (quoteRates?.mileage ?? []).map(m => [String(m.rate), `$${m.rate.toFixed(2)}${m.note ? ` · ${m.note}` : ''}`]));
     const routeDead = legFigures(l.leg).dead;
     const deadField = moneyField(id('dead'), 'Dead miles', !l.deadOn ? null : l.deadTyped ? l.dead_miles : routeDead);
     deadField.querySelector('input').placeholder = routeDead > 0 ? `None · ${Math.round(routeDead)} by route` : 'None';
     const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
-    const calc = calcCost(l, basis);
-    // The calculator's figure stands in the empty Cost, as Estimated miles shows the route's.
-    if (calc !== null) costField.querySelector('input').placeholder = usdCents(calc);
-    costHelp.textContent = l.kind === 'relief'
-      ? (calc === null ? 'Left blank, the cost is the rates page\'s relief charge.' : `Left blank, the cost is the rates page's relief charge: ${usdCents(calc)}.`)
-      : calc === null
-        ? 'Left blank, the cost is worked out once the trip has miles and dates.'
-        : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(basis.miles)} miles over ${basis.days} ${basis.days === 1 ? 'day' : 'days'}.`;
+    /* What a blank Cost becomes, for the kind and leg chosen now: the
+       calculator's figure stands in the empty field, as Estimated miles
+       shows the route's, and the help under it says where it comes from. */
+    const drawCostHelp = (k, legNow) => {
+      const line = { ...l, kind: k, leg: splitNow() ? legNow : l.leg };
+      const b = lineBasis(line);
+      const calc = calcCost(line, b);
+      costField.querySelector('input').placeholder = calc === null ? '' : usdCents(calc);
+      costHelp.textContent = k === 'relief'
+        ? (calc === null ? 'Left blank, the cost is the rates page\'s relief charge.' : `Left blank, the cost is the rates page's relief charge: ${usdCents(calc)}.`)
+        : calc === null
+          ? 'Left blank, the cost is worked out once the trip has miles and dates.'
+          : `Left blank, the cost is the calculator's: ${usdCents(calc)} on ${Math.round(b.miles)} miles over ${b.days} ${b.days === 1 ? 'day' : 'days'}.`;
+    };
     const hotelRef = textField(id('hotelref'), 'Confirmation number', l.hotelRef !== undefined ? l.hotelRef : editing?.hotel?.[hotelLeg(l)]?.ref ?? null);
     hotelRef.classList.add('scheduler-dialog-grid__wide');
     hotelRef.appendChild(el('div', 'rux--form__helper-text', 'Typed in, the hotel counts as booked.'));
-    grid.append(kind, ...(leg ? [leg] : []), item, qty, costField, rateField, deadField, costHelp, hotelRef, descItem, descAdd);
+    grid.append(kind, item, ...(leg ? [leg] : []), qty, costField, rateField, deadField, costHelp, hotelRef, descItem, descAdd);
 
     // The kind decides the item's usual name and words, whether the quantity
     // is the leg's buses, and what the price is called.
@@ -5646,6 +5652,7 @@
       rateField.hidden = k !== 'rental' || !quoteRates;
       deadField.hidden = k !== 'rental';
       costHelp.hidden = !window.SchedulerQuoteLines.priced(k);
+      if (!costHelp.hidden) drawCostHelp(k, legNow);
       costField.querySelector('label').textContent = k === 'discount' ? 'Amount off' : 'Cost';
       // A hotel's confirmation is its leg's; a new leg shows that leg's.
       hotelRef.hidden = k !== 'hotel';
@@ -5666,7 +5673,8 @@
       if (!desc.value.trim() || desc.value === lineKind(kindBefore).description) {
         desc.value = lineKind(kindSelect.value).description;
       }
-      if (desc.value.trim()) descOpen = true;
+      // A kind with words opens them; a blank description folds back behind Add description.
+      descOpen = !!desc.value.trim();
       kindBefore = kindSelect.value;
       sync();
     });

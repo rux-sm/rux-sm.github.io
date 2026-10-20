@@ -2782,6 +2782,13 @@ button.scheduler-row-head__num::after {
   color: var(--rux-link-primary);
 }
 .scheduler-list-add .rux--btn__icon { position: static; margin: 0; }
+/* A list drawn as one card: the tile frames it, and its contained list runs
+   to the tile's edges, the tile's padding taken back as the Summary's table
+   takes it, so the rules between rows meet the frame. */
+.scheduler-list-card { overflow: hidden; }
+.scheduler-list-card > .rux--contained-list {
+  margin: calc(-1 * var(--rux-layout-density-padding-inline-local));
+}
 
 /* The payment dialog's fields, two to a row, falling to one column when the
    modal is too narrow for two. */

@@ -1728,7 +1728,20 @@
      `listRow`, so they cannot drift in height or layout. Each record is a tile
      on the next layer, 8px apart, and the add is the list's last item. The
      list is built once and only its body is redrawn. */
-  const rowList = () => {
+  /* With `card`, the list is one tile holding Carbon's contained list, its
+     rows parted by rules, and its rows and add are made with `card` too. */
+  const rowList = ({ card } = {}) => {
+    if (card) {
+      const list = el('div', 'rux--layer-two');
+      const tile = el('div', 'rux--tile scheduler-list-card');
+      const contained = el('div', 'rux--contained-list');
+      const body = el('ul');
+      body.setAttribute('role', 'list');
+      contained.appendChild(body);
+      tile.appendChild(contained);
+      list.appendChild(tile);
+      return { list, body };
+    }
     const list = el('div', 'scheduler-items');
     const body = el('ul', 'scheduler-list-body');
     body.setAttribute('role', 'list');
@@ -1739,7 +1752,20 @@
   /* The add is the list's last item, a dashed tile where the next record
      appears, with its icon before its words. It is also the empty state: an
      empty list draws it alone. */
-  const listAddRow = ({ label, id, onClick }) => {
+  const listAddRow = ({ label, id, onClick, card }) => {
+    // In a card the add is the card's last row, its icon in Carbon's icon column.
+    if (card) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable rux--contained-list-item--with-icon');
+      const btn = el('button', 'rux--contained-list-item__content');
+      btn.type = 'button';
+      if (id) btn.id = id;
+      const icon = el('span', 'rux--contained-list-item__icon');
+      icon.appendChild(svgUse('#m-add', '16', '0 0 32 32'));
+      btn.append(icon, el('span', null, label));
+      btn.addEventListener('click', onClick);
+      li.appendChild(btn);
+      return { li, btn };
+    }
     const li = el('li', 'scheduler-list-additem');
     const btn = el('button', 'rux--btn rux--btn--ghost rux--layout--size-md scheduler-list-add');
     btn.type = 'button';
@@ -1851,9 +1877,13 @@
      opens the menu keeps its tap from opening the row as well. */
   let itemHints = 0;
   const listRow = ({ name, meta, much, tag, lead, title, edit, remove, removeLabel,
-                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items, context }) => {
-    const li = el('li', 'rux--layer-two scheduler-item');
-    const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
+                    open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items, context, card }) => {
+    // In a card the row is a contained list's item, its menu in the item's action.
+    const li = el('li', card
+      ? `rux--contained-list-item rux--contained-list-item--clickable${context ? '' : ' rux--contained-list-item--with-action'} scheduler-item`
+      : 'rux--layer-two scheduler-item');
+    const open = el('button', card ? 'rux--contained-list-item__content scheduler-item__open'
+      : 'rux--tile rux--tile--clickable scheduler-item__open');
     open.type = 'button';
     const top = el('span', 'scheduler-item__line');
     // `lead` is a round mark before the name, such as a stop's number.
@@ -1906,7 +1936,7 @@
       });
       return li;
     }
-    const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger scheduler-item__menu');
+    const more = el('button', `rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger${card ? '' : ' scheduler-item__menu'}`);
     more.type = 'button';
     more.setAttribute('aria-haspopup', 'true');
     more.setAttribute('aria-expanded', 'false');
@@ -1917,7 +1947,11 @@
     more.addEventListener('click', () => (items
       ? openItemsMenu(more, items, `Actions for ${title}`)
       : openRowMenu(more, { edit, remove, removeLabel, editText, removeText })));
-    li.append(open, more);
+    if (card) {
+      const action = el('div', 'rux--contained-list-item__action');
+      action.appendChild(more);
+      li.append(open, action);
+    } else li.append(open, more);
     return li;
   };
 
@@ -8433,7 +8467,7 @@
       editing.reliefBefore = null;
       askQuoteRates();
       linesLive = false;
-      const lineList = rowList();
+      const lineList = rowList({ card: true });
       // Said as a warning where a saved trip's lines and its price have parted.
       const linesParted = el('div');
       // The dead-mile offer, over the lines it adds to.
@@ -8540,7 +8574,7 @@
             refreshDirty();
           };
           lineList.body.appendChild(listRow({
-            name, meta, much,
+            card: true, name, meta, much,
             title: [name, meta, much].filter(Boolean).join(' · '),
             edit: () => openLineDialog(i),
             items: [
@@ -8564,11 +8598,11 @@
         if (!linePending.length) {
           lineList.body.appendChild(listAddRow({
             label: split ? 'Add the drop-off and pickup' : 'Add the bus rental',
-            id: 'scheduler-f-linestart', onClick: startFromTrip,
+            id: 'scheduler-f-linestart', onClick: startFromTrip, card: true,
           }).li);
         }
         lineList.body.appendChild(listAddRow({
-          label: 'Add line', id: 'scheduler-f-lineadd',
+          label: 'Add line', id: 'scheduler-f-lineadd', card: true,
           onClick: () => openLineDialog(null),
         }).li);
 
@@ -8890,7 +8924,7 @@
          is an invoice, the contract while it has its row. A step the office's
          billing workflow does not use is neither shown nor offered. One Add
          entry row ends it, offering what can be added. */
-      const billList = rowList();
+      const billList = rowList({ card: true });
       // A list's rows with their places in it, earliest first and undated last.
       const byDate = rows => rows.map((row, i) => [row, i])
         .sort(([a], [b]) => (a.date || '\uffff').localeCompare(b.date || '\uffff'));
@@ -8906,6 +8940,7 @@
             { label: 'Mark not sent', danger: true, run: () => markSent(null) },
           ];
           rows.push(listRow({
+            card: true,
             name: 'Quote sent', meta: sent.on ? mdy(sent.on) : 'No date', much: sentPrice(sent.price), title: said,
             items, open: e => openItemsMenu(e.currentTarget, items, `Actions for ${said}`), openLabel: `Actions for ${said}`,
           }));
@@ -8914,6 +8949,7 @@
         if (contract) {
           const when = contract.on ? mdy(contract.on) : 'No date';
           rows.push(listRow({
+            card: true,
             name: 'Contract signed', meta: [when, contract.note].filter(Boolean).join(' · '),
             title: ['Contract signed', when, contract.note].filter(Boolean).join(' · '),
             edit: () => openContractDialog(),
@@ -8927,6 +8963,7 @@
           const much = (p.amount ?? null) === null ? '' : usd(Number(p.amount) || 0);
           const name = p.ref ? `PO ${p.ref}` : 'PO, no reference';
           rows.push(listRow({
+            card: true,
             name, meta: p.date ? mdy(p.date) : 'No date', much,
             title: ['Purchase order', p.ref || 'No reference', p.date ? mdy(p.date) : null, much || 'No amount'].filter(Boolean).join(' · '),
             edit: () => openPoDialog(i),
@@ -8938,6 +8975,7 @@
         for (const [v, i] of stepOn('invoiced') ? byDate(invPending) : []) {
           const name = v.number ? `Invoice ${v.number}` : 'Invoice, no number';
           rows.push(listRow({
+            card: true,
             name, meta: v.date ? mdy(v.date) : 'No date',
             title: ['Invoice', v.number || 'No number', v.date ? mdy(v.date) : null].filter(Boolean).join(' · '),
             edit: () => openInvoiceDialog(i),
@@ -8950,6 +8988,7 @@
           const much = usd(Number(p.amount) || 0);
           const name = p.method ? `${p.method} payment` : 'Payment';
           rows.push(listRow({
+            card: true,
             name, meta: when, much,
             /* The reference is on the tooltip and in the dialog, not the tile: it
                is looked up rather than scanned, and it would wrap the line. */
@@ -8967,7 +9006,7 @@
           { label: 'Payment', run: () => openPaymentDialog(null) },
         ];
         // The add row is also the empty state, as in every list.
-        const add = listAddRow({ label: 'Add entry', id: 'scheduler-f-billadd',
+        const add = listAddRow({ label: 'Add entry', id: 'scheduler-f-billadd', card: true,
           onClick: () => openItemsMenu(add.btn, offers, 'Add entry') });
         billList.body.replaceChildren(...rows, add.li);
         drawSummary();

@@ -704,6 +704,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline-end: var(--rux-spacing-09);
   text-align: start;
 }
+/* In a card, a record is a contained list's item: its two lines a grid 4px
+   apart, as the tile's are. Two classes, over Carbon's inline-block. */
+.scheduler-item .rux--contained-list-item__content {
+  display: grid;
+  gap: var(--rux-spacing-02);
+}
 /* A row whose actions open by right-click or hold has no menu button, so
    its tile keeps Carbon's own end padding, matching its start. A hold selects
    no text and raises no iOS callout, so the menu is what it opens. */

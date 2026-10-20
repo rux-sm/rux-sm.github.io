@@ -166,7 +166,8 @@ None open.
       `scheduler/leg-papers.js` goes with its last reader.
       A group moves with the database functions its pages read: the
       maintenance page with
-      `get_maintenance_schedule`; and the editor with `trips_clear_done`,
+      `get_maintenance_schedule` and the `scheduler/maintenance-status/`
+      function, which reads a bar's leg by its old word; and the editor with `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.

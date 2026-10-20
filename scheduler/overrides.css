@@ -408,6 +408,14 @@
   font-size: var(--rux-label-01-font-size);
 }
 .scheduler-summary__table .rux--data-table .rux--table-header-label { font-size: var(--rux-label-01-font-size); }
+/* The table reads as the figures over it do: its headings are labels in the
+   figures' label weight, and its numbers are values in the primary text at
+   the body size. */
+.scheduler-summary__table .rux--data-table .rux--table-header-label { font-weight: var(--rux-label-01-font-weight); }
+.scheduler-summary__table .rux--data-table td {
+  color: var(--rux-text-primary);
+  font-size: var(--rux-body-compact-01-font-size);
+}
 .scheduler-summary__table .rux--data-table :is(th, td):first-child { padding-inline-start: var(--rux-layout-density-padding-inline-local); }
 .scheduler-summary__table .rux--data-table :is(th, td):last-child { padding-inline-end: var(--rux-layout-density-padding-inline-local); }
 /* The tile's padding ends the table, so its last row draws no rule of its own. */

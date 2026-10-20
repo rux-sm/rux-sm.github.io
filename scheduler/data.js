@@ -8381,7 +8381,7 @@
 
       const statusLine = el('div', 'scheduler-billing-status');
       const figures = el('dl', 'scheduler-figures');
-      const summaryNote = el('p', 'rux--form__helper-text');
+      const summaryNote = el('p', 'rux--form__helper-text scheduler-summary__note');
       const drawSummary = () => {
         // The PO amount is the sum of the PO rows, so coverage counts every PO.
         const { quoted, price, paid, poAmount, poReceived: poOn, rung, confirmed } = billingNow();
@@ -8411,7 +8411,7 @@
           figure('Balance', quoted === null ? '—'
             : (quoted - paid < 0 ? `−${usd(paid - quoted)}` : usd(quoted - paid))),
         );
-        /* Under the tile, what is left. Unconfirmed, what would confirm the
+        /* Under the status, what is left. Unconfirmed, what would confirm the
            trip. Confirmed by a PO, what the POs and payments leave uncovered,
            since a PO confirms the trip whatever its amount, counted as
            `billingStatus` counts it:
@@ -8427,17 +8427,15 @@
         summaryNote.hidden = !summaryNote.textContent;
       };
       /* THE SUMMARY IS THE ROUTE TAB'S TILE, and opens the tab as that one
-         does: the money as figures, the confirmation and billing status at
-         its foot, and under the tile what is left. */
+         does: the money as figures, then at its foot the confirmation and
+         billing status and under them what is left. */
       const summaryTile = el('div', 'rux--tile scheduler-summary');
       const summaryFoot = el('div', 'scheduler-summary__foot');
-      summaryFoot.appendChild(statusLine);
+      summaryFoot.append(statusLine, summaryNote);
       summaryTile.append(figures, summaryFoot);
       const summaryLayer = el('div', 'rux--layer-two');
       summaryLayer.appendChild(summaryTile);
-      const summary = el('div', 'rux--stack-vertical rux--stack-scale-4');
-      summary.append(summaryLayer, summaryNote);
-      panelBilling.appendChild(section('Summary', summary));
+      panelBilling.appendChild(section('Summary', summaryLayer));
 
       /* THE QUOTE'S LINES, over the price they add up to. With any line the
          price is their total and is not typed; with none it is typed as it

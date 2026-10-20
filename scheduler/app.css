@@ -2830,8 +2830,9 @@ button.scheduler-row-head__num::after {
 }
 
 
-/* A tab's first section opens at the tab's own 16px, not 32px below it. */
-#scheduler-panel-body .rux--tab-content > .scheduler-panel-section:first-child {
+/* A tab's first shown section opens at the tab's own 16px, not 32px below
+   it; a hidden one before it, as a split trip's other leg is, does not count. */
+#scheduler-panel-body .rux--tab-content > .scheduler-panel-section:not(:not([hidden]) ~ *) {
   margin-block-start: 0;
 }
 
@@ -2914,11 +2915,11 @@ button.scheduler-row-head__num::after {
 /* The Updates window's head: what changed, over the box. */
 .scheduler-prompt-changes { color: var(--rux-text-secondary); margin-block-end: var(--rux-spacing-05); }
 
-/* A section that follows anything on its tab opens with a 1px rule, 24px under
+/* A section that follows anything shown on its tab opens with a 1px rule, 24px under
    what precedes it and 16px over its heading. Carbon has no rule for rules in a
    form; this is its subtle border, the one for dividers on the panel's layer,
    run to the panel's edges like the header's and the tab strip's lines. */
-#scheduler-panel-body .rux--tab-content > * + .scheduler-panel-section::before {
+#scheduler-panel-body .rux--tab-content > :not([hidden]) ~ .scheduler-panel-section::before {
   content: "";
   display: block;
   margin-inline: calc(-1 * var(--rux-spacing-05));

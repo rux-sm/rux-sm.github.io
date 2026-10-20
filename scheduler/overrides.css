@@ -719,14 +719,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   user-select: none;
 }
 
-/* The Quote tile's lines stand 12px apart, where a record's two lines
-   stand 4px. Three classes, over the record's gap above. */
-.scheduler-item.scheduler-quote-tile .rux--tile--clickable { gap: var(--rux-spacing-04); }
 /* The Billing tile's rows run to its sides, so a row's hover fills it; the
    tile keeps 8px above and below, which each row's 8px makes 16. Two
    classes, over Carbon's tile padding. */
 .rux--tile.scheduler-billing-steps { padding: var(--rux-spacing-03) 0; }
-/* A quote line's fields fill the Quote window: Carbon keeps a quarter of an
+/* An entry's fields fill the billing entries' window: Carbon keeps a quarter of an
    accordion's width empty at the end of its text, which these fields do not
    need, so the end matches the 16px start. Two classes, over Carbon's one. */
 .scheduler-quote-lines .rux--accordion__content {

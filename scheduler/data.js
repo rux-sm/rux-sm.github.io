@@ -4915,7 +4915,7 @@
 
   /* ── The billing entries' window ──
      The Billing tile's Purchase orders, Invoices and Payments rows each open
-     it on their kind, as the Quote tile opens the quote: every entry of the
+     it on their kind: every entry of the
      kind an accordion item, shut to its name, amount and date and open to
      its fields and Remove, then Add and Done or Cancel for the whole kind.
      It edits a copy, so Cancel leaves the entries as they were. A date
@@ -5498,7 +5498,7 @@
     return moved;
   }
 
-  /* A line in words, as the Quote tile and the dialog's headings show it:
+  /* A line in words, as its tile on the Billing tab shows it:
      its name, its quantity at its cost with what the calculator makes it
      where the two differ, a rental's rate, and its amount. A line that
      follows the calculator and has no cost yet reads at the calculator's. */
@@ -5519,35 +5519,46 @@
       amount: cost === null ? 0 : round2(qty * cost), calc: calc !== null && calc !== cost ? calc : null };
   }
 
-  /* ── The quote's window ──
-     The Quote tile opens it, as a vehicle's tile opens the vehicle's. It edits
-     a copy of every line, so Cancel leaves the quote as it was and Done puts
-     the copy in its place. Each line is an item of an accordion, shut to its
-     name and amount and open to its fields and its Move, Use calculator price
-     and Remove; Add line opens a new one. The fields stay in the page while
-     shut, so Done and every move read all of them. */
-  let quoteEdit = null;            // { lines: the copy, open: the keys of the open lines, seeded }
+  /* ── A quote line's window ──
+     Each line is a tile on the Billing tab, as each vehicle is on the Buses
+     tab, and pressing one opens this window on that line alone; Add line
+     opens it on a new one. It edits a copy, so Cancel leaves the line as it
+     was and Done puts the copy in its place, and no other line is ever open
+     beside it. A trip with no lines starts from its rentals: the first opens
+     here, and Cancel takes them back off. */
+  let quoteEdit = null;            // { line: the copy, index: its place, or null for a new one, seeded: lines Cancel takes off }
   let quoteKeys = 0;
   // Set by the Billing tab: the rental lines a trip with none starts from.
   let quoteSeed = () => [];
   const quoteHost = document.getElementById('scheduler-quote-fields');
 
-  function openQuoteDialog() {
+  function openLineDialog(index, seeded = []) {
     if (!quoteHost || !editing) return;
-    const lines = linePending.map(l => ({ ...l, was: l, key: ++quoteKeys }));
-    const seeded = !lines.length;
-    if (seeded) lines.push(...quoteSeed().map(l => ({ ...l, was: null, key: ++quoteKeys })));
-    // One line opens open; several open shut, to their names and amounts.
-    quoteEdit = { lines, open: new Set(lines.length === 1 ? [lines[0].key] : []), seeded };
-    drawQuoteFields();
+    const was = index === null ? null : linePending[index];
+    const line = was ? { ...was, was, key: ++quoteKeys }
+      : { kind: 'other', was: null, key: ++quoteKeys, cost: null, quantity: null };
+    quoteEdit = { line, index, seeded };
+    document.getElementById('scheduler-quote-h').textContent = was ? (was.item || lineKind(was.kind).label) : 'Add line';
+    quoteHost.replaceChildren(lineFields(line));
     window.Rux?.modal?.open?.('scheduler-quote-modal');
+  }
+  // The empty Quote tile starts the trip's rentals and opens the first.
+  function startQuote() {
+    const seeded = quoteSeed();
+    if (!seeded.length) { openLineDialog(null); return; }
+    linePending.push(...seeded);
+    redrawLines();
+    refreshDirty();
+    openLineDialog(linePending.indexOf(seeded[0]), seeded);
   }
 
   /* One line's fields, each id carrying the line's key: what the line is,
-     which leg on a split trip, the words the quote prints and the price. A
-     bus rental's quantity is the leg's buses and cannot be typed, and its
-     description left blank is written from the trip when the quote is
-     printed, so it follows the trip's dates and times. */
+     which leg on a split trip, the words the quote prints and the price, and
+     only those its kind uses. A bus rental's quantity is the leg's buses and
+     its item is Bus Rental, so it shows neither; its description left blank
+     is written from the trip when the quote is printed, so it follows the
+     trip's dates and times. A blank description waits behind Add
+     description. */
   function lineFields(l) {
     const id = part => `scheduler-f-q${l.key}-${part}`;
     const grid = el('div', 'scheduler-dialog-grid');
@@ -5571,6 +5582,12 @@
     descWrap.appendChild(desc);
     const descHelp = el('div', 'rux--form__helper-text', 'Left blank, a bus rental is described from the trip.');
     descItem.append(descLabel, descWrap, descHelp);
+    const descAdd = el('div', 'scheduler-dialog-grid__wide');
+    const descBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Add description');
+    descBtn.type = 'button';
+    descAdd.appendChild(descBtn);
+    let descOpen = !!desc.value.trim();
+    descBtn.addEventListener('click', () => { descOpen = true; sync(); desc.focus(); });
 
     const cost = money(String(l.cost ?? ''));
     const qty = moneyField(id('qty'), 'Quantity', l.kind === 'rental' ? legBuses(l.leg) : (l.quantity ?? 1));
@@ -5589,6 +5606,8 @@
     deadField.querySelector('input').placeholder = routeDead > 0 ? `None · ${Math.round(routeDead)} by route` : 'None';
     const costHelp = el('div', 'rux--form__helper-text scheduler-dialog-grid__wide');
     const calc = calcCost(l, basis);
+    // The calculator's figure stands in the empty Cost, as Estimated miles shows the route's.
+    if (calc !== null) costField.querySelector('input').placeholder = usdCents(calc);
     costHelp.textContent = l.kind === 'relief'
       ? (calc === null ? 'Left blank, the cost is the rates page\'s relief charge.' : `Left blank, the cost is the rates page's relief charge: ${usdCents(calc)}.`)
       : calc === null
@@ -5597,7 +5616,7 @@
     const hotelRef = textField(id('hotelref'), 'Confirmation number', l.hotelRef !== undefined ? l.hotelRef : editing?.hotel?.[hotelLeg(l)]?.ref ?? null);
     hotelRef.classList.add('scheduler-dialog-grid__wide');
     hotelRef.appendChild(el('div', 'rux--form__helper-text', 'Typed in, the hotel counts as booked.'));
-    grid.append(kind, ...(leg ? [leg] : []), item, descItem, qty, costField, rateField, deadField, costHelp, hotelRef);
+    grid.append(kind, ...(leg ? [leg] : []), item, qty, costField, rateField, deadField, costHelp, hotelRef, descItem, descAdd);
 
     // The kind decides the item's usual name and words, whether the quantity
     // is the leg's buses, and what the price is called.
@@ -5611,6 +5630,11 @@
       qtyInput.disabled = k === 'rental' || drivers > 0;
       if (k === 'rental') qtyInput.value = String(legBuses(legNow));
       if (drivers > 0) qtyInput.value = String(drivers);
+      // A quantity the buses or seats set is not typed, so it is not shown.
+      qty.hidden = qtyInput.disabled;
+      item.hidden = k === 'rental';
+      descItem.hidden = !descOpen;
+      descAdd.hidden = descOpen;
       descHelp.hidden = k !== 'rental';
       rateField.hidden = k !== 'rental' || !quoteRates;
       deadField.hidden = k !== 'rental';
@@ -5635,6 +5659,7 @@
       if (!desc.value.trim() || desc.value === lineKind(kindBefore).description) {
         desc.value = lineKind(kindSelect.value).description;
       }
+      if (desc.value.trim()) descOpen = true;
       kindBefore = kindSelect.value;
       sync();
     });
@@ -5645,7 +5670,7 @@
 
   /* A line as its fields stand, kept on its copy. Cost keeps what
      quote-lines.js says: a blank on a settled trip holds the cost the line
-     had, unless Use calculator price was pressed. */
+     had; the tile's Use calculator price lets it follow again. */
   function readLine(l) {
     const val = part => document.getElementById(`scheduler-f-q${l.key}-${part}`)?.value.trim() ?? '';
     if (!document.getElementById(`scheduler-f-q${l.key}-kind`)) return l;
@@ -5653,11 +5678,12 @@
     const kind = val('kind') || 'other';
     const typed = money(val('cost'));
     const was = l.was;
-    const held = !l.useCalc && was && was.kind === kind && QL.follows(was) && QL.settled(billingNow()) ? was.cost ?? null : null;
+    const held = was && was.kind === kind && QL.follows(was) && QL.settled(billingNow()) ? was.cost ?? null : null;
     Object.assign(l, {
       kind,
       leg: splitNow() ? (val('leg') || 'outbound') : null,
-      item: val('item') || null,
+      // A rental's item is Bus Rental, as its field is not shown.
+      item: kind === 'rental' ? (l.item || lineKind('rental').item || null) : (val('item') || null),
       description: val('desc') || null,
       quantity: kind === 'rental' ? null : money(val('qty')),
       ...QL.costKept(kind, typed, held),
@@ -5673,117 +5699,72 @@
     }
     return l;
   }
-  const readQuote = () => quoteEdit.lines.forEach(readLine);
 
-  function drawQuoteFields(focusKey) {
-    if (!quoteHost || !quoteEdit) return;
-    const { lines, open } = quoteEdit;
-    const held = window.SchedulerQuoteLines.settled(billingNow());
-    const redraw = (change, focus) => { readQuote(); change(); drawQuoteFields(focus); };
-    const rows = el('ul', 'rux--accordion rux--accordion--end scheduler-quote-lines');
-    const total = el('p', 'scheduler-quote-total');
-    const drawTotal = () => {
-      total.replaceChildren(el('span', null, 'Total'),
-        el('span', 'scheduler-item__much', usdCents(round2(lines.reduce((n, l) => n + lineSummary(l, held).amount, 0)))));
-    };
-    lines.forEach((l, i) => {
-      const s = lineSummary(l, held);
-      const li = el('li', `rux--accordion__item${open.has(l.key) ? ' rux--accordion__item--active' : ''}`);
-      li.dataset.key = String(l.key);
-      const heading = el('button', 'rux--accordion__heading');
-      heading.type = 'button';
-      heading.setAttribute('aria-expanded', String(open.has(l.key)));
-      const arrow = svgUse('#m-keyboard_arrow_right');
-      arrow.classList.add('rux--accordion__arrow');
-      const title = el('div', 'rux--accordion__title scheduler-quote-line');
-      const top = el('span', 'scheduler-item__line');
-      const name = el('span', 'scheduler-item__name', s.name);
-      const much = el('span', 'scheduler-item__much', s.much);
-      top.append(name, much);
-      const meta = el('span', 'scheduler-item__meta', s.meta);
-      title.append(top, meta);
-      heading.append(arrow, title);
-
-      const wrapper = el('div', 'rux--accordion__wrapper');
-      const content = el('div', 'rux--accordion__content');
-      content.id = `scheduler-quote-line-${l.key}`;
-      heading.setAttribute('aria-controls', content.id);
-      const actions = el('div', 'scheduler-quote-actions');
-      const action = (label, run, danger) => {
-        const b = el('button', `rux--btn ${danger ? 'rux--btn--danger--ghost' : 'rux--btn--ghost'} rux--btn--sm rux--layout--size-sm`, label);
-        b.type = 'button';
-        b.addEventListener('click', run);
-        return b;
-      };
-      if (i > 0) actions.appendChild(action('Move up', () => redraw(() => lines.splice(i - 1, 0, lines.splice(i, 1)[0]), l.key)));
-      if (i < lines.length - 1) actions.appendChild(action('Move down', () => redraw(() => lines.splice(i + 1, 0, lines.splice(i, 1)[0]), l.key)));
-      // A typed or held cost the calculator disagrees with can follow it again.
-      if (s.calc !== null) {
-        actions.appendChild(action(`Use calculator price, ${usdCents(s.calc)}`,
-          () => redraw(() => Object.assign(l, { cost: null, cost_typed: false, basis: null, useCalc: true }), l.key)));
-      }
-      actions.appendChild(action('Remove', () => redraw(() => { lines.splice(i, 1); open.delete(l.key); }), true));
-      content.append(lineFields(l), actions);
-      wrapper.appendChild(content);
-      li.append(heading, wrapper);
-      // The heading follows the fields as they are typed in.
-      content.addEventListener('input', () => {
-        const now = lineSummary(readLine(l), held);
-        name.textContent = now.name;
-        much.textContent = now.much;
-        meta.textContent = now.meta;
-        drawTotal();
-      });
-      content.addEventListener('change', () => content.dispatchEvent(new Event('input')));
-      rows.appendChild(li);
-    });
-    rows.addEventListener('rux:accordion-opened', e => open.add(Number(e.target.dataset.key)));
-    rows.addEventListener('rux:accordion-closed', e => open.delete(Number(e.target.dataset.key)));
-    const add = rowList();
-    add.body.appendChild(listAddRow({
-      label: 'Add line', id: 'scheduler-f-lineadd',
-      onClick: () => {
-        const key = ++quoteKeys;
-        redraw(() => { lines.push({ kind: 'other', was: null, key, cost: null, quantity: null }); open.add(key); }, key);
-      },
-    }).li);
-    drawTotal();
-    const stack = el('div', 'rux--stack-vertical rux--stack-scale-5');
-    stack.append(...(lines.length ? [rows] : []), add.list, ...(lines.length ? [total] : []));
-    quoteHost.replaceChildren(stack);
-    if (focusKey != null) {
-      const item = rows.querySelector(`[data-key="${focusKey}"]`);
-      item?.querySelector('.rux--accordion__heading')?.focus();
-      item?.scrollIntoView({ block: 'nearest' });
-    }
-  }
-
-  /* Done puts the copy in the quote's place. A line left with no item, no
-     words and no cost is dropped, as an empty dialog adds nothing. Each
-     hotel line's confirmation is its leg's, and typing one marks the leg
-     booked; with no hotel line left, the trip's hotel reminder goes too. */
+  /* Done puts the copy in the line's place. A new line left with no item,
+     no words and no cost adds nothing. A hotel line's confirmation is its
+     leg's, and typing one marks the leg booked. */
   document.getElementById('scheduler-quote-done')?.addEventListener('click', () => {
     if (!quoteEdit) return;
-    readQuote();
-    const kept = quoteEdit.lines.filter(l => l.item || l.description || l.cost !== null || l.kind === 'rental');
-    for (const l of kept) {
-      if (l.kind !== 'hotel' || !editing?.hotel) continue;
-      const stay = editing.hotel[hotelLeg(l)];
-      stay.ref = l.hotelRef ?? null;
+    const { line, index } = quoteEdit;
+    readLine(line);
+    const empty = !(line.item || line.description || line.cost !== null || line.kind === 'rental');
+    if (line.kind === 'hotel' && editing?.hotel) {
+      const stay = editing.hotel[hotelLeg(line)];
+      stay.ref = line.hotelRef ?? null;
       if (stay.ref) stay.booked = true;
     }
-    if (linePending.some(l => l.kind === 'hotel') && !kept.some(l => l.kind === 'hotel')) editing.hotelWanted = false;
     // Co-drivers and relief already on get their lines with the first rental.
-    if (!linePending.length && kept.some(l => l.kind === 'rental')) {
+    if (line.kind === 'rental' && !linePending.some((l, i) => l.kind === 'rental' && i !== index)) {
       editing.coBefore = { outbound: 0, return: 0 };
       editing.reliefBefore = { outbound: 0, return: 0 };
     }
-    linePending = kept.map(({ was, key, hotelRef, useCalc, ...l }) => ({ miles: null, dead_miles: null, rate: null, ...l }));
+    const { was, key, hotelRef, ...kept } = line;
+    const saved = { miles: null, dead_miles: null, rate: null, ...kept };
+    const hadHotel = linePending.some(l => l.kind === 'hotel');
+    if (index === null) { if (!empty) linePending.push(saved); } else linePending[index] = saved;
+    // With no hotel line left, the trip's hotel reminder goes too.
+    if (hadHotel && !linePending.some(l => l.kind === 'hotel')) editing.hotelWanted = false;
     quoteEdit = null;
     window.Rux?.modal?.close?.('scheduler-quote-modal');
     redrawLines();
     refreshDirty();
   });
+  // Cancel, Close or Escape: the rentals an empty quote started from go back off.
+  document.getElementById('scheduler-quote-modal')?.addEventListener('rux:modal-closed', () => {
+    if (quoteEdit?.seeded.length) {
+      linePending = linePending.filter(l => !quoteEdit.seeded.includes(l));
+      redrawLines();
+      refreshDirty();
+    }
+    quoteEdit = null;
+  });
+
+  /* A line's tile on the Billing tab: its name and amount over its leg,
+     quantity and cost and rate, opening its window; Move up, Move down, Use
+     calculator price where the calculator disagrees, and Remove on its
+     right-click or hold. Nothing is written until Save, so Remove does not
+     ask: Reset takes it back. */
+  function quoteLineTile(l, i, held) {
+    const s = lineSummary(l, held);
+    const change = run => { run(); redrawLines(); refreshDirty(); };
+    const li = listRow({
+      name: s.name, meta: s.meta, much: s.much, context: true, edit: () => openLineDialog(i),
+      title: [s.name, s.meta, s.much].filter(Boolean).join(' · '), openLabel: `Edit quote line ${i + 1}, ${s.name}`,
+      items: [
+        { label: 'Edit', run: () => openLineDialog(i) },
+        { label: 'Move up', disabled: i === 0, run: () => change(() => linePending.splice(i - 1, 0, linePending.splice(i, 1)[0])) },
+        { label: 'Move down', disabled: i === linePending.length - 1, run: () => change(() => linePending.splice(i + 1, 0, linePending.splice(i, 1)[0])) },
+        ...(s.calc !== null ? [{ label: `Use calculator price, ${usdCents(s.calc)}`,
+          run: () => change(() => Object.assign(l, { cost: null, cost_typed: false, basis: null })) }] : []),
+        { label: 'Remove', danger: true, run: () => change(() => {
+          linePending.splice(i, 1);
+          if (l.kind === 'hotel' && !linePending.some(x => x.kind === 'hotel') && editing) editing.hotelWanted = false;
+        }) },
+      ],
+    });
+    li.querySelector('.scheduler-item__open').dataset.lineKind = l.kind;
+    return li;
+  }
 
   /* The lines Save writes, in order, each with the quantity and amount it has
      now: a rental's quantity is read from the Buses tab at the moment of the
@@ -8671,8 +8652,8 @@
 
       /* THE QUOTE'S LINES, over the price they add up to. With any line the
          price is their total; a trip saved with a price and no line keeps it,
-         the quote prints it as one line, and the Quote window starts its
-         rental from it. The price is written
+         the quote prints it as one line, and its first rental starts
+         from it. The price is written
          only when the total moves, so opening a trip whose price differs
          from its lines shows the difference instead of arming Save to undo it. */
       linePending = editing.linesLoaded && !editing.creating
@@ -8698,7 +8679,7 @@
       editing.reliefBefore = null;
       askQuoteRates();
       linesLive = false;
-      // The quote is one tile, as a vehicle is; it opens the quote's window.
+      // The quote's lines, a tile each, as the vehicles are.
       const lineList = rowList();
       // Said as a warning where a saved trip's lines and its price have parted.
       const linesParted = el('div');
@@ -8706,8 +8687,8 @@
       const deadBox = el('div', 'scheduler-dead-offer');
       deadBox.hidden = true;
       /* The price is the lines' total, or a lineless trip's saved price,
-         which the Summary and the Quote tile show; it is set in the Quote
-         window. The field stays on the page, hidden, since Save reads it. */
+         which the Summary and the empty quote's tile show; the lines set
+         it. The field stays on the page, hidden, since Save reads it. */
       const quotedField = moneyField('scheduler-f-quoted', 'Quoted price', trip.quoted_price);
       const quotedRow = el('div');
       quotedRow.hidden = true;
@@ -8727,8 +8708,8 @@
       // records it.
       let totalBefore = null;
       /* A split trip starts with a rental per leg, anything else with one,
-         sharing the typed price between them to the cent. The quote's window
-         opens on these when the trip has no lines. */
+         sharing the typed price between them to the cent. The empty quote's
+         tile starts from these. */
       quoteSeed = () => {
         const legs = splitNow() ? ['outbound', 'return'] : [null];
         const quoted = money(quotedInput.value);
@@ -8778,46 +8759,32 @@
       const drawLines = () => {
         if (linesLive) syncLines();
         const held = window.SchedulerQuoteLines.settled(billingNow());
-        /* Each line its name and amount, its quantity and cost under them,
-           and the total under the last where there is more than one. With
-           none, the tile says so and opens on the trip's rental. */
-        const tile = el('li', 'rux--layer-two scheduler-item scheduler-item--context scheduler-quote-tile');
-        const open = el('button', 'rux--tile rux--tile--clickable scheduler-item__open');
-        open.type = 'button';
-        open.id = 'scheduler-f-quoteopen';
-        open.addEventListener('click', openQuoteDialog);
-        const said = [];
-        for (const l of linePending) {
-          const s = lineSummary(l, held);
-          const block = el('span', 'scheduler-quote-tile__line');
-          const top = el('span', 'scheduler-item__line');
-          top.append(el('span', 'scheduler-item__name', s.name), el('span', 'scheduler-item__much', s.much));
-          block.append(top, el('span', 'scheduler-item__meta', s.meta));
-          open.appendChild(block);
-          said.push([s.name, s.meta, s.much].filter(Boolean).join(', '));
-        }
+        /* A tile a line, as the Buses tab has a tile a vehicle, each opening
+           that line's window; the total under the last where there is more
+           than one, and Add line at the end. With none, one tile says so and
+           starts the quote from the trip's rentals. */
+        const rows = linePending.map((l, i) => quoteLineTile(l, i, held));
         if (linePending.length > 1) {
-          const sum = el('span', 'scheduler-item__line scheduler-quote-tile__total');
-          sum.append(el('span', 'scheduler-item__name', 'Total'), el('span', 'scheduler-item__much', usdCents(linesTotal())));
-          open.appendChild(sum);
-          said.push(`Total ${usdCents(linesTotal())}`);
+          const sum = el('li', 'scheduler-quote-total');
+          sum.append(el('span', null, 'Total'), el('span', 'scheduler-item__much', usdCents(linesTotal())));
+          rows.push(sum);
         }
         if (!linePending.length) {
-          const block = el('span', 'scheduler-quote-tile__line');
-          const top = el('span', 'scheduler-item__line');
           // A trip saved with a price and no line shows the price, which its rental starts from.
           const price = money(quotedInput.value);
-          top.append(el('span', 'scheduler-item__name scheduler-fleet-tile__none', 'No quote lines yet'),
-            el('span', 'scheduler-item__much', price === null ? '' : usdCents(price)));
           const from = splitNow() ? 'Starts from the drop-off and pickup' : 'Starts from the bus rental';
-          block.append(top, el('span', 'scheduler-item__meta', price === null ? from : `${from} at this price`));
-          open.appendChild(block);
-          said.push(['No quote lines yet', price === null ? null : usdCents(price)].filter(Boolean).join(', '));
+          const li = listRow({
+            name: 'No quote lines yet', meta: price === null ? from : `${from} at this price`,
+            much: price === null ? '' : usdCents(price), context: true, edit: startQuote,
+            title: ['No quote lines yet', price === null ? null : usdCents(price)].filter(Boolean).join(', '),
+            openLabel: 'Start the quote',
+          });
+          li.querySelector('.scheduler-item__name').classList.add('scheduler-fleet-tile__none');
+          li.querySelector('.scheduler-item__open').id = 'scheduler-f-quoteopen';
+          rows.push(li);
         }
-        open.title = said.join(' · ');
-        open.setAttribute('aria-label', `Edit the quote: ${said.join('; ')}`);
-        tile.appendChild(open);
-        lineList.body.replaceChildren(tile);
+        rows.push(listAddRow({ label: 'Add line', id: 'scheduler-f-lineadd', onClick: () => openLineDialog(null) }).li);
+        lineList.body.replaceChildren(...rows);
 
         const total = linesTotal();
         if (linePending.length && totalBefore !== null && total !== totalBefore) {
@@ -14286,14 +14253,15 @@
   });
   /* The field a warning's fix starts in, on the tab it opens: the first trip
      contact, the Billing tile's Contract signed row an unconfirmed trip waits
-     on, its Purchase orders, Payments for a balance, Invoices, the Quote tile
-     for a hotel. */
+     on, its Purchase orders, Payments for a balance, Invoices, the hotel's
+     quote line, or Add line. */
   const WARN_SPOT = {
     contact: () => document.querySelector('[aria-labelledby="scheduler-f-dgroup"] :is(input, button)'),
     confirmation: () => document.getElementById('scheduler-f-bill-contract') ?? document.getElementById('scheduler-f-bill-pos'),
     po: () => document.getElementById('scheduler-f-bill-pos'),
     balance: () => document.getElementById('scheduler-f-bill-payments'),
-    hotel: () => document.getElementById('scheduler-f-quoteopen'),
+    hotel: () => document.querySelector('[data-line-kind="hotel"]') ?? document.getElementById('scheduler-f-quoteopen')
+      ?? document.getElementById('scheduler-f-lineadd'),
     miles: () => document.getElementById('scheduler-f-actmiles'),
     pay: () => [...document.querySelectorAll('[id^="scheduler-f-seatpay-"]')].find(i => !i.value.trim()),
     invoice: () => document.getElementById('scheduler-f-bill-invoices'),

@@ -2809,6 +2809,9 @@ button.scheduler-row-head__num::after {
 /* A field that takes the dialog's whole width, such as a quote line's item
    and its description. */
 .scheduler-dialog-grid__wide { grid-column: 1 / -1; }
+/* A field its line's kind does not use is hidden, over the form item's own
+   display, so it leaves no gap in the grid. */
+.scheduler-dialog-grid > [hidden] { display: none; }
 /* Two columns at every width, so a stop's Arrives and Leaves each read as
    one line, the day and then the time. */
 .scheduler-dialog-grid--pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2926,10 +2929,6 @@ button.scheduler-row-head__num::after {
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
 /* A typed quoted price stands 16px under the lines' add rows rather than
    the list's own 8px. */
-/* The Quote tile: each line its name and amount over its quantity and cost,
-   the lines 12px apart, and the total in the heading weight under the last. */
-.scheduler-quote-tile__line { display: grid; gap: var(--rux-spacing-02); }
-.scheduler-quote-tile__total .scheduler-item__much { font-weight: var(--rux-heading-compact-01-font-weight); }
 /* The Billing tile: a row per step, each a press that runs to the tile's
    edges, its name and amount over its state, the first and last 16px from
    the tile's edge as a tile's content is and 16px between, as the Quote
@@ -2953,8 +2952,9 @@ button.scheduler-row-head__num::after {
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;
 }
-/* The Quote window: each line's heading reads as the tile's line does, its
-   actions in a row under its fields, and the total under Add line. */
+/* The billing entries' window: each entry's heading reads as a tile's line
+   does, its actions in a row under its fields. The quote's total stands
+   under its line tiles, its words lined up with theirs. */
 .scheduler-quote-line { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; padding-block: var(--rux-spacing-03); }
 .scheduler-quote-actions {
   display: flex;
@@ -2966,6 +2966,7 @@ button.scheduler-row-head__num::after {
   display: flex;
   justify-content: space-between;
   margin: 0;
+  padding: var(--rux-spacing-03) var(--rux-spacing-05);
   font-weight: var(--rux-heading-compact-01-font-weight);
   color: var(--rux-text-primary);
 }

@@ -23,8 +23,8 @@
 <body>
 <!-- The maintenance link, which opens without a log-in: two weeks of which
      bus is out on which days, from this week's Monday, and the recent changes
-     to those trips. maintenance.js reads both through the link's token and
-     redraws when the database signals a change. The grid and the bars are the
+     to those trips and to the buses' days out. maintenance.js reads both
+     through the link's token and redraws every 30 seconds. The grid and the bars are the
      schedule's own, from app.css, read-only and two rows tall: where the trip
      goes, then when the bus leaves the yard and comes back. -->
 
@@ -93,7 +93,7 @@
                   <span class="rux--structured-list-th" role="columnheader">When</span>
                   <span class="rux--structured-list-th" role="columnheader">Bus</span>
                   <span class="rux--structured-list-th" role="columnheader">Change</span>
-                  <span class="rux--structured-list-th" role="columnheader">Trip dates</span>
+                  <span class="rux--structured-list-th" role="columnheader">Dates</span>
                   <span class="rux--structured-list-th" role="columnheader">Trip</span>
                   <span class="rux--structured-list-th" role="columnheader">Who</span>
                 </div>

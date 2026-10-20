@@ -3,7 +3,8 @@
    --------------------------------------------------------------------------
    maintenance.html?s=<token> shows, without a log-in, which bus is out on
    which days over two weeks from this week's Monday in Chicago time, and the
-   recent changes to those trips. get_maintenance_schedule and
+   recent changes to those trips and to the buses' days out.
+   get_maintenance_schedule and
    get_maintenance_schedule_changes check the token and return only what this
    page draws, so it keeps working once the database admits only staff.
 
@@ -273,17 +274,19 @@
   };
 
   // -- recent changes ------------------------------------------------------------
-  /* Every change names the same things in the same columns: what happened,
-     the trip, its dates and the bus. The history records a bus only for a bus
-     change, as "Bus 133" before and after. An added or changed trip shows the
+  /* Every change names the same things in the same columns: when, the bus,
+     what happened, the days, the trip and who. get_maintenance_schedule_changes
+     returns only changes whose days touch these two weeks, before or after
+     the change. The history records a bus only for a bus change, as its
+     number before and after. An added, reinstated or moved trip shows the
      buses it is on now, read from the schedule on this page and marked "now",
      because a later move is a row of its own; a removed trip's bus was never
-     recorded. */
+     recorded, and a cancelled one's only as a count. */
   const shortDates = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
-  const tripDates = row => {
-    if (!isDate(row.tripStartDate)) return '';
-    const a = parseISO(row.tripStartDate);
-    const b = isDate(row.tripEndDate) ? parseISO(row.tripEndDate) : a;
+  const days = (from, to) => {
+    if (!isDate(from)) return '';
+    const a = parseISO(from);
+    const b = isDate(to) ? parseISO(to) : a;
     if (b <= a) return shortDates.format(a);
     return typeof shortDates.formatRange === 'function'
       ? shortDates.formatRange(a, b)
@@ -291,40 +294,45 @@
   };
   // A bus name never breaks inside itself, so a narrow column wraps only
   // between buses: "Bus 133 →" over "Bus 506".
-  const keep = s => String(s).replace(/ /g, ' ');
-  // "Bus 506", as the history writes a bus; a vehicle named rather than
-  // numbered, such as the van, keeps its name alone.
+  const keep = s => String(s).replace(/ /g, '\u00a0');
+  // "Bus 506"; a vehicle named rather than numbered, such as the van, keeps
+  // its name alone.
+  const busName = n => keep(/^\d/.test(String(n)) ? `Bus ${n}` : String(n));
   const busesNow = (row, tripsById) => {
     const buses = [...new Set((tripsById.get(String(row.tripId))?.assignments || [])
       .filter(a => a.busNumber != null)
-      .map(a => keep(/^\d/.test(String(a.busNumber)) ? `Bus ${a.busNumber}` : String(a.busNumber))))];
+      .map(a => busName(a.busNumber)))];
     return buses.length ? `${buses.join(', ')} now` : 'No bus yet';
   };
   const describe = (row, tripsById) => {
-    if (row.action === 'created') return { change: 'Trip added', bus: busesNow(row, tripsById) };
-    if (row.action === 'deleted') return { change: 'Trip removed', bus: 'Not recorded' };
+    const trip = row.destination || row.tripRef || 'Unnamed trip';
+    const dates = days(row.tripStartDate, row.tripEndDate);
+    const now = { bus: busesNow(row, tripsById), dates, trip };
+    switch (row.action) {
+      case 'created': return { ...now, change: 'Trip added' };
+      case 'reinstated': return { ...now, change: 'Trip reinstated' };
+      case 'deleted': return { change: 'Trip removed', bus: 'Not recorded', dates, trip };
+      case 'cancelled': {
+        const n = Number(row.busesFreed) || 0;
+        return { change: 'Trip cancelled', bus: n === 1 ? '1 bus freed' : n ? `${n} buses freed` : 'Not recorded', dates, trip };
+      }
+      case 'dates_changed':
+        return { ...now, change: `Dates moved, was ${days(row.wasStartDate, row.wasEndDate)}` };
+      case 'days_out': {
+        const bus = row.busNumber != null ? busName(row.busNumber) : 'A bus';
+        const was = days(row.wasStartDate, row.wasEndDate);
+        const out = days(row.outStartDate, row.outEndDate);
+        const trip = 'Out of service';
+        if (was && out) return { bus, change: `Days out moved, was ${was}`, dates: out, trip };
+        if (out) return { bus, change: 'Days out added', dates: out, trip };
+        return { bus, change: 'Days out removed', dates: was, trip };
+      }
+    }
     const bus = (row.changes || []).find(c => c.field === 'bus');
-    if (bus?.before && bus?.after) return { change: 'Bus changed', bus: `${keep(bus.before)} → ${keep(bus.after)}` };
-    if (bus?.after) return { change: 'Bus assigned', bus: keep(bus.after) };
-    if (bus?.before) return { change: 'Bus unassigned', bus: `${keep(bus.before)} → none` };
-    return { change: 'Trip changed', bus: busesNow(row, tripsById) };
-  };
-
-  /* A change belongs to these two weeks when its trip is on them, by id, or
-     when its trip's days overlap them. Never by trip reference: two trips can
-     share one, and a change printed under the wrong trip would leave the
-     office on this page. */
-  const changesFor = (rows, data) => {
-    const start = parseISO(data.rangeStart);
-    const end = addDays(start, DAYS - 1);
-    const shown = new Set((data.trips || []).map(t => String(t.id)));
-    return (rows || []).filter(row => {
-      if (row.tripId && shown.has(String(row.tripId))) return true;
-      if (!isDate(row.tripStartDate)) return false;
-      const a = parseISO(row.tripStartDate);
-      const b = isDate(row.tripEndDate) ? parseISO(row.tripEndDate) : a;
-      return a <= end && b >= start;
-    });
+    if (bus?.before && bus?.after) return { ...now, change: 'Bus changed', bus: `${busName(bus.before)} → ${busName(bus.after)}` };
+    if (bus?.after) return { ...now, change: 'Bus assigned', bus: busName(bus.after) };
+    if (bus?.before) return { ...now, change: 'Bus unassigned', bus: `${busName(bus.before)} → none` };
+    return { ...now, change: 'Trip changed' };
   };
 
   const renderChanges = (result, data) => {
@@ -336,7 +344,7 @@
       changesNote.hidden = false;
       return;
     }
-    const rows = changesFor(result.data?.changes, data);
+    const rows = result.data?.changes || [];
     const tripsById = new Map((data.trips || []).map(t => [String(t.id), t]));
     // Short cells stay on one line; the bus and the trip's name may wrap, so
     // on a phone the first columns fit before the list scrolls sideways.
@@ -350,15 +358,16 @@
       const tr = el('div', 'rux--structured-list-row');
       tr.setAttribute('role', 'row');
       const when = new Date(row.createdAt);
-      const { change, bus } = describe(row, tripsById);
+      const { change, bus, dates, trip } = describe(row, tripsById);
       // In the order the maintenance crew reads a change: when, which bus,
       // what happened, the days that bus is out, then the trip and who did it.
+      // A change that says what the days were may wrap.
       tr.append(
         cell(Number.isNaN(when.getTime()) ? '' : stamp.format(when)),
         cell(bus, 'rux--structured-list-td'),
-        cell(change),
-        cell(tripDates(row)),
-        cell(row.destination || row.tripRef || 'Unnamed trip', 'rux--structured-list-td'),
+        cell(change, change.includes(', was ') ? 'rux--structured-list-td' : NOWRAP),
+        cell(dates),
+        cell(trip, 'rux--structured-list-td'),
         cell(String(row.actorName || '').trim() || 'Dispatcher'),
       );
       changeRows.append(tr);

@@ -3000,7 +3000,8 @@ button.scheduler-row-head__num::after {
 .scheduler-pair .rux--text-input__field-outer-wrapper,
 .scheduler-pair .rux--text-input__field-wrapper { min-inline-size: 0; inline-size: 100%; }
 .scheduler-pair .rux--text-input,
-.scheduler-pair .rux--select-input { inline-size: 100%; min-inline-size: 0; }
+.scheduler-pair .rux--select-input,
+.scheduler-pair .rux--number input[type=number] { inline-size: 100%; min-inline-size: 0; }
 /* A field beside a checkbox, as a hotel's confirmation number and Booked are.
    The checkbox takes only its own width, so the field keeps the rest and its
    label stays on one line; bottoms align, and the checkbox is centred on the

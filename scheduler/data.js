@@ -6945,13 +6945,15 @@
     topFields.append(
       outRange,
       returnDates,
-      full(textField('scheduler-f-destination', 'Destination', trip.destination)),
-      full(selectField('scheduler-f-type', 'Type', trip.trip_type, [
-        ['', '—'],
-        ['round_trip', 'Round trip'],
-        ['one_way', 'One way'],
-        [SPLIT, 'Split'],
-      ])),
+      pair(
+        textField('scheduler-f-destination', 'Destination', trip.destination),
+        selectField('scheduler-f-type', 'Type', trip.trip_type, [
+          ['', '—'],
+          ['round_trip', 'Round trip'],
+          ['one_way', 'One way'],
+          [SPLIT, 'Split'],
+        ]),
+      ),
       pair(passengers, busCount),
       colorBox,
     );

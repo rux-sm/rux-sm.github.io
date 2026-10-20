@@ -140,6 +140,9 @@ them and nothing is entered twice.
   triggers go.
 - **Each database change is its own step,** written as SQL, shown to rux and
   applied on a yes, before the code that reads it is pushed.
+- **A database function moves with the pages that read it,** because the
+  twelve that name a leg by its word hand that word to a page, so changing
+  one alone would change it twice.
 
 ## Questions
 
@@ -147,10 +150,6 @@ None open.
 
 ## Tasks
 
-- [ ] Read the bodies of `get_driver_share_trips`, `get_maintenance_schedule`,
-      `trip_steps_off`, the triggers that take a Done off and the driver
-      status functions, and write the SQL that makes each read legs, routes
-      and the contact list.
 - [ ] Put the shape rule in a small file with sample cases: a trip's legs by
       date, each one's routes, dates and bus count, and its papers and
       contacts with the first leg's standing in, replacing the two-leg rule
@@ -164,6 +163,11 @@ None open.
       `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
       `scheduler/share/driver.js`; live and the road. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
+      A group moves with the database functions its pages read: the driver
+      pages with `get_driver_share_trips`, the share link functions and the
+      driver status functions; the maintenance page with
+      `get_maintenance_schedule`; and the editor with `trips_clear_done`,
+      `trip_steps_off` and `trip_stops_steps_off`.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

@@ -60,7 +60,7 @@
     locks(cats, results);
     const category = cats.find(c => c.level === at && (c.maker || '') === by);
     if (!category) {
-      say('This rift is not here', 'It may have been moved. Pick one from Puzzles.');
+      say('This rift is not here', 'It may have been moved. Pick one from Play.');
       return;
     }
     const name = heading(category), all = category.puzzles;

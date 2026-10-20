@@ -93,7 +93,6 @@
   const list = people => {
     const el = document.createElement('section');
     el.className = 'rux--stack-vertical rux--stack-scale-4';
-    el.append(words('rux--type-productive-heading-02', 'Friends'));
     const none = words('pixels-meta', 'No friends yet. Send your link to someone to play with.');
     const ul = document.createElement('ul');
     ul.className = 'pixels-people';

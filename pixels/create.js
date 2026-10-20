@@ -155,10 +155,10 @@
         ul.append(...solvers.map(s => {
           const li = document.createElement('li');
           li.className = 'pixels-person';
-          li.append(portrait(s), words('pixels-person-name', s.name), words('pixels-meta', `${s.solved} of ${g.puzzles.length} · ${time(s.seconds)}`));
+          li.append(portrait(s), words('pixels-person-name', s.name), words('pixels-meta', `${s.solved} of ${g.puzzles.length} found · ${time(s.seconds)}`));
           return li;
         }));
-        block.append(ul);
+        block.append(words('pixels-meta', 'Played by'), ul);
       }
       return block;
     }));

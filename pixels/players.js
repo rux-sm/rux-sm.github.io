@@ -19,7 +19,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, DAILY, today, streak, time, portrait } = window.Pixels;
+  const { data, owner, DAILY, today, streak, time, portrait, words } = window.Pixels;
   const $ = id => document.getElementById(id);
 
   const say = (heading, detail) => {
@@ -36,7 +36,7 @@
     b.textContent = text;
     return b;
   };
-  const when = stamp => (stamp ? new Date(stamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : 'Never');
+  const when = stamp => (stamp ? `played ${new Date(stamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}` : 'never played');
 
   const draw = async () => {
     let all;
@@ -69,10 +69,11 @@
       name.className = 'pixels-person-name';
       name.textContent = p.name;
       const stats = document.createElement('span');
-      stats.className = 'pixels-meta pixels-person-name';
+      stats.className = 'pixels-meta';
       // Today's puzzle and the days in a row say nothing while it is off.
-      stats.textContent = [...(DAILY ? [p.today ? `today ${p.today}` : 'not today', `${p.days} in a row`] : []), `${p.solved} solved`, when(p.last_played_at)].join(' · ');
-      text.append(name, stats);
+      stats.textContent = [...(DAILY ? [p.today ? `today ${p.today}` : 'not today', `${p.days} in a row`] : []), `${p.solved} solved`].join(' · ');
+      // When they last played, on a line of its own.
+      text.append(name, stats, words('pixels-meta', when(p.last_played_at)));
       const edit = key('rux--btn--ghost', 'Edit');
       edit.setAttribute('aria-expanded', 'false');
       edit.setAttribute('aria-label', `Edit ${p.name}`);

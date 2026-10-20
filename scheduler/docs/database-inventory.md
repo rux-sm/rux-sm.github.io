@@ -30,11 +30,11 @@ the schema to match the page.
   `staff_all` rule for a staff session; `profiles` lets staff read and each
   person update their own row, but never its `user_id`;
   `quote_rates` and `quote_mileage_rates` are staff only too.
-- **Nine tables have no rule at all**, so they are reachable only through
+- **Seven tables have no rule at all**, so they are reachable only through
   `security definer` functions: `trip_history`, `record_history`,
   `driver_schedule_shares`, `maintenance_schedule_shares`,
-  `trip_driver_confirmations`, `trip_driver_statuses`, `trip_buses`,
-  `trip_docs`, and Pixels' `pixels_door_log`.
+  `trip_driver_confirmations`, `trip_driver_statuses`, and Pixels'
+  `pixels_door_log`.
 - **The publishable key can run ten functions, the ones the link pages
   call:** the driver page's `get_driver_schedule_share`,
   `get_driver_share_trips`, `get_driver_assignment_statuses`,
@@ -62,7 +62,7 @@ constraints, not types; there are no views.
 
 | Table | Key and links | Columns |
 |---|---|---|
-| `trips` | `id`; `trip_ref` the estimate number, six digits from 100001 off `trip_ref_seq`, unique, set by trigger on the first save and never changed; `booking_contact_id` and `trip_contact_1..5_id` to `contacts` | 104 columns. Scheduling: `destination`, `customer`, `passengers` (the headcount the customer gave, a whole number or null, which only the scheduler writes; the named list is `trip_passengers`), `notes`, which nothing writes now and the trigger `trips_note_update` turns into an update, `notes_updated_at` (set by trigger whenever `notes` changes), `start_date`, `end_date`, `departure_time`, `spot_time`, `return_time`, `return_start_date`, `return_end_date`, `bus_count`, `return_bus_count`, `trip_type` (round_trip, one_way, dropoff_pickup), `vehicle_type` (a `buses.type`, null for any), `trip_bar_color`, `is_self_organized`. Contacts: `booking_contact_name`, `_phone`, `_email`, `_missive_url`; `trip_contact_1..5_name` and `_phone`, and `_leg`, the leg of a split trip each is for (outbound, return, or null for the drop-off's, which the pickup takes until it has its own, as `leg-papers.js` reads it); `contact_not_needed`. Money: `quoted_price`, `quote_sent_price` and `quote_sent_on` (the price the customer was sent and the day, null until the Billing tab marks it), `deposit_amount`, `contract_status`, `contract_signed_on` (the day the Billing list's contract row says, null on a contract signed before the column), `contract_note`, `po_received`, `po_ref`, `po_amount`, `invoiced`, `invoice_status`, `invoice_number`, `balance_paid`, `date_paid`, `payment_ref_1..3`. Needs: `req_sleeper`, `req_56pax`, `req_ada`, `need_hotel`, `need_fuel_card`, `trip_reqs` jsonb. Distance: `pickup_address`, `est_miles` (the trip's estimated miles; the scheduler writes the route's total into it unless a figure is typed), `actual_miles`, `driving_hours`, `on_duty_hours`. Per-leg workflow, `_outbound` and `_return`: `driver_contact_sent`, `trip_reminder_sent`, `envelope_printed`, `fuel_card_assigned`, `fuel_card_number`, `hotel_booked`, `hotel_itinerary_number`, `itinerary_printed`, `hos_form_printed`. After the trip: `post_trip_survey_sent`, `post_trip_survey_message`, `post_trip_incident`, `post_trip_note`. Status: `updated_at` (trigger), `confirmed`, `itinerary_confirmed`, `itinerary_not_needed`, `cancelled_at`, `cancellation_reason`. Done: `route_done_at`, `buses_done_at`, `billing_done_at` and each `_by` (a name), cleared by trigger when the tab's contents change. |
+| `trips` | `id`; `trip_ref` the estimate number, six digits from 100001 off `trip_ref_seq`, unique, set by trigger on the first save and never changed; `booking_contact_id` and `trip_contact_1..5_id` to `contacts` | 92 columns. Scheduling: `destination`, `customer`, `passengers` (the headcount the customer gave, a whole number or null), `notes`, which nothing writes now and the trigger `trips_note_update` turns into an update, `notes_updated_at` (set by trigger whenever `notes` changes), `start_date`, `end_date`, `departure_time`, `spot_time`, `return_time`, `return_start_date`, `return_end_date`, `bus_count`, `return_bus_count`, `trip_type` (round_trip, one_way, dropoff_pickup), `vehicle_type` (a `buses.type`, null for any), `trip_bar_color`. Contacts: `booking_contact_name`, `_phone`, `_email`, `_missive_url`; `trip_contact_1..5_name` and `_phone`, and `_leg`, the leg of a split trip each is for (outbound, return, or null for the drop-off's, which the pickup takes until it has its own, as `leg-papers.js` reads it); `contact_not_needed`. Money: `quoted_price`, `quote_sent_price` and `quote_sent_on` (the price the customer was sent and the day, null until the Billing tab marks it), `deposit_amount`, `contract_status`, `contract_signed_on` (the day the Billing list's contract row says, null on a contract signed before the column), `contract_note`, `po_received`, `po_ref`, `po_amount`, `invoiced`, `invoice_status`, `invoice_number`, `balance_paid`, `date_paid`. Needs: `req_sleeper`, `req_56pax`, `req_ada`, `need_hotel`, `need_fuel_card`, `trip_reqs` jsonb. Distance: `pickup_address`, `est_miles` (the trip's estimated miles; the scheduler writes the route's total into it unless a figure is typed), `actual_miles`, `driving_hours`, `on_duty_hours`. Per-leg workflow, `_outbound` and `_return`: `hotel_booked`, `hotel_itinerary_number`, `itinerary_printed`, `hos_form_printed`. Status: `updated_at` (trigger), `confirmed`, `itinerary_not_needed`, `cancelled_at`, `cancellation_reason`. Done: `route_done_at`, `buses_done_at`, `billing_done_at` and each `_by` (a name), cleared by trigger when the tab's contents change. |
 | `buses` | `id`; `bus_ref` generated `BUS-###` by trigger | `number`, `capacity`, `type` (a name from `vehicle-types-v1`, free text), `ada_lift`, `sleeper`, `equipment` jsonb (every other `requirements-v1` vehicle entry it has, `{id: true}`), `status` (active, inactive), `make`, `model`, `year`, `vin`, `color`, `mileage`, `last_service`, `next_service`, `insurance_exp`, `registration_exp`, `inspection_exp`, `sort_order`, `notes` |
 | `drivers` | `id`; `driver_ref` generated `DRV-###` by trigger | `name`, `short_name`, `phone`, `email`, `texting_url`, `address`, `city`, `address_state`, `zip`, `date_of_birth`, `hire_date`, `employment_type` (full-time, part-time, contract, seasonal), `status`, `priority` (1 to 5), `sort_order`, `cdl_class`, `license_number`, `license_state`, `license_exp`, `med_card_expiry`, `endorsements` text[], `emergency_contact_name`, `emergency_contact_phone`, `photo_path`, `notes`, `language` (`en` or `es`, not null, default `en`: the language the driver's schedule link and the texts sent to them are written in, which `get_driver_schedule_share` returns with the driver) |
 | `trip_stops` | `id`; `trip_id` to `trips`, cascade | `position`, `leg` (outbound, return), `type`, `label`, `name`, `address`, `lat`, `lng`, `mapbox_id`, `miles`, `drive`, `miles_source` and `drive_source` (estimated, manual), `depart_prev`, `arrive`, `spot`, `depart_prev_date`, `arrive_date`, `spot_date`, `dwell_status` (off, sleeper, on), `route_status` |
@@ -86,14 +86,10 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `trip_invoices` | trip editor Billing tab | `trip_id` to `trips`, cascade; `position`, `number`, `amount`, `date` |
 | `trip_quote_lines` | trip editor Billing tab, customer quote | `trip_id` to `trips`, cascade; `position`, `kind` (rental, second_driver, relief, discount, hotel, other), `leg` (outbound, return or null), `item`, `description`, `quantity`, `cost`, `amount`, `cost_typed`, and a rental line's `miles`, `dead_miles` and `rate`. Staff only, broadcast on realtime. |
 | `trip_updates` | the board, embedded in each trip for the bar's Updates mark and card; the Updates window, which every Save opens and the Update shortcut opens on its own, and which adds, edits and deletes them | `trip_id` to `trips`, cascade; `created_at`, `actor_id` (default `auth.uid()`), `actor_name`, `body`, `kind` (update, nothing, imported), `changes` jsonb, `edited_at` (null until its words are changed). The `imported` rows are copied from `notes`: 217 from its dated lines, credited to Sergio, and each trip's whole note as an update of its own, unless an update already said the same words. What was said to the customer, newest first. Cancel writes its reason as one. Staff only, anon granted nothing, broadcast on realtime. |
-| `trip_ticket_options` | trip editor, manifest | `trip_id`, `position`, `label`, `price` |
-| `trip_passengers` | manifest | 17 columns: `name`, `phone`, `email`, `seat`, `status`, `ticket_option_id`, `amount_owed`, `amount_paid`, `group_label`, `pickup_location` |
-| `trip_passenger_payments` | manifest | `passenger_id`, `amount`, `method`, `date`, `ref` |
 | `trip_documents` | trip editor Files, driver page, `share/document.html`, the connector's `get_trip` and `read_trip_document` | `trip_id`, `label`, `file_name`, `file_path`, `file_size`, and `leg`, the leg of a split trip an itinerary is for, read as a trip contact's is. Files in bucket `trip-documents`. Replacing a file points the same row at the new one in both apps, so a document link keeps working. A driver's link is handed only the rows labelled Itinerary, with their leg, and all five trip contacts with theirs, by `get_driver_share_trips`. |
 | `document_kinds` | Documents page | `name`, unique whatever its case, and `per_driver`, on for a kind kept once for each driver, such as a background check form. Starts as Insurance certificate, W-9 and Driver background check. Staff only. |
 | `company_documents` | Documents page, the connector's `find_documents` | The office's own paperwork: `kind_id` to `document_kinds`, `customer_id` to `customers` for the customer it belongs to, `driver_id` to `drivers` for who it is about, all three restrict, so a kind, customer or driver with a document is not deleted; `holder`, the name printed on it, which a certificate's holder has without being a customer; `ends_on`, `note`, `file_name`, `file_path`, `file_size`, `replaced_at`, `created_by` (default `auth.uid()`), `updated_at`. Files in bucket `company-documents` at `<document id>/<file name>`. `replaced_at` is null on the current copy, and a unique index allows one current copy for each kind, holder, customer and driver, the holder whatever its case: the trigger `company_documents_replace` makes the one before a new row old, and `company_documents_restore` brings the newest old one back when the current one is deleted. Staff only. |
 | `customer_required_kinds` | Customers page, and every page's checklist through `leg-facts.js` | `customer_id` to `customers` and `kind_id` to `document_kinds`, both cascade: the kinds of driver form a customer asks for on its trips. Staff only. |
-| `trip_itineraries` | Itineraries view | `trip_id` (unique when set), `document` jsonb, `status` (new, reviewed, closed), `label` |
 | `trip_history` | History page | `trip_id`, `trip_ref`, `action` (ten values), `changes` jsonb, each `{ field, label, before, after }` in words, which for a scheduler save `scheduler/trip-history.js` works out from the trip and its rows read before and after the writes, a line for any column that differs, `metadata` jsonb, `actor_name`, the name the browser sends, and `actor_id`, the signed-in account, which is empty on a driver's entry, made from a link with no log-in. RPC only. |
 | `record_history` | History page | `kind` (driver, bus, customer, contact, location), `record_id`, `record_name`, `actor_id`, `actor_name`, `action` (created, updated, deleted), `changes` jsonb, one `field`, `before` and `after` per column that changed. Written only by the `*_history` triggers on those five tables and on `driver_time_off` and `bus_out_of_service`, whichever app made the change; a trigger that fails warns and never stops the save. RPC only. |
 | `trip_driver_statuses` | driver page, To do | `trip_id`, `driver_id`, `leg`, `role`, `status` (five values), `source` (dispatcher, driver), `accepted_at`, `declined_at`, `accepted_view`, what the driver page showed of the driver's job when they accepted, which a later change is compared with, and `told_at` and `told_by`, when the office marked the driver as told of a change, which sets `accepted_view` to the leg as it stood. Staff read it and hear its changes live; written by RPC only. |
@@ -106,18 +102,15 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `maintenance_schedule_shares` | this app's maintenance pages | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. `yard-location-v1` (`{ name, address, lat, lng }`), `requirements-v1` (a list of `{ id, label, type, active, sortOrder, icon }`, `type` vehicle for a bus's need or driver for the trip's), `billing-workflow-v1` (`{ workflow, confirmWhen }`: each of `contractSigned`, `poReceived` and `invoiced` with its `label` and `active`, and the billing statuses that confirm a trip), which the Settings page's Office tab edits, locations, and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here, with the Settings page's `rate-calendar-v1` (`{ months }`, a month's number to the id of the mileage rate it starts from), `route-times-v1`, `fuel-card-v1` (`{ miles, days }`), `dead-miles-v1` (`{ miles }`, null for no offer) and `late-return-v1` (`{ hour }`, 0 to 12, the hour of the morning before which a bus back at the yard came back the night before; 4 with no row). |
 | `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Ruxbot is the one row with no `user_id`, the profile an agent's to-do rows are made by, whose id `ruxbot_profile_id()` returns. Not `platform.profiles`. |
-| `notifications`, `notification_reads` | header bell | `type` (three values), `severity`, `title`, `ref_table`, `ref_id`, `dedupe_key` unique |
 | `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
-| `dev_notes` | dev notes popover | dropped |
 | `game_*` (four tables, nine functions) | Flip Seven | dropped |
-| `trip_docs`, `trip_buses` | nothing | referenced by no code; leave alone |
 | `quote_rates` | quote calculator | this app's own. `key` and `value`, one row per named rate or rule; the keys are listed in `scheduler/quote.js`, and a rule not yet saved falls back to the spreadsheet's figure there. Staff only. |
 | `quote_mileage_rates` | quote calculator | this app's own. `rate`, `note`, `is_default` (at most one true). Staff only. |
 
 ### Functions the app calls
 
-Trigger functions `set_bus_ref`, `set_driver_ref`, `set_trip_ref`, `touch_trips_updated_at`,
-`touch_updated_at` and `trip_itineraries_touch` run on their own, and so do
+Trigger functions `set_bus_ref`, `set_driver_ref`, `set_trip_ref`, `touch_trips_updated_at`
+and `touch_updated_at` run on their own, and so do
 `trips_clear_done` and `trip_rows_clear_done`, which take a tab's Done off
 `trips` when its dates, bus counts, needs or price change, or its stops,
 buses or quote lines do. `to_dos_record_history` writes a to-do row's Done, and its
@@ -148,12 +141,7 @@ ten-minute signed links, and the link pages reach a trip document through
 
 ### Realtime
 
-The old app subscribes to `postgres_changes` on `trips`, `trip_stops`,
-`trip_assignments`, `trip_documents`, `trip_payments`, `trip_pos`,
-`trip_invoices`, `trip_passengers` and `trip_ticket_options` for the grid,
-and separately on notifications, team chat, dev notes and the game. A
-30-second poll backs the grid up, and is the only thing that picks up
-`trip_drivers`. This app subscribes twice: the board's `scheduler-board`
+This app subscribes twice: the board's `scheduler-board`
 channel to the tables it draws from, and its `scheduler-to-do` channel to
 `to_dos`. The board and the Trips page each hold `scheduler-to-do-rows`, a
 channel to the trip tables the gaps on Prep are worked out from.
@@ -174,9 +162,8 @@ as in `screen-inventory.md`.
 | `customers` | Trip editor, Customers, Locations | Customers page, trip editor |
 | `customer_required_kinds` | Customers page | Customers page, with the customer's Save |
 | `trip_updates` | Schedule, trip editor | the Updates window, from Save or on its own; Cancel |
-| `trip_payments`, `trip_pos`, `trip_invoices`, `trip_ticket_options` | Trip editor Billing | Trip editor |
+| `trip_payments`, `trip_pos`, `trip_invoices` | Trip editor Billing | Trip editor |
 | `trip_quote_lines` | Trip editor Billing, the customer quote on the Forms page | Trip editor, which writes `quoted_price` as the lines' sum |
-| `trip_passengers`, `trip_passenger_payments` | Manifest | Manifest |
 | `trip_documents` + bucket | Trip editor Files, driver page, `share/document.html` | Trip editor Files, with its Move to pickup and Move to drop-off, and the bar menu's Upload itinerary, each change with a `trip_history` entry |
 | `company_documents` + bucket, `document_kinds` | Documents page | Documents page: an upload, a new copy, an edit of the facts, a delete, and the Kinds window |
 | `trip_history` (RPC) | History page | every save in the trip editor |
@@ -184,8 +171,6 @@ as in `screen-inventory.md`.
 | `trip_driver_statuses` (RPC) | Schedule, To do, Drivers | driver page accepts and declines; the bar menu's driver status items |
 | `driver_schedule_shares` (RPC) | Driver editor | Driver editor |
 | `settings` | Settings, trip editor defaults, the Billing tab's `billing-workflow-v1`, the Route tab's and Locations page's `yard-location-v1`, `geoapify-key-v1` and `route-times-v1` | Settings |
-| `notifications`, `notification_reads` | header bell | old app's notification job; unchanged |
-| `trip_itineraries` | Itineraries, deferred | intake, deferred |
 
 ## 4. The Claude connector
 

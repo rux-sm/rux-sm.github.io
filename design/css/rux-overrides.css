@@ -651,9 +651,9 @@
    32px controls, the name 24px in. Carbon's is 48px of edge-to-edge 48px
    squares. The bar keeps Carbon's parts: its icons become 32px buttons with
    6px corners, 8px apart, and the name starts 8px past the bar's 16px.
-   RUX-DARK'S HEADER IS 60px, the height of its every other bar of buttons:
-   12px on every side of its 36px controls, as its table toolbar and the
-   scheduler's panel heads hold theirs, on 4px corners.
+   RUX-DARK'S HEADER IS 68px: 16px on every side of its 36px controls, the
+   inset its panel heads and footers, tiles and fields stand in, on 4px
+   corners.
    Everything Carbon places under the header -- the page's content, the side
    nav and its overlay, the header's panels and a side panel -- moves down
    with it. */
@@ -664,8 +664,8 @@
 }
 [data-theme="rux-dark"] .rux--header,
 .rux--header[data-theme="rux-dark"] {
-  block-size: 3.75rem;
-  padding-inline: var(--rux-spacing-04);
+  block-size: 4.25rem;
+  padding-inline: var(--rux-spacing-05);
 }
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__global {
   align-items: center;
@@ -761,16 +761,16 @@
   inset-block-start: 4rem;
 }
 [data-theme="rux-dark"] :is(.rux--header ~ .rux--content, div:has(.rux--header) ~ .rux--content) {
-  margin-block-start: 3.75rem;
+  margin-block-start: 4.25rem;
 }
 [data-theme="rux-dark"] :is(.rux--side-nav--ux, .rux--side-nav__overlay, .rux--header-panel, .rux--side-panel) {
-  inset-block-start: 3.75rem;
+  inset-block-start: 4.25rem;
 }
 [data-theme="rux-dark"] :is(.rux--header ~ .rux--side-nav, .rux--side-panel) {
-  block-size: calc(100% - 3.75rem);
+  block-size: calc(100% - 4.25rem);
 }
 [data-theme="rux-dark"] .rux--header ~ .rux--side-nav {
-  inset-block-start: 3.75rem;
+  inset-block-start: 4.25rem;
 }
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255
@@ -2247,7 +2247,8 @@
    and the action to the end, 12px from every edge. Ant's Modal page gathers
    its buttons at the end of a transparent footer, 8px apart, at the control's
    own height. Both themes take the gathered arrangement for every surface,
-   and geist-dark Geist's 12px. The two rounded themes
+   and geist-dark Geist's 12px; rux-dark keeps 16px, the inset its tiles,
+   fields and panel head stand in, so a footer lines up with them. The two rounded themes
    leave; every other theme keeps the band, so the rules above stand and the
    corner is taken back here rather than the selector list being written twice.
    The Dialog primitive's footer is the same band under another name and ends
@@ -2271,9 +2272,9 @@
   background-color: transparent;
   block-size: auto;
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--action-set,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--modal-footer,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--dialog-footer {
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--action-set,
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-footer,
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--dialog-footer {
   padding: var(--rux-spacing-04);
 }
 /* The height is `md`, read through Carbon's own size variable rather than a

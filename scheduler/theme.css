@@ -332,7 +332,8 @@
    each hold the buttons Design
    sizes that theme's controls at, inset from every edge of its bar:
    geist-dark's 36px buttons 12px in and 8px apart in a 60px bar, the 12px
-   Geist's own Modal and Fieldset footers hold their buttons at, and
+   Geist's own Modal and Fieldset footers hold their buttons at, rux-dark's
+   16px in and 8px apart, the inset of its tiles, fields and footers, and
    ant-dark's 32px ones 8px in and 8px apart in a 48px bar. Nothing fills
    its bar edge to edge, so the four heads
    and the rows under them line up across the board, and every button takes
@@ -340,7 +341,8 @@
    following the card's curve. A panel's close button fixes its own 40px,
    so it is named. The roster's head keeps its full height where the grid
    under it wants more room than the pane has. */
-[data-theme="geist-dark"], [data-theme="rux-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
+[data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
+[data-theme="rux-dark"] { --scheduler-head-inset: var(--rux-spacing-05); --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme^="apple-"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
@@ -559,12 +561,12 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-to-do__more > .scheduler-to-do__buttons {
   gap: var(--rux-spacing-03);
 }
-/* Geist's header is 64px and rux-dark's 60px, not the shell's 48 (Design's
+/* Geist's header is 64px and rux-dark's 68px, not the shell's 48 (Design's
    rux-overrides.css), so what the board places under it -- a panel brought
    in front, its scrim and the quote's pinned total -- sits that far down
    rather than 3rem. */
 [data-theme="geist-dark"] { --scheduler-header-height: 4rem; }
-[data-theme="rux-dark"] { --scheduler-header-height: 3.75rem; }
+[data-theme="rux-dark"] { --scheduler-header-height: 4.25rem; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="roster"] .scheduler-aside,
@@ -772,6 +774,7 @@
      apart the way the trip panel beside them already is. It is drawn at every
      width, the page keeping 16px around the board throughout. */
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
+  --scheduler-region-edge-width: 1px;
 }
 /* The Apple themes' regions are a fill on the page, so each is told apart by
    that fill. Their day band is the region's own surface over a rule, as
@@ -1075,3 +1078,73 @@
 }
 [data-theme="geist-dark"] .scheduler-departures__stepper > .rux--btn { border-radius: 6px; }
 [data-theme="rux-dark"] .scheduler-departures__stepper > .rux--btn { border-radius: 4px; }
+
+/* RUX-DARK MARKS TODAY IN ITS OWN INK, not in a colour: blue is a trip here,
+   red time off and amber an alert, so today's date sits in a pill of the
+   primary text with the page's black on it, as a primary button does, its
+   weekday staying grey, and the roster's letter in a disc of the same. Its
+   column takes a faint wash of that ink down the board and the roster, under
+   the trips; a selected trip's days keep their stronger tint over it. */
+[data-theme="rux-dark"] { --scheduler-today-tint: color-mix(in srgb, var(--rux-text-primary) 5%, transparent); }
+[data-theme="rux-dark"] .scheduler-day--today {
+  color: var(--rux-text-secondary);
+  background: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-day--today.scheduler-day--alt {
+  background: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint)),
+    linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-day--today .scheduler-day__num {
+  padding-inline: var(--rux-spacing-03);
+  border-radius: 999px;
+  background: var(--rux-text-primary);
+  color: var(--rux-background);
+  line-height: 1.5rem;
+}
+[data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--today {
+  display: grid;
+  place-items: center;
+  color: var(--rux-background);
+}
+[data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--today:not(.scheduler-avail__day--on-day) {
+  background: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--today.scheduler-avail__day--alt:not(.scheduler-avail__day--on-day) {
+  background: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint)),
+    linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-avail__day--today .scheduler-avail__letter {
+  display: grid;
+  place-items: center;
+  inline-size: 1.375rem;
+  block-size: 1.375rem;
+  border-radius: 50%;
+  background: var(--rux-text-primary);
+  line-height: 1;
+}
+[data-theme="rux-dark"] .scheduler-avail__cell--today:not(.scheduler-avail__cell--on-day) {
+  background-image: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint));
+}
+[data-theme="rux-dark"] .scheduler-avail__cell--today.scheduler-avail__cell--alt:not(.scheduler-avail__cell--on-day) {
+  background-image: linear-gradient(var(--scheduler-today-tint), var(--scheduler-today-tint)),
+    linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe));
+}
+
+/* RUX-DARK TELLS ITS DAYS APART BY A STRIPE, NOT A LINE: every other day,
+   Tuesday, Thursday and Saturday on a week from Monday, is darkened toward
+   the page's black on the board, its day band and the roster, and the day
+   rules go. The stripe is a wash of black rather than the black itself, so
+   the Unassigned row's tint and a drop's highlight still show through it,
+   each a step darker on its striped days. A selected trip's days keep their
+   own tint in the roster. */
+[data-theme="rux-dark"] { --scheduler-day-stripe: color-mix(in srgb, #000 40%, transparent); }
+[data-theme="rux-dark"] :is(.scheduler-track, .scheduler-avail__cell) { --scheduler-day-rule: transparent; }
+[data-theme="rux-dark"] .scheduler-day--alt:not(.scheduler-day--today) {
+  background: linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--alt:not(.scheduler-avail__day--today, .scheduler-avail__day--on-day) {
+  background: linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe)), var(--scheduler-band-surface);
+}
+[data-theme="rux-dark"] .scheduler-avail__cell--alt:not(.scheduler-avail__cell--today, .scheduler-avail__cell--on-day) {
+  background-image: linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe));
+}

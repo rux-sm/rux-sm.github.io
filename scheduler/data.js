@@ -936,14 +936,24 @@
     paintCorner(corner, typeList[0]?.name ?? '');
     into.appendChild(corner);
 
-    // Today is marked on its header cell only.
+    /* Today is marked on its header cell, and its column's place goes on the
+       grid as `--scheduler-today-at`, which app.css tints down every row in a
+       theme that names the tint; -1 puts it off the board. */
     const today = iso(new Date());
     let todayCell = null;
+    into.style.setProperty('--scheduler-today-at', '-1');
     for (let i = 0; i < days; i++) {
       const d = addDays(weekStart, i);
       const cell = el('div', 'scheduler-day');
       if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
-      if (iso(d) === today) { cell.classList.add('scheduler-day--today'); cell.setAttribute('aria-current', 'date'); todayCell = cell; }
+      // Every other day, the second first, for a theme that tells days apart by a stripe.
+      if (i % 2) cell.classList.add('scheduler-day--alt');
+      if (iso(d) === today) {
+        cell.classList.add('scheduler-day--today');
+        cell.setAttribute('aria-current', 'date');
+        into.style.setProperty('--scheduler-today-at', String(i));
+        todayCell = cell;
+      }
       cell.append(
         document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })),
         el('span', 'scheduler-day__num', String(d.getDate())),
@@ -956,6 +966,12 @@
        stops are set on each track, which app.css draws as its background, so
        `var(--scheduler-day-rule)` resolves on the track that defines it. */
     const ruleCols = Array.from({ length: days - 1 }, (_, i) => i + 1);
+    /* Every other day's stripe, the second day first, drawn under the rules in
+       `--scheduler-day-stripe`, which only a theme that stripes its days
+       names. */
+    const dayStripeStops = Array.from({ length: days }, (_, i) => (i % 2
+      ? `var(--scheduler-day-stripe, transparent) calc(${i} * var(--scheduler-day-w)) calc(${i + 1} * var(--scheduler-day-w))`
+      : `transparent calc(${i} * var(--scheduler-day-w)) calc(${i + 1} * var(--scheduler-day-w))`)).join(', ');
     const dayRuleStops = (() => {
       const parts = [];
       let prev = '0';
@@ -1068,6 +1084,7 @@
       track.style.setProperty('--scheduler-lanes', lanes);
       // The day rules. Per track, for the reason the note above gives.
       track.style.setProperty('--scheduler-day-rules', dayRuleStops);
+      track.style.setProperty('--scheduler-day-stripes', dayStripeStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       for (const w of windows) {
         /* The read covers the four weeks either side, so a window can miss
@@ -10221,12 +10238,16 @@
          the name beside it, with its date when two weeks are on the board.
          Spread rather than `slice`, so the unit is a code point. */
       const short = d.toLocaleDateString(undefined, { weekday: 'short' });
-      const cell = el('div', 'scheduler-avail__day', [...short].slice(0, 1).join(''));
+      // The letter is its own span, so a theme can draw today's as a disc.
+      const cell = el('div', 'scheduler-avail__day');
+      cell.appendChild(el('span', 'scheduler-avail__letter', [...short].slice(0, 1).join('')));
       cell.title = d.toLocaleDateString(undefined, two
         ? { weekday: 'long', month: 'short', day: 'numeric' } : { weekday: 'long' });
       // Weekend letters dim, as the board's day header does; the day rules are
       // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
+      // Every other day, as the board stripes them.
+      if (i % 2) cell.classList.add('scheduler-avail__day--alt');
       // Today is marked on its letter, as on the board's header.
       if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);
@@ -10279,6 +10300,9 @@
           : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
+        if (i % 2) cell.classList.add('scheduler-avail__cell--alt');
+        // Today's column, which a theme that names the tint shades down the roster.
+        if (iso(addDays(weekStart, i)) === iso(new Date())) cell.classList.add('scheduler-avail__cell--today');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
         // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.

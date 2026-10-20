@@ -774,7 +774,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-viewer__toolbar .rux--btn,
 .scheduler-aside__head .rux--btn { border-radius: 0; }
 .scheduler-toolbar > .rux--btn:last-child,
-.scheduler-aside__head > .rux--btn:last-child { border-start-end-radius: var(--scheduler-surface-radius, 0); }
+.scheduler-aside__head > .rux--btn:last-child { border-start-end-radius: var(--scheduler-inner-radius); }
 
 /* A rule between the board toolbar's buttons, as Carbon's pagination divides
    its arrows. The week leads the bar and every ghost button after it draws

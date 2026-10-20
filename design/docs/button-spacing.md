@@ -40,8 +40,9 @@ take its own height; it still takes the gaps below.
 
 | Inset | Where |
 | :--- | :--- |
-| 12px | from the edge of a bar that holds buttons: the header, a toolbar, a panel's head and foot, a dialog's foot, a dialog's close, a card's row of buttons; with 36px buttons that makes every bar 60px |
-| 24px | the margin of what a panel or a dialog holds, its words and fields, wider than the 12px its bars' buttons keep |
+| 16px | from the edge of the header, a panel's head and foot and a dialog's foot, the inset of what they hold; with 36px buttons that makes each of those bars 68px |
+| 12px | from the edge of a toolbar, a dialog's close and a card's row of buttons; with 36px buttons that makes a toolbar 60px |
+| 24px | the margin of what a panel or a dialog holds, its words and fields, wider than the 16px its head and foot keep |
 | centred | a notification's buttons sit centred on its line: the close 8px in on every side of Carbon's 48px square, and 4px in a toast's 40px row |
 
 Ant Dark's foot stands 16px in, as its Modal page measures. Geist Dark

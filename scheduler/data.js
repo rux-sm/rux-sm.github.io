@@ -7494,7 +7494,7 @@
       summaryMenu.setAttribute('aria-label', 'Route options');
       summaryMenu.appendChild(svgUse('#m-more_vert', '16', '0 0 32 32'));
       summaryMenu.lastChild.setAttribute('class', 'rux--btn__icon');
-      // The fuel card is turned on and off here, and suggested under the Summary.
+      // The fuel card is turned on and off here, and suggested at the Summary's foot.
       const setFuelCard = on => { editing.fuelCard = on; drawTotals(); refreshDirty(); };
       /* Every drive of the leg on screen asked again, as picking its places
          again would: the yard's two and the list's, so a drive saved before
@@ -7516,10 +7516,14 @@
       ], 'Route options'));
       const fuelBox = el('div', 'scheduler-fuel');
       const driverBox = el('div', 'scheduler-fuel');
-      const summaryLayer = el('div', 'rux--stack-vertical rux--stack-scale-4');
-      const summaryTile = el('div', 'rux--layer-two');
-      summaryTile.appendChild(summary);
-      summaryLayer.append(summaryTile, driverBox, fuelBox);
+      /* The fuel card and second driver lines are the tile's foot, under a
+         rule as Billing's status is, and the foot is hidden while both are empty. */
+      const summaryFoot = el('div', 'scheduler-summary__foot');
+      const summaryNotes = el('div', 'rux--stack-vertical rux--stack-scale-4');
+      summaryNotes.append(driverBox, fuelBox);
+      summaryFoot.appendChild(summaryNotes);
+      const summaryLayer = el('div', 'rux--layer-two');
+      summaryLayer.appendChild(summary);
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. An older leg with some rows but no
          pickup or yard row has nowhere to put one. */
@@ -8142,7 +8146,7 @@
         table.append(thead, tbody);
         const wrap = el('div', 'rux--data-table-content scheduler-summary__table');
         wrap.appendChild(table);
-        summary.replaceChildren(times, ...actual, wrap);
+        summary.replaceChildren(times, ...actual, wrap, summaryFoot);
 
         /* The fuel card: a line saying the trip has one, or, past the office's
            miles or days, the offer to add one. */
@@ -8196,6 +8200,7 @@
               [{ label: 'Rest in the sleeper', onClick: () => takeSleeperRest(rest.stop) }, coDriver])
             : notice('warning', 'Second driver', `At ${why}${fig.stretches > 1 ? ' between rests' : ''}, this trip needs a second driver.${some}`, coDriver));
         } else driverBox.replaceChildren();
+        summaryFoot.hidden = !driverBox.hasChildNodes() && !fuelBox.hasChildNodes();
       }
 
       // The title is always built, so a change of type can show or hide it.
@@ -8205,7 +8210,7 @@
       routeTitle.hidden = !routeTitle.textContent;
       // The kept times go last, so the Summary is the tab's first section.
       // Its tile is a frame of its own, so app.css draws no rule after it.
-      const summarySection = section(null, summaryLayer);
+      const summarySection = section('Summary', summaryLayer);
       summarySection.classList.add('scheduler-panel-section--summary');
       panelRoute.append(
         summarySection,
@@ -8407,7 +8412,7 @@
       summaryLayer.appendChild(summaryTile);
       const summary = el('div', 'rux--stack-vertical rux--stack-scale-4');
       summary.append(summaryLayer, summaryNote);
-      panelBilling.appendChild(section(null, summary));
+      panelBilling.appendChild(section('Summary', summary));
 
       /* THE QUOTE'S LINES, over the price they add up to. With any line the
          price is their total and is not typed; with none it is typed as it

@@ -1,6 +1,6 @@
 // Runs draft-fields.js, the one list of what a draft may fill, against
 // invented drafts: each kind of value it takes, a field no draft may fill,
-// stops, a purchase order and a contract, and every field having a place in the
+// stops, the trip contacts, a purchase order and a contract, and every field having a place in the
 // editor. Whether each control is on screen is proved by opening a draft.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -22,6 +22,7 @@ const good = {
   booking_contact_email: 'pat@example.com', booking_contact_phone: '(555) 014-2000', departure_time: '6:30',
   req_sleeper: true, booking_contact_missive_url: 'https://mail.missiveapp.com/#inbox/conversations/abc',
   stops: [{ name: 'Arena', arrive: '10:00', leave: '16:00' }],
+  trip_contacts: [{ name: 'Sam Example', phone: '555-014-2001' }, { name: 'Lee Example', leg: 'return' }],
 };
 expect('a draft of good values has nothing wrong', problems(good), []);
 expect('each value of the wrong kind is said, by its field and what it must be',
@@ -39,6 +40,17 @@ expect('stops fit a change too, each with a name or an address, clock times and 
 expect('stops and stop_changes do not go together, since stops replace the leg\'s',
   problems({ stops: good.stops, stop_changes: [{ id: '3f2b6c1e-8a4d-4e2f-9b1a-7c5d3e2f1a0b', dwell: 'off' }] }, { change: true }),
   ['stops replace the leg\'s stops, so a draft carries stops or stop_changes, not both.']);
+expect('trip contacts are up to five people, each a name, a phone and a leg of a split trip',
+  [problems({ trip_contacts: [1, 2, 3, 4, 5].map(n => ({ name: `Contact ${n}`, phone: '(555) 014-200' + n, leg: n % 2 ? 'outbound' : 'return' })) }),
+    problems({ trip_contacts: [{ name: 'Sam Example', leg: null }] }),
+    problems({ trip_contacts: [1, 2, 3, 4, 5, 6].map(n => ({ name: `Contact ${n}` })) }).length,
+    problems({ trip_contacts: [] }).length, problems({ trip_contacts: [{ phone: '555-014-2001' }] }).length,
+    problems({ trip_contacts: [{ name: 'Sam Example', phone: 'call the office' }] }).length,
+    problems({ trip_contacts: [{ name: 'Sam Example', leg: 'pickup' }] }).length,
+    problems({ trip_contacts: [{ name: 'Sam Example', email: 'sam@example.com' }] }).length],
+  [[], [], 1, 1, 1, 1, 1, 1]);
+expect('the two numbered contact fields are no longer fields, so a draft lists its contacts',
+  problems({ trip_contact_2_name: 'Lee Example' })[0].startsWith('These are not trip fields a draft can fill: trip_contact_2_name.'), true);
 expect('a purchase order needs its number or its amount, and a real day',
   [problems({ purchase_order: { ref: '4500123', date: '2027-01-04', amount: '$3,150' } }), problems({ purchase_order: { amount: 900 } }),
     problems({ purchase_order: { date: '2027-01-04' } }).length, problems({ purchase_order: { ref: '1', date: '2027-13-01' } }).length,
@@ -53,7 +65,7 @@ expect('a null value is refused, since a draft only fills', problems({ destinati
 // Every field names a kind the list knows, and a place the editor puts it.
 expect('every field\'s kind of value is one the list checks', FIELDS.filter(f => !KINDS[f.value]).map(f => f.key), []);
 expect('a field with no control is one the editor lays out itself',
-  FIELDS.filter(f => !f.id).map(f => f.kind).filter(k => !['fleet', 'trip', 'buses', 'billing', 'stops', 'stopChanges'].includes(k)), []);
+  FIELDS.filter(f => !f.id).map(f => f.kind).filter(k => !['fleet', 'trip', 'buses', 'billing', 'contacts', 'stops', 'stopChanges'].includes(k)), []);
 
 // Changes to a saved trip's stops: by id, times and days and the wait, and nothing that moves a stop.
 const STOP = '3f2b6c1e-8a4d-4e2f-9b1a-7c5d3e2f1a0b';

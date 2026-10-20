@@ -2379,6 +2379,8 @@ const window = {};
      buses       empty vehicles added on a leg's Buses tab, up to the count
      billing     a purchase order or a signed contract, laid onto the
                  Billing list as a row a person adds there
+     contacts    the trip contacts, up to five, each with the leg of a
+                 split trip it is for, laid into the Details tab's slots
      stops       the places between the pickup and the drop-off, each with
                  its day, laid out on the Route tab; on a change they
                  replace the opened leg's, after the editor asks
@@ -2405,6 +2407,9 @@ const window = {};
   // What a purchase order and a signed contract may carry.
   const PURCHASE_ORDER = ['ref', 'date', 'amount'];
   const CONTRACT = ['signed_on', 'signed_by'];
+  // What a trip contact may carry, and the legs it may be for.
+  const CONTACT = ['name', 'phone', 'leg'];
+  const LEGS = ['outbound', 'return'];
 
   /* Each kind of value, and what a value of it must be. A check answers null
      for a value that fits, or the words for what it must be. */
@@ -2448,6 +2453,11 @@ const window = {};
       && dayOrNone(v.date) && (v.amount == null || (Number.isFinite(number(v.amount)) && number(v.amount) >= 0))
       && (v.ref != null || v.amount != null)
       ? null : '{ ref, date, amount }: its number or its amount at least, the day as YYYY-MM-DD and the amount in dollars'),
+    contacts: v => (Array.isArray(v) && v.length >= 1 && v.length <= 5 && v.every(c => only(c, CONTACT)
+      && typeof c.name === 'string' && c.name.trim() && c.name.length <= 200
+      && (c.phone == null || KINDS.phone(c.phone) === null)
+      && (c.leg == null || LEGS.includes(c.leg)))
+      ? null : 'a list of up to 5 people, each { name, phone, leg }: a name, a phone number, and on a split trip the leg, outbound for the drop-off or return for the pickup'),
     contract: v => (only(v, CONTRACT) && dayOrNone(v.signed_on)
       && (v.signed_by == null || (typeof v.signed_by === 'string' && v.signed_by.trim() && v.signed_by.length <= 200))
       ? null : '{ signed_on, signed_by }: the day it was signed as YYYY-MM-DD and who signed it'),
@@ -2482,10 +2492,8 @@ const window = {};
     { key: 'booking_contact_name', value: 'text', id: 'scheduler-f-cfind', kind: 'text' },
     { key: 'booking_contact_phone', value: 'phone', id: 'scheduler-f-cphone', kind: 'text' },
     { key: 'booking_contact_email', value: 'email', id: 'scheduler-f-cemail', kind: 'text' },
-    { key: 'trip_contact_1_name', value: 'text', id: 'scheduler-f-d1', kind: 'text' },
-    { key: 'trip_contact_1_phone', value: 'phone', id: 'scheduler-f-dphone1', kind: 'text' },
-    { key: 'trip_contact_2_name', value: 'text', id: 'scheduler-f-d2', kind: 'text' },
-    { key: 'trip_contact_2_phone', value: 'phone', id: 'scheduler-f-dphone2', kind: 'text' },
+    // The trip contacts, each into a slot of its leg, after the trip's type says whether it is split.
+    { key: 'trip_contacts', value: 'contacts', kind: 'contacts' },
     // The Route tab. It is built when the panel opens, so these are on screen from the start.
     { key: 'pickup_location', value: 'text', id: 'scheduler-f-pickupname', kind: 'text' },
     { key: 'pickup_address', value: 'text', id: 'scheduler-f-pickup', kind: 'place' },
@@ -2529,7 +2537,7 @@ const window = {};
     return out;
   }
 
-  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, STOP_CHANGES, PURCHASE_ORDER, CONTRACT, byKey, problems };
+  window.SchedulerDraftFields = { FIELDS, KINDS, TRIP_TYPES, STOP_CHANGES, PURCHASE_ORDER, CONTRACT, CONTACT, LEGS, byKey, problems };
 })();
 
 export default window;

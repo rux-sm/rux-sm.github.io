@@ -4328,13 +4328,16 @@
   };
 
   /* A day-of slot's column: what its field says while it is drawn, null once
-     it is taken off in this edit, and as it opened while it is not drawn, as
-     a split trip's other leg's slot is, so a leg's view saves only its own.
-     Undefined while the contacts are not built at all. */
+     it is taken off in this edit, a draft's contact held on it for the leg not
+     on screen, and as it opened while it is not drawn, as a split trip's other
+     leg's slot is, so a leg's view saves only its own. Undefined while the
+     contacts are not built at all. */
   const dayField = (n, key, fromField) => {
     if (!document.getElementById('scheduler-f-days')) return undefined;
     if (document.getElementById(`scheduler-f-d${n}`)) return fromField();
-    return editing?.days?.[n - 1]?.removed ? null : editing?.before[key] ?? null;
+    const d = editing?.days?.[n - 1];
+    if (d?.pending) return { ...d.pending, leg: d.leg }[key.slice(`trip_contact_${n}_`.length)] ?? null;
+    return d?.removed ? null : editing?.before[key] ?? null;
   };
 
   // A contact field's text: null when blank, undefined when not on screen.
@@ -4354,7 +4357,7 @@
     { idKey: 'booking_contact_id', name: 'scheduler-f-cfind', phone: 'scheduler-f-cphone',
       email: 'scheduler-f-cemail', client: 'scheduler-f-customer',
       copy: { name: 'booking_contact_name', phone: 'booking_contact_phone', email: 'booking_contact_email' } },
-    ...[1, 2, 3, 4, 5].map(n => ({ idKey: `trip_contact_${n}_id`, name: `scheduler-f-d${n}`,
+    ...[1, 2, 3, 4, 5].map(n => ({ slot: n, idKey: `trip_contact_${n}_id`, name: `scheduler-f-d${n}`,
                                   phone: `scheduler-f-dphone${n}`,
                                   copy: { name: `trip_contact_${n}_name`, phone: `trip_contact_${n}_phone` } })),
   ];
@@ -4647,7 +4650,19 @@
     const val = id => (id && document.getElementById(id)?.value.trim()) || null;
     for (const s of CONTACT_SLOTS) {
       const box = document.getElementById(s.name);
-      if (!box) continue;
+      if (!box) {
+        /* A draft's contact held for the leg not on screen is linked as a
+           typed one is, by phone, then email, then name, and offers no one
+           new, since nobody has seen it on screen yet. */
+        const held = s.slot && editing.days?.[s.slot - 1]?.pending;
+        if (held?.name && !held.id) {
+          try {
+            const m = await matchContact(held);
+            if (m) { held.id = m.hit.id; row[s.idKey] = m.hit.id; }
+          } catch { failed.push(held.name); }
+        }
+        continue;
+      }
       const p = { name: box.value.trim() || null, phone: val(s.phone), email: val(s.email), client: val(s.client) };
       const before = creating ? null : (editing.before[s.idKey] ?? null);
       const typedNow = field => creating || !same(p[field] ?? null, editing.before[s.copy[field]] ?? null);
@@ -5721,6 +5736,8 @@
   let seatMilesDrawn = null;
   // The open Route tab's taking of a draft's stops; it returns those still to choose.
   let routeTakesStops = null;
+  // The open Details tab's taking of a draft's trip contacts; it returns those held off screen and those with no slot.
+  let detailsTakeContacts = null;
   // How many stops the open Route tab's leg has between its ends, which a draft's stops would replace.
   let routeStopsHeld = () => 0;
   // Its taking of a draft's changes to saved stops; it returns those it could not find.
@@ -6981,7 +6998,8 @@
       // A pickup with none of its own draws none: it shows the drop-off's.
       const borrowed = () => view === 'return' && !shown().length;
       // The first slot no leg savedIn, or one emptied in this edit.
-      const freeSlot = () => editing.days.find(d => !d.open && !savedIn(d.n)) ?? editing.days.find(d => !d.open && d.removed);
+      const freeSlot = () => editing.days.find(d => !d.open && !d.pending && !savedIn(d.n))
+        ?? editing.days.find(d => !d.open && !d.pending && d.removed);
       const openSlot = d => Object.assign(d, { open: true, fresh: true, removed: false, leg: view === 'return' ? 'return' : null });
       if (!shown().length && !borrowed() && freeSlot()) openSlot(freeSlot());
       /* A stack, 24px between contacts, each contact one row of its name
@@ -6998,6 +7016,7 @@
           return { id: name ? (box.dataset.contactId || null) : null, name,
                    phone: document.getElementById(`scheduler-f-dphone${d.n}`)?.value.trim() || null };
         }
+        if (d.pending) return d.pending;
         return d.fresh || d.removed ? null : tripContact(trip, d.n);
       };
 
@@ -7035,6 +7054,47 @@
         }
       };
       drawContacts();
+
+      /* A draft's trip contacts, each into a slot of its leg: the slot already
+         holding someone of that name, whose phone the draft's replaces, or
+         else an empty one drawn, or else the first free one. The leg on screen's are typed into its fields and marked.
+         The other leg's, on a split trip, are held on their slot and saved
+         with the trip, since that leg's slots are not drawn here; the draft
+         notice names them. On any other trip a contact's leg is dropped. */
+      detailsTakeContacts = (list, split) => {
+        const elsewhere = [];
+        const full = [];
+        // The fields typed, marked once every contact is in, since a redraw drops a mark.
+        const typed = [];
+        for (const c of list) {
+          const leg = split && c.leg === 'return' ? 'return' : null;
+          const here = !view || (view === 'return') === (leg === 'return');
+          const ofLeg = d => (d.leg === 'return') === (leg === 'return');
+          const named = d => held(d)?.name;
+          const holding = editing.days.find(d => !d.removed && ofLeg(d) && (d.open || d.pending || savedIn(d.n))
+            && named(d) && folded(named(d)) === folded(c.name));
+          const empty = here ? editing.days.find(d => d.open && onView(d) && !named(d)) : null;
+          const d = holding ?? empty ?? freeSlot();
+          if (!d) { full.push(c); continue; }
+          if (here) {
+            d.leg = leg;
+            if (!d.open) { openSlot(d); d.leg = leg; drawContacts(); }
+            const nameBox = document.getElementById(`scheduler-f-d${d.n}`);
+            const phoneBox = document.getElementById(`scheduler-f-dphone${d.n}`);
+            if (nameBox && !nameBox.value.trim()) { typeInto(nameBox, 'text', c.name.trim()); typed.push(nameBox.id); }
+            if (phoneBox && c.phone && phoneBox.value.trim() !== c.phone.trim()) { typeInto(phoneBox, 'text', c.phone.trim()); typed.push(phoneBox.id); }
+          } else {
+            const was = held(d);
+            d.pending = { id: holding ? was?.id ?? null : null, name: was?.name || c.name.trim(),
+                          phone: c.phone?.trim() || was?.phone || null };
+            Object.assign(d, { leg, removed: false });
+            elsewhere.push(c);
+          }
+        }
+        for (const id of typed) { const box = document.getElementById(id); if (box) markDrafted(box); }
+        syncCopy();
+        return { elsewhere, full };
+      };
 
       const menuBtn = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger');
       menuBtn.type = 'button';
@@ -16303,7 +16363,7 @@
      whose control is not on screen is named in the panel's notice instead,
      so nothing the connector sent goes quietly. */
   const DRAFT_CONTROLS = Object.fromEntries(window.SchedulerDraftFields.FIELDS
-    .filter(f => !['stops', 'stopChanges', 'billing'].includes(f.kind)).map(f => [f.key, f]));
+    .filter(f => !['stops', 'stopChanges', 'billing', 'contacts'].includes(f.kind)).map(f => [f.key, f]));
 
   // What the notice calls a place that still needs choosing from its list.
   const PLACE_LABEL = { pickup_address: 'the pickup', dropoff_address: 'the drop-off' };
@@ -16409,6 +16469,27 @@
         editing.contract = { on: value.signed_on ?? was?.on ?? null,
           note: value.signed_by ? `Signed by ${String(value.signed_by).trim()}` : was?.note ?? null, drafted: true };
         redrawContract();
+        continue;
+      }
+      /* The trip contacts, after the type, so a split trip's pickup ones go to
+         the pickup. Those held for the leg not on screen, and on a split trip
+         not saved yet the pickup's, which nothing on screen marks, are said. */
+      if (key === 'trip_contacts') {
+        if (!Array.isArray(value) || !detailsTakeContacts || !document.getElementById('scheduler-f-days')) {
+          missed.push([key, JSON.stringify(value)]);
+          continue;
+        }
+        const split = document.getElementById('scheduler-f-type')?.value === SPLIT;
+        const { elsewhere, full } = detailsTakeContacts(value, split);
+        const named = cs => cs.map(c => [c.name, c.phone].filter(Boolean).join(', ')).join('; ');
+        const other = legOnScreen() === 'return' ? 'Drop-off' : 'Pickup';
+        if (elsewhere.length) {
+          said.push(`${other} ${elsewhere.length === 1 ? 'contact' : 'contacts'} filled in too, and saved with the trip: `
+            + `${named(elsewhere)}. Check ${elsewhere.length === 1 ? 'it' : 'them'} on ${other} after Save.`);
+        }
+        const pickup = !legOnScreen() && split ? value.filter(c => c.leg === 'return' && !full.includes(c)) : [];
+        if (pickup.length) said.push(`For the pickup: ${named(pickup)}. The rest are the drop-off's.`);
+        if (full.length) missed.push([key, `${named(full)}, with no contact slot left of the trip's five`]);
         continue;
       }
       // Changes to saved stops, laid onto the Route tab; one it cannot find is named with what it asked.

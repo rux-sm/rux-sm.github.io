@@ -269,7 +269,7 @@ reads only the ones before it. Nothing is written until step 10.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.
 - Add the bus rental on a trip that already has a quoted price keeps that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
 - Changing a round trip's pickup leaves the old pickup behind as an extra stop before the return, and it shows only after the save: read the Route tab again once it is saved, remove the leftover stop from its tile's menu, and save once more.
-- `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` and the second trip contact are named in the note at the top and left for the Buses tab and the Trip contacts menu's Add contact.
+- `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` is named in the note at the top and left for the Buses tab.
 - Any Save on a trip whose Estimated miles is blank writes the route's miles into it, even a route with a stop not yet measured, so a save made only to link a thread can write a wrong figure: check the Route tab's miles before such a save.
 
 ## When rux teaches something new

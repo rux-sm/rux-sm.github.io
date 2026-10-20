@@ -685,6 +685,9 @@ Deno.serve(
               'purchase_order is { ref, date, amount }, the PO\'s number, its day and its amount, its number or amount at least; ' +
               'it fills the Billing list\'s purchase order with that number, else one with no number, else adds one. ' +
               'contract is { signed_on, signed_by }, a signed contract\'s day and who signed it, the Billing list\'s Contract signed row. ' +
+              'trip_contacts is the people to reach while the trip runs, up to five, each { name, phone, leg }; on a split trip ' +
+              '(dropoff_pickup) leg is outbound for the drop-off\'s or return for the pickup\'s, and each goes into that day\'s contacts, ' +
+              'whichever day the link opens. A person the trip already has is matched, not added twice. ' +
               'Give each only from the paper itself. A deposit is not a field, so say it in notes.'),
           notes: z.string().max(2000).optional()
             .describe('What you could not work out, shown at the top of the editor.'),

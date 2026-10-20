@@ -132,8 +132,9 @@ days is entered once and works as it does now.
 
 - **`get_trip` answers each contact slot's and each document's leg, and
   `read_trip_document` the file's,** null reading as the drop-off's.
-- **A draft carries all five contact slots, each with its leg,** where it
-  carries two with none, so a reading of each day's papers fills both days.
+- **A draft carries its trip contacts as one list of up to five, each with
+  its leg,** so a reading of each day's papers fills both days, and the
+  editor names in its notice the other day's, which it saves unseen.
 - **A draft cannot set a file's leg,** because a file is written at once and
   never by Save; Claude says which day a file is for, and the office moves
   it on the Files tab.
@@ -151,10 +152,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give a draft all five contact slots, each with its leg, in
-      `scheduler/draft-fields.js` and `scheduler/tools/check-draft-fields.mjs`,
-      laid onto the editor's slots whichever leg the link opens, and rebuild
-      the connector's rules with `scheduler/tools/build-connector-rules.mjs`.
 - [ ] Hand rux the connector's deploy, which carries the legs `get_trip` and
       `read_trip_document` answer and the rebuilt rules, then call `get_trip`
       on a split trip and read each document's and contact's leg back.

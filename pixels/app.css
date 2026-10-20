@@ -1098,3 +1098,5 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-stat-label { color: var(--rux-text-secondary); }
 /* Relaxed play shows no hearts. */
 .pixels-hearts[hidden] { display: none; }
+/* THE LESSON'S STEP, over the status row: what to do now, in a line or two. */
+.pixels-lesson { margin: 0; min-block-size: 3rem; color: var(--rux-text-primary); }

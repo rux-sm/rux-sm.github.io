@@ -45,10 +45,14 @@
    a phone play the sounds at all: a phone starts a page's sound only from a
    tap, never from a drag, and a puzzle is usually begun with a drag.
 
-   HOW TO PLAY opens from the menu and from the button under Start, and by
-   itself over the cover for a player with no puzzle solved who has never
-   closed it in this browser. The clock stands while it is open. app.js's
-   `how` builds it.
+   HOW TO PLAY opens from Me's list and from the button under Start. The
+   clock stands while it is open. app.js's `how` builds it.
+
+   THE LESSON, play.html?lesson, is a 5×5 heart a player is sent to first,
+   once in this browser, when they have solved nothing: one step at a time
+   it lights the line to look at and says in a line what to do, and moves on
+   when it is done. It has no hearts and keeps no time, and its Next is the
+   puzzle the player picked, `?then=`, or the first one not solved.
 
    UNDO takes back the last tap or drag, with the squares a finished line
    crossed out for it, as far back as the puzzle's start, and REDO puts it
@@ -123,6 +127,9 @@
     [...game.children].forEach(el => { if (el !== box) el.hidden = true; });
   };
 
+  // The lesson's picture, a heart five squares a side.
+  const LESSON = { id: 'lesson', name: 'Heart', squares: '0101011111111110111000100', width: 5, height: 5, colours: null };
+
   const loadProgress = () => { try { return JSON.parse(localStorage.getItem(PROGRESS) || '{}'); } catch { return {}; } };
   const saveProgress = (id, value) => {
     const all = loadProgress();
@@ -131,7 +138,7 @@
   };
 
   (async () => {
-    const query = new URLSearchParams(location.search), id = query.get('id'), isDaily = query.has('daily');
+    const query = new URLSearchParams(location.search), id = query.get('id'), isDaily = query.has('daily'), isLesson = query.has('lesson');
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
     if (isDaily && !DAILY) { say('The puzzle of the day is off for now', 'Pick a puzzle from the list.'); game.classList.remove('is-loading'); return; }
     let me, puzzles, results;
@@ -148,9 +155,17 @@
     const puzzle0 = isDaily ? daily(today(), puzzles) : null;
     const cats = categories(puzzles);
     puzzles = order(puzzles);
-    let puzzle = isDaily ? puzzle0 : puzzles.find(p => String(p.id) === id);
-    // A puzzle no player is sent is the owner's to try.
-    let trial = false;
+    // A player who has solved nothing is sent to the lesson first, once.
+    const LEARNED = 'pixels-lesson';
+    const learned = () => { try { return localStorage.getItem(LEARNED) === 'done'; } catch { return true; } };
+    if (!isLesson && !results.size && !learned()) {
+      location.replace(`play.html?lesson${id ? `&then=${encodeURIComponent(id)}` : ''}`);
+      return;
+    }
+    if (isLesson) try { localStorage.setItem(LEARNED, 'done'); } catch { /* it may be shown again */ }
+    let puzzle = isLesson ? LESSON : isDaily ? puzzle0 : puzzles.find(p => String(p.id) === id);
+    // A puzzle no player is sent is the owner's to try; the lesson keeps no time either.
+    let trial = isLesson;
     if (!puzzle && owner && data.all) {
       try { puzzle = (await data.all()).find(p => String(p.id) === id && !p.day); } catch { /* said below */ }
       trial = !!puzzle;
@@ -183,9 +198,9 @@
         return sessionStorage.getItem(FROM);
       } catch { return null; }
     })();
-    const back = cameFrom || (trial ? 'create.html?view=game' : home ? where(home) : './');
+    const back = isLesson ? './' : cameFrom || (trial ? 'create.html?view=game' : home ? where(home) : './');
     $('pixels-back').href = $('pixels-out').href = $('pixels-exit').href = back;
-    if (trial) $('pixels-out').textContent = 'Create';
+    if (trial && !isLesson) $('pixels-out').textContent = 'Create';
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
     // A name stays hidden until its puzzle is solved; the day's shows its
@@ -210,7 +225,7 @@
     // down, at no hearts, with the cover up.
     const world = owner && WORLD, wear = world ? worn(me.found || 0) : [], most = HEARTS + wear.length;
     let hearts = fresh ? Math.min(kept.hearts ?? most, most) : most, down = false;
-    const easy = relaxed();
+    const easy = relaxed() || isLesson;
     if (easy) hearts = most;
     // The fairies this game has spent, how many the player has left, and
     // whether the database is being asked for one.
@@ -243,6 +258,26 @@
     const thumb = picture($('pixels-thumb'), '0'.repeat(W * H));
     // The enemy's health is the share of the picture's squares not yet filled.
     const foe = $('pixels-foe'), whole = answer.flat().filter(Boolean).length;
+    /* THE LESSON'S STEPS: the line each lights and what it says, done once
+       every square of the picture in that line is filled. */
+    let lessonStep = null;
+    if (isLesson) {
+      const STEPS = [
+        ['row', 1, 'Row 2 says 5. Five in a row of five fills it all. Fill row 2.'],
+        ['row', 2, 'Row 3 says 5 too. Fill it.'],
+        ['col', 2, 'The middle column says 4. Fill the two squares under row 3.'],
+        ['row', 3, 'Row 4 says 3. Fill the three in the middle.'],
+        ['row', 0, 'Row 1 says 1 1: two single squares. Fill them to finish.'],
+      ];
+      const full = (kind, n) => (kind === 'row' ? answer[n].every((c, x) => !c || state[n][x] === 1) : answer.every((r, y) => !r[n] || state[y][n] === 1));
+      lessonStep = () => {
+        const step = STEPS.find(([kind, n]) => !full(kind, n));
+        $('pixels-lesson').textContent = step ? step[2] : 'That is all there is to it.';
+        if (!step || !started) return;
+        const [kind, n] = step;
+        el.querySelectorAll(`.pixels-cell[data-${kind === 'row' ? 'y' : 'x'}="${n}"], .pixels-clue[data-${kind}="${n}"]`).forEach(e => e.classList.add('is-hint'));
+      };
+    }
     const draw = () => {
       paint(el, answer, state, { done: true });
       [...thumb.children].forEach((s, i) => s.toggleAttribute('data-on', state[Math.floor(i / W)][i % W] === 1));
@@ -251,6 +286,7 @@
       foe.setAttribute('aria-valuenow', Math.round(left * 100));
       el.querySelectorAll('.is-hint').forEach(e => e.classList.remove('is-hint'));
       highlight(el, ...cursor);
+      lessonStep?.();
       $('pixels-undo').disabled = !past.length;
       $('pixels-redo').disabled = !ahead.length;
     };
@@ -336,10 +372,11 @@
       $('pixels-solved-clock').textContent = time(seconds);
       // What went wrong and what the hints added, then how the time stands.
       const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-      const parts = [...(easy ? ['Relaxed'] : []), mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
+      const parts = [...(easy && !isLesson ? ['Relaxed'] : []), mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
       if (spent) parts.push(`${spent} ${spent === 1 ? 'fairy' : 'fairies'}`);
       if (hints) parts.push(count(hints, 'hint'), added(hints * HINT));
       if (lost) parts.push('not saved');
+      else if (isLesson) parts.push('lesson done');
       else if (trial) parts.push('a trial, not kept');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
       else if (results.has(key)) parts.push('a new best');
@@ -357,7 +394,8 @@
       // to the first. After the puzzle of the day, the first not yet solved;
       // after a trial, none.
       const at = cats.indexOf(home);
-      const rest = isDaily ? puzzles : trial ? [] : [
+      const then = isLesson && puzzles.find(p => String(p.id) === query.get('then'));
+      const rest = isDaily ? puzzles : isLesson ? [...(then ? [then] : []), ...puzzles] : trial ? [] : [
         ...home.puzzles.slice(index + 1), ...home.puzzles.slice(0, index),
         ...[...cats.slice(at + 1), ...cats.slice(0, at)].flatMap(c => c.puzzles),
       ];
@@ -841,12 +879,14 @@
       setTimeout(() => { settling = false; }, 350);
       game.classList.remove('is-waiting');
       $('pixels-cover').remove();
+      if (isLesson) draw();
       sound('fill');
       // A game left at no hearts comes back to the same choice.
       if (!hearts) fall();
     });
     cover.focus({ preventScroll: true });
-    if (!results.size && !how.seen()) window.Rux.modal.open(guide, $('pixels-how-open'));
+    // The lesson's first step is said once the board is drawn.
+    if (isLesson) $('pixels-lesson').hidden = false;
     tick();
     showHearts();
     draw();

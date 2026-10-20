@@ -28,15 +28,14 @@ found. A course rift holds its boss back, dim, until the rest are found. The squ
 them, with its best time and Play, and a sprite just found turns into view.
 
 `me.html` is Me, the player alone: their picture, their username with a pencil that opens a window to
-change it, and fairies; four numbers, sprites found, rifts cleared, days in a row and the best 10×10;
-then a list: Friends, with how many, which opens `friends.html`; a guest's PIN, which brings them back on
-any phone, in a window; How to play, the Sound and Relaxed switches, Add to home screen and, for an
-account, the way to Rux Home. The owner's list, Owner, follows: Players and New players can join. A
-guest's Delete my player is at the foot. `friends.html` is the friend link and the friends, each with a
-menu to remove them. Every page is one phone-wide column on every screen, in Design's `pixel-dark`,
-locked. The places, Play, Create and Me, are the header's links from 66rem and a bar along the foot below
-that, each with its word, but for a puzzle being played or drawn. `docs/profiles.md` has the door,
-profiles, friends, mana and who gets a rift.
+change it, and fairies; four numbers; then a list: Friends, with how many, which opens `friends.html`; a
+guest's PIN, which brings them back on any phone, in a window; How to play, the Sound and Relaxed
+switches, Add to home screen and, for an account, the way to Rux Home. The owner's list, Owner, follows:
+Players and New players can join. A guest's Delete my player is at the foot. `friends.html` is the friend
+link and the friends, each with a menu to remove them. Every page is one phone-wide column on every
+screen, in Design's `pixel-dark`, locked. The places, Play, Create and Me, are the header's links from
+66rem and a bar along the foot below that, each with its word, but for a puzzle being played or drawn.
+`docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
@@ -62,10 +61,11 @@ name shows with the time, the mistakes, the hints and Share picture. Under them 
 the sprite, says +1 mana where the find earned one and +3 fairies where it cleared the rift, and opens
 the rift; a rift the sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved
 puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
-numbers, filling and crossing out, and what a mistake costs. It opens from Me's list, the button under
-Start, and by itself for a player who has solved none and has not closed it in this browser. The clock
-stands meanwhile. Each move plays a tone, which Me's Sound switch turns off and an iPhone's silent switch
-does not, and a phone ticks on each fill. A game in progress is kept in the browser for a reload.
+numbers, filling and crossing out, and what a mistake costs. It opens from Me's list and the button under
+Start, and the clock stands meanwhile. A player who has solved none is sent once to `play.html?lesson`, a
+5×5 heart taught a line at a time. Each move plays a tone, which Me's Sound switch turns off and an
+iPhone's silent switch does not, and a phone ticks on each fill. A game in progress is kept in the
+browser for a reload.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
 results are saved as ever. The puzzle of the day is on, by `DAILY` in `app.js`; turned off, no page shows

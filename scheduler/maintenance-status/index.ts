@@ -104,6 +104,8 @@ Deno.serve(req => handle(req, {
       stats: vehicleIds => samsara<Stat>('/fleet/vehicles/stats', { types: 'engineStates,gps', vehicleIds: vehicleIds.join(',') }),
       // No driver leaves this function, so their hours are not asked.
       clocks: async () => [] as Clock[],
+      // With no clocks there is no resting driver, so no duty logs are asked.
+      logs: async () => [],
       async history(vehicleIds, from, to) {
         const rows = await samsara<{ id: string; gps?: Fix[] }>('/fleet/vehicles/stats/history', {
           types: 'gps', vehicleIds: vehicleIds.join(','),

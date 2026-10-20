@@ -26,6 +26,14 @@
 // cycle, which is how long the driver may still drive. Without the key's hours
 // permission the buses still come back, with no drivers and `hours` false.
 //
+// REST SINCE is when a driver resting in a bus began the stretch of off duty
+// and sleeper they are in now, from Samsara's duty logs, so the card can say
+// how long they have rested and when the 8 hours a passenger carrier's driver
+// needs are up. The logs are read back REST_LOOK_MS, so a stretch longer than
+// that says no earlier than its first log there, which is rest enough. A
+// driver the logs do not show resting now, or logs the key may not read,
+// leave it null.
+//
 // A PATH is where a bus has been since a time the caller names, for each bus
 // in the body's `paths`, `{ bus_id: ISO time }`: Samsara's GPS readings since
 // then, thinned to one every tenth of a mile, so the board can tell which of
@@ -35,6 +43,9 @@
 // A reading older than this says nothing about now.
 export const FRESH_MS = 15 * 60_000
 export const PATH_MS = 4 * 24 * 3600_000
+// How far back the duty logs are read for a resting driver: past the 8 hours
+// that give full hours, with room over.
+export const REST_LOOK_MS = 10 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
 
@@ -56,6 +67,10 @@ export type Faults = {
   oem?: { diagnosticTroubleCodes?: { codeDescription?: string; codeIdentifier?: string }[] }
 }
 export type Fix = { time: string; latitude: number; longitude: number }
+export type HosLogs = {
+  driver?: { id?: string }
+  hosLogs?: { logStartTime?: string; logEndTime?: string; hosStatusType?: string }[]
+}
 export type Clock = {
   driver?: { id?: string; name?: string }
   currentDutyStatus?: { hosStatusType?: string }
@@ -79,6 +94,8 @@ export type Deps = {
   clocks(): Promise<Clock[]>
   // Each vehicle's GPS readings between two instants, by vehicle id.
   history(vehicleIds: string[], from: number, to: number): Promise<Record<string, Fix[]>>
+  // The duty logs of the Samsara drivers named, between two instants.
+  logs(driverIds: string[], from: number, to: number): Promise<HosLogs[]>
   keyed: boolean
   now(): number
 }
@@ -92,6 +109,8 @@ export type LiveDriver = {
   drive_ms: number | null
   shift_ms: number | null
   cycle_ms: number | null
+  // When the stretch of rest a resting driver is in began, or null.
+  rest_since: string | null
   wheel: boolean
 }
 export type LiveBus = {
@@ -176,8 +195,26 @@ export function liveDriver(c: Clock, index: Map<string, string>): LiveDriver {
     duty: DUTY[c.currentDutyStatus?.hosStatusType ?? ''] ?? null,
     left_ms: known.length ? Math.min(...known) : null,
     drive_ms: drive, shift_ms: shift, cycle_ms: cycle,
+    rest_since: null,
     wheel: false,
   }
+}
+
+// The statuses that rest a driver: off duty, personal conveyance and the sleeper.
+const RESTING = new Set(['offDuty', 'personalConveyance', 'sleeperBed', 'sleeperBerth'])
+
+/* When the stretch of rest the logs end in began: back from the newest log
+   while each is a rest, the start of the first of them. A stretch that runs
+   back past the window starts where its first log in the window does, which
+   is no later than it truly began. Null when the newest log is not a rest,
+   as when the logs lag the clocks. */
+export function restSince(logs: HosLogs['hosLogs']): string | null {
+  const rows = (logs ?? []).map(l => ({ at: Date.parse(l.logStartTime ?? ''), status: l.hosStatusType ?? '' }))
+    .filter(l => Number.isFinite(l.at)).sort((a, b) => a.at - b.at)
+  if (!rows.length || !RESTING.has(rows.at(-1)!.status)) return null
+  let i = rows.length - 1
+  while (i > 0 && RESTING.has(rows[i - 1].status)) i--
+  return new Date(rows[i].at).toISOString()
 }
 
 const RANK: Record<string, number> = { driving: 0, on: 1 }
@@ -259,10 +296,25 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
   const statOf = new Map(stats.map(s => [String(s.id), s]))
   const index = driverIndex(drivers)
   const inVehicle = new Map<string, LiveDriver[]>()
+  // The Samsara driver behind each one resting in a bus answered, whose rest is asked after.
+  const resting = new Map<string, LiveDriver>()
+  const answered = new Set(ids)
   for (const c of clocks) {
     const v = c.currentVehicle?.id ? String(c.currentVehicle.id) : null
     if (!v) continue
-    inVehicle.set(v, [...(inVehicle.get(v) ?? []), liveDriver(c, index)])
+    const d = liveDriver(c, index)
+    if (answered.has(v) && (d.duty === 'sleeper' || d.duty === 'off') && c.driver?.id) resting.set(String(c.driver.id), d)
+    inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])
+  }
+  /* One read of the resting drivers' logs; logs that cannot be read leave
+     each rest unknown, and everything else stands. */
+  if (resting.size) {
+    const from = now - REST_LOOK_MS
+    const logs = await deps.logs([...resting.keys()], from, now).catch(() => [] as HosLogs[])
+    for (const l of logs) {
+      const d = l.driver?.id ? resting.get(String(l.driver.id)) : null
+      if (d) d.rest_since = restSince(l.hosLogs)
+    }
   }
 
   return {

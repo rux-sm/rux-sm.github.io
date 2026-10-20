@@ -622,7 +622,7 @@
   const LiveMap = window.SchedulerLiveMap;
   const RoadBar = window.SchedulerRoadBar;
   const { HOUR: ROAD_HOUR, DUTY: ROAD_DUTY, hours: roadHours, mark: roadMark,
-    ago: roadAgo, short: roadShort } = RoadBar;
+    ago: roadAgo, short: roadShort, restWords: roadRest } = RoadBar;
   const roadOut = bar => {
     const now = Date.now();
     return Number(bar.dataset.roadFrom) <= now && now <= Number(bar.dataset.roadTo);
@@ -15056,6 +15056,9 @@
           clocks.appendChild(clock);
         }
         item.appendChild(who);
+        // A resting driver's rest so far and when their hours are full again.
+        const rest = roadRest(d);
+        if (rest) item.appendChild(el('span', 'scheduler-card__live-rest', rest));
         if (clocks.children.length) item.appendChild(clocks);
         list.appendChild(item);
       }

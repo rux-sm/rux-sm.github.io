@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-now/handler.ts', import.meta.url
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-now-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf } = await import(pathToFileURL(file).href);
+const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf, restSince } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -62,6 +62,20 @@ expect('the driver driving is at the wheel', wheel([['Ana Ruiz', 'onDuty', 2 * H
 expect('of two on duty, the one who drove last', wheel([['Ana Ruiz', 'onDuty', 7 * H], ['Ben Ortiz', 'onDuty', 3 * H]]), ['Ben Ortiz']);
 expect('nobody, when both rest', wheel([['Ana Ruiz', 'sleeperBed', 7 * H], ['Ben Ortiz', 'offDuty', 3 * H]]), []);
 
+// ── rest ────────────────────────────────────────────────────────────────────
+const at = (h) => new Date(Date.parse('2026-10-14T20:00:00Z') - h * H).toISOString();
+const log = (h, status) => ({ logStartTime: at(h), hosStatusType: status });
+expect('rest runs back through off duty and the sleeper to the last drive',
+  restSince([log(9, 'driving'), log(5, 'offDuty'), log(3, 'sleeperBed')]), at(5));
+expect('a short stop on duty ends the rest before it',
+  restSince([log(9, 'offDuty'), log(4, 'onDuty'), log(2, 'sleeperBed')]), at(2));
+expect('logs out of order are put in order first',
+  restSince([log(2, 'sleeperBed'), log(9, 'driving'), log(6, 'offDuty')]), at(6));
+expect('logs that end on duty, lagging the clocks, say no rest',
+  restSince([log(5, 'offDuty'), log(1, 'onDuty')]), null);
+expect('a rest that fills the logs starts at their first log', restSince([log(11, 'offDuty')]), at(11));
+expect('no logs, no rest', restSince([]), null);
+
 // ── the fleet ───────────────────────────────────────────────────────────────
 const NOW = Date.parse('2026-10-14T20:00:00Z');
 const ago = min => new Date(NOW - min * 60_000).toISOString();
@@ -71,11 +85,12 @@ const DRIVERS = [{ id: 'd1', name: 'Ana Maria Ruiz' }, { id: 'd2', name: 'Ben Or
 // a hundredth of a mile apart, from two hours ago.
 const fix = (min, lng) => ({ time: ago(min), latitude: 26.2, longitude: lng });
 const DRIVE = Array.from({ length: 241 }, (_, i) => fix(120 - i / 2, -97.9 + i * 0.000163));
-function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false } = {}) {
-  let calls = 0, asked = null;
+function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = false, logsFail = false } = {}) {
+  let calls = 0, asked = null, logsAsked = null;
   return {
     get calls() { return calls; },
     get asked() { return asked; },
+    get logsAsked() { return logsAsked; },
     deps: {
       keyed,
       now: () => NOW,
@@ -96,6 +111,12 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
       ]; },
       history: async (ids, from, to) => { calls++; asked = [ids, from, to]; if (historyFail) throw new Error('403');
         return { v101: DRIVE.filter(f => Date.parse(f.time) >= from) }; },
+      logs: async (ids, from, to) => { calls++; logsAsked = [ids, from, to]; if (logsFail) throw new Error('403');
+        return [{ driver: { id: 's-Ben Ortiz' }, hosLogs: [
+          { logStartTime: ago(7 * 60), hosStatusType: 'driving' },
+          { logStartTime: ago(5 * 60), hosStatusType: 'offDuty' },
+          { logStartTime: ago(3 * 60), hosStatusType: 'sleeperBed' },
+        ] }]; },
     },
   };
 }
@@ -138,6 +159,16 @@ expect('an engine on since long ago is still on while the GPS reports, and says 
 expect('the drivers logged into the bus, who is at the wheel, and their hours',
   a.buses[0].drivers.map(x => [x.driver_id, x.duty, x.wheel, x.left_ms]),
   [['d1', 'driving', true, 9 * H + 3 * 60_000], ['d2', 'sleeper', false, 4 * H]]);
+p = parts();
+a = await liveFor(BUSES, DRIVERS, p.deps);
+expect('the logs are asked for the drivers resting in a bus, ten hours back',
+  [p.logsAsked[0], (NOW - p.logsAsked[1]) / H], [['s-Ben Ortiz'], 10]);
+expect('a driver resting has when the rest began, and one driving has none',
+  a.buses[0].drivers.map(x => [x.name, x.rest_since]), [['Ana Ruiz', null], ['Ben Ortiz', ago(5 * 60)]]);
+p = parts({ logsFail: true });
+a = await liveFor(BUSES, DRIVERS, p.deps);
+expect('logs the key may not read leave the rest unknown, and the drivers still come back',
+  a.buses[0].drivers.map(x => [x.name, x.duty, x.rest_since]), [['Ana Ruiz', 'driving', null], ['Ben Ortiz', 'sleeper', null]]);
 p = parts({ clocksFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps);
 expect('without the hours permission the buses still come back, with no drivers',

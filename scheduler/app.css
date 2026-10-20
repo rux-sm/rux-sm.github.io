@@ -1397,6 +1397,13 @@ button.scheduler-row-head__num::after {
 .scheduler-card__live-link.rux--btn { max-inline-size: none; inline-size: 100%; justify-content: center; padding-inline: var(--rux-spacing-03); }
 .scheduler-card__live-none { margin: 0; color: var(--rux-text-secondary); }
 .scheduler-card__live-driver { display: grid; gap: var(--rux-spacing-02); }
+/* A resting driver's rest, under their name and in line with it past the mark, in the quiet text. */
+.scheduler-card__live-rest {
+  padding-inline-start: calc(12px + var(--rux-spacing-03));
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+}
 /* In the live card's tile the drivers are rows parted by the quiet hairline
    the updates take, running to the tile's sides with their words 16px in:
    the first 16px under the title, the last 16px off the tile's foot, 12px

@@ -39,8 +39,8 @@
    with it, and components.html its samples.
 
    `HOUR`, `DUTY`, `LOW_FUEL`, `IDLE_MS`, `hours(ms)`, `mark(duty, left)`,
-   `ago(at)`, `short(name)` and `words(driver)` are the duty marks, clocks
-   and words the live card draws as the bar does.
+   `ago(at)`, `short(name)`, `words(driver)` and `restWords(driver)` are the
+   duty marks, clocks and words the live card draws as the bar does.
    ========================================================================== */
 (() => {
   'use strict';
@@ -83,7 +83,25 @@
   // The speed every bar lit stands for.
   const TOP_MPH = 80;
   const hours = ms => `${Math.floor(ms / HOUR)}:${String(Math.floor((ms % HOUR) / 60e3)).padStart(2, '0')}`;
-  const words = d => [DUTY[d.duty]?.word ?? 'Status unknown',
+  /* A PASSENGER CARRIER'S DRIVER HAS FULL HOURS AGAIN after 8 hours in a row
+     off duty or in the sleeper: the 10 driving and 15 on duty start over.
+     samsara-now says when a resting driver's stretch began; with that, how
+     long they have rested and when the 8 hours are up, or that they are.
+     A split sleeper rest can give full hours sooner, which Samsara's own
+     clocks show, so this time is never later than the truth. */
+  const REST = 8 * HOUR;
+  const spell = ms => {
+    const min = Math.floor(ms / 60e3);
+    return min < 60 ? `${min}m` : `${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}m`;
+  };
+  const restWords = d => {
+    const since = (d.duty === 'sleeper' || d.duty === 'off') && d.rest_since ? Date.parse(d.rest_since) : NaN;
+    if (!Number.isFinite(since)) return null;
+    const ms = Math.max(0, Date.now() - since);
+    return ms >= REST ? `Rested ${spell(ms)}, full hours`
+      : `Rested ${spell(ms)}, full hours at ${hhmm(Road.clockOf(since + REST), true)}`;
+  };
+  const words = d => [DUTY[d.duty]?.word ?? 'Status unknown', restWords(d),
     d.left_ms != null ? `${hours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
   const short = name => {
     const parts = String(name).trim().split(/\s+/);
@@ -410,5 +428,5 @@
     return [icon, meter, el('span', `scheduler-road__pct${low ? ' scheduler-road__pct--low' : ''}`, fuel != null ? `${fuel}%` : '–')];
   }
 
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words };
+  window.SchedulerRoadBar = { draw, HOUR, DUTY, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words, restWords };
 })();

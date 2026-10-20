@@ -13,7 +13,7 @@
 import 'jsr:@supabase/functions-js@2.116.0/edge-runtime.d.ts'
 
 import { createClient } from 'npm:@supabase/supabase-js@2.116.0'
-import { handle, type Clock, type Fix, type Stat, type Vehicle } from './handler.ts'
+import { handle, type Clock, type Fix, type HosLogs, type Stat, type Vehicle } from './handler.ts'
 
 const TOKEN = Deno.env.get('SAMSARA_API_TOKEN') ?? ''
 const SAMSARA = 'https://api.samsara.com'
@@ -85,6 +85,13 @@ Deno.serve(req => {
       const out: Record<string, Fix[]> = {}
       for (const r of rows) (out[String(r.id)] ??= []).push(...(r.gps ?? []))
       return out
+    },
+    // The resting drivers' duty logs, for when their rest began; the key's
+    // ELD compliance read permission.
+    logs(driverIds, from, to) {
+      return samsara<HosLogs>('/fleet/hos/logs', {
+        driverIds: driverIds.join(','), startTime: new Date(from).toISOString(), endTime: new Date(to).toISOString(),
+      })
     },
   })
 })

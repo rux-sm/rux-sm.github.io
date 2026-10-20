@@ -943,8 +943,6 @@
       const d = addDays(weekStart, i);
       const cell = el('div', 'scheduler-day');
       if (isWeekend(d)) cell.classList.add('scheduler-day--weekend');
-      // Every other day, the second first, for a theme that tells days apart by a stripe.
-      if (i % 2) cell.classList.add('scheduler-day--alt');
       if (iso(d) === today) {
         cell.classList.add('scheduler-day--today');
         cell.setAttribute('aria-current', 'date');
@@ -10242,8 +10240,6 @@
       // Weekend letters dim, as the board's day header does; the day rules are
       // drawn in the body only.
       if (isWeekend(d)) cell.classList.add('scheduler-avail__day--weekend');
-      // Every other day, as the board stripes them.
-      if (i % 2) cell.classList.add('scheduler-avail__day--alt');
       // Today is marked on its letter, as on the board's header.
       if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);

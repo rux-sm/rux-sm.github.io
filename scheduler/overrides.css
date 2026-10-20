@@ -415,8 +415,8 @@
 }
 .scheduler-summary__table .rux--data-table :is(th, td):first-child { padding-inline-start: var(--rux-layout-density-padding-inline-local); }
 .scheduler-summary__table .rux--data-table :is(th, td):last-child { padding-inline-end: var(--rux-layout-density-padding-inline-local); }
-/* The tile's padding ends the table, so its last row draws no rule of its own. */
-.scheduler-summary__table .rux--data-table tbody tr:last-child td { border-block-end: 0; }
+/* The rows run without rules between them; the Total's weight sets it off. */
+.scheduler-summary__table .rux--data-table tbody td { border-block-end: 0; }
 
 /* Fields in a modal take `field-02`, as rux.css does for fields in a side
    panel. A modal is `rux--layer-one`, where `field-01` barely differs from the
@@ -709,12 +709,6 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline-end: var(--rux-spacing-09);
   text-align: start;
 }
-/* In a card, a record is a contained list's item: its two lines a grid 4px
-   apart, as the tile's are. Two classes, over Carbon's inline-block. */
-.scheduler-item .rux--contained-list-item__content {
-  display: grid;
-  gap: var(--rux-spacing-02);
-}
 /* A row whose actions open by right-click or hold has no menu button, so
    its tile keeps Carbon's own end padding, matching its start. A hold selects
    no text and raises no iOS callout, so the menu is what it opens. */
@@ -723,6 +717,17 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* The Quote tile's lines stand 12px apart, where a record's two lines
+   stand 4px. Three classes, over the record's gap above. */
+.scheduler-item.scheduler-quote-tile .rux--tile--clickable { gap: var(--rux-spacing-04); }
+/* A quote line's fields fill the Quote window: Carbon keeps a quarter of an
+   accordion's width empty at the end of its text, which these fields do not
+   need, so the end matches the 16px start. Two classes, over Carbon's one. */
+.scheduler-quote-lines .rux--accordion__content {
+  padding-inline-end: var(--rux-spacing-05);
+  padding-block-end: var(--rux-spacing-05);
 }
 
 /* A Route stop's tile is three columns, the mark, the times and the wait,
@@ -1053,6 +1058,11 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    Two classes, over Carbon's cell rules. */
 .scheduler-summary__table .rux--data-table th,
 .scheduler-summary__table .rux--data-table td { white-space: nowrap; }
+/* Its columns share the width evenly, so a leg's figures land in the same
+   places whether they are filled in or still dashes; a figure wider than its
+   share widens its column. */
+.scheduler-summary__table .rux--data-table { inline-size: 100%; }
+.scheduler-summary__table .rux--data-table th { inline-size: 20%; }
 @media (max-width: 41.98rem) {
   .scheduler-summary__table .rux--data-table th,
   .scheduler-summary__table .rux--data-table td { padding-inline: var(--rux-spacing-03); }

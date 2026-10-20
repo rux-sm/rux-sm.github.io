@@ -291,8 +291,13 @@
     return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])) };
   }
 
+  /* A trip's leg as week.js reads it, by its key or the old word a page
+     still names it by; null where week.js is not loaded or the trip has no
+     such leg. */
+  const weekLeg = (trip, leg) => window.SchedulerWeek?.legByKey(trip, leg || 'outbound') ?? null;
   // The day a leg leaves, which a form has to last until.
-  const legDay = (trip, leg) => String((leg === 'return' && trip.return_start_date) || trip.start_date || '').slice(0, 10);
+  const legDay = (trip, leg) => String(weekLeg(trip, leg)?.from
+    ?? ((leg === 'return' && trip.return_start_date) || trip.start_date) ?? '').slice(0, 10);
   // The kinds the trip's customer asks for, in name order.
   const formKindsOf = trip => (formAsks.get(trip.customer_id) || [])
     .filter(id => formKinds.has(id))
@@ -325,14 +330,18 @@
      `toTell` each confirmed driver the leg changed for since they accepted,
      as driver-job.js reads it, with the lines that say what. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
-    const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
-    const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    // The leg by its key, or by its old word; clashes.js still reads it by the word.
+    const on = weekLeg(trip, leg);
+    const word = on?.leg ?? leg ?? 'outbound';
+    const assigns = (trip.trip_assignments || []).filter(a => (on
+      ? window.SchedulerWeek.legKeyOfVehicle(trip, a) === on.key : (a.leg || 'outbound') === word));
+    const busesNeeded = on ? on.count : word === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
-      facts.clashes = window.SchedulerClashes.standing(trip, leg, nearby, { driversById, busesById }).map(c => c.words);
+      facts.clashes = window.SchedulerClashes.standing(trip, word, nearby, { driversById, busesById }).map(c => c.words);
     }
     for (const a of assigns) {
       if (a.bus_id == null) continue;
@@ -348,7 +357,7 @@
         const name = c.who?.short_name || c.who?.name || 'A driver';
         if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
         const lines = window.SchedulerDriverJob
-          ? window.SchedulerDriverJob.changesSince(trip, leg, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
+          ? window.SchedulerDriverJob.changesSince(trip, word, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
           : [];
         if (lines.length) facts.toTell.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name, lines });
       }

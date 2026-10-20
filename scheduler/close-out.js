@@ -49,7 +49,7 @@
   function asks(trip, now = Date.now()) {
     if (placeholder(trip) || !isBack(trip, now) || lastDay(trip) < FROM) return [];
     const list = [];
-    const facts = legsOf(trip).map(l => window.SchedulerLegFacts.factsOf(trip, l.leg));
+    const facts = legsOf(trip).map(l => window.SchedulerLegFacts.factsOf(trip, l.key));
     if (facts.some(f => f.busesAssigned < f.busesNeeded)) list.push('bus');
     if (facts.some(f => f.seatsOpen > 0)) list.push('driver');
     if (trip.actual_miles == null || trip.actual_miles === '') list.push('miles');

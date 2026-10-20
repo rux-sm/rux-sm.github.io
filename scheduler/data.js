@@ -16479,13 +16479,17 @@
      `opener` is the link pressed, where there was one, and takes the focus
      back when the document panel shuts. */
   function openAsked(asked, opener = null) {
-    const leg = ['outbound', 'return'].includes(asked.get('leg')) ? asked.get('leg') : null;
+    // A leg by its key, its id, or by the old word an older link names.
+    const named = asked.get('leg');
+    const leg = ['outbound', 'return'].includes(named) || /^[0-9a-f-]{36}$/i.test(named ?? '') ? named : null;
     if (asked.get('open') === 'contacts') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
     } else if (asked.get('file') === 'itinerary') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
-        .then(() => openLegItinerary({ trip: asked.get('trip'), leg, assignment: asked.get('assignment'), driver: asked.get('driver') },
+        // The itinerary is still read by the leg's old word, the selected bar's.
+        .then(() => openLegItinerary({ trip: asked.get('trip'), leg: leg && (selectedBar()?.dataset.leg ?? leg),
+          assignment: asked.get('assignment'), driver: asked.get('driver') },
           opener ?? selectedBar()));
     } else if (asked.has('form')) {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../billing.js', '../leg-papers.js', '../checklist.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+for (const f of ['../billing.js', '../leg-papers.js', '../checklist.js', '../trip-shape.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
 const { checklist, leftOf } = window.SchedulerChecklist;
 
 let failed = 0;
@@ -15,17 +15,20 @@ function expect(name, got, want) {
   console.log(`   ${ok ? 'ok  ' : 'FAIL'}  ${name}${ok ? '' : `\n         got  ${JSON.stringify(got)}\n         want ${JSON.stringify(want)}`}`);
 }
 
-const base = { trip_type: 'round_trip', confirmed: false, trip_documents: [], trip_reqs: {} };
+// Each sample is read with its legs, as the pages read a trip, so a leg is named by its id.
+const leg = (id, word, day, more = {}) => ({ id, leg: word, start_date: day, end_date: day, bus_count: 1, trip_routes: [{ id: `r${id}`, position: 1 }], ...more });
+const base = { trip_type: 'round_trip', confirmed: false, trip_documents: [], trip_reqs: {}, start_date: '2026-11-10',
+  trip_legs: [leg('l1', 'outbound', '2026-11-10')] };
 const full = { busesNeeded: 1, busesAssigned: 1, busesShort: 0, seatsOpen: 0, seats: 1, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0, fuelCardsLeft: 0 };
 
 expect('a placeholder has only Entered',
   ids(checklist({ ...base, trip_bar_color: 'amber' })),
-  ['route-done:outbound-', 'buses-done:outbound-', 'billing-done:outbound-']);
+  ['route-done:l1-', 'buses-done:l1-', 'billing-done:l1-']);
 
 expect('a quoted day trip with nothing done',
   ids(checklist(base, () => ({ busesNeeded: 2, busesAssigned: 1, seatsOpen: 1 }))),
-  ['route-done:outbound-', 'buses-done:outbound-', 'billing-done:outbound-', 'confirmed:outbound-',
-    'itinerary:outbound-', 'contact:outbound-', 'buses:outbound-', 'seats:outbound-', 'itinerary-printed:outbound-']);
+  ['route-done:l1-', 'buses-done:l1-', 'billing-done:l1-', 'confirmed:l1-',
+    'itinerary:l1-', 'contact:l1-', 'buses:l1-', 'seats:l1-', 'itinerary-printed:l1-']);
 
 const ready = { ...base, confirmed: true, route_done_at: 't', buses_done_at: 't', billing_done_at: 't',
   trip_documents: [{ label: 'Itinerary' }] };
@@ -35,41 +38,43 @@ expect('a trip with everything done is ready', [readyLegs[0].ready, leftOf(ready
 expect('not needed leaves the contact out and keeps the itinerary, done',
   ids(checklist({ ...ready, itinerary_not_needed: true, contact_not_needed: true, trip_documents: [] }, () => full))
     .filter(i => i.startsWith('itinerary:') || i.startsWith('contact:')),
-  ['itinerary:outbound+']);
+  ['itinerary:l1+']);
 
 expect('a part-time driver asks for the hours-of-service record',
   [ids(checklist(ready, () => ({ ...full, partTime: true, hosLeft: 1 }), true)).filter(i => i.startsWith('hos')),
     ids(checklist(ready, () => ({ ...full, partTime: true }), true)).filter(i => i.startsWith('hos'))],
-  [['hos:outbound-'], ['hos:outbound+']]);
+  [['hos:l1-'], ['hos:l1+']]);
 
 expect('hotel and fuel card appear only when wanted, from tags or the old columns',
   [ids(checklist(ready, () => full, true)).filter(i => /hotel|fuel/.test(i)),
-    ids(checklist({ ...ready, trip_reqs: { hotel: true }, need_fuel_card: true, hotel_booked_outbound: true }, () => ({ ...full, fuelCardsLeft: 1 }), true))
+    ids(checklist({ ...ready, trip_reqs: { hotel: true }, need_fuel_card: true, trip_legs: [leg('l1', 'outbound', '2026-11-10', { hotel_booked: true })] },
+      () => ({ ...full, fuelCardsLeft: 1 }), true))
       .filter(i => /hotel|fuel/.test(i)),
     ids(checklist({ ...ready, need_fuel_card: true }, () => full, true)).filter(i => /fuel/.test(i))],
-  [[], ['hotel:outbound+', 'fuel-card:outbound-'], ['fuel-card:outbound+']]);
+  [[], ['hotel:l1+', 'fuel-card:l1-'], ['fuel-card:l1+']]);
 
-const split = checklist({ ...ready, trip_type: 'dropoff_pickup' }, () => full, true);
-expect('a split trip has two legs, and the trip\'s items only on the first',
-  [split.length, split[1].items.map(i => i.group).filter((g, i, a) => a.indexOf(g) === i)],
-  [2, ['Buses', 'Paperwork']]);
+const split = checklist({ ...ready, trip_type: 'dropoff_pickup', return_start_date: '2026-11-12',
+  trip_legs: [leg('l2', 'return', '2026-11-12'), leg('l1', 'outbound', '2026-11-10')] }, () => full, true);
+expect('a split trip has two legs in date order, and the trip\'s items only on the first',
+  [split.map(l => l.leg), split[1].items.map(i => i.group).filter((g, i, a) => a.indexOf(g) === i)],
+  [['l1', 'l2'], ['Buses', 'Paperwork']]);
 
 expect('a bus short of a need and unconfirmed drivers are open',
   ids(checklist(ready, () => ({ ...full, busesShort: 1, seats: 2, unconfirmed: 2, envelopesLeft: 1 }), true))
     .filter(i => /fit|drivers|envelopes/.test(i)),
-  ['fit:outbound-', 'drivers:outbound-', 'envelopes:outbound-']);
+  ['fit:l1-', 'drivers:l1-', 'envelopes:l1-']);
 
 expect('something in the way is an open Buses item, and nothing in the way, or nothing read, adds none',
   [ids(checklist(ready, () => ({ ...full, clashes: ['Rigo: Time off'] }), true)).filter(i => i.startsWith('clashes')),
     ids(checklist(ready, () => ({ ...full, clashes: [] }), true)).filter(i => i.startsWith('clashes')),
     ids(checklist(ready, () => full, true)).filter(i => i.startsWith('clashes'))],
-  [['clashes:outbound-'], [], []]);
+  [['clashes:l1-'], [], []]);
 
 const forms = f => ids(checklist(ready, () => ({ ...full, ...f }), true)).filter(i => i.startsWith('driver-forms'));
 expect('driver forms are asked for only where the customer wants them, and done once each is on file and printed',
   [forms({}), forms({ formsWanted: 1, formsMissing: ['Ana, Background check'] }), forms({ formsWanted: 1, formsLeft: 1 }),
     forms({ formsWanted: 1, formsMissing: [], formsLeft: 0 }), forms({ formsWanted: 1, seats: 0 })],
-  [[], ['driver-forms:outbound-'], ['driver-forms:outbound-'], ['driver-forms:outbound+'], []]);
+  [[], ['driver-forms:l1-'], ['driver-forms:l1-'], ['driver-forms:l1+'], []]);
 expect('a missing form is said by driver and kind',
   checklist(ready, () => ({ ...full, formsWanted: 1, formsMissing: ['Ana, Background check'] }), true)[0]
     .items.find(i => i.id.startsWith('driver-forms')).detail,

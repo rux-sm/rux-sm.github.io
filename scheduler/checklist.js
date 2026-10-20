@@ -20,9 +20,11 @@
 
    Entered and Customer are the trip's, so they sit on its first leg. A
    placeholder, as billing.js reads one, has only Entered. Nothing here reads
-   the database or the page: the trip row brings its own columns, and the
-   page hands in each leg's buses and seats as `facts`, which leg-facts.js
-   works out, so a rule lives here once whichever screen asks.
+   the database or the page: the trip row brings its own columns, read with
+   its legs as trip-shape.js reads them, and the page hands in each leg's
+   buses and seats as `facts`, which leg-facts.js works out, so a rule lives
+   here once whichever screen asks. A leg is named by its key, week.js's,
+   which is its id.
    ========================================================================== */
 (() => {
   'use strict';
@@ -32,12 +34,14 @@
   const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms', itinerary: 'itinerary' };
 
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
-  // The drop-off's itinerary, by leg-papers.js, which a split trip's pickup is handed too until it has its own.
-  const hasItinerary = trip => !!window.SchedulerLegPapers.itineraryFor(trip, 'outbound');
+  // week.js loads after this file, so it is read when asked.
+  const Week = () => window.SchedulerWeek;
+  // A trip's legs by their keys, in date order.
+  const legsOf = trip => Week().legsOf(trip).map(l => l.key);
+  // The first leg's itinerary, which a later leg is handed too until it has its own.
+  const hasItinerary = trip => !!window.SchedulerTripShape.itineraryFor(trip, legsOf(trip)[0]);
   // A requirement the trip carries, from its tags, or the old column before it had them.
   const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
-  // A trip's legs: the drop-off and pickup of a split trip, or its one leg.
-  const legsOf = trip => (trip.trip_type === 'dropoff_pickup' ? ['outbound', 'return'] : ['outbound']);
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
@@ -108,7 +112,8 @@
     }
 
     if (wants(trip, 'hotel', 'need_hotel')) {
-      add('Extras', 'hotel', 'Hotel booked', trip[`hotel_booked_${leg}`], TABS.billing, trip[`hotel_itinerary_number_${leg}`] || null);
+      const marks = Week().legByKey(trip, leg);
+      add('Extras', 'hotel', 'Hotel booked', marks?.hotelBooked, TABS.billing, marks?.hotelNumber || null);
     }
     // A card is a bus's, its number typed on the first driver's envelope.
     if (wants(trip, 'fuelCard', 'need_fuel_card')) {

@@ -409,8 +409,13 @@ const window = {};
     return { busesById: new Map(buses.map(b => [b.id, b])), driversById: new Map(drivers.map(d => [d.id, d])) };
   }
 
+  /* A trip's leg as week.js reads it, by its key or the old word a page
+     still names it by; null where week.js is not loaded or the trip has no
+     such leg. */
+  const weekLeg = (trip, leg) => window.SchedulerWeek?.legByKey(trip, leg || 'outbound') ?? null;
   // The day a leg leaves, which a form has to last until.
-  const legDay = (trip, leg) => String((leg === 'return' && trip.return_start_date) || trip.start_date || '').slice(0, 10);
+  const legDay = (trip, leg) => String(weekLeg(trip, leg)?.from
+    ?? ((leg === 'return' && trip.return_start_date) || trip.start_date) ?? '').slice(0, 10);
   // The kinds the trip's customer asks for, in name order.
   const formKindsOf = trip => (formAsks.get(trip.customer_id) || [])
     .filter(id => formKinds.has(id))
@@ -443,14 +448,18 @@ const window = {};
      `toTell` each confirmed driver the leg changed for since they accepted,
      as driver-job.js reads it, with the lines that say what. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
-    const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg);
-    const busesNeeded = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    // The leg by its key, or by its old word; clashes.js still reads it by the word.
+    const on = weekLeg(trip, leg);
+    const word = on?.leg ?? leg ?? 'outbound';
+    const assigns = (trip.trip_assignments || []).filter(a => (on
+      ? window.SchedulerWeek.legKeyOfVehicle(trip, a) === on.key : (a.leg || 'outbound') === word));
+    const busesNeeded = on ? on.count : word === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
-      facts.clashes = window.SchedulerClashes.standing(trip, leg, nearby, { driversById, busesById }).map(c => c.words);
+      facts.clashes = window.SchedulerClashes.standing(trip, word, nearby, { driversById, busesById }).map(c => c.words);
     }
     for (const a of assigns) {
       if (a.bus_id == null) continue;
@@ -466,7 +475,7 @@ const window = {};
         const name = c.who?.short_name || c.who?.name || 'A driver';
         if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
         const lines = window.SchedulerDriverJob
-          ? window.SchedulerDriverJob.changesSince(trip, leg, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
+          ? window.SchedulerDriverJob.changesSince(trip, word, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
           : [];
         if (lines.length) facts.toTell.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name, lines });
       }
@@ -759,9 +768,11 @@ const window = {};
 
    Entered and Customer are the trip's, so they sit on its first leg. A
    placeholder, as billing.js reads one, has only Entered. Nothing here reads
-   the database or the page: the trip row brings its own columns, and the
-   page hands in each leg's buses and seats as `facts`, which leg-facts.js
-   works out, so a rule lives here once whichever screen asks.
+   the database or the page: the trip row brings its own columns, read with
+   its legs as trip-shape.js reads them, and the page hands in each leg's
+   buses and seats as `facts`, which leg-facts.js works out, so a rule lives
+   here once whichever screen asks. A leg is named by its key, week.js's,
+   which is its id.
    ========================================================================== */
 (() => {
   'use strict';
@@ -771,12 +782,14 @@ const window = {};
   const TABS = { route: 'route', buses: 'fleet', billing: 'billing', details: 'details', files: 'files', forms: 'forms', itinerary: 'itinerary' };
 
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
-  // The drop-off's itinerary, by leg-papers.js, which a split trip's pickup is handed too until it has its own.
-  const hasItinerary = trip => !!window.SchedulerLegPapers.itineraryFor(trip, 'outbound');
+  // week.js loads after this file, so it is read when asked.
+  const Week = () => window.SchedulerWeek;
+  // A trip's legs by their keys, in date order.
+  const legsOf = trip => Week().legsOf(trip).map(l => l.key);
+  // The first leg's itinerary, which a later leg is handed too until it has its own.
+  const hasItinerary = trip => !!window.SchedulerTripShape.itineraryFor(trip, legsOf(trip)[0]);
   // A requirement the trip carries, from its tags, or the old column before it had them.
   const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
-  // A trip's legs: the drop-off and pickup of a split trip, or its one leg.
-  const legsOf = trip => (trip.trip_type === 'dropoff_pickup' ? ['outbound', 'return'] : ['outbound']);
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
@@ -847,7 +860,8 @@ const window = {};
     }
 
     if (wants(trip, 'hotel', 'need_hotel')) {
-      add('Extras', 'hotel', 'Hotel booked', trip[`hotel_booked_${leg}`], TABS.billing, trip[`hotel_itinerary_number_${leg}`] || null);
+      const marks = Week().legByKey(trip, leg);
+      add('Extras', 'hotel', 'Hotel booked', marks?.hotelBooked, TABS.billing, marks?.hotelNumber || null);
     }
     // A card is a bus's, its number typed on the first driver's envelope.
     if (wants(trip, 'fuelCard', 'need_fuel_card')) {
@@ -871,6 +885,119 @@ const window = {};
   const leftOf = legs => legs.reduce((n, l) => n + l.left, 0);
 
   window.SchedulerChecklist = { GROUPS, TABS, legsOf, legItems, checklist, leftOf };
+})();
+
+// ── trip-shape.js
+/* ==========================================================================
+   Rux Scheduler — TRIP SHAPE, a trip's legs, routes, papers and contacts
+   --------------------------------------------------------------------------
+   The one reading of how a trip runs: its legs, each one time a bus leaves
+   the yard and comes back, in date order; each leg's routes; and which
+   itinerary files and day-of contacts each leg is handed. A trip is read
+   with `trip_legs(*, trip_routes(*))`, `trip_documents` and
+   `trip_contacts`; a row names its leg by `leg_id`, or its route by
+   `route_id`.
+
+   THE FIRST LEG STANDS IN FOR A LEG WITH NONE OF ITS OWN. A file or a
+   contact with no leg is the trip's, and the first leg's with it; a later
+   leg is handed its own, or the first leg's while it has none, so a
+   customer's one paper and one set of contacts for the whole trip are
+   entered once. On a trip of one leg every row is that leg's.
+
+   Nothing here reads the page or the database, and it needs nothing loaded
+   first.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const clean = v => String(v ?? '').trim();
+  const day = v => clean(v).slice(0, 10);
+  // The old words, in the order the legs they name run.
+  const WORD_ORDER = { outbound: 0, return: 1 };
+
+  /* A trip's legs by date, each with its number from 1 and its routes by
+     position. Two legs on one day keep the order of the words they mirror,
+     then the order they were made. */
+  function legsOf(trip) {
+    const legs = (trip?.trip_legs || []).map(l => ({
+      id: l.id,
+      word: l.leg ?? null,
+      kind: l.kind === 'one_way' ? 'one_way' : 'round_trip',
+      start: day(l.start_date) || null,
+      end: day(l.end_date) || day(l.start_date) || null,
+      busCount: Number.isInteger(l.bus_count) ? l.bus_count : null,
+      hotelBooked: !!l.hotel_booked,
+      hotelNumber: clean(l.hotel_itinerary_number) || null,
+      routes: [...(l.trip_routes || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .map(r => ({ id: r.id, position: r.position ?? 1, name: clean(r.name) || null })),
+      created: l.created_at || '',
+    }));
+    legs.sort((a, b) => (a.start || '').localeCompare(b.start || '')
+      || (WORD_ORDER[a.word] ?? 2) - (WORD_ORDER[b.word] ?? 2)
+      || a.created.localeCompare(b.created));
+    return legs.map((l, i) => ({ ...l, number: i + 1 }));
+  }
+  const legOf = (trip, legId) => legsOf(trip).find(l => l.id === legId) ?? null;
+  const firstLeg = trip => legsOf(trip)[0] ?? null;
+  // The leg an old word names, while rows still carry the word.
+  const legOfWord = (trip, word) => legsOf(trip).find(l => l.word === (word || 'outbound')) ?? null;
+  // "2 of 3" on a trip of several legs, and nothing on a trip of one.
+  function legLabel(trip, legId) {
+    const legs = legsOf(trip);
+    const leg = legs.find(l => l.id === legId);
+    return leg && legs.length > 1 ? `${leg.number} of ${legs.length}` : '';
+  }
+  // The leg a route is on.
+  const legOfRoute = (trip, routeId) => legsOf(trip).find(l => l.routes.some(r => r.id === routeId)) ?? null;
+
+  /* A leg's rows of a kind that names a leg, as the rule above hands them:
+     on a trip of one leg, all of them; the first leg's are those naming it
+     or no leg we know; a later leg's are its own, or the first leg's while
+     it has none. */
+  function forLeg(trip, legId, rows) {
+    const legs = legsOf(trip);
+    if (legs.length <= 1) return rows;
+    const first = legs[0].id;
+    const known = new Set(legs.map(l => l.id));
+    const firsts = rows.filter(r => !r.leg_id || r.leg_id === first || !known.has(r.leg_id));
+    if (legId === first) return firsts;
+    const own = rows.filter(r => r.leg_id === legId);
+    return own.length ? own : firsts;
+  }
+
+  /* THE ITINERARY, by the office's rule: a file whose type is Itinerary and
+     no other, so a file named after one is not one. A leg's are newest
+     first, and the first is the one its drivers are handed. */
+  const isItinerary = d => clean(d?.label).toLowerCase() === 'itinerary';
+  const newestFirst = (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0);
+  const allItineraries = trip => (trip?.trip_documents || []).filter(isItinerary).sort(newestFirst);
+  const itinerariesFor = (trip, legId) => forLeg(trip, legId, allItineraries(trip));
+  const itineraryFor = (trip, legId) => itinerariesFor(trip, legId)[0] ?? null;
+  // The itineraries no leg is handed any more, newest first: the earlier versions.
+  function earlierItineraries(trip) {
+    const current = new Set(legsOf(trip).map(l => itineraryFor(trip, l.id)).filter(Boolean));
+    if (!legsOf(trip).length && allItineraries(trip)[0]) current.add(allItineraries(trip)[0]);
+    return allItineraries(trip).filter(d => !current.has(d));
+  }
+
+  /* THE DAY-OF CONTACTS, the trip's list in its order: each a name, a phone,
+     or both, and the contact it links. */
+  const allContacts = trip => [...(trip?.trip_contacts || [])]
+    .filter(c => clean(c.name) || clean(c.phone))
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    .map(c => ({ id: c.contact_id ?? null, name: clean(c.name), phone: clean(c.phone), leg_id: c.leg_id ?? null, row: c.id }));
+  const contactsFor = (trip, legId) => forLeg(trip, legId, allContacts(trip));
+
+  // A route's stops and vehicles, each in its order.
+  const byPosition = (a, b) => (a.position ?? 0) - (b.position ?? 0);
+  const stopsOfRoute = (trip, routeId) => (trip?.trip_stops || []).filter(s => s.route_id === routeId).sort(byPosition);
+  const vehiclesOfRoute = (trip, routeId) => (trip?.trip_assignments || []).filter(a => a.route_id === routeId).sort(byPosition);
+
+  window.SchedulerTripShape = {
+    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg,
+    isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
+    allContacts, contactsFor, stopsOfRoute, vehiclesOfRoute,
+  };
 })();
 
 // ── week.js
@@ -1066,14 +1193,23 @@ const window = {};
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {
-        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, key: l.id, number: l.number });
+        if (l.start && l.word) {
+          add(l.word, l.start, l.end, l.busCount || 1,
+            { legId: l.id, key: l.id, number: l.number, hotelBooked: l.hotelBooked, hotelNumber: l.hotelNumber });
+        }
       }
       return legs;
     }
-    if (trip.start_date) add('outbound', trip.start_date, trip.end_date, trip.bus_count || 1);
-    if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1);
+    const hotel = word => ({ hotelBooked: !!trip[`hotel_booked_${word}`], hotelNumber: trip[`hotel_itinerary_number_${word}`] || null });
+    if (trip.start_date) add('outbound', trip.start_date, trip.end_date, trip.bus_count || 1, hotel('outbound'));
+    if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1, hotel('return'));
     return legs;
   };
+  /* A leg's own stops in order, by its key: every route's on a trip read
+     with its legs, and the stops naming its word on one that is not. */
+  const stopsOfKey = (trip, key) => (shaped(trip)
+    ? (SHAPE.legOf(trip, key)?.routes ?? []).flatMap(r => SHAPE.stopsOfRoute(trip, r.id))
+    : (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === key).sort((a, b) => (a.position ?? 0) - (b.position ?? 0)));
   /* The key of the leg a vehicle runs on: on a trip read with its legs, its
      route's leg, or the leg its old word names while the page has made it
      and not yet read it back with its route; on one that is not, the word. */
@@ -1113,7 +1249,7 @@ const window = {};
 
   window.SchedulerWeek = {
     TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
-    stopsOfLeg, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, stopsOfKey, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt,
   };
 })();
@@ -1914,8 +2050,10 @@ const window = {};
    back for the follow-ups, and the buses, seats, stops and contacts of the
    ones leaving within 30 days, with the trips, time off and days out around
    them, which clashes.js's standing rule reads.
-   Needs billing.js, follow-up.js and checklist.js loaded first, and for
-   `read` requirements.js, leg-facts.js, week.js, clashes.js,
+   A leg is named by its key, week.js's, which is its id on a trip read with
+   its legs, as `read` reads the ones leaving within 30 days.
+   Needs billing.js, follow-up.js, checklist.js, trip-shape.js and week.js
+   loaded first, and for `read` requirements.js, leg-facts.js, clashes.js,
    share/driver-words.js and driver-job.js.
    ========================================================================== */
 (() => {
@@ -1950,17 +2088,18 @@ const window = {};
   const within = (day, days) => { const n = daysTo(day); return n != null && n >= 0 && n <= days; };
 
   const split = trip => trip.trip_type === 'dropoff_pickup';
+  const Week = () => window.SchedulerWeek;
+  const legOf = (trip, leg) => Week().legByKey(trip, leg);
   // The day a leg leaves, as the Departures list reads it.
-  const legDay = (trip, leg) => (leg === 'return' ? (trip.return_start_date ?? trip.end_date) : trip.start_date) ?? null;
+  const legDay = (trip, leg) => legOf(trip, leg)?.from ?? null;
   // A split trip's leg in the office's words; any other trip has one leg and names none.
-  const legName = (trip, leg) => (split(trip) ? (leg === 'return' ? 'Pickup' : 'Drop-off') : null);
+  const legName = (trip, leg) => (split(trip) ? (legOf(trip, leg)?.leg === 'return' ? 'Pickup' : 'Drop-off') : null);
   const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
-  const needed = (trip, leg) => (leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1));
+  const needed = (trip, leg) => legOf(trip, leg)?.count || 1;
   const assigned = (trip, leg) => (trip.trip_assignments || [])
-    .filter(a => (a.leg || 'outbound') === leg && a.bus_id != null).length;
-  const hasTimes = (trip, leg) => (trip.trip_stops || [])
-    .some(s => (s.leg || 'outbound') === leg && (s.arrive || s.spot || s.depart_prev));
+    .filter(a => Week().legKeyOfVehicle(trip, a) === leg && a.bus_id != null).length;
+  const hasTimes = (trip, leg) => Week().stopsOfKey(trip, leg).some(s => s.arrive || s.spot || s.depart_prev);
 
   // An open checklist item as a fault, in the words the trip's card uses.
   const OPEN = {
@@ -2055,17 +2194,22 @@ const window = {};
     'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)'].join(',');
+  // A trip's legs and routes, as trip-shape.js reads them.
+  const TRIP_LEGS = 'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))';
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg)',
+    'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
+    // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
+    TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
+    // The five contact slots, which driver-job.js still reads a driver's job from.
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
-    'trip_assignments(id,bus_id,leg,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
-    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev)'].join(',');
+    'trip_assignments(id,bus_id,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
+    'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 
   // What the rules are handed from a read's buses, drivers, statuses and what is around.
   const handed = read => ({
     factsOf: (t, leg) => window.SchedulerLegFacts.factsOf(t, leg, read),
-    contactOf: t => !!window.SchedulerLegFacts.dayOfContact(t),
+    contactOf: t => window.SchedulerTripShape.contactsFor(t, Week().legsOf(t)[0]?.key).length > 0,
   });
 
   /* Every row the trips give now, and the trips by id. */
@@ -2093,7 +2237,7 @@ const window = {};
     return { rows: rows(all, handed({ ...basics, nearby, statuses })), trips: new Map(all.map(t => [t.id, t])) };
   }
 
-  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, rows, handed, read, legDay, legName, hasTimes };
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, TRIP_LEGS, rows, handed, read, legDay, legName, hasTimes };
 })();
 
 // ── departures.js
@@ -2130,13 +2274,14 @@ const window = {};
    `nearby` trips, time off and days out the caller hands in.
 
    `page` reads neither the database nor the page. The trip row brings its
-   columns, its `trip_prep` row and its seats with their steps, and the
-   caller hands in the buses, the drivers and the driver statuses it read,
-   as leg-facts.js takes them. `readDay` and `readTrip`, handed a client and
-   leg-facts.js's `readBasics`, read all of that, so Prep and the connector
-   ask the same.
-   Needs billing.js, follow-up.js, checklist.js, leg-facts.js and to-do.js,
-   and for the reads week.js and clashes.js.
+   columns, read with its legs as trip-shape.js reads them, its `trip_prep`
+   row and its seats with their steps, and the caller hands in the buses,
+   the drivers and the driver statuses it read, as leg-facts.js takes them.
+   A leg is named by its key, week.js's, which is its id. `readDay` and
+   `readTrip`, handed a client and leg-facts.js's `readBasics`, read all of
+   that, so Prep and the connector ask the same.
+   Needs billing.js, follow-up.js, checklist.js, leg-facts.js, trip-shape.js,
+   week.js and to-do.js, and for the reads clashes.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -2146,6 +2291,8 @@ const window = {};
   const Checklist = window.SchedulerChecklist;
   const Facts = window.SchedulerLegFacts;
   const ToDo = window.SchedulerToDo;
+  const Week = window.SchedulerWeek;
+  const Shape = window.SchedulerTripShape;
 
   const line = (key, state, label, more = {}) => ({ key, state, label, value: null, at: null, by: null, action: null, mark: null, ...more });
   const one = v => (Array.isArray(v) ? v[0] ?? null : v ?? null);
@@ -2199,8 +2346,8 @@ const window = {};
       ? line('confirmed', 'done', 'Confirmation', { value: confirmedBy(trip) })
       : line('confirmed', 'warn', 'Confirmation', { value: 'Not yet' }));
 
-    // The leg's own, or a split trip's pickup with none the drop-off's.
-    const itinerary = window.SchedulerLegPapers.itineraryFor(trip, leg);
+    // The leg's own, or the first leg's where it has none.
+    const itinerary = Shape.itineraryFor(trip, leg);
     if (itinerary) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Received', at: itinerary.created_at ?? null }));
     else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Not needed' }));
     else lines.push(line('itinerary', 'warn', 'Itinerary', { value: 'Missing' }));
@@ -2208,7 +2355,7 @@ const window = {};
     if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', 'Times', { value: 'Missing' }));
 
     if (!trip.contact_not_needed) {
-      const contact = Facts.dayOfContact(trip, leg);
+      const contact = Shape.contactsFor(trip, leg)[0] ?? null;
       lines.push(contact ? line('contact', 'done', 'Contact', { value: contact.name || null })
         : line('contact', 'warn', 'Contact', { value: 'Missing' }));
     }
@@ -2223,8 +2370,9 @@ const window = {};
     // The office books the room only where the trip says so, by its tag or the older column.
     const hotel = trip.trip_reqs && 'hotel' in trip.trip_reqs ? trip.trip_reqs.hotel === true : !!trip.need_hotel;
     if (hotel) {
-      lines.push(trip[`hotel_booked_${leg}`]
-        ? line('hotel', 'done', 'Hotel', { value: trip[`hotel_itinerary_number_${leg}`] || 'Booked' })
+      const marks = Week.legByKey(trip, leg);
+      lines.push(marks?.hotelBooked
+        ? line('hotel', 'done', 'Hotel', { value: marks.hotelNumber || 'Booked' })
         : line('hotel', 'todo', 'Hotel', { action: 'billing' }));
     }
 
@@ -2274,7 +2422,7 @@ const window = {};
       if (partTime) lines.push(step('hos', 'HOS form', seat, 'hos_form_printed', 'forms:hos'));
       /* Where the customer asks for driver forms: a form the driver lacks is
          said by its kind, and once each is on file they are one step to print. */
-      const forms = Facts.driverFormsOf(trip, assign.leg || 'outbound', c.driverId);
+      const forms = Facts.driverFormsOf(trip, Week.legKeyOfVehicle(trip, assign), c.driverId);
       for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
       if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
       for (const x of mine.filter(m => m.driverId === c.driverId)) lines.push(line(`clash:${x.what}`, 'warn', x.what));
@@ -2293,13 +2441,15 @@ const window = {};
      the order the trip keeps them, and how many lines are not done. */
   function page(trip, leg, read = {}) {
     const lines = tripLines(trip, leg);
-    const clashes = read.nearby && window.SchedulerClashes ? window.SchedulerClashes.standing(trip, leg, read.nearby, read) : [];
+    // clashes.js still reads a leg by its old word.
+    const word = Week.legByKey(trip, leg)?.leg;
+    const clashes = read.nearby && window.SchedulerClashes && word ? window.SchedulerClashes.standing(trip, word, read.nearby, read) : [];
     const buses = (trip.trip_assignments || [])
-      .filter(a => (a.leg || 'outbound') === leg)
+      .filter(a => Week.legKeyOfVehicle(trip, a) === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map(a => busBlock(trip, a, read, clashes));
     const tripLeft = lines.filter(l => l.state !== 'done').length;
-    const needed = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    const needed = Week.legByKey(trip, leg)?.count || 1;
     // A bus the leg needs and has no row for is one more thing left.
     const missing = Math.max(0, needed - buses.length);
     return { trip, leg, legName: ToDo.legName(trip, leg), day: ToDo.legDay(trip, leg), lines, tripLeft,
@@ -2343,19 +2493,22 @@ const window = {};
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
+    // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
+    ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
+    // The five contact slots, which driver-job.js still reads a driver's job from.
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
-    'spot_time', 'trip_documents(id,label,created_at,file_path,leg)',
+    'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the To do rules read for a trip read here.
     'departure_time', 'return_time',
-    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
+    'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // The last day any of the legs takes, so what is read around them reaches its end.
   const lastOf = (legs, from) => legs.reduce((last, l) => {
-    const to = window.SchedulerWeek?.legsOf(l.trip).find(x => x.leg === l.leg)?.to;
+    const to = Week.legByKey(l.trip, l.leg)?.to;
     return to && to > last ? to : last;
   }, from);
 

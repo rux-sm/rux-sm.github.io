@@ -4,10 +4,23 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'leg-papers.js', 'follow-up.js', 'checklist.js', 'to-do.js']) {
+for (const file of ['billing.js', 'leg-papers.js', 'follow-up.js', 'checklist.js', 'trip-shape.js', 'week.js', 'to-do.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
-const { rows } = window.SchedulerToDo;
+/* Each sample is read with its legs, as the page reads a trip: the leg on
+   its start date is l1, a split trip's pickup l2, each with one route, and
+   each stop and bus on the route of the leg its word names. */
+const withLegs = t => {
+  const legs = [['l1', 'outbound', t.start_date, t.end_date, t.bus_count],
+    ...(t.return_start_date ? [['l2', 'return', t.return_start_date, t.return_end_date, t.return_bus_count]] : [])];
+  const route = word => (word === 'return' ? 'rl2' : 'rl1');
+  return { ...t,
+    trip_legs: legs.filter(l => l[2]).map(([id, leg, start_date, end_date, bus_count]) =>
+      ({ id, leg, start_date, end_date, bus_count, trip_routes: [{ id: `r${id}`, position: 1 }] })),
+    trip_stops: (t.trip_stops || []).map(x => ({ ...x, route_id: route(x.leg) })),
+    trip_assignments: (t.trip_assignments || []).map(x => ({ ...x, route_id: route(x.leg) })) };
+};
+const rows = (trips, handed) => window.SchedulerToDo.rows(trips.map(withLegs), handed);
 
 let failed = 0;
 function expect(name, got, want) {
@@ -46,7 +59,7 @@ expect('a cancelled trip and a placeholder give no row',
 
 expect('a confirmed trip within 30 days with a leg short of a bus says so, and not past 30',
   said(rows([{ ...good, bus_count: 2 }, { ...good, id: 'b', bus_count: 2, start_date: day(31), end_date: day(31) }], facts)),
-  ['short:a:outbound Short of buses [1 of 2]']);
+  ['short:a:l1 Short of buses [1 of 2]']);
 
 expect('an unconfirmed trip short of a bus is not a Short row',
   said(rows([{ ...good, confirmed: false, trip_assignments: [] }], facts)), []);
@@ -54,24 +67,24 @@ expect('an unconfirmed trip short of a bus is not a Short row',
 expect('a split trip names the leg that is short',
   rows([{ ...good, trip_type: 'dropoff_pickup', return_start_date: day(22), return_bus_count: 1 }], facts)
     .map(r => [r.key, r.legName, r.day]),
-  [['short:a:return', 'Pickup', day(22)]]);
+  [['short:a:l2', 'Pickup', day(22)]]);
 
 expect('a confirmed trip within a week with no times says so, and not past a week',
   said(rows([{ ...good, start_date: day(7), end_date: day(7), trip_stops: [{ arrive: null }] },
     { ...good, id: 'b', start_date: day(8), end_date: day(8), trip_stops: [] }], facts)),
-  ['times:a:outbound No times']);
+  ['times:a:l1 No times']);
 
 expect('a split trip dropped off with times and picked up in two days with none names the pickup',
   rows([{ ...good, trip_type: 'dropoff_pickup', start_date: day(-5), end_date: day(-5), return_start_date: day(2),
     return_bus_count: 1, trip_assignments: [bus, { leg: 'return', bus_id: 1 }],
     trip_stops: [{ leg: 'outbound', arrive: '08:00' }, { leg: 'return', arrive: null }] }], facts)
     .map(r => [r.key, r.legName, r.day]),
-  [['times:a:return', 'Pickup', day(2)]]);
+  [['times:a:l2', 'Pickup', day(2)]]);
 
 const soon = { ...good, start_date: day(1), end_date: day(1) };
 expect('a leg leaving tomorrow with a seat open and no contact says both, and nothing from Paperwork',
   said(rows([soon], { factsOf: () => ({ ...full, seatsOpen: 1, seats: 0 }), contactOf: () => false })),
-  ['leaving:a:outbound Trip contact missing · 1 seat open']);
+  ['leaving:a:l1 Trip contact missing · 1 seat open']);
 
 expect('a leg leaving in three days is not leaving soon',
   said(rows([{ ...good, start_date: day(3), end_date: day(3) }], { factsOf: () => ({ ...full, seatsOpen: 1 }), contactOf: () => false })),
@@ -81,27 +94,27 @@ const clash = ['Bus 897: On trip Austin', 'Rigo: Time off'];
 expect('a leg within 30 days with something in its way is a Clash row, whatever its confirmation',
   said(rows([good, { ...good, id: 'b', confirmed: false, quoted_price: null, created_at: ago(0) }], { ...facts, factsOf: () => ({ ...full, clashes: clash }) }))
     .filter(r => r.startsWith('clash')),
-  ['clash:a:outbound Bus 897: On trip Austin · Rigo: Time off', 'clash:b:outbound Bus 897: On trip Austin · Rigo: Time off']);
+  ['clash:a:l1 Bus 897: On trip Austin · Rigo: Time off', 'clash:b:l1 Bus 897: On trip Austin · Rigo: Time off']);
 expect('a clash past 30 days, or on a placeholder, gives no row',
   said(rows([{ ...good, start_date: day(31), end_date: day(31) }, { ...good, id: 'p', confirmed: false, trip_bar_color: 'amber' }],
     { ...facts, factsOf: () => ({ ...full, clashes: clash }) })), []);
 expect('leaving soon leaves out a clash the Clash row already says',
   said(rows([soon], { factsOf: () => ({ ...full, clashes: clash }), contactOf: () => true })),
-  ['clash:a:outbound Bus 897: On trip Austin · Rigo: Time off']);
+  ['clash:a:l1 Bus 897: On trip Austin · Rigo: Time off']);
 
 expect('a driver who declined and a change to tell are each a row, and leaving soon leaves them out',
   said(rows([soon], { factsOf: () => ({ ...full, unconfirmed: 1, declined: [{ name: 'Ana' }], toTell: [{ name: 'Rigo', lines: ['Bus: 470 → 763'] }] }), contactOf: () => true }))
     .map(r => r.split(' ')[0]),
-  ['declined:a:outbound', 'tell:a:outbound', 'leaving:a:outbound']);
+  ['declined:a:l1', 'tell:a:l1', 'leaving:a:l1']);
 
 expect('leaving soon leaves out what the follow-up and Short rows already say',
   said(rows([{ ...soon, confirmed: false, trip_assignments: [], trip_documents: [] },
     { ...soon, id: 'b', bus_count: 2 }],
   { factsOf: t => ({ ...full, busesNeeded: t.bus_count, busesAssigned: (t.trip_assignments || []).length, unconfirmed: 1 }), contactOf: () => true })),
-  ['leaving:a:outbound Bus not assigned (0 of 1) · 1 driver not confirmed',
+  ['leaving:a:l1 Bus not assigned (0 of 1) · 1 driver not confirmed',
     'follow-up:a Trip unconfirmed · Itinerary missing [1d]',
-    'short:b:outbound Short of buses [1 of 2]',
-    'leaving:b:outbound 1 driver not confirmed']);
+    'short:b:l1 Short of buses [1 of 2]',
+    'leaving:b:l1 1 driver not confirmed']);
 
 console.log(failed ? `\n  ${failed} to-do case(s) failed` : '\n  to-do: every case passed');
 process.exit(failed ? 1 : 0);

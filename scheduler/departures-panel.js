@@ -131,8 +131,7 @@
      day's legs: the time as "HH:MM", and the day it falls on, which is the
      leg's own where the row keeps none. */
   function leavesAt(page) {
-    const stops = (page.trip.trip_stops || []).filter(s => (s.leg || 'outbound') === page.leg)
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const stops = window.SchedulerWeek.stopsOfKey(page.trip, page.leg);
     for (const s of stops) {
       for (const key of ['spot', 'arrive', 'depart_prev']) {
         if (s[key]) return { time: String(s[key]).slice(0, 5), day: s[`${key}_date`] || page.day };
@@ -214,7 +213,7 @@
   const SAID = { done: 'Done', todo: 'To do', warn: 'Needs attention' };
   const keyOf = page => `${page.trip.id}:${page.leg}`;
   // The link names the page's leg, so the board opens that leg's bar and no other.
-  const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}&leg=${encodeURIComponent(page.leg || 'outbound')}${extra}`;
+  const tripHref = (page, extra = '') => `./?trip=${encodeURIComponent(page.trip.id)}&date=${encodeURIComponent(page.day || '')}&leg=${encodeURIComponent(page.leg)}${extra}`;
   const FORMS = { itinerary: { form: 'driver-itinerary', layout: 'simple' }, envelope: { form: 'envelope' }, hos: { form: 'hours-of-service' } };
   const hasItinerary = trip => (trip.trip_documents || []).some(d => String(d.label || '').toLowerCase() === 'itinerary');
   /* Where a line still to do is done, and the word for doing it: the board's

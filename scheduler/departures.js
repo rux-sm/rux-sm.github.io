@@ -31,13 +31,14 @@
    `nearby` trips, time off and days out the caller hands in.
 
    `page` reads neither the database nor the page. The trip row brings its
-   columns, its `trip_prep` row and its seats with their steps, and the
-   caller hands in the buses, the drivers and the driver statuses it read,
-   as leg-facts.js takes them. `readDay` and `readTrip`, handed a client and
-   leg-facts.js's `readBasics`, read all of that, so Prep and the connector
-   ask the same.
-   Needs billing.js, follow-up.js, checklist.js, leg-facts.js and to-do.js,
-   and for the reads week.js and clashes.js.
+   columns, read with its legs as trip-shape.js reads them, its `trip_prep`
+   row and its seats with their steps, and the caller hands in the buses,
+   the drivers and the driver statuses it read, as leg-facts.js takes them.
+   A leg is named by its key, week.js's, which is its id. `readDay` and
+   `readTrip`, handed a client and leg-facts.js's `readBasics`, read all of
+   that, so Prep and the connector ask the same.
+   Needs billing.js, follow-up.js, checklist.js, leg-facts.js, trip-shape.js,
+   week.js and to-do.js, and for the reads clashes.js.
    ========================================================================== */
 (() => {
   'use strict';
@@ -47,6 +48,8 @@
   const Checklist = window.SchedulerChecklist;
   const Facts = window.SchedulerLegFacts;
   const ToDo = window.SchedulerToDo;
+  const Week = window.SchedulerWeek;
+  const Shape = window.SchedulerTripShape;
 
   const line = (key, state, label, more = {}) => ({ key, state, label, value: null, at: null, by: null, action: null, mark: null, ...more });
   const one = v => (Array.isArray(v) ? v[0] ?? null : v ?? null);
@@ -100,8 +103,8 @@
       ? line('confirmed', 'done', 'Confirmation', { value: confirmedBy(trip) })
       : line('confirmed', 'warn', 'Confirmation', { value: 'Not yet' }));
 
-    // The leg's own, or a split trip's pickup with none the drop-off's.
-    const itinerary = window.SchedulerLegPapers.itineraryFor(trip, leg);
+    // The leg's own, or the first leg's where it has none.
+    const itinerary = Shape.itineraryFor(trip, leg);
     if (itinerary) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Received', at: itinerary.created_at ?? null }));
     else if (trip.itinerary_not_needed) lines.push(line('itinerary', 'done', 'Itinerary', { value: 'Not needed' }));
     else lines.push(line('itinerary', 'warn', 'Itinerary', { value: 'Missing' }));
@@ -109,7 +112,7 @@
     if (!ToDo.hasTimes(trip, leg)) lines.push(line('times', 'warn', 'Times', { value: 'Missing' }));
 
     if (!trip.contact_not_needed) {
-      const contact = Facts.dayOfContact(trip, leg);
+      const contact = Shape.contactsFor(trip, leg)[0] ?? null;
       lines.push(contact ? line('contact', 'done', 'Contact', { value: contact.name || null })
         : line('contact', 'warn', 'Contact', { value: 'Missing' }));
     }
@@ -124,8 +127,9 @@
     // The office books the room only where the trip says so, by its tag or the older column.
     const hotel = trip.trip_reqs && 'hotel' in trip.trip_reqs ? trip.trip_reqs.hotel === true : !!trip.need_hotel;
     if (hotel) {
-      lines.push(trip[`hotel_booked_${leg}`]
-        ? line('hotel', 'done', 'Hotel', { value: trip[`hotel_itinerary_number_${leg}`] || 'Booked' })
+      const marks = Week.legByKey(trip, leg);
+      lines.push(marks?.hotelBooked
+        ? line('hotel', 'done', 'Hotel', { value: marks.hotelNumber || 'Booked' })
         : line('hotel', 'todo', 'Hotel', { action: 'billing' }));
     }
 
@@ -175,7 +179,7 @@
       if (partTime) lines.push(step('hos', 'HOS form', seat, 'hos_form_printed', 'forms:hos'));
       /* Where the customer asks for driver forms: a form the driver lacks is
          said by its kind, and once each is on file they are one step to print. */
-      const forms = Facts.driverFormsOf(trip, assign.leg || 'outbound', c.driverId);
+      const forms = Facts.driverFormsOf(trip, Week.legKeyOfVehicle(trip, assign), c.driverId);
       for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
       if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
       for (const x of mine.filter(m => m.driverId === c.driverId)) lines.push(line(`clash:${x.what}`, 'warn', x.what));
@@ -194,13 +198,15 @@
      the order the trip keeps them, and how many lines are not done. */
   function page(trip, leg, read = {}) {
     const lines = tripLines(trip, leg);
-    const clashes = read.nearby && window.SchedulerClashes ? window.SchedulerClashes.standing(trip, leg, read.nearby, read) : [];
+    // clashes.js still reads a leg by its old word.
+    const word = Week.legByKey(trip, leg)?.leg;
+    const clashes = read.nearby && window.SchedulerClashes && word ? window.SchedulerClashes.standing(trip, word, read.nearby, read) : [];
     const buses = (trip.trip_assignments || [])
-      .filter(a => (a.leg || 'outbound') === leg)
+      .filter(a => Week.legKeyOfVehicle(trip, a) === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
       .map(a => busBlock(trip, a, read, clashes));
     const tripLeft = lines.filter(l => l.state !== 'done').length;
-    const needed = leg === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
+    const needed = Week.legByKey(trip, leg)?.count || 1;
     // A bus the leg needs and has no row for is one more thing left.
     const missing = Math.max(0, needed - buses.length);
     return { trip, leg, legName: ToDo.legName(trip, leg), day: ToDo.legDay(trip, leg), lines, tripLeft,
@@ -244,19 +250,22 @@
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
+    // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
+    ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
+    // The five contact slots, which driver-job.js still reads a driver's job from.
     ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
-    `trip_assignments(id,bus_id,position,leg,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
+    `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
-    'spot_time', 'trip_documents(id,label,created_at,file_path,leg)',
+    'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The group's two times, which the To do rules read for a trip read here.
     'departure_time', 'return_time',
-    'trip_stops(position,leg,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
+    'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // The last day any of the legs takes, so what is read around them reaches its end.
   const lastOf = (legs, from) => legs.reduce((last, l) => {
-    const to = window.SchedulerWeek?.legsOf(l.trip).find(x => x.leg === l.leg)?.to;
+    const to = Week.legByKey(l.trip, l.leg)?.to;
     return to && to > last ? to : last;
   }, from);
 

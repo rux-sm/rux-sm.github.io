@@ -36,6 +36,8 @@
       start: day(l.start_date) || null,
       end: day(l.end_date) || day(l.start_date) || null,
       busCount: Number.isInteger(l.bus_count) ? l.bus_count : null,
+      hotelBooked: !!l.hotel_booked,
+      hotelNumber: clean(l.hotel_itinerary_number) || null,
       routes: [...(l.trip_routes || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map(r => ({ id: r.id, position: r.position ?? 1, name: clean(r.name) || null })),
       created: l.created_at || '',

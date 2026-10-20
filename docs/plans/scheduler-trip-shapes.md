@@ -154,8 +154,9 @@ None open.
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, a group at a time: the board's bars,
       which `scheduler/week.js` already reads through it on a trip read with
-      its legs; the editor and `fromStops` in
-      `scheduler/route-figures.js`; Prep and To do; the forms and
+      its legs, though it still reads a leg's times by its word and skips a
+      leg with none; the editor and `fromStops` in
+      `scheduler/route-figures.js`; the forms and
       `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
       `scheduler/share/driver.js`; live and the road. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
@@ -167,11 +168,9 @@ None open.
       driver status functions; the maintenance page with
       `get_maintenance_schedule`; and the editor with `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
-- [ ] Key Prep's and To do's legs, their checklist items and their links to
-      the board, and the driver link, its share rows, cards and form links,
-      by the leg's id, as each moves to the shape rule, so a third leg has a
-      key of its own there too; the board, the editor's leg and the office's
-      driver statuses are keyed by it already.
+- [ ] Key the driver link, its share rows, cards and form links, by the
+      leg's id as the driver pages move to the shape rule, so a third leg
+      has a key of its own there too.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

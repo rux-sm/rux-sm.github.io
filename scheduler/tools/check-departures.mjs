@@ -4,10 +4,33 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-papers.js', 'leg-facts.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
+for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-papers.js', 'leg-facts.js', 'trip-shape.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window, Intl, Date });
 }
-const { prepDays, legsOn, page, gapWords, summary } = window.SchedulerDepartures;
+const D = window.SchedulerDepartures;
+const { prepDays, gapWords } = D;
+/* Each sample is read with its legs, as Prep reads a trip, built from its
+   columns as the database's triggers build them: the leg on its start date
+   is l1, a split trip's pickup l2, each with one route and its hotel marks;
+   each stop and bus on the route of the leg its word names; each contact
+   slot a row of the leg it names. A leg is asked for by its old word. */
+const KEY = { outbound: 'l1', return: 'l2' };
+const withLegs = t => {
+  const legs = [['l1', 'outbound', t.start_date, t.end_date, t.bus_count],
+    ...(t.return_start_date ? [['l2', 'return', t.return_start_date, t.return_end_date, t.return_bus_count]] : [])];
+  const route = word => `r${KEY[word || 'outbound']}`;
+  return { ...t,
+    trip_legs: legs.map(([id, leg, start_date, end_date, bus_count]) => ({ id, leg, start_date, end_date, bus_count,
+      hotel_booked: !!t[`hotel_booked_${leg}`], hotel_itinerary_number: t[`hotel_itinerary_number_${leg}`] ?? null,
+      trip_routes: [{ id: `r${id}`, position: 1 }] })),
+    trip_contacts: [1, 2, 3, 4, 5].filter(n => t[`trip_contact_${n}_name`])
+      .map(n => ({ position: n, name: t[`trip_contact_${n}_name`], leg_id: KEY[t[`trip_contact_${n}_leg`]] ?? null })),
+    trip_stops: (t.trip_stops || []).map(x => ({ ...x, route_id: route(x.leg) })),
+    trip_assignments: (t.trip_assignments || []).map(x => ({ ...x, route_id: route(x.leg) })) };
+};
+const page = (t, leg, r) => D.page(withLegs(t), KEY[leg] ?? leg, r);
+const legsOn = (trips, day) => D.legsOn(trips.map(withLegs), day);
+const summary = (trips, day, r) => D.summary(trips.map(withLegs), day, r);
 const { statusKey } = window.SchedulerLegFacts;
 
 let failed = 0;
@@ -37,7 +60,7 @@ const trip = {
 const read = {
   busesById: new Map([[1, { id: 1, sleeper: true, ada_lift: false, capacity: 56 }], [2, { id: 2, sleeper: false }]]),
   driversById: new Map([['d1', { name: 'George', employment_type: 'full-time' }], ['d2', { name: 'Maria', employment_type: 'part-time' }]]),
-  statuses: new Map([[statusKey('t', 'd1', 'outbound', 'driver'), { status: 'confirmed', acceptedAt: 'a1' }]]),
+  statuses: new Map([[statusKey('t', 'd1', 'l1', 'driver'), { status: 'confirmed', acceptedAt: 'a1' }]]),
 };
 
 expect('a leg shows on the day it leaves and on no other',
@@ -101,7 +124,7 @@ expect('a bus that lacks a need and has no driver says both, and a bus the leg h
 // Another trip on the same bus and driver that day, and the driver away.
 const other = { id: 'o', destination: 'Austin', trip_type: 'round_trip', start_date: day(1), end_date: day(1),
   trip_assignments: [bus('o1', 1, [seat('os', 'd1', 'driver')])], trip_stops: [] };
-const clashed = page(trip, 'outbound', { ...read, nearby: { trips: [trip, other], off: [{ driver_id: 'd1', start_date: day(1), end_date: day(1) }], oos: [] } });
+const clashed = page(trip, 'outbound', { ...read, nearby: { trips: [withLegs(trip), other], off: [{ driver_id: 'd1', start_date: day(1), end_date: day(1) }], oos: [] } });
 expect('a bus and its driver say what stands in their way, each a line still to sort out',
   [clashed.buses[0].needs.filter(n => !n.met).map(n => n.label), said(clashed.buses[0].crew[0].lines).filter(l => l.startsWith('warn'))],
   [['On trip Austin'], ['warn On trip Austin', 'warn Time off']]);
@@ -120,7 +143,7 @@ const split = { ...trip, trip_type: 'dropoff_pickup', return_start_date: day(3),
 const back = page(split, 'return', read);
 expect('a split trip\'s later leg is its own page on its own day, with the trip\'s lines already done',
   [legsOn([split], day(1)).map(l => l.leg), legsOn([split], day(3)).map(l => l.leg), back.legName, said(back.lines).at(-1), said(back.buses[0].crew[0].lines).slice(1)],
-  [['outbound'], ['return'], 'Pickup', 'done Driver info [Sent]', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
+  [['l1'], ['l2'], 'Pickup', 'done Driver info [Sent]', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
 
 expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
   [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],

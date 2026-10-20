@@ -73,8 +73,8 @@
 
     const trip = (trips.data.trips || []).find(t => String(t.id) === String(tripId));
     const driverId = share.data.driver?.id;
-    /* The leg as trip-shape.js reads it, and its old word, which the forms
-       are still drawn by; a trip read without its legs has only the word. */
+    /* The leg as trip-shape.js reads it, by its id, and its old word on a
+       trip read without its legs. */
     const Shape = window.SchedulerTripShape;
     const shaped = trip && Array.isArray(trip.trip_legs) ? Shape.legOf(trip, named) ?? Shape.legOfWord(trip, named) : null;
     const leg = shaped?.word ?? (named === 'return' ? 'return' : 'outbound');
@@ -86,7 +86,7 @@
     }
 
     forms.useRequirements(trips.data.requirements);
-    const subject = { trip, assignment, leg, seat: seated(assignment, driverId) };
+    const subject = { trip, assignment, leg: shaped?.id ?? leg, seat: seated(assignment, driverId) };
     const cards = [form.render(subject, 'standard')].flat();
     // The paper carries the paper's theme, as on the forms page.
     for (const card of cards) card.setAttribute('data-theme', 'g10');

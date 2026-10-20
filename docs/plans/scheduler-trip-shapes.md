@@ -156,10 +156,10 @@ None open.
       which `scheduler/week.js` already reads through it on a trip read with
       its legs, though it still reads a leg's times by its word and skips a
       leg with none; the editor and `fromStops` in
-      `scheduler/route-figures.js`; the forms and
-      `scheduler/print.js`, which `scheduler/share/form.js` still hands a
-      leg's old word; the words of `scheduler/driver-text.js`, which still
-      name a leg Outbound or Inbound by its word; live and the road. The past-midnight
+      `scheduler/route-figures.js`; the words of `scheduler/driver-text.js`,
+      which still name a leg Outbound or Inbound by its word; live and the
+      road. `scheduler/print.js` still keeps a print's marks and reads the
+      quote's lines by the old word, which move with those writers. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
       Each reads a trip through `scheduler/trip-shape.js`, with
       `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and

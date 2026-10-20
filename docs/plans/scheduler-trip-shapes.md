@@ -147,13 +147,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the SQL for `trip_legs`, `trip_routes` and their access rules, a
-      leg row for every leg there is now with one route each, a route id on
-      `trip_stops` and `trip_assignments`, a leg id on `trip_documents` and
-      `trip_driver_statuses`, and a leg id and a route id on
-      `trip_quote_lines`, each filled from their `leg`, so a saved line with
-      a leg reads as priced separately for it and no quote changes; show it
-      to rux and apply it on a yes.
 - [ ] Write the SQL for `trip_contacts` and its access rules, a row for
       every filled contact slot there is now with its leg; show it to rux and
       apply it on a yes.

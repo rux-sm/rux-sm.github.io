@@ -17,8 +17,9 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   at `make.html?me`. It is no puzzle, so it needs no single answer.
 - **Until it is drawn, the picture is made from the username,** by `face` in
   `app.js`, the same in every browser.
-- **Me** shows the picture, the username, the sprites found and the mana,
-  changes the first two, and lists the player's own rifts.
+- **Me** shows the picture, the username, the sprites found and the
+  fairies, and changes the first two. A player's own rifts and their mana
+  are on Create.
 - **A player's character is kept as their gear,** which `pixels_me` sends
   and `pixels_set_gear` takes whole: one ink for the skin, one for the
   eyes, and for a piece of armour the player's drawing of it, 225
@@ -95,7 +96,7 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 - **A rift has an audience:** `everyone`, which is one of the owner's as it
   starts; `friends`, which is a player's own, sent to its maker and to
   their friends; or `picked`, which is one of the owner's kept for
-  the players ticked in Manage.
+  the players ticked in Game, on Create.
 - **A rift is its maker's and a number,** and holds boards of any size. No
   maker is the owner's, so a player's first rift and the owner's can both be
   number one.
@@ -108,10 +109,13 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   puzzle of your own costs one.** A player starts with nine.
 - **Mana is counted by the database from what is there,** so deleting a
   puzzle gives its mana back, and solving your own gives none.
-- **The owner has rifts of their own too,** made from Me and sent to their
-  friends as any player's are. They cost the owner no mana and are not held
-  to five, so Me shows the owner no mana. The rifts every player is sent are
-  made from Manage.
+- **The owner has rifts of their own too,** on Create's Mine and sent to
+  their friends as any player's are. They cost the owner no mana and are not
+  held to five, so Create shows the owner no mana. The rifts every player is
+  sent are made on Create's Game.
+- **A new puzzle in a rift already published waits, off,** until the rift
+  is published again, which switches on all its puzzles, so a half-made
+  puzzle is never sent.
 - **A player has at most five rifts.** A rift holds 15 puzzles and is
   published with 3 or more. One left with no puzzle is gone.
 - **A player writes through database functions, never a table,** which
@@ -146,7 +150,7 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 
 ## The payoff
 
-- **A maker sees who has found sprites in each of their rifts,** on Me: each
+- **A maker sees who has found sprites in each of their rifts,** on Create: each
   player's picture, username, how many, and their time.
 - **A rift a player has not opened, with nothing found in it, says New.** It
   is kept in their browser under `pixels-seen`.

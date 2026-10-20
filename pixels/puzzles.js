@@ -238,8 +238,8 @@
     if (owner) {
       const manage = document.createElement('a');
       manage.className = 'rux--btn rux--btn--primary';
-      manage.href = 'manage.html';
-      manage.textContent = 'Manage';
+      manage.href = 'create.html?view=game';
+      manage.textContent = 'Create';
       wrap.append(manage);
     }
     return wrap;

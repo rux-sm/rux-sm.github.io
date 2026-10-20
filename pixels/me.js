@@ -1,41 +1,31 @@
 /* ==========================================================================
-   me.js — the player's own page
+   me.js — Me, the player's own page
    --------------------------------------------------------------------------
-   The player's picture, large, beside their username, how many sprites
-   they have found, their mana and their fairies. Draw your picture opens the Pixelator on
-   it. The username is a field: Save keeps a new one, unless another player
-   has it. A guest changes their PIN of four digits there, which with their
-   username brings them back on any phone.
+   The player's picture, large, beside their username, with a pencil that
+   opens a window to change it, and how many sprites they have found and
+   fairies they have. Draw your picture opens the Pixelator on it.
 
-   YOUR RIFTS are the rifts the player has made, each with its name, which
-   is a field that saves as it is left, its size and how many puzzles it
-   holds. Publish sends it to their friends and takes three puzzles, and
-   reads Unpublish once it is; Delete, pressed twice, takes the rift and its
-   puzzles, and their mana comes back. A puzzle's tile opens it in the
-   Pixelator. Under a rift is everyone who has found a sprite in it, with
-   how many and their time. The local preview has no players, so none of
-   this is shown there. The owner has rifts of their own here too, apart from
-   the ones every player is sent, and is not shown mana, since theirs cost
-   none.
+   THE LIST UNDER THE PLAYER: Friends, with how many, which opens the
+   Friends page; a guest's PIN, which opens a window to set, change or
+   remove it; How to play, the Sound switch, Add to home screen where the
+   browser can, and for an account the way to Rux Home. THE OWNER'S LIST
+   comes last: Players, which opens their page, and New players can join, a
+   switch. Each is Carbon's contained list. Me has no Theme, because Pixels
+   is always in pixel-dark, which every page sets with `data-theme-lock`.
+
    DELETE MY PLAYER is a guest's, at the foot of the page. It asks twice, a
    press each, and then the player and all that is theirs are gone and the
    door is what is left. An account has none, since its player is made again
-   when it next opens Pixels.
+   when it next opens Pixels. The rifts a player makes are on Create.
 
    A guest with no player yet gets the door first; data.js's `enter` draws
    it.
-
-   THE LIST UNDER THE PLAYER holds what has no place in the bar: How to
-   play, the Sound switch, Add to home screen where the browser can, the
-   owner's Manage and Players, and for an account the way to Rux Home. The
-   bar keeps the four places every player has, so each shows its word; a
-   wide screen's header names Manage and Players too. It is Carbon's contained list. It has no Theme, because Pixels is always in
-   pixel-dark, which every page sets with `data-theme-lock`.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, art, grid, rounds, grade, side, time, sounds, WORLD } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, sounds, WORLD } = window.Pixels;
+  const { modal } = window.Rux;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
     const box = document.getElementById('pixels-error');
@@ -58,25 +48,72 @@
      opens its own install window here. A guest has no account for Home to
      open to. */
 
-  const more = () => {
-    document.getElementById('pixels-more')?.remove();
+  // A list, Carbon's contained one, with a label where it is given.
+  const list = (id, label) => {
+    document.getElementById(id)?.remove();
     const el = document.createElement('div');
-    el.id = 'pixels-more';
+    el.id = id;
     el.className = 'rux--contained-list rux--layout--size-lg rux--contained-list--on-page pixels-more';
+    if (label) {
+      const head = document.createElement('div');
+      head.className = 'rux--contained-list__header';
+      head.append(words('rux--contained-list__label', label));
+      el.append(head);
+    }
     const ul = document.createElement('ul');
     ul.setAttribute('role', 'list');
-    const row = (text, { href, open } = {}) => {
+    el.append(ul);
+    // A row that opens a window or a page, with what it holds at its end.
+    const row = (text, { href, open, value } = {}) => {
       const li = document.createElement('li');
       li.className = 'rux--contained-list-item rux--contained-list-item--clickable';
       const key = document.createElement(href ? 'a' : 'button');
-      key.className = `rux--contained-list-item__content${href ? ' pixels-more-link' : ''}`;
-      key.textContent = text;
+      key.className = `rux--contained-list-item__content pixels-more-link`;
+      key.append(words('pixels-more-text', text));
+      if (value != null) key.append(words('pixels-meta', value));
       if (href) key.href = href; else key.type = 'button';
       if (open) key.dataset.ruxOpen = open;
       li.append(key);
       ul.append(li);
       return key;
     };
+    // A row with a switch at its end, which `flip` is told of.
+    const toggle = (id2, text, on, flip) => {
+      const li = document.createElement('li');
+      li.className = 'rux--contained-list-item rux--contained-list-item--with-action';
+      li.innerHTML = `
+      <div class="rux--contained-list-item__content" id="${id2}-name"></div>
+      <div class="rux--contained-list-item__action">
+        <div class="rux--toggle">
+          <button type="button" class="rux--toggle__button" id="${id2}" role="switch" aria-checked="${on}" aria-labelledby="${id2}-name"></button>
+          <label class="rux--toggle__label" for="${id2}">
+            <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+              <div class="rux--toggle__switch${on ? ' rux--toggle__switch--checked' : ''}"><svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg></div>
+            </div>
+          </label>
+        </div>
+      </div>`;
+      li.firstElementChild.textContent = text;
+      li.addEventListener('rux:toggle', e => flip(e.detail.on, li));
+      ul.append(li);
+      return li;
+    };
+    return { el, ul, row, toggle };
+  };
+
+  const more = async me => {
+    const { el, ul, row } = list('pixels-more');
+    // How many friends, where the database can say.
+    let friends = null;
+    try { friends = data.people ? (await data.people()).length : null; } catch { /* the row says no number */ }
+    if (data.people) row('Friends', { href: 'friends.html', value: friends == null ? null : String(friends) });
+    if (guest && data.setPin) {
+      const pin = row('PIN', { value: me.pin ? 'Set' : 'None' });
+      pin.addEventListener('click', () => {
+        document.getElementById('pixels-pin-body').replaceChildren(pinForm(me));
+        modal.open('pixels-pin-modal', pin);
+      });
+    }
     const first = row('How to play', { open: 'pixels-how' }).parentElement;
     const sound = document.createElement('li'), on = sounds();
     sound.className = 'rux--contained-list-item rux--contained-list-item--with-action';
@@ -102,13 +139,31 @@
       offer = () => { if (install) first.after(add.parentElement); else add.parentElement.remove(); };
       offer();
     }
-    if (owner) {
-      row('Manage', { href: 'manage.html' });
-      row('Players', { href: 'players.html' });
-    }
     if (!guest) row('Rux Home', { href: '/' });
-    el.append(ul);
-    host.parentElement.append(el);
+    host.after(el);
+    if (owner && data.players) await ownerList();
+    if (guest && data.leave) leave();
+  };
+
+  // THE OWNER'S LIST: Players, and whether new players may join.
+  const ownerList = async () => {
+    const { el, row, toggle } = list('pixels-owner', 'Owner');
+    row('Players', { href: 'players.html' });
+    let open = null;
+    try { open = await data.joining(); } catch { /* the switch is left out */ }
+    if (open != null) {
+      let undoing = false;
+      toggle('pixels-joining', 'New players can join', open, async (on, li) => {
+        if (undoing) return;
+        try { await data.setJoining(on); document.getElementById('pixels-error').hidden = true; } catch {
+          undoing = true;
+          window.Rux.formControls.toggle(li.querySelector('.rux--toggle'), !on);
+          undoing = false;
+          say('Joining did not change', 'Try again.');
+        }
+      });
+    }
+    document.getElementById('pixels-more').after(el);
   };
 
   /* THE CHARACTER, for the owner while it is a placeholder, once app.js's
@@ -178,66 +233,57 @@
     h1.className = 'rux--type-productive-heading-04';
     h1.textContent = me.name;
     const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-    text.append(h1, words('pixels-meta', [`${count(me.found, 'sprite', 'sprites')} found`, me.mana == null || owner ? '' : `${me.mana} mana`,
+    // The pencil beside the name opens the window that changes it.
+    const named = document.createElement('div');
+    named.className = 'pixels-me-named';
+    const pencil = document.createElement('button');
+    pencil.type = 'button';
+    pencil.className = 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm';
+    pencil.setAttribute('aria-label', 'Change your username');
+    pencil.title = 'Change your username';
+    pencil.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg>';
+    pencil.addEventListener('click', () => {
+      document.getElementById('pixels-me-name').value = me.name;
+      document.getElementById('pixels-name-note').textContent = '';
+      modal.open('pixels-name-modal', pencil);
+    });
+    named.append(h1, pencil);
+    text.append(named, words('pixels-meta', [`${count(me.found, 'sprite', 'sprites')} found`,
       me.fairies == null ? '' : count(me.fairies, 'fairy', 'fairies')].filter(Boolean).join(' · ')));
     head.append(portrait(me, true), text);
+    shown = me;
 
     const drawIt = document.createElement('a');
     drawIt.className = 'rux--btn rux--btn--tertiary';
     drawIt.href = 'make.html?me';
     drawIt.textContent = 'Draw your picture';
 
-    // The username, by the markup of Design's text input.
-    const form = document.createElement('form');
-    form.noValidate = true;
-    form.className = 'pixels-me-name';
-    const field = document.createElement('div');
-    field.className = 'rux--form-item rux--text-input-wrapper';
-    const labelWrap = document.createElement('div');
-    labelWrap.className = 'rux--text-input__label-wrapper';
-    const input = document.createElement('input');
-    Object.assign(input, { id: 'pixels-me-name', className: 'rux--text-input', type: 'text', maxLength: 20, autocomplete: 'nickname', value: me.name });
-    const label = document.createElement('label');
-    label.className = 'rux--label';
-    label.htmlFor = input.id;
-    label.textContent = 'Username';
-    labelWrap.append(label);
-    const outer = document.createElement('div');
-    outer.className = 'rux--text-input__field-outer-wrapper';
-    const inner = document.createElement('div');
-    inner.className = 'rux--text-input__field-wrapper';
-    inner.append(input);
-    outer.append(inner);
-    field.append(labelWrap, outer);
-    const go = document.createElement('button');
-    go.type = 'submit';
-    go.className = 'rux--btn rux--btn--primary rux--btn--md';
-    go.textContent = 'Save';
-    form.append(field, go);
-    const note = words('pixels-me-note', '');
-    note.setAttribute('aria-live', 'polite');
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const to = input.value.trim();
-      if (!to) { note.textContent = 'Type a username first.'; return; }
-      if (to === me.name) { note.textContent = ''; return; }
-      go.disabled = true;
-      let now;
-      try { now = await data.rename(to); } catch { now = { error: 'lost' }; }
-      go.disabled = false;
-      if (now.error) {
-        note.textContent = { taken: 'That username is taken. Try another.', name: 'A username is 1 to 20 letters.' }[now.error] || 'That did not go through. Try again.';
-        return;
-      }
-      host.replaceChildren(document.getElementById('pixels-error'));
-      draw(now);
-    });
-    host.append(head, drawIt, form, note);
+    host.append(head, drawIt);
     if (owner && WORLD && data.setGear) host.append(character(me));
-    if (guest && data.setPin) host.append(pinForm(me));
-    more();
-    if (guest && data.leave) leave();
+    more(me);
   };
+
+  /* THE USERNAME'S WINDOW. Save keeps a new one, unless another player has
+     it, and the page is drawn again with it. */
+  let shown = null;
+  document.getElementById('pixels-name').addEventListener('submit', async e => {
+    e.preventDefault();
+    const input = document.getElementById('pixels-me-name'), note = document.getElementById('pixels-name-note'), go = document.getElementById('pixels-name-save');
+    const to = input.value.trim();
+    if (!to) { note.textContent = 'Type a username first.'; return; }
+    if (to === shown.name) { modal.close('pixels-name-modal'); return; }
+    go.disabled = true;
+    let now;
+    try { now = await data.rename(to); } catch { now = { error: 'lost' }; }
+    go.disabled = false;
+    if (now.error) {
+      note.textContent = { taken: 'That username is taken. Try another.', name: 'A username is 1 to 20 letters.' }[now.error] || 'That did not go through. Try again.';
+      return;
+    }
+    modal.close('pixels-name-modal');
+    host.replaceChildren(document.getElementById('pixels-error'));
+    draw(now);
+  });
 
   // Delete my player: the first two presses only ask, and a press not
   // followed within a few seconds starts over.
@@ -318,7 +364,9 @@
         note.textContent = { pin: 'A PIN is four digits.', weak: 'That PIN is too easy to guess. Pick another.' }[now.error] || 'That did not go through. Try again.';
         return;
       }
-      form.replaceWith(pinForm({ ...me, pin: now.pin }));
+      shown = { ...shown, pin: now.pin };
+      form.replaceWith(pinForm(shown));
+      more(shown);
     };
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -343,98 +391,6 @@
     b.textContent = text;
     return b;
   };
-  // The player's own rifts, drawn again after each change to one.
-  const rifts = async () => {
-    document.getElementById('pixels-gates')?.remove();
-    let got;
-    try { got = await data.own.mine(); } catch { say('Your rifts did not load', 'Reload the page to try again.'); return; }
-    if (!got) return;
-    const el = document.createElement('section');
-    el.id = 'pixels-gates';
-    el.className = 'rux--stack-vertical rux--stack-scale-5';
-    const top = document.createElement('div');
-    top.className = 'pixels-level-head';
-    const make = document.createElement('a');
-    make.className = 'rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm';
-    make.href = owner ? 'make.html?own' : 'make.html';
-    make.textContent = 'Make a puzzle';
-    top.append(words('rux--type-productive-heading-03', 'Your rifts'), make);
-    el.append(top);
-    const found = new Map();
-    got.puzzles.forEach(p => {
-      if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
-      found.get(p.level).puzzles.push(p);
-    });
-    // A rift holds boards of any size: `sizes` is the sides it has, and
-    // `width` the first, which the database's functions take and do not read.
-    found.forEach(g => {
-      g.sizes = [...new Set(g.puzzles.map(p => p.width))].sort((a, b) => a - b);
-      g.width = g.sizes[0];
-    });
-    if (!found.size) el.append(words('pixels-meta', owner ? 'You have made none yet. A rift holds fifteen, and your friends are sent it once it is published.' : 'You have made none yet. A puzzle costs 1 mana, and a rift holds fifteen.'));
-    [...found.values()].sort((a, b) => a.level - b.level).forEach(g => {
-      const box = document.createElement('div');
-      box.className = 'rux--stack-vertical rux--stack-scale-3 pixels-mine';
-      const head = document.createElement('div');
-      head.className = 'pixels-mine-head';
-      const name = document.createElement('input');
-      Object.assign(name, { className: 'rux--text-input rux--layout--size-sm', type: 'text', maxLength: 30, value: g.theme || '', placeholder: 'Name this rift' });
-      name.setAttribute('aria-label', `Name of ${g.theme || 'this rift'}`);
-      name.addEventListener('change', async () => {
-        try { await data.own.setTheme(g.width, g.level, name.value.trim()); document.getElementById('pixels-error').hidden = true; } catch { say('The rift was not renamed', 'Try again.'); }
-      });
-      name.addEventListener('keydown', e => { if (e.key === 'Enter') name.blur(); });
-      const shown = button(g.hidden ? 'rux--btn--tertiary' : 'rux--btn--ghost', g.hidden ? 'Publish' : 'Unpublish');
-      shown.addEventListener('click', async () => {
-        shown.disabled = true;
-        try {
-          const now = await data.own.publish(g.width, g.level, g.hidden);
-          if (now.error) say('A rift is published with 3 puzzles or more', 'Make another, then publish it.');
-          else document.getElementById('pixels-error').hidden = true;
-        } catch { say('The rift did not change', 'Try again.'); }
-        rifts();
-      });
-      const remove = button('rux--btn--danger--ghost', 'Delete');
-      // A second press within a few seconds does it; the first only asks.
-      remove.addEventListener('click', async () => {
-        if (remove.dataset.sure == null) {
-          remove.dataset.sure = '';
-          remove.textContent = 'Delete it and its puzzles?';
-          setTimeout(() => { delete remove.dataset.sure; remove.textContent = 'Delete'; }, 4000);
-          return;
-        }
-        remove.disabled = true;
-        try { await data.own.removeLevel(g.width, g.level); } catch { say('The rift was not deleted', 'Try again.'); }
-        location.reload();
-      });
-      head.append(name, words('pixels-meta', `${side(g)} · ${g.puzzles.length} of 15`), shown, remove);
-      const list = document.createElement('div');
-      list.className = 'pixels-list';
-      list.append(...g.puzzles.map(p => {
-        const a = document.createElement('a');
-        a.className = 'rux--link rux--tile rux--tile--clickable pixels-puzzle';
-        a.href = `make.html?${owner ? 'own&' : ''}id=${encodeURIComponent(p.id)}`;
-        a.append(art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', grade(rounds(grid(p.squares, p.width)))));
-        return a;
-      }));
-      box.append(head, list);
-      const solvers = got.solvers.filter(s => s.level === g.level);
-      if (solvers.length) {
-        const ul = document.createElement('ul');
-        ul.className = 'pixels-people';
-        ul.append(...solvers.map(s => {
-          const li = document.createElement('li');
-          li.className = 'pixels-person';
-          li.append(portrait(s), words('pixels-person-name', s.name), words('pixels-meta', `${s.solved} of ${g.puzzles.length} · ${time(s.seconds)}`));
-          return li;
-        }));
-        box.append(ul);
-      } else if (!g.hidden) box.append(words('pixels-meta', 'Nobody has found a sprite here yet.'));
-      el.append(box);
-    });
-    host.after(el);
-  };
-
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
     let me;
@@ -446,8 +402,5 @@
     }
     if (!me) return;
     draw(me);
-    // The owner's own rifts are here as a player's are; the ones every player
-    // is sent are in Manage.
-    if (data.own) rifts();
   })();
 })();

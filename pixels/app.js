@@ -903,6 +903,77 @@
     return el;
   };
 
+  /* A ROW'S MENU, Design's overflow menu, flipped to open under the row's
+     end. `items` is [text, act, danger] each, and a missing one is left
+     out; `label` names the opener for a screen reader. */
+  const menu = (label, items) => {
+    const wrap = document.createElement('span');
+    wrap.className = 'rux--overflow-menu__wrapper';
+    const opener = document.createElement('button');
+    Object.assign(opener, { type: 'button', className: 'rux--overflow-menu' });
+    opener.setAttribute('aria-expanded', 'false');
+    opener.setAttribute('aria-haspopup', 'true');
+    opener.setAttribute('aria-label', label);
+    opener.innerHTML = '<svg class="rux--overflow-menu__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-overflow-menu--vertical"/></svg>';
+    const options = document.createElement('ul');
+    options.className = 'rux--overflow-menu-options rux--overflow-menu--flip';
+    options.setAttribute('role', 'menu');
+    options.append(...items.filter(Boolean).map(([text, act, danger]) => {
+      const li = document.createElement('li');
+      li.className = `rux--overflow-menu-options__option${danger ? ' rux--overflow-menu-options__option--danger' : ''}`;
+      li.setAttribute('role', 'none');
+      const b = document.createElement('button');
+      Object.assign(b, { type: 'button', className: 'rux--overflow-menu-options__btn', tabIndex: 0 });
+      b.setAttribute('role', 'menuitem');
+      b.append(words('rux--overflow-menu-options__option-content', text));
+      b.addEventListener('click', () => act(opener));
+      li.append(b);
+      return li;
+    }));
+    wrap.append(opener, options);
+    // The list hangs from the opener, inside a box of the page's own.
+    const holder = document.createElement('span');
+    holder.className = 'pixels-menu';
+    holder.append(wrap);
+    return holder;
+  };
+
+  /* A RIFT'S BLOCK on Create, Mine's and Game's alike: its name, which may
+     be a button, and under it what it holds; then `tags`, `controls` such as
+     a switch, and its menu, along its top; then its pictures, each a link
+     that edits it, dim while it is off, and the add tile last where `add`
+     is its address. Each part does one thing. */
+  const riftBlock = ({ name, meta, tags = [], controls = [], puzzles, href, add, addLabel }) => {
+    const el = document.createElement('div');
+    el.className = 'pixels-block';
+    const top = document.createElement('div');
+    top.className = 'pixels-block-top';
+    const text = document.createElement('div');
+    text.className = 'pixels-block-words';
+    text.append(typeof name === 'string' ? words('pixels-place-name', name) : name, words('pixels-meta', meta));
+    top.append(text, ...tags.map(t => words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--high-contrast', t)), ...controls);
+    const pics = document.createElement('div');
+    pics.className = 'pixels-block-pics';
+    pics.append(...puzzles.map(p => {
+      const a = document.createElement('a');
+      a.className = `pixels-block-pic${p.off ? ' is-off' : ''}`;
+      a.href = href(p);
+      a.setAttribute('aria-label', `Edit ${p.name}${p.off ? ', off' : ''}`);
+      a.append(art(p, true));
+      return a;
+    }));
+    if (add) {
+      const a = document.createElement('a');
+      a.className = 'pixels-block-pic pixels-block-add';
+      a.href = add;
+      a.setAttribute('aria-label', addLabel || 'Add a puzzle');
+      a.textContent = '+';
+      pics.append(a);
+    }
+    el.append(top, pics);
+    return el;
+  };
+
   /* A SPRITE JUST FOUND is kept in this tab until its rift's page shows it
      turning into view: `arrive` keeps one, and `arrived` gives back those
      of the ids it is given and forgets them. `turn` turns a picture into
@@ -1070,13 +1141,13 @@
   tint();
   new MutationObserver(tint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'style'] });
 
-  /* THE PLACES every player has: a bar along the foot of a phone, on the
-     pages that carry it, and from 66rem the header's links on every page in
-     its place. This marks the place the page is, in both; a rift's page and
-     a puzzle's are Puzzles'. The owner's two, Manage and Players, are places
-     too, shown to the owner alone by `shell`. */
+  /* THE PLACES every player has, Play, Create and Me: a bar along the foot
+     of a phone, on the pages that carry it, and from 66rem the header's
+     links on every page in its place. This marks the place the page is, in
+     both; a rift's page and a puzzle's are Play's, and Friends and Players,
+     which open from Me, are Me's. */
   const here = location.pathname.split('/').pop() || 'index.html';
-  const place = { 'category.html': 'index.html', 'play.html': 'index.html' }[here] || here;
+  const place = { 'category.html': 'index.html', 'play.html': 'index.html', 'friends.html': 'me.html', 'players.html': 'me.html' }[here] || here;
   document.querySelectorAll('.game-place, .game-header .rux--header__menu-item').forEach(a => {
     const to = a.getAttribute('href') === './' ? 'index.html' : a.getAttribute('href');
     if (to !== place) return;
@@ -1087,8 +1158,8 @@
   /* THE HEADER'S PANEL, on a wide screen. data.js calls `shell` once there is
      a player, with them where it has them, and Design's js/profile.js does
      the writing. The game's places are all in the header, so the panel is
-     the account's alone; this shows the owner's places, Manage and Players,
-     in the header and the bar. A player with no account is
+     the account's alone; this shows what is the owner's alone, marked
+     `data-pixels-owner`. A player with no account is
      written there too, their picture on the account action, since a guest
      has no account to say who they are. */
   const shell = me => {
@@ -1112,6 +1183,6 @@
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
-    words, art, tile, bar, riftTile, arrive, arrived, turn, how, switcher, chosen, shell,
+    words, art, tile, bar, riftTile, menu, riftBlock, arrive, arrived, turn, how, switcher, chosen, shell,
   });
 })();

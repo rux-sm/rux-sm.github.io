@@ -30,7 +30,7 @@ the game shows now, so a drawing already in the game is never lost:
 | icons | 12 × 12 | the game's icons, a frame to each, named by its tag |
 
 An enemy is drawn on the puzzle sheet, below, or one at a time in the
-Pixelator, in its frame on Manage.
+Pixelator, in its frame on Create's Game.
 
 ## Draw
 

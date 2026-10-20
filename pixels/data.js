@@ -38,7 +38,7 @@
    THE OWNER makes and edits puzzles and sees the players, by the tables'
    own rules: `all`, which is every puzzle there is, `save`, `remove`,
    `setOff`, `move`, `setTheme`, `setHidden`, `orderLevels`, `removeLevel`,
-   `players`, `setJoining`, `share`, `renamePlayer` and `removePlayer`. `move` and
+   `players`, `joining`, `setJoining`, `share`, `renamePlayer` and `removePlayer`. `move` and
    `remove` take one id or several. A puzzle with no `level` is in no
    category, and no player is sent it.
 
@@ -321,8 +321,10 @@
     async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
     /* A PLAYER'S OWN PUZZLES AND RIFTS, by the names the owner's have, so
        the Pixelator saves either. `mine` is everything of the player's:
-       their mana, their puzzles, each with its rift's name and whether the
-       rift is hidden, and who has solved how much of each rift. A save the
+       their mana, their puzzles, each with its rift's name, whether the
+       rift is hidden and whether the puzzle is off, and who has solved how
+       much of each rift. A new puzzle in a rift already published is saved
+       off, and publishing a rift switches all of its puzzles on. A save the
        database turns down for mana, a full rift or a sixth rift throws with
        `refused` saying which. The owner has rifts of this kind too, apart
        from the ones every player is sent, and is charged no mana for them. */
@@ -331,14 +333,14 @@
       async all() {
         const got = await this.mine();
         if (!got) throw new Error('no player');
-        return got.puzzles.map(p => ({ ...p, day: null, off: false }));
+        return got.puzzles.map(p => ({ ...p, day: null, off: !!p.off }));
       },
       async save({ id, name, squares, width, level, colours }) {
         const row = await call('pixels_keep_puzzle', {
           p_key: key(), p_id: id || null, p_name: name, p_squares: squares, p_width: width, p_level: level, p_colours: colours || null,
         });
         if (row.error) throw Object.assign(new Error(row.error), { refused: row.error });
-        return { ...row, day: null, off: false };
+        return { ...row, day: null, off: !!row.off };
       },
       async remove(id) { await call('pixels_drop_puzzle', { p_key: key(), p_id: id }); },
       // A rift just started is hidden by the database, so there is nothing to do.
@@ -484,6 +486,12 @@
       ]);
       [players, results, days, settings].forEach(r => fail(r.error));
       return { players: players.data, results: results.data, days: days.data, joining: settings.data.joining };
+    },
+    // Whether new players may join, for the owner's switch on Me.
+    async joining() {
+      const { data: row, error } = await client.from('pixels_settings').select('joining').single();
+      fail(error);
+      return row.joining;
     },
     async setJoining(on) {
       fail((await client.from('pixels_settings').update({ joining: on }).eq('one', true)).error);

@@ -64,7 +64,7 @@ has a next move, and the picture comes out bit by bit.
    through, not at the first look and not only at the end.
 5. **Break up a solid block.** There is nothing to work out inside one. A
    notch, a shine spot or a bit that sticks out is where the thinking is.
-6. **Play it the next day.** Play, in Manage, tries it. If you were bored or
+6. **Play it the next day.** Play, in a rift's panel on Game, tries it. If you were bored or
    stuck, the players will be too.
 
 ## The colour picture
@@ -94,7 +94,7 @@ then five greys from white to black.
   plain: black if it is filled, white if it is not.
 - **Undo, Redo and Clear** work in both steps. Undo takes back a tap, a
   drag, a fill, Clear or a change of size. Cmd+Z undoes and Shift+Cmd+Z redoes.
-- **Back** leaves for Manage and loses nothing: a new picture is kept
+- **Exit** goes back to Create, to the rift it came from, and loses nothing: a new picture is kept
   in this browser and is on the board the next time you open the Pixelator.
 - **Colour the background too.** A blue sky or a green field behind the shape
   is what makes the finish feel like a reward.
@@ -119,7 +119,7 @@ the game makes itself, which has no name but its date.
   is the one picture all of them see.
 - **Keep it easy or normal.** It is the puzzle people do every day, on a
   phone, often in a spare minute.
-- Manage lists every day drawn, by date, under Dailies; a tile opens it in
+- Game lists every day drawn, by date, under Dailies; a tile opens it in
   the maker.
 
 ## How hard it is
@@ -158,7 +158,7 @@ the order they were drawn in does not matter. The last, which is the
 hardest, is its boss.
 
 - **No rift yet**, first in that list, keeps the puzzle in Unsorted: a
-  section of Manage after the rifts. No player is sent a puzzle
+  section of Game after the rifts. No player is sent a puzzle
   there until it is moved into a rift.
 - **New rift**, in that list, starts one, and a field opens for its
   name. It stands after the others and starts hidden, so only the owner
@@ -168,15 +168,19 @@ hardest, is its boss.
   named as it is started.
 - **Draw more than fifteen.** A picture saved into a rift with fifteen on is
   saved off, and no player is sent it.
+- **A new picture in a published rift is saved off,** so no player meets it
+  half made. Switch it on in the rift's panel when it is ready.
 
-## Manage
+## Game
 
-Manage, in the menu, is where puzzles and rifts are put in order. It
-shows every rift on one page, in order, each with its place, its name and
-its boards' sizes, then Unsorted. The front page shows only what the
+Game, the switch at the top of Create, is where puzzles and rifts are put
+in order. It shows every rift on one page, in order, a block each with its
+place, its name, its boards' sizes and its pictures, then Unsorted. A
+picture opens it in the Pixelator, and the rift's name opens its panel,
+where the arrows and the ticks are. The front page shows only what the
 players are sent.
 
-- **Add puzzle**, the tile after a rift's own, opens the Pixelator on a
+- **The add tile**, after a rift's pictures, opens the Pixelator on a
   blank board of that rift's largest size, and Save offers that rift. The
   Size field changes the board and keeps the rift.
 - **Tick puzzles to move them.** Press a tile to tick it, or the box beside
@@ -189,13 +193,11 @@ players are sent.
   A sixteenth is refused until one is off.
 - **Edit** opens a puzzle in the maker. **Play** tries it; for a puzzle no
   player is sent, the time is not kept.
-- **Publish a rift** with the switch beside its name, which says Published
-  or Hidden: published, every player is sent it; hidden, only Manage shows
-  it.
-- **Move it with the arrows** beside the switch, up or down among the
-  rifts. The order is the one players meet them in, and a rift's number
-  is its place.
-- **Rename it with the pencil** beside the arrows.
-- **Delete it with the bin.** Its puzzles are kept: they move to Unsorted,
+- **Publish a rift** with the switch beside its name: on, every player is
+  sent it; off, only Game shows it.
+- **Move it with the arrows** in its panel, up or down among the rifts. The
+  order is the one players meet them in, and a rift's number is its place.
+- **Rename it, or choose who sees it,** from its menu.
+- **Delete it from its menu.** Its puzzles are kept: they move to Unsorted,
   and the rifts after it move up. A rift left empty by a move or a
   delete goes the same way.

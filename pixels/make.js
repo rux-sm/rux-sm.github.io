@@ -18,18 +18,18 @@
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
    squares a side, or 20 for the owner's course, which Undo takes back, and
    a saved puzzle keeps the size it has. Exit, the toolbar's first button,
-   leaves for Manage; a new picture and an edit are kept as drafts, so
-   nothing is lost by it.
+   goes back to Create, to the view and the rift it came from; a new
+   picture and an edit are kept as drafts, so nothing is lost by it.
 
    SAVE asks where the puzzle goes, once the picture is solvable and named:
    No category yet, which keeps it in Unsorted, where no player is sent it;
    one of the categories on the front page, whatever its boards' size, listed by name with how
    many of its fifteen are on; New category, which starts one after them, asks
-   for its name, and is hidden from the players until Manage's
+   for its name, and is hidden from the players until Game's
    switch publishes it; or Puzzle of the day, which asks for the day. A day's puzzle sits in no category; a
    day takes one puzzle, and after one is saved the day moves on by one. A
-   puzzle saved into a category with fifteen on is saved off, for Manage's
-   switch to turn on.
+   puzzle saved into a category with fifteen on is saved off, for Game's
+   switch to turn on. The rift last saved to is chosen first.
 
    The data calls a category a level: `level` is its number, which is its
    place on the front page and is never shown, and `theme` is its name.
@@ -39,8 +39,10 @@
    ANY OTHER PLAYER makes puzzles for rifts of their own, by data.js's
    `own`: a new puzzle costs one mana, the Rift field lists their rifts and
    New rift, with no Unsorted and no puzzle of the day, a rift holds fifteen,
-   and Exit and Delete leave for Me. A rift just started is hidden until it
-   is published on Me. make.html?own is the same for the owner's own rifts,
+   and Exit and Delete go back to Create. A rift just started is hidden
+   until it is published on Create, and a new puzzle in a rift already
+   published waits, off, until the rift is published again. A new puzzle
+   of the owner's in a published rift is saved off too, for Game's switch. make.html?own is the same for the owner's own rifts,
    which cost no mana, and keeps its draft under `pixels-own-draft`.
 
    make.html?me draws the player's own picture, for any player: the board is
@@ -83,7 +85,16 @@
   // Where a puzzle is kept: the owner's tables, or a player's own rifts,
   // which cost mana. `mana` is the player's, and the owner's is never asked.
   const store = personal ? data?.own || null : data;
-  const home = personal ? 'me.html' : 'manage.html';
+  /* EXIT goes back to Create, to the view the puzzle is in, and for the base
+     game to the rift it is for, whose panel opens there. LAST is the rift
+     the last puzzle was saved to, kept in this browser apart for the base
+     game and for one's own, and chosen first for a new picture. */
+  const gateAsked = +query.get('gate') || null;
+  const homeOf = level => (personal ? 'create.html' : `create.html?view=game${level ? `&rift=${level}` : ''}`);
+  let home = homeOf(gateAsked);
+  const LAST = personal ? 'pixels-last-own-rift' : 'pixels-last-rift';
+  const lastRift = () => { try { return +localStorage.getItem(LAST) || null; } catch { return null; } };
+  $('pixels-exit').href = home;
   // Twenty a side is the course's alone: a player's own rifts stop at
   // fifteen, which the database holds them to.
   if (personal || mine) size.querySelector('option[value="20"]').remove();
@@ -497,7 +508,12 @@
     // fifteen on is saved off too, since the category shows fifteen; a day's
     // puzzle is in no category and is never off.
     const stays = editing && !editing.day && editing.level === puzzle.level;
-    puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || (!stays && held().full(puzzle.level)));
+    // A new puzzle in a published rift waits, off, until it is switched on;
+    // a player's waits until the rift is published again, which the
+    // database decides.
+    const shown = puzzle.level != null && puzzles.some(p => p.level === puzzle.level && !p.day && !p.hidden);
+    const waits = !editing && shown;
+    puzzle.off = !puzzle.day && !!store.setOff && (!!editing?.off || waits || (!stays && held().full(puzzle.level)));
     const turnedOff = puzzle.off && !editing?.off;
     // A player's rift holds fifteen and no more.
     if (personal && !stays && held().full(puzzle.level)) {
@@ -506,11 +522,12 @@
       return;
     }
     // A category just started is hidden, so it is drawn out of the players'
-    // sight; Manage's Published switch shows it.
+    // sight; Game's Published switch shows it.
     const fresh = !puzzle.day && puzzle.level != null && !puzzles.some(p => p.level === puzzle.level && !p.day);
     try {
       if (fresh) await store.setHidden?.(side, puzzle.level, true);
       const row = await store.save(puzzle);
+      if (row.level != null) try { localStorage.setItem(LAST, row.level); } catch { /* the first rift with room is chosen */ }
       // The category's name goes with it, if it was changed.
       const named = theme.value.trim();
       if (!puzzle.day && puzzle.level != null && named !== themeOf()) {
@@ -541,7 +558,7 @@
           when.setDate(when.getDate() + 1);
           day.value = `${when.getFullYear()}-${String(when.getMonth() + 1).padStart(2, '0')}-${String(when.getDate()).padStart(2, '0')}`;
         } else if (row.level == null) saved(`Saved “${row.name}”. It is in Unsorted, where no player is sent it.`);
-        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && store.setHidden ? ', hidden until you publish it' : turnedOff ? ', off, since fifteen are on' : ''}.`);
+        else saved(`Saved “${row.name}”. It is in ${named || 'More'}${fresh && store.setHidden ? ', hidden until you publish it' : row.off && personal ? ', waiting until you publish the rift again' : waits ? ', off until you switch it on' : turnedOff ? ', off, since fifteen are on' : ''}.`);
       }
       $('pixels-error').hidden = true;
     } catch (error) {
@@ -584,7 +601,7 @@
       document.title = `${wearing ? 'Your helmet' : 'Your picture'} — Pixels`;
       document.querySelector('.pixels-maker-top').hidden = true;
       check.hidden = true;
-      const back = maker.querySelector('a[href="manage.html"]');
+      const back = $('pixels-exit');
       back.href = 'me.html';
       back.title = 'Exit to Me';
       back.setAttribute('aria-label', 'Exit to Me');
@@ -628,10 +645,7 @@
         return;
       }
       if (!owner) mana = got.mana;
-      const back = maker.querySelector('a[href="manage.html"]');
-      back.href = home;
-      back.title = 'Exit to Me';
-      back.setAttribute('aria-label', 'Exit to Me');
+      $('pixels-exit').href = home;
     }
     const id = query.get('id');
     try {
@@ -653,6 +667,8 @@
         $('pixels-heading').textContent = `Edit ${editing.name}`;
         document.title = `Edit ${editing.name} — Pixels`;
         $('pixels-delete').hidden = false;
+        home = homeOf(editing.level);
+        $('pixels-exit').href = home;
         // An edit left unsaved is back, while the puzzle is as it was then.
         const kept = readDraft(editKey(editing.id));
         if (kept?.was === was(editing) && kept.squares?.length === editing.squares.length) {
@@ -667,16 +683,16 @@
     if (!editing) {
       const kept = readDraft();
       const keptSide = Math.sqrt(kept?.squares?.length || 0);
-      // Manage's Add puzzle names the rift the puzzle is for, as a size
+      // A rift's add tile names the rift the puzzle is for, as a size
       // and its level: the board is that size and Save offers that rift. A
       // drawing kept of that size is on the board; one of another size is
       // not, and the first square drawn here takes its place.
       const forSide = +query.get('size'), forLevel = +query.get('gate');
-      const asked = !id && !personal && SIZES.includes(forSide) && Number.isInteger(forLevel) && forLevel >= 1;
+      const asked = !id && SIZES.includes(forSide) && Number.isInteger(forLevel) && forLevel >= 1;
       const draws = !id && SIZES.includes(keptSide) && (!asked || keptSide === forSide);
       setSide(asked ? forSide : draws ? keptSide : 10);
       draft = blank();
-      showLevels(asked ? forLevel : openLevel());
+      showLevels(asked ? forLevel : lastRift() && !held().full(lastRift()) && puzzles.some(p => p.level === lastRift() && !p.day) ? lastRift() : openLevel());
       if (draws) {
         draft = grid(kept.squares);
         colours = kept.colours ? grid(kept.colours) : null;

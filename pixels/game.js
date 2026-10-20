@@ -1,51 +1,44 @@
 /* ==========================================================================
-   manage.js — the owner's page: every puzzle, by category, and what is done
-   to them
+   game.js — Create's Game view, the owner's: the base game every player is
+   sent, by rift, and what is done to it
    --------------------------------------------------------------------------
-   A ROW TO EACH RIFT, in the owner's order, which is the order the
-   players meet them in; then Unsorted, the puzzles in no category, which
-   no player is sent; then Dailies where a day's puzzle is drawn. A row has
-   its place and name, its size and how many are on, at most fifteen, a
-   strip of its pictures, and for a rift the switch that hides it from
-   every player. Pressing a row opens that place under it and closes the
-   one open, and pressing the open row closes it, so one place's tiles at
-   most are drawn at a time; the open one is `?rift=` in the address, so a
-   reload or Back comes back to it.
+   A BLOCK TO EACH RIFT, in the owner's order, which is the order the
+   players meet them in; then Unsorted, the puzzles in no rift, which no
+   player is sent; then Dailies where a day's puzzle is drawn. Each part of
+   a block does one thing: a picture edits its puzzle, the add tile draws
+   another for the rift, the switch publishes the rift, the menu holds Who
+   sees, Rename and Delete, and the rift's name opens its panel under it, or
+   closes it; one panel at most is open, and it is `?rift=` in the address,
+   so a reload or the Pixelator's Exit comes back to it.
 
-   AN OPEN RIFT'S HEADING has the box that ticks it, its name, size and
-   count, and arrows that move it up or down among the others; a key that
-   keeps it for picked players; a pencil that renames it; and a bin that
-   deletes it and leaves its puzzles in Unsorted.
+   THE PANEL is where a rift is managed: the box that ticks all of it, its
+   name, size and count, and the arrows that move it among the others; then
+   a tile a puzzle, with its size and how hard it is, and under it Edit,
+   Play, which tries it, and for one in a rift the switch that sends it to
+   no player when off; then Add puzzle.
 
-   A TILE always shows its puzzle's picture and name, its size and how hard it is.
-   Under it are Edit, which opens it in the maker, Play, which tries it, and
-   for one in a category the switch that sends it to no player when off.
-   After a category's tiles is Add puzzle, which opens the maker on a blank
-   board of the category's size, with the category chosen for Save.
+   TICKS. A tile is ticked by pressing it, and the box in a panel ticks its
+   whole rift. A tick stays when another panel opens, so puzzles from two
+   rifts move together. A bar over the list stays in view with how many are
+   ticked in all, and Move, Delete and Clear, which wait for a tick. Move
+   asks where: a rift, Unsorted, or a new rift, which is named there and
+   starts hidden. Puzzles that come into a rift arrive on while it has
+   fewer than fifteen on, and off after that. A rift a move or a delete
+   empties is deleted, so the places stay 1, 2, 3. Delete asks once, and
+   every player's times on the puzzles go with them.
 
-   TICKS. A tile is ticked by pressing it, and the box in a heading ticks
-   its whole category. A tick stays when another place opens, so puzzles
-   from two rifts move together. A bar over the list stays in view with
-   how many are ticked in all, and Move, Delete and Clear, which wait for
-   a tick; it is there before any tile is ticked, so the first tick moves
-   nothing. Move asks where: a category,
-   Unsorted, or a new category, which is named there and starts hidden.
-   Puzzles that come into a category arrive on while it has fewer than fifteen
-   on, and off after that. A category a move or a delete empties is deleted,
-   so the places stay 1, 2, 3. Delete asks once, and every player's times on
-   the puzzles go with them.
+   The data calls a rift a level: `level` is its number, which is its place,
+   and `theme` is its name. It holds boards of any size, and the database's
+   functions still take a size, which they do not read. create.js shows this
+   view and calls `window.Pixels.game` to draw it.
 
-   The data calls a category a level: `level` is its number, which is its
-   place, and `theme` is its name. It holds boards of any size, and the
-   database's functions still take a size, which they do not read.
-
-   Only the owner's account sees this page: the database gives nobody else
-   the tables it reads and writes.
+   Only the owner's account sees it: the database gives nobody else the
+   tables it reads and writes.
    ========================================================================== */
 (() => {
   'use strict';
 
-  const { data, owner, order, grade, words, art, tile, portrait } = window.Pixels;
+  const { data, owner, order, grade, words, art, tile, portrait, menu, riftBlock } = window.Pixels;
   const $ = id => document.getElementById(id);
   const host = $('pixels-levels');
   const { modal } = window.Rux;
@@ -281,19 +274,7 @@
     if (open == null) at.searchParams.delete('rift'); else at.searchParams.set('rift', open);
     history.replaceState(null, '', at);
     draw(focus);
-    if (open != null) $(`pixels-place-${open}`)?.parentElement.scrollIntoView({ block: 'start' });
-  };
-  // A place's pictures, small, in a strip under its name.
-  const strip = list => {
-    const el = document.createElement('span');
-    el.className = 'pixels-strip';
-    el.setAttribute('aria-hidden', 'true');
-    el.append(...list.slice(0, PER_LEVEL).map(p => {
-      const pic = art(p, true);
-      pic.classList.add('pixels-strip-pic');
-      return pic;
-    }));
-    return el;
+    if (open != null) $(`pixels-place-${open}`)?.closest('.pixels-block').scrollIntoView({ block: 'start' });
   };
   function draw(focus = []) {
     host.replaceChildren();
@@ -345,27 +326,25 @@
           say('The rift did not move', 'Try again.');
         }
       };
-      // The Published switch and the word for what it has done.
+      // The Published switch, which a screen reader names.
       const shown = document.createElement('div');
       shown.className = 'pixels-shown';
-      const word = words('pixels-meta', c.hidden ? 'Hidden' : 'Published');
-      word.setAttribute('aria-hidden', 'true');
       shown.append(toggle(`${id}-shown`, `${name} published`, !c.hidden, async to => {
         await data.setHidden(width, c.level, !to);
         c.puzzles.forEach(p => { p.hidden = !to; });
-        word.textContent = to ? 'Published' : 'Hidden';
-      }, { text: false, failed: ['The rift did not change', 'Try again.'] }), word);
-      places.push([String(c.level), title, meta, c.puzzles, shown, () => {
+      }, { text: false, failed: ['The rift did not change', 'Try again.'] }));
+      places.push([String(c.level), title, meta, c.puzzles, null, () => {
         const keys = document.createElement('div');
         keys.className = 'pixels-moves';
         keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
-          key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)),
-          ...(data.share ? [key(`${id}-share`, `Who sees ${name}`, '#m-groups', from => sharing(c, from))] : []),
-          key(`${id}-rename`, `Rename ${name}`, '#m-edit', from => naming(c, from)),
-          key(`${id}-remove`, `Delete ${name}`, '#m-delete', from => removing(c, from)));
+          key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)));
         return section(id, title, h2 => [tickAll(`${id}-all`, `Tick all of ${name}`), h2, words('pixels-meta', meta), keys],
           [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]);
-      }]);
+      }, [shown, menu(`More for ${name}`, [
+        data.share ? ['Who sees it', from => sharing(c, from)] : null,
+        ['Rename', from => naming(c, from)],
+        ['Delete', from => removing(c, from), true],
+      ])], `make.html?size=${Math.max(...sizes(c))}&gate=${c.level}`]);
     });
     // Unsorted has no switch, place or name of its own.
     if (strays.length) {
@@ -385,22 +364,18 @@
     }
     if (!places.some(([k]) => k === open)) open = null;
     const at = places.findIndex(([k]) => k === open);
-    places.forEach(([k, title, meta, list, shown], i) => {
-      const row = document.createElement('div');
-      row.className = 'pixels-place';
-      row.style.order = i * 2;
+    places.forEach(([k, title, meta, list, , , controls = [], add], i) => {
+      // The name opens the panel, or closes it.
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'pixels-place-open';
+      b.className = 'pixels-place-open pixels-place-name';
       b.id = `pixels-place-${k}`;
+      b.textContent = title;
       b.setAttribute('aria-expanded', k === open);
       if (k === open) b.setAttribute('aria-controls', 'pixels-open');
-      const text = document.createElement('span');
-      text.className = 'pixels-place-words';
-      text.append(words('pixels-place-name', title), words('pixels-meta', meta));
-      b.append(text, strip(list));
       b.addEventListener('click', () => choose(k === open ? null : k, [b.id]));
-      row.append(b, ...(shown ? [shown] : []));
+      const row = riftBlock({ name: b, meta, controls, puzzles: list.slice(0, PER_LEVEL), href: p => `make.html?id=${encodeURIComponent(p.id)}`, add, addLabel: `Add a puzzle to ${title}` });
+      row.style.order = i * 2;
       if (k === open) row.setAttribute('aria-current', 'true');
       host.append(row);
     });
@@ -612,17 +587,21 @@
     }
   });
 
-  (async () => {
-    if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
-    if (!owner || !data.all) { say('Only the owner manages puzzles', 'This account can play them.'); return; }
+  // Drawn the first time the view is shown, and kept after.
+  let loaded = false;
+  window.Pixels.game = async () => {
+    if (loaded) return;
+    if (!data || !owner || !data.all) { say('Only the owner manages the game', 'This account can play it.'); return; }
+    loaded = true;
     try {
       puzzles = await data.all();
     } catch {
+      loaded = false;
       say('The puzzles did not load', 'Reload the page to try again.');
       return;
     }
     draw();
     // A rift kept in the address opens scrolled to.
-    if (open != null) $(`pixels-place-${open}`)?.parentElement.scrollIntoView({ block: 'start' });
-  })();
+    if (open != null) $(`pixels-place-${open}`)?.closest('.pixels-block').scrollIntoView({ block: 'start' });
+  };
 })();

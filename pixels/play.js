@@ -69,8 +69,8 @@
    a rift that is still locked and a boss still held back. A boss held
    back, by app.js's `holds`, is not played by its address either.
 
-   THE OWNER PLAYS ANY PUZZLE, from Manage. One no player is sent is a
-   trial: titled by its name, with no Next and no rift, its Back to Manage,
+   THE OWNER PLAYS ANY PUZZLE, from Create's Game. One no player is sent is a
+   trial: titled by its name, with no Next and no rift, its Back to Game,
    and its time not kept.
 
    play.html?daily plays the puzzle of the day, the one the owner drew for
@@ -151,7 +151,7 @@
     // Its category, and its place among that category's puzzles.
     const home = cats.find(c => c.puzzles.includes(puzzle)), index = home ? home.puzzles.indexOf(puzzle) : -1;
     // A rift of the course that is not open yet is not played, by its
-    // address either. The owner plays any, as Manage's Play needs.
+    // address either. The owner plays any, as Game's Play needs.
     if (!isDaily) locks(cats, results);
     if (home?.short && !owner) {
       say('This rift is not open yet', `${home.need - home.short} of ${home.need} sprites to open it. Pick a puzzle from Puzzles.`);
@@ -175,9 +175,9 @@
         return sessionStorage.getItem(FROM);
       } catch { return null; }
     })();
-    const back = cameFrom || (trial ? 'manage.html' : home ? where(home) : './');
+    const back = cameFrom || (trial ? 'create.html?view=game' : home ? where(home) : './');
     $('pixels-back').href = $('pixels-out').href = $('pixels-exit').href = back;
-    if (trial) $('pixels-out').textContent = 'Manage';
+    if (trial) $('pixels-out').textContent = 'Create';
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
     // A name stays hidden until its puzzle is solved; the day's shows its

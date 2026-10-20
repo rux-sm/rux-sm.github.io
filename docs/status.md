@@ -34,9 +34,8 @@ done and how.
   needs a way, on Players, to hand a player a new key.
 - Mana falls below nothing when a puzzle a player solved is deleted or
   redrawn, and Me shows the minus.
-- `pixels/me.js` loads the page again after a rift fails to delete, so the
-  error is never read.
-- An unticked tile on Manage shows a grey check that reads as ticked.
+- An unticked tile in a rift's panel on Game shows a grey check that reads as
+  ticked.
 - The leaderboard cannot go on as it is: a time, a solve and so mana are the
   browser's word, Restart zeroes the clock, and it runs on an idle page.
 

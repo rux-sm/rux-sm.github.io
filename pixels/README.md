@@ -27,17 +27,16 @@ its letter; the next to play is in the primary button's colours and the boss, th
 found. A course rift holds its boss back, dim, until the rest are found. The square chosen is told under
 them, with its best time and Play, and a sprite just found turns into view.
 
-`me.html` is the player's own page: their picture, username, sprites found, mana and fairies, the PIN
-that brings them back on any phone, and the rifts they have made, each to name, publish or delete, with
-who has found sprites in it, and a guest's Delete my player. `friends.html` is the player's friend link
-on a card and their friends, each with a menu to remove them. A player's own puzzles are made in the
-Pixelator, for mana, and a friend's published rifts stand after the owner's on the front page, saying who
-made them, and New until opened. Every page is one phone-wide column on every screen, in Design's
-`pixel-dark`, locked. The places, Puzzles, Friends, Pixelator and Me, are the header's links from 66rem,
-with the owner's Manage and Players, and a bar along the foot below that, each with its word, but for a
-puzzle being played or drawn. Me's list holds How to play, the Sound switch, Add to home screen, the
-owner's Manage and Players and, for an account, the way to Rux Home. `docs/profiles.md` has the door,
-profiles, friends, mana and who gets a rift.
+`me.html` is Me, the player alone: their picture, their username with a pencil that opens a window to
+change it, sprites found and fairies, then a list: Friends, with how many, which opens `friends.html`; a
+guest's PIN, which brings them back on any phone, in a window; How to play, the Sound switch, Add to home
+screen and, for an account, the way to Rux Home. The owner's list, Owner, follows: Players and New
+players can join. A guest's Delete my player is at the foot. `friends.html` is the friend link and the
+friends, each with a menu to remove them. A friend's published rifts stand after the owner's on the front
+page, saying who made them, and New until opened. Every page is one phone-wide column on every screen, in
+Design's `pixel-dark`, locked. The places, Play, Create and Me, are the header's links from 66rem and a
+bar along the foot below that, each with its word, but for a puzzle being played or drawn.
+`docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
@@ -76,26 +75,30 @@ name and colours, or where there is none, one the browser makes from the date, t
 Only it counts toward the days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The owner's
-puzzles go in the owner's rifts, and the owner alone has Manage and Players, in the header and Me's list;
-a player's go in rifts of their own, through functions that count their mana, and so do the owner's own
-at `make.html?own`, which cost none. `make.html?me` draws a player's picture, and `?wear=helmet` the
-helmet of the owner's character. It checks as you draw whether the numbers alone can solve the picture
-and how hard that is, outlines each square that would need a guess, and saves only a picture with one
-answer. Size starts a blank board of 5, 10 or 15 a side, 20 in the course. Its Colour step paints the
-picture the puzzle finishes as, from sixty inks, and Save asks which rift it goes in; a rift shows
-fifteen, the list counts how many of each one's are on, and a puzzle saved into one with fifteen on is
-saved off. A rift just started is named there and hidden until Manage's switch publishes it. No rift yet
-keeps the puzzle in Unsorted, a section of Manage, and Puzzle of the day makes it a day's puzzle, in no
-rift; a day takes one. `docs/making-puzzles.md` is the guide to a good picture and a good rift.
+puzzles go in the owner's rifts, the game's; a player's go in rifts of their own, through functions that
+count their mana, and so do the owner's own at `make.html?own`, which cost none. `make.html?me` draws a
+player's picture, and `?wear=helmet` the helmet of the owner's character. It checks as you draw whether
+the numbers alone can solve the picture and how hard that is, outlines each square that would need a
+guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15 a side, 20 in
+the course. Its Colour step paints the picture the puzzle finishes as, from sixty inks, and Save asks
+which rift it goes in, the last one saved to first; a rift shows fifteen, the list counts how many of
+each one's are on, and a puzzle saved into one with fifteen on is saved off. A rift just started is named
+there and hidden until it is published. A new puzzle in a rift already published waits, off: the owner's
+until its switch on Game, a player's until the rift is published again. No rift yet keeps the puzzle in
+Unsorted, and Puzzle of the day makes it a day's puzzle, in no rift; a day takes one. Exit goes back to
+Create, to the view and rift it came from. `docs/making-puzzles.md` is the guide to a good picture and a
+good rift.
 
-`manage.html` is the owner's desk: a row to each rift, then Unsorted and Dailies, with a strip of its
-pictures and a rift's Published switch. A tap opens one under its row and a second tap closes it;
-`?rift=3` keeps it on a reload. An open rift has arrows that move it, a key that keeps it for picked
-players, a pencil that renames it and a bin that deletes it into Unsorted. Under each tile are Edit,
-Play, which keeps no time for a puzzle no player is sent, and a switch that sends it to no player when
-off; a rift has at most fifteen on. Add puzzle, after a rift's tiles, opens the Pixelator for it.
-Pressing a tile ticks it, and the ticked are moved, to a rift, a new one or Unsorted, or deleted; a rift
-left empty goes too.
+`create.html` is Create. Mine is a heading with the mana, New puzzle, and a block for each of the
+player's rifts with its count and sizes, Hidden or how many new puzzles wait, a menu of Rename, Publish
+or Hide and Delete, and its pictures, each opening it in the Pixelator, then an add tile; at no mana New
+puzzle and the add tiles are off. The owner has Mine and Game, a switch the browser keeps, and
+`?view=game` is Game, the base game: a block to each rift, then Unsorted and Dailies, with its pictures,
+an add tile, its Published switch and a menu of Who sees it, Rename and Delete. A rift's name opens its
+panel under it and a second tap closes it; `?rift=3` keeps it on a reload. The panel has arrows that move
+the rift and its tiles: Edit, Play, which keeps no time for a puzzle no player is sent, and a switch that
+sends it to no player when off. Pressing a tile ticks it, and the ticked are moved, to a rift, a new one
+or Unsorted, or deleted; a rift left empty goes too. `manage.html` sends an old address on to Game.
 
 ## Files
 
@@ -103,8 +106,8 @@ left empty goes too.
 | :--- | :--- |
 | `app.js` | the rules and the board every page shares: the numbers, the line solver, the puzzle of the day, drawing, dragging and zooming, what a mistake costs, tones and the phone's tick |
 | `data.js` | who is playing, the door a guest meets, and where puzzles and results are kept |
-| `puzzles.js`, `category.js`, `play.js`, `make.js`, `manage.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour |
-| `app.css` | the board, the picture, the tiles and Manage, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
+| `puzzles.js`, `category.js`, `play.js`, `make.js`, `create.js`, `game.js`, `players.js`, `me.js`, `friends.js` | each page's own behaviour; `game.js` is Create's Game view |
+| `app.css` | the board, the picture, the tiles and Create, under `pixels-`. The bar of places, the keys, a rift's tile, the start cover and the finish panel are `game-`, from `design/css/rux-game.css` |
 | `theme.css` | the sixty inks a colour picture is painted from |
 | `manifest.json` | the name, the window and the icons a browser installs Pixels with; `app.js` gives it to every browser but an iPhone's. `tools/build-app-icons.mjs` writes the four PNG icons in `brand/` from `brand/favicon.svg` |
 

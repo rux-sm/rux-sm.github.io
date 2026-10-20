@@ -11,9 +11,7 @@
 
    Under the table is every rift a player has made, to hide or delete.
 
-   A new player joins by any player's invite link. Joining's line says
-   whether it is open, and its one key changes it: Close joining shuts every
-   link to anyone new, and those already in keep playing.
+   Whether new players may join is a switch on Me, under Owner.
 
    Only the owner's account reads any of this: the database gives nobody else
    a row.
@@ -49,19 +47,6 @@
       return;
     }
     const day = today();
-    $('pixels-joining-text').textContent = all.joining ? 'Joining is open' : 'Joining is closed';
-    $('pixels-joining-text').title = all.joining ? 'A new player can join by any player\'s invite link.' : 'No invite link lets a new player in.';
-    $('pixels-joining').textContent = all.joining ? 'Close joining' : 'Open joining';
-    $('pixels-joining').onclick = async () => {
-      try {
-        await data.setJoining(!all.joining);
-        $('pixels-error').hidden = true;
-      } catch {
-        say('Joining did not change', 'Try again.');
-      }
-      draw();
-    };
-    $('pixels-invite').hidden = false;
 
     const rows = all.players.map(p => {
       const results = all.results.filter(r => r.player_id === p.id);

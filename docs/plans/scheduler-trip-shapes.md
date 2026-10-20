@@ -20,9 +20,8 @@ them and nothing is entered twice.
 
 ### Order
 
-- **This plan waits on `scheduler-documents.md`,** and so on rux-ui's
-  retirement before it, because rux-ui writes the two fixed legs and would
-  never fill the new ones.
+- **This plan is built next,** ahead of `scheduler-documents.md`, because the
+  office needs trips of several days and routes first.
 - **Legs and routes are one change,** because both change how every stop
   and vehicle is tied to its trip, and the same thirty or so readers would
   otherwise be rewritten twice.
@@ -134,9 +133,11 @@ them and nothing is entered twice.
   ordered by date, so a leg added before the first needs nothing
   renumbered.
 - **It ships reader first.** The tables and ids are filled from the old
-  columns, one route on every leg, so no saved trip changes; Save writes
+  columns, one route on every leg, so no saved trip changes, and triggers
+  keep them filled as the pages write the old columns, so no page writes
   both; every reader moves to the new; and only then can a third leg or a
-  second route be made and the old columns be dropped.
+  second route be made, the writers move, and the old columns and the
+  triggers go.
 - **Each database change is its own step,** written as SQL, shown to rux and
   applied on a yes, before the code that reads it is pushed.
 
@@ -164,8 +165,6 @@ None open.
       date, each one's routes, dates and bus count, and its papers and
       contacts with the first leg's standing in, replacing the two-leg rule
       in `leg-papers.js`.
-- [ ] Make Save write each leg's and route's rows, the ids and the contact
-      list beside the old columns.
 - [ ] Move every reader of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, a group at a time: the board and its

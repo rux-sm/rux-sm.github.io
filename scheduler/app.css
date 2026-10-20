@@ -4503,6 +4503,33 @@ html:has(.scheduler-page[data-takeover]) {
   gap: var(--rux-spacing-05);
 }
 
+/* The office tab's tiles, wider than the trips tab's, since the needs list
+   puts three fields on a line: two side by side at the page's full width. */
+.scheduler-settings-office {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: var(--rux-spacing-05);
+}
+
+/* The needs list: a row a need, its name, whether it is a bus's or the
+   trip's, and whether it is in use, under a head that names them. */
+.scheduler-settings-needs__head,
+.scheduler-settings-needs__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem 3rem;
+  gap: var(--rux-spacing-03);
+  align-items: center;
+}
+.scheduler-settings-needs__rows { display: grid; gap: var(--rux-spacing-03); }
+.scheduler-settings-needs__head {
+  margin-block-end: var(--rux-spacing-03);
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-settings-needs__row > .rux--checkbox-wrapper { justify-content: center; }
+
 /* The mileage list: a row a rate, its note, the default radio and remove,
    under a head that names them. In a tile under 22rem inside, as each of the
    three is at lg, the note takes a line of its own under its rate; at md,

@@ -237,8 +237,9 @@
           </div>
         </div>
 
-        <!-- One form, three tabs: the rates, the rate each month starts
-             from, and what a trip's suggestions are worked out from. The
+        <!-- One form, four tabs: the rates, the rate each month starts
+             from, what a trip's suggestions are worked out from, and the
+             office's yard, needs and billing steps. The
              strip and its panels are one stack child, as the calculator's
              are, and quote.js draws every field. -->
         <form id="scheduler-quote-rates-form" novalidate hidden>
@@ -254,6 +255,9 @@
             </button>
             <button id="scheduler-settings-tab-trips" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-settings-panel-trips" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Trips</span></div>
+            </button>
+            <button id="scheduler-settings-tab-office" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-settings-panel-office" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Office</span></div>
             </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
@@ -367,6 +371,47 @@
               <fieldset class="scheduler-quote__group">
                 <legend class="rux--type-heading-compact-02">Late return</legend>
                 <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-settings-late-return"></div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <!-- Office. Where every route starts and ends, the needs a trip or
+             its vehicles can ask for, and the billing steps in use with the
+             ones that confirm a trip. A need is turned off, never removed,
+             since saved trips name it. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-settings-panel-office" aria-labelledby="scheduler-settings-tab-office" tabindex="0" hidden>
+        <div class="scheduler-settings-office">
+          <div class="rux--tile">
+            <div class="rux--layer-two scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Yard</legend>
+                <div class="rux--stack-vertical rux--stack-scale-6" id="scheduler-settings-yard"></div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="rux--tile">
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Needs</legend>
+                <div class="scheduler-settings-needs__head" aria-hidden="true"><span>Name</span><span>For</span><span>In use</span></div>
+                <div class="scheduler-settings-needs__rows" id="scheduler-settings-needs"></div>
+              </fieldset>
+              <div>
+                <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="scheduler-settings-add-need">Add need<svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
+              </div>
+            </div>
+          </div>
+          <div class="rux--tile">
+            <div class="rux--layer-two rux--stack-vertical rux--stack-scale-6 scheduler-quote__body">
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Billing steps</legend>
+                <div class="rux--stack-vertical rux--stack-scale-3" id="scheduler-settings-billing-steps"></div>
+              </fieldset>
+              <fieldset class="scheduler-quote__group">
+                <legend class="rux--type-heading-compact-02">Confirms a trip</legend>
+                <div class="rux--stack-vertical rux--stack-scale-3" id="scheduler-settings-billing-confirms"></div>
               </fieldset>
             </div>
           </div>

@@ -16,8 +16,9 @@ driver or a customer already holds still opens.
   scheduler change is no longer held to what rux-ui does with the same row.
 - **This plan is built next,** then `scheduler-documents.md`, then
   `scheduler-trip-shapes.md`, each waiting on the one before it.
-- **Nothing is turned off until what only rux-ui does has a home.** That is
-  its Settings: the yard, the bus needs and the billing steps.
+- **The yard, the needs and the billing steps are edited on the scheduler's
+  Settings page,** its Office tab, so nothing only rux-ui's Settings did is
+  left without a home.
 - **The rest of what only rux-ui does is dropped:** pay per seat, ticketed
   trips with their ticket options and passenger list, the self-organized
   billing type, the itinerary's Confirm mark, the Tasks page, the
@@ -49,8 +50,6 @@ driver or a customer already holds still opens.
 
 ## Tasks
 
-- [ ] Add the yard, the bus needs and the billing steps to the scheduler's
-      Settings page.
 - [ ] Take out of the scheduler what it does only for rux-ui: the comments
       and rules that name it in `scheduler/*.js`, and the columns it writes
       for rux-ui alone.

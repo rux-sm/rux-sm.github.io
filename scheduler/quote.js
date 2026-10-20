@@ -160,15 +160,23 @@
   /* THE OFFICE'S OTHER SETTINGS the Settings page edits, each a row of
      `settings`: the mileage rate a month starts from, the times the Route tab
      adds, the distances past which a fuel card and a dead-mile discount are
-     offered, and the hour of the morning before which a bus back at the yard
-     came back the night before. The defaults are what data.js and week.js
-     use with no row saved. */
+     offered, the hour of the morning before which a bus back at the yard
+     came back the night before, the yard, the needs a trip can ask for, and
+     the billing steps. The defaults are what data.js, week.js, leg-facts.js
+     and billing.js use with no row saved. */
   const OFFICE_DEFAULTS = {
     'rate-calendar-v1': { months: {} },
     'route-times-v1': { spot_minutes: 15, pre_trip_minutes: 0, post_trip_minutes: 0, drive_slowdown_percent: 0 },
     'fuel-card-v1': { miles: 600, days: 2 },
     'dead-miles-v1': { miles: null },
     'late-return-v1': { hour: 4 },
+    'yard-location-v1': { name: '', address: '', lat: null, lng: null },
+    'requirements-v1': [],
+    'billing-workflow-v1': {
+      workflow: { contractSigned: { label: 'Contract', active: true }, poReceived: { label: 'Purchase order', active: true },
+        invoiced: { label: 'Invoice', active: true } },
+      confirmWhen: ['contract_signed', 'po_received', 'deposit_received', 'paid_full'],
+    },
   };
   const office = structuredClone(OFFICE_DEFAULTS);
   let client = null;
@@ -211,7 +219,10 @@
     const kept = await client.from('settings').select('key,value').in('key', Object.keys(OFFICE_DEFAULTS));
     if (kept.error) throw new Error(kept.error.message);
     for (const key of Object.keys(OFFICE_DEFAULTS)) {
-      office[key] = { ...OFFICE_DEFAULTS[key], ...(kept.data.find(r => r.key === key)?.value ?? {}) };
+      const saved = kept.data.find(r => r.key === key)?.value;
+      // The needs are a list, kept whole; every other row is an object the defaults fill in.
+      office[key] = Array.isArray(OFFICE_DEFAULTS[key]) ? (Array.isArray(saved) ? saved : [])
+        : { ...structuredClone(OFFICE_DEFAULTS[key]), ...(saved ?? {}) };
     }
   };
 
@@ -727,6 +738,7 @@
       if (!mileage.length) addRateRow();
       drawCalendar();
       drawTrips();
+      drawOffice();
       showResult(null);
     };
 
@@ -790,6 +802,126 @@
       }
     };
 
+    /* THE OFFICE TAB: the yard every route starts and ends at, the needs a
+       trip or its vehicles can ask for, and the billing steps. A need has a
+       name, whether it is a bus's or the trip's, and whether it is in
+       use; one turned off stays in the list, since saved trips name it by
+       its id. A step not in use counts as off everywhere, and a trip is
+       confirmed when its billing reaches one of the statuses ticked. */
+    const NEED_TYPES = [['vehicle', 'Bus'], ['driver', 'Trip']];
+    const STEPS = ['contractSigned', 'poReceived', 'invoiced'];
+    const CONFIRMS = [
+      ['contract_signed', 'Contract signed'], ['po_partial', 'Part of the price on a PO'], ['po_received', 'PO received'],
+      ['deposit_received', 'Deposit received'], ['paid_full', 'Paid in full'], ['overpaid', 'Paid more than the price'],
+    ];
+    const checkField = (id, label, checked, hidden = false) => {
+      const item = document.createElement('div');
+      item.className = 'rux--form-item rux--checkbox-wrapper';
+      const input = Object.assign(document.createElement('input'), { id, className: 'rux--checkbox', type: 'checkbox', checked: !!checked });
+      const lab = Object.assign(document.createElement('label'), { className: 'rux--checkbox-label', htmlFor: id });
+      lab.append(Object.assign(document.createElement('div'), {
+        className: 'rux--checkbox-label-text' + (hidden ? ' rux--visually-hidden' : ''), textContent: label }));
+      item.append(input, lab);
+      return item;
+    };
+    let needSeq = 0;
+    const addNeedRow = (r = { id: '', label: '', type: 'vehicle', active: true }) => {
+      const n = ++needSeq;
+      const row = document.createElement('div');
+      row.className = 'scheduler-settings-needs__row';
+      row.dataset.id = r.id ?? '';
+      const name = textField({ id: `scheduler-settings-need-name-${n}`, label: 'Need name', hidden: true, value: r.label ?? '' });
+      name.querySelector('input').inputMode = 'text';
+      const item = document.createElement('div');
+      item.className = 'rux--form-item';
+      const box = document.createElement('div');
+      box.className = 'rux--select';
+      const label = Object.assign(document.createElement('label'), {
+        className: 'rux--label rux--visually-hidden', htmlFor: `scheduler-settings-need-type-${n}`, textContent: 'For' });
+      const wrap = document.createElement('div');
+      wrap.className = 'rux--select-input__wrapper';
+      const select = Object.assign(document.createElement('select'), { id: `scheduler-settings-need-type-${n}`, className: 'rux--select-input' });
+      select.append(...NEED_TYPES.map(([value, text]) => Object.assign(document.createElement('option'), { value, textContent: text })));
+      select.value = r.type === 'driver' ? 'driver' : 'vehicle';
+      wrap.append(select);
+      wrap.insertAdjacentHTML('beforeend', '<svg class="rux--select__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg>');
+      box.append(label, wrap);
+      item.append(box);
+      row.append(name, item, checkField(`scheduler-settings-need-on-${n}`, 'In use', r.active !== false, true));
+      $('scheduler-settings-needs').append(row);
+      return row;
+    };
+    const drawOffice = () => {
+      const yard = office['yard-location-v1'];
+      $('scheduler-settings-yard').replaceChildren(
+        ...[['yard-name', 'Name', yard.name, 'text'], ['yard-address', 'Address', yard.address, 'text'],
+          ['yard-lat', 'Latitude', yard.lat, 'decimal'], ['yard-lng', 'Longitude', yard.lng, 'decimal']].map(([id, label, value, mode]) => {
+          const field = textField({ id: `scheduler-settings-${id}`, label, value: value == null ? '' : String(value) });
+          field.querySelector('input').inputMode = mode;
+          return field;
+        }));
+      // Vehicle needs before the trip's, each in its saved order, as the trip editor lists them.
+      const byType = t => office['requirements-v1'].filter(r => r && typeof r.id === 'string' && (r.type || 'vehicle') === t)
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      $('scheduler-settings-needs').replaceChildren();
+      for (const r of [...byType('vehicle'), ...byType('driver')]) addNeedRow(r);
+      const flow = office['billing-workflow-v1'];
+      $('scheduler-settings-billing-steps').replaceChildren(...STEPS.map(key => checkField(`scheduler-settings-step-${key}`,
+        flow.workflow?.[key]?.label || OFFICE_DEFAULTS['billing-workflow-v1'].workflow[key].label, flow.workflow?.[key]?.active !== false)));
+      const confirms = Array.isArray(flow.confirmWhen) ? flow.confirmWhen : [];
+      $('scheduler-settings-billing-confirms').replaceChildren(...CONFIRMS.map(([key, label]) =>
+        checkField(`scheduler-settings-confirm-${key}`, label, confirms.includes(key))));
+    };
+    $('scheduler-settings-add-need').addEventListener('click', () => addNeedRow().querySelector('input').focus());
+
+    // A new need's id, from its name in camel case, unlike any other: Wi-Fi is wiFi.
+    const needId = (label, taken) => {
+      const words = label.normalize('NFKD').replace(/[^A-Za-z0-9 ]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+      const base = words.map((w, i) => (i ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase())).join('') || 'need';
+      let id = /^[a-z]/.test(base) ? base : `need${base}`;
+      for (let k = 2; taken.has(id); k++) id = `${base}${k}`;
+      return id;
+    };
+
+    // The office tab as `settings` rows, or what is wrong. A saved row's other fields are kept.
+    const readOfficeTab = () => {
+      const val = id => $(`scheduler-settings-${id}`).value.trim();
+      const name = val('yard-name');
+      const address = val('yard-address');
+      const lat = Number(val('yard-lat'));
+      const lng = Number(val('yard-lng'));
+      if (!name || !address) return { problem: 'The yard needs a name and an address.' };
+      if (val('yard-lat') === '' || !(lat >= -90 && lat <= 90) || val('yard-lng') === '' || !(lng >= -180 && lng <= 180)) {
+        return { problem: 'The yard needs its latitude, from -90 to 90, and its longitude, from -180 to 180.' };
+      }
+      const savedNeeds = new Map(office['requirements-v1'].filter(r => r && typeof r.id === 'string').map(r => [r.id, r]));
+      const taken = new Set(savedNeeds.keys());
+      const needs = [];
+      const order = { vehicle: 0, driver: 0 };
+      for (const row of $('scheduler-settings-needs').children) {
+        const label = row.querySelector('input[type="text"]').value.trim();
+        const type = row.querySelector('select').value;
+        const active = row.querySelector('input[type="checkbox"]').checked;
+        if (!label && !row.dataset.id) continue;
+        if (!label) return { problem: 'Every need in the list needs a name. Turn one off instead of emptying it.' };
+        if (needs.some(x => x.label.toLowerCase() === label.toLowerCase())) return { problem: `Two needs are called ${label}.` };
+        const id = row.dataset.id || needId(label, taken);
+        taken.add(id);
+        needs.push({ ...(savedNeeds.get(id) ?? {}), id, label, type, active, sortOrder: order[type]++ });
+      }
+      const flow = office['billing-workflow-v1'];
+      const workflow = Object.fromEntries(STEPS.map(key => [key, {
+        ...(flow.workflow?.[key] ?? OFFICE_DEFAULTS['billing-workflow-v1'].workflow[key]),
+        active: $(`scheduler-settings-step-${key}`).checked }]));
+      const confirmWhen = CONFIRMS.map(([key]) => key).filter(key => $(`scheduler-settings-confirm-${key}`).checked);
+      if (!confirmWhen.length) return { problem: 'Tick at least one thing that confirms a trip.' };
+      return { rows: [
+        { key: 'yard-location-v1', value: { ...office['yard-location-v1'], name, address, lat, lng } },
+        { key: 'requirements-v1', value: needs },
+        { key: 'billing-workflow-v1', value: { ...flow, workflow, confirmWhen } },
+      ] };
+    };
+
     // The calendar and the trips tab as `settings` rows, or what is wrong.
     const readOffice = list => {
       const whole = (id, name, { min = 0, max, blank = false } = {}) => {
@@ -819,7 +951,9 @@
         if (id && list.some(m => m.id === id)) months[i + 1] = id;
       });
       out['rate-calendar-v1'] = { months };
-      return { rows: Object.entries(out).map(([key, value]) => ({ key, value })) };
+      const tab = readOfficeTab();
+      if (tab.problem) return tab;
+      return { rows: [...Object.entries(out).map(([key, value]) => ({ key, value })), ...tab.rows] };
     };
 
     // The page's fields as rows to save, or a sentence saying what is wrong.

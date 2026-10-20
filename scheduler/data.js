@@ -936,12 +936,9 @@
     paintCorner(corner, typeList[0]?.name ?? '');
     into.appendChild(corner);
 
-    /* Today is marked on its header cell, and its column's place goes on the
-       grid as `--scheduler-today-at`, which app.css tints down every row in a
-       theme that names the tint; -1 puts it off the board. */
+    // Today is marked on its header cell only.
     const today = iso(new Date());
     let todayCell = null;
-    into.style.setProperty('--scheduler-today-at', '-1');
     for (let i = 0; i < days; i++) {
       const d = addDays(weekStart, i);
       const cell = el('div', 'scheduler-day');
@@ -951,7 +948,6 @@
       if (iso(d) === today) {
         cell.classList.add('scheduler-day--today');
         cell.setAttribute('aria-current', 'date');
-        into.style.setProperty('--scheduler-today-at', String(i));
         todayCell = cell;
       }
       cell.append(
@@ -10301,8 +10297,6 @@
         const cell = el('div', cls);
         cell.dataset.day = String(i);
         if (i % 2) cell.classList.add('scheduler-avail__cell--alt');
-        // Today's column, which a theme that names the tint shades down the roster.
-        if (iso(addDays(weekStart, i)) === iso(new Date())) cell.classList.add('scheduler-avail__cell--today');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
         // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.

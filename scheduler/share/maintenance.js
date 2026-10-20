@@ -159,7 +159,7 @@
     bar.append(destRow, timeRow);
 
     const label = [
-      dest, trip.customer, leg === 'return' ? 'return leg' : null,
+      dest, leg === 'return' ? 'return leg' : null,
       dep ? `leaves the yard ${dep}` : null, back ? `back ${back}` : null,
       place.fromPrev ? 'began before these two weeks' : null,
       place.toNext ? 'runs past these two weeks' : null,

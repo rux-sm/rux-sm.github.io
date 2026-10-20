@@ -147,9 +147,6 @@ None open.
 
 ## Tasks
 
-- [ ] Write the SQL for `trip_contacts` and its access rules, a row for
-      every filled contact slot there is now with its leg; show it to rux and
-      apply it on a yes.
 - [ ] Read the bodies of `get_driver_share_trips`, `get_maintenance_schedule`,
       `trip_steps_off`, the triggers that take a Done off and the driver
       status functions, and write the SQL that makes each read legs, routes

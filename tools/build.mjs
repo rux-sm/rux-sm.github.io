@@ -31,4 +31,6 @@ run(process.execPath, ['tools/inline-sprite.mjs'], ROOT);
 run(process.execPath, ['tools/build-app-icons.mjs'], ROOT);
 // The pages' rule files, joined for the Claude app's connector.
 run(process.execPath, ['scheduler/tools/build-connector-rules.mjs'], ROOT);
+// The board's road files and samsara-now's handler, for maintenance-status.
+run(process.execPath, ['scheduler/tools/build-maintenance-road.mjs'], ROOT);
 console.log('\n  built. `npm run check` says whether it is right.');

@@ -45,7 +45,9 @@ it is a rule open to the internet. `anon` holds no table grants either.
 driver share and the maintenance share each call a `SECURITY DEFINER`
 function with a token, which runs as its owner and never
 consults these rules; a trip document goes through the `trip-document-link`
-Edge Function. Pixels' list and puzzle pages open to a guest the same way,
+Edge Function, and the maintenance link's bus status through
+`maintenance-status`, each checking its link before reading with the service
+role. Pixels' list and puzzle pages open to a guest the same way,
 through functions that take the guest's key. Copy that pattern; never grant
 a table to `anon`.
 

@@ -4125,9 +4125,12 @@ html:has(.scheduler-page[data-takeover]) {
    The board has a display rule that beats the browser's own `[hidden]`. */
 .scheduler-board[hidden] { display: none; }
 
-/* The maintenance link's grid is read-only: nothing opens from a bar, so a bar
-   takes no pointer and no hover. */
-.scheduler-week--static .scheduler-bar { cursor: default; }
+/* The maintenance link's grid is read-only: a bar, or a day out, opens only
+   its details, so it takes a pointer and no hover. A day out takes the
+   pointer the board's stripes pass through. */
+.scheduler-week--static .scheduler-bar { cursor: pointer; }
+.scheduler-week--static .scheduler-oos { pointer-events: auto; cursor: pointer; }
+.scheduler-week--static .scheduler-oos:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
 /* It sits in a page that scrolls, above the recent changes, so it takes its
    full height and hands the wheel on to the page. The schedule's own pane caps
    its height and keeps the wheel, because there the board fills the window. */

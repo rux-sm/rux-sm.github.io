@@ -136,7 +136,7 @@
   };
 
   // -- drawing -----------------------------------------------------------------
-  const barEl = ({ trip, leg, info, place, lane }) => {
+  const barEl = ({ trip, leg, info, place, lane, busId, busNumber }) => {
     const bar = el('article', `scheduler-bar ${hueClass(trip)}`);
     if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
     if (place.toNext) bar.classList.add('scheduler-bar--to-next');
@@ -168,6 +168,7 @@
     ].filter(Boolean).join(', ');
     bar.setAttribute('aria-label', label);
     bar.title = label;
+    opens(bar, () => showLeg({ trip, leg, info, busId, busNumber }, bar));
     return bar;
   };
 
@@ -187,7 +188,7 @@
     // Each bus's days out in the two weeks, as get_maintenance_schedule gives them.
     for (const o of data.outOfService || []) {
       const place = clip(o.startDate, o.endDate, start, end);
-      if (place && rows.has(String(o.busId))) rows.get(String(o.busId)).out.push(place);
+      if (place && rows.has(String(o.busId))) rows.get(String(o.busId)).out.push({ ...place, from: o.startDate, to: o.endDate });
     }
     for (const trip of data.trips || []) {
       for (const a of trip.assignments || []) {
@@ -198,7 +199,7 @@
         if (!place) continue;
         const key = a.busId != null ? String(a.busId) : `number:${a.busNumber}`;
         if (!rows.has(key)) rows.set(key, { number: String(a.busNumber), bars: [], out: [] });
-        rows.get(key).bars.push({ trip, leg, info, place });
+        rows.get(key).bars.push({ trip, leg, info, place, busId: a.busId });
       }
     }
 
@@ -248,12 +249,13 @@
         const span = el('div', 'scheduler-oos');
         span.style.setProperty('--scheduler-start', place.start);
         span.style.setProperty('--scheduler-span', place.span);
-        span.setAttribute('role', 'img');
-        span.setAttribute('aria-label', 'Out of service');
-        span.title = 'Out of service';
+        const words = `Out of service, Bus ${row.number}, ${days(place.from, place.to)}`;
+        span.setAttribute('aria-label', words);
+        span.title = words;
+        opens(span, () => showOut({ busNumber: row.number, from: place.from, to: place.to }, span));
         track.append(span);
       }
-      for (const bar of row.bars) track.append(barEl(bar));
+      for (const bar of row.bars) track.append(barEl({ ...bar, busNumber: row.number }));
       rowEl.append(head, track);
       gridEl.append(rowEl);
     }
@@ -272,6 +274,102 @@
     }
     drawn = true;
   };
+
+  // -- a bar's details ---------------------------------------------------------
+  /* A tap on a bar or a day out opens its details in a passive dialog, which
+     Design's modal.js opens and closes and hands focus back from. While the
+     leg's days hold today, maintenance-status is asked once a minute whether
+     its bus has left, is on the road or is back, and when it is due in; never
+     where it is. The staff page also links to the trip on the board. */
+  const detailsEl = $('scheduler-share-details');
+  const detailsBody = $('scheduler-share-details-body');
+  const STATUS_MS = 60000;
+  const officeTime = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
+  const officeClock = at => (Number.isNaN(Date.parse(at)) ? '' : hhmm(officeTime.format(new Date(at))));
+  const officeToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
+
+  // A bar and a day out open as a button does, by a click or Enter or Space.
+  function opens(node, onOpen) {
+    node.setAttribute('role', 'button');
+    node.tabIndex = 0;
+    node.addEventListener('click', onOpen);
+    node.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); }
+    });
+  }
+
+  const pair = (label, value) => {
+    const box = el('div', 'rux--stack-vertical rux--stack-scale-1');
+    const shown = el('span', 'rux--type-body-01', value);
+    box.append(el('span', 'rux--type-label-01', label), shown);
+    return { box, shown };
+  };
+
+  // What the dialog shows now, and its status's minute.
+  let current = null;
+  let statusTimer = 0;
+  const stopStatus = () => { clearInterval(statusTimer); statusTimer = 0; current = null; };
+  detailsEl?.addEventListener('rux:modal-closed', stopStatus);
+
+  const statusWords = s => (s.state === 'yard' ? 'Not left yet'
+    : s.state === 'back' ? (s.back ? `Back at the yard, ${officeClock(s.back)}` : 'Back at the yard')
+      : s.back ? `On the road, back about ${officeClock(s.back)}` : 'On the road');
+
+  /* The bus's status, or none: a leg the function has no word of, outside
+     its stretch on the road or with a bus Samsara does not know, shows no
+     status line, and one that cannot be asked says so. */
+  async function askStatus(shown) {
+    let words = null;
+    try {
+      const { data, error } = await client.functions.invoke('maintenance-status', { body: { token } });
+      if (error) throw error;
+      const s = (data?.buses || []).find(b => `${b.tripId}|${b.leg}|${b.busId}` === shown.key);
+      words = s ? statusWords(s) : null;
+    } catch (error) {
+      words = [404, 503].includes(error?.context?.status) ? null : "Can't be checked right now";
+    }
+    if (current !== shown) return;
+    shown.status.shown.textContent = words ?? '';
+    shown.status.box.hidden = !words;
+  }
+
+  function show(label, heading, parts, trigger, shown = {}) {
+    stopStatus();
+    $('scheduler-share-details-label').textContent = label;
+    $('scheduler-share-details-h').textContent = heading;
+    detailsBody.replaceChildren(...parts);
+    current = shown;
+    window.Rux?.modal?.open(detailsEl, trigger);
+  }
+
+  function showLeg({ trip, leg, info, busId, busNumber }, trigger) {
+    const parts = [
+      pair('Days', days(info.from, info.to)).box,
+      pair('Leaves the yard', hhmm(info.depart) || 'No time yet').box,
+      pair('Due back', hhmm(info.back) || 'No time yet').box,
+    ];
+    const today = officeToday();
+    const running = isDate(info.from) && info.from <= today && iso(addDays(parseISO(info.to || info.from), 1)) >= today;
+    const shown = { key: `${trip.id}|${leg}|${busId}` };
+    if (running && busId != null) {
+      shown.status = pair('Now', 'Checking…');
+      parts.push(shown.status.box);
+    }
+    if (staffPage) {
+      const link = el('a', 'rux--link', 'Open the trip');
+      link.href = `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(info.from || '')}`;
+      parts.push(link);
+    }
+    show(`${busName(busNumber)} · ${leg === 'return' ? 'Return' : 'Outbound'}`, trip.destination || 'No destination', parts, trigger, shown);
+    if (shown.status) {
+      askStatus(shown);
+      statusTimer = setInterval(() => { if (!document.hidden) askStatus(shown); }, STATUS_MS);
+    }
+  }
+
+  function showOut({ busNumber, from, to }, trigger) {
+    show(busName(busNumber), 'Out of service', [pair('Days', days(from, to)).box], trigger);
+  }
 
   // -- recent changes ------------------------------------------------------------
   /* Every change names the same things in the same columns: when, the bus,

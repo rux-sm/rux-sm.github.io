@@ -132,6 +132,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Website requests | the `quote-request` Edge Function (§6), for the company website's quote form; `quote_request_add`, which only the service role runs, is its one write |
 | Samsara miles | the `samsara-miles` Edge Function (§7), for the Billing tab's Get from Samsara; it writes nothing |
 | Samsara now | the `samsara-now` Edge Function (§8), for the board's line while a bus is out and the Live map; it writes nothing |
+| Maintenance status | the `maintenance-status` Edge Function (§9), for a bar's details on the maintenance pages; it writes nothing |
 | History | `record_trip_history`, which every trip entry is written through; `search_history` and `history_people`, the History page's read of trip and record entries together and its names; `get_trip_history`, which nothing calls. All staff only. `record_row_history` and `record_line_history` are the trigger functions, with `history_actor` and `history_text` under them, and nobody calls those four. |
 | Vehicle types | `rename_vehicle_type`, staff only, which the Fleet page's Vehicle types list calls: it renames a type on `buses`, `trips`, `trip_assignments` and `customers`, and puts back the Buses done and Billing done the rename takes off |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
@@ -283,3 +284,20 @@ who is at the wheel, with the key's Compliance permission. A Samsara driver is t
 the same first and last name, unless two share it. It writes nothing, is deployed with Verify JWT
 off as §5 is, and answers the site and the log-in preview.
 `scheduler/tools/check-samsara-now.mjs` runs it against an invented fleet.
+
+## 9. Maintenance status
+
+`maintenance-status`, source in `scheduler/maintenance-status/`, says, for a bar's details on the
+maintenance pages, whether each bus on a leg now has not left, is on the road or is back, with when
+it is expected in once its next stop is at the yard, the return or a drop-off there, and when it
+came in. It takes the link's token, finds it live in `maintenance_schedule_shares` and reads
+`trips`, their legs, stops and assignments, and the `settings` rows `geoapify-key-v1`,
+`yard-location-v1`, `route-times-v1` and `late-return-v1` with the service role, as §5 does. Each
+bus's readings and path are samsara-now's, asked as the board asks, and the drive home is
+Geoapify's, chosen as `places.js` chooses and slowed by the office's percent. It answers only
+`{ tripId, leg, busId, state, back }` for each bus, never a place, speed, fuel or driver, and one
+answer serves every caller for a minute. `road.ts` and `samsara.ts` are built from `trip-shape.js`,
+`week.js`, `road.js` and samsara-now's `handler.ts` by
+`scheduler/tools/build-maintenance-road.mjs`, so a change to any of them is deployed again with
+it. It writes nothing, is deployed with Verify JWT off as §5 is, and answers the site and the log-in
+preview. `scheduler/tools/check-maintenance-status.mjs` runs it against an invented day trip.

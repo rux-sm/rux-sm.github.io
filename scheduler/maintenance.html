@@ -342,6 +342,26 @@
   </div>
 </div>
 
+<!-- A bar's details, or a day out's: read-only, so no buttons but Close.
+     maintenance.js fills it and, while a leg runs, asks maintenance-status
+     whether its bus has left, is on the road or is back. -->
+<div class="rux--layer-one rux--modal" id="scheduler-share-details" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="scheduler-share-details-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <p class="rux--modal-header__label" id="scheduler-share-details-label"></p>
+      <h2 class="rux--modal-header__heading" id="scheduler-share-details-h"></h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <div class="rux--stack-vertical rux--stack-scale-5" id="scheduler-share-details-body"></div>
+    </div>
+  </div>
+</div>
+
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/copy-button.js"></script>

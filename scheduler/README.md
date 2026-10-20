@@ -117,13 +117,14 @@ so the ink drawn there is the ink that prints. After a sent quote: `docs/booking
 
 The pages in `share/` are for people without a log-in, who arrive by a link: `share/document.html`
 opens a trip document, `share/maintenance.html` shows the maintenance crew two weeks of buses, their
-days out and the recent changes, and `share/driver.html` shows a driver, in English or Spanish as
+days out and the recent changes, a bar opening its leg's times and whether its bus has left, is on
+the road or is back, and `share/driver.html` shows a driver, in English or Spanish as
 their profile says and they can switch, the trips dispatch sent them to accept or decline, a card of
 basics each with its stops folded, whose View itinerary opens the itinerary file uploaded to the
 trip and View envelope opens `share/form.html`, which draws the forms page's envelope from the same
 link; a cancelled trip stays as a Cancelled card until its day passes, and the page reads the trips
 again on return and before Accept. Staff see the same schedule inside the app at `maintenance.html`,
-from the side nav, where they copy the public link to send and replace it when it has gone further
+from the side nav, where a bar's details also open its trip, and they copy the public link to send and replace it when it has gone further
 than it should, and a driver's page at `driver-view.html`, from See their page on the Drivers page,
 where they tick the trips to send, copy the message and make, update, replace or revoke the link.
 

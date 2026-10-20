@@ -102,7 +102,7 @@ reads only the ones before it. Nothing is written until step 10.
 6. **Buses.** In the vehicle's window turn on any other need the route gave
    it, and Co-driver when rux chose a second driver. Pick the bus by `rules.md`. An unconfirmed trip gets
    no driver.
-7. **Billing.** Press the Quote's No quote lines yet tile, which adds the
+7. **Billing.** Press the Quote card's No quote lines yet row, which adds the
    bus rental and opens its window, and Done. It prices the line at the rate
    the Settings page's Calendar gives the trip's month, and the line names
    the rate; set another rate on the line only when `rules.md` asks for one
@@ -163,7 +163,7 @@ reads only the ones before it. Nothing is written until step 10.
 - **Buses:** each bus, its driver and co-driver or relief seats, a warning
   when Passengers is above the seats, Mark buses done.
 - **Billing:** a tile of Quoted, Paid and Balance over confirmed or not;
-  Quote: a tile per line and their total, each tile opening that line's
+  Quote: one card, a row per line and their total, each row opening that line's
   window and its right-click menu holding Move, Use calculator price and
   Remove: the bus rental (it shows the calculator's price), the Addt'l
   Driver line a co-driver seat adds, Add line (Discount, Second driver,
@@ -270,7 +270,7 @@ reads only the ones before it. Nothing is written until step 10.
 - The Route tab redraws its list as each drive is measured, so a `ref` read before a stop's Done is gone after it: scroll the tab to its end and press Add stop from a fresh screenshot.
 - Add stop pressed while the Route tab is still redrawing can open no window, and a click by coordinates then lands on the board, where it opens another trip's card and Escape asks to save or discard the whole editor: check the stop's window is showing before clicking or typing in it.
 - A vehicle comes off a trip from its tile's own menu, a right-click on the tile, then Remove, which asks first: pressing the tile opens its window, which has no remove.
-- The No quote lines yet tile on a trip with a quoted price starts the bus rental at that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
+- The No quote lines yet row on a trip with a quoted price starts the bus rental at that price, spread over the buses now on it: after the bus count changes, open the line and type the Cost for one bus that the PO or the quote sent gives.
 - Changing a round trip's pickup leaves the old pickup behind as an extra stop before the return, and it shows only after the save: read the Route tab again once it is saved, remove the leftover stop from its tile's menu, and save once more.
 - `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` is named in the note at the top and left for the Buses tab.
 - Any Save on a trip whose Estimated miles is blank writes the route's miles into it, even a route with a stop not yet measured, so a save made only to link a thread can write a wrong figure: check the Route tab's miles before such a save.

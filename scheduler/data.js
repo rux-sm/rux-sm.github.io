@@ -1855,6 +1855,37 @@
      touch screen, which on iOS sends no right-click of its own. A hold that
      opens the menu keeps its tap from opening the row as well. */
   let itemHints = 0;
+  /* A press's actions on its right-click, or a hold on a touch screen,
+     which on iOS sends no right-click of its own. `onHold` is told when a
+     hold opens them, so the press's tap that follows can be ignored. */
+  const contextItems = (open, items, title, onHold) => {
+    // With no button to find, a screen reader is told how the actions open.
+    const hint = el('span', 'rux--visually-hidden', 'Right-click, hold, or press the menu key for actions.');
+    hint.id = `scheduler-item-hint-${++itemHints}`;
+    open.setAttribute('aria-describedby', hint.id);
+    open.appendChild(hint);
+    const showItems = point => openItemsMenu(open, items, `Actions for ${title}`, point);
+    // Kept from the page's own menu handling, which would shut it at once.
+    open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); showItems(e); });
+    open.addEventListener('pointerdown', down => {
+      if (down.pointerType !== 'touch' || !down.isPrimary) return;
+      const mine = e => e.pointerId === down.pointerId;
+      const move = e => {
+        if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
+      };
+      const up = e => { if (mine(e)) end(); };
+      const end = () => {
+        clearTimeout(hold);
+        open.removeEventListener('pointermove', move);
+        open.removeEventListener('pointerup', up);
+        open.removeEventListener('pointercancel', up);
+      };
+      const hold = setTimeout(() => { end(); onHold?.(); showItems(down); }, TOUCH_HOLD_MS);
+      open.addEventListener('pointermove', move);
+      open.addEventListener('pointerup', up);
+      open.addEventListener('pointercancel', up);
+    });
+  };
   const listRow = ({ name, meta, much, tag, lead, title, edit, remove, removeLabel,
                     open: openRow = edit, openLabel = `Edit ${title}`, editText, removeText, items, context }) => {
     const li = el('li', 'rux--layer-two scheduler-item');
@@ -1882,33 +1913,9 @@
       li.classList.add('scheduler-item--context');
       li.append(open);
       if (!items) return li;
-      // With no button to find, a screen reader is told how the actions open.
-      const hint = el('span', 'rux--visually-hidden', 'Right-click, hold, or press the menu key for actions.');
-      hint.id = `scheduler-item-hint-${++itemHints}`;
-      open.setAttribute('aria-describedby', hint.id);
-      open.appendChild(hint);
-      const showItems = point => openItemsMenu(open, items, `Actions for ${title}`, point);
-      // Kept from the page's own menu handling, which would shut it at once.
-      open.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); showItems(e); });
-      open.addEventListener('pointerdown', down => {
-        held = false;
-        if (down.pointerType !== 'touch' || !down.isPrimary) return;
-        const mine = e => e.pointerId === down.pointerId;
-        const move = e => {
-          if (mine(e) && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) > TOUCH_SLOP) end();
-        };
-        const up = e => { if (mine(e)) end(); };
-        const end = () => {
-          clearTimeout(hold);
-          open.removeEventListener('pointermove', move);
-          open.removeEventListener('pointerup', up);
-          open.removeEventListener('pointercancel', up);
-        };
-        const hold = setTimeout(() => { end(); held = true; showItems(down); }, TOUCH_HOLD_MS);
-        open.addEventListener('pointermove', move);
-        open.addEventListener('pointerup', up);
-        open.addEventListener('pointercancel', up);
-      });
+      // A new press starts unheld; a hold that opens the menu marks it.
+      open.addEventListener('pointerdown', () => { held = false; });
+      contextItems(open, items, title, () => { held = true; });
       return li;
     }
     const more = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm rux--menu-button__trigger scheduler-item__menu');
@@ -5739,31 +5746,47 @@
     quoteEdit = null;
   });
 
-  /* A line's tile on the Billing tab: its name and amount over its leg,
-     quantity and cost and rate, opening its window; Move up, Move down, Use
-     calculator price where the calculator disagrees, and Remove on its
-     right-click or hold. Nothing is written until Save, so Remove does not
-     ask: Reset takes it back. */
-  function quoteLineTile(l, i, held) {
+  /* A line's row in the Quote card, as the Billing card has a row a step:
+     its name and amount over its leg, quantity and cost and rate, opening
+     its window; Move up, Move down, Use calculator price where the
+     calculator disagrees, and Remove on its right-click or hold. Nothing is
+     written until Save, so Remove does not ask: Reset takes it back. */
+  function quoteLineRow(l, i, held) {
     const s = lineSummary(l, held);
     const change = run => { run(); redrawLines(); refreshDirty(); };
-    const li = listRow({
-      name: s.name, meta: s.meta, much: s.much, context: true, edit: () => openLineDialog(i),
-      title: [s.name, s.meta, s.much].filter(Boolean).join(' · '), openLabel: `Edit quote line ${i + 1}, ${s.name}`,
-      items: [
-        { label: 'Edit', run: () => openLineDialog(i) },
-        { label: 'Move up', disabled: i === 0, run: () => change(() => linePending.splice(i - 1, 0, linePending.splice(i, 1)[0])) },
-        { label: 'Move down', disabled: i === linePending.length - 1, run: () => change(() => linePending.splice(i + 1, 0, linePending.splice(i, 1)[0])) },
-        ...(s.calc !== null ? [{ label: `Use calculator price, ${usdCents(s.calc)}`,
-          run: () => change(() => Object.assign(l, { cost: null, cost_typed: false, basis: null })) }] : []),
-        { label: 'Remove', danger: true, run: () => change(() => {
-          linePending.splice(i, 1);
-          if (l.kind === 'hotel' && !linePending.some(x => x.kind === 'hotel') && editing) editing.hotelWanted = false;
-        }) },
-      ],
+    const title = [s.name, s.meta, s.much].filter(Boolean).join(' · ');
+    const row = quoteRow({ name: s.name, meta: s.meta, much: s.much, title });
+    row.dataset.lineKind = l.kind;
+    row.setAttribute('aria-label', `Edit quote line ${i + 1}, ${s.name}`);
+    let heldPress = false;
+    row.addEventListener('pointerdown', () => { heldPress = false; });
+    row.addEventListener('click', e => {
+      if (heldPress) { heldPress = false; e.preventDefault(); return; }
+      openLineDialog(i);
     });
-    li.querySelector('.scheduler-item__open').dataset.lineKind = l.kind;
-    return li;
+    contextItems(row, [
+      { label: 'Edit', run: () => openLineDialog(i) },
+      { label: 'Move up', disabled: i === 0, run: () => change(() => linePending.splice(i - 1, 0, linePending.splice(i, 1)[0])) },
+      { label: 'Move down', disabled: i === linePending.length - 1, run: () => change(() => linePending.splice(i + 1, 0, linePending.splice(i, 1)[0])) },
+      ...(s.calc !== null ? [{ label: `Use calculator price, ${usdCents(s.calc)}`,
+        run: () => change(() => Object.assign(l, { cost: null, cost_typed: false, basis: null })) }] : []),
+      { label: 'Remove', danger: true, run: () => change(() => {
+        linePending.splice(i, 1);
+        if (l.kind === 'hotel' && !linePending.some(x => x.kind === 'hotel') && editing) editing.hotelWanted = false;
+      }) },
+    ], title, () => { heldPress = true; });
+    return row;
+  }
+  // A press in the Quote card, drawn as the Billing card's rows are.
+  function quoteRow({ name, meta, much = '', title, none }) {
+    const row = el('button', 'scheduler-billing-step');
+    row.type = 'button';
+    const top = el('span', 'scheduler-item__line');
+    top.append(el('span', `scheduler-item__name${none ? ' scheduler-fleet-tile__none' : ''}`, name),
+      el('span', 'scheduler-item__much', much));
+    row.append(top, el('span', 'scheduler-item__meta', meta || ''));
+    row.title = title;
+    return row;
   }
 
   /* The lines Save writes, in order, each with the quantity and amount it has
@@ -8679,7 +8702,11 @@
       editing.reliefBefore = null;
       askQuoteRates();
       linesLive = false;
-      // The quote's lines, a tile each, as the vehicles are.
+      // The quote's lines, a row each in one card as the Billing card's
+      // steps are, with Add line under it.
+      const lineLayer = el('div', 'rux--layer-two');
+      const lineCard = el('div', 'rux--tile scheduler-billing-steps');
+      lineLayer.appendChild(lineCard);
       const lineList = rowList();
       // Said as a warning where a saved trip's lines and its price have parted.
       const linesParted = el('div');
@@ -8759,13 +8786,14 @@
       const drawLines = () => {
         if (linesLive) syncLines();
         const held = window.SchedulerQuoteLines.settled(billingNow());
-        /* A tile a line, as the Buses tab has a tile a vehicle, each opening
-           that line's window; the total under the last where there is more
-           than one, and Add line at the end. With none, one tile says so and
-           starts the quote from the trip's rentals. */
-        const rows = linePending.map((l, i) => quoteLineTile(l, i, held));
+        /* One card of the lines, a row each as the Billing card has a row
+           a step, each opening that line's window, and the total in the
+           card under the last where there is more than one; Add line under
+           the card. With none, one row says so and starts the quote from
+           the trip's rentals. */
+        const rows = linePending.map((l, i) => quoteLineRow(l, i, held));
         if (linePending.length > 1) {
-          const sum = el('li', 'scheduler-quote-total');
+          const sum = el('div', 'scheduler-quote-total');
           sum.append(el('span', null, 'Total'), el('span', 'scheduler-item__much', usdCents(linesTotal())));
           rows.push(sum);
         }
@@ -8773,18 +8801,17 @@
           // A trip saved with a price and no line shows the price, which its rental starts from.
           const price = money(quotedInput.value);
           const from = splitNow() ? 'Starts from the drop-off and pickup' : 'Starts from the bus rental';
-          const li = listRow({
-            name: 'No quote lines yet', meta: price === null ? from : `${from} at this price`,
-            much: price === null ? '' : usdCents(price), context: true, edit: startQuote,
-            title: ['No quote lines yet', price === null ? null : usdCents(price)].filter(Boolean).join(', '),
-            openLabel: 'Start the quote',
-          });
-          li.querySelector('.scheduler-item__name').classList.add('scheduler-fleet-tile__none');
-          li.querySelector('.scheduler-item__open').id = 'scheduler-f-quoteopen';
-          rows.push(li);
+          const row = quoteRow({ name: 'No quote lines yet', none: true,
+            meta: price === null ? from : `${from} at this price`, much: price === null ? '' : usdCents(price),
+            title: ['No quote lines yet', price === null ? null : usdCents(price)].filter(Boolean).join(', ') });
+          row.id = 'scheduler-f-quoteopen';
+          row.setAttribute('aria-label', 'Start the quote');
+          row.addEventListener('click', startQuote);
+          rows.push(row);
         }
-        rows.push(listAddRow({ label: 'Add line', id: 'scheduler-f-lineadd', onClick: () => openLineDialog(null) }).li);
-        lineList.body.replaceChildren(...rows);
+        lineCard.replaceChildren(...rows);
+        lineList.body.replaceChildren(listAddRow({ label: 'Add line', id: 'scheduler-f-lineadd', onClick: () => openLineDialog(null) }).li);
+
 
         const total = linesTotal();
         if (linePending.length && totalBefore !== null && total !== totalBefore) {
@@ -8827,7 +8854,7 @@
         { label: 'Copy for QuickBooks', run: copyForQuickBooks },
       ], 'Quote options'));
       const linesBody = el('div', 'rux--stack-vertical rux--stack-scale-3');
-      linesBody.append(deadBox, lineList.list, linesParted, quotedRow);
+      linesBody.append(deadBox, lineLayer, lineList.list, linesParted, quotedRow);
       panelBilling.appendChild(section('Quote', linesBody, quoteMenu));
 
       /* QUOTE SENT: the price the customer was sent, and the day, kept for

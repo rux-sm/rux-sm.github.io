@@ -1843,7 +1843,7 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-secondary);
   background: var(--rux-layer-01);
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
   margin: 0;
 }
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
@@ -2953,8 +2953,8 @@ button.scheduler-row-head__num::after {
   outline-offset: -2px;
 }
 /* The billing entries' window: each entry's heading reads as a tile's line
-   does, its actions in a row under its fields. The quote's total stands
-   under its line tiles, its words lined up with theirs. */
+   does, its actions in a row under its fields. The quote's total is the
+   Quote card's last row, its words lined up with the lines' above it. */
 .scheduler-quote-line { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; padding-block: var(--rux-spacing-03); }
 .scheduler-quote-actions {
   display: flex;
@@ -2966,7 +2966,7 @@ button.scheduler-row-head__num::after {
   display: flex;
   justify-content: space-between;
   margin: 0;
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
   font-weight: var(--rux-heading-compact-01-font-weight);
   color: var(--rux-text-primary);
 }
@@ -3884,7 +3884,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts__trip {
   flex: 1 0 100%;
   min-inline-size: 0;
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
   background: var(--scheduler-bg);
   color: var(--scheduler-fg);
   /* A tap on it opens the trip, as the Open slot does. */
@@ -4083,7 +4083,7 @@ html:has(.scheduler-page[data-takeover]) {
   color: var(--rux-text-secondary);
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
 }
 /* Two lines per result: the destination and date, then who the trip is for.
    Block spans on this app's classes, because Carbon's clickable content is
@@ -5226,7 +5226,7 @@ html:has(.scheduler-page[data-takeover]) {
 /* The credit Geoapify's free plan asks for, the last row of a place search's
    list: small helper text, not an option. */
 .scheduler-place-credit-row {
-  padding: var(--rux-spacing-03) var(--rux-spacing-05);
+  padding: var(--rux-spacing-03) var(--rux-layout-density-padding-inline-local);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 .scheduler-place-credit {

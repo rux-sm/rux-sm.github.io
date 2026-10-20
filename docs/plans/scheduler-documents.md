@@ -17,8 +17,7 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 
 ## Decisions
 
-- **This plan waits on `rux-ui-retirement.md`,** in the order
-  `scheduler-fixes.md` sets.
+- **This plan waits on `rux-ui-retirement.md`.**
 - **Opened from a trip, a background check form has the campus and the trip
   date written into their fields,** on a copy; the stored file never changes.
   The campus is the trip's customer's name.

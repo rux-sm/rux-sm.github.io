@@ -6185,8 +6185,8 @@
 
   /* `===` for the columns that hold a value, and a key-by-key compare for
      `trip_reqs`, which holds an object: two equal objects are never `===`, so
-     without this every open would read as an unsaved change. `histStable`
-     sorts the keys, which is the same shape the history compares. */
+     without this every open would read as an unsaved change. `histSame` is
+     trip-history.js's compare, which sorts the keys. */
   const same = (a, b) => (a && typeof a === 'object') || (b && typeof b === 'object')
     ? histSame(a, b)
     : (a ?? null) === (b ?? null);
@@ -13581,200 +13581,21 @@
   /* ── Trip history ──
      Every change the scheduler makes to a trip writes a `record_trip_history`
      entry as rux-ui writes it, so its History panel shows both apps' entries
-     alike: an action, the trip's snapshot, and changes of
-     `{ field, label, before, after }` holding display strings. The labels and
-     formats are rux-ui's `TRIP_FIELDS` and `buildTripHistoryChanges`, with the
-     columns this app edits and rux-ui's table leaves out added at the end. A
-     column not listed is not recorded. */
-  const HISTORY_FIELDS = [
-    ['trip_ref', 'Trip ID'],
-    ['customer', 'Client'],
-    ['destination', 'Destination'],
-    ['start_date', 'Start date'],
-    ['end_date', 'End date'],
-    ['return_start_date', 'Inbound start date'],
-    ['return_end_date', 'Inbound end date'],
-    ['trip_type', 'Trip type'],
-    ['passengers', 'Passengers', 'number'],
-    ['is_self_organized', 'Billing type', 'billingType'],
-    ['trip_bar_color', 'Trip color'],
-    ['booking_contact_name', 'Booking contact'],
-    ['booking_contact_phone', 'Booking phone'],
-    ['booking_contact_email', 'Booking email'],
-    ['trip_contact_1_name', 'Trip contact'],
-    ['trip_contact_1_phone', 'Trip phone'],
-    ['trip_contact_2_name', 'Alternate trip contact'],
-    ['trip_contact_2_phone', 'Alternate trip phone'],
-    ['trip_contact_3_name', 'Trip contact 3'],
-    ['trip_contact_3_phone', 'Trip contact 3 phone'],
-    ['trip_contact_4_name', 'Trip contact 4'],
-    ['trip_contact_4_phone', 'Trip contact 4 phone'],
-    ['trip_contact_5_name', 'Trip contact 5'],
-    ['trip_contact_5_phone', 'Trip contact 5 phone'],
-    ['trip_contact_1_leg', 'Trip contact day', 'leg'],
-    ['trip_contact_2_leg', 'Alternate trip contact day', 'leg'],
-    ['trip_contact_3_leg', 'Trip contact 3 day', 'leg'],
-    ['trip_contact_4_leg', 'Trip contact 4 day', 'leg'],
-    ['trip_contact_5_leg', 'Trip contact 5 day', 'leg'],
-    ['notes', 'Notes'],
-    ['contract_status', 'Contract status'],
-    ['contract_signed_on', 'Contract signed on'],
-    ['contract_note', 'Contract note'],
-    ['quoted_price', 'Quoted price', 'money'],
-    ['quote_sent_price', 'Quote sent at', 'money'],
-    ['quote_sent_on', 'Quote sent on'],
-    ['deposit_amount', 'Payments received', 'money'],
-    ['est_miles', 'Estimated miles', 'number'],
-    ['actual_miles', 'Actual miles', 'number'],
-    ['driving_hours', 'Drive hours', 'number'],
-    ['on_duty_hours', 'On-duty hours', 'number'],
-    ['invoice_status', 'Invoice status'],
-    ['date_paid', 'Date paid'],
-    ['bus_count', 'Bus count', 'number'],
-    ['return_bus_count', 'Inbound bus count', 'number'],
-    ['confirmed', 'Confirmed', 'boolean'],
-    ['contact_not_needed', 'Contact required', 'inverseBoolean'],
-    ['itinerary_not_needed', 'Itinerary required', 'inverseBoolean'],
-    ['po_received', 'PO received', 'boolean'],
-    ['invoiced', 'Invoiced', 'boolean'],
-    ['balance_paid', 'Balance paid', 'boolean'],
-    // Edited here and not in rux-ui's table.
-    ['vehicle_type', 'Vehicle'],
-    ['req_sleeper', 'Sleeper', 'boolean'],
-    ['req_ada', 'Wheelchair lift', 'boolean'],
-    ['req_56pax', '56 passenger', 'boolean'],
-    ['need_hotel', 'Hotel needed', 'boolean'],
-    ['hotel_booked_outbound', 'Outbound hotel booked', 'boolean'],
-    ['hotel_booked_return', 'Inbound hotel booked', 'boolean'],
-    ['hotel_itinerary_number_outbound', 'Outbound hotel confirmation'],
-    ['hotel_itinerary_number_return', 'Inbound hotel confirmation'],
-    ['route_done_by', 'Route done by'],
-    ['buses_done_by', 'Buses done by'],
-    ['billing_done_by', 'Billing done by'],
-    ['po_ref', 'PO number'],
-    ['po_amount', 'PO amount', 'money'],
-    ['invoice_number', 'Invoice number'],
-  ];
-  const HISTORY_TRIP_TYPES = { round_trip: 'Round trip', one_way: 'One-way', dropoff_pickup: 'Split trip' };
-  const HISTORY_ROLES = {
-    driver: 'Driver', coDriver: 'Co-driver', 'co-driver': 'Co-driver', relief1: 'Relief driver',
-    relief2: 'Relief driver', 'relief-start': 'Relief driver', 'relief-end': 'Relief driver',
-  };
-
-  // Empty is null, and a comparison sorts object keys, as rux-ui compares.
-  const histNull = v => (v === undefined || v === '' ? null : v);
-  const histStable = v => Array.isArray(v) ? v.map(histStable)
-    : v && typeof v === 'object'
-      ? Object.fromEntries(Object.keys(v).sort().map(k => [k, histStable(v[k])]))
-      : histNull(v);
-  const histSame = (a, b) => JSON.stringify(histStable(a)) === JSON.stringify(histStable(b));
-  const histNumber = v => (v === null || v === undefined || v === '' ? null : Number(v));
-  const histUsd = n => n.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
-
-  function histFormat(value, kind, field) {
-    const v = histNull(value);
-    if (v === null) return null;
-    if (field === 'trip_type') return HISTORY_TRIP_TYPES[v] || String(v);
-    if (kind === 'boolean') return v ? 'Yes' : 'No';
-    if (kind === 'inverseBoolean') return v ? 'No' : 'Yes';
-    if (kind === 'billingType') return v ? 'Ticketed' : 'Charter';
-    if (kind === 'leg') return v === 'return' ? 'Pickup' : 'Drop-off';
-    if (kind === 'money' || kind === 'number') {
-      const n = Number(v);
-      if (!Number.isFinite(n)) return String(v);
-      return kind === 'money' ? histUsd(n) : n.toLocaleString();
-    }
-    return String(v);
-  }
-
-  const histByPosition = rows => [...(rows || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-
-  // The parts of a fleet, a route or a list that a change is judged on.
-  const histAssignments = rows => histByPosition(rows).map(a => ({
-    bus_id: a.bus_id || null,
-    position: a.position ?? null,
-    leg: a.leg || 'outbound',
-    active_roles: a.active_roles || ['driver'],
-    drivers: (a.trip_drivers || []).map(d => ({
-      driver_id: d.driver_id || null,
-      role: d.role || 'driver',
-      pay: histNumber(d.pay),
-      report_time: histNull(d.report_time),
-      instructions: histNull(d.instructions),
-      miles: histNumber(d.miles),
-    })).sort((x, y) => `${x.role}:${x.driver_id}`.localeCompare(`${y.role}:${y.driver_id}`)),
-  }));
-  const histStops = rows => histByPosition(rows).map(s => ({
-    leg: s.leg || 'outbound', type: s.type || null, label: s.label || null, name: s.name || null,
-    address: s.address || null, depart_prev: s.depart_prev || null, arrive: s.arrive || null, spot: s.spot || null,
-  }));
-  const histPayments = rows => histByPosition(rows).map(p => ({
-    position: p.position ?? null, amount: histNumber(p.amount),
-    method: histNull(p.method), date: histNull(p.date), ref: histNull(p.ref),
-  }));
-  const histBilling = (rows, refField) => histByPosition(rows).map(r => ({
-    [refField]: histNull(r[refField]), amount: histNumber(r.amount), date: histNull(r.date),
-  }));
-
-  const histLines = rows => histByPosition(rows).map(r => ({
-    kind: histNull(r.kind), leg: histNull(r.leg), item: histNull(r.item),
-    quantity: histNumber(r.quantity), cost: histNumber(r.cost), amount: histNumber(r.amount),
-  }));
-  // "Bus Rental 2 × $3,320 · Addt'l Driver 1 × $470"
-  function histLinesSummary(rows) {
-    if (!rows.length) return null;
-    return rows.map(r => [r.item || r.kind,
-      r.cost !== null ? `${r.quantity ?? 1} × ${histUsd(r.cost)}` : null].filter(Boolean).join(' ')).join(' · ');
-  }
+     alike: an action, the trip's snapshot, and the changes trip-history.js
+     works out between a read before the writes and one after, where any
+     difference in the trip's rows makes a line. */
+  const HISTORY = window.SchedulerTripHistory;
+  const histSame = HISTORY.same;
+  const HISTORY_ROLES = HISTORY.ROLES;
 
   const histBusName = id => (panelIndex.buses.get(id) ? vehicleName(panelIndex.buses.get(id)) : `Unit ${id}`);
   const histDriverName = id => panelIndex.driversById.get(id)?.name ?? id;
+  // The names a history line gives a bus, a driver and a need.
+  const HISTORY_NAMES = { bus: histBusName, driver: histDriverName, requirement: requirementLabel };
 
-  // "Outbound · Bus 12 · Driver: Name ($300 · report 06:00 · 412 mi) | …"
-  function histFleetSummary(rows) {
-    if (!rows.length) return null;
-    return rows.map(a => {
-      const crew = a.drivers.filter(d => d.driver_id).map(d => {
-        const details = [d.pay ? `$${Number(d.pay).toLocaleString()}` : null,
-          d.report_time ? `report ${d.report_time}` : null,
-          d.miles != null ? `${Number(d.miles).toLocaleString()} mi` : null].filter(Boolean);
-        return `${HISTORY_ROLES[d.role] || d.role || 'Driver'}: ${histDriverName(d.driver_id)}`
-          + (details.length ? ` (${details.join(' · ')})` : '');
-      });
-      return [a.leg === 'return' ? 'Inbound' : 'Outbound', a.bus_id ? histBusName(a.bus_id) : 'No bus', ...crew].join(' · ');
-    }).join(' | ');
-  }
-  function histRouteSummary(rows) {
-    if (!rows.length) return null;
-    return rows.map(s => s.name || s.address || s.label).filter(Boolean).join(' → ')
-      || `${rows.length} stop${rows.length === 1 ? '' : 's'}`;
-  }
-  function histPaymentSummary(rows) {
-    if (!rows.length) return null;
-    const total = rows.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
-    return `${rows.length} payment${rows.length === 1 ? '' : 's'} · ${histUsd(total)}`;
-  }
-  function histBillingSummary(rows, refField, noun) {
-    if (!rows.length) return null;
-    return rows.map(r => {
-      const n = Number(r.amount);
-      const money = r.amount !== null && Number.isFinite(n) ? histUsd(n) : '';
-      return [r[refField] ? `${noun} ${r[refField]}` : noun, money].filter(Boolean).join(' ');
-    }).join(' · ');
-  }
-  // Named the way the bar names them, so a requirement is called one thing
-  // wherever this app says it.
-  const histRequirements = reqs => Object.keys(reqs || {}).filter(k => reqs[k]).sort()
-    .map(requirementLabel).join(', ') || null;
-
-  // A trip and every row a save can change, as the database holds them.
-  const HISTORY_READ = '*,'
-    + 'trip_assignments(bus_id,position,leg,active_roles,trip_drivers(driver_id,role,pay,report_time,instructions,miles)),'
-    + 'trip_stops(position,leg,type,label,name,address,depart_prev,arrive,spot),'
-    + 'trip_payments(position,amount,method,date,ref),'
-    + 'trip_pos(position,ref,amount,date),'
-    + 'trip_invoices(position,number,amount,date),'
-    + 'trip_quote_lines(position,kind,leg,item,quantity,cost,amount)';
+  // A trip and every row a save can change, as the database holds them, each whole.
+  const HISTORY_READ = '*,trip_assignments(*,trip_drivers(*)),trip_stops(*),'
+    + 'trip_payments(*),trip_pos(*),trip_invoices(*),trip_quote_lines(*)';
   async function readTripState(tripId) {
     const { data, error } = await withTimeout(client.from('trips').select(HISTORY_READ).eq('id', tripId).single().then(r => r));
     if (error) throw new Error(error.message);
@@ -13784,35 +13605,7 @@
   const tripSnapshot = state => Object.fromEntries(Object.entries(state || {}).filter(([, v]) => !Array.isArray(v)));
 
   // The changes between two reads of `readTripState`; null before is a new trip.
-  function tripChanges(before, after) {
-    if (!before) return [{ field: 'trip', label: 'Trip', before: null, after: 'Created' }];
-    const changes = [];
-    const push = (field, label, was, now) => {
-      if (histSame(was, now)) return;
-      changes.push({ field, label, before: histNull(was), after: histNull(now) });
-    };
-    for (const [field, label, kind] of HISTORY_FIELDS) {
-      if (histSame(before[field], after[field])) continue;
-      push(field, label, histFormat(before[field], kind, field), histFormat(after[field], kind, field));
-    }
-    if (!histSame(before.trip_reqs || {}, after.trip_reqs || {})) {
-      push('trip_reqs', 'Requirements', histRequirements(before.trip_reqs), histRequirements(after.trip_reqs));
-    }
-    const lists = [
-      ['assignments', 'Fleet assignments', 'trip_assignments', histAssignments, histFleetSummary],
-      ['itinerary', 'Itinerary', 'trip_stops', histStops, histRouteSummary],
-      ['payments', 'Payments', 'trip_payments', histPayments, histPaymentSummary],
-      ['purchase_orders', 'Purchase orders', 'trip_pos', r => histBilling(r, 'ref'), r => histBillingSummary(r, 'ref', 'PO')],
-      ['invoices', 'Invoices', 'trip_invoices', r => histBilling(r, 'number'), r => histBillingSummary(r, 'number', 'Invoice')],
-      ['quote_lines', 'Quote lines', 'trip_quote_lines', histLines, histLinesSummary],
-    ];
-    for (const [field, label, key, shape, summary] of lists) {
-      const was = shape(before[key]);
-      const now = shape(after[key]);
-      if (!histSame(was, now)) push(field, label, summary(was), summary(now));
-    }
-    return changes;
-  }
+  const tripChanges = (before, after) => HISTORY.changes(before, after, HISTORY_NAMES);
 
   /* The history's actor is the person's rux-ui profile name, the one rux-ui
      records, found by the account's id; the platform profile's name stands in
@@ -13875,11 +13668,8 @@
 
   // One column changed from the board, labelled and formatted as a save's.
   function recordFieldChange(tripId, field, was, now) {
-    const [, label, kind] = HISTORY_FIELDS.find(([f]) => f === field);
-    if (histSame(was, now)) return;
-    recordHistory(tripId, 'updated', [{
-      field, label, before: histFormat(was, kind, field), after: histFormat(now, kind, field),
-    }]);
+    const change = HISTORY.line(field, was, now, HISTORY_NAMES);
+    if (change) recordHistory(tripId, 'updated', [change]);
   }
 
   // One document change, with the file in the metadata.

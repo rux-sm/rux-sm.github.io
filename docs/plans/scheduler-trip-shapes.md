@@ -20,13 +20,14 @@ them and nothing is entered twice.
 
 ### Order
 
-- **This plan waits on `scheduler-documents.md`,** in the order
-  `scheduler-fixes.md` sets, and so on rux-ui's retirement before it,
-  because rux-ui writes the two fixed legs and would never fill the new
-  ones.
+- **This plan waits on `scheduler-documents.md`,** and so on rux-ui's
+  retirement before it, because rux-ui writes the two fixed legs and would
+  never fill the new ones.
 - **Legs and routes are one change,** because both change how every stop
   and vehicle is tied to its trip, and the same thirty or so readers would
   otherwise be rewritten twice.
+- **The past-midnight rule's six copies become one,** because this plan
+  rewrites every reader that holds a copy.
 
 ### The shape
 
@@ -172,7 +173,8 @@ None open.
       `scheduler/week.js`; the editor and `fromStops` in
       `scheduler/route-figures.js`; Prep and To do; the forms and
       `scheduler/print.js`; the driver pages, `scheduler/driver-text.js` and
-      `scheduler/share/driver.js`; live and the road.
+      `scheduler/share/driver.js`; live and the road. The past-midnight
+      rule's copies become one rule file with its sample cases on the way.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

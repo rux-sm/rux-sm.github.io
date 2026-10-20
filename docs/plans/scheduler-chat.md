@@ -49,8 +49,9 @@ the schedule comes back as something to press, and is never done by itself.
   them, each with why; `draft_time_off` parks a driver's days off for a
   press.
 - **A recommendation is the page's own rule, not a second copy of it.** The
-  order Assign best uses joins the rule file `scheduler-fixes.md` builds for
-  the connector.
+  order Assign best uses joins the connector's rules,
+  `scheduler/connector/rules.ts`, which `build-connector-rules.mjs` makes
+  from the pages' rule files.
 - **The chat says who should drive and does not seat them.** A driver goes on
   a trip in the editor, whose Save is the only writer of a trip.
 - **A pressed time off is written to `driver_time_off` as the Drivers page

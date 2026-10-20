@@ -14,8 +14,8 @@ driver or a customer already holds still opens.
 
 - **rux-ui is retired.** The scheduler is the one app that edits trips, so a
   scheduler change is no longer held to what rux-ui does with the same row.
-- **This plan waits on `scheduler-fixes.md`,** whose Order decision sets the
-  plans' order.
+- **This plan is built next,** then `scheduler-documents.md`, then
+  `scheduler-trip-shapes.md`, each waiting on the one before it.
 - **Nothing is turned off until what only rux-ui does has a home.** That is
   its Settings: the yard, the bus needs and the billing steps.
 - **The rest of what only rux-ui does is dropped:** pay per seat, ticketed

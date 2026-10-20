@@ -391,9 +391,6 @@
 .rux--side-panel__actions-container .rux--action-set__action-button {
   padding-inline: var(--rux-spacing-04);
 }
-/* A count beside its field keeps a narrow box: Passengers' 7rem holds any
-   count and leaves Type the rest. */
-#scheduler-panel .scheduler-pair--count { grid-template-columns: minmax(0, 1fr) 7rem; }
 /* The Route tab's Summary has five columns, which at Carbon's 16px a side
    and body size need 388px, more than the 307px its tile holds on a 375px
    phone. A group in the editor's stack may be narrower than its widest line,

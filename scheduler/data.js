@@ -1681,12 +1681,6 @@
     row.append(...nodes);
     return row;
   };
-  // A field beside a count, which keeps a narrow box; overrides.css sizes it.
-  const countPair = (...nodes) => {
-    const row = pair(...nodes);
-    row.classList.add('scheduler-pair--count');
-    return row;
-  };
   /* One field across the whole row. A dropdown or a contact search keeps its
      own width and ignores its container, so it takes the pair's one-column
      form, whose sizing makes every box down to the input fill. */
@@ -2919,6 +2913,7 @@
     if (linesLive) redrawLines();
     // The Billing tab's Miles has a field for each seat.
     seatMilesDrawn?.();
+    busCountDrawn?.();
   }
 
   // The vehicle a control edits: the window's copy inside the window, else the tab's.
@@ -5768,6 +5763,8 @@
   let routeTimesDrawn = null;
   // The open Billing tab's redraw of each seat's miles, for a change to the seats.
   let seatMilesDrawn = null;
+  // The Details tab's Buses count, redrawn whenever the vehicles change.
+  let busCountDrawn = null;
   // The open Route tab's taking of a draft's stops; it returns those still to choose.
   let routeTakesStops = null;
   // The open Details tab's taking of a draft's trip contacts; it returns those held off screen and those with no slot.
@@ -6895,19 +6892,67 @@
     const passengers = moneyField('scheduler-f-passengers', 'Passengers', trip.passengers);
     passengers.querySelector('input').inputMode = 'numeric';
     passengers.querySelector('input').addEventListener('input', () => drawFleet());
+    /* HOW MANY BUSES, the Buses tab's vehicles counted, on Carbon's number
+       input. Its plus adds an empty vehicle; its minus takes one off the end
+       only while that one is empty, so no bus or driver goes this way, and a
+       typed number does both up to where an occupied vehicle stops it. It is
+       the leg on screen's count, and the drop-off leg's on a split not saved
+       as one yet. */
+    const busCount = el('div', 'rux--form-item');
+    const busNumber = el('div', 'rux--number rux--number--md');
+    const busLabel = el('label', 'rux--label', 'Buses');
+    busLabel.htmlFor = 'scheduler-f-buscount';
+    const busWrap = el('div', 'rux--number__input-wrapper');
+    const busInput = el('input');
+    busInput.type = 'number';
+    busInput.id = 'scheduler-f-buscount';
+    busInput.min = '1';
+    busInput.max = String(MAX_BUSES);
+    const busControls = el('div', 'rux--number__controls');
+    const busStep = (dir, label, icon) => {
+      const b = el('button', `rux--number__control-btn ${dir}-icon`);
+      b.type = 'button';
+      b.setAttribute('aria-label', label);
+      b.appendChild(svgUse(icon, '16', '0 0 32 32'));
+      return b;
+    };
+    const busDown = busStep('down', 'One bus fewer', '#m-remove');
+    const busUp = busStep('up', 'One bus more', '#m-add');
+    busControls.append(busDown, el('div', 'rux--number__rule-divider'), busUp, el('div', 'rux--number__rule-divider'));
+    busWrap.append(busInput, busControls);
+    busNumber.append(busLabel, busWrap);
+    busCount.appendChild(busNumber);
+    const busLeg = () => legOnScreen() ?? 'outbound';
+    busCountDrawn = () => {
+      const list = editing?.fleet?.[busLeg()];
+      if (!list) return;
+      busInput.value = String(list.length);
+      busUp.disabled = list.length >= MAX_BUSES;
+      busDown.disabled = list.length <= 1 || !busEmpty(list.at(-1));
+    };
+    busInput.addEventListener('change', () => {
+      const list = editing?.fleet?.[busLeg()];
+      if (!list) return;
+      const want = Math.min(MAX_BUSES, Math.max(1, Math.round(Number(busInput.value)) || list.length));
+      const before = list.length;
+      while (list.length < want) list.push(blankBus(list[0] ?? {}));
+      while (list.length > want && list.length > 1 && busEmpty(list.at(-1))) list.pop();
+      drawFleet();
+      busCountDrawn();
+      if (list.length !== before) refreshDirty();
+    });
+    busCountDrawn();
     topFields.append(
       outRange,
       returnDates,
       full(textField('scheduler-f-destination', 'Destination', trip.destination)),
-      countPair(
-        selectField('scheduler-f-type', 'Type', trip.trip_type, [
-          ['', '—'],
-          ['round_trip', 'Round trip'],
-          ['one_way', 'One way'],
-          [SPLIT, 'Split'],
-        ]),
-        passengers,
-      ),
+      full(selectField('scheduler-f-type', 'Type', trip.trip_type, [
+        ['', '—'],
+        ['round_trip', 'Round trip'],
+        ['one_way', 'One way'],
+        [SPLIT, 'Split'],
+      ])),
+      pair(passengers, busCount),
       colorBox,
     );
     panelDetails.appendChild(section('Trip information', fieldTile(topFields), tripMenu));

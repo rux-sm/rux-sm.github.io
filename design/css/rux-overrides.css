@@ -911,8 +911,8 @@
    each takes 36 here, and every button, field, dropdown, tab and switcher
    sized md follows. A button given no size draws at Carbon's 48 and takes the
    md size too, unless it or a container around it names a size. The date
-   picker's field fixes its own 40 and takes the md size with the fields beside
-   it. Buttons that set their own height keep it: the header's actions, the
+   picker's field and the number input's field fix their own 40 and take the md
+   size with the fields beside them. Buttons that set their own height keep it: the header's actions, the
    page-number buttons of the pagination nav and the dialog's 64px footer. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]),
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.rux--popover-content, .rux--table-toolbar) {
@@ -933,7 +933,8 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--btn:not([class*="rux--layout--size-"]):not([class*="rux--layout--size-"] *) {
   --rux-layout-size-height: var(--rux-layout-size-height-md);
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm) {
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm),
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--number:not(.rux--number--lg, .rux--number--sm) :is(input[type=number], input[type=text]) {
   block-size: var(--rux-layout-size-height-md);
 }
 /* GEIST'S TYPE, measured on its Typography page in dark mode. The face is

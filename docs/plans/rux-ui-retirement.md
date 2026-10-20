@@ -20,8 +20,9 @@ driver or a customer already holds still opens.
   its Settings: the yard, the bus needs and the billing steps.
 - **The rest of what only rux-ui does is dropped:** pay per seat, ticketed
   trips with their ticket options and passenger list, the self-organized
-  billing type, the itinerary's Confirm mark, the Tasks page and the
-  notifications panel.
+  billing type, the itinerary's Confirm mark, the Tasks page, the
+  notifications panel, and a trip's notes on the driver's page, since notes
+  are the office's.
 - **The pages people outside the office open keep their addresses.** Five
   rux-ui addresses are in links already sent, and each has a page here that
   reads the same parameter: `driver.html?s=` and its old name `d.html` open
@@ -34,9 +35,10 @@ driver or a customer already holds still opens.
 - **The scheduler's driver page already does what rux-ui's does, except a
   few things nobody relies on:** the link's date range and last-updated line,
   a document viewer with Print in the page, a Try again on a trip that will
-  not load, and a seat's instructions for any role but relief. No coming trip
-  has a seat with instructions, and every coming itinerary is labelled
-  Itinerary exactly, as the scheduler's page reads it.
+  not load, and a seat's instructions for any role but relief, which only
+  rux-ui can write, since the scheduler's editor gives only a relief seat a
+  note. No coming trip has a seat with instructions, and every coming
+  itinerary is labelled Itinerary exactly, as the scheduler's page reads it.
 - **The repository is archived, not deleted,** once nothing links to it, so
   its history stays.
 - **Columns and tables only rux-ui used are left in place.** Dropping one is
@@ -44,14 +46,9 @@ driver or a customer already holds still opens.
 
 ## Questions
 
-- Should drivers see a trip's notes? rux-ui's driver page shows them and the
-  scheduler's does not. 155 coming trips have notes, which only rux-ui writes
-  and which the office's updates have replaced.
 
 ## Tasks
 
-- [ ] Show a seat's instructions on the driver's card for every role, as
-      rux-ui's page does, in `scheduler/share/driver.js`.
 - [ ] Redirect `driver.html` on rux-ui to `scheduler/share/driver.html`,
       which every link the scheduler makes or copies already opens.
 - [ ] Redirect `maintenance.html`, `m.html`, `d.html` and `doc.html` on

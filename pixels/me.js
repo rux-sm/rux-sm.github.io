@@ -87,7 +87,7 @@
         <div class="rux--toggle">
           <button type="button" class="rux--toggle__button" id="${id2}" role="switch" aria-checked="${on}" aria-labelledby="${id2}-name"></button>
           <label class="rux--toggle__label" for="${id2}">
-            <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+            <div class="rux--toggle__appearance">
               <div class="rux--toggle__switch${on ? ' rux--toggle__switch--checked' : ''}"><svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg></div>
             </div>
           </label>
@@ -123,7 +123,7 @@
         <div class="rux--toggle">
           <button type="button" class="rux--toggle__button" id="pixels-sound" role="switch" aria-checked="${on}" aria-labelledby="pixels-sound-name"></button>
           <label class="rux--toggle__label" for="pixels-sound">
-            <div class="rux--toggle__appearance rux--toggle__appearance--sm">
+            <div class="rux--toggle__appearance">
               <div class="rux--toggle__switch${on ? ' rux--toggle__switch--checked' : ''}"><svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg></div>
             </div>
           </label>

@@ -99,7 +99,7 @@
     name.htmlFor = id;
     name.id = `${id}-l`;
     const look = document.createElement('div');
-    look.className = 'rux--toggle__appearance rux--toggle__appearance--sm';
+    look.className = 'rux--toggle__appearance';
     const knob = document.createElement('div');
     knob.className = `rux--toggle__switch${on ? ' rux--toggle__switch--checked' : ''}`;
     knob.innerHTML = '<svg class="rux--toggle__check" width="6" height="5" viewBox="0 0 6 5" aria-hidden="true"><path d="M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z"/></svg>';

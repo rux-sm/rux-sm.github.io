@@ -3170,3 +3170,52 @@
 @media (prefers-reduced-motion: reduce) {
   [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):active { transform: none; }
 }
+
+/* THE SWITCH IS A KEY IN A SLOT. The track is 56 by 28, its corners cut a
+   pixel in, with the theme's 2px black edge and a dark band along its top
+   that sinks it; dark when off, green when on. In the part the thumb leaves
+   open it shows a grey ring when off and a white bar when on, so the state
+   reads without colour. The thumb is a raised key the switch's full height,
+   which covers the track's edge at its end, so one black line runs round
+   everything: a light line under its top, a dark lip along its bottom, grey
+   when off and white when on. It jumps across, with no slide. The small
+   switch is the same at 32 by 16, with no ring or bar, which it has no room
+   for. The keyboard's ring is square, 2px outside the edge. */
+[data-theme="pixel-dark"] .rux--toggle__switch {
+  --rux-pixel-cut: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  inline-size: 56px;
+  block-size: 28px;
+  border-radius: 0;
+  clip-path: var(--rux-pixel-cut);
+  background: var(--rux-field-01) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4' shape-rendering='crispEdges'%3E%3Cpath fill='%236f6f6f' d='M0 0h4v1H0zM0 3h4v1H0zM0 1h1v2H0zM3 1h1v2H3z'/%3E%3C/svg%3E") no-repeat 38px 12px / 8px 8px;
+  box-shadow: inset 0 0 0 2px #000000, inset 0 6px 0 rgba(0, 0, 0, 0.4);
+  transition: none;
+}
+[data-theme="pixel-dark"] .rux--toggle__switch--checked {
+  background: var(--rux-support-success) linear-gradient(#f4f4f4, #f4f4f4) no-repeat 14px 11px / 2px 10px;
+  box-shadow: inset 0 0 0 2px #000000, inset 0 6px 0 rgba(0, 0, 0, 0.3);
+}
+[data-theme="pixel-dark"] .rux--toggle__switch::before {
+  inline-size: 28px;
+  block-size: 28px;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  border-radius: 0;
+  clip-path: var(--rux-pixel-cut);
+  background: #8d8d8d;
+  box-shadow: inset 0 0 0 2px #000000, inset 0 4px 0 rgba(255, 255, 255, 0.35), inset 0 -6px 0 rgba(0, 0, 0, 0.45);
+  transition: none;
+}
+[data-theme="pixel-dark"] .rux--toggle__switch--checked::before {
+  background: #f4f4f4;
+  box-shadow: inset 0 0 0 2px #000000, inset 0 4px 0 #ffffff, inset 0 -6px 0 rgba(0, 0, 0, 0.3);
+  transform: translateX(28px);
+}
+[data-theme="pixel-dark"] .rux--toggle__appearance--sm .rux--toggle__switch { inline-size: 32px; block-size: 16px; background-image: none; box-shadow: inset 0 0 0 2px #000000, inset 0 4px 0 rgba(0, 0, 0, 0.4); }
+[data-theme="pixel-dark"] .rux--toggle__appearance--sm .rux--toggle__switch::before { inline-size: 16px; block-size: 16px; box-shadow: inset 0 0 0 2px #000000, inset 0 -3px 0 rgba(0, 0, 0, 0.45); }
+[data-theme="pixel-dark"] .rux--toggle__appearance--sm .rux--toggle__switch--checked::before { transform: translateX(16px); }
+[data-theme="pixel-dark"] .rux--toggle__check { display: none; }
+[data-theme="pixel-dark"] .rux--toggle__switch::after { display: none; }
+[data-theme="pixel-dark"] .rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch { clip-path: none; outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+[data-theme="pixel-dark"] .rux--toggle--disabled .rux--toggle__switch { background: var(--rux-field-01); opacity: 0.5; }
+[data-theme="pixel-dark"] .rux--toggle--readonly .rux--toggle__switch { background-color: transparent; }

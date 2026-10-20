@@ -11,15 +11,15 @@ address, `/pixels/`, and types a name and a PIN at the door. A guest's browser k
 they are; one with no key is let in by the name and the PIN. No player is shown another but a friend.
 Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 
-`index.html` has the Pixels star and name at its top, and two tabs. Puzzles: today's puzzle on a card
-with the days solved in a row; then Continue, a card that plays the next puzzle; then a tile for each
-rift, which the code calls a category, in the owner's order. A tile is the way into its rift: the sprite
-last found in it, its number, its name, how many of its sprites are found and a bar of that; once all
-are, its boss in a gold frame and the bar gold. A rift of the course from the sixth on is locked until
-enough sprites are found, which `app.js`'s `locks` counts: its tile is one dim line saying how many more
-open it, and its page shows no puzzle. With `WORLD` in `app.js` on, the owner is drawn the course as a
-map in place of its tiles, their character by their rift (`docs/drawing-the-art.md`). Leaderboard:
-today's ranking by time, and all time's by puzzles solved.
+`index.html` has the Pixels star and name at its top, and two tabs. Puzzles: Continue, a card that plays
+the next puzzle; then today's puzzle on a card with the days solved in a row; then a tile for each rift,
+which the code calls a category, in the owner's order. A tile is the way into its rift: the sprite last
+found in it, its number, its name, how many of its sprites are found and a bar of that; once all are, its
+boss in a gold frame and the bar gold. A rift of the course from the sixth on is locked until enough
+sprites are found, which `app.js`'s `locks` counts: its tile is one dim line saying how many more open
+it, and its page shows no puzzle. With `WORLD` in `app.js` on, the owner is drawn the course as a map in
+place of its tiles, their character by their rift (`docs/drawing-the-art.md`). Leaderboard: today's
+ranking by time, and all time's by puzzles solved.
 
 `category.html?at=` is one rift, named by its place among its maker's: its puzzles, small boards first
 and then easy to hard, in rows of five, A to O, each a square showing its picture once found and else
@@ -68,11 +68,11 @@ Sound switch turns off and an iPhone's silent switch does not, and a phone ticks
 progress is kept in the browser for a reload.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
-results are saved as ever. The puzzle of the day is switched off by `DAILY` in `app.js`: no page shows
+results are saved as ever. The puzzle of the day is on, by `DAILY` in `app.js`; turned off, no page shows
 it, the leaderboard ranks all time only, and the maker still dates puzzles so they can be drawn ahead.
-With it on, `play.html?daily` plays the puzzle of the day: the one the owner drew for that day, with its
-name and colours, or where there is none, one the browser makes from the date, the same for everyone.
-Only it counts toward the days in a row. A player is never sent a day's puzzle before its day.
+`play.html?daily` plays the puzzle of the day: the one the owner drew for that day, with its name and
+colours, or where there is none, one the browser makes from the date, the same for everyone. Only it
+counts toward the days in a row. A player is never sent a day's puzzle before its day.
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The owner's
 puzzles go in the owner's rifts, the game's; a player's go in rifts of their own, through functions that

@@ -23,12 +23,11 @@
   // The sides a puzzle may have, and the side of the puzzle of the day.
   const SIZES = [5, 10, 15, 20], DAY = 10;
 
-  /* THE PUZZLE OF THE DAY IS OFF. While this is false no page shows it: the
-     front page has no Today card, the leaderboard ranks all time only, the
-     owner's page drops its two columns for it, and play.html?daily says it
-     is off. The maker still gives a puzzle its day and the owner still sees
-     the days drawn, so they can be made ahead of turning it on. */
-  const DAILY = false;
+  /* THE PUZZLE OF THE DAY IS ON. Turned off, no page shows it: the front
+     page has no Today card, the leaderboard ranks all time only, Players
+     drops what it says of it, and play.html?daily says it is off, while the
+     maker still gives a puzzle its day so days can be drawn ahead. */
+  const DAILY = true;
 
   /* THE LEADERBOARD IS OFF. While this is false the front page has no tabs
      and no ranking, only the puzzles, and does not ask the database for one.

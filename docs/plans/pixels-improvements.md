@@ -42,31 +42,31 @@ Sharing:
 
 - **A solved picture can be shared** from the finish: the picture drawn
   large on a card with its name and time, as an image, through the
-  phone's own share sheet, and copied where there is none.
+  phone's own share sheet, and saved as a file where there is none.
+
+Playing easy:
+
+- **Relaxed is a switch in Me's list.** With it on, a puzzle has no hearts:
+  a wrong square is marked and costs nothing. A relaxed solve finds the
+  sprite and keeps a time only where none was kept, so it never replaces a
+  time played with hearts.
 
 Reading:
 
 - **Error messages in the pixel theme are dark,** drawn on the theme's
   raised grey with its edge, where Carbon's light box stands out today.
   The change is Design's, in `design/css/rux-overrides.css`.
+- **Sentences are in IBM Plex Sans in `pixel-dark`,** which Design already
+  loads: paragraphs, How to play, notes and messages. Headings, keys, names
+  and numbers stay in Silkscreen. `docs/plans/pixel-theme.md`'s font
+  decision changes to say so.
 
 Not in this plan: the Pixelator's icons, its tool states, its name label and
 its Empty badge, which the visual-pass session takes.
 
 ## Questions
 
-1. Should long text use a plain font? `docs/plans/pixel-theme.md` decided
-   Silkscreen everywhere, running text too. The best pixel games keep pixel
-   letters for headings, keys and numbers and a plain font for sentences.
-   Recommended: IBM Plex Sans, which Design already loads, for paragraphs,
-   How to play and messages in `pixel-dark`; that changes the theme plan's
-   decision.
-2. Should there be a relaxed mode with no hearts, where a wrong square is
-   only marked? Recommended: yes, as a switch in Me's list, its times kept
-   apart from those played with hearts.
-3. Is the shared card an image of the picture, or a grid of squares as text
-   the way Wordle shares? Recommended: the image, since the picture is the
-   reward.
+None open.
 
 ## Tasks
 
@@ -74,13 +74,10 @@ its Empty badge, which the visual-pass session takes.
   and How to play no longer opening by itself.
 - [ ] The service worker and the queue of solves, offline and failed alike,
   with Play's line saying how many wait; the lost-solve status item goes.
-- [ ] The puzzle of the day switched on and checked: its card, its days in
-  a row, and a day's puzzle drawn by the owner.
 - [ ] Me's numbers.
 - [ ] Sharing a solved picture from the finish.
-- [ ] Design: the pixel theme's dark error message, and the plain font for
-  long text if question 1 says so.
-- [ ] The relaxed mode if question 2 says so.
+- [ ] Design: the pixel theme's dark error message, and Plex for sentences.
+- [ ] The relaxed switch and relaxed play.
 - [ ] `pixels/README.md` and `pixels/docs/` say each change, in the commit
   that makes it, and each is checked in Chrome on :8641 at phone width,
   offline included.

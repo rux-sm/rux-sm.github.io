@@ -25,7 +25,7 @@ days is entered once and works as it does now.
 - **A driver is sent the scheduler's own link,** because one whose old link
   opens rux-ui's `driver.html` is handed the trip's newest file whatever the
   day, until `rux-ui-retirement.md` redirects it.
-- **`scheduler-routes.md` builds on it.** A file and a contact name a leg,
+- **`scheduler-trip-shapes.md` builds on it.** A file and a contact name a leg,
   never a route, so every route of a leg is handed the leg's; a route's own
   sheet is the itinerary `print.js` draws.
 
@@ -43,7 +43,7 @@ days is entered once and works as it does now.
   other leg's bar does,** because the editor holds one leg's route at a time.
 - **On a split trip not saved yet, Pickup is disabled,** because the pickup
   leg is made from the drop-off leg's places on the first save.
-- **The route switcher `scheduler-routes.md` adds sits inside the Route tab,
+- **The route switcher `scheduler-trip-shapes.md` adds sits inside the Route tab,
   under this one,** so a leg is chosen first and a route within it.
 
 ### What stays the trip's

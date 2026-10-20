@@ -68,7 +68,7 @@ These are the draft's own, so the chat and the Read button both use them.
   with a time, a notice on Billing while it has a PO or contract file and a
   purchase order with no number, and each file's own menu on the Files tab,
   for reading a newer file.
-- **The reading fills the route on screen.** `scheduler-routes.md` gives a
+- **The reading fills the route on screen.** `scheduler-trip-shapes.md` gives a
   leg more than one route; until it does, a paper that describes two groups
   of buses comes back as a note.
 - **Only a PDF is read, and only one within the API's limits,** 32 MB and

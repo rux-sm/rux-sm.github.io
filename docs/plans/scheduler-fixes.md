@@ -21,7 +21,7 @@ site.
 - **`scheduler-split-trip-days.md` is built now, ahead of the rest,**
   because the office sends split trips with a different driver each day.
 - **The other plans follow as retiring rux-ui, documents with the customer
-  profile, then routes,** each waiting on the one before it.
+  profile, then `scheduler-trip-shapes.md`,** each waiting on the one before it.
 - **A rule goes in a small file with sample cases,** never in `data.js`.
 - **A database change or a deploy is its own step,** applied on rux's yes
   before the code that reads it is pushed.
@@ -41,7 +41,7 @@ site.
 - **Save stays many separate writes,** because it says what landed and one
   transaction means moving Save into the database.
 - **QuickBooks stays typed by hand,** with Copy for QuickBooks as the bridge.
-- **The past-midnight rule's six copies wait for the routes plan,** which
+- **The past-midnight rule's six copies wait for `scheduler-trip-shapes.md`,** which
   rewrites every one of those readers.
 - **A change to a rate or a setting is not recorded,** because each quote
   line already keeps the rate it was priced at.

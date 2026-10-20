@@ -6,7 +6,7 @@ import { runInNewContext } from 'node:vm';
 const window = {};
 runInNewContext(readFileSync(new URL('../trip-shape.js', import.meta.url), 'utf8'), { window, Date });
 runInNewContext(readFileSync(new URL('../week.js', import.meta.url), 'utf8'), { window });
-const { legsOf, clip, setLateReturn } = window.SchedulerWeek;
+const { legsOf, legKeyOfVehicle, legByKey, clip, setLateReturn } = window.SchedulerWeek;
 
 let failed = 0;
 function expect(name, got, want) {
@@ -81,10 +81,19 @@ const withRows = { trip_type: 'dropoff_pickup', start_date: '2026-10-13', end_da
 const shapedTrip = { ...withRows, trip_legs: [
   { id: 'l2', leg: 'return', start_date: '2026-10-15', end_date: '2026-10-15', bus_count: 1, trip_routes: [{ id: 'r2', position: 1 }] },
   { id: 'l1', leg: 'outbound', start_date: '2026-10-13', end_date: '2026-10-13', bus_count: 2, trip_routes: [{ id: 'r1', position: 1 }] }] };
-const bare = l => { const { legId, number, ...rest } = l; return rest; };
-expect('a trip read with its legs gives the bars its columns give, with each leg\'s id and number',
-  [legsOf(shapedTrip).map(bare), legsOf(shapedTrip).map(l => [l.legId, l.number])],
-  [legsOf(withRows), [['l1', 1], ['l2', 2]]]);
+const bare = l => { const { legId, key, ...rest } = l; return rest; };
+expect('a trip read with its legs gives the bars its columns give, keyed by each leg\'s id',
+  [legsOf(shapedTrip).map(bare), legsOf(shapedTrip).map(l => [l.key, l.legId, l.number])],
+  [legsOf(withRows).map(bare), [['l1', 'l1', 1], ['l2', 'l2', 2]]]);
+expect('a trip read without its legs keys them by the old word, numbered in order',
+  legsOf(withRows).map(l => [l.key, l.number]), [['outbound', 1], ['return', 2]]);
+expect('a vehicle is on its route\'s leg, or the leg its word names before it has a route',
+  [legKeyOfVehicle(shapedTrip, { route_id: 'r2', leg: 'outbound' }), legKeyOfVehicle(shapedTrip, { leg: 'return' }),
+    legKeyOfVehicle(shapedTrip, {}), legKeyOfVehicle(withRows, { route_id: 'r2', leg: 'return' }), legKeyOfVehicle(withRows, {})],
+  ['l2', 'l2', 'l1', 'return', 'outbound']);
+expect('a leg is found by its key, or by the old word a link names',
+  [legByKey(shapedTrip, 'l2')?.leg, legByKey(shapedTrip, 'return')?.key, legByKey(withRows, 'return')?.key, legByKey(shapedTrip, 'l9')],
+  ['return', 'l2', 'return', null]);
 
 console.log(failed ? `\n  week: ${failed} case(s) failed` : '\n  week: every case passed');
 process.exit(failed ? 1 : 0);

@@ -175,20 +175,22 @@
   // A leg saved with its end before its start is read as its start day, so it
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
-  /* A trip's legs, each with the days it takes, `from` to `to`, and `ends`,
-     the last day as saved; a trip read with its legs gives each its `legId`
-     and `number` too. Every leg still carries the old word it mirrors, which
-     the bars are keyed by. */
+  /* A trip's legs, each with the days it takes, `from` to `to`, `ends`, the
+     last day as saved, and `number`, from 1 in date order. `key` tells the
+     legs apart: the leg's id on a trip read with its legs, which gives
+     `legId` too, and the old word on one that is not, such as a draft. Every
+     leg still carries the old word it mirrors in `leg`, which the old
+     columns are read by. */
   const legsOf = trip => {
     const legs = [];
     const add = (leg, from, end, count, more = {}) => {
       const times = timesOf(trip, leg);
       const ends = lastDay(from, end);
-      legs.push({ leg, from, ends, count, ...times, ...takes(from, ends, times), ...more });
+      legs.push({ leg, key: leg, number: legs.length + 1, from, ends, count, ...times, ...takes(from, ends, times), ...more });
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {
-        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, number: l.number });
+        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, key: l.id, number: l.number });
       }
       return legs;
     }
@@ -196,6 +198,14 @@
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1);
     return legs;
   };
+  /* The key of the leg a vehicle runs on: on a trip read with its legs, its
+     route's leg, or the leg its old word names while the page has made it
+     and not yet read it back with its route; on one that is not, the word. */
+  const legKeyOfVehicle = (trip, a) => (!shaped(trip) ? a?.leg || 'outbound'
+    : (a?.route_id ? SHAPE.legOfRoute(trip, a.route_id) : SHAPE.legOfWord(trip, a?.leg))?.id ?? null);
+  // A trip's leg by its key, or by the old word a link or row still names.
+  const legByKey = (trip, key) => legsOf(trip).find(l => l.key === key)
+    ?? legsOf(trip).find(l => l.leg === key) ?? null;
 
   const clip = (from, to, weekStart, weekEnd) => {
     const a = parseISO(from), b = parseISO(to);
@@ -227,7 +237,7 @@
 
   window.SchedulerWeek = {
     TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
-    stopsOfLeg, timesOf, legsOf, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt,
   };
 })();

@@ -285,9 +285,15 @@ const window = {};
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
   ];
-  // A status row's identity, as the table keys it: trip, driver, leg and role.
+  /* A status row's identity: trip, driver, leg and role, the leg by the key
+     week.js gives it, its id on a trip read with its legs. */
   const statusKey = (tripId, driverId, leg, role) =>
     [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
+  /* The statuses as `crewOf` looks them up, each row under its leg's id and,
+     for a page that reads its trips without their legs, its old word. */
+  const statusMap = rows => new Map((rows || []).flatMap(r => [
+    ...(r.legId ? [[statusKey(r.tripId, r.driverId, r.legId, r.role), r]] : []),
+    [statusKey(r.tripId, r.driverId, r.leg, r.role), r]]));
 
   // The tone names an older row holds in place of a status.
   const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
@@ -309,23 +315,25 @@ const window = {};
   }
 
   /* An assignment's crew in role order: each driver in a role that is on, with
-     their status, and each role that is on with nobody in it. */
+     their status, and each role that is on with nobody in it. Each carries
+     its leg's key in `legKey` and the old word in `leg`. */
   function crewOf(trip, assign, driversById, statuses) {
     const on = activeRolesOf(assign);
     const leg = assign.leg || 'outbound';
+    const legKey = window.SchedulerWeek?.legKeyOfVehicle(trip, assign) ?? leg;
     const crew = [];
     for (const r of ROLES) {
       if (!on.has(r.role)) continue;
       const filled = (assign.trip_drivers || []).filter(d => d.driver_id && (d.role || 'driver') === r.role);
       for (const d of filled) {
-        const row = statuses?.get(statusKey(trip.id, d.driver_id, leg, r.role)) ?? null;
+        const row = statuses?.get(statusKey(trip.id, d.driver_id, legKey, r.role)) ?? null;
         const value = row ? row.status : on.get(r.role);
         crew.push({
-          ...r, leg, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
+          ...r, leg, legKey, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
           status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
         });
       }
-      if (!filled.length) crew.push({ ...r, leg, needed: true });
+      if (!filled.length) crew.push({ ...r, leg, legKey, needed: true });
     }
     return crew;
   }
@@ -486,7 +494,7 @@ const window = {};
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
   };
 })();
@@ -1043,20 +1051,22 @@ const window = {};
   // A leg saved with its end before its start is read as its start day, so it
   // still has a bar to open and put right.
   const lastDay = (from, to) => (to && to >= from ? to : from);
-  /* A trip's legs, each with the days it takes, `from` to `to`, and `ends`,
-     the last day as saved; a trip read with its legs gives each its `legId`
-     and `number` too. Every leg still carries the old word it mirrors, which
-     the bars are keyed by. */
+  /* A trip's legs, each with the days it takes, `from` to `to`, `ends`, the
+     last day as saved, and `number`, from 1 in date order. `key` tells the
+     legs apart: the leg's id on a trip read with its legs, which gives
+     `legId` too, and the old word on one that is not, such as a draft. Every
+     leg still carries the old word it mirrors in `leg`, which the old
+     columns are read by. */
   const legsOf = trip => {
     const legs = [];
     const add = (leg, from, end, count, more = {}) => {
       const times = timesOf(trip, leg);
       const ends = lastDay(from, end);
-      legs.push({ leg, from, ends, count, ...times, ...takes(from, ends, times), ...more });
+      legs.push({ leg, key: leg, number: legs.length + 1, from, ends, count, ...times, ...takes(from, ends, times), ...more });
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {
-        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, number: l.number });
+        if (l.start && l.word) add(l.word, l.start, l.end, l.busCount || 1, { legId: l.id, key: l.id, number: l.number });
       }
       return legs;
     }
@@ -1064,6 +1074,14 @@ const window = {};
     if (trip.return_start_date) add('return', trip.return_start_date, trip.return_end_date, trip.return_bus_count || trip.bus_count || 1);
     return legs;
   };
+  /* The key of the leg a vehicle runs on: on a trip read with its legs, its
+     route's leg, or the leg its old word names while the page has made it
+     and not yet read it back with its route; on one that is not, the word. */
+  const legKeyOfVehicle = (trip, a) => (!shaped(trip) ? a?.leg || 'outbound'
+    : (a?.route_id ? SHAPE.legOfRoute(trip, a.route_id) : SHAPE.legOfWord(trip, a?.leg))?.id ?? null);
+  // A trip's leg by its key, or by the old word a link or row still names.
+  const legByKey = (trip, key) => legsOf(trip).find(l => l.key === key)
+    ?? legsOf(trip).find(l => l.leg === key) ?? null;
 
   const clip = (from, to, weekStart, weekEnd) => {
     const a = parseISO(from), b = parseISO(to);
@@ -1095,7 +1113,7 @@ const window = {};
 
   window.SchedulerWeek = {
     TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
-    stopsOfLeg, timesOf, legsOf, takes, setLateReturn, lateReturn, clip, assignLanes,
+    stopsOfLeg, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt,
   };
 })();
@@ -2071,7 +2089,7 @@ const window = {};
     // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
     const statusRows = heavy.length
       ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
-    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const statuses = Facts.statusMap(statusRows);
     return { rows: rows(all, handed({ ...basics, nearby, statuses })), trips: new Map(all.map(t => [t.id, t])) };
   }
 
@@ -2350,7 +2368,7 @@ const window = {};
       ids.length ? client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [],
       legs.length && window.SchedulerClashes ? window.SchedulerClashes.readNearby(client, from, lastOf(legs, from)) : null,
     ]);
-    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const statuses = Facts.statusMap(statusRows);
     const read = { ...basics, statuses, nearby };
     return { pages: legs.map(l => page(l.trip, l.leg, read)), read };
   }

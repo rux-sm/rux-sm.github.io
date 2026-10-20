@@ -208,7 +208,7 @@
     // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
     const statusRows = heavy.length
       ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
-    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const statuses = Facts.statusMap(statusRows);
     return { rows: rows(all, handed({ ...basics, nearby, statuses })), trips: new Map(all.map(t => [t.id, t])) };
   }
 

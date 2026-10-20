@@ -32,7 +32,7 @@
   const {
     setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayOfContact,
   } = window.SchedulerLegFacts;
 
   /* Which itinerary and which day-of contacts each leg of a split trip is
@@ -508,7 +508,7 @@
     // page write, keyed as `statusKey` builds it.
     const statusRows = trips.length ? await withTimeout(
       client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
-    const statuses = new Map(statusRows.map(r => [statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const statuses = statusMap(statusRows);
     const data = { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd };
     for (const [id, move] of heldMoves) {
       if (!move.saving && mine > move.since) heldMoves.delete(id);
@@ -557,7 +557,7 @@
 
   // -- placing --------------------------------------------------------------
   // Which days a leg covers, its times and its lane, shared with the printed week.
-  const { stopsOfLeg, timesOf, legsOf, takes, clip, assignLanes } = window.SchedulerWeek;
+  const { stopsOfLeg, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, clip, assignLanes } = window.SchedulerWeek;
 
   // The contact columns as the editor shows them on opening, so an untouched
   // panel has nothing to save. Each day-of contact stays in its own slot.
@@ -749,11 +749,11 @@
     if (!found) return;
     const inBus = new Set(bus.drivers.map(d => d.driver_id).filter(Boolean).map(String));
     const due = found.crew.filter(c => !c.needed && inBus.has(String(c.driverId)) && c.status.value !== 'confirmed'
-      && !confirming.has(`${found.trip.id}:${c.driverId}:${c.leg}:${c.role}`));
+      && !confirming.has(`${found.trip.id}:${c.driverId}:${c.legKey}:${c.role}`));
     if (!due.length) return;
     const { trip } = found;
-    for (const c of due) confirming.add(`${trip.id}:${c.driverId}:${c.leg}:${c.role}`);
-    const picked = c => due.some(x => x.driverId === c.driverId && x.leg === c.leg && x.role === c.role);
+    for (const c of due) confirming.add(`${trip.id}:${c.driverId}:${c.legKey}:${c.role}`);
+    const picked = c => due.some(x => x.driverId === c.driverId && x.legKey === c.legKey && x.role === c.role);
     const list = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => (
         { driverId: c.driverId, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c), ...(picked(c) && { source: 'samsara' }) })));
@@ -898,7 +898,7 @@
         const place = clip(leg.from, leg.to, weekStart, weekEnd);
         if (!place) continue;
         const assigns = (trip.trip_assignments || [])
-          .filter(a => (a.leg || 'outbound') === leg.leg)
+          .filter(a => legKeyOfVehicle(trip, a) === leg.key)
           .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
         assigns.forEach(a => push(a.bus_id ?? UNASSIGNED, { trip, leg, assign: a, place, slot: a.position ?? 0 }));
         for (let i = assigns.length; i < (leg.count || 1); i++) push(UNASSIGNED, { trip, leg, assign: null, place, slot: i });
@@ -1430,11 +1430,11 @@
          it or gone from it, so a drop and the draw that follows agree: the row
          takes its height, the bars already there move to their lanes, and the
          answer is the lane the carried bar gets. The order is `render`'s: the
-         trips as read, a trip's outbound leg before its return, a leg's buses
+         trips as read, a trip's legs in their order, a leg's buses
          by position, and `assignLanes` over that. */
       const pack = (track, carried) => {
         const rank = new Map([...panelIndex.trips.keys()].map((id, i) => [String(id), i]));
-        const order = b => [rank.get(b.dataset.tripId) ?? 0, b.dataset.leg === 'return' ? 1 : 0,
+        const order = b => [rank.get(b.dataset.tripId) ?? 0, +b.dataset.legNumber || 1,
           b === bar || b.dataset.assignmentId ? 0 : 1, +b.dataset.slot || 0];
         const list = [...track.querySelectorAll(':scope > .scheduler-bar')].filter(b => b !== bar);
         if (carried) list.push(bar);
@@ -2094,7 +2094,7 @@
     bus.needs = needsObject(needIds(a.needs));
     bus.vehicleType = a.vehicle_type ?? null;
     const on = activeRolesOf(a);
-    const leg = a.leg || 'outbound';
+    const leg = legKeyOfVehicle(trip, a);
     for (const r of ROLES) {
       const seat = bus.seats[r.role];
       seat.on = on.has(r.role);
@@ -6564,6 +6564,8 @@
     const ready = !!legOnScreen();
     for (const btn of legSwitch.querySelectorAll('[data-leg]')) {
       const pickup = btn.dataset.leg === 'return';
+      // Each option opens its leg by the leg's key; Pickup has none until its first save.
+      btn.dataset.legKey = (trip && legsOf(trip).find(l => l.leg === btn.dataset.leg)?.key) || btn.dataset.leg;
       const day = legDay(pickup ? trip?.return_start_date : trip?.start_date);
       btn.querySelector('.rux--content-switcher__label').textContent = [pickup ? 'Pickup' : 'Drop-off', day].filter(Boolean).join(' · ');
       btn.disabled = pickup && !ready;
@@ -6572,27 +6574,29 @@
     const on = legSwitch.querySelector(`[data-leg="${legOnScreen() || 'outbound'}"]`);
     window.Rux?.contentSwitcher?.select?.(legSwitch, on, { focus: false, silent: true });
   }
-  // The editor on the other leg, from its bar where the week shows one.
-  function openLeg(leg) {
+  // The editor on another leg, by its key, from its bar where the week shows one.
+  function openLeg(key) {
     const trip = panelIndex.trips.get(String(editing?.id)) ?? panelArgs?.trip;
-    if (!trip) return;
+    const leg = trip ? legByKey(trip, key) : null;
+    if (!leg) return;
     const bar = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(String(trip.id))}"]`)]
-      .find(b => (b.dataset.leg || 'outbound') === leg);
+      .find(b => barOnLeg(b, leg.key));
     if (bar) { selectBar(bar); openPanel(bar); }
     else {
-      const first = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
+      const first = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === leg.key)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))[0];
-      openPanel(null, null, { ref: { tripId: String(trip.id), leg, busId: first?.bus_id != null ? String(first.bus_id) : null,
+      openPanel(null, null, { ref: { tripId: String(trip.id), leg: leg.leg, legKey: leg.key,
+        busId: first?.bus_id != null ? String(first.bus_id) : null,
         assignmentId: first?.id != null ? String(first.id) : null }, trip });
     }
-    legSwitch?.querySelector(`[data-leg="${leg}"]`)?.focus();
+    legSwitch?.querySelector(`[data-leg-key="${CSS.escape(leg.key)}"]`)?.focus();
   }
   legSwitch?.addEventListener('rux:content-switcher-selected', e => {
-    const leg = e.detail?.option?.dataset.leg;
-    const from = legOnScreen();
+    const key = e.detail?.option?.dataset.legKey;
+    const from = legOnScreen() ? editing.legKey : null;
     drawLegSwitch();
-    if (!leg || !from || leg === from) return;
-    whenSafe(() => openLeg(leg));
+    if (!key || !from || key === from) return;
+    whenSafe(() => openLeg(key));
   });
 
   // `bar` opens a trip from the board; `again` replays an earlier `panelArgs`.
@@ -6604,8 +6608,10 @@
     const trip = draft ?? again?.trip ?? (ref ? panelIndex.trips.get(ref.tripId) : null);
     if (!trip) return;
     panelArgs = { ref, draft, trip: creating ? null : trip };
-    const legName = ref?.leg || 'outbound';
-    const leg = legsOf(trip).find(l => l.leg === legName) ?? legsOf(trip)[0];
+    // The leg the bar or link names, by its key, or the trip's first.
+    const named = ref ? legByKey(trip, ref.legKey ?? ref.leg ?? 'outbound') : null;
+    const legName = named?.leg ?? ref?.leg ?? 'outbound';
+    const leg = named ?? legsOf(trip)[0];
 
     // A plain heading until `refreshDirty` calls `setTitle`, which names the trip.
     const heading = creating ? 'New trip' : 'Edit trip';
@@ -6622,7 +6628,7 @@
       ? parseISO(leg.from).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
       : `${parseISO(leg.from).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} to ${parseISO(leg.to).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} (${legDays} days)`;
 
-    editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null,
+    editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, legKey: named?.key ?? legName,
       /* What the trip already answered, whether or not the editor draws a tag
          for it: a save merges its own tags over this, so a requirement the
          office has since deactivated keeps its answer. */
@@ -9405,7 +9411,7 @@
     if (!row) return false;
     const start = +bar.dataset.start, span = +bar.dataset.span;
     return row.days.slice(start, start + span).some(day => day.off
-      || day.refs.some(r => !(from && r.tripId === from.tripId && r.leg === from.leg)));
+      || day.refs.some(r => !(from && r.tripId === from.tripId && r.legKey === from.legKey)));
   };
 
   // Slides a driver's name back into the roster, found afresh because a read can have drawn it again.
@@ -9874,7 +9880,7 @@
         const place = clip(leg.from, leg.to, weekStart, weekEnd);
         if (!place) continue;
         for (const a of trip.trip_assignments || []) {
-          if ((a.leg || 'outbound') !== leg.leg) continue;
+          if (legKeyOfVehicle(trip, a) !== leg.key) continue;
           // Only the roles that are on, as the bar's crew counts them, so the
           // grid and the bar agree on who is driving.
           const on = activeRolesOf(a);
@@ -9883,17 +9889,17 @@
             if (!row || !on.has(td.role || 'driver')) continue;
             const what = trip.destination || 'Trip';
             // The bar a busy day selects, by the values `findBar` reads.
-            const ref = { tripId: String(trip.id), leg: leg.leg, assignmentId: a.id != null ? String(a.id) : null };
+            const ref = { tripId: String(trip.id), leg: leg.leg, legKey: leg.key, assignmentId: a.id != null ? String(a.id) : null };
             for (let i = 0; i < place.span; i++) {
               const day = row.days[place.start + i];
               if (!day) continue;
               if (!day.trips.includes(what)) day.trips.push(what);
-              if (!day.refs.some(r => r.tripId === ref.tripId && r.leg === ref.leg)) day.refs.push(ref);
+              if (!day.refs.some(r => r.tripId === ref.tripId && r.legKey === ref.legKey)) day.refs.push(ref);
               // A leg that runs past the board's range, for the join below.
               if (i === 0 && place.fromPrev) day.fromPrev = true;
               if (i === place.span - 1 && place.toNext) day.toNext = true;
             }
-            if (!row.legs.some(l => l.tripId === ref.tripId && l.leg === ref.leg)) row.legs.push({ ...leg, tripId: ref.tripId, what });
+            if (!row.legs.some(l => l.tripId === ref.tripId && l.key === ref.legKey)) row.legs.push({ ...leg, tripId: ref.tripId, what });
           }
         }
       }
@@ -9947,7 +9953,7 @@
        beats a trip in a cell, so it also cuts that trip's bar. At either end
        of the board's range, a day joins on when its leg or time off runs past
        the range. */
-    const sameLeg = (a, b) => a.refs.some(r => b.refs.some(s => s.tripId === r.tripId && s.leg === r.leg));
+    const sameLeg = (a, b) => a.refs.some(r => b.refs.some(s => s.tripId === r.tripId && s.legKey === r.legKey));
     for (const row of rows) {
       row.days.forEach((day, i) => {
         const prev = row.days[i - 1], next = row.days[i + 1];
@@ -10149,25 +10155,32 @@
      elements. */
   function selectedBar() { return gridEl.querySelector('.scheduler-bar[aria-pressed="true"]'); }
 
+  /* A bar's leg is named by `legKey`, the key week.js gives the leg; `leg`
+     is the old word, which the old columns are still read by. */
   function barRef(bar) {
     return {
       tripId: bar.dataset.tripId,
       leg: bar.dataset.leg || 'outbound',
+      legKey: bar.dataset.legKey || bar.dataset.leg || 'outbound',
       busId: bar.dataset.busId || null,
       assignmentId: bar.dataset.assignmentId || null,
     };
   }
+  /* Whether a bar is on the leg a key names. A link from a page that still
+     reads its trips without their legs names the leg by its old word. */
+  const barOnLeg = (bar, key) => bar.dataset.legKey === key || (bar.dataset.leg || 'outbound') === key;
+  const refLegKey = ref => ref.legKey ?? ref.leg ?? 'outbound';
 
   function findBar(ref) {
     if (!ref?.tripId) return null;
     return [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(ref.tripId)}"]`)]
-      .find(b => (b.dataset.leg || 'outbound') === ref.leg && (b.dataset.assignmentId || null) === ref.assignmentId) ?? null;
+      .find(b => barOnLeg(b, refLegKey(ref)) && (b.dataset.assignmentId || null) === ref.assignmentId) ?? null;
   }
 
   function isEditorBar(bar) {
     const ref = panelArgs?.ref;
     return !panelEl.hidden && !!ref && !panelArgs.draft && bar.dataset.tripId === ref.tripId
-      && (bar.dataset.leg || 'outbound') === ref.leg && (bar.dataset.assignmentId || null) === ref.assignmentId;
+      && barOnLeg(bar, refLegKey(ref)) && (bar.dataset.assignmentId || null) === ref.assignmentId;
   }
 
   // Any bar of the trip open in the editor. Those are locked on the board.
@@ -10194,7 +10207,7 @@
   let menuHidesCard = false;
   // The Contacts window, while it is open: its overlay registration and slot.
   let contactsOpen = null;
-  const barKey = bar => `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}`;
+  const barKey = bar => `${bar.dataset.tripId}|${bar.dataset.legKey}|${bar.dataset.assignmentId}`;
   /* The trip whose card was put away by picking one of its actions, so the
      card does not stand over what the action opened. Selecting another trip,
      or this one again after letting it go, brings the card back. */
@@ -10728,7 +10741,7 @@
   async function reloadEditorTrip() {
     const { ref, trip } = panelArgs || {};
     if (!ref || !trip) return;
-    const from = legsOf(trip).find(l => l.leg === ref.leg)?.from ?? trip.start_date;
+    const from = legByKey(trip, refLegKey(ref))?.from ?? trip.start_date;
     if (from) cursor = mondayOf(parseISO(from));
     await show();
     const bar = findBar(ref);
@@ -11976,7 +11989,7 @@
     const { trip } = found;
     const list = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
-        const picked = c.driverId === target.driverId && c.leg === target.leg && c.role === target.role;
+        const picked = c.driverId === target.driverId && c.legKey === target.legKey && c.role === target.role;
         return { driverId: c.driverId, leg: c.leg, role: c.role,
           status: picked ? value : c.status.value, dirty: picked };
       }));
@@ -12037,7 +12050,7 @@
     const assign = trip?.trip_assignments?.find(a => String(a.id) === bar.dataset.assignmentId);
     if (!assign) return null;
     const leg = assign.leg || 'outbound';
-    const range = legsOf(trip).find(l => l.leg === leg);
+    const range = legByKey(trip, legKeyOfVehicle(trip, assign));
     const seat = (assign.trip_drivers || []).find(d => (d.role || 'driver') === role) ?? null;
     return { ref: barRef(bar), trip, assign, leg, role, range: range ? { from: range.from, to: range.to, ends: range.ends, depart: range.depart, back: range.back, backDays: range.backDays } : null, seat };
   }
@@ -12469,7 +12482,7 @@
       for (const l of legs) {
         if (!datesOverlap(range, l)) continue;
         for (const assign of trip.trip_assignments || []) {
-          if ((assign.leg || 'outbound') !== l.leg || assign.bus_id == null) continue;
+          if (legKeyOfVehicle(trip, assign) !== l.key || assign.bus_id == null) continue;
           const now = crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses)
             .find(c => c.role === 'driver' && !c.needed) ?? null;
           const state = now ? now.status.value : 'empty';
@@ -13937,7 +13950,7 @@
      so any change to what a row says redraws this. */
   let dockedDrawn = '';
   function drawDockedTrip(bar) {
-    const key = `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.getAttribute('aria-label') || ''}`;
+    const key = `${bar.dataset.tripId}|${bar.dataset.legKey}|${bar.getAttribute('aria-label') || ''}`;
     let head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
     if (head && key === dockedDrawn) return;
     dockedDrawn = key;
@@ -14109,7 +14122,7 @@
     const slots = docked ? SHORTCUT_ROW : [];
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
-    const key = [docked, bar.dataset.tripId, bar.dataset.leg, bar.dataset.itineraryId,
+    const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip),
       JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadTabOf(bar)} ${roadTabOf(bar) === 'road' ? bar.dataset.road : ''}` : ''].join('|');
@@ -14178,7 +14191,7 @@
   function driverLetter(trip) {
     let confirmed = 0;
     const legs = legsOf(trip).map(l => {
-      const lines = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === l.leg)
+      const lines = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === l.key)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .flatMap(a => {
           const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
@@ -16443,7 +16456,7 @@
     cursor = mondayOf(parseISO(day));
     await show();
     const bars = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
-    const bar = (leg && bars.find(b => (b.dataset.leg || 'outbound') === leg)) || bars[0];
+    const bar = (leg && bars.find(b => barOnLeg(b, leg))) || bars[0];
     if (!bar) {
       // A cancelled trip has no bar, so its link opens the cancelled dialog.
       const { data: trip } = await withTimeout(client.from('trips')

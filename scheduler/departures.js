@@ -269,7 +269,7 @@
       ids.length ? client.rpc('get_trip_driver_statuses', { p_trip_ids: ids }).then(unwrap) : [],
       legs.length && window.SchedulerClashes ? window.SchedulerClashes.readNearby(client, from, lastOf(legs, from)) : null,
     ]);
-    const statuses = new Map(statusRows.map(r => [Facts.statusKey(r.tripId, r.driverId, r.leg, r.role), r]));
+    const statuses = Facts.statusMap(statusRows);
     const read = { ...basics, statuses, nearby };
     return { pages: legs.map(l => page(l.trip, l.leg, read)), read };
   }

@@ -376,6 +376,9 @@
     bar.dataset.tripId = trip.id;
     // A trip that is back stays where it is on the board; close-out.js says when.
     if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
+    // The leg by its key, week.js's, and its number; `leg` is the old word the old columns are read by.
+    bar.dataset.legKey = leg.key ?? leg.leg;
+    bar.dataset.legNumber = leg.number ?? 1;
     bar.dataset.leg = leg.leg;
     bar.dataset.start = place.start;
     bar.dataset.span = place.span;

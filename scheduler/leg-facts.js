@@ -167,9 +167,15 @@
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
   ];
-  // A status row's identity, as the table keys it: trip, driver, leg and role.
+  /* A status row's identity: trip, driver, leg and role, the leg by the key
+     week.js gives it, its id on a trip read with its legs. */
   const statusKey = (tripId, driverId, leg, role) =>
     [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
+  /* The statuses as `crewOf` looks them up, each row under its leg's id and,
+     for a page that reads its trips without their legs, its old word. */
+  const statusMap = rows => new Map((rows || []).flatMap(r => [
+    ...(r.legId ? [[statusKey(r.tripId, r.driverId, r.legId, r.role), r]] : []),
+    [statusKey(r.tripId, r.driverId, r.leg, r.role), r]]));
 
   // The tone names an older row holds in place of a status.
   const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
@@ -191,23 +197,25 @@
   }
 
   /* An assignment's crew in role order: each driver in a role that is on, with
-     their status, and each role that is on with nobody in it. */
+     their status, and each role that is on with nobody in it. Each carries
+     its leg's key in `legKey` and the old word in `leg`. */
   function crewOf(trip, assign, driversById, statuses) {
     const on = activeRolesOf(assign);
     const leg = assign.leg || 'outbound';
+    const legKey = window.SchedulerWeek?.legKeyOfVehicle(trip, assign) ?? leg;
     const crew = [];
     for (const r of ROLES) {
       if (!on.has(r.role)) continue;
       const filled = (assign.trip_drivers || []).filter(d => d.driver_id && (d.role || 'driver') === r.role);
       for (const d of filled) {
-        const row = statuses?.get(statusKey(trip.id, d.driver_id, leg, r.role)) ?? null;
+        const row = statuses?.get(statusKey(trip.id, d.driver_id, legKey, r.role)) ?? null;
         const value = row ? row.status : on.get(r.role);
         crew.push({
-          ...r, leg, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
+          ...r, leg, legKey, row, driverId: d.driver_id, who: driversById.get(d.driver_id), reportTime: d.report_time ?? null,
           status: DRIVER_STATUSES.find(x => x.value === value) ?? DRIVER_STATUSES[0],
         });
       }
-      if (!filled.length) crew.push({ ...r, leg, needed: true });
+      if (!filled.length) crew.push({ ...r, leg, legKey, needed: true });
     }
     return crew;
   }
@@ -368,7 +376,7 @@
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
   };
 })();

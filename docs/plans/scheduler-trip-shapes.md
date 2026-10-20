@@ -167,9 +167,11 @@ None open.
       driver status functions; the maintenance page with
       `get_maintenance_schedule`; and the editor with `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
-- [ ] Key each bar, the editor's leg, a driver's status and the driver link
-      by the leg's id where they use the old word now, so a third leg has a
-      key of its own.
+- [ ] Key Prep's and To do's legs, their checklist items and their links to
+      the board, and the driver link, its share rows, cards and form links,
+      by the leg's id, as each moves to the shape rule, so a third leg has a
+      key of its own there too; the board, the editor's leg and the office's
+      driver statuses are keyed by it already.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

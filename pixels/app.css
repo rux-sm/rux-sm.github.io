@@ -1089,3 +1089,12 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-toolbar-tools { order: 6; --keys: 3; }
 .pixels-toolbar-clear { order: 7; --keys: 1; }
 
+
+/* ME'S NUMBERS, under the head: a grid of plates, each a number over its
+   word, two to a row. */
+.pixels-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.pixels-stat { display: grid; gap: .25rem; padding: .75rem; background: var(--rux-layer-01); }
+.pixels-stat-value { font-size: 24px; line-height: 32px; font-variant-numeric: tabular-nums; }
+.pixels-stat-label { color: var(--rux-text-secondary); }
+/* Relaxed play shows no hearts. */
+.pixels-hearts[hidden] { display: none; }

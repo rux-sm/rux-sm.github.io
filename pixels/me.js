@@ -24,7 +24,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, sounds, WORLD } = window.Pixels;
+  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, sounds, relaxed, categories, streak, time, DAILY, WORLD } = window.Pixels;
   const { modal } = window.Rux;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
@@ -131,6 +131,19 @@
       </div>`;
     sound.addEventListener('rux:toggle', e => sounds(e.detail.on));
     ul.append(sound);
+    // Relaxed, the same switch, for puzzles with no hearts.
+    const easy = sound.cloneNode(true);
+    easy.querySelector('#pixels-sound-name').id = 'pixels-relaxed-name';
+    easy.querySelector('#pixels-relaxed-name').textContent = 'Relaxed, no hearts';
+    const easyKey = easy.querySelector('#pixels-sound');
+    easyKey.id = 'pixels-relaxed';
+    easyKey.setAttribute('aria-labelledby', 'pixels-relaxed-name');
+    easy.querySelector('label').htmlFor = 'pixels-relaxed';
+    const on2 = relaxed();
+    easyKey.setAttribute('aria-checked', on2);
+    easy.querySelector('.rux--toggle__switch').classList.toggle('rux--toggle__switch--checked', on2);
+    easy.addEventListener('rux:toggle', e => relaxed(e.detail.on));
+    ul.append(easy);
     if (iphone && !installed) row('Add to home screen', { href: './#add' });
     else if (!installed) {
       // The row is in the list only while the browser offers to install.
@@ -248,8 +261,7 @@
       modal.open('pixels-name-modal', pencil);
     });
     named.append(h1, pencil);
-    text.append(named, words('pixels-meta', [`${count(me.found, 'sprite', 'sprites')} found`,
-      me.fairies == null ? '' : count(me.fairies, 'fairy', 'fairies')].filter(Boolean).join(' · ')));
+    text.append(named, words('pixels-meta', me.fairies == null ? '' : count(me.fairies, 'fairy', 'fairies')));
     head.append(portrait(me, true), text);
     shown = me;
 
@@ -258,9 +270,36 @@
     drawIt.href = 'make.html?me';
     drawIt.textContent = 'Draw your picture';
 
-    host.append(head, drawIt);
+    const numbers = document.createElement('div');
+    numbers.className = 'pixels-stats';
+    numbers.setAttribute('aria-label', 'Your numbers');
+    host.append(head, numbers, drawIt);
+    stats(me, numbers);
     if (owner && WORLD && data.setGear) host.append(character(me));
     more(me);
+  };
+
+  /* YOUR NUMBERS, four in a grid under the head: sprites found, rifts
+     cleared, days in a row at the puzzle of the day, and the best time on a
+     10×10, read from what the player has solved. One the database cannot
+     give is a dash. */
+  const stats = async (me, el) => {
+    const one = (value, label) => {
+      const d = document.createElement('div');
+      d.className = 'pixels-stat';
+      const dt = words('pixels-stat-label', label), dd = words('pixels-stat-value', value);
+      d.append(dd, dt);
+      return d;
+    };
+    let cleared = '–', row = '–', best = '–';
+    try {
+      const [puzzles, results, days] = await Promise.all([data.list(), data.results(), DAILY ? data.days() : Promise.resolve(new Map())]);
+      cleared = String(categories(puzzles).filter(c => c.puzzles.every(p => results.has(p.id))).length);
+      if (DAILY) row = String(streak(new Set(days.keys())));
+      const tens = puzzles.filter(p => p.width === 10 && results.has(p.id)).map(p => results.get(p.id).seconds);
+      if (tens.length) best = time(Math.min(...tens));
+    } catch { /* the dashes stay */ }
+    el.replaceChildren(one(String(me.found ?? 0), 'Sprites'), one(cleared, 'Rifts cleared'), ...(DAILY ? [one(row, 'Days in a row')] : []), one(best, 'Best 10×10'));
   };
 
   /* THE USERNAME'S WINDOW. Save keeps a new one, unless another player has

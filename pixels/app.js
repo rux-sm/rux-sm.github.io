@@ -756,6 +756,15 @@
     solved: [[523, .1], [659, .1], [784, .1], [1047, .25]],
   };
   const SOUND = 'pixels-sound', FRESH = 400;
+  /* RELAXED, Me's switch, kept in this browser: a puzzle with no hearts,
+     where a wrong square is marked and costs nothing. */
+  const RELAXED = 'pixels-relaxed';
+  const relaxed = on => {
+    try {
+      if (on != null) localStorage.setItem(RELAXED, on ? 'on' : 'off');
+      return localStorage.getItem(RELAXED) === 'on';
+    } catch { return false; }
+  };
   const sounds = on => {
     try {
       if (on != null) localStorage.setItem(SOUND, on ? 'on' : 'off');
@@ -1181,7 +1190,7 @@
   window.Pixels = Object.assign(window.Pixels || {}, {
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
-    daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, listen, time, title,
+    daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, relaxed, listen, time, title,
     words, art, tile, bar, riftTile, menu, riftBlock, arrive, arrived, turn, how, switcher, chosen, shell,
   });
 })();

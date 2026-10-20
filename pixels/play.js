@@ -77,6 +77,10 @@
    today or else the one app.js makes from the date; its result is kept by
    day, and solving it shows the days in a row.
 
+   RELAXED, Me's switch, plays with no hearts: a wrong square is crossed out
+   in red and costs nothing, and the finish says Relaxed. Its time is kept
+   only where none was, so it never replaces one played with hearts.
+
    Each fill, X, finished line, mistake, fall, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
    one. Me's Sound switch keeps its choice in this browser.
@@ -94,7 +98,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, listen, time, title, riftTile, arrive, turn, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, relaxed, listen, time, title, riftTile, arrive, turn, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
@@ -202,6 +206,8 @@
     // down, at no hearts, with the cover up.
     const world = owner && WORLD, wear = world ? worn(me.found || 0) : [], most = HEARTS + wear.length;
     let hearts = fresh ? Math.min(kept.hearts ?? most, most) : most, down = false;
+    const easy = relaxed();
+    if (easy) hearts = most;
     // The fairies this game has spent, how many the player has left, and
     // whether the database is being asked for one.
     let spent = fresh ? kept.fairies || 0 : 0, fairies = me.fairies || 0, asking = false;
@@ -254,6 +260,7 @@
 
     // The hearts, a lost one dim; `hit` shakes the one just lost.
     const life = $('pixels-hearts');
+    life.hidden = easy;
     const showHearts = hit => {
       life.replaceChildren(...Array.from({ length: most }, (_, n) => {
         const one = heart();
@@ -316,7 +323,7 @@
       el.classList.add('is-solved');
       let best = { best: seconds, isNew: true }, lost = false;
       const [saved] = await Promise.allSettled([
-        trial ? best : isDaily ? data.recordDay(key, seconds) : data.record(key, seconds),
+        trial ? best : easy && results.has(key) ? { best: results.get(key).seconds, isNew: false } : isDaily ? data.recordDay(key, seconds) : data.record(key, seconds),
         new Promise(done => setTimeout(done, still ? 0 : REVEAL)),
       ]);
       if (saved.status === 'fulfilled') best = saved.value; else lost = true;
@@ -325,7 +332,7 @@
       $('pixels-solved-clock').textContent = time(seconds);
       // What went wrong and what the hints added, then how the time stands.
       const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-      const parts = [mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
+      const parts = [...(easy ? ['Relaxed'] : []), mistakes ? count(mistakes, 'mistake') : 'No mistakes'];
       if (spent) parts.push(`${spent} ${spent === 1 ? 'fairy' : 'fairies'}`);
       if (hints) parts.push(count(hints, 'hint'), added(hints * HINT));
       if (lost) parts.push('not saved');
@@ -455,7 +462,7 @@
         } else {
           state[y][x] = 3;
           mistakes++;
-          hearts--;
+          if (!easy) hearts--;
           showHearts(true);
           buzz([40, 60, 40]);
           sound(hearts ? 'miss' : 'fall');

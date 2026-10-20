@@ -74,10 +74,8 @@ None open.
   and How to play no longer opening by itself.
 - [ ] The service worker and the queue of solves, offline and failed alike,
   with Play's line saying how many wait; the lost-solve status item goes.
-- [ ] Me's numbers.
 - [ ] Sharing a solved picture from the finish.
 - [ ] Design: the pixel theme's dark error message, and Plex for sentences.
-- [ ] The relaxed switch and relaxed play.
 - [ ] `pixels/README.md` and `pixels/docs/` say each change, in the commit
   that makes it, and each is checked in Chrome on :8641 at phone width,
   offline included.

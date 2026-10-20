@@ -11,11 +11,11 @@
    The date is the trip's first day, so a folder sorts by trip, and the code
    is three letters saying what the document is. A form printed once per
    driver or per leg names that copy last. A file with no trip, the week
-   schedule, is its date and code alone. rux-ui's `buildDocumentFileName`
-   names its uploads the same way.
+   schedule, is its date and code alone. An upload
+   is named the same way.
 
    Parts are lowercased, stripped of accents and joined inside with hyphens,
-   as rux-ui's `documentFileSlug` does, so a name works in any folder and any
+   so a name works in any folder and any
    mail program.
    ========================================================================== */
 (() => {
@@ -35,7 +35,7 @@
     'hotel-confirmation': 'htl',
   };
 
-  // An upload's stored label, as the Files tab and rux-ui write it, to its code.
+  // An upload's stored label, as the Files tab writes it, to its code.
   const LABEL_CODES = {
     itinerary: CODES.itinerary,
     contract: CODES.contract,
@@ -58,7 +58,7 @@
   const dated = value => (/^\d{4}-\d{2}-\d{2}$/.test(value ?? '') ? value : 'unknown-date');
 
   /* A trip's file. `trip` needs `start_date`, `trip_ref` and `customer`, with
-     the contact names behind the customer as rux-ui falls back to them; the id
+     the contact names to fall back to when the customer is blank; the id
      stands in for a trip with no number. `copy` is the driver or leg a form
      was printed for, or left out. */
   function forTrip(trip, code, copy) {

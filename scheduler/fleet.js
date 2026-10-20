@@ -2,8 +2,8 @@
    fleet.js — THE FLEET PAGE
    --------------------------------------------------------------------------
    fleet.html lists every vehicle, a unit. fleet.html?id=<bus id> edits one
-   and fleet.html?new makes one. Both read and write the tables rux-ui writes,
-   `buses` and `bus_out_of_service`, so both apps show the same fleet; the
+   and fleet.html?new makes one. Both read and write the tables
+   `buses` and `bus_out_of_service`, so both pages show the same fleet; the
    table keeps its name. A unit's type is one of the office's own list, which
    the Vehicle types dialog edits, and vehicles.js names a unit everywhere.
 
@@ -13,9 +13,9 @@
 
    THE FLEET'S ORDER IS THE TYPE, in the list's order, then the model year,
    newest first, units of one year by their number, and no year last.
-   `buses.sort_order` carries it, because rux-ui draws its rows from that
+   `buses.sort_order` carries it, because the board draws its rows from that
    column; a Save of a unit or of the types renumbers the whole fleet whenever
-   the order no longer matches the numbering, so the board and rux-ui never
+   the order no longer matches the numbering, so the board and this list never
    disagree about which row is which.
 
    A bus is never deleted here, only set Inactive, so past trips keep the
@@ -181,7 +181,7 @@
   };
 
   /* EQUIPMENT is the office's requirements list, its vehicle entries. Sleeper
-     and ADA lift keep their own columns, which rux-ui and the print pages
+     and ADA lift keep their own columns, which the print pages
      read, and 56 passengers is the unit's seats, so `buses.equipment` holds
      every other entry by its id, `{ id: true }`. An entry the office has since
      switched off stays on a unit that has it, drawn and saved as it was. */
@@ -698,7 +698,7 @@
     error.hidden = true;
     error.setAttribute('role', 'alert');
 
-    // rux-ui writes the reason as free text, so this stays a text field.
+    // The reason is stored as free text, so this stays a text field.
     const reasonItem = el('div', 'rux--form-item rux--text-input-wrapper');
     const lw = el('div', 'rux--text-input__label-wrapper');
     const lab = el('label', 'rux--label', 'Reason');

@@ -8,7 +8,7 @@
    A FILE AND A CONTACT CARRY THE LEG THEY WERE ENTERED UNDER, in
    `trip_documents.leg` and `trips.trip_contact_<n>_leg`: `outbound` is a
    split trip's drop-off, `return` its pickup. One with none, which is every
-   one saved before the column and every row rux-ui writes, is the
+   one saved before the column, is the
    drop-off's. The pickup takes the drop-off's until it has its own, so a
    customer's one paper and one set of contacts for the whole trip are
    entered once. Only a split trip has a pickup leg of its own, so on any
@@ -50,7 +50,7 @@
 
   /* THE DAY-OF CONTACTS, slots 1 to 5, as the trip records them: the trip's
      own copy of the name and phone, and a slot with neither the contact
-     linked beside it, as rux-ui keeps them. `read` may read a slot another
+     linked beside it. `read` may read a slot another
      way, as leg-facts.js does; it answers `{ name, phone }` or null. */
   function slotContact(trip, n) {
     const name = clean(trip[`trip_contact_${n}_name`]);

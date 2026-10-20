@@ -5,11 +5,11 @@
    writes and after them: the trip's own columns and every row under it,
    its stops, its vehicles, their seats, its quote lines, payments, purchase
    orders and invoices. Each difference is a line of `{ field, label,
-   before, after }` holding display strings, the shape rux-ui records, so the
-   History page and rux-ui's History tab show both apps' entries alike.
+   before, after }` holding display strings, the shape every recorded entry
+   has, so the History page shows all entries alike.
 
    ANY DIFFERENCE MAKES A LINE. A column has the label below when it has one,
-   rux-ui's words first, and else its own name in words, so a column added
+   and else its own name in words, so a column added
    to the table is recorded the day it is saved, not when someone lists it.
    Three kinds of column make no line of their own, because another says it:
 
@@ -33,9 +33,8 @@
 (() => {
   'use strict';
 
-  /* The trip's columns with a label, in the order a change lists them:
-     rux-ui's `TRIP_FIELDS` first, then the columns this app edits that its
-     table leaves out. The kind says how a value is written. */
+  /* The trip's columns with a label, in the order a change lists
+     them. The kind says how a value is written. */
   const FIELDS = [
     ['trip_ref', 'Trip ID'],
     ['customer', 'Client'],
@@ -46,7 +45,6 @@
     ['return_end_date', 'Inbound end date'],
     ['trip_type', 'Trip type', 'tripType'],
     ['passengers', 'Passengers', 'number'],
-    ['is_self_organized', 'Billing type', 'billingType'],
     ['trip_bar_color', 'Trip color'],
     ['booking_contact_name', 'Booking contact'],
     ['booking_contact_phone', 'Booking phone'],
@@ -136,7 +134,7 @@
   };
   const LEGS = { outbound: 'Drop-off', return: 'Pickup' };
 
-  // Empty is null, and a comparison sorts object keys, as rux-ui compares.
+  // Empty is null, and a comparison sorts object keys, so key order is never a difference.
   const blank = v => (v === undefined || v === '' ? null : v);
   const stable = v => (Array.isArray(v) ? v.map(stable)
     : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, stable(v[k])]))
@@ -173,7 +171,6 @@
       case 'tripType': return TRIP_TYPES[v] || String(v);
       case 'boolean': return v ? 'Yes' : 'No';
       case 'inverseBoolean': return v ? 'No' : 'Yes';
-      case 'billingType': return v ? 'Ticketed' : 'Charter';
       case 'leg': return LEGS[v] || String(v);
       case 'bus': return names.bus?.(v) ?? `Unit ${v}`;
       case 'driver': return names.driver?.(v) ?? String(v);

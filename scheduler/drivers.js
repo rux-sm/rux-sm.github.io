@@ -2,17 +2,17 @@
    drivers.js — THE DRIVERS PAGE
    --------------------------------------------------------------------------
    drivers.html lists every driver. drivers.html?id=<driver id> edits one and
-   drivers.html?new makes one. Both read and write the tables rux-ui writes,
+   drivers.html?new makes one. Both read and write the tables
    `drivers` and `driver_time_off`, and the `driver-photos` bucket, so both
-   apps show the same driver. A photo is read through a link signed for ten
+   pages show the same driver. A photo is read through a link signed for ten
    minutes, since the bucket is closed to all but staff.
 
    The list sorts itself rather than through js/data-table.js, because the
    Licence and medical column sorts by the date it describes, not its text.
 
    A driver is never deleted here, only set Inactive, so past trips keep the
-   driver's name. The schedule link is shown, not made: rux-ui makes, changes
-   and turns off driver links.
+   driver's name. The schedule link is shown, not made: driver-view.html makes,
+   changes and turns off driver links.
    ========================================================================== */
 (() => {
   'use strict';
@@ -31,7 +31,7 @@
   // The driver's page a link opens, as Driver view sends it.
   const { DRIVER_LINK } = window.SchedulerDriverText;
   const PHOTO_BUCKET = 'driver-photos';
-  // An expiry this close shows as a warning, as rux-ui's newer roster warns.
+  // An expiry this close shows as a warning.
   const WARN_DAYS = 45;
 
   const DRIVER_COLUMNS = [
@@ -267,7 +267,7 @@
   let baseline = '';        // the form as loaded, to tell whether it changed
 
   /* The columns Save writes, read off the form. A blank field saves as null.
-     The name is the two name fields joined, as rux-ui joins them. */
+     The name is the two name fields joined. */
   function readForm() {
     const endorsements = [...document.querySelectorAll('#scheduler-d-endorsements input:checked')].map(i => i.value);
     const name = [text('first'), text('last')].filter(Boolean).join(' ') || null;
@@ -763,7 +763,7 @@
       loaded = saved;
       currentId = id;
 
-      // Each range keeps its place on the page, which is the order rux-ui lists.
+      // Each range keeps its place on the page, saved as its `position`.
       part = 'their time off';
       await window.SchedulerPair.syncRows(client, 'driver_time_off', {
         have: loadedOff, want: off, key: r => JSON.stringify(offRow(r)), order: 'position',

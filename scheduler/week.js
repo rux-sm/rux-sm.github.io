@@ -21,7 +21,7 @@
      the `scheduler-bar--*` class that paints it. Amber is the office's
      placeholder colour; billing.js says when an amber trip is a placeholder.
 
-     Retired names are mapped on read and never rewritten, as rux-ui does:
+     Retired names are mapped on read and never rewritten:
      orange and yellow paint as amber, cyan as teal. */
   const TRIP_COLORS = [
     { value: 'teal', label: 'Teal', hue: 'teal' },
@@ -40,7 +40,7 @@
   // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
   const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
 
-  // An override colour beats status, and status beats the default blue, as in rux-ui.
+  // An override colour beats status, and status beats the default blue.
   const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
     ?? standardHueOf(trip);
 

@@ -7,8 +7,8 @@
    office's own, however it was typed.
 
    IT FORMATS WHAT IS SHOWN, NEVER WHAT IS STORED. A number is saved as it
-   was typed, rux-ui still writes the same columns in whatever form its users
-   type, and matching already compares digits alone, so the stored spelling
+   was typed, older rows hold numbers in whatever form they were
+   typed, and matching already compares digits alone, so the stored spelling
    decides nothing but how a number looks. A field that edits a number keeps
    it as typed.
 

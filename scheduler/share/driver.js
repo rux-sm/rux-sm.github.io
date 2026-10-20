@@ -21,7 +21,7 @@
    the card now: a difference lists before and after and asks again. Edits
    that are not the driver's job, like price or colour, are not in the view,
    so they ask nothing. A leg accepted before views were kept asks again, with
-   no list, when the trip was saved after the answer, which is rux-ui's rule.
+   no list, when the trip was saved after the answer, since there is no view to compare.
 
    THE PAGE SPEAKS THE DRIVER'S LANGUAGE. Every word it writes is in
    driver-words.js, in English and Spanish; the link's first read returns the

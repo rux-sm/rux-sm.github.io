@@ -83,10 +83,9 @@
 
   // -- placing -----------------------------------------------------------------
   /* The board's colours, as data.js's `hueFor` picks them: the trip's chosen
-     colour, with rux-ui's retired names mapped, or else red for an unconfirmed
+     colour, with the older colour names mapped, or else red for an unconfirmed
      trip and blue for the rest. `confirmed` is the function's own reading,
-     which also counts a signed contract, a covering PO, a deposit or a payment,
-     as rux-ui's maintenance page does. */
+     which also counts a signed contract, a covering PO, a deposit or a payment. */
   const HUE_CLASS = {
     teal: 'scheduler-bar--teal', green: 'scheduler-bar--green', purple: 'scheduler-bar--purple',
     amber: 'scheduler-bar--amber', pink: 'scheduler-bar--magenta',
@@ -98,7 +97,7 @@
   /* A leg's days and yard times. An assignment on the return leg takes the
      trip's return dates; the times are that leg's first pickup's departure and
      its last return stop's arrival, or else the trip's own departure and return
-     times, as rux-ui's maintenance page reads them. */
+     times. */
   const legOf = (trip, leg) => {
     const ret = leg === 'return';
     const from = (ret && trip.returnStartDate) || trip.startDate;

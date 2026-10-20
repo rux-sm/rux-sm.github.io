@@ -48,7 +48,7 @@ const window = {};
    A FILE AND A CONTACT CARRY THE LEG THEY WERE ENTERED UNDER, in
    `trip_documents.leg` and `trips.trip_contact_<n>_leg`: `outbound` is a
    split trip's drop-off, `return` its pickup. One with none, which is every
-   one saved before the column and every row rux-ui writes, is the
+   one saved before the column, is the
    drop-off's. The pickup takes the drop-off's until it has its own, so a
    customer's one paper and one set of contacts for the whole trip are
    entered once. Only a split trip has a pickup leg of its own, so on any
@@ -90,7 +90,7 @@ const window = {};
 
   /* THE DAY-OF CONTACTS, slots 1 to 5, as the trip records them: the trip's
      own copy of the name and phone, and a slot with neither the contact
-     linked beside it, as rux-ui keeps them. `read` may read a slot another
+     linked beside it. `read` may read a slot another
      way, as leg-facts.js does; it answers `{ name, phone }` or null. */
   function slotContact(trip, n) {
     const name = clean(trip[`trip_contact_${n}_name`]);
@@ -145,7 +145,7 @@ const window = {};
      `requirements.js`, which the forms page loads too, so a requirement is one
      drawing and one name wherever it shows.
 
-     THE LIST IS THE OFFICE'S. rux-ui's Settings page edits it and it already
+     THE LIST IS THE OFFICE'S. The Settings page edits it and it already
      holds more than that table does, so a requirement is named from the
      office's list and falls back to the table, then to its own id. Dropping
      one the table does not know would take it off the bar without saying so. */
@@ -167,9 +167,9 @@ const window = {};
     || REQUIREMENT_ICONS[requirementList.find(r => r.id === id)?.icon] || null;
 
   /* The needs the editor offers: the office's active list, vehicle before
-     driver and each in its own order, which is how rux-ui's trip panel groups
-     them. Before that list has been read the five this app names itself stand,
-     so the row is never empty and the connector always has a tag to type into. */
+     driver and each in its own order. Before that list has been read the
+     five this app names itself stand, so the row is never empty and the
+     connector always has a tag to type into. */
   const FALLBACK_NEEDS = ['sleeper', 'pax56', 'adaLift', 'hotel', 'fuelCard'];
   function editableNeeds() {
     const active = requirementList.filter(r => r.active !== false);
@@ -194,7 +194,7 @@ const window = {};
   const needIds = o => (o && typeof o === 'object' ? Object.keys(o).filter(k => o[k] === true).sort() : []);
 
   /* The ids a trip carries, from `trip_reqs` where it is set and the older
-     columns where it is not -- the pair rux-ui reads, and print.js with it. */
+     columns where it is not -- the pair print.js reads too. */
   function requirementsOf(trip) {
     const reqs = trip.trip_reqs;
     const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
@@ -258,7 +258,7 @@ const window = {};
     return `${type} needed`;
   }
 
-  /* A driver's role and status on a bar. The roles are rux-ui's four, in the
+  /* A driver's role and status on a bar. The roles are four, in the
      order the drivers row lists them. Relief is the one role that is not a
      person, so it cannot be taken for a co-driver at 12px. */
   const ROLES = [
@@ -277,7 +277,7 @@ const window = {};
      the shape it is drawn as, on the bar and in the editor alike, each its own
      so the colour is never the only signal. Not sent is the broken ring rather
      than nothing: it is the first step of the run, not the absence of one. Its
-     stored value stays `off`, which is what rux-ui writes. */
+     stored value stays `off`, the value the rows already hold. */
   const DRIVER_STATUSES = [
     { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-motion_photos_on' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-do_not_disturb_on-fill' },
@@ -285,14 +285,14 @@ const window = {};
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
   ];
-  // A status row's identity, as rux-ui keys it: trip, driver, leg and role.
+  // A status row's identity, as the table keys it: trip, driver, leg and role.
   const statusKey = (tripId, driverId, leg, role) =>
     [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
 
-  // The tone names rux-ui once saved in place of a status.
+  // The tone names an older row holds in place of a status.
   const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
 
-  /* The roles an assignment turns on, each with the status rux-ui once saved
+  /* The roles an assignment turns on, each with the status saved
      after it as `role:state`, which a trip with no status row still shows. An
      assignment without the column keeps every role it has a driver in, and
      the driver role is always on. */
@@ -330,8 +330,8 @@ const window = {};
     return crew;
   }
 
-  /* A contact as the trip records it. rux-ui keeps each contact's name, phone
-     and email on the trip itself and links the contact beside them, so the
+  /* A contact as the trip records it. The trip keeps each contact's name,
+     phone and email on itself and links the contact beside them, so the
      trip's own copy comes first; a trip with only a link shows the linked
      contact. Slot 0 is the booking contact, 1 to 5 the day-of ones. */
   function tripContact(trip, slot) {
@@ -495,7 +495,7 @@ const window = {};
 /* ==========================================================================
    billing.js — WHERE A TRIP'S MONEY STANDS
    --------------------------------------------------------------------------
-   rux-ui's billing rules, the one copy the scheduler's pages share: the
+   The billing rules, the one copy the scheduler's pages share: the
    workflow the `billing-workflow-v1` settings row sets, the status ladder a
    trip climbs, and a saved trip's money read from its rows. The board sets
    the workflow as it reads the week; a page that reads the row itself calls
@@ -504,9 +504,9 @@ const window = {};
 (() => {
   'use strict';
 
-  /* The billing workflow rux-ui keeps in the `billing-workflow-v1` settings
+  /* The billing workflow the office keeps in the `billing-workflow-v1` settings
      row: which milestones are in use, and which billing statuses confirm a
-     trip. `read` fills it with the week; these are rux-ui's defaults for a
+     trip. `read` fills it with the week; these are the defaults for a
      missing row or a missing part of one. */
   const CONFIRMING = ['contract_signed', 'po_partial', 'po_received', 'deposit_received', 'paid_full', 'overpaid'];
   const BILLING_DEFAULT = { steps: { contractSigned: true, poReceived: true, invoiced: true },
@@ -523,8 +523,7 @@ const window = {};
   // Whether a milestone is in use. One that is not counts as off.
   const stepOn = key => billingWorkflow.steps[key] !== false;
 
-  /* The billing status ladder, rux-ui's `deriveStatus` in its
-     `js/core/billing-config.js`; first match wins:
+  /* The billing status ladder; first match wins:
 
        overpaid          price > 0 && balance < 0
        paid_full         price > 0 && paid > 0 && balance <= 0
@@ -546,15 +545,15 @@ const window = {};
     if (contractSigned) return 'contract_signed';
     return 'pending';
   }
-  // A partial PO confirms whenever a PO does, as in rux-ui. A trip paid past
-  // its price confirms whenever one paid in full does, which rux-ui's own
+  // A partial PO confirms whenever a PO does. A trip paid past
+  // its price confirms whenever one paid in full does, which the
   // default list leaves out, so a card fee inside a payment or a discount
   // after it does not turn a paid trip unconfirmed.
   const confirmRungOf = rung => (rung === 'po_partial' ? 'po_received' : rung);
   const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung))
     || (rung === 'overpaid' && billingWorkflow.confirmWhen.includes('paid_full'));
 
-  /* A trip's milestones as rux-ui opens them. A confirmed trip with no
+  /* A trip's milestones. A confirmed trip with no
      contract status predates the column and counts as signed; a PO reference
      or an invoice number turns its milestone on. */
   const contractSignedOf = trip => stepOn('contractSigned')
@@ -565,9 +564,9 @@ const window = {};
   /* A saved trip's money, read from its rows the way the editor's
      `billingNow` reads its form, so the bar and the Billing tab put the trip
      on the same rung. The row lists are the live ones; the `deposit_amount` and `po_amount`
-     aggregates are what rux-ui filled before those lists existed. A trip rux-ui
-     marked paid with no payment rows carries the whole quote as paid, as
-     rux-ui's own `normalizeRecord` does, so it is not read as owing it. */
+     aggregates are what an older trip holds from before those lists existed. A
+     trip marked paid with no payment rows carries the whole quote as paid,
+     so it is not read as owing it. */
   function billingOf(trip) {
     const sum = rows => (rows || []).reduce((n, r) => n + (Number(r.amount) || 0), 0);
     const price = Number(trip.quoted_price) || 0;
@@ -890,7 +889,7 @@ const window = {};
      the `scheduler-bar--*` class that paints it. Amber is the office's
      placeholder colour; billing.js says when an amber trip is a placeholder.
 
-     Retired names are mapped on read and never rewritten, as rux-ui does:
+     Retired names are mapped on read and never rewritten:
      orange and yellow paint as amber, cyan as teal. */
   const TRIP_COLORS = [
     { value: 'teal', label: 'Teal', hue: 'teal' },
@@ -909,7 +908,7 @@ const window = {};
   // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
   const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
 
-  // An override colour beats status, and status beats the default blue, as in rux-ui.
+  // An override colour beats status, and status beats the default blue.
   const hueFor = trip => TRIP_COLORS.find(c => c.value === tripColorOf(trip))?.hue
     ?? standardHueOf(trip);
 
@@ -1364,7 +1363,7 @@ const window = {};
   // A leg stays until the end of its last day, in the office's time.
   const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
 
-  // -- the trip, as rux-ui reads it -------------------------------------------
+  // -- the trip ---------------------------------------------------------------
   // A seat's kind, which the page writes in its language, and its English
   // label, which is what Accept keeps.
   const ROLE_KEY = { 'driver': 'driver', 'co-driver': 'co-driver', 'relief-start': 'relief', 'relief-end': 'relief', 'relief_driver': 'relief' };

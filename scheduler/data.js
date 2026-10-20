@@ -1,10 +1,10 @@
 /* ==========================================================================
    data.js — the live week
    --------------------------------------------------------------------------
-   Fills #scheduler-grid from the tables rux-ui also writes, and writes back:
+   Fills #scheduler-grid from the trip tables, and writes back:
    a drag moves a bus, and the trip panel's Save writes the trip with its
    stops, contacts, payments, POs, invoices and assignments. The database is
-   production and shared with rux-ui, so nothing is tried with a test record.
+   production, so nothing is tried with a test record.
 
    The client is the account's. /account.js opens the session and exposes
    window.Rux.account.client, because two clients on one storage key make
@@ -294,16 +294,14 @@
     // Set from the Checklist or the Files tab; a trip that does not need an
     // itinerary is not marked.
     'itinerary_not_needed',
-    // rux-ui's Confirm mark on the itinerary, which a save that changes the route takes off.
-    'itinerary_confirmed',
     // Its twin for the day-of contact: a trip nobody needs to be called on is
     // not marked as missing one.
     'contact_not_needed',
     'booking_contact_id',
     'contacts:booking_contact_id(id,name,phone,email,client)',
-    // The trip's own copy of the booking contact, which rux-ui reads and writes.
+    // The trip's own copy of the booking contact.
     'booking_contact_name', 'booking_contact_phone', 'booking_contact_email',
-    // The booking's email thread, a link rux-ui stores beside the contact.
+    // The booking's email thread, a link stored beside the contact.
     'booking_contact_missive_url',
     // The day-of contacts: five, because the schema has five.
     'trip_contact_1_id', 'trip_contact_2_id', 'trip_contact_3_id',
@@ -474,9 +472,9 @@
       // Overlap, not containment: a driver away across the whole fortnight has
       // neither date inside this week and is still away every day of it.
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-      /* rux-ui's settings this app follows: the billing workflow, the yard and
+      /* The office's settings this app follows: the billing workflow, the yard and
          the Geoapify key the Route tab finds places and drives with. A
-         refused read keeps what was there, as rux-ui does. */
+         refused read keeps what was there. */
       client.from('settings').select('key,value')
         .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
           'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1', 'late-return-v1'])
@@ -504,7 +502,7 @@
     // which is what an ended log-in or removed access looks like; a reload
     // sends the account where it can go.
     if (!buses.length) throw new Error('The schedule came back empty. Reload the page.');
-    // Each driver's status on these trips, from the table rux-ui and the driver
+    // Each driver's status on these trips, from the table the editor and the driver
     // page write, keyed as `statusKey` builds it.
     const statusRows = trips.length ? await withTimeout(
       client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
@@ -1168,7 +1166,7 @@
 
   /* ── Moving a trip to another bus ──
      A drag writes one assignment's `bus_id`, or inserts the row for an empty
-     slot. It moves vertically only, as rux-ui's drag does; dates change in the
+     slot. It moves vertically only; dates change in the
      editor. Its rules:
        * a threshold before it counts, so a press that does not move selects;
        * a finger holds before a bar lifts, because a touch that travels at
@@ -2053,7 +2051,7 @@
 
   /* ══ The Buses tab ══
      How many buses each leg needs, the bus on each, and who fills each bus's
-     four seats, as rux-ui stores them: `bus_count` and `return_bus_count` on
+     four seats, as the database stores them: `bus_count` and `return_bus_count` on
      the trip, a `trip_assignments` row per bus, a `trip_drivers` row per
      filled seat, and each seat's status through `sync_trip_driver_statuses`.
      The tab edits a model, `editing.fleet`, and Save writes the difference
@@ -2140,7 +2138,7 @@
     && !seatFilled(b.seats.driver)
     && sameNeeds(b.needs, b.seed?.needs) && (b.vehicleType ?? null) === (b.seed?.vehicleType ?? null);
 
-  // `active_roles` as rux-ui writes it: the driver first, then each seat that
+  // `active_roles` as it is stored: the driver first, then each seat that
   // is on, with its status after a colon unless it is Not sent.
   const activeRolesValue = bus => ROLES
     .filter(r => r.role === 'driver' || bus.seats[r.role].on)
@@ -2157,7 +2155,7 @@
   const fleetLegs = () => (fleetSplit() ? ['outbound', 'return'] : ['outbound']);
 
   /* THE TRIP-WIDE NEEDS SUM UP ITS VEHICLES, the ones on the legs it has, so
-     rux-ui, the print pages and the connector, which read the trip's columns,
+     the print pages and the connector, which read the trip's columns,
      see every need any vehicle has. Null before the tab is built. */
   const fleetVehicles = () => (editing?.fleet ? fleetLegs().flatMap(leg => editing.fleet[leg]) : null);
   const fleetNeedUnion = () => {
@@ -2166,7 +2164,7 @@
   };
 
   // The legs Save touches: the ones shown, and the return leg of a trip that
-  // stopped being a split in this editor, whose buses go as rux-ui drops them.
+  // stopped being a split in this editor, whose return buses are dropped.
   const fleetLegsToSave = () => {
     const legs = fleetLegs();
     if (!fleetSplit() && editing?.before.trip_type === SPLIT) legs.push('return');
@@ -2175,7 +2173,7 @@
 
   /* Save's work for the fleet, or null before the tab was built. Positions
      are rewritten only on a leg whose buses were added, removed or reordered,
-     so a trip rux-ui numbered with gaps opens with nothing to save. The
+     so an older trip numbered with gaps opens with nothing to save. The
      counts compare with the buses the tab opened on, so a trip whose count
      and rows disagree opens unchanged too. */
   function fleetWork() {
@@ -3001,8 +2999,8 @@
      Replace and Delete. The list is drawn again on its own after a file
      changes, so the form's unsaved edits stay. */
   /* The types a file is asked for: each type's stored label and the name it
-     shows, rux-ui's three first. A label is free text in `trip_documents`, and rux-ui shows
-     one it does not know by the label itself, so Something else stores the
+     shows. A label is free text in `trip_documents`, and one that names no
+     type shows as the label itself, so Something else stores the
      name typed. */
   const DOC_TYPES = [
     ['Itinerary', 'Itinerary'], ['Contract', 'Contract'], ['PO', 'Purchase order'],
@@ -3517,7 +3515,7 @@
       .slice(0, 5)
       .map(savedAsPlace);
   }
-  // The saved location a place is, by the Mapbox id rux-ui saves or by its address as one key, or null.
+  // The saved location a place is, by its Mapbox id or by its address as one key, or null.
   const savedLocationOf = place => (place ? (panelIndex.locations || []).find(l =>
     (place.mapbox_id && l.mapbox_id === place.mapbox_id)
     || (!!place.address && addressKey(l.address) === addressKey(place.address))) ?? null : null);
@@ -3658,7 +3656,7 @@
       ? el('a', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm')
       : el('button', 'rux--copy-btn rux--copy rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-sm');
     if (open) {
-      // One named window, as rux-ui opens it, so each thread reuses the tab.
+      // One named window, so each thread reuses the tab.
       btn.target = 'missive';
       btn.rel = 'noopener';
     } else {
@@ -4231,13 +4229,13 @@
     { key: 'trip_bar_color', get: f => f['scheduler-f-color'].querySelector('.rux--list-box__menu-item--active')?.dataset.color || null },
     // `confirmed`, `balance_paid` and `date_paid` are derived, not edited:
     // `derivedBilling` writes them with any billing change.
-    /* THE NEEDS GO IN `trip_reqs`, which is where rux-ui keeps them and so what
-       the bar, the envelope and the history all read. It is merged over what
+    /* THE NEEDS GO IN `trip_reqs`, which is what the bar, the envelope and
+       the history all read. It is merged over what
        the trip already held, so a requirement the office has since deactivated
        keeps its answer instead of being dropped by a save that never drew it.
 
-       THE FIVE OLDER COLUMNS ARE WRITTEN FROM THE SAME TAGS, because rux-ui's
-       own screens and this panel's hotel block still read them, and a trip
+       THE FIVE OLDER COLUMNS ARE WRITTEN FROM THE SAME TAGS, because the print
+       pages and this panel's hotel block still read them, and a trip
        whose two records disagree reads one way here and another there. They go
        when nothing reads them. A column whose tag was not drawn is left as it
        was, for the same reason as above. */
@@ -4256,7 +4254,7 @@
     // The vehicle's three are true when any vehicle on the trip needs them.
     ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56']]
       .map(([key, id]) => ({ key, get: () => fleetNeedUnion()?.has(id) ?? !!editing?.before?.[key] })),
-    // A reminder to book a hotel, not the bus's equipment; rux-ui lists it with the needs.
+    // A reminder to book a hotel, not the bus's equipment; it is listed with the needs.
     { key: 'need_hotel', get: () => hotelNeeded() },
     { key: 'need_fuel_card', get: () => !!editing?.fuelCard },
     // Each leg's hotel: whether it is booked, and its confirmation number.
@@ -4286,7 +4284,7 @@
     /* The PO and invoice columns are filled from the rows in `trip_pos` and
        `trip_invoices`: `po_ref` is the first PO's reference, `po_amount` the sum
        of the PO amounts and `invoice_number` the first invoice's number, because
-       rux-ui and other readers still use the columns. `listRowsToSave` is the
+       other readers still use the columns. `listRowsToSave` is the
        list Save writes, so the columns and the rows agree, and PO received and
        Invoice sent are on while their list has a row. */
     { key: 'po_received', get: () => stepOn('poReceived') && poPending.length > 0 },
@@ -4302,7 +4300,7 @@
        getter returns undefined when its control is not on screen. */
     { key: 'booking_contact_id', get: () => linkId('scheduler-f-cfind') },
     ...[1, 2, 3, 4, 5].map(n => ({ key: `trip_contact_${n}_id`, get: () => dayField(n, `trip_contact_${n}_id`, () => linkId(`scheduler-f-d${n}`) ?? null) })),
-    /* The trip's own copy of each contact, which rux-ui reads and writes: the
+    /* The trip's own copy of each contact: the
        name, phone and email as this trip has them. `undefined` when the field
        is not on screen, as above. The ids are settled at save by
        `linkContacts`, which needs the database. */
@@ -4346,7 +4344,7 @@
     return e ? (e.value.trim() || null) : undefined;
   };
 
-  /* Linking a trip's contacts, as rux-ui does it. A contact picked from the
+  /* Linking a trip's contacts. A contact picked from the
      list keeps its id while the name, phone or email still agrees with it;
      anything else is matched against the contacts list by phone, then email,
      then exact name, and added to the list when nothing matches -- which is
@@ -4767,7 +4765,7 @@
              fullyPaid, datePaid: fullyPaid ? lastPaid : null };
   }
 
-  // The trip columns a save that changes billing derives, as rux-ui's does.
+  // The trip columns a save that changes billing derives.
   const BILLING_KEYS = ['quoted_price', 'contract_status', 'contract_signed_on', 'contract_note', 'po_received', 'po_ref',
                         'po_amount', 'invoice_status', 'invoiced', 'invoice_number'];
   function derivedBilling() {
@@ -4886,8 +4884,8 @@
     }).join('\n\n');
   }
 
-  /* The six methods rux-ui offers, in its order. `trip_payments.method` is free
-     text both apps write, so a spelling rux-ui's menu lacks would not
+  /* The six payment methods, in the office's order. `trip_payments.method` is
+     free text, so a spelling this menu lacks would not
      round-trip. */
   const PAYMENT_METHODS = ['Cash', 'Check', 'Card', 'ACH', 'Zelle', 'Other'];
 
@@ -5014,7 +5012,7 @@
 
   /* The invoice dialog: a date, today on a new one, and the invoice number.
      An invoice's amount feeds no total, so it is not asked for, and an amount
-     rux-ui saved on the row is kept as it is. */
+     an older row holds is kept as it is. */
   function openInvoiceDialog(index) {
     const host = document.getElementById('scheduler-inv-fields');
     if (!host) return;
@@ -5356,8 +5354,8 @@
       dead: round2((Number(out) || 0) + (Number(home) || 0)), days, perDay, route: routeMiles };
   }
 
-  /* ESTIMATED MILES FOLLOW THE ROUTE. The column is rux-ui's override, and
-     its driver records read no other miles, so a blank field is not saved
+  /* ESTIMATED MILES FOLLOW THE ROUTE. The column is the trip's miles
+     override, and driver records read no other miles, so a blank field is not saved
      blank: Save writes the route's miles, every leg together, rounded as the
      Summary's Total is. A figure typed in the field is saved as typed. A trip
      that opened following and still does is not a change by itself, so an
@@ -5630,7 +5628,7 @@
 
   /* The rows Save writes for one list, the pending rows in order. A PO
      received is a row, one with nothing typed if need be, so `po_received`
-     always agrees with whether rows exist, the rule rux-ui follows too. */
+     always agrees with whether rows exist. */
   function listRowsToSave(kind) {
     const po = kind === 'po';
     const refKey = po ? 'ref' : 'number';
@@ -5650,7 +5648,7 @@
 
   /* A PO or invoice list as writes, by id like `paymentsPatch`: new rows
      insert, changed rows update, removed rows delete. `was` is the list as the
-     trip opened, so a row saved in rux-ui after that is neither updated nor
+     trip opened, so a row saved elsewhere after that is neither updated nor
      deleted here. A trip opened without its rows writes none. */
   function listPatch(kind) {
     if (!editing || editing.listsLoaded === false) return null;
@@ -5705,15 +5703,15 @@
 
   /* ── The Route tab's model ──
      A leg is two times a person types, when the group leaves its pickup and
-     when its trip ends, and the times worked out from them, kept in the rows
-     rux-ui's itinerary writes and the board reads. The leg's `pickup` stop
+     when its trip ends, and the times worked out from them, kept in the
+     `trip_stops` rows the board reads. The leg's `pickup` stop
      holds the pickup place, the drive from the yard, the yard departure in
      `depart_prev` and the spot time. The first `stop` after it holds the
-     departure from the pickup in `depart_prev`, as rux-ui keeps it. Its last
+     departure from the pickup in `depart_prev`. Its last
      `return` stop, the yard, holds when the trip ends in `depart_prev`, the
      yard return in `arrive` and the drive back. A trip that is not a round
      trip ends somewhere else, the last `stop` before the return, which may be
-     the first. Every other stop, rux-ui's itinerary, is left as it is. */
+     the first. Every other stop is left as it is. */
   let yardPlace = null;     // `yard-location-v1`: { name, address, lat, lng }
 
   /* The office's `route-times-v1`: how long before the group leaves the bus is
@@ -5761,7 +5759,7 @@
     const d = ((n % 1440) + 1440) % 1440;
     return `${String(Math.floor(d / 60)).padStart(2, '0')}:${String(d % 60).padStart(2, '0')}`;
   };
-  // A drive as rux-ui stores it, "H:MM", and as a person types it: "1:48",
+  // A drive as it is stored, "H:MM", and as a person types it: "1:48",
   // "108" minutes or "1h 48m".
   const driveText = n => (n == null ? null : `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`);
   const driveMin = t => {
@@ -5790,7 +5788,7 @@
   // The two map points a drive is between, as one word, or null where either has none.
   const driveEnds = (a, b) => (a?.lat != null && b?.lat != null ? `${a.lat},${a.lng}>${b.lat},${b.lng}` : null);
 
-  /* Two places are the same when both carry the Mapbox id rux-ui saves, or when
+  /* Two places are the same when both carry a Mapbox id and the ids match, or when
      their name and address both read the same. A drop-off the same as the
      pickup is what a round trip means, and writes no drop-off row. */
   const samePlace = (a, b) => {
@@ -5861,7 +5859,7 @@
   }
 
   /* The group's arrival where it is let off. The tab keeps one end time, the
-     arrival and the bus leaving at once, where rux-ui can hold the two apart;
+     arrival and the bus leaving at once, where an older row may hold the two apart;
      until that time is changed, a drop-off's own stored arrival stands, so
      opening such a leg is no edit. */
   const dropArrival = (row, end) => (row?.arrive && same(hhmmOrNull(end), editing?.route?.endOpen ?? null)
@@ -5891,7 +5889,7 @@
   const hasAny = o => Object.values(o).some(v => v !== null && v !== undefined && v !== '');
 
   /* What the Route tab writes to `trip_stops`: updates to the rows the leg
-     has, and the rows it lacks, each placed where rux-ui keeps it: the pickup
+     has, and the rows it lacks, each in its place: the pickup
      first on its leg, the first stop just after it, the return last. */
   function routePlan() {
     const r = editing?.route;
@@ -5941,13 +5939,13 @@
      the wait counts as. Once the list is touched, Save writes the leg's rows
      in the list's order: each stop takes the place a stop held, day and
      sleeper rows keep theirs, and a new stop goes after the last one. A
-     stop's leave time is kept where rux-ui keeps it, as the next row's
+     stop's leave time is kept as the next row's
      `depart_prev`, so the first stop holds when the group departs the pickup
      and the drop-off holds when it leaves the last stop. A round trip with
      stops gets a drop-off row back at the pickup, so the drive home counts
      whether or not the last stop has a leave time. The leg's `position`s are renumbered from its first, and a leg
-     that grows moves the other leg's rows down, since rux-ui orders a trip's
-     stops by `position` across both legs. */
+     that grows moves the other leg's rows down, since a trip's stops are
+     ordered by `position` across both legs. */
   function listRoutePlan(wanted) {
     const r = editing.route;
     const { from, to } = routeDates(r.leg);
@@ -6085,7 +6083,7 @@
   }
 
   /* Writes the plan. A new row takes its place by moving the rows at and
-     after it one down, since rux-ui orders a trip's stops by `position`
+     after it one down, since a trip's stops are ordered by `position`
      across both legs. A list plan names every row's place itself. */
   async function saveRoute(tripId, write) {
     const r = editing?.route;
@@ -6840,7 +6838,7 @@
     outRange.querySelector('#scheduler-f-end').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off end' : 'End date');
 
     /* The customer is `trips.customer_id`, with its name in `trips.customer`
-       for rux-ui. A trip not linked yet offers the customer whose name its
+       as text. A trip not linked yet offers the customer whose name its
        typed one matches exactly, and Save keeps it. It stands last under
        Booking contact, because picking the contact suggests it. */
     const customerBox = withSaved(customerSearch('scheduler-f-customer', 'Customer', panelIndex.customers || [],
@@ -6899,7 +6897,7 @@
       const threadField = thread.querySelector('#scheduler-f-cthread');
       const emailItem = withCopy(textField('scheduler-f-cemail', 'Email', contact?.email),
         'scheduler-f-cemail', 'Booking contact email');
-      // One named window, as rux-ui opens it, so each thread reuses the tab.
+      // One named window, so each thread reuses the tab.
       const openThread = el('a', 'rux--link rux--link--sm scheduler-thread-link', 'Email thread');
       openThread.target = 'missive';
       openThread.rel = 'noopener';
@@ -7167,7 +7165,7 @@
       const r = editing.route;
       /* The drop-off defaults to the pickup, which is what a round trip
          means. `routeWanted` writes a drop-off row only when the two places
-         differ, so a round trip's rows stay exactly as rux-ui left them. A
+         differ, so a round trip's rows stay exactly as they were saved. A
          trip typed as a round trip is let off at its pickup whatever its last
          stop is, so that stop reads as a stop in the full itinerary rather
          than as where the group is let off. A one-way or split leg has no
@@ -7515,7 +7513,7 @@
       summaryTile.appendChild(summary);
       summaryLayer.append(summaryTile, driverBox, fuelBox);
       /* Stops can be added to a leg with its rows, or to one with none yet,
-         whose Save writes them all. A leg rux-ui left with some rows but no
+         whose Save writes them all. An older leg with some rows but no
          pickup or yard row has nowhere to put one. */
       const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === r.leg);
       const listNote = routeNote(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
@@ -8305,7 +8303,7 @@
 
       /* Payments are saved by `id`, not replaced: new rows insert, changed rows
          update, removed rows delete, so a failure touches only its own row.
-         `position` is the row's place in the list, since rux-ui orders by it.
+         `position` is the row's place in the list, since the list is ordered by it.
          The list is a render of `pending`, which is the array Save diffs. */
       const pending = (trip.trip_payments || [])
         .slice().sort((x, y) => (x.position ?? 0) - (y.position ?? 0))
@@ -8377,8 +8375,8 @@
         );
         /* Under the tile, what is left. Unconfirmed, what would confirm the
            trip. Confirmed by a PO, what the POs and payments leave uncovered,
-           since a PO confirms the trip whatever its amount (rux-ui's
-           `isStatusConfirmed`), counted as `billingStatus` counts it:
+           since a PO confirms the trip whatever its amount, counted as
+           `billingStatus` counts it:
 
                shortfall = max(0, (quoted - paid) - po_amount)
 
@@ -8406,8 +8404,8 @@
       /* THE QUOTE'S LINES, over the price they add up to. With any line the
          price is their total and is not typed; with none it is typed as it
          always was, and the quote prints it as one line. The price is written
-         only when the total moves, so opening a trip whose price rux-ui
-         changed shows the difference instead of arming Save to undo it. */
+         only when the total moves, so opening a trip whose price differs
+         from its lines shows the difference instead of arming Save to undo it. */
       linePending = editing.linesLoaded && !editing.creating
         ? editing.lines.map(l => ({
           id: String(l.id), kind: l.kind || 'other', leg: l.leg ?? null,
@@ -11394,13 +11392,8 @@
       const row = creating
         ? { id: editing.newId, ...form, bus_count: 1, ...(fleet?.trip ?? {}) }
         : { ...patch, ...(fleet?.trip ?? {}) };
-      /* A save that changes the route takes off rux-ui's Confirm mark on the
-         itinerary, since a changed route needs checking again. */
-      if (!creating && editing.trip?.itinerary_confirmed && ('trip_type' in patch || routePlan().work)) {
-        row.itinerary_confirmed = false;
-      }
       /* A new trip, or a save that changes its billing, writes the confirmation
-         and the paid fields the billing now gives, as rux-ui's save does. A
+         and the paid fields the billing now gives. A
          save that touches no billing leaves them as they are. */
       if (creating || BILLING_KEYS.some(k => k in patch) || paymentsPatch()?.work
           || posPatch()?.work || invoicesPatch()?.work || linesPatch()?.work) {
@@ -11460,9 +11453,9 @@
       await mirrorPickupLeg(tripId, write);
 
       /* Payments, then `deposit_amount`, which holds their sum despite its
-         name: rux-ui reads it as the amount paid (`normalizeRecord` in its
-         billing-config.js), so it is rewritten after the rows. `|| null`
-         matches what rux-ui stores for no payments. */
+         name: `billingOf` reads it as the amount paid when a trip has no
+         payment rows, so it is rewritten after the rows. `|| null`
+         leaves it empty when there are no payments. */
       const payPatch = paymentsPatch();
       if (payPatch?.work) {
         for (const p of payPatch.inserts) {
@@ -13548,16 +13541,16 @@
 
   /* ── A trip's files ──
      Upload, replace and delete write at once, not with Save, and store a file
-     exactly as rux-ui does, so either app reads what the other wrote: the
+     in one layout, so every reader finds it: the
      `trip-documents` bucket at `<trip id>/<milliseconds>/<file name>`, a
-     `trip_documents` row, and a `record_trip_history` entry. Unlike rux-ui,
-     every step's error is checked, and the order leaves a stored file at worst,
+     `trip_documents` row, and a `record_trip_history` entry. Every
+     step's error is checked, and the order leaves a stored file at worst,
      never a row that points at nothing. Nothing here writes to `trips`, and no
      trigger on `trip_documents` does, so a file never turns the editor's next
      Save into a conflict. */
   const DOC_BUCKET = 'trip-documents';
 
-  // rux-ui's `documentFileSlug`: accents stripped, lowercased, hyphenated.
+  // A file name's slug: accents stripped, lowercased, hyphenated.
   const docSlug = (value, fallback) => String(value ?? '')
     .normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || fallback;
@@ -13571,7 +13564,7 @@
     return window.SchedulerFileNames.forUpload(trip, label);
   }
 
-  // A PDF by its type or name, as rux-ui checks, and by its first bytes, so a
+  // A PDF by its type or name, and by its first bytes, so a
   // renamed file of another kind is refused.
   async function isPdf(file) {
     if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name || '')) return false;
@@ -13580,7 +13573,7 @@
 
   /* ── Trip history ──
      Every change the scheduler makes to a trip writes a `record_trip_history`
-     entry as rux-ui writes it, so its History panel shows both apps' entries
+     entry in one shape, so the History panel shows every entry
      alike: an action, the trip's snapshot, and the changes trip-history.js
      works out between a read before the writes and one after, where any
      difference in the trip's rows makes a line. */
@@ -13607,9 +13600,9 @@
   // The changes between two reads of `readTripState`; null before is a new trip.
   const tripChanges = (before, after) => HISTORY.changes(before, after, HISTORY_NAMES);
 
-  /* The history's actor is the person's rux-ui profile name, the one rux-ui
-     records, found by the account's id; the platform profile's name stands in
-     for an account rux-ui never saw, and with neither the function's own
+  /* The history's actor is the person's display name in `public.profiles`,
+     found by the account's id; the platform profile's name stands in
+     for an account with no public profile, and with neither the function's own
      default does. Read once per page. */
   let actorPromise = null;
   const actorName = () => (actorPromise ??= (async () => {
@@ -13627,7 +13620,7 @@
 
   /* One history entry. With no snapshot given, the trip's own is read. An entry
      with no changes is not sent, and a failed one is logged and never undoes
-     the change it records, as in rux-ui. */
+     the change it records. */
   async function recordHistory(tripId, action, changes, snapshot = null, metadata = {}) {
     if (!tripId || !changes?.length) return;
     try {
@@ -13661,7 +13654,7 @@
     }
   }
 
-  // A bus change from the board, as rux-ui records a reassignment.
+  // A bus change from the board, recorded as a reassignment.
   const recordBusChange = (tripId, fromBus, toBus) => recordHistory(tripId, 'assignment_changed', [{
     field: 'bus', label: 'Bus', before: fromBus ? histBusName(fromBus) : null, after: toBus ? histBusName(toBus) : null,
   }]);
@@ -13719,7 +13712,7 @@
 
   /* The new file is stored, the row is pointed at it, and only then does the
      old stored file go, so a failure part way leaves the trip with a file. The
-     row keeps its id, as rux-ui's replace keeps it, so a link to the document
+     row keeps its id, so a link to the document
      opens the new file. A row that fails takes the new stored file back out. */
   async function replaceDocument(tripId, old, file) {
     const fileName = await documentName(tripId, old.label);
@@ -13820,7 +13813,7 @@
   /* An upload from any entry point. `item` is the Files tab's Carbon file item
      when the upload started there; elsewhere the toasts say how it went. A PO
      turns the Billing tab's PO received switch on in the open editor, which
-     Save then writes, as rux-ui does. An itinerary goes to `leg`, the leg on
+     Save then writes. An itinerary goes to `leg`, the leg on
      screen or the bar's: the pickup's is kept as its own, and any other is
      the drop-off's. */
   async function uploadFrom(tripId, label, file, item, leg = null) {
@@ -15113,7 +15106,7 @@
 
   /* Cancel is not delete: `cancelled_at` takes the trip off the board and the
      row stays, so a cancelled trip can still be looked up. Its buses and
-     drivers come off it, as rux-ui's cancel takes them off, so they are free
+     drivers come off it, so they are free
      for other trips at once; the history entry says how many. The reason is
      required: Cancel trip stays disabled until the box holds some text. The
      bar menu and the editor's Cancel trip button both open the dialog
@@ -15197,7 +15190,7 @@
 
   /* A cancelled trip is not on the board, so search opens this dialog
      instead: what the trip was, when it was cancelled and why. Bring back
-     clears both, as rux-ui's reinstate does, writes a `reinstated` history
+     clears both, writes a `reinstated` history
      entry and goes to the trip on its week. */
   let reinstating = null;
 

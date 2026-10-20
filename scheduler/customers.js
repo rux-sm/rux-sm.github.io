@@ -709,7 +709,7 @@
       // again, and the next Save, an update by then, sends the ticks again.
       await saveForms(id);
       wrote = true;
-      // rux-ui shows a contact's organization as text, and a trip carries
+      // A contact keeps its organization's name as text, and a trip carries
       // its customer's name as text beside the link, so its contacts and its
       // trips take the new spelling with it. An update that fails is tried
       // again on the next Save, which would otherwise see no rename.

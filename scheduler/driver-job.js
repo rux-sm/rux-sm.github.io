@@ -55,7 +55,7 @@
   // A leg stays until the end of its last day, in the office's time.
   const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
 
-  // -- the trip, as rux-ui reads it -------------------------------------------
+  // -- the trip ---------------------------------------------------------------
   // A seat's kind, which the page writes in its language, and its English
   // label, which is what Accept keeps.
   const ROLE_KEY = { 'driver': 'driver', 'co-driver': 'co-driver', 'relief-start': 'relief', 'relief-end': 'relief', 'relief_driver': 'relief' };

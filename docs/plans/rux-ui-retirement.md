@@ -50,11 +50,9 @@ driver or a customer already holds still opens.
 
 ## Tasks
 
-- [ ] Take out of the scheduler what it does only for rux-ui: the comments
-      and rules that name it in `scheduler/*.js`, and the columns it writes
-      for rux-ui alone.
 - [ ] Say rux-ui is retired in `AGENTS.md`, the root `README.md`, the
       scheduler's inventories and `developer/CLAUDE.md` in `~/claude-config`.
 - [ ] Archive the `rux-ui` repository.
-- [ ] List the tables, columns and triggers only rux-ui used, and show rux
-      the SQL that drops them.
+- [ ] List the tables, columns and triggers only rux-ui used, among them
+      `itinerary_confirmed`, `is_self_organized` and `trip_passengers`, which
+      no scheduler page reads, and show rux the SQL that drops them.

@@ -27,7 +27,7 @@
      `requirements.js`, which the forms page loads too, so a requirement is one
      drawing and one name wherever it shows.
 
-     THE LIST IS THE OFFICE'S. rux-ui's Settings page edits it and it already
+     THE LIST IS THE OFFICE'S. The Settings page edits it and it already
      holds more than that table does, so a requirement is named from the
      office's list and falls back to the table, then to its own id. Dropping
      one the table does not know would take it off the bar without saying so. */
@@ -49,9 +49,9 @@
     || REQUIREMENT_ICONS[requirementList.find(r => r.id === id)?.icon] || null;
 
   /* The needs the editor offers: the office's active list, vehicle before
-     driver and each in its own order, which is how rux-ui's trip panel groups
-     them. Before that list has been read the five this app names itself stand,
-     so the row is never empty and the connector always has a tag to type into. */
+     driver and each in its own order. Before that list has been read the
+     five this app names itself stand, so the row is never empty and the
+     connector always has a tag to type into. */
   const FALLBACK_NEEDS = ['sleeper', 'pax56', 'adaLift', 'hotel', 'fuelCard'];
   function editableNeeds() {
     const active = requirementList.filter(r => r.active !== false);
@@ -76,7 +76,7 @@
   const needIds = o => (o && typeof o === 'object' ? Object.keys(o).filter(k => o[k] === true).sort() : []);
 
   /* The ids a trip carries, from `trip_reqs` where it is set and the older
-     columns where it is not -- the pair rux-ui reads, and print.js with it. */
+     columns where it is not -- the pair print.js reads too. */
   function requirementsOf(trip) {
     const reqs = trip.trip_reqs;
     const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
@@ -140,7 +140,7 @@
     return `${type} needed`;
   }
 
-  /* A driver's role and status on a bar. The roles are rux-ui's four, in the
+  /* A driver's role and status on a bar. The roles are four, in the
      order the drivers row lists them. Relief is the one role that is not a
      person, so it cannot be taken for a co-driver at 12px. */
   const ROLES = [
@@ -159,7 +159,7 @@
      the shape it is drawn as, on the bar and in the editor alike, each its own
      so the colour is never the only signal. Not sent is the broken ring rather
      than nothing: it is the first step of the run, not the absence of one. Its
-     stored value stays `off`, which is what rux-ui writes. */
+     stored value stays `off`, the value the rows already hold. */
   const DRIVER_STATUSES = [
     { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-motion_photos_on' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-do_not_disturb_on-fill' },
@@ -167,14 +167,14 @@
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
   ];
-  // A status row's identity, as rux-ui keys it: trip, driver, leg and role.
+  // A status row's identity, as the table keys it: trip, driver, leg and role.
   const statusKey = (tripId, driverId, leg, role) =>
     [tripId, driverId, leg || 'outbound', role || 'driver'].join(':');
 
-  // The tone names rux-ui once saved in place of a status.
+  // The tone names an older row holds in place of a status.
   const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
 
-  /* The roles an assignment turns on, each with the status rux-ui once saved
+  /* The roles an assignment turns on, each with the status saved
      after it as `role:state`, which a trip with no status row still shows. An
      assignment without the column keeps every role it has a driver in, and
      the driver role is always on. */
@@ -212,8 +212,8 @@
     return crew;
   }
 
-  /* A contact as the trip records it. rux-ui keeps each contact's name, phone
-     and email on the trip itself and links the contact beside them, so the
+  /* A contact as the trip records it. The trip keeps each contact's name,
+     phone and email on itself and links the contact beside them, so the
      trip's own copy comes first; a trip with only a link shows the linked
      contact. Slot 0 is the booking contact, 1 to 5 the day-of ones. */
   function tripContact(trip, slot) {

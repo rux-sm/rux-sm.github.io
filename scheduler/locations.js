@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    locations.html lists every saved location. locations.html?id=<location id>
    edits one and locations.html?new makes one. Both read and write
-   `locations`, which rux-ui's Settings list and itinerary search read too.
+   `locations`, which the trip editor reads too.
 
    A location is a name, an address and a map point. The address is picked
    from the search in places.js, which brings its point, or typed and its

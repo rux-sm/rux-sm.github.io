@@ -3,11 +3,11 @@
    --------------------------------------------------------------------------
    Staff pick a driver, tick which of their current and upcoming trip legs
    go on the driver's link, copy the message to send them, and make, update
-   or revoke the link, as rux-ui's Driver week info window does. The
+   or revoke the link. The
    driver's own page, drawn below by share/driver.js, redraws from the link
    once it is saved, so staff read what the driver will read.
 
-   The link functions are the ones rux-ui calls: create_driver_schedule_share
+   The link functions: create_driver_schedule_share
    makes a link, or brings back the driver's last one so the address stays
    the same; update_driver_schedule_share saves a new choice to the same
    address; revoke_driver_schedule_share stops it, and replace_driver_schedule_share
@@ -38,7 +38,7 @@
     return n;
   };
 
-  // -- words the message uses, as rux-ui writes them -----------------------------
+  // -- words the message uses ----------------------------------------------------
   const dateOf = v => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(clean(v)); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());

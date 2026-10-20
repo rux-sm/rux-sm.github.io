@@ -55,8 +55,8 @@ const TRIP_DETAIL = [
   // The leg of a split trip each trip contact is for, null being the drop-off's.
   'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg',
   'trip_contact_4_leg', 'trip_contact_5_leg', 'req_sleeper', 'req_56pax', 'req_ada',
-  'need_hotel', 'need_fuel_card', 'trip_reqs', 'itinerary_confirmed',
-  'is_self_organized', 'cancellation_reason', 'updated_at',
+  'need_hotel', 'need_fuel_card', 'trip_reqs',
+  'cancellation_reason', 'updated_at',
   // What a save writes to the Details and Billing tabs and the three Done
   // marks, so a session reads its own save back.
   'passengers', 'quote_sent_price', 'quote_sent_on',

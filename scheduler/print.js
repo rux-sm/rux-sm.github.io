@@ -210,7 +210,7 @@
   ).trim();
 
   /* What the trip needs, from `trip_reqs` where it is set and the older
-     booleans where it is not, which is the pair rux-ui reads.
+     booleans where it is not.
 
      THE FIVE BELOW ARE ONLY THE ONES THIS FORM SPELLS OUT. The list is the
      office's to edit and already holds more than five, so a ticked id this
@@ -255,7 +255,7 @@
     }));
   }
 
-  /* The office's own requirement list, where rux-ui keeps it. A form asks for
+  /* The office's own requirement list. A form asks for
      it once it is on screen; a read that fails leaves the five above naming
      themselves and everything else naming its id. */
   const REQUIREMENTS_KEY = 'requirements-v1';
@@ -551,9 +551,8 @@
     return svg;
   }
 
-  // The multi-stop layout's log, in place of the destination line. rux-ui
-  // names this layout for the customer who asked for it; it is a shape, not a
-  // customer, so it is named for what it does.
+  // The multi-stop layout's log, in place of the destination line. It is a
+  // shape, not a customer, so it is named for what it does.
   function envelopeLog() {
     const table = el('table', 'scheduler-envelope__log');
     const head = el('thead');
@@ -747,10 +746,9 @@
      keeping belongs upstream, in the stop's own `label` or the seat's
      instructions, both of which already print.
 
-     AND IT WORKS NOTHING OUT. Miles and drive are columns on the stop. The
-     tight-leg warnings and the duty-hours-by-day footer rux-ui's own sheet
-     carries come from its Grid tab's arithmetic, which this app does not
-     have. */
+     AND IT WORKS NOTHING OUT. Miles and drive are columns on the stop. It
+     carries no tight-leg warnings and no duty-hours-by-day footer, which
+     need arithmetic this app does not do. */
 
   const LEGS = ['outbound', 'return'];
   const legName = leg => (leg === 'return' ? 'Return' : 'Outbound');
@@ -779,8 +777,8 @@
      `depart_prev` when it starts and `arrive` when it ends, and the bus rolls
      at the following row's `depart_prev`.
 
-     There is no report time. rux-ui works one out in its Grid tab from the
-     yard plan; nothing on `trip_stops` holds it, and a form does not compute. */
+     There is no report time. Nothing on `trip_stops` holds it, and a form
+     does not compute. */
   /* `day` is the row's own date. A departure on another day, the morning after
      a night at a hotel or the end of a stay of nights, carries its weekday; a
      stop left the moment it is reached, a drop-off, prints its arrival alone. */
@@ -801,7 +799,7 @@
   };
 
   /* A `day` row is the itinerary's own day divider, and its `label` is the
-     day: an ISO date where rux-ui's import had one, free text where the
+     day: an ISO date where an older import had one, free text where the
      customer wrote "Day 1". Its `name` is a marker and never printed. */
   const dayName = label => {
     const day = weekdayOf(label);
@@ -1791,7 +1789,7 @@
      office already names the ones QuickBooks makes. A blank one has no day
      and keeps the page's own title. */
   /* ── THE WEEK SCHEDULE ────────────────────────────────────────────────────
-     rux-ui's billing report of a week, in its format and layout: Legal
+     The office's billing report of a week, in its own format and layout: Legal
      landscape, five buses a sheet, a row per bus and a column per day, and a
      card per trip leg on each bus across the days it covers. Only the look is
      this app's. Where a trip sits, its lane and its colour come from week.js,
@@ -1812,7 +1810,7 @@
   const plusDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   const isoDay = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-  // "September 21-27, 2026", or across a month or a year as rux-ui writes it.
+  // "September 21-27, 2026", or across a month or a year as the office writes it.
   function weekTitle(first) {
     const last = plusDays(first, 6);
     const a = MONTHS[first.getMonth()], b = MONTHS[last.getMonth()];
@@ -1824,7 +1822,7 @@
       : `${a} ${first.getDate()}-${b} ${last.getDate()}, ${last.getFullYear()}`;
   }
 
-  /* A value a detail line prints. rux-ui leaves a status word out of a field
+  /* A value a detail line prints. A status word is left out of a field
      that should hold a number or a reference, so "pending" and the office's
      other holding words print as an empty line to write on. */
   const HOLDING_WORDS = ['draft', 'hold', 'working on approval', 'check in mail'];
@@ -1930,7 +1928,7 @@
     const card = el('div', `scheduler-week__trip scheduler-week__trip--${hue}`);
     card.style.gridColumn = `${place.start + 1} / span ${place.span}`;
     card.style.gridRow = String(lane + 1);
-    // Its lines keep to the first day's width, as rux-ui's do, however many
+    // Its lines keep to the first day's width, however many
     // days the colour runs across.
     card.style.setProperty('--scheduler-week-span', String(place.span));
     card.dataset.trip = trip.destination || 'Trip';
@@ -1977,9 +1975,7 @@
     }
     facts.appendChild(top);
 
-    const riders = (trip.trip_passengers || []).length;
-    facts.appendChild(el('div', 'scheduler-week__line', trip.is_self_organized
-      ? `${riders} passenger${riders === 1 ? '' : 's'}` : trip.customer || BLANK));
+    facts.appendChild(el('div', 'scheduler-week__line', trip.customer || BLANK));
     const who = trip.booking_contact_name || trip.booking_contact_phone
       ? [trip.booking_contact_name, trip.booking_contact_phone]
       : [trip.trip_contact_1_name, trip.trip_contact_1_phone];
@@ -2131,7 +2127,7 @@
     return sheets;
   }
 
-  /* WHAT DID NOT FIT. rux-ui squeezes a crowded row to 55% and clips the rest;
+  /* WHAT DID NOT FIT. A crowded row is not squeezed and clipped;
      this names the trips instead, above the sheet and off the paper, so a
      crowded day is seen before it is printed rather than after. */
   function weekOverflow(card) {
@@ -3694,7 +3690,7 @@
      asking again. A cancelled trip is left off, as the board leaves it. */
   const WEEKS_BEFORE = 4, WEEKS_AFTER = 8;
   const WEEK_TRIP_COLUMNS = [
-    'id,destination,customer,is_self_organized,start_date,end_date,return_start_date,return_end_date',
+    'id,destination,customer,start_date,end_date,return_start_date,return_end_date',
     'bus_count,return_bus_count,trip_type,trip_bar_color,confirmed,contract_status,trip_reqs',
     'req_56pax,req_sleeper,req_ada,need_hotel,need_fuel_card,departure_time,return_time',
     'booking_contact_name,booking_contact_phone,trip_contact_1_name,trip_contact_1_phone',
@@ -3705,7 +3701,6 @@
     'trip_payments(position,amount,method,date,ref)',
     'trip_pos(position,ref,amount)',
     'trip_invoices(position,number)',
-    'trip_passengers(id)',
   ].join(',');
 
   async function showWeekForm(form) {

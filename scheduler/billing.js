@@ -1,7 +1,7 @@
 /* ==========================================================================
    billing.js — WHERE A TRIP'S MONEY STANDS
    --------------------------------------------------------------------------
-   rux-ui's billing rules, the one copy the scheduler's pages share: the
+   The billing rules, the one copy the scheduler's pages share: the
    workflow the `billing-workflow-v1` settings row sets, the status ladder a
    trip climbs, and a saved trip's money read from its rows. The board sets
    the workflow as it reads the week; a page that reads the row itself calls
@@ -10,9 +10,9 @@
 (() => {
   'use strict';
 
-  /* The billing workflow rux-ui keeps in the `billing-workflow-v1` settings
+  /* The billing workflow the office keeps in the `billing-workflow-v1` settings
      row: which milestones are in use, and which billing statuses confirm a
-     trip. `read` fills it with the week; these are rux-ui's defaults for a
+     trip. `read` fills it with the week; these are the defaults for a
      missing row or a missing part of one. */
   const CONFIRMING = ['contract_signed', 'po_partial', 'po_received', 'deposit_received', 'paid_full', 'overpaid'];
   const BILLING_DEFAULT = { steps: { contractSigned: true, poReceived: true, invoiced: true },
@@ -29,8 +29,7 @@
   // Whether a milestone is in use. One that is not counts as off.
   const stepOn = key => billingWorkflow.steps[key] !== false;
 
-  /* The billing status ladder, rux-ui's `deriveStatus` in its
-     `js/core/billing-config.js`; first match wins:
+  /* The billing status ladder; first match wins:
 
        overpaid          price > 0 && balance < 0
        paid_full         price > 0 && paid > 0 && balance <= 0
@@ -52,15 +51,15 @@
     if (contractSigned) return 'contract_signed';
     return 'pending';
   }
-  // A partial PO confirms whenever a PO does, as in rux-ui. A trip paid past
-  // its price confirms whenever one paid in full does, which rux-ui's own
+  // A partial PO confirms whenever a PO does. A trip paid past
+  // its price confirms whenever one paid in full does, which the
   // default list leaves out, so a card fee inside a payment or a discount
   // after it does not turn a paid trip unconfirmed.
   const confirmRungOf = rung => (rung === 'po_partial' ? 'po_received' : rung);
   const confirmsTrip = rung => billingWorkflow.confirmWhen.includes(confirmRungOf(rung))
     || (rung === 'overpaid' && billingWorkflow.confirmWhen.includes('paid_full'));
 
-  /* A trip's milestones as rux-ui opens them. A confirmed trip with no
+  /* A trip's milestones. A confirmed trip with no
      contract status predates the column and counts as signed; a PO reference
      or an invoice number turns its milestone on. */
   const contractSignedOf = trip => stepOn('contractSigned')
@@ -71,9 +70,9 @@
   /* A saved trip's money, read from its rows the way the editor's
      `billingNow` reads its form, so the bar and the Billing tab put the trip
      on the same rung. The row lists are the live ones; the `deposit_amount` and `po_amount`
-     aggregates are what rux-ui filled before those lists existed. A trip rux-ui
-     marked paid with no payment rows carries the whole quote as paid, as
-     rux-ui's own `normalizeRecord` does, so it is not read as owing it. */
+     aggregates are what an older trip holds from before those lists existed. A
+     trip marked paid with no payment rows carries the whole quote as paid,
+     so it is not read as owing it. */
   function billingOf(trip) {
     const sum = rows => (rows || []).reduce((n, r) => n + (Number(r.amount) || 0), 0);
     const price = Number(trip.quoted_price) || 0;

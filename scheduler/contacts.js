@@ -2,12 +2,12 @@
    contacts.js — THE CONTACTS PAGE
    --------------------------------------------------------------------------
    contacts.html lists every contact. contacts.html?id=<contact id> edits one
-   and contacts.html?new makes one. Both read and write `contacts`, the table
-   rux-ui's Customers view writes, so both apps show the same people.
+   and contacts.html?new makes one. Both read and write `contacts`, so both
+   show the same people.
 
    A contact is a person. The school or business they book for is their
    customer, picked from the Customers list; `client` keeps the customer's
-   name as text, which rux-ui shows.
+   name as text.
 
    A trip names its contacts in six columns, the booking contact and five
    day-of ones, and keeps its own copy of each name and phone. Editing a
@@ -244,7 +244,7 @@
   let customerText = '';    // the customer field's text
 
   /* The columns Save writes, read off the form. A blank field saves as null.
-     `client` is the customer's name as text, for rux-ui. */
+     `client` is the customer's name as text. */
   const readForm = () => ({
     name: text('name'),
     customer_id: customerId,

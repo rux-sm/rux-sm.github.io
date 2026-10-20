@@ -406,7 +406,7 @@
     const m = /^(\d+):(\d{1,2})$/.exec(String(v ?? '').trim());
     return m ? Number(m[1]) * 60 + Number(m[2]) : null;
   };
-  /* Two places are the same when both carry the Mapbox id rux-ui saves, or
+  /* Two places are the same when both carry a Mapbox id and the ids match, or
      when their name and address both read the same, the Route tab's rule for
      telling a round trip. */
   const samePlace = (a, b) => {

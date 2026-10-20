@@ -45,7 +45,10 @@
     address.className = 'pixels-meta pixels-link-address';
     const show = code => { address.textContent = `${site}/pixels/?join=${encodeURIComponent(code)}`; };
     show(me.code);
-    const note = words('pixels-meta', 'Whoever opens it is asked to add you.');
+    // A sentence, so a paragraph, which the pixel theme sets in its plain face.
+    const note = document.createElement('p');
+    note.className = 'pixels-meta';
+    note.textContent = 'Whoever opens it is asked to add you. New link stops the old one working.';
     const keys = document.createElement('div');
     keys.className = 'pixels-link-keys';
     const copy = button('rux--btn--tertiary', 'Copy');

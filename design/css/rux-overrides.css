@@ -2874,10 +2874,13 @@
 }
 
 
-/* PIXEL-DARK, THE GAMES' THEME: every word in Silkscreen and every edge
+/* PIXEL-DARK, THE GAMES' THEME: its words in Silkscreen and every edge
    drawn a pixel at a time. css/rux-theme.css holds its colours.
    - The face is Silkscreen, which js/theme.js loads for this theme alone,
-     everywhere, the code face too. It is drawn on an 8-pixel grid with one
+     for headings, keys, names and numbers, the code face too; a sentence,
+     a paragraph or a notification's words, is in IBM Plex Sans, as the
+     best pixel games keep pixel letters for what is glanced at and a plain
+     face for what is read. It is drawn on an 8-pixel grid with one
      weight, so every style is 400 with no tracking, and nothing is made
      bold or slanted by the browser.
    - It has two sizes, as a pixel-art game's words do, so a letter's pixel
@@ -3219,3 +3222,27 @@
 [data-theme="pixel-dark"] .rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch { clip-path: none; outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 [data-theme="pixel-dark"] .rux--toggle--disabled .rux--toggle__switch { background: var(--rux-field-01); opacity: 0.5; }
 [data-theme="pixel-dark"] .rux--toggle--readonly .rux--toggle__switch { background-color: transparent; }
+
+/* SENTENCES IN PLEX. A paragraph and a notification's or a modal's words
+   are in IBM Plex Sans at 16px on 24px, smoothed as a plain face is. A
+   paragraph that is a label marks itself `rux--type-mono`, which stays in
+   Silkscreen. */
+[data-theme="pixel-dark"] :is(p, .rux--inline-notification__subtitle, .rux--toast-notification__subtitle, .rux--actionable-notification__subtitle, .rux--form__helper-text, .rux--form-requirement):not(.rux--type-mono) {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  -webkit-font-smoothing: auto;
+  text-rendering: auto;
+}
+/* AN ERROR IS DARK, on the raised grey with the theme's edge and lip, a red
+   band 8px wide down its left and the icon red, where Carbon's notification
+   is a light box. */
+[data-theme="pixel-dark"] .rux--inline-notification--error {
+  background-color: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  box-shadow: inset 0 0 0 2px #000000, inset 8px 0 0 var(--rux-support-error), inset 0 -6px 0 rgba(0, 0, 0, 0.45);
+}
+[data-theme="pixel-dark"] .rux--inline-notification--error::before { display: none; }
+[data-theme="pixel-dark"] .rux--inline-notification--error .rux--inline-notification__title { color: var(--rux-text-primary); }
+[data-theme="pixel-dark"] .rux--inline-notification--error .rux--inline-notification__subtitle { color: var(--rux-text-secondary); }
+[data-theme="pixel-dark"] .rux--inline-notification--error .rux--inline-notification__icon { fill: var(--rux-support-error); }

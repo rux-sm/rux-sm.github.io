@@ -43,9 +43,10 @@ The pixel look:
 - **Focus is a 2px ring of the accent,** square, with no glow.
 - **Movement steps.** A change happens in two or three steps, not a smooth
   fade, and with motion turned down it happens at once.
-- **The font is Silkscreen, everywhere,** running text too. It is drawn on
-  an 8-pixel grid in capitals, so it reads as pixel art; labels are kept
-  short because it is wide.
+- **The font is Silkscreen for what is glanced at,** headings, keys, names
+  and numbers. It is drawn on an 8-pixel grid in capitals, so it reads as
+  pixel art; labels are kept short because it is wide. A sentence is in IBM
+  Plex Sans, which reads easily, as the best pixel games set theirs.
 
 Sharp, not blurry:
 

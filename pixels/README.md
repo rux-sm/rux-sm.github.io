@@ -53,14 +53,14 @@ and adds none, and the best time is the one kept. With `WORLD` on, the owner's t
 switch, a sword and a shield, the enemy's health, a bar of the picture left to fill, stands before the
 clock, and a character faces the enemy's shadow, with a helmet and a heart more at five sprites. Hint, or
 H, lights the line where the numbers decide the most, and a fairy finishes it, as `docs/profiles.md`
-says. Undo, or U, takes back the last tap or drag, and Redo, or R, puts it back, but neither touches a
-mistake, and a tap that was only a mistake is no move to take back. Pause, P or Escape, or leaving the
-page stands the clock under a cover with Resume, Restart and Exit, which goes where the player came from;
-Restart empties the board, and Undo straight after brings it back. The board's corner shows the picture
-so far. When the picture is complete the squares fill in as the picture, in its colours if it has them,
-and its name shows with the time, the mistakes and the hints. Under them the rift's tile counts the
-sprite, says +1 mana where the find earned one and +3 fairies where it cleared the rift, and opens the
-rift; a rift the sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved
+says. Undo, or U, takes back a tap or drag, and Redo, or R, puts it back, but neither touches a mistake,
+and a tap that was only a mistake is no move to take back. Pause, P or Escape, or leaving the page stands
+the clock under a cover with Resume, Restart and Exit, which goes where the player came from; Restart
+empties the board, and Undo straight after brings it back. The board's corner shows the picture so far.
+When the picture is complete the squares fill in as the picture, in its colours if it has them, and its
+name shows with the time, the mistakes, the hints and Share picture. Under them the rift's tile counts
+the sprite, says +1 mana where the find earned one and +3 fairies where it cleared the rift, and opens
+the rift; a rift the sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved
 puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
 numbers, filling and crossing out, and what a mistake costs. It opens from Me's list, the button under
 Start, and by itself for a player who has solved none and has not closed it in this browser. The clock

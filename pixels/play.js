@@ -81,6 +81,10 @@
    in red and costs nothing, and the finish says Relaxed. Its time is kept
    only where none was, so it never replaces one played with hearts.
 
+   SHARE PICTURE, on the finish, draws the finished picture large on a card
+   with its name, its time and Pixels, as a PNG, and hands it to the phone's
+   share sheet, or saves it as a file where there is none.
+
    Each fill, X, finished line, mistake, fall, hint and solve plays a tone and
    ticks the phone, and an X taken off or a move undone plays a falling
    one. Me's Sound switch keeps its choice in this browser.
@@ -98,7 +102,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, relaxed, listen, time, title, riftTile, arrive, turn, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
+  const { data, owner, enter, boss, holds, DAILY, grid, column, clues, solveLine, order, categories, where, daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, relaxed, listen, time, title, art, riftTile, arrive, turn, locks, fairy, heart, sword, shield, worn, hero, shade, how, WORLD } = window.Pixels;
   const $ = id => document.getElementById(id);
   const game = $('pixels-game'), boardHost = $('pixels-board'), status = $('pixels-status'), clock = $('pixels-clock'), tally = $('pixels-count');
 
@@ -346,6 +350,7 @@
       // The sprite that earns the owner's character its helmet says so.
       if (world && home && !lost && !results.has(key) && worn((me.found || 0) + 1).length > wear.length) parts.push('Helmet unlocked');
       $('pixels-solved-time').textContent = parts.join(' · ');
+      $('pixels-share').onclick = () => share(puzzle, seconds);
       document.title = `${puzzle.name} — Pixels`;
       // The next puzzle not yet solved: the rest of this category, after
       // this one and then before it, then each category after it and round
@@ -412,6 +417,41 @@
         { transformOrigin: '0 0', transform: `translate(${from.x - to.x}px, ${from.y - to.y}px) scale(${from.width / to.width})` },
         { transformOrigin: '0 0', transform: 'none' },
       ], { duration: 400, easing: 'ease-out' });
+    };
+
+    /* THE SHARED CARD: 600 by 720, the page's dark, the picture at a whole
+       number of pixels a square in the middle of its top, then the name and
+       the time and Pixels under it in the pixel font. */
+    const share = async (p, secs) => {
+      const W0 = 600, H0 = 720, n = p.width, px = Math.floor(504 / n), side = px * n;
+      const c = document.createElement('canvas');
+      c.width = W0;
+      c.height = H0;
+      const ctx = c.getContext('2d');
+      const page = getComputedStyle(document.documentElement);
+      ctx.fillStyle = page.getPropertyValue('--rux-background').trim() || '#161616';
+      ctx.fillRect(0, 0, W0, H0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(art(p, true), (W0 - side) / 2, 48, side, side);
+      try { await document.fonts.load('32px Silkscreen'); } catch { /* the browser's own font */ }
+      ctx.textAlign = 'center';
+      ctx.fillStyle = page.getPropertyValue('--rux-text-primary').trim() || '#f4f4f4';
+      ctx.font = '32px Silkscreen, monospace';
+      ctx.fillText(p.name.toUpperCase(), W0 / 2, 48 + side + 64);
+      ctx.fillStyle = page.getPropertyValue('--rux-text-secondary').trim() || '#c6c6c6';
+      ctx.font = '16px Silkscreen, monospace';
+      ctx.fillText(`${time(secs)} · PIXELS`, W0 / 2, 48 + side + 100);
+      const blob = await new Promise(done => c.toBlob(done, 'image/png'));
+      const file = new File([blob], `${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`, { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: p.name }); } catch { /* the sheet was closed */ }
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     };
 
     // Solved when every square of the picture is filled; a wrong fill is

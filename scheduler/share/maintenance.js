@@ -95,20 +95,26 @@
   const hueClass = trip => HUE_CLASS[String(trip.tripBarColor || '').toLowerCase()]
     ?? (trip.confirmed === false ? 'scheduler-bar--red' : 'scheduler-bar--blue');
 
-  /* A leg's days and yard times. An assignment on the return leg takes the
-     trip's return dates; the times are that leg's first pickup's departure and
-     its last return stop's arrival, or else the trip's own departure and return
-     times. */
-  const legOf = (trip, leg) => {
-    const ret = leg === 'return';
-    const from = (ret && trip.returnStartDate) || trip.startDate;
-    const to = (ret && (trip.returnEndDate || trip.returnStartDate)) || trip.endDate || from;
-    const stops = (trip.stops || [])
-      .filter(s => (s.leg || 'outbound') === leg)
-      .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+  /* A vehicle's leg, its days and its yard times, through trip-shape.js: the
+     leg its route is on, that leg's own days, and the route's first pickup's
+     departure and last return stop's arrival, or else the trip's own
+     departure and return times. `key` is the leg's id and `word` the old
+     word it mirrors; `inbound` is a split trip's pickup, every leg after its
+     first. A vehicle on no leg the trip has is not drawn. */
+  const Shape = window.SchedulerTripShape;
+  const shapeOf = trip => ({
+    trip_legs: (trip.legs || []).map(l => ({ id: l.id, leg: l.leg, kind: l.kind, start_date: l.startDate,
+      end_date: l.endDate, created_at: l.createdAt, trip_routes: l.routes || [] })),
+    trip_stops: (trip.stops || []).map(s => ({ ...s, route_id: s.routeId })),
+  });
+  const legOf = (trip, shaped, a) => {
+    const leg = Shape.legOfRoute(shaped, a.routeId) ?? Shape.legOfWord(shaped, a.leg);
+    if (!leg) return null;
+    const stops = Shape.stopsOfRoute(shaped, leg.routes.some(r => r.id === a.routeId) ? a.routeId : leg.routes[0]?.id);
     const pickup = stops.find(s => s.type === 'pickup');
     const back = [...stops].reverse().find(s => s.type === 'return');
-    return { from, to, depart: pickup?.departPrev || trip.departureTime, back: back?.arrive || trip.returnTime };
+    return { key: leg.id, word: leg.word, inbound: trip.tripType === 'dropoff_pickup' && leg.number > 1,
+      from: leg.start, to: leg.end || leg.start, depart: pickup?.departPrev || trip.departureTime, back: back?.arrive || trip.returnTime };
   };
 
   const clip = (from, to, start, end) => {
@@ -136,7 +142,7 @@
   };
 
   // -- drawing -----------------------------------------------------------------
-  const barEl = ({ trip, leg, info, place, lane, busId, busNumber }) => {
+  const barEl = ({ trip, info, place, lane, busId, busNumber }) => {
     const bar = el('article', `scheduler-bar ${hueClass(trip)}`);
     if (place.fromPrev) bar.classList.add('scheduler-bar--from-prev');
     if (place.toNext) bar.classList.add('scheduler-bar--to-next');
@@ -147,7 +153,7 @@
     const dest = trip.destination || 'No destination';
     const destRow = el('div', 'scheduler-bar__row scheduler-bar__dest');
     destRow.append(el('span', null, dest));
-    if (leg === 'return') destRow.append(el('span', 'scheduler-bar__ref', 'Return'));
+    if (info.inbound) destRow.append(el('span', 'scheduler-bar__ref', 'Return'));
 
     // Only the times these two weeks hold: a leg that began before them has no
     // departure on screen, and one that runs past them no return. A trip with
@@ -160,7 +166,7 @@
     bar.append(destRow, timeRow);
 
     const label = [
-      dest, leg === 'return' ? 'return leg' : null,
+      dest, info.inbound ? 'return leg' : null,
       dep ? `leaves the yard ${dep}` : null, back ? `back ${back}` : null,
       place.fromPrev ? 'began before these two weeks' : null,
       place.toNext ? 'runs past these two weeks' : null,
@@ -168,7 +174,7 @@
     ].filter(Boolean).join(', ');
     bar.setAttribute('aria-label', label);
     bar.title = label;
-    opens(bar, () => showLeg({ trip, leg, info, busId, busNumber }, bar));
+    opens(bar, () => showLeg({ trip, info, busId, busNumber }, bar));
     return bar;
   };
 
@@ -191,15 +197,16 @@
       if (place && rows.has(String(o.busId))) rows.get(String(o.busId)).out.push({ ...place, from: o.startDate, to: o.endDate });
     }
     for (const trip of data.trips || []) {
+      const shaped = shapeOf(trip);
       for (const a of trip.assignments || []) {
         if (a.busNumber == null) continue;
-        const leg = a.leg || 'outbound';
-        const info = legOf(trip, leg);
+        const info = legOf(trip, shaped, a);
+        if (!info) continue;
         const place = clip(info.from, info.to, start, end);
         if (!place) continue;
         const key = a.busId != null ? String(a.busId) : `number:${a.busNumber}`;
         if (!rows.has(key)) rows.set(key, { number: String(a.busNumber), bars: [], out: [] });
-        rows.get(key).bars.push({ trip, leg, info, place, busId: a.busId });
+        rows.get(key).bars.push({ trip, info, place, busId: a.busId });
       }
     }
 
@@ -323,7 +330,9 @@
     try {
       const { data, error } = await client.functions.invoke('maintenance-status', { body: { token } });
       if (error) throw error;
-      const s = (data?.buses || []).find(b => `${b.tripId}|${b.leg}|${b.busId}` === shown.key);
+      // A bus by its trip and its leg's id, or by the old word from a function that names no leg id.
+      const s = (data?.buses || []).find(b => String(b.tripId) === shown.tripId && String(b.busId) === shown.busId
+        && (b.legId ? b.legId === shown.leg : b.leg === shown.word));
       words = s ? statusWords(s) : null;
     } catch (error) {
       words = [404, 503].includes(error?.context?.status) ? null : "Can't be checked right now";
@@ -342,7 +351,7 @@
     window.Rux?.modal?.open(detailsEl, trigger);
   }
 
-  function showLeg({ trip, leg, info, busId, busNumber }, trigger) {
+  function showLeg({ trip, info, busId, busNumber }, trigger) {
     const parts = [
       pair('Days', days(info.from, info.to)).box,
       pair('Leaves the yard', hhmm(info.depart) || 'No time yet').box,
@@ -350,7 +359,7 @@
     ];
     const today = officeToday();
     const running = isDate(info.from) && info.from <= today && iso(addDays(parseISO(info.to || info.from), 1)) >= today;
-    const shown = { key: `${trip.id}|${leg}|${busId}` };
+    const shown = { tripId: String(trip.id), leg: info.key, word: info.word, busId: String(busId) };
     if (running && busId != null) {
       shown.status = pair('Now', 'Checking…');
       parts.push(shown.status.box);
@@ -360,7 +369,7 @@
       link.href = `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(info.from || '')}`;
       parts.push(link);
     }
-    show(`${busName(busNumber)} · ${leg === 'return' ? 'Return' : 'Outbound'}`, trip.destination || 'No destination', parts, trigger, shown);
+    show(`${busName(busNumber)} · ${info.inbound ? 'Return' : 'Outbound'}`, trip.destination || 'No destination', parts, trigger, shown);
     if (shown.status) {
       askStatus(shown);
       statusTimer = setInterval(() => { if (!document.hidden) askStatus(shown); }, STATUS_MS);

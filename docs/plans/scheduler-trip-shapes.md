@@ -152,23 +152,22 @@ None open.
 
 - [ ] Move every reader of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
-      contact slots to the shape rule, a group at a time: the editor and
-      `fromStops` in `scheduler/route-figures.js`, with the quote calculator
-      it fills and the bar's ref, whose `leg` is the old word; the
-      maintenance link, `scheduler/share/maintenance.js`; and the
-      `scheduler/samsara-miles/` function, which reads each leg's yard times
-      by the old word. The bar menu's hotel mark, itinerary upload and Mark as told
-      send the old word, and `scheduler/print.js` still keeps a print's marks
-      and reads the quote's lines by it, which move with those writers. The past-midnight
-      rule's copies become one rule file with its sample cases on the way.
-      Each reads a trip through `scheduler/trip-shape.js`, with
+      contact slots to the shape rule: the editor and `fromStops` in
+      `scheduler/route-figures.js`, with the quote calculator it fills and
+      the bar's ref, whose `leg` is the old word, and the
+      `scheduler/samsara-miles/` function, whose answer the Billing tab
+      reads and which reads each leg's yard times by the old word. The bar
+      menu's hotel mark, itinerary upload and Mark as told send the old
+      word, and `scheduler/print.js` still keeps a print's marks and reads
+      the quote's lines by it, which move with those writers. The
+      past-midnight rule's copies become one rule file with its sample cases
+      on the way. Each reads a trip through `scheduler/trip-shape.js`, with
       `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and
-      `scheduler/leg-papers.js` goes with its last reader.
-      A group moves with the database functions its pages read: the
-      maintenance page with
-      `get_maintenance_schedule` and the `scheduler/maintenance-status/`
-      function, which reads a bar's leg by its old word; and the editor with `trips_clear_done`,
+      `scheduler/leg-papers.js` goes with its last reader. The editor moves
+      with the database functions it reads, `trips_clear_done`,
       `trip_steps_off` and `trip_stops_steps_off`.
+- [ ] Hand rux the deploy of `scheduler/maintenance-status/`, whose source
+      reads a bar's leg by its id and answers with it beside the old word.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
@@ -199,7 +198,9 @@ None open.
       already, answer for a leg with no old word, so a third leg's driver
       can accept.
 - [ ] Write the SQL that drops the old leg columns and contact slots once
-      nothing reads them, show it to rux, and apply it on a yes.
+      nothing reads them, with the old date fields and words
+      `get_maintenance_schedule` still hands the maintenance link, show it
+      to rux, and apply it on a yes.
 - [ ] Describe the tables, the ids and the changed screens in the
       scheduler's database and screen inventories, its `README.md` and the
       trips skill.

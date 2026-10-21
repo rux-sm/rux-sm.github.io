@@ -100,28 +100,36 @@ const iso = time => new Date(T(time)).toISOString();
 H.forget();
 let d = deps('07:30', [busAt(0, '07:29', [P(0, '07:00'), P(0, '07:29')], { mph: 0, engine: 'idle', engine_at: new Date(T('07:20')).toISOString() })]);
 let r = await ask(d);
-expect('before yard-out, a bus standing at the yard has not left', r.body.buses, [{ tripId: 't1', leg: 'outbound', busId: 'b1', state: 'yard', back: null }]);
+expect('before yard-out, a bus standing at the yard has not left', r.body.buses, [{ tripId: 't1', leg: 'outbound', legId: null, busId: 'b1', state: 'yard', back: null }]);
 expect('each bus\'s path is asked from two hours before yard-out, the board\'s stretch', d.calls.paths, { b1: iso('06:00'), b2: iso('06:00') });
 expect('Samsara is asked for the buses by number, with no driver', d.calls.fleet, [{ id: 'b1', number: '133' }, { id: 'b2', number: '506' }]);
 expect('a bus Samsara does not know is left out', r.body.buses.some(b => b.busId === 'b2'), false);
+// The same trip read with its legs: the bus's leg is its route's, and the answer names it by its id.
+H.forget();
+const shapedTrip = { ...trip, trip_legs: [{ id: 'l1', leg: 'outbound', start_date: DAY, end_date: DAY, bus_count: 2, trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_stops: trip.trip_stops.map(x => ({ ...x, route_id: 'r1' })), trip_assignments: trip.trip_assignments.map(x => ({ ...x, route_id: 'r1' })) };
+r = await ask(deps('07:30', [busAt(0, '07:29', [P(0, '07:00'), P(0, '07:29')], { mph: 0, engine: 'idle', engine_at: new Date(T('07:20')).toISOString() })],
+  { trips: async () => [shapedTrip] }));
+expect('a trip read with its legs answers with the leg\'s id beside its word', r.body.buses,
+  [{ tripId: 't1', leg: 'outbound', legId: 'l1', busId: 'b1', state: 'yard', back: null }]);
 
 H.forget();
 d = deps('11:00', [busAt(20, '10:59', OUT.slice(0, 6), { mph: 0 })]);
 r = await ask(d);
-expect('at its destination, the bus is on the road with no time back yet', r.body.buses, [{ tripId: 't1', leg: 'outbound', busId: 'b1', state: 'road', back: null }]);
+expect('at its destination, the bus is on the road with no time back yet', r.body.buses, [{ tripId: 't1', leg: 'outbound', legId: null, busId: 'b1', state: 'road', back: null }]);
 expect('and no drive is asked while the yard is not next', d.calls.route, 0);
 
 H.forget();
 d = deps('13:00', [busAt(15, '12:55', OUT)]);
 r = await ask(d);
 expect('heading home, it is due in after the drive, slowed by the office\'s percent',
-  r.body.buses, [{ tripId: 't1', leg: 'outbound', busId: 'b1', state: 'road', back: new Date(T('13:00') + 35 * 60e3).toISOString() }]);
+  r.body.buses, [{ tripId: 't1', leg: 'outbound', legId: null, busId: 'b1', state: 'road', back: new Date(T('13:00') + 35 * 60e3).toISOString() }]);
 expect('both routes are asked', d.calls.route, 2);
 
 H.forget();
 d = deps('15:10', [busAt(0.1, '15:02', HOME, { mph: 0 })]);
 r = await ask(d);
-expect('back at the yard, with the time it came in', r.body.buses, [{ tripId: 't1', leg: 'outbound', busId: 'b1', state: 'back', back: iso('15:02') }]);
+expect('back at the yard, with the time it came in', r.body.buses, [{ tripId: 't1', leg: 'outbound', legId: null, busId: 'b1', state: 'back', back: iso('15:02') }]);
 
 H.forget();
 d = deps('19:00', [busAt(0.1, '18:00', HOME, { mph: 0, engine: 'off' })]);
@@ -163,8 +171,8 @@ expect('after five minutes, it is', d.calls.route, 4);
 // ── what leaves, and to whom ────────────────────────────────────────────────
 H.forget();
 r = await ask(deps('13:00', [busAt(15, '12:55', OUT)]));
-expect('only the five fields leave, never a place, speed, fuel or driver',
-  [...new Set(r.body.buses.flatMap(Object.keys))].sort(), ['back', 'busId', 'leg', 'state', 'tripId']);
+expect('only the six fields leave, never a place, speed, fuel or driver',
+  [...new Set(r.body.buses.flatMap(Object.keys))].sort(), ['back', 'busId', 'leg', 'legId', 'state', 'tripId']);
 expect('the answer is the buses and when', Object.keys(r.body).sort(), ['at', 'buses']);
 expect('a wrong token is not found', (await ask(deps('13:00', []), { token: 'ffffffffffffffffffff' })).status, 404);
 const nosy = deps('13:00', []);

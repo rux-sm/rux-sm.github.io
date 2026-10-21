@@ -47,12 +47,14 @@ async function samsara<T>(path: string, params: Record<string, string>): Promise
   return rows
 }
 
-// The trip columns the board reads a leg by, as data.js selects them.
+// The trip columns the board reads a leg by, as data.js selects them, and
+// `ends`, an embed that returns nothing, which the read of trips tests.
 const TRIP = [
-  'id,trip_type,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count',
+  'id,trip_type,start_date,end_date,departure_time,return_time',
   'trip_stops(id,position,leg,route_id,type,name,address,lat,lng,depart_prev,arrive,spot,depart_prev_date,arrive_date,spot_date)',
   'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
   'trip_assignments(id,leg,route_id,bus_id,buses(number))',
+  'ends:trip_legs!inner()',
 ].join(',')
 
 let geoapifyKey = ''
@@ -68,10 +70,11 @@ Deno.serve(req => handle(req, {
     if (error) throw error
     return !!data
   },
+  // The trips that start by `toDay` with a leg that ends, or with no end starts, on or after `fromDay`.
   async trips(fromDay, toDay) {
     const { data, error } = await admin.from('trips').select(TRIP)
       .is('cancelled_at', null).lte('start_date', toDay)
-      .or(`start_date.gte.${fromDay},end_date.gte.${fromDay},return_end_date.gte.${fromDay}`)
+      .or(`end_date.gte.${fromDay},start_date.gte.${fromDay}`, { referencedTable: 'ends' })
     if (error) throw error
     return (data ?? []).map(t => ({
       ...t,

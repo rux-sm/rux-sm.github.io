@@ -56,7 +56,8 @@ export type Deps = {
   now(): number
 }
 export type State = 'yard' | 'road' | 'back'
-export type Status = { tripId: string; leg: string; busId: string; state: State; back: string | null }
+// `legId` is the leg's id, beside the old word a page that reads no legs still matches by.
+export type Status = { tripId: string; leg: string; legId: string | null; busId: string; state: State; back: string | null }
 export type Answer = { at: string; buses: Status[] }
 
 // An office day, "2026-10-20", `n` days from the one `ms` falls on.
@@ -147,12 +148,12 @@ export async function statusFor(deps: Deps): Promise<Answer> {
     for (const { trip, a, leg, span } of legs) {
       const bus = byId.get(a.bus_id)
       if (!bus) continue
-      const stops = road.stopsOf(trip, leg.leg)
+      const stops = road.stopsOf(trip, leg.key)
       const where = road.whereOn(stops, bus.path ?? [], bus, now)
       const home = stops.map((s: { type: string }) => s.type).lastIndexOf('return')
       const yard: Point | null = (home >= 0 && stops[home].point) || settings.yard
       const here: Point | null = bus.lat != null && bus.lng != null ? [bus.lat, bus.lng] : null
-      const base = { tripId: String(trip.id), leg: a.leg || 'outbound', busId: String(a.bus_id) }
+      const base = { tripId: String(trip.id), leg: a.leg || 'outbound', legId: leg.legId ?? null, busId: String(a.bus_id) }
       /* Whether every stop from `i` to the yard return is at the yard, within
          road.js's reach of the return, so a group let off at the yard before
          the bus parks has the bus home: heading in once such a stop is next,

@@ -13740,8 +13740,10 @@
   };
   async function followFocus() {
     const id = tripInFocus();
-    if (id === focusShown || following) return;
-    focusShown = id;
+    // Where the trip in focus is the editor's counts too, so the editor opening on the trip the calculator shows fills it from the editor.
+    const key = id && `${id}${editorOn(id) ? ':editor' : ''}`;
+    if (key === focusShown || following) return;
+    focusShown = key;
     if (!id) return;
     following = true;
     try {
@@ -13757,7 +13759,8 @@
         else doc.showNoFile(FILE_NAMES[doc.docType] ?? doc.docType, id);
       }
       const calc = viewers.calc;
-      if (calc?.el && !calc.el.hidden && calc.trip !== id && await asks(calc, 'the quote calculator')) {
+      const calcFromEditor = calcFor && String(calcFor.trip) === id;
+      if (calc?.el && !calc.el.hidden && (calc.trip !== id || (editorOn(id) && !calcFromEditor)) && await asks(calc, 'the quote calculator')) {
         if (editorOn(id)) openCalculator(null);
         else openSavedCalculator(trip, selectedBar()?.dataset.tripId === id ? selectedBar().dataset.legKey : null);
       }
@@ -13765,7 +13768,8 @@
       following = false;
     }
     // The focus may have moved again while a panel asked.
-    if (tripInFocus() !== focusShown) followFocus();
+    const now = tripInFocus();
+    if ((now && `${now}${editorOn(now) ? ':editor' : ''}`) !== focusShown) followFocus();
   }
 
   const openGenerated = ({ kind, ...rest }) => (kind === 'Quote calculator' ? viewers.calc : viewers.forms).openGenerated({ kind, ...rest });

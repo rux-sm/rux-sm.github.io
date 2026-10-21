@@ -53,12 +53,13 @@ screen. The trip editor is the one exception.
 
 ## Questions
 
-- None left; the check below is what remains.
+- At a 1169px window, the editor and any one panel leave the week under its
+  19.5rem minimum, so no panel opens beside the editor and the board asks for
+  the editor to close. Should the new panel come in front of the board there
+  instead, should the week be allowed narrower while the editor is open, or
+  should it stay as it is?
 
 ## Tasks
 
-- [ ] Check in Chrome on :8641 with real trips, at a wide window, a laptop
-      window and a phone width: open every panel in turn, select other trips
-      with Forms and the document panel open, with the editor shut and open, and open a panel with an unsaved
-      editor and typed calculator figures, and report what closes and what
-      asks each time.
+- [ ] Build the answer to the laptop-width question, and check it in Chrome
+      at 1169px with the editor open.

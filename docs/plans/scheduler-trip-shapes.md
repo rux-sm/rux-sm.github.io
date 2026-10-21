@@ -154,9 +154,10 @@ None open.
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, a group at a time: the editor and
       `fromStops` in `scheduler/route-figures.js`, with the quote calculator
-      it fills and the bar's ref, whose `leg` is the old word; and live and
-      the road, whose `stopsOf` in `scheduler/road.js` finds a leg by its
-      word. The bar menu's hotel mark, itinerary upload and Mark as told
+      it fills and the bar's ref, whose `leg` is the old word; the
+      maintenance link, `scheduler/share/maintenance.js`; and the
+      `scheduler/samsara-miles/` function, which reads each leg's yard times
+      by the old word. The bar menu's hotel mark, itinerary upload and Mark as told
       send the old word, and `scheduler/print.js` still keeps a print's marks
       and reads the quote's lines by it, which move with those writers. The past-midnight
       rule's copies become one rule file with its sample cases on the way.

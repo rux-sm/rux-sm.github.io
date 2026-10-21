@@ -12,7 +12,8 @@
    asking each time for the points since the last one it has.
 
    `stopsOf(trip, leg)` lists a leg's stops in order with the time the bus is
-   due at each: the pickup at its Spot, every other stop and the yard return
+   due at each, the leg named by its key, week.js's, or by its old word: the
+   pickup at its Spot, every other stop and the yard return
    at their Arrives. `whereOn(stops, path, bus)` follows the path through
    them: a stop is reached when the bus comes within a quarter mile of it, in
    order, and no sooner than two hours before it is due, so a bus driving
@@ -85,9 +86,9 @@
      time before it. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
-    const legOf = W.legsOf(trip).find(l => l.leg === leg);
+    const legOf = W.legByKey(trip, leg);
     if (!legOf) return [];
-    const { stops, pickup } = W.stopsOfLeg(trip, leg);
+    const { stops, pickup } = W.stopsOfLeg(trip, legOf.key);
     let day = legOf.from, last = null;
     return stops.slice(Math.max(stops.indexOf(pickup), 0)).map(s => {
       const [time, date] = s.type === 'pickup' ? (s.spot ? [s.spot, s.spot_date] : [s.depart_prev, s.depart_prev_date])

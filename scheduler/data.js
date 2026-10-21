@@ -650,7 +650,7 @@
   function roadNext(bar, bus) {
     const trip = heldTrip(bar.dataset.tripId);
     if (!trip || !bus) return null;
-    const stops = Road.stopsOf(trip, bar.dataset.leg);
+    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
     const where = Road.whereOn(stops, bus.path, bus);
     const here = bus.lat != null ? [bus.lat, bus.lng] : null;
     if (where.at) return { stops, where, stop: stops[where.reached], at: true };

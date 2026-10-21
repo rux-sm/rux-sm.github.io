@@ -223,7 +223,7 @@
       parts.push(part);
       said.push(`${words} ${clock}${late ? `, ${late} minutes late` : ''}`);
     };
-    const spot = leg ? Road.stopsOf(trip, leg.leg)[0]?.due ?? null : null;
+    const spot = leg ? Road.stopsOf(trip, leg.key)[0]?.due ?? null : null;
     time('Spot', assign?.pickup_at, 'scheduler-bar__complete-spot', at => Road.pickupLate(spot, at) || 0, 'at the pickup');
     const planned = leg ? window.SchedulerWeek.backAt(leg) : null;
     time('Back', assign?.actual_yard_return_at, 'scheduler-bar__complete-back',

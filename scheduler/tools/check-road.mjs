@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../trip-shape.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const { stopsOf, whereOn, clockOf, lateBy, pickupLate, arrivals, live } = window.SchedulerRoad;
 const { officeInstant } = window.SchedulerWeek;
 
@@ -43,6 +43,12 @@ expect('a leg runs from the pickup to the yard, the yard named Yard',
 expect('the pickup is due at its Spot, a stop at its Arrives, a time earlier on the clock the next day',
   stops.map(s => s.due), [T('2026-10-15', '16:30'), T('2026-10-15', '17:30'), T('2026-10-15', '20:10'),
     T('2026-10-15', '23:50'), T('2026-10-16', '00:20')]);
+// The same trip read with its legs: its stops are found by the leg's id or by its old word, and a leg it lacks has none.
+const shaped = { ...day, trip_legs: [{ id: 'l1', leg: 'outbound', start_date: '2026-10-15', end_date: '2026-10-15', trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_stops: day.trip_stops.map(x => ({ ...x, route_id: 'r1' })) };
+expect('a leg read with its legs has the same stops by its id or its word, and a leg it lacks none',
+  [stopsOf(shaped, 'l1').map(x => [x.name, x.due]), stopsOf(shaped, 'outbound').length, stopsOf(shaped, 'l9')],
+  [stops.map(x => [x.name, x.due]), 5, []]);
 expect('a stop with no place has no point', stops.map(s => !!s.point), [true, true, false, true, true]);
 
 // Paths: the bus waits at the yard, drives on a mile a minute.

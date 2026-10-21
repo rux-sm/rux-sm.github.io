@@ -54,19 +54,24 @@
     () => draw());
 
   // ── reading ─────────────────────────────────────────────────────────────
+  /* A trip with its legs and routes, as trip-shape.js reads them, and
+     `ends`, an embed that returns nothing, which the read below tests. */
   const TRIP_COLUMNS = 'id,destination,customer,confirmed,trip_bar_color,trip_type,start_date,end_date,'
-    + 'return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,'
-    + 'trip_stops(id,position,leg,type,name,address,lat,lng,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date),'
-    + 'trip_assignments(id,bus_id,leg)';
+    + 'departure_time,return_time,'
+    + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
+    + 'trip_stops(id,position,leg,route_id,type,name,address,lat,lng,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date),'
+    + 'trip_assignments(id,bus_id,leg,route_id),ends:trip_legs!inner()';
 
   /* Each bus's legs from yesterday to tomorrow, with when it counts as out
-     on each, so a bus is matched to the leg it is out on now. */
+     on each, so a bus is matched to the leg it is out on now: a trip that
+     starts by tomorrow with a leg that ends, or with no end starts, since
+     two days ago. A leg is named by its key, week.js's. */
   async function readTrips() {
     const from = dayFrom(-2), to = dayFrom(1);
     const { data, error } = await client.from('trips').select(TRIP_COLUMNS)
       .is('cancelled_at', null)
       .lte('start_date', to)
-      .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`);
+      .or(`end_date.gte.${from},start_date.gte.${from}`, { referencedTable: 'ends' });
     if (error) throw error;
     const legs = new Map();
     for (const trip of data || []) {
@@ -74,9 +79,9 @@
         const span = Road.span(leg);
         if (!span) continue;
         for (const a of trip.trip_assignments || []) {
-          if (!a.bus_id || (a.leg || 'outbound') !== leg.leg) continue;
+          if (!a.bus_id || W.legKeyOfVehicle(trip, a) !== leg.key) continue;
           if (!legs.has(a.bus_id)) legs.set(a.bus_id, []);
-          legs.get(a.bus_id).push({ trip, leg: leg.leg, span });
+          legs.get(a.bus_id).push({ trip, leg: leg.key, span });
         }
       }
     }

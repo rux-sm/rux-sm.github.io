@@ -198,7 +198,7 @@
   // When this page first saw each red warning on each bar, so it blinks for its first minute.
   const alarms = new Map();
   function start(bar, bus, motion) {
-    const key = `${bar.dataset.tripId}:${bar.dataset.leg}:${bar.dataset.busId}`;
+    const key = `${bar.dataset.tripId}:${bar.dataset.legKey}:${bar.dataset.busId}`;
     if (started.has(key) || motion !== 'full') return;
     started.add(key);
     const name = bus.engine === 'on' || bus.engine === 'idle' ? 'scheduler-bar--starting' : 'scheduler-bar--lit';
@@ -237,7 +237,7 @@
       const moving = bus.engine === 'on' && bus.mph > 0;
       const resting = !moving && bus.drivers.some(d => d.duty === 'sleeper') && !bus.drivers.some(d => d.duty === 'driving');
       bar.dataset.light = bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
-      const alarm = worst?.tone === 'error' ? `${bar.dataset.tripId}|${bar.dataset.leg}|${bar.dataset.assignmentId}|${worst.kind}` : null;
+      const alarm = worst?.tone === 'error' ? `${bar.dataset.tripId}|${bar.dataset.legKey}|${bar.dataset.assignmentId}|${worst.kind}` : null;
       if (alarm && !alarms.has(alarm)) alarms.set(alarm, Date.now());
       const blinkFor = alarm ? alarms.get(alarm) + ALARM_MS - Date.now() : 0;
       bar.toggleAttribute('data-alarm', blinkFor > 0);

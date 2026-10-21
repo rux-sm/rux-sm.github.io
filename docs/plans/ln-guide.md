@@ -26,10 +26,24 @@ exports, so a correction is made once and every page redraws.
 
 ## Decisions
 
+### A documentation site, with a walked mode inside it
+
+- **The site is the house and Guided is a room in it.** Every page shares
+  Design's shell: the header, a left menu on a wide screen, and one reading
+  column. A task page is a document first, and one button at its top, Walk it,
+  turns it into the step-at-a-time view LN Guide has now. One shell is simpler
+  to learn than a site and a phone app with tabs.
+
+- **The mockup in `design/m/ln-guide/` is the picture of these decisions**:
+  Home, the Ship from stock process page, and one task in both views, built
+  from Design's `document-page` template with the export's own text. A decision
+  changes there first, because a mockup is cheap to redraw.
+
 ### Four kinds of page
 
 Each kind answers one question, the way professional documentation separates
-doing, following, looking up and understanding.
+doing, following, looking up and understanding, which Diátaxis names how-to,
+tutorial, reference and explanation.
 
 | Page | Answers | From atlas |
 | :--- | :--- | :--- |
@@ -39,81 +53,106 @@ doing, following, looking up and understanding.
 | **Idea** | What does this mean, and why does LN work this way? | A `concepts/` file |
 
 - **A task is one action on one or two screens**, named as a verb and its
-  object: Create and approve a sales order, Release a sales order to
-  warehousing, Generate outbound advice. The same action in two processes is
-  one task, so Run order planning links to Create and approve a sales order
-  rather than saying to follow another scenario's steps.
+  object: Create and approve a sales order, Generate outbound advice. The same
+  action in two processes is one task, so Run order planning links to Create
+  and approve a sales order rather than saying to follow another's steps.
 
 - **A process is a path of tasks**, with each decision a fork between the two
   tasks it separates, as the scenario path draws it now. Ship from stock and
   Plan to shipment are processes.
 
 - **The side tasks of the tasks map are tasks too.** One with written steps is a
-  task page; one without is a row on its module's index.
+  task page; one without is a quiet row on the task index.
+
+- **A task carries one example of its own**, the values it was walked with, so
+  it reads whole on its own. A process says at its head which values its run
+  uses.
 
 ### The task page
 
-- **On top, always visible:** the title, one line of purpose, its verified
-  status, what must exist first as links to the tasks that make it, and the
-  numbered steps. Each step is one short action with what you should see under
-  it, and the screen's code is a chip that copies.
+- **On top, always visible, in this order:** the title; one line of What you
+  get; its verified status and its module as tags; a strip saying which task
+  of which process this is and what comes next; Before you start, naming what
+  must exist first as links to the tasks that make it; the screen's route with
+  its code as a chip that copies; one Walk it button; then the numbered steps,
+  each one short action with what you should see under it.
 
 - **Folded underneath, open when wanted:** Why LN works this way, If something
   goes wrong, Variations, and Related, which names the screens, the ideas and
   the next task. A fold's label carries its count, such as If something goes
   wrong · 9.
 
-- **Two views of the same task, Guided and Full page.** Guided is the step view
-  LN Guide has now: one step at a time, Back and Next, the arrow keys, Read it to
-  me and a progress bar. Full page shows the whole task as one readable
-  document and is what prints. The reader's last choice is remembered in that
-  browser.
+- **Two views of the same task, Full page and Guided.** Full page is the task
+  as one readable document and is what prints. Guided is one step at a time:
+  a progress bar under the task's name, the step in large type, what you should
+  see, the route, three quiet links reading Stuck? with its count, Full page
+  and Read it to me, and Back and Next fixed at the foot, with the arrow keys.
+
+- **The screen's shape decides which view opens, not a memory.** A phone opens
+  Guided, a wide screen opens Full page, and the other view is one tap away. A
+  rule the reader can predict beats a setting they cannot see.
 
 - **A step's headline is the action alone.** A menu route, a screen's code and
   a second sentence are moved beneath it by the build, so the library's wording
   stays as it was walked.
 
 - **A step refers to a step by its place on the page**, never by a phase number
-  from the library, so no step reads as "phase 1 task 2 steps 1–11".
+  from the library; one in another task is named by that task's title too.
 
 ### The other pages
 
-- **A process page** lists its tasks in order, each with its module and status,
-  and draws its decisions as forks. Its Start opens the first task in Guided.
+- **A process page** lists its tasks in order, each with what it achieves and
+  its step count, and draws its decisions as dashed forks. Above the path: its
+  purpose, its tags, a Before you start line and one Start button, which opens
+  the first task in Guided. Below it: a Done when line, then the folds If
+  something goes wrong, Reference, Different cases and What comes next.
 
 - **A screen page** gives the screen's purpose, code, menu route or how it is
   reached, and the tasks that use it. The owner sees its fields after log-in.
 
-- **An idea page** gives a short explanation in the library's own words, its
-  other names, its screens, and the tasks where it matters. The owner sees the
-  full account after log-in.
+- **An idea page** gives a short explanation written for it in atlas, its other
+  names, its screens, and the tasks where it matters. The owner sees the full
+  account after log-in. A one-line idea page is a dead end.
 
-- **A module index** lists the module's tasks: a documented one as a link with
-  its status, and one the library has no steps for as a quiet row reading Not
-  documented yet. The indexes are how the site shows its own coverage.
+- **The task index** lists every task grouped by module: a documented one as a
+  link with its status, and one the library has no steps for as a quiet row
+  reading Not documented yet. The index is how the site shows its coverage.
+
+- **The map stops being navigation.** Its grid is drawn once, on the idea page
+  about how an order moves through LN, and no tab or menu entry leads to it.
+  The numbered path, the useful half of the old Map tab, is the process page.
 
 ### Front door and navigation
 
-- **Home has one search box, three ways in and a place to start.** Do a task,
-  Follow a process and Look it up open the task index, the process list and the
-  screens and ideas. Carry on returns to where the reader stopped. Start here
-  lists the processes in the order they depend on each other, each with its
-  verified status.
+- **Home asks What are you doing?** and answers with one search box, one Carry
+  on card that returns to where the reader stopped, Start here, the processes
+  as cards in order with their verified status, and one quiet card, Still to
+  confirm. There are no other doors, because a reader does not know whether
+  what they want is a task or a process.
 
-- **On a wide screen, a left menu by module**, the content column no wider than
-  a comfortable line, and an On this page list beside it. The modules are
-  Master Data, Sales, Planning, Procurement, Manufacturing, Warehousing and
-  Tools.
+- **The Start here order** is Check an item's inventory, Ship from stock,
+  Purchase to receipt, Warehouse transfer, Create test items, Production order,
+  Run order planning, Plan to shipment, Set up a GenAI prompt and Use the AI
+  commands: the concrete warehousing processes before the planning ones, and
+  the AI commands last, with Tools as their tag and no area of their own.
 
-- **On a phone, one column and a bar at the foot of the window.**
+- **On a wide screen, a left menu of the processes** in the Start here order,
+  then Screens and Ideas, one flat entry each. A learner thinks in what they
+  are doing, not in LN's modules, so the module is a tag on a task and the
+  grouping of the task index. Beside the content column, which is no wider than
+  a comfortable line, an On this page list names the page's parts.
 
-- **Search covers tasks, processes, screens, ideas and problems**, and groups
-  its results by kind. A query that names a task, a screen or an idea puts that
-  page first; a problem is one of the library's "something went wrong" rows, so
-  typing a symptom still finds its fix.
+- **On a phone, one column and no bar at the foot.** The header's menu button
+  opens the same menu and its search action opens search, so the only fixed
+  thing on a phone is Guided's Back and Next.
 
-- **Every page has an address**, so Back, a reload and a shared link all work.
-  Old addresses are not kept.
+- **Search covers tasks, processes, screens, ideas and problems**, grouped by
+  kind. A query that names a page puts it first, and a problem is one of the
+  library's "something went wrong" rows, so typing a symptom finds its fix.
+
+- **Every page is its own file with a plain address** under `do/`, `follow/`,
+  `screens/` or `ideas/`, so Back, a reload, a shared link and a printed page
+  all work. Old addresses are not kept.
 
 ### Verified status
 
@@ -121,12 +160,13 @@ doing, following, looking up and understanding.
   Verified, Walked in LN with its month, or Not walked yet. It is computed from
   atlas and shown on the page, the process, the index and Home.
 
+- **A walk stamps a task, not a process**, so a task walked in one process
+  counts in every other. Atlas's status, phase and walk checks move from the
+  phase to the task.
+
 - **A task nobody has walked says so**, with two buttons for the owner: it
   matched, and it was different. The second asks for one line and takes a
   screenshot.
-
-- **Home ends with one quiet card, Still to confirm**, which lists what waits.
-  It has no score and no streak.
 
 - **What the owner sends is evidence, not a change.** It is saved to the
   owner's account and brought into atlas, where a session reads it and decides.
@@ -140,28 +180,34 @@ doing, following, looking up and understanding.
   as that text with a Copy button.
 
 - **Source citations stay in atlas.** A guide's name, a page number or a help
-  topic never shows in a reader's sentence; a gap shows as one Not documented yet
-  line of its own, never appended to a sentence that gives an answer.
+  topic never shows in a reader's sentence, and a gap is one line of its own,
+  Not documented for this release yet, never appended to an answer.
 
 - **Read it to me speaks the step** with the browser's own voice, so nothing is
-  sent anywhere.
+  sent anywhere. Progress is shown and never scored.
 
-- **Progress is shown and never scored.**
+### Print
+
+- **Printing a task or a process prints its Full page**, from one Print button
+  and the browser's dialog, where Save as PDF is a destination, so no PDF
+  library is added. `ln/print.css` keeps the paper light on any theme with no
+  fills and no chrome, as `scheduler/print.css` does, and the PDF takes the
+  page's title as its name.
 
 ### Private detail
 
 - **A screen's fields and an idea's full account show after log-in**, for the
   owner alone. They rest on Infor's help, so they are read from the database and
-  never built into the public page. The opening lines show, and each section
+  never built into the public page; the opening lines show, and each section
   waits behind its heading.
 
 ### The library
 
 - **Atlas gains a task class.** A task file holds its purpose, what must exist
-  first, its steps, why LN works this way, its something-went-wrong rows, its
-  variations and its sources, and carries the checks a walkthrough's phase does
-  now. A walkthrough becomes a process: its tasks in order, its decisions, and
-  what the process itself adds.
+  first, its steps, its example, why LN works this way, its something-went-wrong
+  rows, its variations and its sources, and carries the checks a walkthrough's
+  phase does now. A walkthrough becomes a process: its tasks in order, its
+  decisions, and what the process itself adds.
 
 - **The export gains the task and process kinds**, under a new contract number,
   and LN Guide reads them.
@@ -173,13 +219,14 @@ doing, following, looking up and understanding.
 
 ### Built from Design
 
-- **Every control is Carbon.** The wide layout starts from Design's
-  `document-page` template, its side navigation and breadcrumbs, and Guided
-  from `wizard-page`'s progress indicator. Search results start from
-  `search-results-page` and an index from `list-page`.
+- **Every control is Carbon.** The wide layout is Design's `document-page`
+  template; Guided's progress is Carbon's progress bar, a fold its accordion,
+  On this page its contained list, and the code chip its inline code snippet.
+  Search results start from `search-results-page` and the task index from
+  `list-page`.
 
 - **What Carbon lacks is LN Guide's own**, under the `ln-` prefix, with every
-  colour a `--rux-*` token: the process path, the step and the phone bar.
+  colour a `--rux-*` token: the path, the step, the step list and Guided's bar.
 
 - **Design's button set runs off a phone**, because each button keeps a fixed
   width. Until Design has a set that fits, the two rules that size Back, Next
@@ -187,53 +234,35 @@ doing, following, looking up and understanding.
 
 ### What carries over
 
-- **The pipeline:** atlas, `emit.py`, the export with its pin, the build that
-  writes the page, and its list of what it could not place.
-
-- **Carry on, Read it to me, the confirm buttons, the private shelf, the map and
-  its whole grid.**
+- **The pipeline and the reader's tools:** atlas, `emit.py`, the export with
+  its pin, the build with its list of what it could not place; and Carry on,
+  Read it to me, the confirm buttons and the private shelf.
 
 ### Left out, on purpose
 
-Scores, streaks and quests; lighting two processes to compare them; and
-landings for old page addresses.
+Scores, streaks and quests; a check-yourself at the end of a process, for the
+same reason as the scores; the Map tab; a bar at the foot of a phone; lighting
+two processes to compare them; and landings for old page addresses.
 
 ## Questions
 
-- **Is the task the right main unit**, with processes built from tasks? The
-  other way keeps the scenario as the unit and adds a task index beside it,
-  which is less work in atlas and keeps the duplicated steps.
-- **Where do a process's example values live?** A task written once can carry
-  one example of its own, a process can give each of its tasks the values of
-  its run, or a task can carry no example and say only "your value".
-- **Does a walk stamp a task or a process?** Stamping tasks lets a task walked
-  in one process count in every other; it moves atlas's status, phase and walk
-  checks from the phase to the task.
-- **Which view opens first, Guided or Full page?** And should a phone open in
-  Guided whatever the reader chose on a wide screen?
-- **Should public idea pages get a short explanation written for them in atlas**,
-  about sixteen of them, or stay one line with the full account behind log-in?
-- **What is in the phone bar:** Home, Map and Search as now, or Home, Search and
-  Carry on?
-- **Does Full page replace the print plan**, `docs/plans/ln-print.md`, so that
-  printing a task or a process prints its Full page?
-- **Are the AI commands part of Tools, or an area of their own?**
-- **Is this the Start here order:** Check an item's inventory, Ship from stock,
-  Purchase to receipt, Create test items, Production order, Run order planning,
-  Warehouse transfer, Plan to shipment, with the AI commands apart?
-- **Should a process end with a short check-yourself**, a question or two drawn
-  from its tasks' Why LN works this way, or is that left out with the scores?
+- **Does Guided on a wide screen stay one step alone**, with the rest of the
+  window empty, or show Stuck? and Why LN works this way open beside the step?
 
 ## Tasks
 
+- [ ] Keep the mockup redrawable: its generator, written in a session's
+      scratchpad, becomes the first shape of the new `ln/tools/build-views.mjs`,
+      rebuilding `design/m/ln-guide/` from the export, with Guided on a wide
+      screen mocked both ways.
 - [ ] In atlas, write the task class into `standards/`, its template, its
       frontmatter and its checks, with the process shape a walkthrough takes.
 - [ ] In atlas, split each walkthrough's phases into task files, joining the
       phases that are the same action, and rewrite each walkthrough as a process
       that names its tasks.
 - [ ] In atlas, move the walked stamps, the walk files and the status
-      computation to the unit the walk question settles, with their checks and
-      self-test fixtures.
+      computation from the phase to the task, with their checks and self-test
+      fixtures.
 - [ ] In atlas, turn each side task of `maps/tasks.md` that has steps into a
       task file.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
@@ -244,22 +273,28 @@ landings for old page addresses.
       which is one that sets several things at once.
 - [ ] In atlas, write a screen file for the five screens still without one, once
       a source says how each is opened.
+- [ ] In atlas, write the short explanation for each of the sixteen ideas.
 - [ ] In atlas, give a field's name its own token where it sits inside bold or
       quoted words, and take the underscore tidy out of `ln/app.js`.
 - [ ] In atlas, emit the task and process kinds from `tools/emit.py` under the
       new contract number, and document them in `standards/export-json.md`.
-- [ ] Build Home, the module indexes, and the task, process, screen and idea
-      pages in `ln/tools/build-views.mjs` from the new contract, with Guided and
-      Full page on the task page.
+- [ ] Build Home, the task index, and the task, process, screen and idea
+      pages in `ln/tools/build-views.mjs` from the new contract, one file per
+      page, with both views on the task page and the search index as one file.
 - [ ] Group search results by kind, and put a page whose name the query names
       first.
-- [ ] Lay out the wide screen from `document-page`, with the module menu and On
-      this page, and the phone as one column with its bar.
+- [ ] Lay out the wide screen from `document-page`, with the process menu and
+      On this page, and the phone as one column with no bar.
+- [ ] Draw the whole grid on the idea page about how an order moves through
+      LN, and remove the Map tab.
 - [ ] Carry the confirm buttons, Still to confirm and the private detail onto
       the new pages.
+- [ ] Add the Print button to a task and a process, write `ln/print.css`, and
+      add it to the print rule in `tools/check.mjs`.
 - [ ] Give Design a button set that fits a phone, and take the two rules out of
       `ln/overrides.css`.
-- [ ] Say in `ln/README.md` what each kind of page is and where it comes from.
+- [ ] Say in `ln/README.md` what each kind of page is, where it comes from, and
+      how a page is printed.
 - [ ] Check every kind of page in Chrome on :8641, at a phone width and a wide
       one, in a light theme and a dark one, and the Full page of one task in
       print preview.

@@ -5523,6 +5523,15 @@
     return moved;
   }
 
+  /* Brings the lines in step and, where a price moved, draws them again, so
+     the Billing card and the quoted price, which follows the lines' total,
+     show what Save writes. True when a price moved. */
+  function followLines() {
+    if (!linesLive || !syncLines()) return false;
+    redrawLines();
+    return true;
+  }
+
   /* A line in words, as its tile on the Billing tab shows it:
      its name, its quantity at its cost with what the calculator makes it
      where the two differ, a rental's rate, and its amount. A line that
@@ -5817,8 +5826,9 @@
 
   /* The lines Save writes, in order, each with the quantity and amount it has
      now: a rental's quantity is read from the Buses tab at the moment of the
-     save. */
-  const linesToSave = () => (linesLive && syncLines(), linePending).map((l, position) => ({
+     save. It only reads, since the checks that call it draw nothing: a price
+     is moved by `followLines`, which draws it. */
+  const linesToSave = () => linePending.map((l, position) => ({
     id: l.id ?? null, position, kind: l.kind, leg: l.leg ?? null,
     item: l.item ?? null, description: l.description ?? null,
     quantity: lineQty(l), cost: money(String(l.cost ?? '')), amount: lineAmount(l),
@@ -6698,8 +6708,7 @@
   function refreshDirty() {
     syncEstHint();
     // A date, a type, the miles or a drive can move a line's price.
-    if (linesLive && syncLines()) redrawLines();
-    else if (linesLive) redrawDeadOffer();
+    if (!followLines() && linesLive) redrawDeadOffer();
     const startEl = document.getElementById('scheduler-f-start');
     const destEl = document.getElementById('scheduler-f-destination');
     const startOk = !!isoOrNull(startEl?.value);
@@ -6850,6 +6859,8 @@
       ? parseISO(leg.from).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })
       : `${parseISO(leg.from).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} to ${parseISO(leg.to).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} (${legDays} days)`;
 
+    // The lines are the last trip's until the Billing tab loads this one's.
+    linesLive = false;
     editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, legKey: named?.key ?? legName,
       /* What the trip already answered, whether or not the editor draws a tag
          for it: a save merges its own tags over this, so a requirement the
@@ -8400,6 +8411,8 @@
           unmeasured: fig.unmeasured,
         };
         drawDone();
+        // The quote is priced from the miles a day, so its lines and price follow them.
+        if (followLines()) refreshDirty();
         const table = el('table', 'rux--data-table rux--data-table--xs');
         const head = el('tr');
         for (const h of [...(days ? ['Day'] : []), 'Miles', 'Drive', 'On duty', 'Less rest']) {
@@ -8535,6 +8548,10 @@
       dropFields.addEventListener('input', drawTimeline);
       // The tiles at the two ends show what their dialogs now hold.
       routeEndsClosed = () => { drawTimeline(); drawStops(); };
+      // The days and the Summary's rows follow the trip's dates, picked or typed.
+      for (const id of ['scheduler-f-start', 'scheduler-f-end', 'scheduler-f-rstart', 'scheduler-f-rend']) {
+        document.getElementById(id)?.addEventListener('change', () => { drawTimeline(); drawStops(); });
+      }
       document.getElementById('scheduler-f-type')?.addEventListener('change', () => {
         /* A drop-off that only copied the pickup, as a round trip's does, is
            let go when the trip becomes one-way or split, which ends
@@ -8727,7 +8744,6 @@
       editing.coBefore = null;
       editing.reliefBefore = null;
       askQuoteRates();
-      linesLive = false;
       // The quote's lines, a row each in one card as the Billing card's
       // steps are, with Add line under it.
       const lineLayer = el('div', 'rux--layer-two');
@@ -11633,6 +11649,8 @@
      conflict box's Save anyway, and `answered` the update it already holds.
      A failed read does not block the save, which reports its own errors. */
   async function saveEditor(after, force = false, answered = null) {
+    // A price still to move moves on screen first, so the quoted price Save writes is the lines' total.
+    followLines();
     if (!editing || (!editing.creating && !changed())) return false;
     const heldBy = saveHeldBy();
     if (heldBy) { toast('error', 'The trip was not saved.', heldBy); return false; }

@@ -150,8 +150,6 @@ None open.
 
 ## Tasks
 
-- [ ] Let `trip_steps_off` take a leg by its id and `trip_stops_steps_off`
-      find a stop's leg by its route, as SQL shown to rux.
 - [ ] Move the editor's readers of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, once no other session has `data.js`

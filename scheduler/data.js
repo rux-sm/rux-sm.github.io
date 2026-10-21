@@ -10216,16 +10216,14 @@
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
-    /* The first band's name heads the whole roster, in the column header where
-       "Driver" used to sit: a band heading is the header band again, so one
-       drawn against the header's own edge would be that header twice. An empty
-       roster has no band to name and keeps "Driver". */
+    /* Every priority is its own tile under its own heading, so the column
+       header's corner is empty until a heading scrolls under it; an empty
+       roster has no tile and keeps "Driver". */
     const bandName = p => p == null ? 'No priority' : `Priority ${p}`;
-    const firstBand = rows.length ? (rows[0].driver.priority ?? null) : null;
 
     const head = el('div', 'scheduler-avail__days');
     head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head',
-      rows.length ? bandName(firstBand) : 'Driver'));
+      rows.length ? '' : 'Driver'));
     for (let i = first; i < first + count; i++) {
       const d = addDays(weekStart, i);
       /* One letter, taken from the locale's own `short` weekday, for the
@@ -10249,17 +10247,21 @@
     }
     availGrid.appendChild(head);
 
-    /* A heading wherever the priority changes, because the rows are in
-       priority order and only the breaks are missing. A driver with no
-       priority gets their own heading rather than sitting under the last
-       number, which would say something untrue about them. */
-    // Seeded with the band the column header already names, so it draws none.
-    let band = firstBand;
+    /* A tile wherever the priority changes, because the rows are in priority
+       order and only the breaks are missing. A driver with no priority gets
+       their own tile rather than sitting under the last number, which would
+       say something untrue about them. The heading's count is filled by
+       `markAvailDays`, since it answers for the selected trip. */
+    let band, group = null;
     for (const row of rows) {
       const p = row.driver.priority ?? null;
-      if (p !== band) {
+      if (!group || p !== band) {
         band = p;
-        availGrid.appendChild(el('div', 'scheduler-avail__band', bandName(p)));
+        group = el('div', 'scheduler-avail__group');
+        const heading = el('div', 'scheduler-avail__band');
+        heading.append(el('span', 'scheduler-avail__band-name', bandName(p)), el('span', 'scheduler-avail__count'));
+        group.appendChild(heading);
+        availGrid.appendChild(group);
       }
       const r = el('div', 'scheduler-avail__row');
       /* The full name goes on the title, because the cell shows `short_name`
@@ -10323,24 +10325,22 @@
         if (day.refs.length) availRefs.set(cell, day.refs);
         r.appendChild(cell);
       });
-      availGrid.appendChild(r);
+      group.appendChild(r);
     }
 
-    /* The corner names the band being read. The first band is drawn there
-       instead of as a heading of its own, so every later band hands its name
-       over as it reaches the header and the roster never shows two headings
-       in a row. */
+    /* The corner names the band being read once its heading has scrolled
+       under the column header, so a long tile keeps its name in view. */
     const corner = head.firstElementChild;
-    const bands = [...availGrid.querySelectorAll('.scheduler-avail__band')];
+    const bands = [...availGrid.querySelectorAll('.scheduler-avail__band-name')];
     nameAvailBand = () => {
       if (!rows.length) return;
       const edge = corner.getBoundingClientRect().bottom;
       // A hidden roster measures zero, where every band would pass and the
       // last would win; it is named again when it is shown.
       if (!edge) return;
-      let name = bandName(firstBand);
+      let name = '';
       for (const b of bands) {
-        if (b.getBoundingClientRect().top > edge) break;
+        if (b.getBoundingClientRect().top >= edge) break;
         name = b.textContent;
       }
       if (corner.textContent !== name) corner.textContent = name;
@@ -10349,12 +10349,19 @@
   }
 
   /* Marks the selected trip's days down the roster, so "who is free then"
-     needs no counting; null clears it. app.css underlines the days' letters
-     and draws an open slot in each free cell, which are the answer. */
+     needs no counting; null clears it. Each free cell on those days is an open
+     mark, joined to an open neighbour; a driver free on every day shown is
+     whole, with a tick by the name, and one free on some days names how many.
+     Each priority's heading counts its whole drivers. */
+  const OPEN = ['scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day', 'scheduler-avail__cell--open',
+    'scheduler-avail__cell--whole', 'scheduler-avail__cell--open-prev', 'scheduler-avail__cell--open-next'];
   function markAvailDays(start, span) {
-    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
-      c.classList.remove('scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day');
+    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) c.classList.remove(...OPEN);
+    for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-open]')) {
+      delete n.dataset.open;
+      n.querySelector('.scheduler-avail__whole')?.remove();
     }
+    for (const c of availGrid.querySelectorAll('.scheduler-avail__count')) c.textContent = '';
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -10362,6 +10369,38 @@
     for (let i = start; i <= end; i++) {
       for (const d of availGrid.querySelectorAll(`.scheduler-avail__day[data-day="${i}"]`)) d.classList.add('scheduler-avail__day--on-day');
       for (const c of availGrid.querySelectorAll(`.scheduler-avail__cell[data-day="${i}"]`)) c.classList.add('scheduler-avail__cell--on-day');
+    }
+    // Counted against the days shown, so a trip running on into the other
+    // week is judged by the part the roster can see.
+    const days = availGrid.querySelectorAll('.scheduler-avail__days > .scheduler-avail__day--on-day').length;
+    if (!days) return;
+    for (const group of availGrid.querySelectorAll('.scheduler-avail__group')) {
+      let whole = 0;
+      for (const r of group.querySelectorAll('.scheduler-avail__row')) {
+        const open = [...r.querySelectorAll('.scheduler-avail__cell--on-day')]
+          .filter(c => !c.matches('.scheduler-avail__cell--busy, .scheduler-avail__cell--off'));
+        if (!open.length) continue;
+        const all = open.length === days;
+        if (all) whole++;
+        for (const c of open) {
+          c.classList.add('scheduler-avail__cell--open');
+          if (all) c.classList.add('scheduler-avail__cell--whole');
+          const prev = c.previousElementSibling;
+          if (open.includes(prev)) {
+            c.classList.add('scheduler-avail__cell--open-prev');
+            prev.classList.add('scheduler-avail__cell--open-next');
+          }
+        }
+        const name = r.querySelector('.scheduler-avail__name');
+        name.dataset.open = all ? 'all' : `${open.length}/${days}`;
+        if (all) {
+          const tick = svgUse('#m-check', '16', '0 0 20 20');
+          tick.classList.add('scheduler-avail__whole');
+          name.appendChild(tick);
+        }
+      }
+      group.querySelector('.scheduler-avail__count').textContent =
+        `${whole || 'None'} free${days > 1 ? ` all ${days} days` : ''}`;
     }
   }
 

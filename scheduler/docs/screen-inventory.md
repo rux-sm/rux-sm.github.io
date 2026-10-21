@@ -181,9 +181,11 @@ it is a companion view, not panel content, and it stays on until turned off.
 
 The grid and the panel can both be open. Only the panel is one at a time.
 
-Each driver free on one of a selected trip's days has an open slot there, a
-dashed outline the size of a mark, so a column of slots is who can take the
-trip. Rux-dark draws each slot as a grey mark instead.
+Each priority is its own tile. With a trip selected, its days are shaded in
+the header, and each driver free on one of them has a mark there: a green bar
+when free every day, with a tick by the name, and a grey one when free only
+some, with the count of days, such as 2/3. Each tile's heading counts its
+drivers free for the whole trip.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

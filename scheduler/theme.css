@@ -1118,9 +1118,3 @@
 [data-theme="rux-dark"] .scheduler-avail__cell--alt {
   background-image: linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe));
 }
-/* A free day of the selected trip is a grey mark, the size and corners of a
-   booked one, in place of the open slot's dashed outline. */
-[data-theme="rux-dark"] .scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off)::before {
-  border: 0;
-  background: var(--rux-layer-selected);
-}

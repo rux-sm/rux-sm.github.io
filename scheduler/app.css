@@ -3119,7 +3119,7 @@ button.scheduler-row-head__num::after {
 /* Pinned to the pane's width. `.scheduler-grid` is `max-content` so the board
    can overflow and scroll; here that would stop the name column shrinking and
    give the roster a sideways scroll. */
-.scheduler-avail__grid { align-content: start; inline-size: 100%; }
+.scheduler-avail__grid { align-content: start; inline-size: 100%; padding: 0 var(--rux-spacing-02) var(--rux-spacing-03); }
 .scheduler-avail__days,
 .scheduler-avail__row { display: contents; }
 
@@ -3149,11 +3149,35 @@ button.scheduler-row-head__num::after {
 .scheduler-week--short .scheduler-row--last > * {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-/* The row over a priority band takes the band's rule for its own, as the
-   column header meets the first row: none where the surface change separates
-   them, Carbon's way, and the hairline in a theme that separates with one. */
-.scheduler-avail__row:has(+ .scheduler-avail__band) > * {
-  border-block-end: var(--scheduler-band-rule);
+/* EACH PRIORITY IS A TILE, 4px inside the pane and 8px below the one above,
+   so the lists read as separate groups. The inset is 4px, not 8px, because
+   the 20rem pane leaves the names under 90px. It is a subgrid of the roster, so its
+   days stay in the header's columns, and its edge is a shadow rather than a
+   border, which would narrow its first and last columns. Its corners are the
+   bar's, square where Carbon draws them. Its last row needs no rule: the
+   edge closes it. */
+.scheduler-avail__group {
+  --scheduler-tile-radius: var(--scheduler-bar-radius, 0);
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-block-start: var(--rux-spacing-03);
+  border-radius: var(--scheduler-tile-radius);
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01);
+}
+.scheduler-avail__group > .scheduler-avail__row:last-child > * { border-block-end: 0; }
+.scheduler-avail__group > .scheduler-avail__row:last-child > :first-child { border-end-start-radius: var(--scheduler-tile-radius); }
+.scheduler-avail__group > .scheduler-avail__row:last-child > :last-child { border-end-end-radius: var(--scheduler-tile-radius); }
+/* The column header reaches over the roster's 4px inset to the pane's edges,
+   so rows scrolling under it never show at its sides. The last day gives the
+   inset back as padding, which keeps its letter over its column. */
+.scheduler-avail__days > .scheduler-avail__day--head {
+  margin-inline-start: calc(-1 * var(--rux-spacing-02));
+  padding-inline-start: calc(var(--rux-spacing-02) + var(--rux-spacing-03));
+}
+.scheduler-avail__days > .scheduler-avail__day:last-child {
+  margin-inline-end: calc(-1 * var(--rux-spacing-02));
+  padding-inline-end: var(--rux-spacing-02);
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
@@ -3222,10 +3246,18 @@ button.scheduler-row-head__num::after {
   padding-inline: 0;
   text-align: center;
 }
-/* The selected trip's days are in primary text, and today's letter takes the
+/* The selected trip's days are shaded in the header, in primary text, with
+   the mark's corners at the run's two top ends; today's letter takes the
    colour the board's own today does. Two classes, to beat the header row's
-   colour; today comes second, so a selected today stays in its colour. */
-.scheduler-avail__days > .scheduler-avail__day--on-day { color: var(--rux-text-primary); }
+   surface and colour; today comes second, so a selected today stays in its
+   colour. The shade lies over the band's surface, because in some themes the
+   selected token is a wash. */
+.scheduler-avail__days > .scheduler-avail__day--on-day {
+  background: linear-gradient(var(--rux-background-selected), var(--rux-background-selected)), var(--scheduler-band-surface);
+  color: var(--rux-text-primary);
+}
+.scheduler-avail__days > :not(.scheduler-avail__day--on-day) + .scheduler-avail__day--on-day { border-start-start-radius: var(--scheduler-mark-radius, 0); }
+.scheduler-avail__days > .scheduler-avail__day--on-day:not(:has(+ .scheduler-avail__day--on-day)) { border-start-end-radius: var(--scheduler-mark-radius, 0); }
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
 /* The roster's corner, sticky in both axes. */
 .scheduler-avail__day--head {
@@ -3256,18 +3288,30 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-/* A FREE DAY OF THE SELECTED TRIP is an open slot: a dashed outline in the
-   interactive colour, the size and corners of a mark, empty because the day
-   is. It is a kind of mark nothing else in the roster draws, so it cannot be
-   taken for a booking, a header or a band, and a column of them is who can
-   take the trip. A booked or day-off cell keeps its own mark instead. */
+/* A FREE DAY OF THE SELECTED TRIP is an open mark, the size and corners of a
+   booked one: green where the driver is free every day of the trip, grey
+   where only some, and joined into one bar across free days in a row, as a
+   trip's days are. A booked or day-off cell keeps its own mark instead. A
+   theme can name either colour. */
 .scheduler-avail__cell--on-day { position: relative; }
-.scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off)::before {
+.scheduler-avail__cell--open::before {
   content: '';
   position: absolute;
   inset: 2px;
-  border: 1px dashed var(--rux-border-interactive);
   border-radius: var(--scheduler-mark-radius, 0);
+  background: var(--scheduler-avail-part, var(--rux-layer-selected));
+}
+.scheduler-avail__cell--whole::before { background: var(--scheduler-avail-whole, var(--rux-tag-background-green)); }
+.scheduler-avail__cell--open-prev { overflow: visible; }
+.scheduler-avail__cell--open-next::before {
+  inset-inline-end: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.scheduler-avail__cell--open-prev::before {
+  inset-inline-start: -1px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
@@ -3368,6 +3412,24 @@ button.scheduler-row-head__num::after {
   font-weight: var(--rux-heading-compact-01-font-weight);
 }
 .scheduler-avail__name:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+/* How much of the selected trip a driver is free for, at the name's end: a
+   green tick for all of it, or the count of days, such as 2/3. */
+.scheduler-avail__name[data-open] { padding-inline-end: var(--rux-spacing-06); }
+.scheduler-avail__name[data-open]:not([data-open="all"])::after {
+  content: attr(data-open);
+  position: absolute;
+  inset-inline-end: var(--rux-spacing-02);
+  color: var(--rux-text-secondary);
+  font-size: var(--scheduler-fs);
+  font-weight: var(--rux-body-compact-01-font-weight);
+}
+.scheduler-avail__whole {
+  position: absolute;
+  inset-inline-end: var(--rux-spacing-02);
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  color: var(--rux-support-success);
+}
 .scheduler-avail__cell--busy { cursor: pointer; }
 
 /* A driver carried to a trip, from the roster or off another bar, is a figure
@@ -3514,6 +3576,8 @@ button.scheduler-row-head__num::after {
    do. Two classes, to beat the band's weight on
    `.scheduler-avail__days > .scheduler-avail__day`. */
 .scheduler-avail__days > .scheduler-avail__day--weekend { font-weight: var(--rux-body-compact-01-font-weight); }
+/* The heading's count of drivers free for the whole selected trip. */
+.scheduler-avail__count { font-weight: var(--rux-body-compact-01-font-weight); }
 
 /* The heading over each priority band, which is the column header band again,
    lower down: the same surface, type and colour, across the same eight
@@ -3535,6 +3599,11 @@ button.scheduler-row-head__num::after {
   block-size: 2rem;
   line-height: 2rem;
   padding-inline: var(--rux-spacing-03);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--rux-spacing-03);
+  border-start-start-radius: var(--scheduler-tile-radius);
+  border-start-end-radius: var(--scheduler-tile-radius);
   background: var(--scheduler-band-surface);
   border-block-end: var(--scheduler-band-rule);
   color: var(--rux-text-secondary);

@@ -44,6 +44,8 @@ screen. The trip editor is the one exception.
   what an open Forms, calculator or document panel shows to that trip's, and
   one holding typed input asks first, keeping what it shows if the answer is
   no.
+- **A selected trip with no file of the kind showing** keeps the document
+  panel open, saying No files uploaded under its head, which names the trip.
 - **A panel that shows one trip names it in its head** with the trip's
   `trip_ref`, as the editor already shows "#1042" beside its title: Forms,
   the calculator and the document panel. To do, Prep and Driver availability
@@ -53,9 +55,7 @@ screen. The trip editor is the one exception.
 
 ## Questions
 
-- When a selected trip has no stored file of the kind the document panel is
-  showing, such as no itinerary, should the panel close, or stay on the last
-  trip's file with its head naming that trip?
+- Is the plan ready to build?
 
 ## Tasks
 
@@ -73,7 +73,8 @@ screen. The trip editor is the one exception.
       a panel holds typed input, and stopping at the editor; keep one panel at
       a time below md.
 - [ ] Follow the selected trip in Forms, the calculator and the document
-      panel, from `syncSelection` in `scheduler/data.js`.
+      panel, from `syncSelection` in `scheduler/data.js`, with No files
+      uploaded where the trip has no file of the kind showing.
 - [ ] Point each toolbar button at its own panel, pressed while it is open.
 - [ ] Put the trip's `#trip_ref` in the head of Forms, the calculator and the
       document panel.

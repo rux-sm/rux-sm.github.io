@@ -2296,20 +2296,21 @@ button.scheduler-row-head__num::after {
   block-size: max(24rem, calc(100dvh - 15rem));
 }
 
-/* The itinerary panel's column, left of everything on the board. Its width
+/* Each document panel's column: a stored file's, the forms list's and the
+   calculator's. The file's width
    matches the panel's `rux--side-panel--sm`, `--md`, `--lg` or `--xl` class,
-   which data.js swaps together with the page's `data-viewer`; the column hands
-   its width to the panel through Carbon's own custom-size property, since the
-   small size is the lists' 24rem rather than Carbon's 20rem. Like the
-   editor's column it never shrinks and app.js gives it a definite height. A
-   document always opens: where the board cannot hold this column the panel
-   comes in front of it instead, and is never sent to a browser tab. */
-.scheduler-page[data-viewer="md"] { --scheduler-viewer-w: var(--scheduler-viewer-md-w); }
-.scheduler-page[data-viewer="lg"] { --scheduler-viewer-w: var(--scheduler-viewer-lg-w); }
-.scheduler-page[data-viewer="xl"] { --scheduler-viewer-w: var(--scheduler-viewer-xl-w); }
+   which data.js swaps together with the stored file's column's `data-size`;
+   the column hands its width to the panel through Carbon's own custom-size
+   property, since the small size is the lists' 24rem rather than Carbon's
+   20rem. The forms list and the calculator have columns of their own, always
+   small. Like the editor's column each never shrinks and app.js gives it a
+   definite height, and data.js orders it left of the week among the open
+   panels. */
+.scheduler-viewer[data-size="md"] { --scheduler-viewer-w: var(--scheduler-viewer-md-w); }
+.scheduler-viewer[data-size="lg"] { --scheduler-viewer-w: var(--scheduler-viewer-lg-w); }
+.scheduler-viewer[data-size="xl"] { --scheduler-viewer-w: var(--scheduler-viewer-xl-w); }
 .scheduler-viewer {
   --rux-side-panel-modified-size: var(--scheduler-viewer-w);
-  order: -2;
   flex: 0 0 var(--scheduler-viewer-w);
   min-inline-size: var(--scheduler-viewer-w);
   max-inline-size: 100%;
@@ -3091,15 +3092,12 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is `--scheduler-panel-w` wide, as the lists' pane is. It is fixed
-   so it does not move when the driver list changes; the schedule gives way
-   instead.
-   `order` puts it left of the board while the markup keeps the schedule
-   first. */
+   The roster is `--scheduler-panel-w` wide, as the lists' panes are. It is
+   fixed so it does not move when the driver list changes; the schedule gives
+   way instead. data.js orders it left of the week among the open panels. */
 .scheduler-aside {
   flex: 0 0 var(--scheduler-panel-w);
   inline-size: var(--scheduler-panel-w);
-  order: -1;
 }
 
 /* The roster's rows are Carbon's sm height, 32px, level with the header band. */
@@ -5347,15 +5345,14 @@ html:has(.scheduler-page[data-takeover]) {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-/* The board's pane: a region of the board like the roster, left of everything
-   on it, on the surface the schedule is on, under the roster's own head, a
-   title and the close control. It never shrinks, the schedule giving way
-   instead, and it takes the height app.js gives it. `order` puts it there
-   while the markup keeps the schedule first. */
+/* Each list's pane, To do's and Prep's: a region of the board like the
+   roster, left of the week where data.js orders it among the open panels, on
+   the surface the schedule is on, under the roster's own head, a title and
+   the close control. It never shrinks, the schedule giving way instead, and
+   it takes the height app.js gives it. */
 .scheduler-to-do--pane {
   flex: 0 0 var(--scheduler-panel-w);
   inline-size: var(--scheduler-panel-w);
-  order: -3;
   background: var(--rux-layer);
 }
 /* Each list keeps 16px of the pane around it. */

@@ -9330,7 +9330,10 @@
 
     if (!again) panelOpener = bar;
     panelEl.hidden = false;
+    const editorWasShut = !!tripEl?.hidden;
     if (tripEl) tripEl.hidden = false;
+    // The editor always opens, and the oldest panels close for its room.
+    if (editorWasShut) void makeRoom('editor');
     // Once the panel shows, so Open trip and the driver grid treat this trip
     // as the one in the editor.
     syncSelection();
@@ -10662,6 +10665,7 @@
     if (bar && focusDriver != null && !bar.classList.contains('scheduler-bar--driver')) pickDriver(null);
     // The roster moves to the selected trip's week, and lights its days.
     drawRoster();
+    followTrip(bar);
     // What this tab is on has changed, so everyone else's board says so.
     presenceTell();
   }
@@ -11084,18 +11088,20 @@
   // Every selection change, from a click, a key or a script, lands here.
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
-  /* ── Beside the week, or in front of it ─────────────────────────────────────
-     A panel either sits beside the week or comes in front of the board. There
-     is no third state: a panel drawn over a week that still claims the width
-     it is covering hides the toolbar's controls and the bus column, which are
-     the two things the week cannot be read without.
+  /* ── Beside the week, as many as fit ───────────────────────────────────────
+     Every panel has its own place beside the week: To do, Prep, Driver
+     availability, Forms, the quote calculator and the stored file stand left
+     of it, oldest farthest left, and the trip editor right of it. From md up
+     nothing is drawn over the week, which would hide the toolbar's controls
+     and the bus column, the two things the week cannot be read without.
 
      One sum decides it. The week's minimum plus every open panel is what the
-     board is asked for; while the board holds that, every panel sits beside
-     the week and the week spends its days, scrolling to fewer of them. Past it
-     the newest comes in front, and behind it the board is the week alone.
-     Nothing closes itself and nothing is refused: every panel stays open, and
-     what a narrowing window changes is only which one is in front.
+     board is asked for. Opening a panel past it closes the oldest, then the
+     next, until the new one fits; one with something typed in it asks first,
+     and the editor is never closed for room, so where it alone stands in the
+     way the new panel does not open and the board says why. A window narrowed
+     past the sum closes the oldest panels with nothing typed in them. Below md
+     one panel is open at a time, in front of the board.
 
      The board's width is what this reads, never the schedule's: the board is
      the whole content column whichever panels are open, so it holds still when
@@ -11114,76 +11120,143 @@
   const TOOLBAR_TIGHT = 30;
   const boardEl = document.querySelector('.scheduler-board');
   const frameEl = document.querySelector('.scheduler-frame');
-  /* The panels open, oldest first, so the newest is the one that comes in
-     front. It is kept from what each pass finds open rather than pushed to by
-     the openers, so no path can forget to say it opened something. */
+  /* The panels open, oldest first. It is kept from what each pass finds open
+     rather than pushed to by the openers, so no path can forget to say it
+     opened something. */
   let openOrder = [];
+  // The panel in front of the board, where one is: below md, the one open.
+  let frontPanel = null;
+  // The three document panels, which their block further down makes.
+  let viewers = {};
+  const prepPane = document.getElementById('scheduler-prep-panel');
 
-  /* A panel's width, from the token app.css lays it out with rather than from
-     the panel itself. A panel in front of the board has given its width up, so
-     pricing it by what it takes right now would unmake the decision that moved
-     it and the two would flip back and forth. */
-  const panelWidth = name => {
-    const root = getComputedStyle(document.documentElement);
-    const raw = root.getPropertyValue(name).trim();
+  const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const toPx = raw => {
     const n = parseFloat(raw);
     if (!Number.isFinite(n)) return 0;
-    return raw.endsWith('rem') ? n * (parseFloat(root.fontSize) || 16) : n;
+    return String(raw).trim().endsWith('rem') ? n * remPx() : n;
   };
+  /* A panel's width, from the token app.css lays it out with rather than from
+     the panel itself, which in front of the board has given its width up. A
+     document panel's is read off the panel, whose size is its own. */
+  const panelWidth = name => toPx(getComputedStyle(document.documentElement).getPropertyValue(name).trim());
+  const ownWidth = (el, name) => (el ? toPx(getComputedStyle(el).getPropertyValue(name).trim()) : 0);
+
+  /* EVERY PANEL THE BOARD LAYS OUT: its name, its box, whether it is open,
+     the width it takes, how the board closes it for room, and whether
+     something typed in it would be lost. The trip editor is the exception:
+     it stands right of the week and the board never closes it. */
+  const PANEL_NAMES = { roster: 'Driver availability', 'to-do': 'To do list', prep: 'Prep', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
+  const panels = () => [
+    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-panel-w'),
+      close: () => { availOn = false; placeAvailability(); } },
+    { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-panel-w'),
+      close: () => window.SchedulerToDoList?.close('tasks') },
+    { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-panel-w'),
+      close: () => window.SchedulerToDoList?.close('prep') },
+    ...Object.values(viewers).map(v => ({ name: v.key, el: v.el, open: !!v.el && !v.el.hidden,
+      width: () => ownWidth(v.el, '--scheduler-viewer-w'), close: () => v.close(false), dirty: () => v.dirty })),
+    { name: 'editor', el: tripEl, open: !!tripEl && !tripEl.hidden, width: () => panelWidth('--scheduler-editor-w'), editor: true },
+  ];
+
+  // The room the open panels ask for, `adding` among them, against the board's width.
+  function overRoom(adding = null) {
+    const board = boardEl?.getBoundingClientRect().width ?? 0;
+    if (!board) return false;
+    const open = panels().filter(p => p.open || p.name === adding);
+    if (matchMedia('(max-width: 41.98rem)').matches) return open.length > 1;
+    const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
+    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * remPx() > board;
+  }
+
+  /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
+     panel closes, then the next, until the new one fits; one holding typed
+     input asks first and stays on a no. The editor is never closed for room:
+     where it is what stands in the way, the new panel does not open and the
+     board says why. The editor itself always opens. Below md one panel is open
+     at a time, so opening one closes the one open. It answers whether the new
+     panel may open. */
+  async function makeRoom(name) {
+    placeRoom();
+    const kept = new Set();
+    while (overRoom(name)) {
+      const oldest = openOrder.map(n => panels().find(p => p.name === n))
+        .find(p => p && p.open && p.name !== name && !p.editor && !kept.has(p.name));
+      if (!oldest) break;
+      if (oldest.dirty?.() && !(await ask(`Close ${PANEL_NAMES[oldest.name]}?`, `To open ${PANEL_NAMES[name]}, ${PANEL_NAMES[oldest.name]} closes, and what was typed in it is not kept.`))) {
+        kept.add(oldest.name);
+        continue;
+      }
+      oldest.close();
+    }
+    if (name === 'editor' || !overRoom(name)) return true;
+    /* What stands in the way is named: a panel kept open on a no first, since
+       that was the answer just given, else the editor. */
+    const editorOpen = panels().find(p => p.editor)?.open;
+    const inWay = [...kept].map(n => PANEL_NAMES[n]);
+    toast('info', `No room for ${PANEL_NAMES[name]}`,
+      inWay.length ? `Close ${inWay.join(' or ')} to make room for it.`
+        : editorOpen ? 'Close the trip editor to make room for it.' : 'Close a panel to make room for it.');
+    return false;
+  }
+  window.SchedulerPanels = { room: makeRoom };
 
   function placeRoom() {
     if (!boardEl || !frameEl || !pageEl) return;
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const rem = remPx();
     const board = boardEl.getBoundingClientRect().width;
     // Nothing to measure while the board is hidden, as it is behind a notice.
     if (!board) return;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
 
     /* What is open, and in what order it was asked for. A panel already in the
-       list keeps its place, so widening the window and narrowing it again
-       brings the same one forward. */
-    const open = [
-      ['roster', availOn, '--scheduler-panel-w'],
-      ['editor', !!tripEl && !tripEl.hidden, '--scheduler-editor-w'],
-      ['viewer', !!viewerEl && !viewerEl.hidden, `--scheduler-viewer-${pageEl.dataset.viewer ?? 'sm'}-w`],
-      ['to-do', !!toDoPane && !toDoPane.hidden, '--scheduler-panel-w'],
-    ].filter(([, on]) => on);
-    const names = open.map(([name]) => name);
+       list keeps its place. */
+    const all = panels();
+    const open = all.filter(p => p.open);
+    const names = open.map(p => p.name);
     openOrder = openOrder.filter(name => names.includes(name))
       .concat(names.filter(name => !openOrder.includes(name)));
+    const overlay = matchMedia('(max-width: 41.98rem)').matches;
+
+    /* A window narrowed past what fits closes the oldest panels with nothing
+       typed in them, one at a time, each close laying the board out again. One
+       holding typed input and the editor stay, and the week gives way. */
+    if (overRoom()) {
+      const oldest = openOrder.map(n => open.find(p => p.name === n))
+        .find(p => p && !p.editor && !p.dirty?.() && (!overlay || p.name !== openOrder.at(-1)));
+      if (oldest) { oldest.close(); return; }
+    }
+
+    /* Oldest farthest left: the panels left of the week stand in the order
+       they were opened, the newest nearest the week. The editor keeps its own
+       place right of it. */
+    let place = 0;
+    for (const name of openOrder) {
+      const p = open.find(x => x.name === name);
+      if (p?.el && !p.editor) p.el.style.order = String(place++ - 100);
+    }
+    for (const p of all) if (!p.open && p.el) p.el.style.removeProperty('order');
 
     /* Below md nothing is laid out beside the week at all: Carbon's own fixed
-       panel stands there and the board has no room for a column either way, so
-       no panel is priced and whichever is open is in front. */
-    const overlay = matchMedia('(max-width: 41.98rem)').matches;
-    const width = Object.fromEntries(open.map(([name, , token]) => [name, panelWidth(token)]));
-    /* An open panel's wrapper keeps its place in the board's row whether the
-       panel is beside the week or in front of it, so the gap beside it is
-       charged either way and only the width ever comes back. */
-    const gaps = names.length * gap;
-    const widths = overlay ? 0 : names.reduce((sum, name) => sum + width[name], 0);
-
-    /* Past the sum the newest panel comes in front of the board, and behind it
-       the board is the week alone: the others are still open, are not drawn,
-       and come back the moment the one in front closes. One panel in front of
-       one week is the whole of it, at every width. */
-    const takeover = openOrder.length && (overlay || widths + gaps + WEEK_MIN * rem > board)
-      ? openOrder[openOrder.length - 1] : null;
-    if (takeover) pageEl.setAttribute('data-takeover', takeover);
+       panel stands there, and the one open is in front of the board. */
+    const front = overlay && openOrder.length ? openOrder.at(-1) : null;
+    frontPanel = front;
+    const shown = front && viewers[front] ? 'viewer' : front === 'prep' ? 'to-do' : front;
+    if (shown) pageEl.setAttribute('data-takeover', shown);
     else pageEl.removeAttribute('data-takeover');
 
     /* Behind the one in front, the board is set aside rather than there to be
        read, so it takes no click and no Tab: what is on screen and what can be
-       reached are the same thing. An open panel that is not the one in front
-       waits with it. */
-    frameEl.inert = !!takeover;
-    for (const [name, el] of [['roster', asideSlot], ['editor', tripEl], ['viewer', viewerEl], ['to-do', toDoPane]]) {
-      if (el) el.inert = !!takeover && name !== takeover;
-    }
+       reached are the same thing. */
+    frameEl.inert = !!front;
+    for (const p of all) if (p.el) p.el.inert = !!front && p.name !== front;
 
-    /* Behind the one in front the board is the week alone, so it is charged
-       only the gaps the collapsed wrappers still hold open. */
-    const room = board - gaps - (takeover ? 0 : widths);
+    /* An open panel's wrapper keeps its place in the board's row whether the
+       panel is beside the week or in front of it, so the gap beside it is
+       charged either way. */
+    const gaps = names.length * gap;
+    const widths = overlay ? 0 : open.reduce((sum, p) => sum + p.width(), 0);
+    const room = board - gaps - (front ? 0 : widths);
     frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
     // Under the tight width `Today` gives way to its menu row, in app.css.
 
@@ -11212,7 +11285,7 @@
   if (boardEl && 'ResizeObserver' in window) {
     new ResizeObserver(() => placeRoom()).observe(boardEl);
   }
-  // to-do-list.js says when it has shown or hidden the lists' pane.
+  // to-do-list.js says when it has shown or hidden one of the lists' panes.
   document.addEventListener('scheduler:to-do-pane', () => {
     placeRoom();
     window.Rux?.schedule?.fit?.();
@@ -11246,7 +11319,8 @@
   }
 
   // A press shows the roster or hides it; where it then goes is `placeRoom`'s.
-  availToggle?.addEventListener('click', () => {
+  availToggle?.addEventListener('click', async () => {
+    if (!availOn && !(await makeRoom('roster'))) return;
     availOn = !availOn;
     placeAvailability();
   });
@@ -13017,21 +13091,102 @@
      at 30rem, and the panel's action toolbar stands in for it. The panel stays
      open through week changes and selections, like the editor, and another
      file replaces the one shown. */
-  const viewerEl = document.getElementById('scheduler-viewer');
-  let viewerFrame = document.getElementById('scheduler-viewer-frame');
-  const viewerTitle = document.getElementById('scheduler-viewer-title');
-  const viewerTitleCollapsed = document.getElementById('scheduler-viewer-title-collapsed');
-  const viewerUploaded = document.getElementById('scheduler-viewer-uploaded');
-  const viewerStatus = document.getElementById('scheduler-viewer-status');
-  const viewerPrint = document.getElementById('scheduler-viewer-print');
-  const viewerToolbar = document.getElementById('scheduler-viewer-toolbar');
-  const viewerCopies = document.getElementById('scheduler-viewer-copies');
-  const viewerDownload = document.getElementById('scheduler-viewer-download');
-  const viewerNewTab = document.getElementById('scheduler-viewer-new-tab');
-  const viewerClose = document.getElementById('scheduler-viewer-close');
-  const viewerHead = document.getElementById('scheduler-viewer-head');
-  const viewerBack = document.getElementById('scheduler-viewer-back');
-  const viewerZooms = [...document.querySelectorAll('[data-viewer-zoom]')];
+
+  const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
+  /* A stored file is read through a link signed for ten minutes, never its
+     public address, because the trip-documents bucket is closed to all but
+     staff. Null when the file cannot be signed, and the caller falls back to
+     the document's share page. */
+  const signedDocumentUrl = async path => {
+    if (!client || !path) return null;
+    try {
+      const { data, error } = await client.storage.from('trip-documents').createSignedUrl(path, 600);
+      return error ? null : data?.signedUrl ?? null;
+    } catch { return null; }
+  };
+
+
+  /* A form in the frame asks through the board's own dialog, so a print is
+     asked about one way whatever was printed. It answers null on a no, and
+     on a yes what was typed in `field`, where the question had one. */
+  const askForForm = async (question, field = null) => ((await ask(question, '', field))
+    ? { value: field ? String(askField?.value ?? '').trim() : '' } : null);
+
+
+
+  /* WHAT A STORED ITINERARY MARKS. Opened from a Departures line or the
+     checklist it is the sheet a leg's drivers are handed, so after a print
+     the board asks, as the itinerary this app draws asks, and Yes writes
+     `itinerary_printed` on every seat of the leg, which the trip's checklist
+     and Departures read. The toolbar carries no box for it, because the
+     question is the one place it is marked. A file opened any other way
+     marks nothing. */
+  function itineraryMarkOf(trip, leg) {
+    const rows = (trip?.trip_assignments || []).filter(a => (a.leg || 'outbound') === (leg || 'outbound'))
+      .flatMap(a => a.trip_drivers || []).filter(seat => seat.driver_id);
+    if (!rows.length) return null;
+    const names = rows.map(seat => {
+      const who = panelIndex.driversById.get(seat.driver_id);
+      return who?.short_name || who?.name || '';
+    }).filter(Boolean);
+    return { rows, names: [...new Set(names)] };
+  }
+  const isMarked = mark => mark.rows.every(seat => seat.itinerary_printed);
+
+  // The seats in hand follow the write, so a second print of the same file does not ask again.
+  async function markItinerary(mark) {
+    const { error } = client
+      ? await client.from('trip_drivers').update({ itinerary_printed: true }).in('id', mark.rows.map(seat => seat.id))
+      : { error: { message: 'Not connected.' } };
+    if (error) { toast('error', 'The itinerary was not marked.', error.message); return; }
+    mark.rows.forEach(seat => { seat.itinerary_printed = true; });
+    toast('success', 'Itinerary marked printed');
+  }
+
+  /* EACH OF THE THREE PANELS IS ONE OF THESE: `doc` frames a stored file in
+     the markup's own panel, and `forms` and `calc` frame the forms list and the
+     quote calculator in copies of it, made before anything here touches the
+     markup, their ids renamed from `scheduler-viewer` to `scheduler-<key>-viewer`
+     and their copies menu with them. Each keeps its own state, and its frame
+     carries its own host, so a page in it talks to the panel it is in. */
+  const VIEWER_NAMES = { doc: 'Document', forms: 'Forms', calc: 'Quote calculator' };
+  const viewerMarkup = document.getElementById('scheduler-viewer')?.cloneNode(true) ?? null;
+  const viewerMenuMarkup = document.getElementById('scheduler-viewer-copies')?.cloneNode(true) ?? null;
+  function makeViewer(key) {
+    const prefix = key === 'doc' ? 'scheduler-viewer' : `scheduler-${key}-viewer`;
+    if (key !== 'doc' && viewerMarkup) {
+      const rename = node => {
+        for (const n of [node, ...node.querySelectorAll('[id]')]) {
+          if (n.id?.startsWith('scheduler-viewer')) n.id = n.id.replace('scheduler-viewer', prefix);
+        }
+        return node;
+      };
+      const column = rename(viewerMarkup.cloneNode(true));
+      column.hidden = true;
+      document.getElementById('scheduler-viewer')?.after(column);
+      if (viewerMenuMarkup) document.getElementById('scheduler-viewer-copies')?.after(rename(viewerMenuMarkup.cloneNode(true)));
+      const aside = column.querySelector('aside');
+      aside?.setAttribute('aria-label', VIEWER_NAMES[key]);
+      column.querySelector(`#${prefix}-close`)?.setAttribute('aria-label', `Close ${VIEWER_NAMES[key].toLowerCase()}`);
+      // Only a stored file takes a larger size, so the copies have no size button.
+      column.querySelector(`#${prefix}-size`)?.remove();
+    }
+    const byId = part => document.getElementById(part ? `${prefix}-${part}` : prefix);
+  const viewerEl = byId();
+  let viewerFrame = byId('frame');
+  const viewerTitle = byId('title');
+  const viewerTitleCollapsed = byId('title-collapsed');
+  const viewerUploaded = byId('uploaded');
+  const viewerStatus = byId('status');
+  const viewerPrint = byId('print');
+  const viewerToolbar = byId('toolbar');
+  const viewerCopies = byId('copies');
+  const viewerDownload = byId('download');
+  const viewerNewTab = byId('new-tab');
+  const viewerClose = byId('close');
+  const viewerHead = byId('head');
+  const viewerBack = byId('back');
+  const viewerZooms = [...(viewerEl?.querySelectorAll('[data-viewer-zoom]') ?? [])];
   /* Safari's PDF view, which every browser on an iPad uses too, ignores the
      zoom an address asks for and draws its own zoom controls over the page, so
      there the panel's zoom buttons are hidden rather than left doing nothing.
@@ -13055,24 +13210,21 @@
   let viewerLoading = null;
   // The seats the itinerary showing is printed for, where a Departures line opened it.
   let viewerMark = null;
-  const documentLink = id => `share/document.html?id=${encodeURIComponent(id)}`;
-  /* A stored file is read through a link signed for ten minutes, never its
-     public address, because the trip-documents bucket is closed to all but
-     staff. Null when the file cannot be signed, and the caller falls back to
-     the document's share page. */
-  const signedDocumentUrl = async path => {
-    if (!client || !path) return null;
-    try {
-      const { data, error } = await client.storage.from('trip-documents').createSignedUrl(path, 600);
-      return error ? null : data?.signedUrl ?? null;
-    } catch { return null; }
-  };
+  // The stored file's type, lowercase, so following another trip shows that trip's of the same kind.
+  let viewerType = null;
+
 
   /* Each load gets a new frame: a PDF viewer does not read a changed fragment
      again, and navigating a frame that has loaded adds to the tab's history,
      so Back would step through zooms. */
   function swapFrame(src) {
     const frame = viewerFrame.cloneNode(false);
+    frame.schedulerHost = host;
+    viewerDirty = false;
+    // A page of this origin says when it is typed into, so closing it for room asks first.
+    frame.addEventListener('load', () => {
+      try { frame.contentDocument?.addEventListener('input', () => { viewerDirty = true; }, true); } catch { /* a file's viewer */ }
+    });
     if (src) frame.src = src; else frame.removeAttribute('src');
     viewerFrame.replaceWith(frame);
     viewerFrame = frame;
@@ -13160,8 +13312,6 @@
     setToolbarShown(true);
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
-    if (viewerSizeBtn) viewerSizeBtn.hidden = form;
-    setViewerSize(form ? 'sm' : keptViewerSize());
     viewerDownload.hidden = form;
     viewerNewTab.hidden = form;
     if (!form) setFormControls([]);
@@ -13279,7 +13429,7 @@
 
   viewerCopies?.addEventListener('rux:menu-closed', () => { viewerCopies.hidden = true; });
 
-  window.Rux = window.Rux || {};
+
   /* Whether the frame holds something to act on. The Forms list does not, and
      says so; opening anything else brings the row back. */
   function setToolbarShown(shown) {
@@ -13331,80 +13481,52 @@
     });
   }
 
-  /* A form in the frame asks through the board's own dialog, so a print is
-     asked about one way whatever was printed. It answers null on a no, and
-     on a yes what was typed in `field`, where the question had one. */
-  const askForForm = async (question, field = null) => ((await ask(question, '', field))
-    ? { value: field ? String(askField?.value ?? '').trim() : '' } : null);
-
   // And it says what it did in the board's toast, as the board does.
-  window.Rux.viewer = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink, ask: askForForm,
-    report: window.SchedulerToast.report };
+  const host = { setFormControls, setFormNote, setViewerHead, setToolbarShown, setViewerBack, setFormLink, ask: askForForm,
+    report: window.SchedulerToast.report, setTrip };
 
-  /* Opens the panel, or brings it forward. Asked for again while it is open,
-     it is the newest panel again, so it comes in front of an editor opened
-     since where the window has room for one. The room is measured before the
-     board is fit. */
-  /* THE TOOLBAR'S FORMS AND CALCULATOR BUTTONS are pressed while the panel
-     shows what each opens: Forms for the forms list and a form from it, the
-     calculator for the calculator. `viewerKind` is what the panel was last
-     opened on, and a stored file is neither. */
-  let viewerKind = null;
-  const formsOpen = document.getElementById('scheduler-forms-open');
-  const calcOpen = document.getElementById('scheduler-calc-open');
-  function syncViewerButtons() {
-    const shown = viewerEl && !viewerEl.hidden ? viewerKind : null;
-    for (const [button, on] of [[formsOpen, shown === 'Forms' || shown === 'Form'], [calcOpen, shown === 'Quote calculator']]) {
-      if (!button) continue;
-      button.setAttribute('aria-pressed', String(on));
-      // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
-      // Carbon's pressed look, as on the board's other pane toggles.
-      button.classList.toggle('rux--btn--selected', on);
-    }
-  }
-  /* Forms opens the selected trip's forms, or the trip's in the editor, and
-     with neither the forms list itself, every form blank. The calculator
-     opens filled from the selected trip, or from the editor's, as the bar
-     menu's Quote calculator does, and with neither, empty. A press on a
-     pressed one shuts the panel. */
-  formsOpen?.addEventListener('click', () => {
-    if (formsOpen.getAttribute('aria-pressed') === 'true') { closeViewer(); return; }
-    const bar = selectedBar();
-    if (bar) openForms(bar, bar.dataset.tripId, formsOpen);
-    else if (editing?.id) openForms(null, editing.id, formsOpen);
-    else openGenerated({ url: 'print.html', kind: 'Forms', note: '', opener: formsOpen });
-  });
-  calcOpen?.addEventListener('click', () => {
-    if (calcOpen.getAttribute('aria-pressed') === 'true') { closeViewer(); return; }
-    const bar = selectedBar();
-    if (bar) openCalculator(bar);
-    else if (editing?.id) openCalculator(null);
-    else {
-      calcFor = null;
-      openGenerated({ url: 'quote.html', kind: 'Quote calculator', note: '', opener: calcOpen });
-    }
-  });
-
+  /* Shows the panel, which the opener has already found room for. A panel
+     already open keeps its place among the others. */
   function showViewer(opener) {
     if (viewerEl.hidden) {
       viewerOpener = opener ?? null;
       viewerEl.hidden = false;
-    } else {
-      openOrder = openOrder.filter(name => name !== 'viewer').concat('viewer');
     }
     placeRoom();
     window.Rux?.schedule?.fit?.();
     syncViewerButtons();
   }
 
+  /* What the panel was last opened on, whether a page in its frame has been
+     typed into since, and the trip it shows, by id, for the head's number and
+     for following the selected trip. */
+  let viewerKind = null;
+  let viewerDirty = false;
+  let viewerTrip = null;
+  const viewerRef = el('span', 'scheduler-panel-ref');
+  viewerRef.hidden = true;
+  // In the title's own row, which this head's column of one line holds, so the head keeps its height.
+  viewerTitle?.after(viewerRef);
+  // The trip's number beside the title, as the editor's head carries it.
+  function setTrip(id) {
+    viewerTrip = id == null ? null : String(id);
+    const trip = viewerTrip ? (panelIndex.trips.get(viewerTrip) ?? (String(editing?.id) === viewerTrip ? editing.trip : null)) : null;
+    const ref = trip?.trip_ref ? String(trip.trip_ref) : '';
+    viewerRef.textContent = ref ? `#${ref}` : '';
+    viewerRef.title = ref ? `Trip ${ref}` : '';
+    viewerRef.hidden = !ref;
+  }
+
   /* A form from print.html. It needs no fetch and no blob address: a page of
      this site is already this origin, which is the whole reason a PDF is
      fetched into one -- so the panel may print what it frames. */
-  function openGenerated({ url, kind, note, opener }) {
+  async function openGenerated({ url, kind, note, opener, trip = null }) {
     if (!viewerEl) {
       window.open(url, '_blank', 'noopener');
       return;
     }
+    if (viewerEl.hidden && !(await makeRoom(key))) return;
+    setTrip(trip);
     dropShown();
     setViewerMode('form');
     viewerKind = kind;
@@ -13422,35 +13544,6 @@
     showViewer(opener);
     viewerClose?.focus();
     swapFrame(url);
-  }
-
-  /* WHAT A STORED ITINERARY MARKS. Opened from a Departures line or the
-     checklist it is the sheet a leg's drivers are handed, so after a print
-     the board asks, as the itinerary this app draws asks, and Yes writes
-     `itinerary_printed` on every seat of the leg, which the trip's checklist
-     and Departures read. The toolbar carries no box for it, because the
-     question is the one place it is marked. A file opened any other way
-     marks nothing. */
-  function itineraryMarkOf(trip, leg) {
-    const rows = (trip?.trip_assignments || []).filter(a => (a.leg || 'outbound') === (leg || 'outbound'))
-      .flatMap(a => a.trip_drivers || []).filter(seat => seat.driver_id);
-    if (!rows.length) return null;
-    const names = rows.map(seat => {
-      const who = panelIndex.driversById.get(seat.driver_id);
-      return who?.short_name || who?.name || '';
-    }).filter(Boolean);
-    return { rows, names: [...new Set(names)] };
-  }
-  const isMarked = mark => mark.rows.every(seat => seat.itinerary_printed);
-
-  // The seats in hand follow the write, so a second print of the same file does not ask again.
-  async function markItinerary(mark) {
-    const { error } = client
-      ? await client.from('trip_drivers').update({ itinerary_printed: true }).in('id', mark.rows.map(seat => seat.id))
-      : { error: { message: 'Not connected.' } };
-    if (error) { toast('error', 'The itinerary was not marked.', error.message); return; }
-    mark.rows.forEach(seat => { seat.itinerary_printed = true; });
-    toast('success', 'Itinerary marked printed');
   }
 
   /* After a print the board asks, by name, in the dialog it asks about a
@@ -13473,6 +13566,7 @@
      line opened it. */
   async function openDocument(doc, opener, trip, mark = null) {
     if (!doc) return;
+    if (viewerEl && viewerEl.hidden && !(await makeRoom(key))) return;
     setViewerMode('file');
     const url = await signedDocumentUrl(doc.file_path);
     if (!viewerEl || !url) {
@@ -13492,7 +13586,9 @@
     // signs a fresh one each time it is opened.
     viewerNewTab.href = documentLink(doc.id);
     viewerDocId = String(doc.id);
+    viewerType = String(doc.label || '').toLowerCase();
     viewerMark = mark;
+    setTrip(trip?.id ?? doc.trip_id ?? null);
     showViewer(opener);
     viewerClose?.focus();
     // The file showing, or downloading, is not fetched again, so its zoom stays.
@@ -13571,7 +13667,9 @@
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.hidden = true;
     viewerDocId = null;
+    viewerType = null;
     viewerMark = null;
+    setTrip(null);
     syncViewerButtons();
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     viewerSeq++;
@@ -13592,6 +13690,111 @@
   }
   viewerClose?.addEventListener('click', () => closeViewer());
 
+  /* A selected trip with no file of the kind showing: the panel stays,
+     its head naming the kind and the trip's number, and says so. */
+  function showNoFile(kind, tripId) {
+    viewerSeq++;
+    dropShown();
+    setViewerMode('file');
+    setViewerHead(kind);
+    setTrip(tripId);
+    viewerDocId = null;
+    viewerMark = null;
+    viewerUploaded.textContent = '';
+    viewerStatus.hidden = false;
+    viewerStatus.replaceChildren(note('info', 'No files uploaded', ''));
+  }
+
+  return {
+    key, el: viewerEl, host, openGenerated, openDocument, showNoFile, close: closeViewer,
+    get kind() { return viewerKind; },
+    get dirty() { return viewerDirty; },
+    get trip() { return viewerTrip; },
+    get docId() { return viewerDocId; },
+    get docType() { return viewerType; },
+    get mark() { return viewerMark; },
+    get frame() { return viewerFrame; },
+  };
+  }
+  window.Rux = window.Rux || {};
+  viewers = { doc: makeViewer('doc'), forms: makeViewer('forms'), calc: makeViewer('calc') };
+  // A page framed by an older board finds the forms panel's host here.
+  window.Rux.viewer = viewers.forms.host;
+  const openDocument = (...args) => viewers.doc.openDocument(...args);
+  /* THE TRIP'S PANELS FOLLOW THE SELECTED TRIP. Selecting another trip's bar
+     shows that trip's forms in an open Forms panel, and that trip's newest
+     file of the kind showing in an open document panel, or No files uploaded
+     where it has none. The calculator follows the trip in the editor, since
+     the editor's Route tab is where its miles come from, so it refills when a
+     selected trip is the editor's. A panel with something typed in it asks
+     first, and keeps what it shows on a no. */
+  let following = false;
+  async function followTrip(bar) {
+    const id = bar?.dataset.tripId;
+    if (!id || following) return;
+    following = true;
+    try {
+      const trip = panelIndex.trips.get(id) ?? null;
+      const dest = trip?.destination || 'this trip';
+      const asks = async (viewer, what) => !viewer.dirty || ask(`Show ${what} for ${dest}?`, 'What was typed in the panel is not kept.');
+      const forms = viewers.forms;
+      if (forms?.el && !forms.el.hidden && forms.trip !== String(id) && await asks(forms, 'the forms')) openForms(bar, id, null);
+      const doc = viewers.doc;
+      if (doc?.el && !doc.el.hidden && doc.trip && doc.trip !== String(id) && doc.docType && trip && await asks(doc, 'the file')) {
+        const same = documentsOf(trip).find(d => String(d.label || '').toLowerCase() === doc.docType);
+        const kind = FILE_NAMES[doc.docType] ?? doc.docType;
+        if (same) openDocument(same, null, trip);
+        else doc.showNoFile(kind, id);
+      }
+      const calc = viewers.calc;
+      if (calc?.el && !calc.el.hidden && calc.trip !== String(id) && isEditorTrip(bar) && await asks(calc, 'the quote calculator')) openCalculator(bar);
+    } finally {
+      following = false;
+    }
+  }
+
+  const openGenerated = ({ kind, ...rest }) => (kind === 'Quote calculator' ? viewers.calc : viewers.forms).openGenerated({ kind, ...rest });
+
+  /* THE TOOLBAR'S FORMS AND CALCULATOR BUTTONS are pressed while their panel
+     is open. */
+  const formsOpen = document.getElementById('scheduler-forms-open');
+  const calcOpen = document.getElementById('scheduler-calc-open');
+  function syncViewerButtons() {
+    for (const [button, viewer] of [[formsOpen, viewers.forms], [calcOpen, viewers.calc]]) {
+      if (!button) continue;
+      const on = !!viewer.el && !viewer.el.hidden;
+      button.setAttribute('aria-pressed', String(on));
+      // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
+      // Carbon's pressed look, as on the board's other pane toggles.
+      button.classList.toggle('rux--btn--selected', on);
+    }
+  }
+  /* Forms opens the selected trip's forms, or the trip's in the editor, and
+     with neither the forms list itself, every form blank. The calculator
+     opens filled from the selected trip, or from the editor's, as the bar
+     menu's Quote calculator does, and with neither, empty. A press on a
+     pressed one shuts its panel. */
+  // Each names the panel it opens, which is made above rather than written in the page.
+  formsOpen?.setAttribute('aria-controls', 'scheduler-forms-viewer-panel');
+  calcOpen?.setAttribute('aria-controls', 'scheduler-calc-viewer-panel');
+  formsOpen?.addEventListener('click', () => {
+    if (viewers.forms.el && !viewers.forms.el.hidden) { viewers.forms.close(); return; }
+    const bar = selectedBar();
+    if (bar) openForms(bar, bar.dataset.tripId, formsOpen);
+    else if (editing?.id) openForms(null, editing.id, formsOpen);
+    else openGenerated({ url: 'print.html', kind: 'Forms', note: '', opener: formsOpen });
+  });
+  calcOpen?.addEventListener('click', () => {
+    if (viewers.calc.el && !viewers.calc.el.hidden) { viewers.calc.close(); return; }
+    const bar = selectedBar();
+    if (bar) openCalculator(bar);
+    else if (editing?.id) openCalculator(null);
+    else {
+      calcFor = null;
+      openGenerated({ url: 'quote.html', kind: 'Quote calculator', note: '', opener: calcOpen });
+    }
+  });
+
   // Open itinerary, from a shortcut slot or the bar menu: the trip's newest.
   /* The forms this trip can fill in, on print.html's own list. It takes the
      trip rather than the bar's assignment, because the list is the trip's and
@@ -13604,6 +13807,7 @@
       kind: 'Forms',
       note: '',
       opener,
+      trip: id,
     });
   }
 
@@ -13618,7 +13822,7 @@
     if (assignment) asks.set('assignment', assignment);
     if (driver) asks.set('driver', driver);
     if (trip) { asks.set('trip', trip); asks.set('from', 'forms'); }
-    openGenerated({ url: `print.html?${asks}`, kind: 'Form', note: '', opener });
+    openGenerated({ url: `print.html?${asks}`, kind: 'Form', note: '', opener, trip: trip ?? null });
   }
 
   /* The itinerary a leg's drivers are handed, as a Departures line asks for
@@ -13671,6 +13875,7 @@
       kind: 'Quote calculator',
       note: '',
       opener: bar ?? document.getElementById('scheduler-f-quotemenu'),
+      trip: editing?.id ?? null,
     });
   }
 
@@ -13685,9 +13890,9 @@
      what changed; `reset` makes them its starting point. Only while it is
      framed beside the trip it was filled from. */
   function tellCalculator(reset = false) {
-    if (!calcFor || !editing || String(editing.id) !== String(calcFor.trip) || viewerEl?.hidden) return;
+    if (!calcFor || !editing || String(editing.id) !== String(calcFor.trip) || viewers.calc.el?.hidden) return;
     let hook = null;
-    try { hook = viewerFrame?.contentWindow?.Rux?.calculatorTrip; } catch { return; }
+    try { hook = viewers.calc.frame?.contentWindow?.Rux?.calculatorTrip; } catch { return; }
     hook?.changed(calcFacts(calcFor.leg), reset);
   }
 
@@ -14154,10 +14359,10 @@
       }
       await refreshDocuments(tripId);
       // The panel open on the file shows the new one.
-      if (viewerDocId === String(old.id)) {
+      if (viewers.doc.docId === String(old.id)) {
         const trip = panelIndex.trips.get(tripId) ?? panelArgs?.trip;
         const fresh = trip && (trip.trip_documents || []).find(d => String(d.id) === String(doc.id));
-        openDocument(fresh || doc, null, trip, viewerMark);
+        openDocument(fresh || doc, null, trip, viewers.doc.mark);
       }
       toast('success', 'The file was replaced.');
     });
@@ -14182,7 +14387,7 @@
       return;
     }
     // The panel on the deleted file has nothing left to show.
-    if (viewerDocId === String(target.doc.id)) closeViewer(false);
+    if (viewers.doc.docId === String(target.doc.id)) viewers.doc.close(false);
     await refreshDocuments(target.tripId);
     toast('success', 'The file was deleted.');
   });
@@ -15577,8 +15782,9 @@
   const viewerSizeBtn = document.getElementById('scheduler-viewer-size');
   const viewerPanelEl = document.getElementById('scheduler-viewer-panel');
   function setViewerSize(size) {
-    if (!pageEl || !viewerPanelEl) return;
-    if (size === 'sm') delete pageEl.dataset.viewer; else pageEl.dataset.viewer = size;
+    const column = viewers.doc?.el;
+    if (!column || !viewerPanelEl) return;
+    if (size === 'sm') delete column.dataset.size; else column.dataset.size = size;
     for (const each of VIEWER_SIZES) viewerPanelEl.classList.toggle(VIEWER_CLASSES[each], each === size);
     if (viewerSizeBtn) {
       const widest = size === VIEWER_SIZES.at(-1);
@@ -15590,7 +15796,7 @@
     placeRoom();
   }
   viewerSizeBtn?.addEventListener('click', () => {
-    const now = VIEWER_SIZES.indexOf(pageEl?.dataset.viewer ?? 'sm');
+    const now = VIEWER_SIZES.indexOf(viewers.doc?.el?.dataset.size ?? 'sm');
     const size = VIEWER_SIZES[(now + 1) % VIEWER_SIZES.length];
     try { localStorage.setItem(VIEWER_SIZE_KEY, size); } catch { /* kept for this visit */ }
     setViewerSize(size);
@@ -15607,13 +15813,13 @@
      on the scrim both do. It answers whether there was one, so Escape can go
      on to what it means with nothing in front. */
   function leaveFront() {
-    switch (pageEl?.getAttribute('data-takeover')) {
-      case 'viewer': closeViewer(); return true;
-      case 'editor': whenSafe(() => closePanel()); return true;
-      case 'roster': availOn = false; placeAvailability(); availToggle?.focus(); return true;
-      case 'to-do': window.SchedulerToDoList?.shut(); return true;
-      default: return false;
-    }
+    if (!frontPanel) return false;
+    if (frontPanel === 'editor') whenSafe(() => closePanel());
+    else if (frontPanel === 'roster') { availOn = false; placeAvailability(); availToggle?.focus(); }
+    else if (frontPanel === 'to-do') window.SchedulerToDoList?.shut('tasks');
+    else if (frontPanel === 'prep') window.SchedulerToDoList?.shut('prep');
+    else viewers[frontPanel]?.close();
+    return true;
   }
   document.getElementById('scheduler-scrim')?.addEventListener('click', () => leaveFront());
   /* Escape acts where focus is. Inside the itinerary panel it closes that
@@ -15628,9 +15834,10 @@
        leaves it wherever focus is: the board behind it is inert and has
        nothing to take the key for. */
     if (leaveFront()) { e.preventDefault(); return; }
-    if (viewerEl && !viewerEl.hidden && viewerEl.contains(document.activeElement)) {
+    const inViewer = Object.values(viewers).find(v => v.el && !v.el.hidden && v.el.contains(document.activeElement));
+    if (inViewer) {
       e.preventDefault();
-      closeViewer();
+      inViewer.close();
       return;
     }
     const inEditor = !!tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement);
@@ -16788,7 +16995,7 @@
         .then(() => { if (tab) requestAnimationFrame(() => goToTripPart(tab)); });
     }
   }
-  /* The lists' pane offers each of its trip links here before following it,
+  /* The lists' panes offer each of their trip links here before following it,
      and the board takes the ones that are its own address, so the trip opens
      beside the list and the page is not read again. */
   document.addEventListener('scheduler:open-trip', e => {

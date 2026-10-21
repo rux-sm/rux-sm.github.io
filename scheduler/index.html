@@ -370,26 +370,27 @@
                  Cmd-K opens it too. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-search-open" data-rux-open="scheduler-search-modal" aria-label="Search trips" title="Search trips (⌘K)"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-search"/></svg></button>
             <!-- To do and Prep, the board's two lists: each shows and hides
-                 the one pane left of the week on its own list, so each is a
-                 pressed toggle, its glyph filled while its list shows, and
+                 its own pane left of the week, so each is a pressed toggle,
+                 its glyph filled while its pane is open, and
                  each carries how many are due. Where the row scrolls, a
                  phone 402px wide shows search and both counts before a swipe,
                  and one 375px wide search and To do. to-do-list.js works
                  them. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="To do list" title="To do list"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
-            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Prep" title="Prep"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
+            <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-prep-panel" aria-label="Prep" title="Prep"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
           <!-- Named "Driver availability", like the pane's own head, so one
                control has one name. It stays in the toolbar at every width,
                a swipe along the row away where a phone is too narrow. It sits beside
                To do and Prep, the bar's other panes, and its person is outlined
                while the pane is shut and filled while it shows, set by data.js. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
-          <!-- Forms and the quote calculator open the document panel left of
-               the week, on the selected trip, the editor's, or none; each is
-               pressed while the panel shows it, and a press then shuts it.
-               data.js works them. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-forms-open" aria-pressed="false" aria-controls="scheduler-viewer-panel" aria-label="Forms" title="Forms"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></button>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-calc-open" aria-pressed="false" aria-controls="scheduler-viewer-panel" aria-label="Quote calculator" title="Quote calculator"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></button>
+          <!-- Forms and the quote calculator each open their own panel left
+               of the week, on the selected trip, the editor's, or none; each
+               is pressed while its panel is open, and a press then shuts it.
+               data.js makes the two panels from the document panel's markup
+               and works them. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-forms-open" aria-pressed="false" aria-label="Forms" title="Forms"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-calc-open" aria-pressed="false" aria-label="Quote calculator" title="Quote calculator"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></button>
             </div>
             <!-- The overflow menu (#scheduler-view-menu): New trip where its
                  toolbar button hides, Today below md, then the options for how
@@ -492,16 +493,23 @@
               </button>
             </div>
           </div>
-          <!-- The pane of the board's two lists, To do and Prep, left of
-               everything on the board; `order` puts it there while the markup
-               keeps the schedule first. The toolbar's two buttons show and
-               hide it, its head holds the name of the list showing and the
-               close control, as the roster's does, and to-do-list.js and
-               departures-panel.js fill it. -->
+          <!-- The panes of the board's two lists, To do and Prep, each left of
+               the week where data.js orders it among the open panels. The
+               toolbar's two buttons show and hide them, each head holds its
+               list's name and its close control, as the roster's does, and
+               to-do-list.js and departures-panel.js fill them. -->
           <div class="scheduler-to-do scheduler-to-do--pane" id="scheduler-to-do-panel" role="region" aria-label="To do list" hidden>
             <div class="scheduler-aside__head">
               <span class="scheduler-aside__title">To do list</span>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-to-do-close" aria-label="Hide the list">
+                <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="scheduler-to-do scheduler-to-do--pane" id="scheduler-prep-panel" role="region" aria-label="Prep" hidden>
+            <div class="scheduler-aside__head">
+              <span class="scheduler-aside__title">Prep</span>
+              <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-close" aria-label="Hide Prep">
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
               </button>
             </div>
@@ -706,7 +714,7 @@
        blocks. -->
   <!-- The documents the head's title lists, filled by data.js from what the
        framed form says it has: every envelope on the trip, one of them ticked. -->
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items" id="scheduler-viewer-copies" role="menu" tabindex="-1" hidden></ul>
+  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items scheduler-viewer-copies" id="scheduler-viewer-copies" role="menu" tabindex="-1" hidden></ul>
 
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items scheduler-view-menu" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking or holding an empty cell

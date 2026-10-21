@@ -45,7 +45,7 @@
   const client = account?.client;
   const Departures = window.SchedulerDepartures;
   const Facts = window.SchedulerLegFacts;
-  const panel = document.getElementById('scheduler-to-do-panel');
+  const panel = document.getElementById('scheduler-prep-panel');
   if (!client || !Departures || !Facts || !panel) return;
 
   // -- small things ---------------------------------------------------------

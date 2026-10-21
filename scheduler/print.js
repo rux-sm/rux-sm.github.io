@@ -2684,11 +2684,12 @@
      hands the panel the controls it built and the panel holds them; its own
      bar then has nothing to show and stays hidden. Opened in a tab there is no
      panel, and the page's bar is the only toolbar there is.
-     `window.parent` is this origin either way, and the guard is for a frame
-     that is not the board's. */
+     The frame carries the host of the panel it is in, since the board has a
+     panel for the forms and one for the calculator; `window.parent` is this
+     origin either way, and the guard is for a frame that is not the board's. */
   const host = (() => {
     if (!framed) return null;
-    try { return window.parent.Rux?.viewer ?? null; } catch { return null; }
+    try { return window.frameElement?.schedulerHost ?? window.parent.Rux?.viewer ?? null; } catch { return null; }
   })();
 
   /* A new page in the frame takes the last one's controls out of the panel.

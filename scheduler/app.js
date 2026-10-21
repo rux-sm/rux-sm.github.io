@@ -101,24 +101,25 @@
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
-    /* The lists' pane takes the same height and scrolls inside it, and gives
-       it up in front of the board, where its own insets are its height. */
-    const toDo = document.querySelector('.scheduler-to-do--pane');
-    if (toDo && !toDo.hidden && getComputedStyle(toDo).position !== 'fixed') {
-      if (toDo.style.blockSize !== panelNext) toDo.style.blockSize = panelNext;
-    } else if (toDo && toDo.style.blockSize) {
-      toDo.style.removeProperty('block-size');
+    /* The lists' panes, To do and Prep, take the same height and scroll
+       inside it, and give it up in front of the board, where their own insets
+       are their height. */
+    for (const toDo of document.querySelectorAll('.scheduler-to-do--pane')) {
+      if (!toDo.hidden && getComputedStyle(toDo).position !== 'fixed') {
+        if (toDo.style.blockSize !== panelNext) toDo.style.blockSize = panelNext;
+      } else if (toDo.style.blockSize) {
+        toDo.style.removeProperty('block-size');
+      }
     }
 
-    /* The trip editor and the itinerary panel get a definite `block-size`, not
+    /* The trip editor and the document panels get a definite `block-size`, not
        a cap: the side panel inside each resolves `block-size: 100%` against
        this box, and a percentage against a parent with only a maximum resolves
        to auto, which leaves the form unscrollable and the Save bar unpinned. */
-    for (const id of ['scheduler-trip', 'scheduler-viewer']) {
-      const column = document.getElementById(id);
-      if (column && !column.hidden) {
+    for (const column of document.querySelectorAll('#scheduler-trip, .scheduler-viewer')) {
+      if (!column.hidden) {
         if (column.style.blockSize !== panelNext) column.style.blockSize = panelNext;
-      } else if (column && column.style.blockSize) {
+      } else if (column.style.blockSize) {
         column.style.removeProperty('block-size');
       }
     }

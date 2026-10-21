@@ -1,11 +1,11 @@
 /* ==========================================================================
-   to-do-list.js — TO DO, AND THE PANE THE BOARD'S TWO LISTS SHARE
+   to-do-list.js — TO DO, AND THE PANES OF THE BOARD'S TWO LISTS
    --------------------------------------------------------------------------
-   The board's toolbar has two buttons, To do and Prep, and one pane beside
-   the week that shows either list. This shows and hides the pane, says on
-   each button how many are due, and fills To do. Prep is departures-panel.js's.
-   The pane stays while a trip or a form opens beside it; a press on the open
-   list's button shuts it, and a press on the other swaps the list.
+   The board's toolbar has two buttons, To do and Prep, each opening its own
+   pane left of the week. This shows and hides both panes, says on each
+   button how many are due, and fills To do. Prep is departures-panel.js's.
+   A pane stays until its button or its close shuts it, or the board closes
+   it for room as the oldest panel open.
 
    To do is what people ask of the office, the `to_dos` rows. A Claude
    session adds a row through the connector, made by Ruxbot; nobody adds one
@@ -45,12 +45,12 @@
   const client = account?.client;
   const Rows = window.SchedulerToDoRows;
   const panel = document.getElementById('scheduler-to-do-panel');
-  const title = panel?.querySelector('.scheduler-aside__title');
-  /* The two lists: each one's button, its glyph, filled while its list
-     shows, and its name on the pane's head. */
+  /* The two lists, each in a pane of its own: the pane, its name to the
+     board's room, its button, the button's glyph, filled while the pane is
+     open, and its name on the button. */
   const LISTS = {
-    tasks: { button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do list', due: 'due' },
-    prep: { button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
+    tasks: { pane: panel, room: 'to-do', button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do list', due: 'due' },
+    prep: { pane: document.getElementById('scheduler-prep-panel'), room: 'prep', button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
   };
   if (!client || !panel || !LISTS.tasks.button) return;
 
@@ -114,7 +114,7 @@
   let editingId = null;     // the row whose form is open
   let openId = null;        // the row that is open, one at a time
   let doneOpen = false;     // whether Done today is open, shut again when the pane shuts
-  let showing = null;       // the list the pane shows, `tasks` or `prep`, or none while it is shut
+  const shown = { tasks: false, prep: false };   // which panes are open
   let failure = '';
   // A row's trip, and the trips its Trip choice offers, as to-do-rows.js read them.
   const tripOf = id => Rows?.trips().get(id) ?? null;
@@ -513,7 +513,6 @@
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-to-do__list');
   body.append(error, list);
-  body.hidden = true;
   panel.appendChild(body);
 
   /* The open row's menu, one for the whole list: Design's menu, which its
@@ -593,7 +592,7 @@
     if (e.target.dataset?.id === openId) openId = null;
   });
   // A link to a trip, a Prep row's or a Prep line's, by a plain press.
-  panel.addEventListener('click', e => {
+  for (const { pane } of Object.values(LISTS)) pane?.addEventListener('click', e => {
     const a = e.target.closest?.('a[href*="?trip="]');
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if (boardTook(a.href, a)) e.preventDefault();
@@ -603,52 +602,48 @@
   // A task's trip is read by to-do-rows.js, so its words come with that reading.
   document.addEventListener('scheduler:to-do-rows', () => draw());
 
-  /* The pane shows one list or is shut. A list's button reads as pressed, its
-     glyph filled, while its list shows. Opening a list reads it again, since
-     a tab left open all morning is hours behind, and leaving To do shuts its
-     open row and its form. The board, told by `scheduler:to-do-pane`, finds
-     the pane its room: beside the week, or in front of it where the window is
-     too narrow. Nothing keeps whether it was open, so the board always opens
-     on the week with the pane shut. */
-  function setPane(next) {
-    if (next === showing || (next && !LISTS[next]?.button)) return;
-    const was = showing;
-    showing = next;
-    panel.hidden = !next;
-    for (const [name, { button, glyph }] of Object.entries(LISTS)) {
-      if (!button) continue;
-      const on = name === next;
-      button.setAttribute('aria-pressed', String(on));
-      button.classList.toggle('rux--btn--selected', on);
-      button.querySelector('use')?.setAttribute('href', on ? `${glyph}-fill` : glyph);
+  /* Each list is its own pane, open or shut, and a list's button reads as
+     pressed, its glyph filled, while its pane is open. Opening asks the board
+     for room first, which may close the oldest panel or say why there is
+     none; opening reads the list again, since a tab left open all morning is
+     hours behind, and shutting To do shuts its open row and its form. The
+     board, told by `scheduler:to-do-pane`, lays the panes out. Nothing keeps
+     whether one was open, so the board always opens on the week alone. */
+  async function setPane(name, on) {
+    const list = LISTS[name];
+    if (!list?.pane || shown[name] === on) return;
+    if (on && !(await (window.SchedulerPanels?.room?.(list.room) ?? true))) return;
+    if (shown[name] === on) return;
+    shown[name] = on;
+    list.pane.hidden = !on;
+    list.button?.setAttribute('aria-pressed', String(on));
+    list.button?.classList.toggle('rux--btn--selected', on);
+    list.button?.querySelector('use')?.setAttribute('href', on ? `${list.glyph}-fill` : list.glyph);
+    if (name === 'tasks') {
+      editingId = null;
+      openId = null;
+      doneOpen = false;
+      if (on) { loadStored(); Rows?.load(); }
+      draw();
+    } else {
+      const prep = window.SchedulerDeparturesPanel;
+      if (on) prep?.open(); else prep?.close();
     }
-    editingId = null;
-    openId = null;
-    doneOpen = false;
-    if (next) {
-      if (title) title.textContent = LISTS[next].name;
-      panel.setAttribute('aria-label', LISTS[next].name);
-    }
-    body.hidden = next !== 'tasks';
-    const prep = window.SchedulerDeparturesPanel;
-    if (next === 'prep') prep?.open(); else if (was === 'prep') prep?.close();
-    if (next) { loadStored(); Rows?.load(); }
-    draw();
-    if (!was !== !next) document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
+    document.dispatchEvent(new CustomEvent('scheduler:to-do-pane'));
   }
-  // Shuts the pane and hands the focus back to the button of the list it showed.
-  function shut() {
-    const button = LISTS[showing]?.button;
-    if (!button) return;
-    setPane(null);
-    button.focus();
+  // Shuts a pane and hands the focus back to its button.
+  function shut(name) {
+    if (!shown[name]) return;
+    setPane(name, false);
+    LISTS[name].button?.focus();
   }
   for (const [name, { button }] of Object.entries(LISTS)) {
     // Prep is a list only where departures-panel.js loaded to draw it.
     if (name === 'prep' && !window.SchedulerDeparturesPanel) continue;
-    button?.addEventListener('click', () => setPane(showing === name ? null : name));
+    button?.addEventListener('click', () => setPane(name, !shown[name]));
   }
-  document.getElementById('scheduler-to-do-close')?.addEventListener('click', shut);
+  document.getElementById('scheduler-to-do-close')?.addEventListener('click', () => shut('tasks'));
+  document.getElementById('scheduler-prep-close')?.addEventListener('click', () => shut('prep'));
 
   let channel = null;
   function listen() {
@@ -673,6 +668,7 @@
     listen();
   })();
 
-  // The way the board shuts the pane when it is the one in front.
-  window.SchedulerToDoList = { shut };
+  /* The way the board shuts a pane, `tasks` or `prep`: with the focus handed
+     back, or without, where it closes one for room. */
+  window.SchedulerToDoList = { shut, close: name => setPane(name, false) };
 })();

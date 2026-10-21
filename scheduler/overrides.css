@@ -749,7 +749,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* Carbon sizes a menu to its own default, which cuts a bus and a driver's name
    to an ellipsis. This one lists documents by their full names, so it takes
    the width those names need and the panel's own width as its ceiling. */
-#scheduler-viewer-copies {
+.scheduler-viewer-copies {
   min-inline-size: 18rem;
   max-inline-size: var(--scheduler-viewer-w, 24rem);
 }
@@ -766,7 +766,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    The document toolbar's buttons carry none, and in a 30rem panel that space
    is the difference between one row and two, so they end where the label
    does. */
-#scheduler-viewer-toolbar .rux--btn:not(.rux--btn--icon-only) {
+.scheduler-viewer__toolbar .rux--btn:not(.rux--btn--icon-only) {
   padding-inline-end: var(--rux-spacing-05);
 }
 

@@ -1076,7 +1076,7 @@
     document.querySelector('.rux--header')?.remove();
     document.querySelector('.scheduler-quote-title')?.remove();
     document.querySelector('.scheduler-quote-tabs > .rux--tabs')?.remove();
-    try { window.parent.Rux?.viewer?.setToolbarShown(false); } catch { /* not the board's frame */ }
+    try { (window.frameElement?.schedulerHost ?? window.parent.Rux?.viewer)?.setToolbarShown(false); } catch { /* not the board's frame */ }
   }
 
   const show = () => {

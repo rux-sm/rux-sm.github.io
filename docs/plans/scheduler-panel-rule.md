@@ -38,12 +38,10 @@ screen. The trip editor is the one exception.
 - **When the editor alone stands in the way,** the new panel does not open
   until the editor is closed by hand: the board says so, and the editor's own
   unsaved-changes dialog stands as it does now.
-- **A trip's panels follow the selected trip.** Selecting another bar changes
-  what an open Forms or document panel shows to that trip's, and one holding
-  typed input asks first, keeping what it shows if the answer is no. The
-  calculator follows the trip in the editor instead, refilling when the
-  selected trip is the editor's, because its miles come from the editor's
-  Route tab and following any bar would open the editor on every press.
+- **A trip's panels follow the trip in focus,** the editor's where it is open
+  on a saved trip, otherwise the selected one, and only when it changes, so a
+  panel opened on another trip on purpose stays on it until then. One holding
+  typed input asks first, keeping what it shows if the answer is no.
 - **A selected trip with no file of the kind showing** keeps the document
   panel open, saying No files uploaded under its head, which names the trip.
 - **A panel that shows one trip names it in its head** with the trip's
@@ -55,13 +53,12 @@ screen. The trip editor is the one exception.
 
 ## Questions
 
-- Is the calculator following the editor's trip, rather than any selected
-  trip, the right call?
+- None left; the check below is what remains.
 
 ## Tasks
 
 - [ ] Check in Chrome on :8641 with real trips, at a wide window, a laptop
       window and a phone width: open every panel in turn, select other trips
-      with Forms and the document panel open, and open a panel with an unsaved
+      with Forms and the document panel open, with the editor shut and open, and open a panel with an unsaved
       editor and typed calculator figures, and report what closes and what
       asks each time.

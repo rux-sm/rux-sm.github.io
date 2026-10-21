@@ -10665,7 +10665,7 @@
     if (bar && focusDriver != null && !bar.classList.contains('scheduler-bar--driver')) pickDriver(null);
     // The roster moves to the selected trip's week, and lights its days.
     drawRoster();
-    followTrip(bar);
+    followFocus();
     // What this tab is on has changed, so everyone else's board says so.
     presenceTell();
   }
@@ -13721,36 +13721,47 @@
   // A page framed by an older board finds the forms panel's host here.
   window.Rux.viewer = viewers.forms.host;
   const openDocument = (...args) => viewers.doc.openDocument(...args);
-  /* THE TRIP'S PANELS FOLLOW THE SELECTED TRIP. Selecting another trip's bar
-     shows that trip's forms in an open Forms panel, and that trip's newest
-     file of the kind showing in an open document panel, or No files uploaded
-     where it has none. The calculator follows the trip in the editor, since
-     the editor's Route tab is where its miles come from, so it refills when a
-     selected trip is the editor's. A panel with something typed in it asks
-     first, and keeps what it shows on a no. */
+  /* THE TRIP'S PANELS FOLLOW THE TRIP IN FOCUS: the editor's, where it is
+     open on a saved trip, and otherwise the selected one. Forms shows that
+     trip's forms, the document panel that trip's newest file of the kind it
+     is showing, or No files uploaded where it has none, and the calculator,
+     whose miles come from the editor's Route tab, refills when the trip in
+     focus is the editor's. They follow only when the trip in focus changes,
+     so a panel opened on another trip on purpose stays on it until then. A
+     panel with something typed in it asks first, and keeps what it shows on
+     a no; with no trip in focus, each keeps what it shows. */
+  let focusShown = null;
   let following = false;
-  async function followTrip(bar) {
-    const id = bar?.dataset.tripId;
-    if (!id || following) return;
+  const tripInFocus = () => {
+    if (tripEl && !tripEl.hidden && editing?.id && !editing.creating) return String(editing.id);
+    const id = selectedBar()?.dataset.tripId;
+    return id ? String(id) : null;
+  };
+  async function followFocus() {
+    const id = tripInFocus();
+    if (id === focusShown || following) return;
+    focusShown = id;
+    if (!id) return;
     following = true;
     try {
-      const trip = panelIndex.trips.get(id) ?? null;
+      const trip = panelIndex.trips.get(id) ?? (String(editing?.id) === id ? editing.trip : null);
       const dest = trip?.destination || 'this trip';
       const asks = async (viewer, what) => !viewer.dirty || ask(`Show ${what} for ${dest}?`, 'What was typed in the panel is not kept.');
       const forms = viewers.forms;
-      if (forms?.el && !forms.el.hidden && forms.trip !== String(id) && await asks(forms, 'the forms')) openForms(bar, id, null);
+      if (forms?.el && !forms.el.hidden && forms.trip !== id && await asks(forms, 'the forms')) openForms(null, id, null);
       const doc = viewers.doc;
-      if (doc?.el && !doc.el.hidden && doc.trip && doc.trip !== String(id) && doc.docType && trip && await asks(doc, 'the file')) {
+      if (doc?.el && !doc.el.hidden && doc.trip !== id && doc.docType && trip && await asks(doc, 'the file')) {
         const same = documentsOf(trip).find(d => String(d.label || '').toLowerCase() === doc.docType);
-        const kind = FILE_NAMES[doc.docType] ?? doc.docType;
         if (same) openDocument(same, null, trip);
-        else doc.showNoFile(kind, id);
+        else doc.showNoFile(FILE_NAMES[doc.docType] ?? doc.docType, id);
       }
       const calc = viewers.calc;
-      if (calc?.el && !calc.el.hidden && calc.trip !== String(id) && isEditorTrip(bar) && await asks(calc, 'the quote calculator')) openCalculator(bar);
+      if (calc?.el && !calc.el.hidden && calc.trip !== id && String(editing?.id) === id && !tripEl?.hidden && await asks(calc, 'the quote calculator')) openCalculator(null);
     } finally {
       following = false;
     }
+    // The focus may have moved again while a panel asked.
+    if (tripInFocus() !== focusShown) followFocus();
   }
 
   const openGenerated = ({ kind, ...rest }) => (kind === 'Quote calculator' ? viewers.calc : viewers.forms).openGenerated({ kind, ...rest });

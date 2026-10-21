@@ -156,12 +156,14 @@ Three homes, and one rule for choosing.
   time, in front of the board 16px in from the header and every edge, and
   Escape, its close button or the dim leave it. `placeRoom` and `makeRoom` in
   `scheduler/data.js` decide it.
-- **A panel on one trip follows the selected trip.** Forms shows the selected
-  trip's forms, and the stored file panel that trip's newest file of the same
-  kind, or No files uploaded; the calculator refills when the selected trip is
-  the editor's, whose Route tab its miles come from. Each asks first where
-  something is typed in it, and each names the trip by its number, `#1042`,
-  beside its title, as the editor does.
+- **A panel on one trip follows the trip in focus:** the editor's, where it is
+  open on a saved trip, otherwise the selected one. Forms shows that trip's
+  forms, and the stored file panel its newest file of the same kind, or No
+  files uploaded; the calculator, whose miles come from the editor's Route tab,
+  refills when the trip in focus is the editor's. A panel follows only when the
+  trip in focus changes, so one opened on another trip on purpose stays on it
+  until then. Each asks first where something is typed in it, and each names
+  the trip by its number, `#1042`, beside its title, as the editor does.
 - **A generated form is a page, not a modal.** `print.html` draws it and the
   document viewer frames it, so nothing has to hide the board in order to
   print, and two forms on different paper never argue over one `@page`.

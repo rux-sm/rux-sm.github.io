@@ -3149,12 +3149,13 @@ button.scheduler-row-head__num::after {
 .scheduler-week--short .scheduler-row--last > * {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-/* EACH PRIORITY IS A TILE UNDER ITS OWN HEADING, as the To do list's groups
-   are: 16px inside the pane and 16px below the one above, the heading 8px
-   over its tile. It is a subgrid of the roster, so its days stay in the
-   header's columns. The tile's edge is a shadow on a layer under the heading
-   rather than a border, which would narrow its first and last columns, and
-   its corners are a tile's. Its last row needs no rule: the edge closes it. */
+/* THE ROSTER IS ONE TILE, 16px inside the pane: the column header and every
+   driver. It is a subgrid of the roster, so its rows keep the roster's
+   columns. Its edge is a shadow on a layer over it rather than a border,
+   which would narrow its first and last columns, and its corners are a
+   tile's, taken by the header's end cells and the last row's. Its last row
+   needs no rule: the edge closes it, and the header inside it needs no rule
+   above it either. */
 .scheduler-avail__group {
   grid-column: 1 / -1;
   display: grid;
@@ -3165,26 +3166,28 @@ button.scheduler-row-head__num::after {
 .scheduler-avail__group::after {
   content: '';
   position: absolute;
-  inset: calc(1rem + var(--rux-spacing-03)) 0 0;
+  inset: 0;
   border-radius: var(--scheduler-tile-radius, 0);
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01);
   pointer-events: none;
 }
+.scheduler-avail__group > .scheduler-avail__days > .scheduler-avail__day { border-block-start: 0; }
+.scheduler-avail__group > .scheduler-avail__days > :first-child { border-start-start-radius: var(--scheduler-tile-radius, 0); }
+.scheduler-avail__group > .scheduler-avail__days > :last-child { border-start-end-radius: var(--scheduler-tile-radius, 0); }
 .scheduler-avail__group > .scheduler-avail__row:last-child > * { border-block-end: 0; }
-.scheduler-avail__group > .scheduler-avail__band + .scheduler-avail__row > :first-child { border-start-start-radius: var(--scheduler-tile-radius, 0); }
-.scheduler-avail__group > .scheduler-avail__band + .scheduler-avail__row > :last-child { border-start-end-radius: var(--scheduler-tile-radius, 0); }
 .scheduler-avail__group > .scheduler-avail__row:last-child > :first-child { border-end-start-radius: var(--scheduler-tile-radius, 0); }
 .scheduler-avail__group > .scheduler-avail__row:last-child > :last-child { border-end-end-radius: var(--scheduler-tile-radius, 0); }
-/* The column header reaches over the roster's 16px inset to the pane's edges,
-   so rows scrolling under it never show at its sides. The last day gives the
-   inset back as padding, which keeps its letter over its column. */
-.scheduler-avail__days > .scheduler-avail__day--head {
-  margin-inline-start: calc(-1 * var(--rux-spacing-05));
-  padding-inline-start: calc(var(--rux-spacing-05) + var(--rux-spacing-03));
-}
-.scheduler-avail__days > .scheduler-avail__day:last-child {
-  margin-inline-end: calc(-1 * var(--rux-spacing-05));
-  padding-inline-end: var(--rux-spacing-05);
+/* Where the priority changes, a second rule over the row's own, so the
+   groups part without a heading between them. */
+.scheduler-avail__row--break > * { border-block-start: 1px solid var(--rux-border-subtle-02, var(--rux-border-subtle-01)); }
+/* The priority column, inside the name cell: its number on a priority's
+   first driver, in the quiet colour and figures of one width, so the names
+   start in one line under the header's P. */
+.scheduler-avail__p {
+  display: inline-block;
+  inline-size: 1.25rem;
+  color: var(--rux-text-secondary);
+  font-variant-numeric: tabular-nums;
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
@@ -3270,9 +3273,8 @@ button.scheduler-row-head__num::after {
 .scheduler-avail__day--head {
   position: sticky;
   inset-inline-start: 0;
-  /* Start-aligned on the driver names' own inset, not Carbon's 1rem: the label
-     is a band's name, and "Priority 1" has no room inside 1rem of a column the
-     week has already taken its width from. Declared here, after
+  /* Start-aligned on the driver names' own inset, not Carbon's 1rem, so its P
+     and Driver stand over the names' columns. Declared here, after
      `.scheduler-avail__day`, whose zero padding and centring also match this
      cell at the same specificity. */
   padding-inline: var(--rux-spacing-03);
@@ -3583,31 +3585,6 @@ button.scheduler-row-head__num::after {
    do. Two classes, to beat the band's weight on
    `.scheduler-avail__days > .scheduler-avail__day`. */
 .scheduler-avail__days > .scheduler-avail__day--weekend { font-weight: var(--rux-body-compact-01-font-weight); }
-/* The heading's count of drivers free for the whole selected trip. */
-.scheduler-avail__count { font-weight: var(--rux-body-compact-01-font-weight); }
-
-/* The heading over each priority's tile is a To do group's heading: a label's
-   size, spacing and quiet colour, the count at the line's end, 8px over the
-   tile and in the pane's open space rather than on it. */
-.scheduler-avail__band {
-  /* Across every column, since a heading covers the name and the whole week,
-     and a label held inside the name column has no room for "No priority". */
-  grid-column: 1 / -1;
-  /* In flow rather than pinned. The column header's corner names the band
-     being read and data.js hands it over as each one reaches the header, so a
-     heading pinned under that header would say it twice. A heading passes
-     under the header's own opaque cells. */
-  block-size: 1rem;
-  line-height: 1rem;
-  margin-block-end: var(--rux-spacing-03);
-  display: flex;
-  justify-content: space-between;
-  gap: var(--rux-spacing-03);
-  color: var(--rux-text-secondary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
 
 /* ── The schedule's times ───────────────────────────────────────────────────
    Carbon ships nothing for a row of times, so this is the app's own grid. Two

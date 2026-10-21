@@ -9367,13 +9367,6 @@
   const asideSlot = document.getElementById('scheduler-aside');
   const availEl = document.getElementById('scheduler-avail');
   const availGrid = document.getElementById('scheduler-avail-grid');
-  /* Set by `drawAvailability` and called by the scroll below. The region is
-     taken by id, because the grid is moved into it only when the roster is
-     shown. Capture, because a scroll does not bubble: the card scrolls below
-     md and the pane inside it above, and one listener hears both. */
-  let nameAvailBand = () => {};
-  document.getElementById('scheduler-aside')
-    ?.addEventListener('scroll', () => nameAvailBand(), true);
   const availToggle = document.getElementById('scheduler-avail-toggle');
   let availOn = false;
   // The pane of the board's two lists, which to-do-list.js shows and hides.
@@ -10216,14 +10209,16 @@
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
-    /* Every priority is its own tile under its own heading, so the column
-       header's corner is empty until a heading scrolls under it; an empty
-       roster has no tile and keeps "Driver". */
-    const bandName = p => p == null ? 'No priority' : `Priority ${p}`;
-
+    /* One tile holds the column header and every driver. The rows are in
+       priority order, and a priority's number leads its first driver's name,
+       in a column the header heads P. */
+    const tile = el('div', 'scheduler-avail__group');
     const head = el('div', 'scheduler-avail__days');
-    head.appendChild(el('div', 'scheduler-avail__day scheduler-avail__day--head',
-      rows.length ? '' : 'Driver'));
+    const corner = el('div', 'scheduler-avail__day scheduler-avail__day--head');
+    const pHead = el('span', 'scheduler-avail__p', 'P');
+    pHead.title = 'Priority';
+    corner.append(pHead, 'Driver');
+    head.appendChild(corner);
     for (let i = first; i < first + count; i++) {
       const d = addDays(weekStart, i);
       /* One letter, taken from the locale's own `short` weekday, for the
@@ -10245,31 +10240,28 @@
       cell.dataset.day = String(i);
       head.appendChild(cell);
     }
-    availGrid.appendChild(head);
+    tile.appendChild(head);
+    availGrid.appendChild(tile);
 
-    /* A tile wherever the priority changes, because the rows are in priority
-       order and only the breaks are missing. A driver with no priority gets
-       their own tile rather than sitting under the last number, which would
-       say something untrue about them. The heading's count is filled by
-       `markAvailDays`, since it answers for the selected trip. */
-    let band, group = null;
-    for (const row of rows) {
+    /* Where the priority changes, the first driver of the new one carries its
+       number, or a dash for no priority, and its row a rule above it. A driver
+       with no priority is set apart rather than left under the last number,
+       which would say something untrue about them. */
+    let band;
+    rows.forEach((row, n) => {
       const p = row.driver.priority ?? null;
-      if (!group || p !== band) {
-        band = p;
-        group = el('div', 'scheduler-avail__group');
-        const heading = el('div', 'scheduler-avail__band');
-        heading.append(el('span', 'scheduler-avail__band-name', bandName(p)), el('span', 'scheduler-avail__count'));
-        group.appendChild(heading);
-        availGrid.appendChild(group);
-      }
-      const r = el('div', 'scheduler-avail__row');
+      const starts = n === 0 || p !== band;
+      band = p;
+      const r = el('div', `scheduler-avail__row${starts && n ? ' scheduler-avail__row--break' : ''}`);
       /* The full name goes on the title, because the cell shows `short_name`
          when there is one and ellipses a long name. `title` is hover only, so
          it does not help a keyboard or screen-reader user tell two similar
          names apart. */
       const shown = row.driver.short_name || row.driver.name || 'Driver';
-      const nameEl = el('div', 'scheduler-avail__name', shown);
+      const nameEl = el('div', 'scheduler-avail__name');
+      const pCell = el('span', 'scheduler-avail__p', starts ? (p == null ? '–' : String(p)) : '');
+      if (starts) pCell.title = p == null ? 'No priority' : `Priority ${p}`;
+      nameEl.append(pCell, shown);
       if (row.driver.name) nameEl.title = row.driver.name;
       // A press picks out the driver's trips on the board; see `markDriverTrips`.
       nameEl.setAttribute('role', 'button');
@@ -10325,34 +10317,14 @@
         if (day.refs.length) availRefs.set(cell, day.refs);
         r.appendChild(cell);
       });
-      group.appendChild(r);
-    }
-
-    /* The corner names the band being read once its heading has scrolled
-       under the column header, so a long tile keeps its name in view. */
-    const corner = head.firstElementChild;
-    const bands = [...availGrid.querySelectorAll('.scheduler-avail__band-name')];
-    nameAvailBand = () => {
-      if (!rows.length) return;
-      const edge = corner.getBoundingClientRect().bottom;
-      // A hidden roster measures zero, where every band would pass and the
-      // last would win; it is named again when it is shown.
-      if (!edge) return;
-      let name = '';
-      for (const b of bands) {
-        if (b.getBoundingClientRect().top >= edge) break;
-        name = b.textContent;
-      }
-      if (corner.textContent !== name) corner.textContent = name;
-    };
-    nameAvailBand();
+      tile.appendChild(r);
+    });
   }
 
   /* Marks the selected trip's days down the roster, so "who is free then"
      needs no counting; null clears it. Each free cell on those days is an open
      mark, joined to an open neighbour; a driver free on every day shown is
-     whole, with a tick by the name, and one free on some days names how many.
-     Each priority's heading counts its whole drivers. */
+     whole, with a tick by the name, and one free on some days names how many. */
   const OPEN = ['scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day', 'scheduler-avail__cell--open',
     'scheduler-avail__cell--whole', 'scheduler-avail__cell--open-prev', 'scheduler-avail__cell--open-next'];
   function markAvailDays(start, span) {
@@ -10361,7 +10333,6 @@
       delete n.dataset.open;
       n.querySelector('.scheduler-avail__whole')?.remove();
     }
-    for (const c of availGrid.querySelectorAll('.scheduler-avail__count')) c.textContent = '';
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -10374,33 +10345,27 @@
     // week is judged by the part the roster can see.
     const days = availGrid.querySelectorAll('.scheduler-avail__days > .scheduler-avail__day--on-day').length;
     if (!days) return;
-    for (const group of availGrid.querySelectorAll('.scheduler-avail__group')) {
-      let whole = 0;
-      for (const r of group.querySelectorAll('.scheduler-avail__row')) {
-        const open = [...r.querySelectorAll('.scheduler-avail__cell--on-day')]
-          .filter(c => !c.matches('.scheduler-avail__cell--busy, .scheduler-avail__cell--off'));
-        if (!open.length) continue;
-        const all = open.length === days;
-        if (all) whole++;
-        for (const c of open) {
-          c.classList.add('scheduler-avail__cell--open');
-          if (all) c.classList.add('scheduler-avail__cell--whole');
-          const prev = c.previousElementSibling;
-          if (open.includes(prev)) {
-            c.classList.add('scheduler-avail__cell--open-prev');
-            prev.classList.add('scheduler-avail__cell--open-next');
-          }
-        }
-        const name = r.querySelector('.scheduler-avail__name');
-        name.dataset.open = all ? 'all' : `${open.length}/${days}`;
-        if (all) {
-          const tick = svgUse('#m-check', '16', '0 0 20 20');
-          tick.classList.add('scheduler-avail__whole');
-          name.appendChild(tick);
+    for (const r of availGrid.querySelectorAll('.scheduler-avail__row')) {
+      const open = [...r.querySelectorAll('.scheduler-avail__cell--on-day')]
+        .filter(c => !c.matches('.scheduler-avail__cell--busy, .scheduler-avail__cell--off'));
+      if (!open.length) continue;
+      const all = open.length === days;
+      for (const c of open) {
+        c.classList.add('scheduler-avail__cell--open');
+        if (all) c.classList.add('scheduler-avail__cell--whole');
+        const prev = c.previousElementSibling;
+        if (open.includes(prev)) {
+          c.classList.add('scheduler-avail__cell--open-prev');
+          prev.classList.add('scheduler-avail__cell--open-next');
         }
       }
-      group.querySelector('.scheduler-avail__count').textContent =
-        `${whole || 'None'} free${days > 1 ? ` all ${days} days` : ''}`;
+      const name = r.querySelector('.scheduler-avail__name');
+      name.dataset.open = all ? 'all' : `${open.length}/${days}`;
+      if (all) {
+        const tick = svgUse('#m-check', '16', '0 0 20 20');
+        tick.classList.add('scheduler-avail__whole');
+        name.appendChild(tick);
+      }
     }
   }
 
@@ -11278,8 +11243,6 @@
        longer has room for. */
     placeRoom();
     window.Rux?.schedule?.fit?.();
-    // The corner can only be named from a roster that has a size.
-    if (shown) nameAvailBand();
   }
 
   // A press shows the roster or hides it; where it then goes is `placeRoom`'s.

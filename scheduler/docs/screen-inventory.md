@@ -181,11 +181,12 @@ it is a companion view, not panel content, and it stays on until turned off.
 
 The grid and the panel can both be open. Only the panel is one at a time.
 
-Each priority is its own tile, under a heading in the To do list's group style. With a trip selected, its days are shaded in
-the header, and each driver free on one of them has a mark there: a green bar
-when free every day, with a tick by the name, and a grey one when free only
-some, with the count of days, such as 2/3. Each tile's heading counts its
-drivers free for the whole trip.
+The grid is one tile, its column header inside it, with the drivers in
+priority order: a P column carries the priority's number on its first driver,
+with a rule above that row. With a trip selected, its days are shaded in the
+header, and each driver free on one of them has a mark there: a green bar when
+free every day, with a tick by the name, and a grey one when free only some,
+with the count of days, such as 2/3.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

@@ -17,6 +17,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A quote can go out with a leg's times as TBD, because the times are settled with the customer later and never hold a quote back.
 - A quote names the departing city and the farthest destination city only, even when the trip stops in more, because one pair of cities keeps the quote simple.
 - When a customer changes a quoted or signed trip's days or route, the trip is priced again by the calculator on the new route and days, as its Bus rental line, never as the old price with a line added, because the calculator's figure is what the office quotes that trip new.
+- A booking whose buses run different itineraries is entered as one trip per bus, each with its own route and its bus's share of the price, and each carries the same contract, PO and quote sent, because the editor cannot yet give one trip a second route.
 
 ## Route
 
@@ -40,6 +41,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 - A driver rux has said not to depend on is not counted as cover: a review leaves them out of the free drivers and offers them for no seat, because a trip that waits on them may have no driver on the day; who that is stays out of this public file.
 - The owners drive only when no other driver is free, and then on the shortest trips of the day, because they run the company the rest of the time.
 - A trip's equipment needs pick its bus first, such as a sleeper for a long one-driver day, an ADA lift or 56 seats; among the buses that meet them, the farthest trips take the newest, as the board lists the buses newest first, because the newest are the most comfortable and reliable over distance.
+- A customer on a local trip asking how many a bus seats is told the office has 52- and 56-passenger coaches, but a long trip is never promised a 56-seat coach, because the 56-seat coaches have no sleeper and a long day's on-duty hours may need one.
 - A bus gets as long at the yard between trips as the week allows, so it can be cleaned and fuelled: a bus back late at night goes out on a later departure the next day rather than an early one.
 - When a trip's drivers rest in the sleeper and one of its buses has none, the fixes are tried in this order, because a swap is the easiest and a co-driver is the last resort: swap the bus with a sleeper from a trip on the same days that needs none; install a sleeper in the bus, which needs the bus free the day before; and only when neither can be done, a co-driver.
 - Need hotel is on only when the office books the driver's room; when the customer provides it, as they usually do, it stays off.

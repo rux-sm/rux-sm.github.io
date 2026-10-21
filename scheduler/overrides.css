@@ -238,6 +238,17 @@
   padding-block: 0;
   padding-inline-end: calc(2 * var(--rux-layout-size-height-md) + var(--scheduler-head-gap, 0px) + var(--scheduler-head-inset, 0px) + var(--rux-spacing-03));
 }
+/* The title runs to the head's own padding, which already clears the buttons,
+   so Carbon's room after the title for a close button it keeps elsewhere
+   would only part the trip's number from it. */
+.scheduler-viewer .rux--side-panel .rux--side-panel__header--has-title .rux--side-panel__title-text {
+  padding-inline-end: 0;
+}
+/* The forms and calculator panels have no size button, so their head clears
+   the close button alone. */
+.scheduler-viewer .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title:not(:has(#scheduler-viewer-size)) {
+  padding-inline-end: calc(var(--rux-layout-size-height-md) + var(--scheduler-head-inset, 0px) + var(--rux-spacing-03));
+}
 /* Carbon lays its collapsed title over the real one and fades it in as the
    title beneath shrinks. Neither panel animates its title -- index.html says
    why on the trip panel's head -- so this one never shows, but it was still

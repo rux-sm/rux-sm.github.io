@@ -3491,10 +3491,8 @@
     sheet.replaceChildren();
 
     const found = trip ? await tripBuses(trip) : null;
-    if (found?.destination) {
-      title.textContent = `Forms — ${found.destination}`;
-      host?.setViewerHead(`Forms — ${found.destination}`);
-    }
+    // A tab of its own names the trip; the board's panel says Forms, and its trip number beside it says which trip.
+    if (found?.destination) title.textContent = `Forms — ${found.destination}`;
 
     /* A row is the form's icon and its short name, under the heading of who
        the form is for, which the short name leaves out. */

@@ -80,7 +80,8 @@
       const shaped = Shape.legOfRoute(trip, a.route_id);
       if (!shaped) return null;
       const leg = shaped.word || 'outbound';
-      const inbound = leg === 'return' && trip.trip_type === 'dropoff_pickup';
+      // A split trip's pickup is every leg after its first.
+      const inbound = trip.trip_type === 'dropoff_pickup' && shaped.number > 1;
       const start = shaped.start;
       const end = shaped.end || start;
       if (!dateOf(start) || String(end).slice(0, 10) < now) return null;
@@ -91,7 +92,7 @@
       const itinerary = Shape.itineraryFor(trip, shaped.id);
       const partner = activeSeats(a).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driver.id));
       return {
-        key: `${trip.id}:${shaped.id}`, assignmentId: a.id, trip, legId: shaped.id, leg, role: row.role || 'driver',
+        key: `${trip.id}:${shaped.id}`, assignmentId: a.id, trip, legId: shaped.id, leg, inbound, role: row.role || 'driver',
         start: dateOf(start), end: dateOf(end) || dateOf(start),
         bus: a.buses?.number != null ? String(a.buses.number) : '',
         spot: pickup.spot || trip.spot_time, swap: row.report_time, instructions: clean(row.instructions),

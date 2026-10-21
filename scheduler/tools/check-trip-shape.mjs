@@ -70,6 +70,8 @@ const earlier = { ...booking, trip_legs: [...booking.trip_legs, leg('z', '2027-0
 expect('a leg added before the others becomes leg 1, and the first leg\'s papers are now its',
   [S.firstLeg(earlier).id, S.legLabel(earlier, 'a'), S.contactsFor(earlier, 'z').map(c => c.name)], ['z', '2 of 4', ['Pat']]);
 expect('a trip read without its legs has none, and hands nothing out', [S.legsOf({}), S.contactsFor({}, null)], [[], []]);
+const undated = { trip_legs: [leg('later', null, { leg: 'return' }), leg('first', '2027-01-13', { leg: 'outbound' })] };
+expect('a leg with no date comes after every dated one', S.legsOf(undated).map(l => [l.id, l.number]), [['first', 1], ['later', 2]]);
 
 console.log(failed ? `\n  ${failed} trip shape case(s) failed` : '\n  trip shape: every case passed');
 process.exit(failed ? 1 : 0);

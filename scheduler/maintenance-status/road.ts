@@ -33,7 +33,7 @@ const window = {};
 
   /* A trip's legs by date, each with its number from 1 and its routes by
      position. Two legs on one day keep the order of the words they mirror,
-     then the order they were made. */
+     then the order they were made, and a leg with no date comes last. */
   function legsOf(trip) {
     const legs = (trip?.trip_legs || []).map(l => ({
       id: l.id,
@@ -48,7 +48,7 @@ const window = {};
         .map(r => ({ id: r.id, position: r.position ?? 1, name: clean(r.name) || null })),
       created: l.created_at || '',
     }));
-    legs.sort((a, b) => (a.start || '').localeCompare(b.start || '')
+    legs.sort((a, b) => (!a.start - !b.start) || (a.start || '').localeCompare(b.start || '')
       || (WORD_ORDER[a.word] ?? 2) - (WORD_ORDER[b.word] ?? 2)
       || a.created.localeCompare(b.created));
     return legs.map((l, i) => ({ ...l, number: i + 1 }));

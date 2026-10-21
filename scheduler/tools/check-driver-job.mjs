@@ -141,5 +141,11 @@ expect('a role, a need and a removed itinerary each say what, and only the first
   "Hi Ana, you're now the co-driver on today's trip. It now needs: Hotel. It no longer needs: HOS form. It no longer has an itinerary.");
 expect('Spanish agrees in number', opening([{ key: 'bus' }, { key: 'time' }], 'es'), 'Hola Ana, cambiaron el autobús y la hora de llegada de tu viaje de hoy.');
 
+// A split trip's leg says which way it runs, Inbound for its pickup, every leg after the first.
+const way = (inbound, lang) => window.SchedulerDriverText.legLines({ ...told, trip: { trip_type: 'dropoff_pickup' }, inbound }, { lang })[0].split(' • ').at(-1);
+expect('a split trip\'s leg says which way it runs, in the driver\'s language, and another trip\'s says neither',
+  [way(false), way(true), way(true, 'es'), /Outbound|Inbound/.test(window.SchedulerDriverText.legLines(told)[0])],
+  ['Outbound', 'Inbound', 'Regreso', false]);
+
 console.log(failed ? `\n  ${failed} fault(s) in driver job` : '\n  driver job: every case passed');
 process.exit(failed ? 1 : 0);

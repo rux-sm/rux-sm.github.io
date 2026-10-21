@@ -154,13 +154,11 @@ None open.
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, a group at a time: the editor and
       `fromStops` in `scheduler/route-figures.js`, with the quote calculator
-      it fills and the bar's ref, whose `leg` is the old word; the words of
-      `scheduler/driver-text.js`, which still name a leg Outbound or Inbound
-      by the word the Call or text window hands it; live and the road, whose
-      `stopsOf` in `scheduler/road.js` finds a leg by its word. The bar
-      menu's hotel mark, itinerary upload and Mark as told send the old word,
-      and `scheduler/print.js` still keeps a print's marks and reads the
-      quote's lines by it, which move with those writers. The past-midnight
+      it fills and the bar's ref, whose `leg` is the old word; and live and
+      the road, whose `stopsOf` in `scheduler/road.js` finds a leg by its
+      word. The bar menu's hotel mark, itinerary upload and Mark as told
+      send the old word, and `scheduler/print.js` still keeps a print's marks
+      and reads the quote's lines by it, which move with those writers. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
       Each reads a trip through `scheduler/trip-shape.js`, with
       `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and

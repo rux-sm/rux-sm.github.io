@@ -14818,8 +14818,8 @@
     const docked = barShortcuts.hasAttribute('data-docked');
 
     /* The bar's leg by its key, week.js's, which is its id on a trip read
-       with its legs. `word` is the old word it mirrors, which driver-text.js
-       names a split's legs by and the writers still send. */
+       with its legs. `word` is the old word it mirrors, which the writers
+       still send. */
     const on = legByKey(trip, bar.dataset.legKey || bar.dataset.leg || 'outbound');
     const leg = on?.key ?? (bar.dataset.leg || 'outbound');
     const word = on ? on.leg : (bar.dataset.leg || 'outbound');
@@ -14844,14 +14844,14 @@
         : (a.position ?? 0) - (b.position ?? 0)));
     /* Each driver's leg as a text to them says it, in the Driver week info's
        wording: their day, bus, role and spot or swap, the leg's towns and its
-       newest itinerary. Today is the office's, in Chicago. A trip read with
-       its legs gives the leg's saved days and every route's stops, a split
-       trip's pickup being every leg after the first. */
+       newest itinerary. Today is the office's, in Chicago. The leg's saved
+       days and every route's stops come through the shape rule, and a split
+       trip's pickup is every leg after the first. */
     const driverText = window.SchedulerDriverText;
-    const inbound = trip.trip_type === SPLIT && (saved ? (on?.number ?? 1) > 1 : word === 'return');
-    const legStart = saved ? saved.start : inbound ? trip.return_start_date : trip.start_date;
-    const legEnd = (saved ? saved.end : (inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date))) || legStart;
-    const legStops = (saved ? window.SchedulerWeek.stopsOfKey(trip, leg) : driverText?.stopsForLeg(trip, word)) ?? [];
+    const inbound = trip.trip_type === SPLIT && (on?.number ?? 1) > 1;
+    const legStart = saved?.start ?? null;
+    const legEnd = saved?.end || legStart;
+    const legStops = window.SchedulerWeek.stopsOfKey(trip, leg);
     const legPickup = legStops.find(s => s.type === 'pickup') || {};
     const legBack = [...legStops].reverse().find(s => s.type === 'return') || {};
     const officeToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
@@ -14863,7 +14863,7 @@
       const partner = partnerSeat ? panelIndex.driversById.get(partnerSeat.driver_id) : null;
       const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
       return {
-        trip, leg: word, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
+        trip, inbound, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
         bus: number != null ? String(number) : '',
         spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
         partner: partner ? (partner.short_name || partner.name) : '',

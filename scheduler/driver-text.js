@@ -9,8 +9,10 @@
    of a driver's link alone, so the link it copies is the one sent.
 
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
-   same shape: { trip, leg, role, start, end, bus, spot, swap, instructions,
-   partner, from, to, itinerary }, dates as Date and times as stored.
+   same shape: { trip, inbound, role, start, end, bus, spot, swap,
+   instructions, partner, from, to, toYard, itinerary }, dates as Date and
+   times as stored. `inbound` is a split trip's pickup, every leg after its
+   first, as trip-shape.js orders them.
 
    IT WRITES IN THE DRIVER'S LANGUAGE, `en` or `es` from their profile, which
    each caller passes in; English when none is. What the office typed, a
@@ -148,21 +150,6 @@
   const roleLabel = (r, lang) => wordsFor(lang).role[ROLE_KEY[r] || 'driver'];
   const isRelief = r => r === 'relief-start' || r === 'relief-end';
 
-  /* A leg's stops, in route order. A drop-off and pickup trip saved before
-     stops carried their leg keeps both legs in one run, split at the second
-     pickup after the first return. */
-  const stopsForLeg = (trip, leg) => {
-    const all = [...(trip.trip_stops || [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-    let out = all.filter(s => (s.leg || 'outbound') !== 'return');
-    let back = all.filter(s => s.leg === 'return');
-    if (trip.trip_type === 'dropoff_pickup' && !back.length) {
-      const firstReturn = out.findIndex(s => s.type === 'return');
-      const second = out.findIndex((s, i) => i > firstReturn && s.type === 'pickup');
-      if (firstReturn >= 0 && second > firstReturn) { back = out.slice(second); out = out.slice(0, second); }
-    }
-    return leg === 'return' ? back : out;
-  };
-
   /* One leg's lines: the day, bus, role and which way a split trip's leg
      runs; then a relief driver's swap, and their instructions, or everyone
      else's spot time; then where the leg runs from and to. `itinerary` adds
@@ -170,7 +157,7 @@
   function legLines(l, { itinerary = false, lang = 'en' } = {}) {
     const w = wordsFor(lang);
     const lines = [];
-    const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.leg === 'return' ? w.inbound : w.outbound) : '';
+    const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.inbound ? w.inbound : w.outbound) : '';
     lines.push([messageDate(l.start, l.end, lang), l.bus ? w.bus(l.bus) : w.busNotSet, roleLabel(l.role, lang), legWord].filter(Boolean).join(' • '));
     if (isRelief(l.role)) {
       lines.push(l.swap ? w.swapAt(timeText(l.swap)) : l.partner ? w.swapWith(l.partner) : w.swapNotSet);
@@ -245,6 +232,6 @@
 
   window.SchedulerDriverText = {
     SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor,
-    messageDate, messageRange, timeText, town, roleLabel, isRelief, stopsForLeg, legLines, reminder, change,
+    messageDate, messageRange, timeText, town, roleLabel, isRelief, legLines, reminder, change,
   };
 })();

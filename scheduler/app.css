@@ -2245,7 +2245,7 @@ button.scheduler-row-head__num::after {
 .scheduler-aside[hidden] { display: none; }
 /* The roster's head, on the pane's surface like the toolbar: a title over a
    region, not a column-header band. Its height comes from the same size token
-   as the toolbar's, so the roster's header row lands on the board's day band. */
+   as the toolbar's, so the head and the toolbar end on one line. */
 .scheduler-aside__head {
   display: flex;
   align-items: center;
@@ -2257,10 +2257,10 @@ button.scheduler-row-head__num::after {
   border-start-start-radius: var(--scheduler-inner-radius);
   border-start-end-radius: var(--scheduler-inner-radius);
 }
-/* The lists' pane, To do and Prep, has no day band under its head, so the head
-   draws the rule the roster's band draws under its own, in the grid's colour,
-   and every pane's head stands off what it holds the same way. */
-.scheduler-to-do--pane > .scheduler-aside__head {
+/* Every pane's head, the lists' and the roster's, draws a rule under itself in
+   the grid's colour, since what each holds sits in a tile below it and no band
+   meets the head. */
+.scheduler-aside__head {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 /* `heading-compact-02`, 16px at 600: the same style as the week name in the

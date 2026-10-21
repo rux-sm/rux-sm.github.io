@@ -1,9 +1,9 @@
-commit   435d339537916059310528d7eb16b9b780e3e42b
-date     2026-10-21T19:04:05Z
-subject  fix(tools): Keep environment values out of export
+commit   bfb0b27157e3d414e2dbe0057e3e2ef8f6e07889
+date     2026-10-21T20:00:22Z
+subject  feat(reviews): File the 2026-10-20 team call
 contract 16 
 tier     export
-sha256   af983b91c4df60acb7cb3ef4bef041c5f66ac8dc168fa778d90de45a98af2fa2
+sha256   6348901ff618a14823494c290a045d0d5b95e207822d43bbc3233c9822210b43
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -1263,10 +1263,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Sales Order Lines"
+                  "v": "Sales Order Lines, and the Order Lines tab of the Order Intake Workbench"
                 }
               ],
-              "text": "Sales Order Lines"
+              "text": "Sales Order Lines, and the Order Lines tab of the Order Intake Workbench"
             },
             {
               "tokens": [
@@ -1281,10 +1281,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Run on four lines, and each answer agreed with the line's status screen"
+                  "v": "Run on four lines one at a time, and each answer agreed with the line's status screen. Run on four at once from the workbench, and not yet checked"
                 }
               ],
-              "text": "Run on four lines, and each answer agreed with the line's status screen"
+              "text": "Run on four lines one at a time, and each answer agreed with the line's status screen. Run on four at once from the workbench, and not yet checked"
             }
           ]
         },
@@ -2080,10 +2080,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The command is on Sales Order Lines opened by itself, 1.1. The Order Lines tab of the workbench has an Actions menu of its own, and no AI command has been seen in it"
+                  "v": "The command is on Sales Order Lines opened by itself, 1.1, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Personalize Form"
+                },
+                {
+                  "t": "text",
+                  "v": " names in the status bar"
                 }
               ],
-              "text": "The command is on Sales Order Lines opened by itself, 1.1. The Order Lines tab of the workbench has an Actions menu of its own, and no AI command has been seen in it"
+              "text": "The command is on Sales Order Lines opened by itself, 1.1, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's Personalize Form names in the status bar"
             }
           ]
         },
@@ -2183,6 +2191,36 @@
                 }
               ],
               "text": "Set up a GenAI prompt builds a command like these, improves its answer and removes it"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Several lines at once"
+                }
+              ],
+              "text": "Several lines at once"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the lines on the Order Lines tab of the workbench and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Status Overview…"
+                },
+                {
+                  "t": "text",
+                  "v": " once. The answer covers each line in the list's order, with a line of dashes between them. Check each line against its own status screen"
+                }
+              ],
+              "text": "Tick the lines on the Order Lines tab of the workbench and choose Status Overview… once. The answer covers each line in the list's order, with a line of dashes between them. Check each line against its own status screen"
             }
           ]
         }

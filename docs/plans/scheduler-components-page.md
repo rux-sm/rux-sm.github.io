@@ -22,7 +22,7 @@ parts join it.
   `components.js` draws each as a section under the page's Motion, board and
   rows.
 - **The sections after the bars, in order:** the trip card and its tabs,
-  with the live card and its map; the To do list's rows and the Prep panel;
+  with the live card and its map; the Tasks list's rows and the Departures panel;
   a bus's row head, its tip and the yard card; the editor's route stops,
   quote lines and billing tiles.
 - **`tools/check-bar.mjs` grows a case for each,** the classes and words
@@ -36,7 +36,7 @@ None open.
 
 - [ ] Move the trip card and its tabs, with the live card and its map, out
       of `data.js`, and add their section.
-- [ ] Move the To do rows and the Prep panel's drawing, and add their section.
+- [ ] Move the task rows and the Departures panel's drawing, and add their section.
 - [ ] Move a bus's row head, its tip and the yard card, and add their section.
 - [ ] Move the editor's route stops, quote lines and billing tiles, and add
       their section.

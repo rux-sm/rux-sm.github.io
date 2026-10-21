@@ -2,7 +2,7 @@
    checklist.js — WHAT A TRIP STILL NEEDS BEFORE EACH LEG LEAVES
    --------------------------------------------------------------------------
    The one copy of the checklist's rules, read by the Departures list and
-   the To do list. A leg's list is five groups
+   the to-do rules. A leg's list is five groups
    in the order the work happens, and only the items the leg needs:
 
      Entered      the Route, Buses and Billing tabs each marked done

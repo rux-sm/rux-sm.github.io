@@ -146,7 +146,7 @@ Other improvements wait until it is live and the old links forward to it.
   drawn by `print.js`'s envelope form for this driver alone, once that form
   can draw outside the forms page. An itinerary opens through the document
   page, which asks `trip-document-link` for a ten-minute link.
-- **Telling the boards.** Nothing is sent: the board and Prep hear an answer
+- **Telling the boards.** Nothing is sent: the board and Departures hear an answer
   from `trip_driver_statuses`, and rux-ui's board reads it every 30 seconds.
 - **When there is nothing to show.** No token: "This link has no schedule in
   it", and ask dispatch. An inactive link: "This link is no longer active",

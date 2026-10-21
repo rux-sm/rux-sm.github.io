@@ -2,11 +2,11 @@
 type: plan
 ---
 
-# Plan: The name row in Prep
+# Plan: The name row in Departures
 
 ## Goal
 
-A crew member's name row in Prep reads whole at the panel's narrowest width.
+A crew member's name row in Departures reads whole at the panel's narrowest width.
 The name is the last thing cut short and Part-time never pushes it out. The
 row ends with the face of whoever confirmed the driver, as every step line
 ends with the face of whoever did it, so every time in a bus's block ends at
@@ -34,7 +34,7 @@ one edge.
 - **Part-time is a small outlined PT tag,** Design's `rux--tag--sm
   rux--tag--outline`, its title and its spoken name the whole word, because
   it kept the whole name longest of five versions drawn at a narrow panel.
-- **The components page's Prep sample carries a long-named part-time
+- **The components page's Departures sample carries a long-named part-time
   driver** when its section lands from the
   [components page plan](scheduler-components-page.md), so the row is seen at
   its worst.

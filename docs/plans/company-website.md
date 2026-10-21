@@ -8,7 +8,7 @@ type: plan
 
 escamillatourbuses.com opens over HTTPS on any phone, says what the company
 runs and where it goes, and takes a quote request straight into the
-scheduler, as a New quote on the board's To do list, which starts the trip with the
+scheduler, as a New quote on the board's Tasks list, which starts the trip with the
 request already filled in.
 
 The site stands as a public preview in its own repository,
@@ -96,16 +96,16 @@ the last one forwarded came in March 2026.
   to the customer on the thank-you page, to give when they call. Staff read
   and update it, and only the function adds one: no policy or grant lets a
   signed-in person insert.
-- **Each request adds a New quote row to To do:** `kind` `quote`, `source`
+- **Each request adds a New quote task:** `kind` `quote`, `source`
   `website`, due the day it came in, its organization or name as who, its trip
   in a line as words and its facts as detail. `to_dos` gains
   `quote_request_id`, its `source` rule takes `website`, and `to_dos_stamp`
   takes a website row only with no one signed in, naming Website where a
   person or Ruxbot would be.
 - **A request goes to the scheduler alone, and no email is sent,** because
-  the office's quote work is already a New quote on To do, and a mail service
+  the office's quote work is already a New quote on Tasks, and a mail service
   would add domain records, a key and a spam filter between the form and the
-  office. To do's count shows it the day it lands, and the office answers by
+  office. The Tasks count shows it the day it lands, and the office answers by
   writing to the customer from Missive. A free mail service, such as Resend's
   free tier, can be added later if a request ever waits unseen.
 - **A request that fails to store is never lost in silence.** The page says
@@ -120,7 +120,7 @@ the last one forwarded came in March 2026.
   organization is a customer's exact name, and the booking contact where the
   email or phone is a contact's; Update your lists offers the rest after the
   save. `trip_drafts` gains `quote_request_id`, and the save links the request
-  and its To do row to the trip.
+  and its task to the trip.
 - **A session cannot deploy a function.** It hands rux the deploy command for
   `quote-request`, as for the connector, and rux sets the function's secret,
   the Turnstile secret, in the dashboard.

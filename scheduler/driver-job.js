@@ -99,7 +99,7 @@
   };
 
   /* A trip read with its papers the new way: its contacts as `trip_contacts`
-     and its files with `leg_id`, as the driver's link, Prep and the board
+     and its files with `leg_id`, as the driver's link, Departures and the board
      read them. Another is handed its papers by leg-papers.js and the old
      word. */
   const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
@@ -271,7 +271,7 @@
      seat's status as get_trip_driver_statuses returns it; only a confirmed
      seat with a kept view can have changed, so one accepted before views
      were kept says nothing. The lines are brief, Pickup changed or Bus
-     changed, because a card and a To do row say only what to tell, and the
+     changed, because a card and a to-do rule's row say only what to tell, and the
      driver's own page gives the old and new. They are English, as the office
      reads them, unless `read.lang` names the driver's language; a need the
      driver page names in it is named so here. `read.keys` gives the

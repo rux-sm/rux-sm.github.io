@@ -1,40 +1,41 @@
 /* ==========================================================================
-   to-do-list.js — TO DO, AND THE PANES OF THE BOARD'S TWO LISTS
+   to-do-list.js — TASKS, AND THE PANES OF THE BOARD'S TWO LISTS
    --------------------------------------------------------------------------
-   The board's toolbar has two buttons, To do and Prep, each opening its own
+   The board's toolbar has two buttons, Tasks and Departures, each opening its own
    pane left of the week. This shows and hides both panes, says on each
-   button how many are due, and fills To do. Prep is departures-panel.js's.
+   button how many are due, and fills Tasks. Departures is departures-panel.js's.
    A pane stays until its button or its close shuts it, or the board closes
    it for room as the oldest panel open.
 
-   To do is what people ask of the office, the `to_dos` rows. A Claude
+   Tasks is what people ask of the office, the `to_dos` rows. A Claude
    session adds a row through the connector, made by Ruxbot; nobody adds one
    here, where a row is done, edited and deleted.
 
    A row is a tile that opens, Design's tile around an item of its accordion,
-   as a leg is on Prep. Every row has a number the database gives it when it
+   as a leg is on Departures. Every row has a number the database gives it when it
    is added and it keeps, so a person can say "task 112". Closed, a row is
-   its number, then who it is about in bold, with its due
-   day at the line's end, in the error colour once the day is past; its
-   words under them, on up to two lines; and a last line of its kind's tag,
-   its trip and its detail's first line, the one line cut where it runs
-   long. A row that names nobody starts with its words. A press opens it to
-   those in full, then the rest of its detail as a list, a fact to an item,
-   then one row of buttons: Done, Email and Trip, and a menu of Edit and
-   Delete. Who added a row is said in its form, under the fields, and not on
-   its tile. One row is open at a time. Delete closes the row with the
-   reason Deleted, so it goes to Done today with that said, and nothing is
-   removed.
+   two lines, each ended in an ellipsis where it runs long, so every closed
+   row stands the same height: its words in bold, with its number at the
+   line's end; then its kind in Design's grey tag, who it is about, and its
+   due day at the line's end, in the error colour once the day is past, as a
+   leg on Departures is its place, then what it has left, its customer and its
+   spot time. A press opens it to those in full, then its trip as a link,
+   its detail as a list, a fact to an item, and one row of buttons: Done,
+   Email, Start trip on a website request with no trip yet, and a menu of
+   Edit and Delete. Who added a row is said in its form, under the fields,
+   and not on its tile. One row is open at a time. Delete closes the row with
+   the reason Deleted, so it goes to Done today with that said, and nothing
+   is removed.
 
    The rows are grouped Overdue, Today, This week, Later and No date, then
    Done today: the rows closed today behind one line that says how many and
    is shut until pressed, each a tile struck through, with Undo. Everyone on
-   the staff sees every row. The count on To do is its Overdue
-   and Today rows; the count on Prep is the one departures-panel.js gives.
+   the staff sees every row. The count on Tasks is its Overdue
+   and Today rows; the count on Departures is the one departures-panel.js gives.
 
    A change to a row arrives on the `scheduler-to-do` channel and redraws.
 
-   Needs to-do-rows.js for a row's trip, departures-panel.js for Prep,
+   Needs to-do-rows.js for a row's trip, departures-panel.js for Departures,
    /account.js for the client, and Design's accordion.js and menu.js, which
    open a row and its menu.
    ========================================================================== */
@@ -49,28 +50,27 @@
      board's room, its button, the button's glyph, filled while the pane is
      open, and its name on the button. */
   const LISTS = {
-    tasks: { pane: panel, room: 'to-do', button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'To do list', due: 'due' },
-    prep: { pane: document.getElementById('scheduler-prep-panel'), room: 'prep', button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Prep', due: 'not ready' },
+    tasks: { pane: panel, room: 'to-do', button: document.getElementById('scheduler-tasks-toggle'), glyph: '#m-check_circle', name: 'Tasks', due: 'due' },
+    prep: { pane: document.getElementById('scheduler-prep-panel'), room: 'prep', button: document.getElementById('scheduler-prep-toggle'), glyph: '#m-directions_bus', name: 'Departures', due: 'not ready' },
   };
   if (!client || !panel || !LISTS.tasks.button) return;
 
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
   const MENU_ID = 'scheduler-to-do-menu';
-  /* The kinds of work a row can be: each one's words on its tag and the tag's
-     colour. A row with no kind reads To do, and a kind not listed here reads
-     as its own word, both in the outline tag. The connector's `TO_DO_KINDS`
-     repeats the names. */
+  /* The kinds of work a row can be, each one's words on its tag. A row with
+     no kind reads To do, and a kind not listed here reads as its own word.
+     The connector's `TO_DO_KINDS` repeats the names. */
   const KINDS = new Map([
-    ['quote', ['New quote', 'rux--tag--blue']],
-    ['itinerary', ['Itinerary', 'rux--tag--purple']],
-    ['po', ['PO', 'rux--tag--green']],
-    ['change', ['Change', 'rux--tag--magenta']],
-    ['respond', ['Respond', 'rux--tag--teal']],
-    ['form', ['Form', 'rux--tag--cyan']],
-    ['invoice', ['Invoice', 'rux--tag--gray']],
+    ['quote', 'New quote'],
+    ['itinerary', 'Itinerary'],
+    ['po', 'PO'],
+    ['change', 'Change'],
+    ['respond', 'Respond'],
+    ['form', 'Form'],
+    ['invoice', 'Invoice'],
   ]);
   const kindOf = row => KINDS.get(row.kind)
-    ?? [row.kind ? row.kind.charAt(0).toUpperCase() + row.kind.slice(1).replaceAll('-', ' ') : 'To do', 'rux--tag--outline'];
+    ?? (row.kind ? row.kind.charAt(0).toUpperCase() + row.kind.slice(1).replaceAll('-', ' ') : 'To do');
 
   // -- small things ---------------------------------------------------------
   const el = (tag, cls, text) => {
@@ -93,8 +93,22 @@
   // The Sunday that ends this week, as the board's weeks run Monday to Sunday.
   const weekEnd = () => { const d = new Date(); d.setDate(d.getDate() + ((7 - d.getDay()) % 7)); return iso(d); };
   const shortDay = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-  // "today", "tomorrow", else "Sat, Oct 17".
-  const dayWords = day => (day === iso(new Date()) ? 'today' : day === dayFrom(1) ? 'tomorrow' : shortDay.format(parseISO(day)));
+  const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
+  const monthDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+  const monthDayYear = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  /* A due day in the fewest words: nothing on the day itself, which its
+     group names, "Yesterday" and "Tomorrow", the weekday for the rest of this
+     week, else "Oct 30", with the year where it is not this one. */
+  const dueWords = day => {
+    if (day === iso(new Date())) return '';
+    if (day === dayFrom(-1)) return 'Yesterday';
+    if (day === dayFrom(1)) return 'Tomorrow';
+    const d = parseISO(day);
+    if (day > iso(new Date()) && day <= weekEnd()) return weekday.format(d);
+    return (d.getFullYear() === new Date().getFullYear() ? monthDay : monthDayYear).format(d);
+  };
+  // A row's words start with a capital, as a sentence does, whoever wrote them.
+  const sentence = s => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // A row about one leg names it, so the board opens that leg's bar.
   const tripHref = (trip, day, leg) => `./?trip=${encodeURIComponent(trip.id)}&date=${encodeURIComponent(day || trip.start_date || '')}${leg ? `&leg=${leg}` : ''}`;
@@ -235,12 +249,11 @@
   }
 
   // -- drawing --------------------------------------------------------------
-  /* A stored row's tag: its kind's words in its kind's colour. It is a div,
-     as Carbon's tag is, because Design's outline tag is not drawn on a span. */
+  /* A stored row's kind, in Design's grey tag, as what a leg has left is on
+     Departures: in both lists a tag's colour is kept for how a thing stands. */
   const kindTag = row => {
-    const [words, tone] = kindOf(row);
-    const t = el('div', `rux--tag ${tone} rux--tag--sm rux--layout--size-sm scheduler-to-do__tag`);
-    t.appendChild(el('span', 'rux--tag__label', words));
+    const t = el('span', 'rux--tag rux--tag--gray rux--tag--sm rux--layout--size-sm scheduler-to-do__tag');
+    t.appendChild(el('span', 'rux--tag__label', kindOf(row)));
     return t;
   };
   /* Whose a stored row is, then who added it and when, with the person a
@@ -255,7 +268,7 @@
       row.created_at ? shortDay.format(new Date(row.created_at)) : null].filter(Boolean).join(DOT);
   };
 
-  /* A tile around a one-item accordion, as a leg's is on Prep: the item's
+  /* A tile around a one-item accordion, as a leg's is on Departures: the item's
      heading fills the tile, so the whole closed tile is the press. */
   const tileOf = item => {
     const rows = el('ul', 'rux--accordion rux--accordion--end');
@@ -267,75 +280,80 @@
 
   /* A stored row, as a tile around an item of Design's accordion, whose
      script opens and shuts it. The heading is the closed row and the whole
-     of it is the press; the panel under it holds what a closed row has no
-     room for: its notes, Design's list, then the buttons, and on a done
-     row who closed it, and why where it was deleted. A button the row cannot
-     use is disabled and never left out, so every open row has the same
-     buttons in the same places. */
+     of it is the press; it carries no arrow, since the tile says it opens.
+     The panel under it holds what a closed row has no room for: its trip,
+     its detail, then the buttons, and on a done row who closed it, and why
+     where it was deleted. What a row has none of, a trip or a thread, is left
+     out rather than shown disabled. */
   function storedRow(row, done) {
     const open = row.id === openId;
     const li = el('li', `rux--accordion__item scheduler-to-do__item${done ? ' scheduler-to-do__item--done' : ''}${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.id = row.id;
     const trip = row.trip_id ? tripOf(row.trip_id) : null;
     const lines = String(row.detail || '').split('\n').map(s => s.trim()).filter(Boolean);
-    const today = iso(new Date());
-    // A row due today is under Today, which says so, and a done row is past its day.
-    const dueDay = !done && row.due_on && row.due_on !== today ? row.due_on : null;
 
     const heading = el('button', 'rux--accordion__heading');
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
-    const arrow = svgUse('#m-keyboard_arrow_right');
-    arrow.classList.add('rux--accordion__arrow');
     const title = el('div', 'rux--accordion__title');
-    // The first line is the row's number, then who the row is about, or its
-    // words where it names nobody, and its due day ends the line, with Task
-    // and Due said for a reader.
+    // The first line is the row's words, then its number, with Task said for a reader.
     const top = el('span', 'scheduler-to-do__top');
-    const what = el('span', 'scheduler-to-do__what', row.body);
+    top.appendChild(el('span', 'scheduler-to-do__what', sentence(row.body)));
     if (row.number != null) {
       const number = el('span', 'scheduler-to-do__number');
       number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
       top.appendChild(number);
     }
-    top.appendChild(row.who ? el('span', 'scheduler-to-do__who', row.who) : what);
-    if (dueDay) {
-      const words = dayWords(dueDay);
-      const due = el('span', `scheduler-to-do__due${dueDay < today ? ' scheduler-to-do__due--late' : ''}`);
-      due.append(el('span', 'rux--visually-hidden', 'Due '), words.charAt(0).toUpperCase() + words.slice(1));
-      top.appendChild(due);
-    }
+    // The second is its kind, who it is about, and its due day at the end, with
+    // Due said for a reader; a done row is past its day.
     const context = el('span', 'scheduler-to-do__context');
-    const said = [trip ? tripWords(trip) : null, lines[0]].filter(Boolean).join(DOT);
     context.appendChild(kindTag(row));
-    if (said) context.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', said));
-    title.append(top, ...(row.who ? [what] : []), context);
-    heading.append(arrow, title);
+    if (row.who) context.appendChild(el('span', 'scheduler-to-do__who', row.who));
+    const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
+    if (dueWord) {
+      const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
+      due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
+      context.appendChild(due);
+    }
+    title.append(top, context);
+    heading.appendChild(title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
     const more = el('div', 'rux--accordion__content scheduler-to-do__more');
     more.id = `scheduler-to-do-more-${row.id}`;
     heading.setAttribute('aria-controls', more.id);
-    if (lines.length > 1) {
-      const notes = el('ul', 'rux--list--unordered scheduler-to-do__notes');
-      for (const line of lines.slice(1)) notes.appendChild(el('li', 'rux--list__item scheduler-to-do__note', line));
+    /* Its trip comes first, a link the pane offers to the board to open in
+       place, so it stands in the same place however long the detail under it. */
+    if (trip) {
+      const link = el('a', 'scheduler-to-do__trip');
+      link.href = tripHref(trip);
+      const words = el('span', 'scheduler-to-do__trip-words', trip.destination || trip.trip_ref || 'Trip');
+      if (trip.customer) words.appendChild(el('span', 'scheduler-to-do__trip-customer', `${DOT}${trip.customer}`));
+      link.append(svgUse('#m-directions_bus'), words, svgUse('#m-arrow_forward'));
+      more.appendChild(link);
+    }
+    if (lines.length) {
+      const notes = el('ul', 'scheduler-to-do__notes');
+      for (const line of lines) notes.appendChild(el('li', 'scheduler-to-do__note', line));
       more.appendChild(notes);
     }
     const closed = done ? [staff.get(row.closed_by)?.display_name, row.closed_reason].filter(Boolean).join(': ') : '';
 
-    const act = button('rux--btn--primary', done ? 'Undo' : 'Done');
+    const act = button('rux--btn--tertiary', done ? 'Undo' : 'Done');
     act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
-    const email = button('rux--btn--ghost', 'Email');
-    email.disabled = !row.thread_url;
-    email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));
-    // A website request with no trip yet starts one where its trip would open.
-    const starts = !done && !row.trip_id && !!row.quote_request_id;
-    const toTrip = button('rux--btn--ghost', starts ? 'Start trip' : 'Trip');
-    toTrip.disabled = !trip && !starts;
-    toTrip.addEventListener('click', () => {
-      if (starts) startTrip(row, toTrip);
-      else if (!boardTook(tripHref(trip))) location.href = tripHref(trip);
-    });
+    const bar = el('div', 'scheduler-to-do__buttons');
+    bar.appendChild(act);
+    if (row.thread_url) {
+      const email = button('rux--btn--ghost', 'Email');
+      email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));
+      bar.appendChild(email);
+    }
+    // A website request with no trip yet starts one where its trip would show.
+    if (!done && !row.trip_id && row.quote_request_id) {
+      const start = button('rux--btn--ghost', 'Start trip');
+      start.addEventListener('click', () => startTrip(row, start));
+      bar.appendChild(start);
+    }
     // Edit and Delete are the menu's; a row ticked today has only Undo to take back.
     const menuButton = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--btn--sm rux--layout--size-sm rux--menu-button__trigger scheduler-to-do__end');
     menuButton.type = 'button';
@@ -344,8 +362,7 @@
     menuButton.setAttribute('aria-haspopup', 'menu');
     menuButton.setAttribute('data-rux-open', MENU_ID);
     menuButton.appendChild(svgUse('#m-more_vert'));
-    const bar = el('div', 'scheduler-to-do__buttons');
-    bar.append(act, email, toTrip, menuButton);
+    bar.appendChild(menuButton);
     more.appendChild(bar);
     if (closed) more.appendChild(el('div', 'scheduler-to-do__meta', closed));
     wrapper.appendChild(more);
@@ -360,10 +377,10 @@
     return ul;
   };
 
-  /* Done today: the rows closed today, behind one item of the accordion that
-     says how many it holds. It is a line and no tile, shut until pressed, so
-     the tab opens on what is still owed, and its rows are the tiles they
-     are above it. */
+  /* Done today: the rows closed today, behind one item of the accordion whose
+     heading is set as a group's is, its name and how many it holds. It is no
+     tile, shut until pressed, so the tab opens on what is still owed, and its
+     rows are the tiles they are above it. */
   function doneGroup(rows) {
     const li = el('li', `rux--accordion__item scheduler-to-do__done-item${doneOpen ? ' rux--accordion__item--active' : ''}`);
     const heading = el('button', 'rux--accordion__heading');
@@ -371,7 +388,9 @@
     heading.setAttribute('aria-expanded', String(doneOpen));
     const arrow = svgUse('#m-keyboard_arrow_right');
     arrow.classList.add('rux--accordion__arrow');
-    heading.append(arrow, el('div', 'rux--accordion__title scheduler-to-do__done-title', `Done today${DOT}${rows.length}`));
+    const title = el('div', 'rux--accordion__title scheduler-to-do__done-title', 'Done today');
+    title.append(' ', el('span', 'scheduler-to-do__count', String(rows.length)));
+    heading.append(arrow, title);
     const wrapper = el('div', 'rux--accordion__wrapper');
     const inside = el('div', 'rux--accordion__content');
     inside.id = 'scheduler-to-do-done';
@@ -444,8 +463,8 @@
     const form = el('form', 'scheduler-to-do__form rux--layer-three rux--stack-vertical rux--stack-scale-4');
     const kind = el('select', 'rux--select-input');
     kind.append(option('', 'To do', !row.kind),
-      ...[...KINDS].map(([name, [text]]) => option(name, text, name === row.kind)),
-      ...(row.kind && !KINDS.has(row.kind) ? [option(row.kind, kindOf(row)[0], true)] : []));
+      ...[...KINDS].map(([name, text]) => option(name, text, name === row.kind)),
+      ...(row.kind && !KINDS.has(row.kind) ? [option(row.kind, kindOf(row), true)] : []));
     const who = el('input', 'rux--text-input rux--layout--size-sm');
     who.type = 'text';
     who.value = row.who || '';
@@ -537,7 +556,7 @@
   document.body.appendChild(menu);
 
   /* How many are due, on each list's button: Design's count badge, and the
-     button's name says it too. To do counts its Overdue and Today rows. */
+     button's name says it too. Tasks counts its Overdue and Today rows. */
   function drawCount(list, n) {
     const { button, name, due } = LISTS[list];
     if (!button) return;
@@ -556,7 +575,10 @@
       if (!items.length) continue;
       const ul = tileList();
       for (const row of items) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
-      parts.push(el('h3', 'scheduler-to-do__group', g), ul);
+      // A group's heading says how many rows it holds.
+      const head = el('h3', 'scheduler-to-do__group', g);
+      head.append(' ', el('span', 'scheduler-to-do__count', String(items.length)));
+      parts.push(head, ul);
     }
     const done = stored.filter(r => r.closed_at);
     if (done.length) parts.push(doneGroup(done));
@@ -591,7 +613,7 @@
     if (isDone(e.target)) { doneOpen = false; return; }
     if (e.target.dataset?.id === openId) openId = null;
   });
-  // A link to a trip, a Prep row's or a Prep line's, by a plain press.
+  // A link to a trip, a task's, a Departures row's or line's, by a plain press.
   for (const { pane } of Object.values(LISTS)) pane?.addEventListener('click', e => {
     const a = e.target.closest?.('a[href*="?trip="]');
     if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -606,7 +628,7 @@
      pressed, its glyph filled, while its pane is open. Opening asks the board
      for room first, which may close the oldest panel or say why there is
      none; opening reads the list again, since a tab left open all morning is
-     hours behind, and shutting To do shuts its open row and its form. The
+     hours behind, and shutting Tasks shuts its open row and its form. The
      board, told by `scheduler:to-do-pane`, lays the panes out. Nothing keeps
      whether one was open, so the board always opens on the week alone. */
   async function setPane(name, on) {
@@ -638,7 +660,7 @@
     LISTS[name].button?.focus();
   }
   for (const [name, { button }] of Object.entries(LISTS)) {
-    // Prep is a list only where departures-panel.js loaded to draw it.
+    // Departures is a list only where departures-panel.js loaded to draw it.
     if (name === 'prep' && !window.SchedulerDeparturesPanel) continue;
     button?.addEventListener('click', () => setPane(name, !shown[name]));
   }

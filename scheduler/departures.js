@@ -36,7 +36,7 @@
    the drivers and the driver statuses it read, as leg-facts.js takes them.
    A leg is named by its key, week.js's, which is its id. `readDay` and
    `readTrip`, handed a client and leg-facts.js's `readBasics`, read all of
-   that, so Prep and the connector ask the same.
+   that, so Departures and the connector ask the same.
    Needs billing.js, follow-up.js, checklist.js, leg-facts.js, trip-shape.js,
    week.js and to-do.js, and for the reads clashes.js.
    ========================================================================== */
@@ -256,7 +256,7 @@
     `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
-    // The group's two times, which the To do rules read for a trip read here.
+    // The group's two times, which the to-do rules read for a trip read here.
     'departure_time', 'return_time',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 

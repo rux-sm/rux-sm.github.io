@@ -1,6 +1,6 @@
 // Runs quote-request's handler, the company website's quote form's door to
 // the scheduler, against sample requests: what it refuses and why, what it
-// stores, and the New quote row it gives To do; then To do's Start trip, on
+// stores, and the New quote task it gives Tasks; then a task's Start trip, on
 // requests as the database returns them. The handler is TypeScript with no
 // imports; its types are taken off and the rest is run as a module.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -58,7 +58,7 @@ async function post(body, { verify = true, recent = 0, fail = false, method = 'P
 let r = await post(good);
 expect('a good request is stored and its number goes back', [r.status, r.body], [200, { number: 1001 }]);
 expect('the address is kept only as its hash', r.stored[0].request.sender, 'hash:203.0.113.9');
-expect('its To do row is who, the trip in a line, and today', [r.stored[0].task.who, r.stored[0].task.body, r.stored[0].task.due_on],
+expect('its task is who, the trip in a line, and today', [r.stored[0].task.who, r.stored[0].task.body, r.stored[0].task.due_on],
   ['Example High School Band', 'Round trip from 100 Main St, McAllen to San Antonio, Fri, Nov 13 to Sun, Nov 15, 45 passengers', TODAY]);
 expect('its detail lists the facts, one to a line', r.stored[0].task.detail.split('\n'), [
   'Website request {number}', 'Name: Ana Lopez', 'Phone: (956) 555-0100', 'Email: ana@example.org',
@@ -118,10 +118,10 @@ r = await post(good, { origin: 'https://elsewhere.example' });
 expect('another site is answered for the site\'s own address', r.allow, 'https://rux-sm.github.io');
 
 const long = requestFrom({ ...good, details: 'x'.repeat(2000) }, TODAY).request;
-expect('a long request still fits the 1000 characters a To do row\'s detail holds', taskFor(long, TODAY).detail.length <= 1000, true);
+expect('a long request still fits the 1000 characters a task\'s detail holds', taskFor(long, TODAY).detail.length <= 1000, true);
 
 // ── Start trip's draft ──────────────────────────────────────────────────────
-/* To do's Start trip turns a stored request into a draft for the trip editor.
+/* A task's Start trip turns a stored request into a draft for the trip editor.
    Its draft is read out of to-do-list.js and run on requests as the database
    returns them, and every field it fills must be one draft-fields.js lets a
    draft fill, of the kind it takes. */

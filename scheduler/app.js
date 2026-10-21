@@ -101,7 +101,7 @@
     }
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
-    /* The lists' panes, To do and Prep, take the same height and scroll
+    /* The lists' panes, Tasks and Departures, take the same height and scroll
        inside it, and give it up in front of the board, where their own insets
        are their height. */
     for (const toDo of document.querySelectorAll('.scheduler-to-do--pane')) {

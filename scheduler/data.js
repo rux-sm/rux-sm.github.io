@@ -11107,7 +11107,7 @@
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
   /* ── Beside the week, as many as fit ───────────────────────────────────────
-     Every panel has its own place beside the week: To do, Prep, Driver
+     Every panel has its own place beside the week: Tasks, Departures, Driver
      availability, Forms, the quote calculator and the stored file stand left
      of it, oldest farthest left, and the trip editor right of it. From md up
      nothing is drawn over the week, which would hide the toolbar's controls
@@ -11164,7 +11164,7 @@
      the width it takes, how the board closes it for room, and whether
      something typed in it would be lost. The trip editor is the exception:
      it stands right of the week and the board never closes it. */
-  const PANEL_NAMES = { roster: 'Driver availability', 'to-do': 'To do list', prep: 'Prep', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
+  const PANEL_NAMES = { roster: 'Driver availability', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
     { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-panel-w'),
       close: () => { availOn = false; placeAvailability(); } },
@@ -11791,7 +11791,7 @@
       // Only once the trip stands does its contact take its customer.
       await fillContactCustomer(row);
       /* A trip started from a website request takes it, and its New quote
-         row on To do takes the trip, so the row's Trip opens it. */
+         task takes the trip, so the task's trip line opens it. */
       if (creating && openDraftRequest) {
         await write('the website request', client.from('quote_requests').update({ trip_id: tripId }).eq('id', openDraftRequest));
         await write('the website request', client.from('to_dos').update({ trip_id: tripId })
@@ -15336,7 +15336,7 @@
   function drawLiveCard(trip, bar) {
     const card = el('div', 'scheduler-card scheduler-card--live');
     card.dataset.tripId = trip.id;
-    // Each part of the live card is a tile of its own, as the Prep panel's are.
+    // Each part of the live card is a tile of its own, as the Departures panel's are.
     const tile = cls => el('div', `rux--tile scheduler-card__live-tile ${cls}`);
     const bus = roadBusOf(bar);
     if (!bus) { card.appendChild(el('p', 'scheduler-card__row scheduler-card__live-none', 'Samsara has no reading for this bus now.')); return card; }
@@ -15584,7 +15584,7 @@
        real button with an arrow, so a keyboard and a screen reader reach what
        a press anywhere on the section does. */
     /* Floating, the title is Updates whatever there is, and with none a line
-       under it in its tile says so, as the Prep panel's empty day does. */
+       under it in its tile says so, as the Departures panel's empty day does. */
     const title = cardTitle(all.length || floating ? 'Updates' : 'No updates', all.length, add);
     if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
@@ -17052,7 +17052,7 @@
   /* Shows a trip's week with its bar selected and in view, and opens the
      trip unless `open` is false, as a pick from Search trips asks. A link
      that names a leg takes that leg's bar, so a pickup's line in Departures
-     or Prep never opens the drop-off; one that names none takes
+     never opens the drop-off; one that names none takes
      the trip's first bar on the week. */
   async function goToTrip(id, day, { open = true, leg = null } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
@@ -17075,7 +17075,7 @@
     if (open && !isEditorBar(bar)) whenSafe(() => openRef(ref));
   }
 
-  /* A LINK TO ONE TRIP, as the address or a row of Prep gives it. A
+  /* A LINK TO ONE TRIP, as the address or a row of Departures gives it. A
      Departures line opens the trip where its step is done: the Contact list,
      or a form or the customer's itinerary in the document panel, with the
      trip selected and its editor left shut, or one tab of the editor.

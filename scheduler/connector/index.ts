@@ -3,7 +3,7 @@
 // database's own staff rules decide what it sees. Nothing here writes a trip.
 // The two draft tools park a filled-in trip in `trip_drafts` and hand back a
 // link to the scheduler's editor, where the person checks it and presses Save.
-// The to-do tools write rows of the office's To do list, in `to_dos`, and
+// The to-do tools write rows of the office's Tasks list, in `to_dos`, and
 // nothing else: the database makes each one Ruxbot's, with the signed-in
 // person beside it, and lets a tool close only a row a tool made.
 
@@ -18,7 +18,7 @@ import { withOAuthProtectedResource, withSupabase } from 'npm:@supabase/server@1
 import { z } from 'npm:zod@4.6.5'
 
 // The pages' own rule files, joined by build-connector-rules.mjs: what a
-// draft may fill, and what Prep and the To do list say a trip lacks.
+// draft may fill, and what Departures and the to-do rules say a trip lacks.
 import rules from './rules.ts'
 import { pdfText } from './pdf-text.ts'
 const DraftFields = rules.SchedulerDraftFields
@@ -247,7 +247,7 @@ function stopDateWarnings(
 
 type Row = Record<string, any>
 
-/** A To do row the trips give, in words: its kind, its trip and leg, and what it says. */
+/** A row the to-do rules give from the trips, in words: its kind, its trip and leg, and what it says. */
 function toDoWords(r: Row) {
   return {
     kind: ToDo.KINDS[r.kind]?.label ?? r.kind, trip_id: r.trip.id, trip_ref: r.trip.trip_ref ?? null,
@@ -257,7 +257,7 @@ function toDoWords(r: Row) {
   }
 }
 
-/** A leg's Prep page in words: its trip, whether it is ready, and each gap. */
+/** A leg's Departures page in words: its trip, whether it is ready, and each gap. */
 function prepWords(p: Row) {
   return {
     trip_id: p.trip.id, trip_ref: p.trip.trip_ref ?? null, destination: p.trip.destination ?? null,
@@ -350,7 +350,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Prep panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the board\'s To do list says of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. On a split trip (trip_type dropoff_pickup) a document\'s leg and each trip_contact_<n>_leg say which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Departures panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the scheduler\'s to-do rules say of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. On a split trip (trip_type dropoff_pickup) a document\'s leg and each trip_contact_<n>_leg say which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -385,7 +385,7 @@ Deno.serve(
               .select('body, created_at, actor_name')
               .eq('trip_id', trip.id).neq('kind', 'nothing').order('created_at', { ascending: false }))
 
-            // What Prep and the To do list say the trip lacks, by the pages' own rules.
+            // What Departures and the to-do rules say the trip lacks, by the pages' own rules.
             const prep = await Departures.readTrip(supabase, trip.id, await LegFacts.readBasics(supabase, { forms: true }))
             const live = !!prep && !trip.cancelled_at && !isPlaceholder(prep.trip)
             const gaps = live ? prep.pages.flatMap((p: Row) => Departures.gapWords(p).map((w: string) => (p.legName ? `${p.legName}: ${w}` : w))) : []
@@ -432,7 +432,7 @@ Deno.serve(
           {
             title: 'What needs attention',
             description:
-              'What the scheduler itself says needs doing, by the board\'s own rules. to_do is every row its To do list works out from the trips: a follow-up due, a trip short of buses, no times, a clash, a driver who declined or has a change to be told, a leg leaving soon with something open. departures is each day the office preps for, tomorrow and on to the next working day, or the day asked, with every leg leaving that day, whether it is ready, and its gaps as the Prep panel lists them. None of this is a stored row: each goes once its trip is fixed, so never add a To do row for it. today is the office\'s day.',
+              'What the scheduler itself says needs doing, by the board\'s own rules. to_do is every row its to-do rules work out from the trips: a follow-up due, a trip short of buses, no times, a clash, a driver who declined or has a change to be told, a leg leaving soon with something open. departures is each day the office preps for, tomorrow and on to the next working day, or the day asked, with every leg leaving that day, whether it is ready, and its gaps as the Departures panel lists them. None of this is a stored row: each goes once its trip is fixed, so never add a task for it. today is the office\'s day.',
             inputSchema: z.object({
               day: ISO_DATE.optional().describe('List the legs leaving on this day. Left out, the days the office preps for today.'),
             }),
@@ -741,7 +741,7 @@ Deno.serve(
           },
         )
 
-        // The To do list. These four touch `to_dos` and nothing else. A row a
+        // The Tasks list. These four touch `to_dos` and nothing else. A row a
         // tool adds is an agent's: the database stamps it as Ruxbot's, keeps
         // the signed-in person beside it, and refuses a tool's close on a row
         // a person wrote.
@@ -774,7 +774,7 @@ Deno.serve(
           {
             title: 'List the to-do rows',
             description:
-              'The rows stored in the office\'s To do list: what a person typed and what a review added, each with its number, which the list shows and people use to name a row ("task 112"), its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; needs_attention lists those, and get_trip gives one trip\'s. Open rows by default.',
+              'The rows stored in the office\'s Tasks list: what a person typed and what a review added, each with its number, which the list shows and people use to name a row ("task 112"), its kind, who it is about, its words and its detail. It does NOT list what the scheduler works out from the trips itself, such as a follow-up due or a trip short of a bus; needs_attention lists those, and get_trip gives one trip\'s. Open rows by default.',
             inputSchema: z.object({
               include_closed: z.boolean().default(false).describe('Also the rows already ticked or closed.'),
               trip_id: z.string().uuid().optional().describe('Only the rows about this trip.'),
@@ -822,7 +822,7 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s To do list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row shows who it is about beside its due day, what to do, and one quiet line of its kind and its detail\'s first line, so each part stays short. Before adding a row about a trip, read get_trip: if its warnings or to_do already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
+              'Add a row to the office\'s Tasks list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row is two lines, each cut short where it runs long: what to do, then its kind, who it is about and its due day; the detail shows only once the row is opened, so what to do and who it is about stay short. Before adding a row about a trip, read get_trip: if its warnings or to_do already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
             inputSchema: z.object(toDoShape),
           },
           async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {

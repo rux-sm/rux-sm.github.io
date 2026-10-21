@@ -399,7 +399,7 @@ const window = {};
   /* The buses and the drivers by id, and the office's settings set in the
      rule files that keep them: the requirement list here, the follow-up wait
      and window in follow-up.js and the billing workflow in billing.js.
-     `forms` reads the driver forms too, as Prep does. */
+     `forms` reads the driver forms too, as Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const [buses, drivers, settings] = await Promise.all([
@@ -764,7 +764,7 @@ const window = {};
    checklist.js — WHAT A TRIP STILL NEEDS BEFORE EACH LEG LEAVES
    --------------------------------------------------------------------------
    The one copy of the checklist's rules, read by the Departures list and
-   the To do list. A leg's list is five groups
+   the to-do rules. A leg's list is five groups
    in the order the work happens, and only the items the leg needs:
 
      Entered      the Route, Buses and Billing tabs each marked done
@@ -1596,7 +1596,7 @@ const window = {};
   };
 
   /* A trip read with its papers the new way: its contacts as `trip_contacts`
-     and its files with `leg_id`, as the driver's link, Prep and the board
+     and its files with `leg_id`, as the driver's link, Departures and the board
      read them. Another is handed its papers by leg-papers.js and the old
      word. */
   const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
@@ -1768,7 +1768,7 @@ const window = {};
      seat's status as get_trip_driver_statuses returns it; only a confirmed
      seat with a kept view can have changed, so one accepted before views
      were kept says nothing. The lines are brief, Pickup changed or Bus
-     changed, because a card and a To do row say only what to tell, and the
+     changed, because a card and a to-do rule's row say only what to tell, and the
      driver's own page gives the old and new. They are English, as the office
      reads them, unless `read.lang` names the driver's language; a need the
      driver page names in it is named so here. `read.keys` gives the
@@ -1815,7 +1815,7 @@ const window = {};
    --------------------------------------------------------------------------
    The one reading of what a trip collides with, loaded by every page that
    picks a bus or a driver or says a trip is short of one, so a picker, a bar
-   and Prep give one answer. `fitFor` says what stands in each bus's and
+   and Departures give one answer. `fitFor` says what stands in each bus's and
    driver's way on one leg; `rankDrivers` puts drivers in the order to ask
    them and `autoPicks` in the order an automatic pick takes them;
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
@@ -1825,7 +1825,7 @@ const window = {};
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
    days out, a driver's time off, a driver set Inactive, or a card that runs
    out before the leg ends. The leg is named by its key, week.js's, or by
-   the old word a page still names it by. The bar, the checklist, Prep and
+   the old word a page still names it by. The bar, the checklist, Departures and
    the Trips page all read it, so they cannot disagree. A placeholder raises
    nothing on itself, though it still stands in another trip's way.
 
@@ -2331,7 +2331,7 @@ const window = {};
    the drivers and the driver statuses it read, as leg-facts.js takes them.
    A leg is named by its key, week.js's, which is its id. `readDay` and
    `readTrip`, handed a client and leg-facts.js's `readBasics`, read all of
-   that, so Prep and the connector ask the same.
+   that, so Departures and the connector ask the same.
    Needs billing.js, follow-up.js, checklist.js, leg-facts.js, trip-shape.js,
    week.js and to-do.js, and for the reads clashes.js.
    ========================================================================== */
@@ -2551,7 +2551,7 @@ const window = {};
     `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.
     'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
-    // The group's two times, which the To do rules read for a trip read here.
+    // The group's two times, which the to-do rules read for a trip read here.
     'departure_time', 'return_time',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev,arrive_date,spot_date,depart_prev_date)'].join(',');
 

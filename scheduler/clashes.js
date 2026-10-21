@@ -3,7 +3,7 @@
    --------------------------------------------------------------------------
    The one reading of what a trip collides with, loaded by every page that
    picks a bus or a driver or says a trip is short of one, so a picker, a bar
-   and Prep give one answer. `fitFor` says what stands in each bus's and
+   and Departures give one answer. `fitFor` says what stands in each bus's and
    driver's way on one leg; `rankDrivers` puts drivers in the order to ask
    them and `autoPicks` in the order an automatic pick takes them;
    `restBetween` is a driver's rest between two legs; `cardLapse` says a
@@ -13,7 +13,7 @@
    a saved leg's way, bus by bus and seat by seat: another trip, a bus's
    days out, a driver's time off, a driver set Inactive, or a card that runs
    out before the leg ends. The leg is named by its key, week.js's, or by
-   the old word a page still names it by. The bar, the checklist, Prep and
+   the old word a page still names it by. The bar, the checklist, Departures and
    the Trips page all read it, so they cannot disagree. A placeholder raises
    nothing on itself, though it still stands in another trip's way.
 

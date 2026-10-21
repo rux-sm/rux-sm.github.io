@@ -1,7 +1,7 @@
 /* ==========================================================================
    to-do-rows.js — WHAT THE TRIPS ASK, READ
    --------------------------------------------------------------------------
-   Keeps the rows to-do.js's `read` gives: for a task's trip on the To do
+   Keeps the rows to-do.js's `read` gives: for a task's trip on the Tasks
    list, and for the Trips page's Show choices. A change to a trip arrives on
    the `scheduler-to-do-rows` channel and reads them again, and each reading
    says `scheduler:to-do-rows`.

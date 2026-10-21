@@ -1,14 +1,14 @@
 ---
 name: inbox-review
-description: Review the team's email in Missive against the scheduler and keep the office's To do list. Read the team inbox, match each thread to its trip, and add a To do row for what an email asks of the office, change the row a thread already has, or close one whose work is done. Use when rux asks to review the inbox, check the email, see what came in, or update the to-do list from email. Reads Missive and never replies, archives, labels or snoozes there.
+description: Review the team's email in Missive against the scheduler and keep the office's Tasks list. Read the team inbox, match each thread to its trip, and add a task for what an email asks of the office, change the row a thread already has, or close one whose work is done. Use when rux asks to review the inbox, check the email, see what came in, or update the tasks or to-do list from email. Reads Missive and never replies, archives, labels or snoozes there.
 ---
 
 # Reviewing the team inbox
 
-A review turns the day's email into rows of the office's To do list, the
+A review turns the day's email into rows of the office's Tasks list, the
 one the scheduler's toolbar opens. `scheduler/docs/working-from-claude.md` is the list
 from rux's side, and the `trips` skill beside this one is how a single trip's
-thread is read in depth. This skill owns the team inbox and the To do
+thread is read in depth. This skill owns the team inbox and the Tasks
 list's rows; one trip or one customer's thread is that skill's. `rules.md`
 there is the office's policy.
 

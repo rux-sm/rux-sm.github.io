@@ -281,7 +281,7 @@
   /* The buses and the drivers by id, and the office's settings set in the
      rule files that keep them: the requirement list here, the follow-up wait
      and window in follow-up.js and the billing workflow in billing.js.
-     `forms` reads the driver forms too, as Prep does. */
+     `forms` reads the driver forms too, as Departures does. */
   async function readBasics(client, { forms = false } = {}) {
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const [buses, drivers, settings] = await Promise.all([

@@ -40,10 +40,10 @@ the schedule comes back as something to press, and is never done by itself.
   is spent the API answers nothing more until it refreshes, and no card is
   charged.
 - **It reads freely and changes nothing by itself.** It reads trips, free
-  buses and drivers, contacts, company documents and the To do list. A
+  buses and drivers, contacts, company documents and the Tasks list. A
   change comes back as a card in the conversation with its own button, and
   the press writes it as that person: a trip as a draft link, as the
-  connector gives one; a To do row; a driver's time off.
+  connector gives one; a task; a driver's time off.
 - **Two tools are new, and the connector gets them too.** `recommend_drivers`
   answers the free drivers for a trip's leg in the order Assign best takes
   them, each with why; `draft_time_off` parks a driver's days off for a
@@ -65,7 +65,7 @@ the schedule comes back as something to press, and is never done by itself.
 - **A conversation is the person's own and lasts the visit.** It is kept in
   the tab, so it follows from page to page, and never in the database.
 - **What a tool returns is read as data.** A customer's words in a trip or a
-  To do row cannot give the chat an order, and since only a press writes,
+  task cannot give the chat an order, and since only a press writes,
   nothing it reads can change the schedule.
 - **The model is `claude-opus-5-5`, and the answer shows as it is written.**
 - **It reads no file and no email.** A trip's files are
@@ -94,8 +94,8 @@ None open.
       the deploy.
 - [ ] Draw the chat's header action and panel on every Scheduler page: the
       conversation, the box, and a card with its button for each change.
-- [ ] Write the press for each card: a draft link opens the editor, a To do
-      row is added, a time off is written.
+- [ ] Write the press for each card: a draft link opens the editor, a task
+      is added, a time off is written.
 - [ ] Write the chat into `scheduler/docs/database-inventory.md` and
       `scheduler/docs/screen-inventory.md`, and beside the Claude app in
       `scheduler/docs/working-from-claude.md`.

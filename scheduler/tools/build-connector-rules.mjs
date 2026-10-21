@@ -2,7 +2,7 @@
 //
 // Joins the Scheduler's rule files into scheduler/connector/rules.ts, so the
 // Claude app's connector answers with the pages' own rules: a draft's fields
-// as draft-fields.js checks them, and a trip's gaps as Prep and the To do
+// as draft-fields.js checks them, and a trip's gaps as Departures and the to-do
 // list read them. Each file runs as the page runs it, against a `window` of
 // its own, and the connector imports that window. `npm run build` writes it;
 // `--check` says whether the committed copy is the files as they are now.

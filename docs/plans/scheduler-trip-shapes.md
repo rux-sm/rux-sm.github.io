@@ -68,7 +68,7 @@ them and nothing is entered twice.
   every leg now.
 - **Everything that reads a contact reads the list:** the editor, the driver
   card, the envelope and itinerary sheet, which print a leg's first two,
-  Prep, the driver's link and the connector.
+  Departures, the driver's link and the connector.
 
 ### A cancelled day
 
@@ -150,10 +150,6 @@ None open.
 
 ## Tasks
 
-- [ ] Read `scheduler/samsara-miles/` through the shape rule: each leg's
-      yard window and pickup from its legs and routes, a vehicle's leg by its
-      route, and an answer that names each leg by its id beside the old word
-      the Billing tab still reads; then hand rux the deploy.
 - [ ] Let `trip_steps_off` take a leg by its id and `trip_stops_steps_off`
       find a stop's leg by its route, as SQL shown to rux.
 - [ ] Move the editor's readers of `outbound`, `return`, the `_outbound` and

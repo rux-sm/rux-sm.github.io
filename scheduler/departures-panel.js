@@ -1,14 +1,15 @@
 /* ==========================================================================
-   departures-panel.js — PREP, WHAT THE TRIPS STILL NEED
+   departures-panel.js — DEPARTURES, WHAT THE TRIPS STILL NEED
    --------------------------------------------------------------------------
-   The board's Prep list, in the pane to-do-list.js shows and hides: the
+   The board's Departures list, in the pane to-do-list.js shows and hides: the
    legs leaving on the days to prep for, and what each still needs.
 
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a tile that opens: Design's tile around an item of its
-   accordion. Closed, as every leg is until it is pressed, it is its place,
-   how many lines it has left or Ready, and a quiet line of its customer.
+   accordion. Closed, as every leg is until it is pressed, it is two lines,
+   as a task is on Tasks: its place; then how many lines it has left or
+   Ready in a tag, its customer, and its spot time.
    Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
@@ -32,7 +33,7 @@
 
    The days' trips are read fresh when the list opens, when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
-   channel. The count on the Prep button is the legs not ready on the days to
+   channel. The count on the Departures button is the legs not ready on the days to
    prep for, said in `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
@@ -152,7 +153,7 @@
         pages = await readDays(days);
         failure = '';
       } catch (e) {
-        failure = `Prep did not load. ${e?.message || e}`;
+        failure = `Departures did not load. ${e?.message || e}`;
       }
       reading = false;
       if (prepping()) said(countOf(pages));
@@ -413,9 +414,11 @@
   }
 
   /* A leg, as one of Design's tiles around an item of its accordion, whose
-     script opens and shuts it. The heading is the closed leg: its place and
-     what is left, and under them its customer, and on a split trip which
-     leg; the spot time is the open leg's, on its lines. */
+     script opens and shuts it. The heading is the closed leg, two lines as a
+     task's are on Tasks, with no arrow, since the tile says it opens: its
+     place in bold; then what is left in its tag, its customer, and on a split
+     trip which leg, and at the line's end its spot time, with the day where
+     it falls on another, with Spot said for a reader. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
@@ -425,18 +428,22 @@
     heading.type = 'button';
     heading.dataset.hold = `leg:${key}`;
     heading.setAttribute('aria-expanded', String(open));
-    const arrow = svgUse('#m-keyboard_arrow_right');
-    arrow.classList.add('rux--accordion__arrow');
     const title = el('div', 'rux--accordion__title');
-    const summary = el('span', 'scheduler-departures__summary');
-    const place = el('span', 'scheduler-departures__place');
-    place.appendChild(el('strong', null, placeName(page.trip.destination)));
-    summary.append(place, leftTag(page.left));
-    title.appendChild(summary);
-    // Always a line, so the arrow at its end never meets what is left.
-    const quiet = [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT);
-    title.appendChild(el('span', 'scheduler-to-do__meta scheduler-to-do__line', quiet));
-    heading.append(arrow, title);
+    const top = el('span', 'scheduler-to-do__top');
+    top.appendChild(el('span', 'scheduler-to-do__what', placeName(page.trip.destination)));
+    const context = el('span', 'scheduler-to-do__context');
+    context.append(leftTag(page.left),
+      el('span', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT)));
+    const at = leavesAt(page);
+    if (at) {
+      const [h, m] = at.time.split(':').map(Number);
+      const when = el('span', 'scheduler-to-do__when');
+      when.append(el('span', 'rux--visually-hidden', 'Spot '),
+        `${at.day === page.day ? '' : `${weekday.format(parseISO(at.day))} `}${clock(h, m)}`);
+      context.appendChild(when);
+    }
+    title.append(top, context);
+    heading.appendChild(title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
     const content = el('div', 'rux--accordion__content scheduler-departures__page');
@@ -589,7 +596,7 @@
     listen();
   })();
 
-  /* The count, and `due` for the Prep button: the legs not ready on the days
+  /* The count, and `due` for the Departures button: the legs not ready on the days
      to prep for. */
   window.SchedulerDeparturesPanel = { open, close, summary: () => ({ ...ahead, due: ahead.known ? ahead.legs - ahead.ready : 0 }) };
 })();

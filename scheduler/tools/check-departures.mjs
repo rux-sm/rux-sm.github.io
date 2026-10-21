@@ -9,7 +9,7 @@ for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.
 }
 const D = window.SchedulerDepartures;
 const { prepDays, gapWords } = D;
-/* Each sample is read with its legs, as Prep reads a trip, built from its
+/* Each sample is read with its legs, as Departures reads a trip, built from its
    columns as the database's triggers build them: the leg on its start date
    is l1, a split trip's pickup l2, each with one route and its hotel marks;
    each stop and bus on the route of the leg its word names; each contact

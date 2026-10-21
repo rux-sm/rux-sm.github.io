@@ -1,5 +1,5 @@
 // Runs to-do.js, the to-do list's computed rules, against sample trips and
-// fails when a row appears or disappears, or the Prep list joins them, where it should not.
+// fails when a row appears or disappears, or the Departures list joins them, where it should not.
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
@@ -34,7 +34,7 @@ const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')
 const day = n => { const [y, m, d] = window.SchedulerFollowUp.today().split('-').map(Number); return iso(new Date(y, m - 1, d + n)); };
 const ago = n => new Date(Date.now() - n * 864e5).toISOString();
 const said = list => list.map(r => `${r.key} ${r.what}${r.detail ? ` [${r.detail}]` : ''}`);
-// A Prep row: its day from today, its trip, its leg where it names one, and its gaps.
+// A Departures row: its day from today, its trip, its leg where it names one, and its gaps.
 
 // A confirmed trip with nothing to ask: paid, its itinerary in, a bus on it and times in.
 const bus = { leg: 'outbound', bus_id: 1 };

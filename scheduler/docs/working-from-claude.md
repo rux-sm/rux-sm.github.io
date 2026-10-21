@@ -93,30 +93,30 @@ One link is one trip, so a fix across several trips is a link for each.
 Claude can press Save on such a link too, after you say yes in chat to
 that change, as for any Save it makes.
 
-## Keep the To do list
+## Keep the Tasks list
 
-Claude can read the office's To do list, the one the board's toolbar opens,
+Claude can read the office's Tasks list, the one the board's toolbar opens,
 and add to it. Ask in plain words:
 
-- what is on the to-do list
-- add a to-do to call the school about the PO, for Friday
-- close the to-do about the PO, it arrived
+- what tasks are open
+- add a task to call the school about the PO, for Friday
+- close the task about the PO, it arrived
 - work on task 112
 
-Every to-do has a number, shown at the start of its tile, that it keeps
-for good, so "task 112" always means the same one.
+Every task has a number, shown at the end of its tile's first line, that
+it keeps for good, so "task 112" always means the same one.
 
-A to-do Claude adds shows in the list at once, for everyone, made by Ruxbot
-with your name kept beside it. It carries a tag for its kind of work, such
-as New quote, PO or Respond, then who it is about and what to do in a few
-words; press it for the rest, and for Done, Email and Trip. Claude can change or close only the rows
+A task Claude adds shows in the list at once, for everyone, made by Ruxbot
+with your name kept beside it. It shows what to do in a few words, then its
+kind of work, such as New quote, PO or Respond, and who it is about; press
+it for the rest, its trip, and Done and Email. Claude can change or close only the rows
 Claude added. A row a person typed stays theirs: Claude says when it looks
 done and leaves Done to them.
 
 Claude sees the rows people and Claude wrote. What the scheduler works out by
 itself, such as a follow-up due or a trip short of a bus, is not a row;
-Claude reads those as the board's To do list and Prep panel show them, by
-the same rules, and never adds a row for one.
+Claude reads those by the rules the board's Departures panel and the Trips
+page use, and never adds a row for one.
 
 Ask Claude Code to review the inbox and it reads the team's email in Missive,
 matches each thread to its trip and adds the rows. It reads every open row
@@ -133,7 +133,7 @@ server**.
 
 ## What it will not do
 
-- It never writes or changes a trip. Only Save in the editor does. The To do
+- It never writes or changes a trip. Only Save in the editor does. The Tasks
   list's rows are the one thing it writes itself.
 - A draft can fill only the trip fields the connector lists. Anything else is
   refused, with the list, rather than written. A new trip's draft can carry

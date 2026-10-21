@@ -28,11 +28,12 @@ Customer page, and `scheduler/docs/database-inventory.md`.
   pages load supabase-js, from jsdelivr at a pinned version with its hash.
 - **The form is a PDF, uploaded once a year for each driver,** and printed
   for the driver to carry.
-- **A session cannot deploy the connector.** It copies
-  `scheduler/connector/index.ts` to
-  `supabase/functions/scheduler-connector/index.ts` under a scratch folder and
-  hands rux `supabase functions deploy scheduler-connector --project-ref
-  udnmqhayzhrbltxzzhjw --no-verify-jwt --use-api`, run from that folder.
+- **A session deploys the connector from rux's Terminal panel, on rux's yes,**
+  because the Supabase CLI is signed in there and not in the session's own
+  shell. It copies the three files in `scheduler/connector/` to
+  `supabase/functions/scheduler-connector/` under a scratch folder and runs
+  `supabase functions deploy scheduler-connector --project-ref
+  udnmqhayzhrbltxzzhjw --no-verify-jwt --use-api --workdir <that folder>`.
 - **A trip is its customer's when `trips.customer_id` links it.** A trip
   saved before customers were linked has only the customer's name; those
   whose name was exactly a customer's are linked, and any other links when it

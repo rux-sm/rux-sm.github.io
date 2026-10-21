@@ -8,7 +8,7 @@
     "Warehousing",
     "Sales"
   ],
-  "updated": "2026-10-15",
+  "updated": "2026-10-21",
   "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
   "order": 0,
@@ -17,6 +17,7 @@
     "tdsls4101m000",
     "tdsls4534s000",
     "tdsls4601m200",
+    "ttrpi5100m000",
     "ttrpi5150m000",
     "ttadv9160m000"
   ],
@@ -1138,6 +1139,209 @@
       "tokens": [
         {
           "t": "strong",
+          "v": "A prepared question, attached to a screen."
+        },
+        {
+          "t": "text",
+          "v": " Someone writes the question once, chooses the LN data that goes with it, and links it to one session. Everyone who uses that session then sees it as a command in the "
+        },
+        {
+          "t": "strong",
+          "v": "Actions"
+        },
+        {
+          "t": "text",
+          "v": " menu. Choosing it sends the selected record to the Infor GenAI service, and the answer opens in a window of its own."
+        }
+      ],
+      "text": "A prepared question, attached to a screen. Someone writes the question once, chooses the LN data that goes with it, and links it to one session. Everyone who uses that session then sees it as a command in the Actions menu. Choosing it sends the selected record to the Infor GenAI service, and the answer opens in a window of its own.",
+      "under": "What it is"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "It does",
+        "It does not"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Answer one fixed question about the record selected"
+                }
+              ],
+              "text": "Answer one fixed question about the record selected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Take a typed question. There is no chat box"
+                }
+              ],
+              "text": "Take a typed question. There is no chat box"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read only the data its dataset names"
+                }
+              ],
+              "text": "Read only the data its dataset names"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Change anything in LN"
+                }
+              ],
+              "text": "Change anything in LN"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the answer to read, copy or download"
+                }
+              ],
+              "text": "Open the answer to read, copy or download"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check itself. A wrong answer reads like a right one"
+                }
+              ],
+              "text": "Check itself. A wrong answer reads like a right one"
+            }
+          ]
+        }
+      ],
+      "under": "What it is"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "What it is"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Command",
+        "Where",
+        "What it answers",
+        "Standing"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Status Overview…"
+                }
+              ],
+              "text": "Status Overview…"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales Order Lines"
+                }
+              ],
+              "text": "Sales Order Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Why an order line has not shipped, and which step comes next"
+                }
+              ],
+              "text": "Why an order line has not shipped, and which step comes next"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run on four lines, and each answer agreed with the line's status screen"
+                }
+              ],
+              "text": "Run on four lines, and each answer agreed with the line's status screen"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Item Inventory…"
+                }
+              ],
+              "text": "Item Inventory…"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Company - Item Inventory"
+                }
+              ],
+              "text": "Company - Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where an item's stock is, and what is planned in and out"
+                }
+              ],
+              "text": "Where an item's stock is, and what is planned in and out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Kept as a demonstration. LN's own inventory screens show the same figures"
+                }
+              ],
+              "text": "Kept as a demonstration. LN's own inventory screens show the same figures"
+            }
+          ]
+        }
+      ],
+      "under": "The commands in this environment"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "The commands in this environment"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
           "v": "Each command answers one question about the record ticked, from the data LN sends with it."
         }
       ],
@@ -1363,6 +1567,410 @@
       "under": "What the commands cannot do"
     },
     {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "The GenAI Embedded Experience feature must be switched on for the tenant first"
+        },
+        {
+          "t": "text",
+          "v": ", in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under "
+        },
+        {
+          "t": "path",
+          "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI"
+        },
+        {
+          "t": "text",
+          "v": ", and "
+        },
+        {
+          "t": "link",
+          "v": "Set up a GenAI prompt",
+          "href": "set-up-a-genai-prompt.md"
+        },
+        {
+          "t": "text",
+          "v": " walks each one."
+        }
+      ],
+      "text": "The GenAI Embedded Experience feature must be switched on for the tenant first, in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under Tools ➔ Application Extensibility ➔ Embedded GenAI, and Set up a GenAI prompt walks each one.",
+      "under": "Setting one up"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Build",
+        "Session",
+        "What it holds"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Dataset"
+                }
+              ],
+              "text": "Dataset"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ttrpi5100m000",
+                  "name": "Datasets"
+                }
+              ],
+              "text": "Datasets (ttrpi5100m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model"
+                }
+              ],
+              "text": "The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ttrpi5150m000",
+                  "name": "GenAI Prompts"
+                }
+              ],
+              "text": "GenAI Prompts (ttrpi5150m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The command's name, its dataset, the text sent to the model, and the sentence the user sees"
+                }
+              ],
+              "text": "The command's name, its dataset, the text sent to the model, and the sentence the user sees"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Link"
+                }
+              ],
+              "text": "Link"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "ttadv9160m000",
+                  "name": "GenAI Prompts by Session"
+                }
+              ],
+              "text": "GenAI Prompts by Session (ttadv9160m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The one session the command appears on, and when it is enabled"
+                }
+              ],
+              "text": "The one session the command appears on, and when it is enabled"
+            }
+          ]
+        }
+      ],
+      "under": "Setting one up"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Then run it and check it"
+        },
+        {
+          "t": "text",
+          "v": ", on one record of each kind it can meet, before anyone else relies on it. "
+        },
+        {
+          "t": "strong",
+          "v": "To remove it,"
+        },
+        {
+          "t": "text",
+          "v": " delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none."
+        }
+      ],
+      "text": "Then run it and check it, on one record of each kind it can meet, before anyone else relies on it. To remove it, delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.",
+      "under": "Setting one up"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "Setting one up"
+    },
+    {
+      "kind": "reference",
+      "columns": [
+        "Lesson",
+        "Why"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Put the command where the data is"
+                }
+              ],
+              "text": "Put the command where the data is"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A screen's record reaches only some tables. The stock check was wanted on the order line, which cannot reach stock"
+                }
+              ],
+              "text": "A screen's record reaches only some tables. The stock check was wanted on the order line, which cannot reach stock"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Decide in the dataset, word in the prompt"
+                }
+              ],
+              "text": "Decide in the dataset, word in the prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A filter applies a condition the same way every time; a sentence in the prompt is judged afresh on each run"
+                }
+              ],
+              "text": "A filter applies a condition the same way every time; a sentence in the prompt is judged afresh on each run"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Forbid calculating"
+                }
+              ],
+              "text": "Forbid calculating"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Left free, the model added sums of its own, and one was wrong"
+                }
+              ],
+              "text": "Left free, the model added sums of its own, and one was wrong"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Say what to write when a value is missing"
+                }
+              ],
+              "text": "Say what to write when a value is missing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Otherwise the model fills the gap with a confident wrong answer"
+                }
+              ],
+              "text": "Otherwise the model fills the gap with a confident wrong answer"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Give the layout"
+                }
+              ],
+              "text": "Give the layout"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Without one, the model chose its own form and changed it between runs"
+                }
+              ],
+              "text": "Without one, the model chose its own form and changed it between runs"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Reopen the screen after changing the dataset"
+                }
+              ],
+              "text": "Reopen the screen after changing the dataset"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A screen already open keeps answering from the old dataset. A change to the prompt text shows on the next run"
+                }
+              ],
+              "text": "A screen already open keeps answering from the old dataset. A change to the prompt text shows on the next run"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Not yet known"
+                }
+              ],
+              "text": "Not yet known"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where it stands"
+                }
+              ],
+              "text": "Where it stands"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Where the service processes data"
+                }
+              ],
+              "text": "Where the service processes data"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "When the service is down"
+                }
+              ],
+              "text": "When the service is down"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Authorization levels"
+                }
+              ],
+              "text": "Authorization levels"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Not documented for this release."
+                }
+              ],
+              "text": "Not documented for this release."
+            }
+          ]
+        }
+      ],
+      "under": "What the first prompts taught"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
+      "under": "What the first prompts taught"
+    },
+    {
       "kind": "troubleshooting",
       "columns": [
         "Phase",
@@ -1583,5 +2191,5 @@
     }
   ],
   "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
-  "openIssues": 5
+  "openIssues": 8
 }

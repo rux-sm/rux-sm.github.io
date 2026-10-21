@@ -100,7 +100,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content" data-ln-commit="6490fb1b7517de5df39581f35ca1d4b84150ac24">
+<main id="main-content" class="rux--content" data-ln-commit="2fbf8027b8c6f7e1c1794d79a28e3cc2530f9856">
 <div class="ln-app">
   <section class="ln-screen" data-screen="home">
     <h1 class="ln-ask">What are you doing?</h1>
@@ -136,7 +136,7 @@
       <li data-t="0" data-n="1"><a class="ln-path__stop" href="./?s=use-the-ai-commands&amp;t=0"><span class="ln-path__dot">1</span><b>Run the stock check</b><small>7<span class="rux--visually-hidden"> steps</span></small></a></li>
       <li data-t="1" data-n="2"><a class="ln-path__stop" href="./?s=use-the-ai-commands&amp;t=1"><span class="ln-path__dot">2</span><b>Run Status Overview</b><small>13<span class="rux--visually-hidden"> steps</span></small></a></li>
     </ol>
-    <p><a class="rux--link" href="./?s=use-the-ai-commands&amp;r=1">Reference</a><span class="ln-quiet"> What the commands cannot do</span></p>
+    <p><a class="rux--link" href="./?s=use-the-ai-commands&amp;r=1">Reference</a><span class="ln-quiet"> What it is · The commands in this environment · What the commands cannot do · Setting one up · What the first prompts taught</span></p>
     <p><a class="rux--link" href="#main-content" data-open="loose">Different cases</a></p>
     <ul class="ln-list" data-panel="loose" hidden>
       <li><b><span class="ln-t-named">Building a command</span></b><p><a class="rux--link" href="./?s=set-up-a-genai-prompt">Set up a GenAI prompt</a> builds a command like these, improves its answer and removes it</p></li>
@@ -145,6 +145,18 @@
   <section class="ln-screen" data-screen="ref" data-s="use-the-ai-commands" hidden>
     <a class="rux--link ln-back" href="./?s=use-the-ai-commands"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Use the AI commands</a>
     <h1 class="ln-ask">Reference</h1>
+    <h2 class="ln-ref__title">What it is</h2>
+    <p><strong>A prepared question, attached to a screen.</strong> Someone writes the question once, chooses the LN data that goes with it, and links it to one session. Everyone who uses that session then sees it as a command in the <strong>Actions</strong> menu. Choosing it sends the selected record to the Infor GenAI service, and the answer opens in a window of its own.</p>
+    <ul class="ln-list">
+      <li><b>Answer one fixed question about the record selected</b><p><span class="ln-quiet">It does not</span><br>Take a typed question. There is no chat box</p></li>
+      <li><b>Read only the data its dataset names</b><p><span class="ln-quiet">It does not</span><br>Change anything in LN</p></li>
+      <li><b>Open the answer to read, copy or download</b><p><span class="ln-quiet">It does not</span><br>Check itself. A wrong answer reads like a right one</p></li>
+    </ul>
+    <h2 class="ln-ref__title">The commands in this environment</h2>
+    <ul class="ln-list">
+      <li><b><span class="ln-t-named">Status Overview…</span></b><p><span class="ln-quiet">Where</span><br>Sales Order Lines</p><p><span class="ln-quiet">What it answers</span><br>Why an order line has not shipped, and which step comes next</p><p><span class="ln-quiet">Standing</span><br>Run on four lines, and each answer agreed with the line's status screen</p></li>
+      <li><b><span class="ln-t-named">Item Inventory…</span></b><p><span class="ln-quiet">Where</span><br>Company - Item Inventory</p><p><span class="ln-quiet">What it answers</span><br>Where an item's stock is, and what is planned in and out</p><p><span class="ln-quiet">Standing</span><br>Kept as a demonstration. LN's own inventory screens show the same figures</p></li>
+    </ul>
     <h2 class="ln-ref__title">What the commands cannot do</h2>
     <p><strong>Each command answers one question about the record ticked, from the data LN sends with it.</strong></p>
     <ul class="ln-list">
@@ -157,6 +169,27 @@
       <li><b>Can disagree with the row</b><p><span class="ln-quiet">What it means</span><br>One item's warehouses added up to 500 less on hand than its row, so the row is what to act on</p></li>
       <li><b>A demonstration</b><p><span class="ln-quiet">What it means</span><br>LN's own inventory screens show what the stock check shows; Status Overview is the one that reads and explains</p></li>
       <li><b>Shared by everyone</b><p><span class="ln-quiet">What it means</span><br>The commands are set up once for the screen, so every user of it sees them</p></li>
+    </ul>
+    <h2 class="ln-ref__title">Setting one up</h2>
+    <p><strong>The GenAI Embedded Experience feature must be switched on for the tenant first</strong>, in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span class="dest">Embedded GenAI</span></span>, and <a class="rux--link" href="./?s=set-up-a-genai-prompt">Set up a GenAI prompt</a> walks each one.</p>
+    <ul class="ln-list">
+      <li><b>Dataset</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="./?c=ttrpi5100m000"><span class="ln-t-named">Datasets</span></a> <span class="ln-t-exact">ttrpi5100m000</span></p><p><span class="ln-quiet">What it holds</span><br>The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model</p></li>
+      <li><b>Prompt</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="./?c=ttrpi5150m000"><span class="ln-t-named">GenAI Prompts</span></a> <span class="ln-t-exact">ttrpi5150m000</span></p><p><span class="ln-quiet">What it holds</span><br>The command's name, its dataset, the text sent to the model, and the sentence the user sees</p></li>
+      <li><b>Link</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="./?c=ttadv9160m000"><span class="ln-t-named">GenAI Prompts by Session</span></a> <span class="ln-t-exact">ttadv9160m000</span></p><p><span class="ln-quiet">What it holds</span><br>The one session the command appears on, and when it is enabled</p></li>
+    </ul>
+    <p><strong>Then run it and check it</strong>, on one record of each kind it can meet, before anyone else relies on it. <strong>To remove it,</strong> delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.</p>
+    <h2 class="ln-ref__title">What the first prompts taught</h2>
+    <ul class="ln-list">
+      <li><b>Put the command where the data is</b><p><span class="ln-quiet">Why</span><br>A screen's record reaches only some tables. The stock check was wanted on the order line, which cannot reach stock</p></li>
+      <li><b>Decide in the dataset, word in the prompt</b><p><span class="ln-quiet">Why</span><br>A filter applies a condition the same way every time; a sentence in the prompt is judged afresh on each run</p></li>
+      <li><b>Forbid calculating</b><p><span class="ln-quiet">Why</span><br>Left free, the model added sums of its own, and one was wrong</p></li>
+      <li><b>Say what to write when a value is missing</b><p><span class="ln-quiet">Why</span><br>Otherwise the model fills the gap with a confident wrong answer</p></li>
+      <li><b>Give the layout</b><p><span class="ln-quiet">Why</span><br>Without one, the model chose its own form and changed it between runs</p></li>
+      <li><b>Reopen the screen after changing the dataset</b><p><span class="ln-quiet">Why</span><br>A screen already open keeps answering from the old dataset. A change to the prompt text shows on the next run</p></li>
+      <li><b>Not yet known</b><p><span class="ln-quiet">Why</span><br>Where it stands</p></li>
+      <li><b>Where the service processes data</b><p><span class="ln-quiet">Why</span><br><strong>Not documented for this release.</strong></p></li>
+      <li><b>When the service is down</b><p><span class="ln-quiet">Why</span><br><strong>Not documented for this release.</strong></p></li>
+      <li><b>Authorization levels</b><p><span class="ln-quiet">Why</span><br><strong>Not documented for this release.</strong></p></li>
     </ul>
   </section>
   <section class="ln-screen" data-screen="task" data-s="use-the-ai-commands" data-t="0" data-title="Run the stock check" data-after="./?s=use-the-ai-commands&amp;t=1" hidden>

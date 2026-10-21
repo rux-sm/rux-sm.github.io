@@ -1,9 +1,9 @@
-commit   6490fb1b7517de5df39581f35ca1d4b84150ac24
-date     2026-10-16T03:25:58Z
-subject  feat(genai): Keep the stock check as a demo
+commit   2fbf8027b8c6f7e1c1794d79a28e3cc2530f9856
+date     2026-10-21T17:46:20Z
+subject  feat(genai): Move overview into AI walkthrough
 contract 16 
 tier     export
-sha256   29ea9195afb75e87a808736fb8554de57e7fd365e3dc9efb70eadcfcfb874474
+sha256   167f591f2788a37388be1a77a672cdc16ee079454d91d8ddf0df8b3c3f92667a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

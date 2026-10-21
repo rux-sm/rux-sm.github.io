@@ -13147,6 +13147,9 @@
      send `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is
      fluid instead; there is no file to download, and the print dialog saves a
      PDF. Print stands for both, and a form adds its own controls ahead of it.
+     The size button is a stored file's too: a form, the forms list and the
+     calculator lay themselves out to the panel, so they open at its small
+     width with no button, and a file brings back the size this browser keeps.
 
      OPEN IN NEW TAB IS A STORED FILE'S ALONE. A form opened as a page took the
      board's place and the week with it, and everything the page offers the
@@ -13157,6 +13160,8 @@
     setToolbarShown(true);
     setViewerBack(null);
     for (const btn of viewerZooms) btn.hidden = form || noZoom;
+    if (viewerSizeBtn) viewerSizeBtn.hidden = form;
+    setViewerSize(form ? 'sm' : keptViewerSize());
     viewerDownload.hidden = form;
     viewerNewTab.hidden = form;
     if (!form) setFormControls([]);
@@ -15590,10 +15595,14 @@
     try { localStorage.setItem(VIEWER_SIZE_KEY, size); } catch { /* kept for this visit */ }
     setViewerSize(size);
   });
-  try {
-    const kept = localStorage.getItem(VIEWER_SIZE_KEY);
-    if (VIEWER_SIZES.includes(kept) && kept !== 'sm') setViewerSize(kept);
-  } catch { /* small */ }
+  // The size this browser keeps for a stored file, small where it keeps none.
+  function keptViewerSize() {
+    try {
+      const kept = localStorage.getItem(VIEWER_SIZE_KEY);
+      return VIEWER_SIZES.includes(kept) ? kept : 'sm';
+    } catch { return 'sm'; }
+  }
+  setViewerSize(keptViewerSize());
   /* Leaving whichever panel is in front of the board, which Escape and a press
      on the scrim both do. It answers whether there was one, so Escape can go
      on to what it means with nothing in front. */

@@ -355,6 +355,10 @@
      week within it is drawn without the network, so this is the one number that
      decides how far a run of swipes stays smooth. */
   const NEAR_DAYS = 28;
+  /* How many days before the first day drawn a trip's last leg may end and
+     the trip still be read. A week: a leg back past midnight takes a day
+     past the one it ends on, and the standing rule reads the day before a leg. */
+  const ENDED_DAYS = 7;
   const withTimeout = promise => Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(
@@ -445,23 +449,28 @@
     const weekEnd = lastShown(weekStart);
     /* Four weeks either side come with the week asked for, so a run of swipes
        draws from what is in hand rather than stopping at the second one to wait
-       on the network. It costs one widened window and no second query: a trip
-       that started before the week can still run through it, so this already
-       reached 90 days back, and carrying 28 days at each end rather than 7
-       takes the one read from 111 days to 153. The exact overlap is decided
-       per leg in `render`, not by this filter, which is what lets one payload
-       draw nine weeks. */
+       on the network. It costs one widened window and no second query. The
+       exact overlap is decided per leg in `render`, not by this filter, which
+       is what lets one payload draw nine weeks.
+
+       A TRIP IS READ BY ITS LEGS' DAYS: one that starts by the last day drawn
+       and has a leg ending within ENDED_DAYS of the first, a leg with no end
+       by its start. So a trip that started long before and still runs into
+       the weeks is read, a split trip by its pickup too, and one long over is
+       not. `ends` is that test, an embed that returns nothing. */
     const from = addDays(weekStart, -NEAR_DAYS);
     const to = addDays(weekEnd, NEAR_DAYS);
     const lo = iso(addDays(from, -90));
     const hi = iso(to);
+    const ended = iso(addDays(from, -ENDED_DAYS));
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
     const [buses, trips, drivers, contacts, customers, locations, oos, timeOff] = await withTimeout(Promise.all([
       client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin').order('sort_order').then(unwrap),
       // A cancelled trip stays in the table but is not on the schedule.
-      client.from('trips').select(TRIP_COLUMNS).is('cancelled_at', null)
-        .gte('start_date', lo).lte('start_date', hi).order('start_date').then(unwrap),
+      client.from('trips').select(`${TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
+        .lte('start_date', hi).or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })
+        .order('start_date').then(unwrap),
       // `status`, so the Buses tab offers active drivers; `priority`, so the
       // roster lists them in the order they are called on; `employment_type`,
       // because a part-time driver needs an hours-of-service record; the

@@ -2034,20 +2034,27 @@ const window = {};
     return out;
   }
 
-  /* The trips, time off and out-of-service days around a range: trips from
-     90 days before it, so one still running into it is seen, to a day past it,
-     so one starting the day after reads as back-to-back. Each trip comes with
-     its legs and routes, as trip-shape.js reads them, and its times and stops,
-     which say when it leaves and is back. */
+  /* The trips, time off and out-of-service days around a range: every trip
+     with a leg that ends within RECENT_DAYS and a week of it, a leg with no
+     end by its start, so a driver's days lately are counted and a trip still
+     running into it is seen, and that starts by a day past it, so one
+     starting the day after reads as back-to-back. The week covers a leg back
+     past midnight, which takes a day past the one it ends on. `ends` is that
+     test, an embed that returns nothing. Each trip comes with its legs and
+     routes, as trip-shape.js reads them, and its times and stops, which say
+     when it leaves and is back. */
   async function readNearby(client, lo, hi) {
     const past = iso(addDays(parseISO(hi), 1));
+    const ended = iso(addDays(parseISO(lo), -(RECENT_DAYS + 7)));
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
     const [trips, off, oos] = await Promise.all([
       client.from('trips')
         .select('id,destination,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,bus_count,return_bus_count,trip_type,'
           + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
-          + 'trip_stops(position,leg,route_id,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role))')
-        .is('cancelled_at', null).lte('start_date', past).gte('start_date', iso(addDays(parseISO(lo), -90)))
+          + 'trip_stops(position,leg,route_id,type,depart_prev,arrive,spot),trip_assignments(id,bus_id,leg,route_id,active_roles,trip_drivers(driver_id,role)),'
+          + 'ends:trip_legs!inner()')
+        .is('cancelled_at', null).lte('start_date', past)
+        .or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })
         .then(unwrap),
       client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
       client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),

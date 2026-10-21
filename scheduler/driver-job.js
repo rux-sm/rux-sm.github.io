@@ -99,9 +99,9 @@
   };
 
   /* A trip read with its papers the new way: its contacts as `trip_contacts`
-     and its files with `leg_id`, as the driver's link and Prep read them.
-     Another, such as the board's, is handed its papers by leg-papers.js and
-     the old word. */
+     and its files with `leg_id`, as the driver's link, Prep and the board
+     read them. Another is handed its papers by leg-papers.js and the old
+     word. */
   const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
   /* The leg's day-of contacts, or with none whoever booked. */
   const contactsOf = (trip, leg) => {

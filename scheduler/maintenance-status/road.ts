@@ -170,12 +170,14 @@ const window = {};
      the same two; `timesOf` falls back to the trip's own time columns.
 
      A TRIP READ WITH ITS LEGS is read through trip-shape.js: the leg's
-     first route's stops. One read without them, from a page whose query
-     does not ask for them yet, is read by the old word on each stop. */
+     first route's stops, the leg named by its key, its id, or by the old
+     word a page still names it by. One read without them, from a page whose
+     query does not ask for them yet, is read by the old word on each stop. */
   const SHAPE = window.SchedulerTripShape;
   const shaped = trip => Array.isArray(trip?.trip_legs) && !!SHAPE;
+  const shapeLeg = (trip, key) => SHAPE.legOf(trip, key) ?? SHAPE.legOfWord(trip, key);
   const stopsOfLeg = (trip, leg) => {
-    const route = shaped(trip) ? SHAPE.legOfWord(trip, leg)?.routes[0] : null;
+    const route = shaped(trip) ? shapeLeg(trip, leg)?.routes[0] : null;
     const stops = route ? SHAPE.stopsOfRoute(trip, route.id)
       : (trip.trip_stops || [])
         .filter(s => (s.leg || 'outbound') === leg)
@@ -217,12 +219,15 @@ const window = {};
     return days - start;
   };
 
-  /* A leg's times as saved: the yard departure, the spot, the trip's end and
-     the yard return, and `nights`, the midnights a one-day leg's return comes
-     after its departure. */
+  /* A leg's times as saved, by its key or its old word: the yard departure,
+     the spot, the trip's end and the yard return, and `nights`, the midnights
+     a one-day leg's return comes after its departure. A leg with no pickup
+     departure takes the trip's time column for the word it mirrors, and a
+     leg that mirrors none has no departure. */
   const timesOf = (trip, leg) => {
     const { stops, pickup, back } = stopsOfLeg(trip, leg);
-    const depart = pickup?.depart_prev || (leg === 'outbound' ? trip.departure_time : trip.return_time) || null;
+    const word = shaped(trip) ? shapeLeg(trip, leg)?.word ?? null : leg;
+    const depart = pickup?.depart_prev || (word === 'outbound' ? trip.departure_time : word ? trip.return_time : null) || null;
     return {
       depart,
       back: back?.arrive || null,
@@ -297,19 +302,19 @@ const window = {};
   /* A trip's legs, each with the days it takes, `from` to `to`, `ends`, the
      last day as saved, and `number`, from 1 in date order. `key` tells the
      legs apart: the leg's id on a trip read with its legs, which gives
-     `legId` too, and the old word on one that is not, such as a draft. Every
-     leg still carries the old word it mirrors in `leg`, which the old
-     columns are read by. */
+     `legId` too, and the old word on one that is not, such as a draft. A
+     leg that mirrors an old word carries it in `leg`, which the old columns
+     are read by, and a leg that mirrors none carries null. */
   const legsOf = trip => {
     const legs = [];
     const add = (leg, from, end, count, more = {}) => {
-      const times = timesOf(trip, leg);
+      const times = timesOf(trip, more.key ?? leg);
       const ends = lastDay(from, end);
       legs.push({ leg, key: leg, number: legs.length + 1, from, ends, count, ...times, ...takes(from, ends, times), ...more });
     };
     if (shaped(trip)) {
       for (const l of SHAPE.legsOf(trip)) {
-        if (l.start && l.word) {
+        if (l.start) {
           add(l.word, l.start, l.end, l.busCount || 1,
             { legId: l.id, key: l.id, number: l.number, hotelBooked: l.hotelBooked, hotelNumber: l.hotelNumber });
         }
@@ -333,7 +338,7 @@ const window = {};
     : (a?.route_id ? SHAPE.legOfRoute(trip, a.route_id) : SHAPE.legOfWord(trip, a?.leg))?.id ?? null);
   // A trip's leg by its key, or by the old word a link or row still names.
   const legByKey = (trip, key) => legsOf(trip).find(l => l.key === key)
-    ?? legsOf(trip).find(l => l.leg === key) ?? null;
+    ?? (key == null ? null : legsOf(trip).find(l => l.leg === key)) ?? null;
 
   const clip = (from, to, weekStart, weekEnd) => {
     const a = parseISO(from), b = parseISO(to);

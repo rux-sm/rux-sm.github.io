@@ -290,7 +290,7 @@
     'trip_prep(driver_info_sent,driver_info_sent_at)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
-    'trip_documents(id,label,created_at,file_name,file_path,file_size,leg)',
+    'trip_documents(id,label,created_at,file_name,file_path,file_size,leg,leg_id)',
     // Set from the Checklist or the Files tab; a trip that does not need an
     // itinerary is not marked.
     'itinerary_not_needed',
@@ -313,6 +313,9 @@
     'trip_contact_3_name', 'trip_contact_3_phone', 'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
     'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
+    // The day-of contacts as a list, which the bars read through trip-shape.js;
+    // the editor still writes the five slots, and a trigger keeps the list.
+    'trip_contacts(id,position,leg_id,contact_id,name,phone)',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     // The price the customer was sent, and when, which the quote lines may move past.
     'quote_sent_price,quote_sent_on',
@@ -335,8 +338,9 @@
     // what the Route tab edits on a leg's pickup, drop-off and return rows.
     'trip_stops(id,position,leg,route_id,type,label,name,address,lat,lng,mapbox_id,depart_prev,arrive,spot,'
       + 'depart_prev_date,arrive_date,spot_date,miles,drive,miles_source,drive_source,dwell_status)',
-    // The trip's legs and their routes, which week.js reads the bars from through trip-shape.js.
-    'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
+    // The trip's legs and their routes, which week.js reads the bars from through trip-shape.js,
+    // with each leg's hotel marks.
+    'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))',
     // What was said to the customer, for the bar's follow-up mark and its card.
     'trip_updates(id,created_at,actor_id,actor_name,body,kind,edited_at)',
   ].join(',');
@@ -837,7 +841,8 @@
   }
 
   /* The trips, time off and days out the board read, which a bar's standing
-     rule is read against, and each leg's answer, kept until the next draw. */
+     rule is read against, and each leg's answer by its key, kept until the
+     next draw. */
   let boardNearby = { trips: [], off: [], oos: [] };
   const standingOf = new Map();
   const standingFor = (trip, leg, driversById, busesById) => {
@@ -848,14 +853,18 @@
 
   /* One bar, drawn by bar.js from what the board holds: its drivers, buses
      and statuses, the standing rule's answer for the leg, a move still being
-     saved, the trip's itinerary and the end of the stretch the office
-     staffs, which moves with the week's first day. */
+     saved, the leg's itinerary and the end of the stretch the office
+     staffs, which moves with the week's first day. A leg is named by its
+     key; a trip read with its legs hands its itinerary through
+     trip-shape.js, and one read without them by the old word. */
+  const legItinerary = (trip, key) => (Array.isArray(trip.trip_legs)
+    ? window.SchedulerTripShape.itineraryFor(trip, key) : latestItinerary(trip, key));
   function barEl(b, driversById, busesById, statuses) {
     const { bar, facts } = Bar.draw(b, {
       driversById, busesById, statuses,
-      standing: (trip, leg) => standingFor(trip, leg, driversById, busesById),
+      standing: (trip, key) => standingFor(trip, key, driversById, busesById),
       saving: id => !!heldMoves.get(String(id))?.saving,
-      itineraryOf: latestItinerary,
+      itineraryOf: legItinerary,
       staffedUntil: iso(addDays(mondayOf(new Date()), 14)),
     });
     barFacts.set(bar, facts);

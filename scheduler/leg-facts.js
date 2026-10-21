@@ -98,11 +98,11 @@
      counted. `overSeats` says the passengers the trip carries over those
      seats, in words, or null when they fit or either is unknown. The Buses
      tab, the bar and its card read both, so they say it alike; it is a
-     warning and asks nothing more, since the office decides what to send. */
+     warning and asks nothing more, since the office decides what to send.
+     A leg is named by its key, week.js's, or by its old word. */
   const seatsTotal = capacities => (capacities.length && capacities.every(c => Number(c) > 0)
     ? capacities.reduce((sum, c) => sum + Number(c), 0) : null);
-  const seatsOf = (trip, leg, busesById = new Map()) => seatsTotal((trip.trip_assignments || [])
-    .filter(a => (a.leg || 'outbound') === leg)
+  const seatsOf = (trip, leg, busesById = new Map()) => seatsTotal(vehiclesOf(trip, leg)
     .map(a => (a.bus_id != null ? busesById.get(a.bus_id)?.capacity ?? null : null)));
   const overSeats = (people, seats) => (Number(people) > 0 && seats != null && Number(people) > seats
     ? `${Number(people)} passengers and ${seats} seats` : null);
@@ -235,10 +235,17 @@
     return linked ? { id: linked.id, name: linked.name ?? '', phone: linked.phone ?? null, email: linked.email ?? null } : null;
   }
 
-  /* A leg's day-of contact: the first of its slots, by leg-papers.js, that
-     holds anyone, or null; a split trip's pickup with none of its own takes
-     the drop-off's. The card says when there is none. */
-  const dayOfContact = (trip, leg = 'outbound') => window.SchedulerLegPapers.contactsFor(trip, leg, tripContact)[0] ?? null;
+  /* A leg's day-of contact, the first that holds anyone, or null; the card
+     says when there is none. A trip read with its legs and `trip_contacts`
+     is read through trip-shape.js, by the leg's key, so a leg with none of
+     its own takes the first leg's. One read without them is read from its
+     slots by leg-papers.js and the old word, so a split trip's pickup with
+     none takes the drop-off's. */
+  const dayOfContact = (trip, leg = 'outbound') => {
+    const on = Array.isArray(trip?.trip_contacts) && window.SchedulerTripShape ? weekLeg(trip, leg) : null;
+    return (on ? window.SchedulerTripShape.contactsFor(trip, on.key)
+      : window.SchedulerLegPapers.contactsFor(trip, leg, tripContact))[0] ?? null;
+  };
 
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
      document kept once for each driver, such as a background check form, and
@@ -295,6 +302,12 @@
      still names it by; null where week.js is not loaded or the trip has no
      such leg. */
   const weekLeg = (trip, leg) => window.SchedulerWeek?.legByKey(trip, leg || 'outbound') ?? null;
+  // A leg's vehicles, by its key or its old word.
+  const vehiclesOf = (trip, leg) => {
+    const on = weekLeg(trip, leg);
+    return (trip.trip_assignments || []).filter(a => (on
+      ? window.SchedulerWeek.legKeyOfVehicle(trip, a) === on.key : (a.leg || 'outbound') === (leg || 'outbound')));
+  };
   // The day a leg leaves, which a form has to last until.
   const legDay = (trip, leg) => String(weekLeg(trip, leg)?.from
     ?? ((leg === 'return' && trip.return_start_date) || trip.start_date) ?? '').slice(0, 10);
@@ -330,18 +343,18 @@
      `toTell` each confirmed driver the leg changed for since they accepted,
      as driver-job.js reads it, with the lines that say what. */
   function factsOf(trip, leg, { busesById = new Map(), driversById = new Map(), statuses = new Map(), nearby = null } = {}) {
-    // The leg by its key, or by its old word; clashes.js still reads it by the word.
+    // The leg by its key, or by its old word.
     const on = weekLeg(trip, leg);
     const word = on?.leg ?? leg ?? 'outbound';
-    const assigns = (trip.trip_assignments || []).filter(a => (on
-      ? window.SchedulerWeek.legKeyOfVehicle(trip, a) === on.key : (a.leg || 'outbound') === word));
+    const key = on?.key ?? word;
+    const assigns = vehiclesOf(trip, leg);
     const busesNeeded = on ? on.count : word === 'return' ? (trip.return_bus_count || trip.bus_count || 1) : (trip.bus_count || 1);
     const facts = { busesNeeded, busesAssigned: 0, busesShort: 0, seatsOpen: 0, seats: 0, unconfirmed: 0, envelopesLeft: 0, itinerariesLeft: 0, partTime: false, hosLeft: 0,
       payLeft: 0, declined: [], toTell: [],
       formsWanted: formKindsOf(trip).length, formsMissing: [], formsLeft: 0,
       fuelCardsLeft: Math.max(0, busesNeeded - assigns.filter(a => String(a.fuel_card_number ?? '').trim()).length) };
     if (nearby && window.SchedulerClashes) {
-      facts.clashes = window.SchedulerClashes.standing(trip, word, nearby, { driversById, busesById }).map(c => c.words);
+      facts.clashes = window.SchedulerClashes.standing(trip, key, nearby, { driversById, busesById }).map(c => c.words);
     }
     for (const a of assigns) {
       if (a.bus_id == null) continue;
@@ -357,7 +370,7 @@
         const name = c.who?.short_name || c.who?.name || 'A driver';
         if (c.status?.value === 'declined') facts.declined.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name });
         const lines = window.SchedulerDriverJob
-          ? window.SchedulerDriverJob.changesSince(trip, word, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
+          ? window.SchedulerDriverJob.changesSince(trip, key, c.driverId, c.row, { busesById, driversById, nameOf: requirementLabel })
           : [];
         if (lines.length) facts.toTell.push({ assignmentId: a.id, driverId: c.driverId, role: c.role, name, lines });
       }

@@ -9,12 +9,12 @@
    slot, lane }`, and `board` what the bar reads from the board around it:
      driversById, busesById   the drivers and buses, as Maps by id;
      statuses                 the driver statuses the office keeps;
-     standing(trip, leg)      clashes.js's standing answer for the leg, which
+     standing(trip, key)      clashes.js's standing answer for the leg, which
                               the board works out once a draw; without it the
                               answer is read against `nearby`;
      nearby                   { trips, off, oos } the standing rule reads;
      saving(assignmentId)     true while a move to this bus is unanswered;
-     itineraryOf(trip, leg)   the itinerary the leg's drivers are handed;
+     itineraryOf(trip, key)   the itinerary the leg's drivers are handed;
      staffedUntil             the ISO day the office staffs to, exclusive,
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
@@ -363,23 +363,24 @@
     // The bar menu reads both to check the trip's colour and paint Standard.
     bar.dataset.tripColor = tripColorOf(trip) ?? '';
     bar.dataset.standardHue = standardHueOf(trip);
-    // The itinerary shortcut and menu item open this document.
-    const itinerary = board.itineraryOf?.(trip, leg.leg) ?? null;
+    /* The leg is read by its key, week.js's, which is its id on a trip read
+       with its legs. The itinerary shortcut and menu item open this document. */
+    const itinerary = board.itineraryOf?.(trip, leg.key) ?? null;
     bar.dataset.itineraryId = itinerary?.id ?? '';
     // The bar menu's hotel item reads both: whether the trip needs a hotel, and
     // whether this leg's is booked.
     bar.dataset.needHotel = trip.need_hotel ? 'true' : '';
-    bar.dataset.hotelBooked = trip[`hotel_booked_${leg.leg}`] ? 'true' : '';
+    bar.dataset.hotelBooked = leg.hotelBooked ? 'true' : '';
     bar.setAttribute('role', 'button');
     bar.tabIndex = 0;
     bar.setAttribute('aria-pressed', 'false');
     bar.dataset.tripId = trip.id;
     // A trip that is back stays where it is on the board; close-out.js says when.
     if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
-    // The leg by its key, week.js's, and its number; `leg` is the old word the old columns are read by.
+    // The leg by its key, week.js's, and its number; `leg` is the old word it mirrors, if any.
     bar.dataset.legKey = leg.key ?? leg.leg;
     bar.dataset.legNumber = leg.number ?? 1;
-    bar.dataset.leg = leg.leg;
+    bar.dataset.leg = leg.leg ?? '';
     bar.dataset.start = place.start;
     bar.dataset.span = place.span;
     // The slot is the position an empty slot's assignment row is written at.
@@ -403,10 +404,10 @@
     /* A leg that leaves the group or fetches it says so in a pill at the time
        row's end, its arrow pointing the way the bus does: across for a
        one-way trip, down for a split's drop-off, where the group is set down,
-       up for its pickup. The pill says which leg of a split this is, so the
-       reference is only its count. */
+       up for its pickup, every leg after the first. The pill says which leg
+       of a split this is, so the reference is only its count. */
     const split = trip.trip_type === SPLIT;
-    const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : leg.leg === 'return' ? 'pickup' : 'drop-off';
+    const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : (leg.number ?? 1) > 1 ? 'pickup' : 'drop-off';
     /* How many buses the leg takes, written after the destination on a leg of
        more than one: `×3`. Which of them a bar is goes unsaid, because its row
        is the bus. */
@@ -426,7 +427,7 @@
     const needs = placeholder ? [] : needsFor(trip, assign).map(id => {
       const name = id === 'hotel' ? (REQUIREMENTS.hotel?.label || 'Hotel') : requirementLabel(id);
       if (id === 'hotel') {
-        const booked = !!trip[`hotel_booked_${leg.leg}`];
+        const booked = !!leg.hotelBooked;
         return { id, href: REQUIREMENTS.hotel?.icon, name, label: booked ? 'Hotel booked' : 'Hotel not booked', done: booked };
       }
       const missing = shortfall(id, bus);
@@ -458,10 +459,10 @@
     const standing = board.standing
       ?? ((t, l) => window.SchedulerClashes.standing(t, l, board.nearby ?? NOBODY_NEAR, { driversById, busesById }));
     const clashes = placeholder || !assign ? []
-      : standing(trip, leg.leg).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
+      : standing(trip, leg.key).filter(c => String(c.assignmentId) === String(assign.id)).map(c => c.words);
     const misfits = placeholder ? [] : [wrong, ...needs.filter(n => n.short).map(n => n.label), ...clashes].filter(Boolean);
     // More passengers than the leg's buses seat, a warning on every bar of the leg.
-    const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.leg, busesById));
+    const overSeated = placeholder ? null : overSeats(trip.passengers, seatsOf(trip, leg.key, busesById));
     /* THE DRIVERS ON THIS BUS who said no, or whom the leg changed for since
        they said yes, as driver-job.js reads it: each a warning, which the
        Contact list puts right. */
@@ -470,14 +471,14 @@
       if (c.needed) return [];
       const name = c.who?.short_name || c.who?.name || 'A driver';
       if (c.status?.value === 'declined') return [`${name} declined`];
-      const lines = window.SchedulerDriverJob?.changesSince(trip, leg.leg, c.driverId, c.row,
+      const lines = window.SchedulerDriverJob?.changesSince(trip, leg.key, c.driverId, c.row,
         { busesById, driversById, nameOf: requirementLabel }) ?? [];
       if (!lines.length) return [];
       tells.push(name);
       return [`Tell ${name}: ${lines.join(', ')}`];
     });
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
-    const facts = { leg: leg.leg, needs, misfits, overSeated, driverAlerts, tells };
+    const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };
 
     /* The one mark, at the destination row's end: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
@@ -570,7 +571,7 @@
     else if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
       const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-          || (!dayOfContact(trip, leg.leg) && !trip.contact_not_needed));
+          || (!dayOfContact(trip, leg.key) && !trip.contact_not_needed));
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }

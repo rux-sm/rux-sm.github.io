@@ -95,5 +95,23 @@ expect('a leg is found by its key, or by the old word a link names',
   [legByKey(shapedTrip, 'l2')?.leg, legByKey(shapedTrip, 'return')?.key, legByKey(withRows, 'return')?.key, legByKey(shapedTrip, 'l9')],
   ['return', 'l2', 'return', null]);
 
+// A third leg, made by the editor once it writes legs, mirrors no old word: it still has a bar, read by its id.
+const third = { ...shapedTrip, trip_legs: [...shapedTrip.trip_legs,
+  { id: 'l3', leg: null, start_date: '2026-10-17', end_date: '2026-10-17', bus_count: 1, trip_routes: [{ id: 'r3', position: 1 }] }],
+  trip_stops: [...shapedTrip.trip_stops, { leg: 'outbound', route_id: 'r3', position: 4, type: 'pickup', depart_prev: '08:00', spot: '08:30' },
+    { leg: 'outbound', route_id: 'r3', position: 5, type: 'return', arrive: '18:45' }] };
+expect('a leg that mirrors no old word has its bar, its times read by its id',
+  legsOf(third).map(l => [l.key, l.leg, l.number, l.from, l.to, l.depart, l.back]),
+  [['l1', 'outbound', 1, '2026-10-13', '2026-10-13', '06:00', '23:30'], ['l2', 'return', 2, '2026-10-15', '2026-10-15', '05:00', '02:15'],
+    ['l3', null, 3, '2026-10-17', '2026-10-17', '08:00', '18:45']]);
+expect('a leg\'s stops and times are found by its id or by its old word',
+  [window.SchedulerWeek.stopsOfLeg(third, 'l3').stops.length, window.SchedulerWeek.timesOf(third, 'l2').depart,
+    window.SchedulerWeek.timesOf(third, 'return').depart, legByKey(third, null)],
+  [2, '05:00', '05:00', null]);
+expect('a leg with no pickup departure takes the trip\'s time for its word, and one with no word none',
+  ['l1', 'l2', 'l3'].map(k => window.SchedulerWeek.timesOf({ ...third, departure_time: '05:30', return_time: '04:30',
+    trip_stops: third.trip_stops.map(s => ({ ...s, depart_prev: null })) }, k).depart),
+  ['05:30', '04:30', null]);
+
 console.log(failed ? `\n  week: ${failed} case(s) failed` : '\n  week: every case passed');
 process.exit(failed ? 1 : 0);

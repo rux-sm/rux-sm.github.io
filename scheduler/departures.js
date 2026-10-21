@@ -198,9 +198,7 @@
      the order the trip keeps them, and how many lines are not done. */
   function page(trip, leg, read = {}) {
     const lines = tripLines(trip, leg);
-    // clashes.js still reads a leg by its old word.
-    const word = Week.legByKey(trip, leg)?.leg;
-    const clashes = read.nearby && window.SchedulerClashes && word ? window.SchedulerClashes.standing(trip, word, read.nearby, read) : [];
+    const clashes = read.nearby && window.SchedulerClashes ? window.SchedulerClashes.standing(trip, leg, read.nearby, read) : [];
     const buses = (trip.trip_assignments || [])
       .filter(a => Week.legKeyOfVehicle(trip, a) === leg)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))

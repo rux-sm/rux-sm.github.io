@@ -152,13 +152,13 @@ None open.
 
 - [ ] Move every reader of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
-      contact slots to the shape rule, a group at a time: the board's bars,
-      which `scheduler/week.js` already reads through it on a trip read with
-      its legs, though it still reads a leg's times by its word and skips a
-      leg with none; the editor and `fromStops` in
-      `scheduler/route-figures.js`; the words of `scheduler/driver-text.js`,
-      which still name a leg Outbound or Inbound by its word; live and the
-      road. `scheduler/print.js` still keeps a print's marks and reads the
+      contact slots to the shape rule, a group at a time: the bar's menu and
+      what it opens, its contact list, Call or text, itinerary and hotel
+      mark, which read the bar's leg by `bar.dataset.leg`; the editor and
+      `fromStops` in `scheduler/route-figures.js`; the words of
+      `scheduler/driver-text.js`, which still name a leg Outbound or Inbound
+      by its word; live and the road, whose `stopsOf` in `scheduler/road.js`
+      finds a leg by its word. `scheduler/print.js` still keeps a print's marks and reads the
       quote's lines by the old word, which move with those writers. The past-midnight
       rule's copies become one rule file with its sample cases on the way.
       Each reads a trip through `scheduler/trip-shape.js`, with

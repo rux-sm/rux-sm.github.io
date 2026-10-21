@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../billing.js', '../requirements.js', '../leg-papers.js', '../leg-facts.js', '../week.js', '../clashes.js']) {
+for (const f of ['../billing.js', '../requirements.js', '../leg-papers.js', '../leg-facts.js', '../trip-shape.js', '../week.js', '../clashes.js']) {
   runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 }
 const { REST_HOURS, restBetween, fitFor, rankDrivers, autoPicks, cardLapse, standing } = window.SchedulerClashes;
@@ -142,6 +142,17 @@ expect('a placeholder raises nothing on itself', standing({ ...saved, trip_bar_c
 const blocking = { ...around, trips: [saved, { ...trip({ from: '2026-10-14', dest: 'Hold', buses: [['h1', 'b1']] }), trip_bar_color: 'amber' }], off: [] };
 expect('and still stands in another trip\'s way', standing(saved, 'outbound', blocking, read).map(c => c.words)[0], 'Bus 897: On trip Hold');
 expect('its own trip is never in its way', standing(saved, 'outbound', { trips: [saved], off: [], oos: [] }, { driversById: new Map() }), []);
+
+// The same trips read with their legs: a leg is named by its id, and each vehicle is on its route's leg.
+const shaped = t => ({ ...t, trip_legs: [{ id: `l-${t.id}`, leg: 'outbound', start_date: t.start_date, end_date: t.end_date, bus_count: 1,
+  trip_routes: [{ id: `r-${t.id}`, position: 1 }] }],
+trip_stops: t.trip_stops.map(x => ({ ...x, route_id: `r-${t.id}` })),
+trip_assignments: t.trip_assignments.map(x => ({ ...x, route_id: `r-${t.id}`, leg: 'return' })) });
+const shapedAround = { ...around, trips: around.trips.map(shaped) };
+expect('a leg read with its legs says the same by its id or its old word, its vehicles found by their route',
+  [standing(shaped(saved), `l-${saved.id}`, shapedAround, read).map(c => c.words), standing(shaped(saved), 'outbound', shapedAround, read).length],
+  [['Bus 897: On trip Lunch', 'Rigo: Time off', 'Rigo: Licence expired Oct 10, 2026', 'Ana Ruiz: Inactive'], 4]);
+expect('a leg the trip does not have stands in nothing\'s way', standing(shaped(saved), 'l-none', shapedAround, read), []);
 
 console.log(failed ? `\n  ${failed} fault(s) in clashes` : '\n  clashes: every case passed');
 process.exit(failed ? 1 : 0);

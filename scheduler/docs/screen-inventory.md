@@ -150,12 +150,15 @@ Three homes, and one rule for choosing.
   the board holds the open panels and the week's 19.5rem minimum, all of them
   show. Opening one past that closes the oldest, then the next, without a word,
   except one with something typed in it, which asks first and stays on a no.
-  The board never closes the editor: where it stands in the way, the new panel
-  does not open and a notice says to close the editor. A narrowed window closes
-  the oldest panels with nothing typed in them. Below md one panel is open at a
-  time, in front of the board 16px in from the header and every edge, and
-  Escape, its close button or the dim leave it. `placeRoom` and `makeRoom` in
-  `scheduler/data.js` decide it.
+  The board never closes the editor: where it alone stands in the way, the
+  one other panel comes in front of the week, no wider than the week's side,
+  with the week dimmed and the editor open and in use beside it; a press on the
+  dim, its close button, or Escape outside the editor leave it. A narrowed
+  window closes the oldest panels with nothing typed in them, keeping one
+  beside the editor. Below md one panel is open at a time, in front of the
+  board 16px in from the header and every edge, and Escape, its close button
+  or the dim leave it. `placeRoom` and `makeRoom` in `scheduler/data.js`
+  decide it.
 - **A panel on one trip follows the trip in focus:** the editor's, where it is
   open on a saved trip, otherwise the selected one. Forms shows that trip's
   forms, and the stored file panel its newest file of the same kind, or No

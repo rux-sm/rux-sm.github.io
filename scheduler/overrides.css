@@ -124,13 +124,19 @@
   inset-inline: var(--rux-spacing-05) auto;
   inline-size: min(var(--scheduler-viewer-w), calc(100% - 2 * var(--rux-spacing-05)));
 }
+/* Over the week beside the editor, it keeps to the week's side of the
+   editor, 16px short of it, as app.css's scrim stops. */
+.scheduler-page[data-cover][data-takeover="viewer"] .scheduler-viewer .rux--side-panel {
+  inline-size: min(var(--scheduler-viewer-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
+}
 
 /* A panel that is open but not the one in front is not drawn. Behind the one in
    front the board is the week alone, so there is no place beside it for a
    second panel to wait in -- and below md Carbon's fixed panel would otherwise
    stand full-width over whichever panel was asked for last. It is still open,
-   and comes back the moment the one in front closes. */
-.scheduler-page[data-takeover]:not([data-takeover="editor"]) .scheduler-trip .rux--side-panel,
+   and comes back the moment the one in front closes. The editor beside a
+   panel over the week, `data-cover`, is drawn and in use. */
+.scheduler-page[data-takeover]:not([data-takeover="editor"], [data-cover]) .scheduler-trip .rux--side-panel,
 .scheduler-page[data-takeover]:not([data-takeover="viewer"]) .scheduler-viewer .rux--side-panel {
   display: none;
 }

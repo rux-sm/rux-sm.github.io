@@ -11179,7 +11179,11 @@
   async function makeRoom(name) {
     placeRoom();
     const kept = new Set();
-    while (overRoom(name)) {
+    const desk = !matchMedia('(max-width: 41.98rem)').matches;
+    // Beside the editor one panel stays, over the week: the new one, or for the editor itself the newest open.
+    const besideEditor = () => desk && (name === 'editor' || panels().find(p => p.editor)?.open)
+      && panels().filter(p => (p.open || p.name === name) && !p.editor).length <= 1;
+    while (overRoom(name) && !besideEditor()) {
       const oldest = openOrder.map(n => panels().find(p => p.name === n))
         .find(p => p && p.open && p.name !== name && !p.editor && !kept.has(p.name));
       if (!oldest) break;
@@ -11190,13 +11194,14 @@
       oldest.close();
     }
     if (name === 'editor' || !overRoom(name)) return true;
-    /* What stands in the way is named: a panel kept open on a no first, since
-       that was the answer just given, else the editor. */
+    /* Where the editor alone stands in the way, the panel opens over the week
+       beside it, which `placeRoom` lays out. A panel kept open on a no is
+       named instead, since that was the answer just given. */
     const editorOpen = panels().find(p => p.editor)?.open;
+    if (editorOpen && !kept.size) return true;
     const inWay = [...kept].map(n => PANEL_NAMES[n]);
     toast('info', `No room for ${PANEL_NAMES[name]}`,
-      inWay.length ? `Close ${inWay.join(' or ')} to make room for it.`
-        : editorOpen ? 'Close the trip editor to make room for it.' : 'Close a panel to make room for it.');
+      inWay.length ? `Close ${inWay.join(' or ')} to make room for it.` : 'Close a panel to make room for it.');
     return false;
   }
   window.SchedulerPanels = { room: makeRoom };
@@ -11221,7 +11226,9 @@
     /* A window narrowed past what fits closes the oldest panels with nothing
        typed in them, one at a time, each close laying the board out again. One
        holding typed input and the editor stay, and the week gives way. */
-    if (overRoom()) {
+    // Beside the editor one panel can always stay, over the week.
+    const editorOpen = open.some(p => p.editor);
+    if (overRoom() && !(editorOpen && !overlay && open.filter(p => !p.editor).length <= 1)) {
       const oldest = openOrder.map(n => open.find(p => p.name === n))
         .find(p => p && !p.editor && !p.dirty?.() && (!overlay || p.name !== openOrder.at(-1)));
       if (oldest) { oldest.close(); return; }
@@ -11238,25 +11245,33 @@
     for (const p of all) if (!p.open && p.el) p.el.style.removeProperty('order');
 
     /* Below md nothing is laid out beside the week at all: Carbon's own fixed
-       panel stands there, and the one open is in front of the board. */
-    const front = overlay && openOrder.length ? openOrder.at(-1) : null;
+       panel stands there, and the one open is in front of the board. From md
+       up, where the editor and one other panel are open and the two do not fit
+       beside the week, that panel comes in front of the week alone and the
+       editor stays beside it, in use. */
+    const others = open.filter(p => !p.editor);
+    const cover = !overlay && others.length === 1 && open.some(p => p.editor) && overRoom() ? others[0].name : null;
+    const front = overlay && openOrder.length ? openOrder.at(-1) : cover;
     frontPanel = front;
     const shown = front && viewers[front] ? 'viewer' : front === 'prep' ? 'to-do' : front;
     if (shown) pageEl.setAttribute('data-takeover', shown);
     else pageEl.removeAttribute('data-takeover');
+    pageEl.toggleAttribute('data-cover', !!cover);
 
     /* Behind the one in front, the board is set aside rather than there to be
        read, so it takes no click and no Tab: what is on screen and what can be
-       reached are the same thing. */
+       reached are the same thing. The editor beside a panel over the week is
+       not behind it. */
     frameEl.inert = !!front;
-    for (const p of all) if (p.el) p.el.inert = !!front && p.name !== front;
+    for (const p of all) if (p.el) p.el.inert = !!front && p.name !== front && !(cover && p.editor);
 
     /* An open panel's wrapper keeps its place in the board's row whether the
        panel is beside the week or in front of it, so the gap beside it is
        charged either way. */
     const gaps = names.length * gap;
     const widths = overlay ? 0 : open.reduce((sum, p) => sum + p.width(), 0);
-    const room = board - gaps - (front ? 0 : widths);
+    // Over the week the panel gives its width up; the editor beside it keeps its own.
+    const room = board - gaps - (cover ? open.find(p => p.editor).width() : front ? 0 : widths);
     frameEl.style.setProperty('--scheduler-room', `${Math.max(0, Math.round(room))}px`);
     // Under the tight width `Today` gives way to its menu row, in app.css.
 
@@ -15894,8 +15909,10 @@
     if (document.querySelector('.rux--modal.is-visible')) return;
     /* A panel in front of the board is the only thing on screen, so Escape
        leaves it wherever focus is: the board behind it is inert and has
-       nothing to take the key for. */
-    if (leaveFront()) { e.preventDefault(); return; }
+       nothing to take the key for. The editor beside a panel over the week
+       is still in use, so there Escape is the editor's. */
+    const inEditorBeside = pageEl?.hasAttribute('data-cover') && (tripEl?.contains(document.activeElement) || panelEl.contains(document.activeElement));
+    if (!inEditorBeside && leaveFront()) { e.preventDefault(); return; }
     const inViewer = Object.values(viewers).find(v => v.el && !v.el.hidden && v.el.contains(document.activeElement));
     if (inViewer) {
       e.preventDefault();

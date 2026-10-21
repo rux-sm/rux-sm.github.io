@@ -3998,7 +3998,7 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
    header or an edge of the window, and a rounded corner wants a page behind
    it. Below md it fills the width, there being nothing beside it to leave
    room for. */
-.scheduler-page[data-takeover] .scheduler-trip,
+.scheduler-page[data-takeover]:not([data-cover]) .scheduler-trip,
 .scheduler-page[data-takeover] .scheduler-viewer {
   flex: 0 0 0;
   min-inline-size: 0;
@@ -4032,6 +4032,11 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
   background: var(--rux-layer);
   box-shadow: 0 2px 8px rgb(0 0 0 / .4);
 }
+/* Over the week beside the editor, each keeps to the week's side of it. */
+.scheduler-page[data-cover][data-takeover="roster"] .scheduler-aside,
+.scheduler-page[data-cover][data-takeover="to-do"] .scheduler-to-do--pane {
+  inline-size: min(var(--scheduler-panel-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
+}
 /* The lists' pane keeps its column there, its list scrolling under its head. */
 .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane { display: flex; overflow: hidden; }
 /* The head sticks at the top of the card, above the grid's highest layer, the
@@ -4063,6 +4068,15 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
   inset: 3rem 0 0;
   z-index: 1000;
   background: var(--rux-overlay);
+}
+/* A PANEL OVER THE WEEK, BESIDE THE EDITOR. Where the editor alone leaves no
+   room beside the week, a panel opened comes in front of the week and the
+   editor stays where it is, open and in use: data.js marks the page
+   `data-cover` as well as naming the panel in front, the editor's wrapper
+   keeps its width, and the scrim dims the week alone, stopping short of the
+   editor by its width and the page's 16px inset and gap. */
+.scheduler-page[data-cover] .scheduler-scrim {
+  inset-inline-end: calc(var(--scheduler-editor-w) + 2 * var(--rux-spacing-05));
 }
 
 @media (max-width: 41.98rem) {

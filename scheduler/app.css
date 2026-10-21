@@ -3222,22 +3222,10 @@ button.scheduler-row-head__num::after {
   padding-inline: 0;
   text-align: center;
 }
-/* The selected trip's days are underlined in their letters, in primary text,
-   with a 2px bar in the interactive colour the free slots below are drawn
-   in, so the days read as picked even where every driver is booked; and
-   today's letter takes the colour the board's own today does. Two classes, to
-   beat the header row's colour; today comes second, so a selected today stays
-   in its colour. The cell is sticky, which places the bar. */
+/* The selected trip's days are in primary text, and today's letter takes the
+   colour the board's own today does. Two classes, to beat the header row's
+   colour; today comes second, so a selected today stays in its colour. */
 .scheduler-avail__days > .scheduler-avail__day--on-day { color: var(--rux-text-primary); }
-.scheduler-avail__days > .scheduler-avail__day--on-day::after {
-  content: '';
-  position: absolute;
-  inset-inline: var(--rux-spacing-02);
-  inset-block-end: 2px;
-  block-size: 2px;
-  border-radius: 1px;
-  background: var(--rux-border-interactive);
-}
 .scheduler-avail__days > .scheduler-avail__day--today { color: var(--rux-link-primary-hover); }
 /* The roster's corner, sticky in both axes. */
 .scheduler-avail__day--head {

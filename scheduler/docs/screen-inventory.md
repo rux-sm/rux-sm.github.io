@@ -181,9 +181,9 @@ it is a companion view, not panel content, and it stays on until turned off.
 
 The grid and the panel can both be open. Only the panel is one at a time.
 
-A selected trip's days are underlined in the grid's header, and each driver
-free on one of them has an open slot there, a dashed outline the size of a
-mark, so a column of slots is who can take the trip.
+Each driver free on one of a selected trip's days has an open slot there, a
+dashed outline the size of a mark, so a column of slots is who can take the
+trip. Rux-dark fills those days as a grey band down the grid instead.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

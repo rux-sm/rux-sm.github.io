@@ -13340,6 +13340,46 @@
      it is the newest panel again, so it comes in front of an editor opened
      since where the window has room for one. The room is measured before the
      board is fit. */
+  /* THE TOOLBAR'S FORMS AND CALCULATOR BUTTONS are pressed while the panel
+     shows what each opens: Forms for the forms list and a form from it, the
+     calculator for the calculator. `viewerKind` is what the panel was last
+     opened on, and a stored file is neither. */
+  let viewerKind = null;
+  const formsOpen = document.getElementById('scheduler-forms-open');
+  const calcOpen = document.getElementById('scheduler-calc-open');
+  function syncViewerButtons() {
+    const shown = viewerEl && !viewerEl.hidden ? viewerKind : null;
+    for (const [button, on] of [[formsOpen, shown === 'Forms' || shown === 'Form'], [calcOpen, shown === 'Quote calculator']]) {
+      if (!button) continue;
+      button.setAttribute('aria-pressed', String(on));
+      // rux.css styles nothing on `aria-pressed`; `rux--btn--selected` is
+      // Carbon's pressed look, as on the board's other pane toggles.
+      button.classList.toggle('rux--btn--selected', on);
+    }
+  }
+  /* Forms opens the selected trip's forms, or the trip's in the editor, and
+     with neither the forms list itself, every form blank. The calculator
+     opens filled from the selected trip, or from the editor's, as the bar
+     menu's Quote calculator does, and with neither, empty. A press on a
+     pressed one shuts the panel. */
+  formsOpen?.addEventListener('click', () => {
+    if (formsOpen.getAttribute('aria-pressed') === 'true') { closeViewer(); return; }
+    const bar = selectedBar();
+    if (bar) openForms(bar, bar.dataset.tripId, formsOpen);
+    else if (editing?.id) openForms(null, editing.id, formsOpen);
+    else openGenerated({ url: 'print.html', kind: 'Forms', note: '', opener: formsOpen });
+  });
+  calcOpen?.addEventListener('click', () => {
+    if (calcOpen.getAttribute('aria-pressed') === 'true') { closeViewer(); return; }
+    const bar = selectedBar();
+    if (bar) openCalculator(bar);
+    else if (editing?.id) openCalculator(null);
+    else {
+      calcFor = null;
+      openGenerated({ url: 'quote.html', kind: 'Quote calculator', note: '', opener: calcOpen });
+    }
+  });
+
   function showViewer(opener) {
     if (viewerEl.hidden) {
       viewerOpener = opener ?? null;
@@ -13349,6 +13389,7 @@
     }
     placeRoom();
     window.Rux?.schedule?.fit?.();
+    syncViewerButtons();
   }
 
   /* A form from print.html. It needs no fetch and no blob address: a page of
@@ -13361,6 +13402,7 @@
     }
     dropShown();
     setViewerMode('form');
+    viewerKind = kind;
     // The controls belong to the frame being replaced, so they go with it and
     // the page hands its own up once it has drawn.
     setFormControls([]);
@@ -13437,6 +13479,7 @@
        naming the destination here said it twice, and a file that is only
        itself has nothing to list. */
     const kind = docTypeName(doc);
+    viewerKind = null;
     setViewerHead(kind);
     const when = uploadedOn(doc.created_at);
     viewerUploaded.textContent = when ? `Uploaded ${when}` : '';
@@ -13524,6 +13567,7 @@
     viewerEl.hidden = true;
     viewerDocId = null;
     viewerMark = null;
+    syncViewerButtons();
     // A fetch still running is dropped, and no PDF is held while the panel is shut.
     viewerSeq++;
     dropShown();

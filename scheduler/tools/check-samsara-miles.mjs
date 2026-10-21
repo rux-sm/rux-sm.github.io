@@ -209,6 +209,24 @@ expect('each leg says who drove the bus on it, and the bus who drove it in all',
   [a.buses[0].legs.map(l => l.drivers.map(d => [d.name, d.miles])), a.buses[0].drivers.map(d => [d.name, d.miles])],
   [[[['Ana Ruiz Jr', 80]], [['Dee Moss', 70], ['Ana Ruiz Jr', 10]]], [['Ana Ruiz Jr', 90], ['Dee Moss', 70]]]);
 
+// The same split trip read with its legs: a leg is found by its id or its old word, a bus row is on its
+// route's leg whatever its word says, and the answer names each leg by both.
+const shapedSplit = { ...both,
+  trip_legs: [
+    { id: 'l2', leg: 'return', start_date: '2026-10-12', end_date: '2026-10-12', created_at: '1', trip_routes: [{ id: 'r2', position: 1 }] },
+    { id: 'l1', leg: 'outbound', start_date: '2026-10-10', end_date: '2026-10-10', created_at: '1', trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_stops: split.trip_stops.map(x => ({ ...x, route_id: x.leg === 'return' ? 'r2' : 'r1' })),
+  trip_assignments: [{ bus_id: 'b1', leg: 'return', route_id: 'r1' }, { bus_id: 'b1', leg: 'outbound', route_id: 'r2' }] };
+expect('a leg read with its legs has the window its id or its word names',
+  [legWindow(shapedSplit, 'l2'), legWindow(shapedSplit, 'return'), legWindow(shapedSplit, 'l9')], [legWindow(split, 'return'), legWindow(split, 'return'), null]);
+p = parts({ odometer: (v, at) => ({ obdOdometerMeters: reading(at, Math.round((Date.parse(at) - Date.parse('2026-10-10T00:00:00Z')) / 3600_000 * 10 * MILE)) }) });
+a = await milesFor(shapedSplit, p.deps);
+expect('each leg in the answer is named by its old word and its id, a bus row on its route\'s leg',
+  [a.legs.map(l => [l.leg, l.leg_id]), a.buses[0].legs.map(l => [l.leg, l.leg_id, l.miles]), a.buses[0].miles],
+  [[['outbound', 'l1'], ['return', 'l2']], [['outbound', 'l1', 80], ['return', 'l2', 80]], 160]);
+a = await milesFor(both, p.deps);
+expect('a trip read without its legs names none by id', [a.legs.map(l => l.leg_id), a.buses[0].legs.map(l => l.leg_id)], [[null, null], [null, null]]);
+
 // ── the pickup ──────────────────────────────────────────────────────────────
 // The yard, and a pickup about six miles north; a quarter mile is 0.0036°.
 const YARD = [26.2000, -98.2300];
@@ -322,6 +340,14 @@ let n = nightParts();
 let got = await night(n.deps, '2026-10-10', '2026-10-11', true);
 expect('each night saves each bus row\'s yard times', [got.trips, n.saved],
   [1, [{ id: 'row-1', actual_yard_depart_at: '2026-10-10T10:55:00.000Z', actual_yard_return_at: '2026-10-10T16:58:00.000Z' }]]);
+// Read with its legs, the row is found by its route's leg, whatever its old word says.
+n = nightParts();
+n.deps.tripsBetween = async () => [{ ...placed,
+  trip_legs: [{ id: 'l1', leg: 'outbound', start_date: placed.start_date, end_date: placed.end_date, trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_stops: placed.trip_stops.map(x => ({ ...x, route_id: 'r1' })), trip_assignments: [{ id: 'row-1', bus_id: 'b1', leg: 'return', route_id: 'r1' }] }];
+got = await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('a trip read with its legs saves the row on its route\'s leg', n.saved,
+  [{ id: 'row-1', actual_yard_depart_at: '2026-10-10T10:55:00.000Z', actual_yard_return_at: '2026-10-10T16:58:00.000Z' }]);
 n = nightParts();
 got = await night(n.deps, '2026-10-01', '2026-10-11', false);
 expect('a run that may not write says what it found and saves nothing', [got.rows.length, n.saved.length], [1, 0]);

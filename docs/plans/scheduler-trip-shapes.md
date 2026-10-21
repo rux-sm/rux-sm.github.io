@@ -150,24 +150,27 @@ None open.
 
 ## Tasks
 
-- [ ] Move every reader of `outbound`, `return`, the `_outbound` and
+- [ ] Read `scheduler/samsara-miles/` through the shape rule: each leg's
+      yard window and pickup from its legs and routes, a vehicle's leg by its
+      route, and an answer that names each leg by its id beside the old word
+      the Billing tab still reads; then hand rux the deploy.
+- [ ] Let `trip_steps_off` take a leg by its id and `trip_stops_steps_off`
+      find a stop's leg by its route, as SQL shown to rux.
+- [ ] Move the editor's readers of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
-      contact slots to the shape rule: the editor and `fromStops` in
-      `scheduler/route-figures.js`, with the quote calculator it fills and
-      the bar's ref, whose `leg` is the old word, and the
-      `scheduler/samsara-miles/` function, whose answer the Billing tab
-      reads and which reads each leg's yard times by the old word. The bar
-      menu's hotel mark, itinerary upload and Mark as told send the old
-      word, and `scheduler/print.js` still keeps a print's marks and reads
-      the quote's lines by it, which move with those writers. The
-      past-midnight rule's copies become one rule file with its sample cases
-      on the way. Each reads a trip through `scheduler/trip-shape.js`, with
-      `trip_legs(*, trip_routes(*))` and `trip_contacts` in its query, and
-      `scheduler/leg-papers.js` goes with its last reader. The editor moves
-      with the database functions it reads, `trips_clear_done`,
-      `trip_steps_off` and `trip_stops_steps_off`.
-- [ ] Hand rux the deploy of `scheduler/maintenance-status/`, whose source
-      reads a bar's leg by its id and answers with it beside the old word.
+      contact slots to the shape rule, once no other session has `data.js`
+      open: the editor and `fromStops` in `scheduler/route-figures.js`, with
+      the quote calculator it fills, the bar's ref, whose `leg` is the old
+      word, and the Billing tab's Samsara answer; `scheduler/trip-history.js`,
+      `scheduler/draft-fields.js`, `scheduler/fleet.js` and
+      `scheduler/drivers.js`. Each reads a trip through
+      `scheduler/trip-shape.js`, with `trip_legs(*, trip_routes(*))` and
+      `trip_contacts` in its query. The past-midnight rule's copies become
+      one rule file with its sample cases on the way, and
+      `scheduler/leg-papers.js` goes with its last reader. The bar menu's
+      hotel mark, itinerary upload and Mark as told, `scheduler/print.js`'s
+      marks and quote lines, and `trips_clear_done`, which clears a tab's
+      Done from the trip's own columns, move with the writers.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,

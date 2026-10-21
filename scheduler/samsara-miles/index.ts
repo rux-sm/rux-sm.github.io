@@ -27,8 +27,11 @@ const SAMSARA = 'https://api.samsara.com'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const NIGHT_KEY = Deno.env.get('SAMSARA_NIGHT_KEY') ?? ''
 
-const STOPS = 'trip_stops(leg,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
-const TRIP = `id,start_date,end_date,return_start_date,return_end_date,departure_time,return_time,${STOPS}`
+// A trip with its legs and routes, as handler.ts reads them, and `ends`, an
+// embed that returns nothing, which the reads of trips by their days test.
+const STOPS = 'trip_stops(leg,route_id,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
+const LEGS = 'trip_legs(id,leg,start_date,end_date,created_at,trip_routes(id,position))'
+const TRIP = `id,start_date,end_date,departure_time,return_time,${STOPS},${LEGS}`
 
 // Every page of a Samsara list.
 async function samsara<T>(path: string, params: Record<string, string>): Promise<T[]> {
@@ -59,7 +62,7 @@ function depsOn(db: any): Deps {
     now: () => Date.now(),
     async trip(id) {
       const { data, error } = await db.from('trips')
-        .select(`${TRIP},trip_assignments(bus_id,leg)`).eq('id', id).maybeSingle()
+        .select(`${TRIP},trip_assignments(bus_id,leg,route_id)`).eq('id', id).maybeSingle()
       if (error) throw error
       return data as Trip | null
     },
@@ -75,12 +78,12 @@ function depsOn(db: any): Deps {
     },
     async others(busIds, from, to, except) {
       const { data, error } = await db.from('trips')
-        .select(`${TRIP},trip_assignments!inner(bus_id,leg)`)
+        .select(`${TRIP},trip_assignments!inner(bus_id,leg,route_id),ends:trip_legs!inner()`)
         .in('trip_assignments.bus_id', busIds)
         .neq('id', except)
         .is('cancelled_at', null)
         .lte('start_date', to)
-        .or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`)
+        .or(`end_date.gte.${from},start_date.gte.${from}`, { referencedTable: 'ends' })
       if (error) throw error
       return (data ?? []) as Trip[]
     },
@@ -138,10 +141,10 @@ Deno.serve(req => {
       ...depsOn(db),
       async tripsBetween(from, to) {
         const { data, error } = await db.from('trips')
-          .select(`${TRIP},trip_assignments(id,bus_id,leg)`)
+          .select(`${TRIP},trip_assignments(id,bus_id,leg,route_id),ends:trip_legs!inner()`)
           .is('cancelled_at', null)
           .lte('start_date', to)
-          .or(`end_date.gte.${from},return_end_date.gte.${from}`)
+          .or(`end_date.gte.${from},start_date.gte.${from}`, { referencedTable: 'ends' })
         if (error) throw error
         return (data ?? []) as Trip[]
       },

@@ -34,6 +34,12 @@
 //
 // TIMES ARE THE OFFICE'S. The stops keep McAllen wall-clock times with no zone,
 // and each is turned into an instant with that date's offset.
+//
+// A TRIP'S LEGS are its `trip_legs` in date order, as scheduler/trip-shape.js
+// orders them: a leg's stops are its routes' stops, and a bus row is on its
+// route's leg. A trip read without its legs is read by its old date columns
+// and each row's old word. Every leg in the answer carries `leg_id`, its id,
+// beside `leg`, the old word it mirrors, which the Billing tab still reads.
 
 export const ZONE = 'America/Chicago'
 export const MARGIN_MS = 2 * 3600_000
@@ -45,6 +51,7 @@ const LATE_HOUR = 4
 
 export type Stop = {
   leg: string | null
+  route_id?: string | null
   type: string | null
   position: number | null
   depart_prev: string | null
@@ -56,7 +63,18 @@ export type Stop = {
   lat?: number | string | null
   lng?: number | string | null
 }
-export type Assignment = { id?: string; bus_id: string | null; leg: string | null }
+export type Assignment = { id?: string; bus_id: string | null; leg: string | null; route_id?: string | null }
+export type LegRow = {
+  id: string
+  leg: string | null
+  start_date: string | null
+  end_date: string | null
+  created_at?: string | null
+  trip_routes?: { id: string; position?: number | null }[]
+}
+// A trip's leg as this function reads it. `key` tells legs apart: its id, or
+// on a trip read without its legs the old word, which `word` is either way.
+export type Leg = { key: string; id: string | null; word: string | null; start: string | null; end: string | null; routes: string[] }
 export type Trip = {
   id: string
   start_date: string | null
@@ -67,6 +85,7 @@ export type Trip = {
   return_time: string | null
   trip_stops: Stop[]
   trip_assignments: Assignment[]
+  trip_legs?: LegRow[]
 }
 export type Bus = { id: string; number: string | null }
 export type Vehicle = { id: string; name: string }
@@ -112,7 +131,8 @@ export type Deps = {
 
 export type LegNote = 'not-in-samsara' | 'other-trip' | 'not-finished' | 'no-readings'
 export type BusLeg = {
-  leg: 'outbound' | 'return'
+  leg: string | null
+  leg_id: string | null
   miles: number | null
   source: 'engine' | 'gps' | null
   note: LegNote | null
@@ -136,7 +156,7 @@ export type BusMiles = {
   drivers: Drove[] | null
 }
 export type Answer = {
-  legs: { leg: 'outbound' | 'return'; from: string; to: string; timed: boolean }[]
+  legs: { leg: string | null; leg_id: string | null; from: string; to: string; timed: boolean }[]
   buses: BusMiles[]
   actual: number | null
 }
@@ -191,6 +211,53 @@ export function instant(date: string, time: string | null): number | null {
 
 const iso = (ms: number) => new Date(ms).toISOString()
 
+// ── a trip's legs ───────────────────────────────────────────────────────────
+
+const WORD_ORDER: Record<string, number> = { outbound: 0, return: 1 }
+
+// A trip's legs in date order, as scheduler/trip-shape.js orders them: a leg
+// with no date last, two on one day in the order of the words they mirror,
+// then as they were made. A trip read without its legs has the ones its old
+// columns give.
+export function legsOf(trip: Trip): Leg[] {
+  if (Array.isArray(trip.trip_legs)) {
+    const day = (v: string | null | undefined) => (v ? String(v).slice(0, 10) : null)
+    return trip.trip_legs
+      .map(l => ({ key: l.id, id: l.id, word: l.leg ?? null, start: day(l.start_date), end: day(l.end_date) ?? day(l.start_date),
+        routes: [...(l.trip_routes ?? [])].sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map(r => r.id), made: l.created_at ?? '' }))
+      .sort((a, b) => (Number(!a.start) - Number(!b.start)) || (a.start ?? '').localeCompare(b.start ?? '')
+        || (WORD_ORDER[a.word ?? ''] ?? 2) - (WORD_ORDER[b.word ?? ''] ?? 2) || a.made.localeCompare(b.made))
+      .map(({ made: _made, ...l }) => l)
+  }
+  const out: Leg[] = [{ key: 'outbound', id: null, word: 'outbound', start: trip.start_date, end: trip.end_date ?? trip.start_date, routes: [] }]
+  if (trip.return_start_date) {
+    out.push({ key: 'return', id: null, word: 'return', start: trip.return_start_date, end: trip.return_end_date ?? trip.return_start_date, routes: [] })
+  }
+  return out
+}
+
+// A trip's leg by its key, or by the old word a caller still names it by.
+function legNamed(trip: Trip, named: string | null | undefined): Leg | null {
+  const legs = legsOf(trip)
+  return legs.find(l => l.key === named) ?? legs.find(l => l.word === (named || 'outbound')) ?? null
+}
+
+// A leg's stops in route order: its routes' on a trip read with its legs,
+// and those naming its word on one that is not.
+const stopsOfLeg = (trip: Trip, leg: Leg): Stop[] => (trip.trip_stops || [])
+  .filter(s => (leg.id ? leg.routes.includes(s.route_id ?? '') : (s.leg || 'outbound') === leg.word))
+  .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+
+// The key of the leg a bus row is on: its route's leg on a trip read with its
+// legs, or the leg its old word names while it has no route; on a trip read
+// without them, the word.
+function legKeyOf(trip: Trip, a: Assignment): string | null {
+  const word = a.leg === 'return' ? 'return' : 'outbound'
+  if (!Array.isArray(trip.trip_legs)) return word
+  const legs = legsOf(trip)
+  return (a.route_id ? legs.find(l => l.routes.includes(a.route_id!)) : legs.find(l => l.word === word))?.key ?? null
+}
+
 // ── a leg's window ──────────────────────────────────────────────────────────
 
 export type Window = { start: number; end: number; timed: boolean }
@@ -198,19 +265,22 @@ export type Window = { start: number; end: number; timed: boolean }
 // A leg's planned yard-out to yard-back, read the way the Route tab reads the
 // saved rows: the `pickup` row's departure is the yard-out, the last `return`
 // row's arrival the yard-back. With no times it is the leg's whole days, to
-// the late-return hour after the last. Null when the leg has no dates.
-export function legWindow(trip: Trip, leg: 'outbound' | 'return'): Window | null {
-  const from = leg === 'return' ? trip.return_start_date : trip.start_date
-  const to = (leg === 'return' ? trip.return_end_date : trip.end_date) ?? from
-  if (!from || !to) return null
-  const rows = (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === leg)
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+// the late-return hour after the last. Null when the leg has no dates. The
+// leg is named by its key or its old word; the trip's own departure and return
+// times stand in for the word they belong to.
+export function legWindow(trip: Trip, named: string): Window | null {
+  const leg = legNamed(trip, named)
+  const from = leg?.start ?? null
+  const to = leg?.end ?? from
+  if (!leg || !from || !to) return null
+  const rows = stopsOfLeg(trip, leg)
   const pickup = rows.find(s => s.type === 'pickup') ?? null
   const back = [...rows].reverse().find(s => s.type === 'return') ?? null
 
-  const outTime = pickup?.depart_prev ?? pickup?.spot ?? (leg === 'outbound' ? trip.departure_time : null)
+  const alone = !legsOf(trip).some(l => l.word === 'return')
+  const outTime = pickup?.depart_prev ?? pickup?.spot ?? (leg.word === 'outbound' ? trip.departure_time : null)
   const outDate = (pickup?.depart_prev ? pickup.depart_prev_date : pickup?.spot ? pickup.spot_date : null) ?? from
-  const backTime = back?.arrive ?? back?.depart_prev ?? (leg === 'outbound' && !trip.return_start_date ? trip.return_time : null)
+  const backTime = back?.arrive ?? back?.depart_prev ?? (leg.word === 'outbound' && alone ? trip.return_time : null)
   const backDate = (back?.arrive ? back.arrive_date : back?.depart_prev ? back.depart_prev_date : null) ?? to
 
   const timed = !!(outTime && backTime)
@@ -222,9 +292,6 @@ export function legWindow(trip: Trip, leg: 'outbound' | 'return'): Window | null
   while (end <= start) end += DAY_MS
   return { start, end, timed }
 }
-
-const legsOf = (trip: Trip): ('outbound' | 'return')[] =>
-  trip.return_start_date ? ['outbound', 'return'] : ['outbound']
 
 // ── the pickup ──────────────────────────────────────────────────────────────
 
@@ -250,17 +317,19 @@ export function crow(a: [number, number], b: [number, number]): number {
 
 // A leg's pickup, the row week.js picks, with its map point and when the bus
 // is due there: its Spot, or the leg's departure where it has none, on the
-// row's own date or the leg's first day. Null when it has no map point.
-export function pickupOf(trip: Trip, leg: 'outbound' | 'return'): { point: [number, number]; due: number | null } | null {
-  const rows = (trip.trip_stops || []).filter(s => (s.leg || 'outbound') === leg)
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+// row's own date or the leg's first day. Null when it has no map point. The
+// leg is named by its key or its old word.
+export function pickupOf(trip: Trip, named: string): { point: [number, number]; due: number | null } | null {
+  const leg = legNamed(trip, named)
+  if (!leg) return null
+  const rows = stopsOfLeg(trip, leg)
   const p = rows.find(s => s.type === 'pickup') ?? rows[0]
   if (!p || p.lat == null || p.lng == null || p.lat === '' || p.lng === '') return null
   const point: [number, number] = [Number(p.lat), Number(p.lng)]
   if (!point.every(Number.isFinite)) return null
-  const from = leg === 'return' ? trip.return_start_date : trip.start_date
+  const from = leg.start
   const [time, date] = p.spot ? [p.spot, p.spot_date]
-    : [p.depart_prev ?? (leg === 'outbound' ? trip.departure_time : trip.return_time), p.depart_prev ? p.depart_prev_date : null]
+    : [p.depart_prev ?? (leg.word === 'outbound' ? trip.departure_time : leg.word ? trip.return_time : null), p.depart_prev ? p.depart_prev_date : null]
   return { point, due: time && (date ?? from) ? instant((date ?? from)!, time) : null }
 }
 
@@ -326,8 +395,6 @@ export function yardTimes(yard: [number, number], fixes: Fix[], reached: number 
   return { depart, back }
 }
 
-const legOfAssignment = (a: Assignment): 'outbound' | 'return' => (a.leg === 'return' ? 'return' : 'outbound')
-
 // ── miles ───────────────────────────────────────────────────────────────────
 
 // The McAllen date of an instant.
@@ -374,12 +441,14 @@ function driverIndex(drivers: Driver[]): Map<string, string> {
 
 export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const legs = legsOf(trip)
-    .map(leg => ({ leg, w: legWindow(trip, leg) }))
-    .filter((l): l is { leg: 'outbound' | 'return'; w: Window } => !!l.w)
+    .map(leg => ({ leg, w: legWindow(trip, leg.key) }))
+    .filter((l): l is { leg: Leg; w: Window } => !!l.w)
+  // A leg in the answer, by the old word it mirrors and its id.
+  const named = (l: Leg) => ({ leg: l.word, leg_id: l.id })
 
   const busIds = [...new Set((trip.trip_assignments || []).map(a => a.bus_id).filter((v): v is string => !!v))]
   if (!busIds.length || !legs.length) {
-    return { legs: legs.map(l => ({ leg: l.leg, from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })), buses: [], actual: null }
+    return { legs: legs.map(l => ({ ...named(l.leg), from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })), buses: [], actual: null }
   }
 
   const first = Math.min(...legs.map(l => l.w.start))
@@ -397,21 +466,22 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const busy = new Map<string, Window[]>()
   for (const o of others) {
     for (const a of o.trip_assignments || []) {
-      if (!a.bus_id) continue
-      const w = legWindow(o, legOfAssignment(a))
+      const key = a.bus_id ? legKeyOf(o, a) : null
+      if (!a.bus_id || key == null) continue
+      const w = legWindow(o, key)
       if (w) busy.set(a.bus_id, [...(busy.get(a.bus_id) ?? []), w])
     }
   }
 
   // Each bus on each of its legs: the instants to read at, or why not.
-  type Ask = { bus: string; leg: 'outbound' | 'return'; vehicle: string | null; from: number; to: number; note: LegNote | null }
+  type Ask = { bus: string; leg: Leg; vehicle: string | null; from: number; to: number; note: LegNote | null }
   const asks: Ask[] = []
   const now = deps.now()
   for (const bus of busIds) {
-    const on = new Set((trip.trip_assignments || []).filter(a => a.bus_id === bus).map(legOfAssignment))
+    const on = new Set((trip.trip_assignments || []).filter(a => a.bus_id === bus).map(a => legKeyOf(trip, a)))
     const vehicle = vehicleOf.get(nameKey(numberOf.get(bus))) ?? null
     for (const { leg, w } of legs) {
-      if (!on.has(leg)) continue
+      if (!on.has(leg.key)) continue
       const near = busy.get(bus) ?? []
       let from = w.start - MARGIN_MS
       let to = w.end + MARGIN_MS
@@ -443,16 +513,16 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   const yardAt = new Map<string, { depart: number | null; back: number | null }>()
   await Promise.all(asks.map(async a => {
     if (!a.vehicle || (a.note && a.note !== 'not-finished') || a.to <= a.from) return
-    const pickup = pickupOf(trip, a.leg)
+    const pickup = pickupOf(trip, a.leg.key)
     if (!pickup && !yard) return
     const fixes = await deps.gps(a.vehicle, a.from, a.to).catch(() => [] as Fix[])
     let reached: number | null = null
     if (pickup) {
       const cut = pickup.due != null ? pickup.due + AFTER_DUE_MS : Infinity
       reached = arrivalAt(pickup.point, pickup.due, fixes.filter(f => Date.parse(f.time) <= cut))
-      arrived.set(`${a.bus}|${a.leg}`, reached)
+      arrived.set(`${a.bus}|${a.leg.key}`, reached)
     }
-    if (yard) yardAt.set(`${a.bus}|${a.leg}`, yardTimes(yard, fixes, reached, a.note !== 'not-finished'))
+    if (yard) yardAt.set(`${a.bus}|${a.leg.key}`, yardTimes(yard, fixes, reached, a.note !== 'not-finished'))
   }))
   const pickupAt = (bus: string, leg: string) => {
     const at = arrived.get(`${bus}|${leg}`)
@@ -477,17 +547,17 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
       deps.samsaraDrivers().catch(() => [] as SamsaraDriver[]),
       deps.drivers(),
     ])
-    askable.forEach((a, i) => segments.set(`${a.bus}|${a.leg}`, found[i]))
+    askable.forEach((a, i) => segments.set(`${a.bus}|${a.leg.key}`, found[i]))
     names = new Map(theirs.map(d => [String(d.id), d.name]))
     index = driverIndex(ours)
   } catch {
     known = false
   }
-  const droveFor = (bus: string, leg?: 'outbound' | 'return'): Drove[] | null => {
+  const droveFor = (bus: string, leg?: string): Drove[] | null => {
     if (!known) return null
     const meters = new Map<string, number>()
-    for (const a of asks.filter(x => x.bus === bus && (!leg || x.leg === leg))) {
-      for (const s of segments.get(`${bus}|${a.leg}`) ?? []) {
+    for (const a of asks.filter(x => x.bus === bus && (!leg || x.leg.key === leg))) {
+      for (const s of segments.get(`${bus}|${a.leg.key}`) ?? []) {
         if (!(s.startMs >= a.from && s.startMs <= a.to)) continue
         const who = s.driverId ? String(s.driverId) : ''
         meters.set(who, (meters.get(who) ?? 0) + (s.distanceMeters ?? 0))
@@ -501,14 +571,14 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
 
   const out: BusMiles[] = busIds.map(bus => {
     const mine: BusLeg[] = asks.filter(a => a.bus === bus).map(a => {
-      const drivers = droveFor(bus, a.leg)
-      const pickup_at = pickupAt(bus, a.leg)
-      const times = yardTimesOf(bus, a.leg)
-      if (a.note || !a.vehicle) return { leg: a.leg, miles: null, source: null, note: a.note, drivers, pickup_at, ...times }
+      const drivers = droveFor(bus, a.leg.key)
+      const pickup_at = pickupAt(bus, a.leg.key)
+      const times = yardTimesOf(bus, a.leg.key)
+      if (a.note || !a.vehicle) return { ...named(a.leg), miles: null, source: null, note: a.note, drivers, pickup_at, ...times }
       const got = between(read.get(a.from)?.[a.vehicle], read.get(a.to)?.[a.vehicle], a.from)
       return got
-        ? { leg: a.leg, miles: got.miles, source: got.source, note: null, drivers, pickup_at, ...times }
-        : { leg: a.leg, miles: null, source: null, note: 'no-readings' as const, drivers, pickup_at, ...times }
+        ? { ...named(a.leg), miles: got.miles, source: got.source, note: null, drivers, pickup_at, ...times }
+        : { ...named(a.leg), miles: null, source: null, note: 'no-readings' as const, drivers, pickup_at, ...times }
     })
     const whole = mine.length > 0 && mine.every(l => l.miles != null)
     return { bus_id: bus, number: numberOf.get(bus) ?? null, miles: whole ? mine.reduce((n, l) => n + (l.miles ?? 0), 0) : null,
@@ -516,7 +586,7 @@ export async function milesFor(trip: Trip, deps: Deps): Promise<Answer> {
   })
   const totals = out.map(b => b.miles).filter((m): m is number => m != null)
   return {
-    legs: legs.map(l => ({ leg: l.leg, from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })),
+    legs: legs.map(l => ({ ...named(l.leg), from: iso(l.w.start), to: iso(l.w.end), timed: l.w.timed })),
     buses: out,
     actual: totals.length ? Math.max(...totals) : null,
   }
@@ -552,7 +622,7 @@ export async function night(deps: NightDeps, from: string, to: string, write: bo
     const answer = await milesFor(trip, shared)
     for (const bus of answer.buses) {
       for (const leg of bus.legs) {
-        const a = (trip.trip_assignments || []).find(x => x.bus_id === bus.bus_id && legOfAssignment(x) === leg.leg && x.id)
+        const a = (trip.trip_assignments || []).find(x => x.bus_id === bus.bus_id && legKeyOf(trip, x) === (leg.leg_id ?? leg.leg) && x.id)
         if (!a?.id || (!leg.yard_depart_at && !leg.yard_return_at)) continue
         rows.push({ id: a.id, ...(leg.yard_depart_at ? { actual_yard_depart_at: leg.yard_depart_at } : {}),
           ...(leg.yard_return_at ? { actual_yard_return_at: leg.yard_return_at } : {}) })

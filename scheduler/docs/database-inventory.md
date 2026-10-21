@@ -256,13 +256,15 @@ requests.
 ## 7. Samsara miles
 
 `samsara-miles`, source in `scheduler/samsara-miles/`, is the Billing tab's
-Get from Samsara. It reads the trip's dates, stops and buses, and `drivers`, on
+Get from Samsara. It reads the trip with its legs and routes, as
+`trip-shape.js` orders them, its stops and buses, and `drivers`, on
 the caller's own session, so a caller who is not staff finds no trip and
 Samsara is never asked. With `SAMSARA_API_TOKEN` it reads each bus's odometer
 at the start and end of each leg the bus is on, and Samsara's own trips for
 the bus, which name the driver logged in; it answers each bus's miles, or why
 it has none, who drove it and how far on each leg and in all, matched as §8
-matches drivers, and the farthest bus's total. A bus is the Samsara vehicle named with its number. A
+matches drivers, and the farthest bus's total, each leg named by its old word
+and, in `leg_id`, its id. A bus is the Samsara vehicle named with its number. A
 leg runs from its yard-out to its yard-back, widened by two hours each side
 but never into the same bus's trip before or after. Without Read Vehicle
 Trips nobody is known and the miles still come. It writes nothing; Save

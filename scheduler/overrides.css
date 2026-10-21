@@ -751,7 +751,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    the width those names need and the panel's own width as its ceiling. */
 #scheduler-viewer-copies {
   min-inline-size: 18rem;
-  max-inline-size: var(--scheduler-viewer-w, 20rem);
+  max-inline-size: var(--scheduler-viewer-w, 24rem);
 }
 
 /* The bar menu's driver list holds every active driver, longer than a short

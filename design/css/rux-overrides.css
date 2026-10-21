@@ -642,10 +642,18 @@
    sits on the page's own black (js/theme.js leaves it there), so the line under
    it is its only edge, and it takes border-subtle-01 -- the 14% white Geist
    draws between every region -- rather than the fainter step Carbon gives a
-   header outside any layer. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-.rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+   header outside any layer.
+   RUX-DARK'S HEADER HAS NO LINE, as Vercel's own docs draw theirs: the bar
+   and the page share one black, and its 68px of space parts it from the
+   content. The line turns transparent rather than going, so the bar keeps
+   its height. */
+[data-theme="geist-dark"] .rux--header,
+.rux--header[data-theme="geist-dark"] {
   border-block-end-color: var(--rux-border-subtle-01);
+}
+[data-theme="rux-dark"] .rux--header,
+.rux--header[data-theme="rux-dark"] {
+  border-block-end-color: transparent;
 }
 /* GEIST'S HEADER IS 64px, measured on its own site: 16px on every side of
    32px controls, the name 24px in. Carbon's is 48px of edge-to-edge 48px

@@ -620,6 +620,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
   padding-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
+/* On rux-dark the header has no line, and its own 16px under the buttons is
+   the board's top margin, so the page adds none there and the board sits
+   16px from its buttons as it does from the window's other three edges. */
+[data-theme="rux-dark"] .rux--content:not(.scheduler-pair-page) {
+  padding-block-start: 0;
+}
 /* A page pair's page, from md up, takes the template's 2rem inset on every
    side, as design/templates/list-page.html sets on its own page class. The
    pair's class beside Carbon's beats the flat 16px above; a phone keeps that

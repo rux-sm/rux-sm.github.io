@@ -353,17 +353,18 @@ const window = {};
     return linked ? { id: linked.id, name: linked.name ?? '', phone: linked.phone ?? null, email: linked.email ?? null } : null;
   }
 
-  /* A leg's day-of contact, the first that holds anyone, or null; the card
-     says when there is none. A trip read with its legs and `trip_contacts`
-     is read through trip-shape.js, by the leg's key, so a leg with none of
-     its own takes the first leg's. One read without them is read from its
-     slots by leg-papers.js and the old word, so a split trip's pickup with
-     none takes the drop-off's. */
-  const dayOfContact = (trip, leg = 'outbound') => {
+  /* A leg's day-of contacts in their order, and its day-of contact, the
+     first of them, or null; the card says when there is none. A trip read
+     with its legs and `trip_contacts` is read through trip-shape.js, by the
+     leg's key, so a leg with none of its own takes the first leg's. One
+     read without them is read from its slots by leg-papers.js and the old
+     word, so a split trip's pickup with none takes the drop-off's. */
+  const dayContactsOf = (trip, leg = 'outbound') => {
     const on = Array.isArray(trip?.trip_contacts) && window.SchedulerTripShape ? weekLeg(trip, leg) : null;
-    return (on ? window.SchedulerTripShape.contactsFor(trip, on.key)
-      : window.SchedulerLegPapers.contactsFor(trip, leg, tripContact))[0] ?? null;
+    return on ? window.SchedulerTripShape.contactsFor(trip, on.key)
+      : window.SchedulerLegPapers.contactsFor(trip, leg, tripContact);
   };
+  const dayOfContact = (trip, leg = 'outbound') => dayContactsOf(trip, leg)[0] ?? null;
 
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
      document kept once for each driver, such as a background check form, and
@@ -516,7 +517,7 @@ const window = {};
   window.SchedulerLegFacts = {
     REQUIREMENTS, setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, needsFor, wrongType, seatsTotal, seatsOf, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayOfContact, factsOf,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact, factsOf,
     setDriverForms, readDriverForms, readBasics, formKindsOf, driverFormsOf,
   };
 })();

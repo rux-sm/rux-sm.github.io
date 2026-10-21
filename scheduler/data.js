@@ -32,7 +32,7 @@
   const {
     setRequirementList, requirementLabel, requirementIcon, editableNeeds, isVehicleNeed,
     needIds, requirementsOf, shortfall, wrongType, seatsTotal, overSeats,
-    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayOfContact,
+    ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact,
   } = window.SchedulerLegFacts;
 
   /* Which itinerary and which day-of contacts each leg of a split trip is
@@ -13155,7 +13155,7 @@
      question is the one place it is marked. A file opened any other way
      marks nothing. */
   function itineraryMarkOf(trip, leg) {
-    const rows = (trip?.trip_assignments || []).filter(a => (a.leg || 'outbound') === (leg || 'outbound'))
+    const rows = (trip?.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === leg)
       .flatMap(a => a.trip_drivers || []).filter(seat => seat.driver_id);
     if (!rows.length) return null;
     const names = rows.map(seat => {
@@ -13881,12 +13881,14 @@
   /* The itinerary a leg's drivers are handed, as a Departures line asks for
      it: the file the customer sent, which is the sheet the office prints, with
      the leg's seats to mark. A trip that has lost its file since the line was
-     drawn gets the itinerary this app draws. */
+     drawn gets the itinerary this app draws. The leg is named by its key, or
+     by the old word an older link names it by, and none is the first leg. */
   function openLegItinerary({ trip: id, leg, assignment, driver } = {}, opener = null) {
     // The trip in the editor may be off the week showing.
     const trip = panelIndex.trips.get(id) ?? (id && String(editing?.id) === String(id) ? editing.trip : null);
-    const doc = trip ? latestItinerary(trip, leg) : null;
-    if (doc) openDocument(doc, opener, trip, itineraryMarkOf(trip, leg));
+    const key = trip ? legByKey(trip, leg || 'outbound')?.key ?? leg : leg;
+    const doc = trip ? legItinerary(trip, key) : null;
+    if (doc) openDocument(doc, opener, trip, itineraryMarkOf(trip, key));
     else openTripForm({ form: 'driver-itinerary', layout: 'simple', trip: id, assignment, driver }, opener);
   }
 
@@ -14815,12 +14817,20 @@
     closeContacts();
     const docked = barShortcuts.hasAttribute('data-docked');
 
+    /* The bar's leg by its key, week.js's, which is its id on a trip read
+       with its legs. `word` is the old word it mirrors, which driver-text.js
+       names a split's legs by and the writers still send. */
+    const on = legByKey(trip, bar.dataset.legKey || bar.dataset.leg || 'outbound');
+    const leg = on?.key ?? (bar.dataset.leg || 'outbound');
+    const word = on ? on.leg : (bar.dataset.leg || 'outbound');
+    const saved = window.SchedulerTripShape.legOf(trip, leg);
+
     /* The customer's side, one tile per person: the booking contact, then
-       the leg's day-of contacts as leg-papers.js hands them to its drivers.
-       The booking contact who is also a day-of contact, by name and number,
-       is one tile under both. */
+       the leg's day-of contacts as its drivers are handed them. The booking
+       contact who is also a day-of contact, by name and number, is one tile
+       under both. */
     const people = [];
-    const dayContacts = PAPERS.contactsFor(trip, bar.dataset.leg || 'outbound', tripContact);
+    const dayContacts = dayContactsOf(trip, leg);
     for (const [c, day] of [[tripContact(trip, 0), false], ...dayContacts.map(c => [c, true])]) {
       if (!c?.name) continue;
       const same = people.find(p => p.name === c.name && dial(p.phone || '') === dial(c.phone || ''));
@@ -14829,18 +14839,19 @@
         email: day ? null : c.email || null, customer: true });
     }
     // The crew on each bus of this leg, this bar's bus first.
-    const leg = bar.dataset.leg || 'outbound';
-    const assigns = (trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === leg)
+    const assigns = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === leg)
       .sort((a, b) => (String(a.id) === bar.dataset.assignmentId ? -1 : String(b.id) === bar.dataset.assignmentId ? 1
         : (a.position ?? 0) - (b.position ?? 0)));
     /* Each driver's leg as a text to them says it, in the Driver week info's
        wording: their day, bus, role and spot or swap, the leg's towns and its
-       newest itinerary. Today is the office's, in Chicago. */
+       newest itinerary. Today is the office's, in Chicago. A trip read with
+       its legs gives the leg's saved days and every route's stops, a split
+       trip's pickup being every leg after the first. */
     const driverText = window.SchedulerDriverText;
-    const inbound = leg === 'return' && trip.trip_type === SPLIT;
-    const legStart = inbound ? trip.return_start_date : trip.start_date;
-    const legEnd = (inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date)) || legStart;
-    const legStops = driverText?.stopsForLeg(trip, leg) ?? [];
+    const inbound = trip.trip_type === SPLIT && (saved ? (on?.number ?? 1) > 1 : word === 'return');
+    const legStart = saved ? saved.start : inbound ? trip.return_start_date : trip.start_date;
+    const legEnd = (saved ? saved.end : (inbound ? (trip.return_end_date || trip.return_start_date) : (trip.end_date || trip.start_date))) || legStart;
+    const legStops = (saved ? window.SchedulerWeek.stopsOfKey(trip, leg) : driverText?.stopsForLeg(trip, word)) ?? [];
     const legPickup = legStops.find(s => s.type === 'pickup') || {};
     const legBack = [...legStops].reverse().find(s => s.type === 'return') || {};
     const officeToday = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
@@ -14852,13 +14863,13 @@
       const partner = partnerSeat ? panelIndex.driversById.get(partnerSeat.driver_id) : null;
       const number = a.bus_id != null ? panelIndex.buses.get(a.bus_id)?.number ?? null : null;
       return {
-        trip, leg, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
+        trip, leg: word, role: c.role, start: parseISO(legStart), end: parseISO(legEnd),
         bus: number != null ? String(number) : '',
         spot: legPickup.spot, swap: c.reportTime, instructions: String(seat?.instructions ?? '').trim(),
         partner: partner ? (partner.short_name || partner.name) : '',
         from: legPickup.address || legPickup.name,
         to: inbound ? (legBack.address || legBack.name || '') : trip.destination, toYard: inbound,
-        itinerary: latestItinerary(trip, leg)?.id || '',
+        itinerary: legItinerary(trip, leg)?.id || '',
       };
     };
     const changesOf = (c, lang, keys = false) => window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
@@ -14930,7 +14941,7 @@
       const view = window.SchedulerDriverJob.viewNow(trip, leg, p.driverId,
         { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel });
       const { data, error } = await client.rpc('mark_driver_told',
-        { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
+        { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: word, p_role: p.seatRole, p_view: view });
       if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
       await again();
       toast('success', `${firstName(p.name)} is marked as told`);
@@ -15096,7 +15107,8 @@
        reminder is, and then the board asks to mark them told. */
     const linkOf = p => (client ? client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: p.driverId }) : Promise.resolve({}))
       .then(({ data: s, error }) => (!error && s?.token && (!s.expiresAt || new Date(s.expiresAt) > new Date())
-        && (s.assignmentRefs || []).some(r => String(r.tripId) === String(trip.id) && (r.leg || 'outbound') === leg)
+        && (s.assignmentRefs || []).some(r => String(r.tripId) === String(trip.id)
+          && (r.legId ? String(r.legId) === String(leg) : (r.leg || 'outbound') === word))
         ? driverText.DRIVER_LINK + encodeURIComponent(s.token) : ''), () => '');
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
@@ -17078,8 +17090,7 @@
         .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
     } else if (asked.get('file') === 'itinerary') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
-        // The itinerary is still read by the leg's old word, the selected bar's.
-        .then(() => openLegItinerary({ trip: asked.get('trip'), leg: leg && (selectedBar()?.dataset.leg ?? leg),
+        .then(() => openLegItinerary({ trip: asked.get('trip'), leg,
           assignment: asked.get('assignment'), driver: asked.get('driver') },
           opener ?? selectedBar()));
     } else if (asked.has('form')) {

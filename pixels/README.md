@@ -94,11 +94,11 @@ player's rifts with its count and sizes, Hidden or how many new puzzles wait, a 
 or Hide and Delete, and its pictures, each opening it in the Pixelator, then an add tile; at no mana New
 puzzle and the add tiles are off. The owner has Mine and Game, a switch the browser keeps, and
 `?view=game` is Game, the base game: a block to each rift, then Unsorted and Dailies, with its pictures,
-an add tile, its Published switch and a menu of Who sees it, Rename and Delete. A rift's name opens its
-panel under it and a second tap closes it; `?rift=3` keeps it on a reload. The panel has arrows that move
-the rift and its tiles: Edit, Play, which keeps no time for a puzzle no player is sent, and a switch that
-sends it to no player when off. Pressing a tile ticks it, and the ticked are moved, to a rift, a new one
-or Unsorted, or deleted; a rift left empty goes too. `manage.html` sends an old address on to Game.
+an add tile, its Published switch and a menu of Who sees it, Rename and Delete. A rift's name replaces
+its previews with a management grid; a second tap closes it, and `?rift=3` keeps it on reload. Arrows
+reorder the rift. Pictures edit; controls underneath play or publish. Select puzzles opens checkboxes for moving
+to a rift, a new one or Unsorted, or deleting; an emptied rift goes too. Done selecting clears the
+selection. Create is wider on desktop. `manage.html` redirects to Game.
 
 ## Files
 

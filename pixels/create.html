@@ -110,7 +110,7 @@
   <!-- ACCOUNT:END -->
 </header>
 
-<main id="main-content" class="rux--content game-main">
+<main id="main-content" class="rux--content game-main pixels-create-main">
   <!-- The three places, shown once there is a player. app.js marks the one this page is. -->
   <nav class="game-places" aria-label="Pixels" hidden>
     <a class="game-place" href="./"><svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-grid_view"/></svg>Play</a>
@@ -145,14 +145,15 @@
         <!-- create.js writes a block a rift here: the player's own, or the owner's own. -->
         <div class="pixels-blocks" id="pixels-mine" hidden></div>
         <div class="rux--stack-vertical rux--stack-scale-6 pixels-desk" id="pixels-desk" hidden>
-        <!-- What is done to the ticked puzzles. It is there with none ticked, its buttons waiting, and stays in view at the top while the page scrolls. -->
-        <div class="pixels-ticked" id="pixels-ticked" role="toolbar" aria-label="Ticked puzzles" hidden>
+        <!-- Selection is explicit; its actions stay above the rifts. -->
+        <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" id="pixels-select" aria-pressed="false">Select puzzles</button>
+        <div class="pixels-ticked" id="pixels-ticked" role="toolbar" aria-label="Selected puzzles" hidden>
           <span class="pixels-ticked-count" id="pixels-ticked-count" aria-live="polite"></span>
           <button type="button" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm" id="pixels-ticked-move">Move</button>
           <button type="button" class="rux--btn rux--btn--danger--tertiary rux--btn--sm rux--layout--size-sm" id="pixels-ticked-delete">Delete</button>
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" id="pixels-ticked-clear">Clear</button>
         </div>
-        <!-- game.js writes a block a rift here, then Unsorted, and the open one's panel under it. -->
+        <!-- game.js writes a block a rift here, then Unsorted, with expanded grids inside their blocks. -->
         <div class="pixels-manage" id="pixels-levels"></div>
         </div>
       </div>

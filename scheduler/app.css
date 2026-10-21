@@ -21,16 +21,17 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The panels beside the board open at Carbon's `rux--side-panel--sm`, so the
-   board's regions line up whichever are open: the lists' pane, the roster and
-   the document viewer. The trip editor opens at `md`, for the room its tabs'
+/* The lists' pane and the roster are 24rem, the narrowest that keeps 16px
+   round the roster's tiles and still holds an eleven-letter name beside a
+   week of squares. The document viewer opens at Carbon's
+   `rux--side-panel--sm`, and the trip editor at `md`, for the room its tabs'
    figures and fields need side by side. The viewer's size button takes it to `md`, `lg` and `xl`, since its width is
    the document's zoom: a letter page in 20rem renders 11pt text at under 6px.
    `placeRoom` in data.js prices the panels by reading these back off them, so
    the arithmetic and the layout cannot drift. */
 :root {
   /* The lists' pane and the roster. */
-  --scheduler-panel-w: 20rem;
+  --scheduler-panel-w: 24rem;
   /* The document viewer, Carbon's `rux--side-panel--sm`, and made larger its
      `md`, `lg` and then its `xl`. `--scheduler-viewer-w` is the one showing. */
   --scheduler-viewer-sm-w: 20rem;
@@ -3087,8 +3088,7 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is `--scheduler-panel-w` wide, the narrowest that holds its
-   names beside a week of squares, and the lists' pane's width too. It is fixed
+   The roster is `--scheduler-panel-w` wide, as the lists' pane is. It is fixed
    so it does not move when the driver list changes; the schedule gives way
    instead.
    `order` puts it left of the board while the markup keeps the schedule
@@ -3119,7 +3119,7 @@ button.scheduler-row-head__num::after {
 /* Pinned to the pane's width. `.scheduler-grid` is `max-content` so the board
    can overflow and scroll; here that would stop the name column shrinking and
    give the roster a sideways scroll. */
-.scheduler-avail__grid { align-content: start; inline-size: 100%; padding: 0 var(--rux-spacing-02) var(--rux-spacing-03); }
+.scheduler-avail__grid { align-content: start; inline-size: 100%; padding: 0 var(--rux-spacing-05) var(--rux-spacing-05); }
 .scheduler-avail__days,
 .scheduler-avail__row { display: contents; }
 
@@ -3149,35 +3149,42 @@ button.scheduler-row-head__num::after {
 .scheduler-week--short .scheduler-row--last > * {
   border-block-end: 1px solid var(--rux-border-subtle-01);
 }
-/* EACH PRIORITY IS A TILE, 4px inside the pane and 8px below the one above,
-   so the lists read as separate groups. The inset is 4px, not 8px, because
-   the 20rem pane leaves the names under 90px. It is a subgrid of the roster, so its
-   days stay in the header's columns, and its edge is a shadow rather than a
-   border, which would narrow its first and last columns. Its corners are the
-   bar's, square where Carbon draws them. Its last row needs no rule: the
-   edge closes it. */
+/* EACH PRIORITY IS A TILE UNDER ITS OWN HEADING, as the To do list's groups
+   are: 16px inside the pane and 16px below the one above, the heading 8px
+   over its tile. It is a subgrid of the roster, so its days stay in the
+   header's columns. The tile's edge is a shadow on a layer under the heading
+   rather than a border, which would narrow its first and last columns, and
+   its corners are a tile's. Its last row needs no rule: the edge closes it. */
 .scheduler-avail__group {
-  --scheduler-tile-radius: var(--scheduler-bar-radius, 0);
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: subgrid;
-  margin-block-start: var(--rux-spacing-03);
-  border-radius: var(--scheduler-tile-radius);
+  position: relative;
+  margin-block-start: var(--rux-spacing-05);
+}
+.scheduler-avail__group::after {
+  content: '';
+  position: absolute;
+  inset: calc(1rem + var(--rux-spacing-03)) 0 0;
+  border-radius: var(--scheduler-tile-radius, 0);
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01);
+  pointer-events: none;
 }
 .scheduler-avail__group > .scheduler-avail__row:last-child > * { border-block-end: 0; }
-.scheduler-avail__group > .scheduler-avail__row:last-child > :first-child { border-end-start-radius: var(--scheduler-tile-radius); }
-.scheduler-avail__group > .scheduler-avail__row:last-child > :last-child { border-end-end-radius: var(--scheduler-tile-radius); }
-/* The column header reaches over the roster's 4px inset to the pane's edges,
+.scheduler-avail__group > .scheduler-avail__band + .scheduler-avail__row > :first-child { border-start-start-radius: var(--scheduler-tile-radius, 0); }
+.scheduler-avail__group > .scheduler-avail__band + .scheduler-avail__row > :last-child { border-start-end-radius: var(--scheduler-tile-radius, 0); }
+.scheduler-avail__group > .scheduler-avail__row:last-child > :first-child { border-end-start-radius: var(--scheduler-tile-radius, 0); }
+.scheduler-avail__group > .scheduler-avail__row:last-child > :last-child { border-end-end-radius: var(--scheduler-tile-radius, 0); }
+/* The column header reaches over the roster's 16px inset to the pane's edges,
    so rows scrolling under it never show at its sides. The last day gives the
    inset back as padding, which keeps its letter over its column. */
 .scheduler-avail__days > .scheduler-avail__day--head {
-  margin-inline-start: calc(-1 * var(--rux-spacing-02));
-  padding-inline-start: calc(var(--rux-spacing-02) + var(--rux-spacing-03));
+  margin-inline-start: calc(-1 * var(--rux-spacing-05));
+  padding-inline-start: calc(var(--rux-spacing-05) + var(--rux-spacing-03));
 }
 .scheduler-avail__days > .scheduler-avail__day:last-child {
-  margin-inline-end: calc(-1 * var(--rux-spacing-02));
-  padding-inline-end: var(--rux-spacing-02);
+  margin-inline-end: calc(-1 * var(--rux-spacing-05));
+  padding-inline-end: var(--rux-spacing-05);
 }
 /* Sticky on the left on the pane's own surface, like the board's bus column,
    and opaque so nothing shows through. */
@@ -3579,37 +3586,27 @@ button.scheduler-row-head__num::after {
 /* The heading's count of drivers free for the whole selected trip. */
 .scheduler-avail__count { font-weight: var(--rux-body-compact-01-font-weight); }
 
-/* The heading over each priority band, which is the column header band again,
-   lower down: the same surface, type and colour, across the same eight
-   columns. That makes the two the same thing, so the roster draws only one of
-   them at the top -- drawAvailability puts the first band's name in the column
-   header itself, where "Driver" used to be, rather than heading a band that
-   starts on the header's own edge. */
+/* The heading over each priority's tile is a To do group's heading: a label's
+   size, spacing and quiet colour, the count at the line's end, 8px over the
+   tile and in the pane's open space rather than on it. */
 .scheduler-avail__band {
-  /* Across every column, since a band covers the name and the whole week, and
-     a label held inside the name column has no room for "No priority". */
+  /* Across every column, since a heading covers the name and the whole week,
+     and a label held inside the name column has no room for "No priority". */
   grid-column: 1 / -1;
   /* In flow rather than pinned. The column header's corner names the band
      being read and data.js hands it over as each one reaches the header, so a
-     band pinned under that header would be the header twice -- which is what
-     naming the first band in the corner set out to avoid. A band passes as the
-     separator it is, under the header's own opaque cells. */
-  /* The column header's own 2rem and inset, so a band heading and the header
-     it repeats are the same band at the same size. */
-  block-size: 2rem;
-  line-height: 2rem;
-  padding-inline: var(--rux-spacing-03);
+     heading pinned under that header would say it twice. A heading passes
+     under the header's own opaque cells. */
+  block-size: 1rem;
+  line-height: 1rem;
+  margin-block-end: var(--rux-spacing-03);
   display: flex;
   justify-content: space-between;
   gap: var(--rux-spacing-03);
-  border-start-start-radius: var(--scheduler-tile-radius);
-  border-start-end-radius: var(--scheduler-tile-radius);
-  background: var(--scheduler-band-surface);
-  border-block-end: var(--scheduler-band-rule);
   color: var(--rux-text-secondary);
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: var(--rux-label-01-letter-spacing);
 }
 
 /* ── The schedule's times ───────────────────────────────────────────────────

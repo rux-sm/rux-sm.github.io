@@ -935,6 +935,8 @@
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
   --scheduler-mark-radius: 4px;
+  /* The roster's priority tiles take the 8px Design gives these themes' tiles. */
+  --scheduler-tile-radius: 8px;
   /* A rounded region closes a list that reaches its edge, so there the last
      row of the board and of the roster draws no rule: a straight line laid
      across a 12px corner is cut short at both ends. A list that stops short

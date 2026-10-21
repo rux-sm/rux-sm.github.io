@@ -13724,14 +13724,15 @@
   /* THE TRIP'S PANELS FOLLOW THE TRIP IN FOCUS: the editor's, where it is
      open on a saved trip, and otherwise the selected one. Forms shows that
      trip's forms, the document panel that trip's newest file of the kind it
-     is showing, or No files uploaded where it has none, and the calculator,
-     whose miles come from the editor's Route tab, refills when the trip in
-     focus is the editor's. They follow only when the trip in focus changes,
+     is showing, or No files uploaded where it has none, and the calculator
+     that trip's figures: from the editor where the trip is the editor's,
+     and from its saved rows where it is not. They follow only when the trip in focus changes,
      so a panel opened on another trip on purpose stays on it until then. A
      panel with something typed in it asks first, and keeps what it shows on
      a no; with no trip in focus, each keeps what it shows. */
   let focusShown = null;
   let following = false;
+  const editorOn = id => !!tripEl && !tripEl.hidden && String(editing?.id) === String(id);
   const tripInFocus = () => {
     if (tripEl && !tripEl.hidden && editing?.id && !editing.creating) return String(editing.id);
     const id = selectedBar()?.dataset.tripId;
@@ -13756,7 +13757,10 @@
         else doc.showNoFile(FILE_NAMES[doc.docType] ?? doc.docType, id);
       }
       const calc = viewers.calc;
-      if (calc?.el && !calc.el.hidden && calc.trip !== id && String(editing?.id) === id && !tripEl?.hidden && await asks(calc, 'the quote calculator')) openCalculator(null);
+      if (calc?.el && !calc.el.hidden && calc.trip !== id && await asks(calc, 'the quote calculator')) {
+        if (editorOn(id)) openCalculator(null);
+        else openSavedCalculator(trip, selectedBar()?.dataset.tripId === id ? selectedBar().dataset.legKey : null);
+      }
     } finally {
       following = false;
     }
@@ -13797,9 +13801,10 @@
   });
   calcOpen?.addEventListener('click', () => {
     if (viewers.calc.el && !viewers.calc.el.hidden) { viewers.calc.close(); return; }
+    const id = tripInFocus();
     const bar = selectedBar();
-    if (bar) openCalculator(bar);
-    else if (editing?.id) openCalculator(null);
+    if (id && editorOn(id)) openCalculator(null);
+    else if (id) openSavedCalculator(panelIndex.trips.get(id), bar?.dataset.tripId === id ? bar.dataset.legKey : null, calcOpen);
     else {
       calcFor = null;
       openGenerated({ url: 'quote.html', kind: 'Quote calculator', note: '', opener: calcOpen });
@@ -13888,6 +13893,48 @@
       opener: bar ?? document.getElementById('scheduler-f-quotemenu'),
       trip: editing?.id ?? null,
     });
+  }
+
+  /* THE CALCULATOR FROM A TRIP'S SAVED ROWS, for a trip that is not in the
+     editor: its stops' miles, or its estimated miles where they have none,
+     spread over the leg's days, the pickup and return drives as dead miles,
+     and its buses and their co-driver and relief seats as saved. What the
+     editor has not saved yet is not in it, so the editor's trip is filled
+     from the editor instead. */
+  function savedCalcFacts(trip, legKey) {
+    const leg = (legKey ? legByKey(trip, legKey) : null) ?? legsOf(trip)[0];
+    if (!leg) return null;
+    const { stops } = stopsOfLeg(trip, leg.leg);
+    const pickup = stops.find(st => st.type === 'pickup');
+    const back = stops.filter(st => st.type === 'return').at(-1);
+    const stopMiles = stops.reduce((n, st) => n + (Number(st.miles) || 0), 0);
+    const legs = legsOf(trip);
+    const whole = Math.round(stopMiles > 0 ? stopMiles : (legs.length < 2 ? Number(trip.est_miles) || 0 : 0));
+    const days = leg.from && leg.ends ? daysBetween(parseISO(leg.from), parseISO(leg.ends)) + 1 : 1;
+    const buses = (trip.trip_assignments || []).filter(a => legKeyOfVehicle(trip, a) === leg.key);
+    const seatsOn = role => buses.filter(a => (a.active_roles || []).includes(role)).length;
+    return {
+      miles: window.SchedulerQuoteLines.milesADay(null, whole, days),
+      dead: round2((Number(pickup?.miles) || 0) + (Number(back?.miles) || 0)),
+      drivers: seatsOn('co-driver') > 0 ? 2 : 1,
+      buses: Math.max(buses.length, 1),
+      relief: seatsOn('relief-start') + seatsOn('relief-end'),
+      date: leg.from,
+    };
+  }
+  function openSavedCalculator(trip, legKey, opener = null) {
+    const facts = trip ? savedCalcFacts(trip, legKey) : null;
+    if (!facts) return;
+    const params = new URLSearchParams();
+    if (facts.miles) params.set('miles', facts.miles.join(','));
+    if (facts.drivers === 2) params.set('drivers', '2');
+    params.set('buses', String(facts.buses));
+    if (facts.relief > 0) params.set('relief', String(facts.relief));
+    if (facts.date) params.set('date', facts.date);
+    if (facts.dead > 0) params.set('dead', String(facts.dead));
+    // Not the editor's trip, so the editor is told nothing and takes no lines from it.
+    calcFor = null;
+    openGenerated({ url: `quote.html?${params}`, kind: 'Quote calculator', note: '', opener, trip: trip.id });
   }
 
   // What the calculator is filled with from a leg: the Route tab's miles a

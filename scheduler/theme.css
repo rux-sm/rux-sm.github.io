@@ -421,9 +421,10 @@
      close button among them: they stand clear of the corner here, so each
      reads as a button. Primer leaves a close button bare, and this theme
      does not follow it there. The ring gives way to the focus ring, which is
-     that same border. */
-  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn:not(:focus),
-  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus) {
+     that same border, only where the focus shows: a panel that opens puts the
+     focus on its close button, and a press puts no ring there to replace it. */
+  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn:not(:focus-visible),
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus-visible) {
     border-color: var(--rux-border-subtle-02);
   }
   /* Ringed buttons that touch draw a doubled line between them, so a

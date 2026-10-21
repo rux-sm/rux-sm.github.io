@@ -159,8 +159,9 @@ Three homes, and one rule for choosing.
 - **A panel on one trip follows the trip in focus:** the editor's, where it is
   open on a saved trip, otherwise the selected one. Forms shows that trip's
   forms, and the stored file panel its newest file of the same kind, or No
-  files uploaded; the calculator, whose miles come from the editor's Route tab,
-  refills when the trip in focus is the editor's. A panel follows only when the
+  files uploaded; the calculator fills from the editor's Route and Buses tabs
+  where the trip is the editor's, and otherwise from the trip as saved, its
+  stops' or estimated miles over its days and its buses' seats. A panel follows only when the
   trip in focus changes, so one opened on another trip on purpose stays on it
   until then. Each asks first where something is typed in it, and each names
   the trip by its number, `#1042`, beside its title, as the editor does.

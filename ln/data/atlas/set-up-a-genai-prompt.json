@@ -8,7 +8,7 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-15",
+  "updated": "2026-10-21",
   "status": "draft",
   "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
   "order": 1,
@@ -20,7 +20,8 @@
     "ttrpi5150m000",
     "ttadv9160m000",
     "whwmd4100m100",
-    "whwmd4300m000"
+    "whwmd4300m000",
+    "tdsls4601m200"
   ],
   "phases": [
     {
@@ -146,10 +147,18 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Read the code in the status bar at the foot of the screen"
+                      "v": "Read the code in the status bar at the foot of the screen. On a tab of a workbench, read it in the tab's own "
+                    },
+                    {
+                      "t": "command",
+                      "route": "Personalization ➔ Personalize Form…"
+                    },
+                    {
+                      "t": "text",
+                      "v": " instead"
                     }
                   ],
-                  "text": "Read the code in the status bar at the foot of the screen"
+                  "text": "Read the code in the status bar at the foot of the screen. On a tab of a workbench, read it in the tab's own Personalization ➔ Personalize Form… instead"
                 },
                 {
                   "tokens": [
@@ -3638,10 +3647,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar"
+                  "v": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar, or on a tab of a workbench in the tab's own Personalize Form"
                 }
               ],
-              "text": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar"
+              "text": "Go where the record that owns the data is listed, not where the user happens to be. A link is to one exact session code, read in the status bar, or on a tab of a workbench in the tab's own Personalize Form"
             },
             {
               "tokens": [
@@ -5070,6 +5079,21 @@
       "tokens": [
         {
           "t": "strong",
+          "v": "The line for codes holds when a code outside its list arrives."
+        },
+        {
+          "t": "text",
+          "v": " Status Overview's text names four activity codes and says to write any other as it is. Later, two order lines carried a fifth activity, and the answer wrote it as its code. "
+        }
+      ],
+      "text": "The line for codes holds when a code outside its list arrives. Status Overview's text names four activity codes and says to write any other as it is. Later, two order lines carried a fifth activity, and the answer wrote it as its code.",
+      "under": "A template for the two texts"
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
           "v": "The steps build one kind, a record with the rows that belong to it."
         },
         {
@@ -5214,6 +5238,37 @@
                 }
               ],
               "text": "A prompt on Business Partners that looks for one company entered twice. Of seven partners ticked, its answer listed six as received"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One record each, several ticked"
+                }
+              ],
+              "text": "One record each, several ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Nothing. A text written for one record answers for each ticked record in turn, in the list's order"
+                }
+              ],
+              "text": "Nothing. A text written for one record answers for each ticked record in turn, in the list's order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status Overview and Shipments on four ticked sales order lines, each line answered in turn"
+                }
+              ],
+              "text": "Status Overview and Shipments on four ticked sales order lines, each line answered in turn"
             }
           ]
         },
@@ -5742,6 +5797,37 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a value for the Module field."
+                }
+              ],
+              "text": "Enter a value for the Module field."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The session is three boxes: package, module and code. Type the module in its own box, as in 3.2"
+                }
+              ],
+              "text": "The session is three boxes: package, module and code. Type the module in its own box, as in 3.2"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "4"
                 }
               ],
@@ -5764,10 +5850,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the session code in the status bar of the screen and compare it with 3.2, character for character"
+                  "v": "Read the session code in the status bar of the screen and compare it with 3.2, character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in 0.3"
                 }
               ],
-              "text": "Read the session code in the status bar of the screen and compare it with 3.2, character for character"
+              "text": "Read the session code in the status bar of the screen and compare it with 3.2, character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in 0.3"
             }
           ]
         },
@@ -6147,6 +6233,44 @@
               "tokens": [
                 {
                   "t": "chip",
+                  "v": "The same commands on another screen"
+                }
+              ],
+              "text": "The same commands on another screen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat phase 3 with the other screen's code, or copy the links: open "
+                },
+                {
+                  "t": "chip",
+                  "v": "GenAI Prompts by Session"
+                },
+                {
+                  "t": "text",
+                  "v": " from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with "
+                },
+                {
+                  "t": "field",
+                  "v": "Import Only in This View"
+                },
+                {
+                  "t": "text",
+                  "v": " ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+                }
+              ],
+              "text": "Repeat phase 3 with the other screen's code, or copy the links: open GenAI Prompts by Session from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with Import Only in This View ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "chip",
                   "v": "Running the commands, not building them"
                 }
               ],
@@ -6169,6 +6293,12 @@
           ]
         }
       ],
+      "under": "Variants"
+    },
+    {
+      "kind": "prose",
+      "tokens": [],
+      "text": "",
       "under": "Variants"
     },
     {

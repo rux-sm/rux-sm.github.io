@@ -176,14 +176,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " on-hand at "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA01"
+                      "v": " on-hand at the finished-goods warehouse "
                     }
                   ],
-                  "text": "Read BAM-CHOP-PAIR on-hand at ADNA01"
+                  "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse"
                 },
                 {
                   "tokens": [
@@ -252,14 +248,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " on-hand at "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
+                      "v": " on-hand at the raw-materials warehouse "
                     }
                   ],
-                  "text": "Read BAM-ROD and BAM-SLEEVE on-hand at ADNA02"
+                  "text": "Read BAM-ROD and BAM-SLEEVE on-hand at the raw-materials warehouse"
                 },
                 {
                   "tokens": [
@@ -1068,22 +1060,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ", for cluster "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "NA1"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and site "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "CSADNA01"
+                      "v": ", for the items' planning cluster and site "
                     }
                   ],
-                  "text": "Open Planned Orders (cprrp1100m000) at Planning ➔ Order Planning ➔ Planned Orders, for cluster NA1 and site CSADNA01"
+                  "text": "Open Planned Orders (cprrp1100m000) at Planning ➔ Order Planning ➔ Planned Orders, for the items' planning cluster and site"
                 },
                 {
                   "tokens": [
@@ -1212,15 +1192,7 @@
             },
             {
               "t": "text",
-              "v": " became purchase order "
-            },
-            {
-              "t": "literal",
-              "v": "100000682"
-            },
-            {
-              "t": "text",
-              "v": ". The two planned production orders beside them were deliberately left untransferred and remain at "
+              "v": " became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at "
             },
             {
               "t": "status",
@@ -1239,7 +1211,7 @@
               "v": " "
             }
           ],
-          "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became purchase order 100000682. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 3.6 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
+          "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 3.6 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
         },
         {
           "kind": "prose",
@@ -1302,15 +1274,11 @@
                 {
                   "tokens": [
                     {
-                      "t": "literal",
-                      "v": "BP4000006"
-                    },
-                    {
                       "t": "text",
-                      "v": " FAIRFIELD ENGINEERING CO. — added 2026-08-25"
+                      "v": "A buy-from business partner, added 2026-08-25 "
                     }
                   ],
-                  "text": "BP4000006 FAIRFIELD ENGINEERING CO. — added 2026-08-25"
+                  "text": "A buy-from business partner, added 2026-08-25"
                 }
               ],
               "id": "3.1",
@@ -1679,14 +1647,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " \"Purchase Receipts\", ship-to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
+                      "v": " \"Purchase Receipts\", ship-to the raw-materials warehouse "
                     }
                   ],
-                  "text": "Order type PUI \"Purchase Receipts\", ship-to ADNA02"
+                  "text": "Order type PUI \"Purchase Receipts\", ship-to the raw-materials warehouse"
                 }
               ],
               "id": "4.1",
@@ -1881,22 +1845,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " on-hand at "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
-                    },
-                    {
-                      "t": "text",
-                      "v": " in "
+                      "v": " on-hand at the raw-materials warehouse from 0.3 in "
                     },
                     {
                       "t": "chip",
                       "v": "Inventory 360"
                     }
                   ],
-                  "text": "Read Errors Logged, then re-read BAM-ROD on-hand at ADNA02 in Inventory 360"
+                  "text": "Read Errors Logged, then re-read BAM-ROD on-hand at the raw-materials warehouse from 0.3 in Inventory 360"
                 },
                 {
                   "tokens": [
@@ -1921,7 +1877,10 @@
               ],
               "id": "4.5",
               "optional": false,
-              "produces": true
+              "produces": true,
+              "refs": [
+                "0.3"
+              ]
             }
           ]
         }
@@ -1997,15 +1956,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "BOM "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "JB0000242"
-                    },
-                    {
-                      "t": "text",
-                      "v": " rev "
+                      "v": "BOM rev "
                     },
                     {
                       "t": "literal",
@@ -2037,10 +1988,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ", rods and sleeves listed"
+                      "v": ", rods and sleeves listed "
                     }
                   ],
-                  "text": "BOM JB0000242 rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed"
+                  "text": "BOM rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed"
                 }
               ],
               "id": "5.1",
@@ -2366,22 +2317,14 @@
                     },
                     {
                       "t": "text",
-                      "v": " on-hand at "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA01"
-                    },
-                    {
-                      "t": "text",
-                      "v": " in "
+                      "v": " on-hand at the finished-goods warehouse from 0.2 in "
                     },
                     {
                       "t": "chip",
                       "v": "Inventory 360"
                     }
                   ],
-                  "text": "Read BAM-CHOP-PAIR on-hand at ADNA01 in Inventory 360"
+                  "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse from 0.2 in Inventory 360"
                 },
                 {
                   "tokens": [
@@ -2406,7 +2349,10 @@
               ],
               "id": "5.7",
               "optional": false,
-              "produces": true
+              "produces": true,
+              "refs": [
+                "0.2"
+              ]
             }
           ]
         }
@@ -3408,19 +3354,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "NA1"
-                },
-                {
                   "t": "text",
-                  "v": " / "
-                },
-                {
-                  "t": "literal",
-                  "v": "CSADNA01"
+                  "v": "Yes "
                 }
               ],
-              "text": "NA1 / CSADNA01"
+              "text": "Yes"
             }
           ]
         },
@@ -3465,19 +3403,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "NA1"
-                },
-                {
                   "t": "text",
-                  "v": " / "
-                },
-                {
-                  "t": "literal",
-                  "v": "CSADNA01"
+                  "v": "Yes "
                 }
               ],
-              "text": "NA1 / CSADNA01"
+              "text": "Yes"
             }
           ]
         },
@@ -3522,19 +3452,11 @@
             {
               "tokens": [
                 {
-                  "t": "literal",
-                  "v": "NA1"
-                },
-                {
                   "t": "text",
-                  "v": " / "
-                },
-                {
-                  "t": "literal",
-                  "v": "CSADNA01"
+                  "v": "Yes "
                 }
               ],
-              "text": "NA1 / CSADNA01"
+              "text": "Yes"
             }
           ]
         }
@@ -3546,15 +3468,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "BOM "
-        },
-        {
-          "t": "literal",
-          "v": "JB0000242"
-        },
-        {
-          "t": "text",
-          "v": " — "
+          "v": "The BOM is at "
         },
         {
           "t": "strong",
@@ -3606,34 +3520,10 @@
         },
         {
           "t": "text",
-          "v": ". Site "
-        },
-        {
-          "t": "literal",
-          "v": "CSADNA01"
-        },
-        {
-          "t": "text",
-          "v": ". Raw materials at "
-        },
-        {
-          "t": "literal",
-          "v": "ADNA02"
-        },
-        {
-          "t": "text",
-          "v": ", finished goods at "
-        },
-        {
-          "t": "literal",
-          "v": "ADNA01"
-        },
-        {
-          "t": "text",
-          "v": "."
+          "v": ". One site, with raw materials and finished goods in two warehouses. "
         }
       ],
-      "text": "BOM JB0000242 — revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. Site CSADNA01. Raw materials at ADNA02, finished goods at ADNA01.",
+      "text": "The BOM is at revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. One site, with raw materials and finished goods in two warehouses.",
       "under": "The bamboo family, for reference"
     },
     {
@@ -3669,15 +3559,7 @@
         },
         {
           "t": "text",
-          "v": " "
-        },
-        {
-          "t": "literal",
-          "v": "BP4000006"
-        },
-        {
-          "t": "text",
-          "v": " FAIRFIELD ENGINEERING CO. was added to "
+          "v": " A buy-from business partner was added to "
         },
         {
           "t": "literal",
@@ -3708,7 +3590,7 @@
           "v": "Not documented for this release."
         }
       ],
-      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. BP4000006 FAIRFIELD ENGINEERING CO. was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release.",
+      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. A buy-from business partner was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, phase 3 will very likely fail on it the same way. Not documented for this release.",
       "under": "The bamboo family, for reference"
     },
     {
@@ -4536,18 +4418,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " is received and shipped at "
-                },
-                {
-                  "t": "literal",
-                  "v": "ADNA01"
-                },
-                {
-                  "t": "text",
-                  "v": ", so this does not arise"
+                  "v": " is received and shipped at the same finished-goods warehouse, so this does not arise "
                 }
               ],
-              "text": "Insert Warehouse transfer between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at ADNA01, so this does not arise"
+              "text": "Insert Warehouse transfer between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at the same finished-goods warehouse, so this does not arise"
             }
           ]
         },

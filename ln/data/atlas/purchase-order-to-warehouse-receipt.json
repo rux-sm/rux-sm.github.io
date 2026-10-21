@@ -134,22 +134,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " — the walked run used "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "RAW MATERIALS"
+                      "v": " — the walked run used the raw-materials warehouse "
                     }
                   ],
-                  "text": "receiving warehouse — the walked run used ADNA02 RAW MATERIALS"
+                  "text": "receiving warehouse — the walked run used the raw-materials warehouse"
                 }
               ],
               "id": "0.1",
@@ -501,22 +489,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " — the walked run used "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "BP4000007"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "VISTA MACHINES INC."
+                      "v": " — the walked run used one of the standard test partners "
                     }
                   ],
-                  "text": "buy-from business partner — the walked run used BP4000007 VISTA MACHINES INC."
+                  "text": "buy-from business partner — the walked run used one of the standard test partners"
                 }
               ],
               "id": "1.3",
@@ -571,14 +547,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " (Inventory Purchase Order) and purchase office "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "401P00"
+                      "v": " (Inventory Purchase Order) and the partner's purchase office "
                     }
                   ],
-                  "text": "The walked run showed IPO (Inventory Purchase Order) and purchase office 401P00"
+                  "text": "The walked run showed IPO (Inventory Purchase Order) and the partner's purchase office"
                 }
               ],
               "id": "1.4",
@@ -638,14 +610,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " — the walked run produced order "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "100000677"
+                      "v": " "
                     }
                   ],
-                  "text": "purchase order number and order type — the walked run produced order 100000677"
+                  "text": "purchase order number and order type"
                 }
               ],
               "id": "1.5",
@@ -890,18 +858,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "Both lines point at "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
-                    },
-                    {
-                      "t": "text",
-                      "v": " in the walked run — this is what decides where the goods land"
+                      "v": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land "
                     }
                   ],
-                  "text": "Both lines point at ADNA02 in the walked run — this is what decides where the goods land"
+                  "text": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land"
                 }
               ],
               "id": "2.4",
@@ -1089,27 +1049,19 @@
                     },
                     {
                       "t": "text",
-                      "v": " \"Purchase Receipts\", ship-from "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "BP4000007"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", ship-to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
+                      "v": " \"Purchase Receipts\", ship-from the partner from 1.3, ship-to the receiving warehouse from 0.1 "
                     }
                   ],
-                  "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from BP4000007, ship-to ADNA02"
+                  "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from the partner from 1.3, ship-to the receiving warehouse from 0.1"
                 }
               ],
               "id": "3.2",
               "optional": false,
-              "produces": true
+              "produces": true,
+              "refs": [
+                "1.3",
+                "0.1"
+              ]
             },
             {
               "cells": [
@@ -1269,14 +1221,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " — the walked run produced receipt "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "100001505"
+                      "v": " "
                     }
                   ],
-                  "text": "receipt number — the walked run produced receipt 100001505"
+                  "text": "receipt number"
                 }
               ],
               "id": "4.1",

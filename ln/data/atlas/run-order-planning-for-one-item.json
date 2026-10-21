@@ -319,22 +319,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " — the observed environment uses "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "NA1"
-                    },
-                    {
-                      "t": "text",
-                      "v": " and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "CSADNA01"
+                      "v": " "
                     }
                   ],
-                  "text": "planning cluster and site — the observed environment uses NA1 and CSADNA01"
+                  "text": "planning cluster and site"
                 }
               ],
               "id": "0.4",
@@ -2666,15 +2654,7 @@
         },
         {
           "t": "text",
-          "v": " became purchase order "
-        },
-        {
-          "t": "literal",
-          "v": "100000682"
-        },
-        {
-          "t": "text",
-          "v": ". Full reference in "
+          "v": " became one purchase order. Full reference in "
         },
         {
           "t": "literal",
@@ -2685,7 +2665,7 @@
           "v": ". Three things from that walk matter to anyone leaving this walkthrough:"
         }
       ],
-      "text": "What is known about the step after this walkthrough, so the boundary is a handover rather than a cliff. Transfer Order Planning (cppat1210m000) turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the purchase half was walked on 2026-08-25: two planned purchase orders for BAM-ROD became purchase order 100000682. Full reference in the source on file. Three things from that walk matter to anyone leaving this walkthrough:",
+      "text": "What is known about the step after this walkthrough, so the boundary is a handover rather than a cliff. Transfer Order Planning (cppat1210m000) turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the purchase half was walked on 2026-08-25: two planned purchase orders for BAM-ROD became one purchase order. Full reference in the source on file. Three things from that walk matter to anyone leaving this walkthrough:",
       "under": "Downstream actions"
     },
     {

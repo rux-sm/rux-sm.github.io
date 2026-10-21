@@ -160,6 +160,5 @@ landings for old page addresses, which are deleted.
       own, since most of their tasks are not on this chain.
 - [ ] In atlas, write a screen file for the four screens still without one, once
       a source says how each is opened.
-- [ ] In atlas, stop exporting reviews, summaries and experiments.
 - [ ] In atlas, give a field's name its own token where it sits inside bold or
       quoted words, and take the underscore tidy out of `ln/app.js`.

@@ -1,10 +1,10 @@
-commit   2fbf8027b8c6f7e1c1794d79a28e3cc2530f9856
-date     2026-10-21T17:46:20Z
-subject  feat(genai): Move overview into AI walkthrough
+commit   435d339537916059310528d7eb16b9b780e3e42b
+date     2026-10-21T19:04:05Z
+subject  fix(tools): Keep environment values out of export
 contract 16 
 tier     export
-sha256   167f591f2788a37388be1a77a672cdc16ee079454d91d8ddf0df8b3c3f92667a
+sha256   af983b91c4df60acb7cb3ef4bef041c5f66ac8dc168fa778d90de45a98af2fa2
 
-Emitted by tools/sync-export.sh via atlas tools/emit.py --all --reviews --experiments --references --screens --glossary.
+Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync
 overwrites them, and the real fix belongs in the walkthrough in atlas.

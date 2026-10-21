@@ -1544,7 +1544,7 @@
             },
             {
               "t": "text",
-              "v": " > The Production and Sales portions of this phase were walked in Company 4100 on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing "
+              "v": " > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing "
             },
             {
               "t": "literal",
@@ -1552,10 +1552,10 @@
             },
             {
               "t": "text",
-              "v": " finished-goods defaults, and the Company 4100 reference currency. Do not reuse them in another company without repeating those checks."
+              "v": " finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. "
             }
           ],
-          "text": "> Warning > The Production and Sales portions of this phase were walked in Company 4100 on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the Company 4100 reference currency. Do not reuse them in another company without repeating those checks."
+          "text": "> Warning > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks."
         },
         {
           "kind": "prose",
@@ -2401,22 +2401,14 @@
             },
             {
               "t": "text",
-              "v": " > All three items were created this way in Company 4100 on 2026-08-16 and their "
-            },
-            {
-              "t": "literal",
-              "v": "CSADNA01"
-            },
-            {
-              "t": "text",
-              "v": " site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. "
+              "v": " > All three items were created this way on 2026-08-16 and their site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. "
             },
             {
               "t": "strong",
               "v": "Not documented for this release."
             }
           ],
-          "text": "> Note > All three items were created this way in Company 4100 on 2026-08-16 and their CSADNA01 site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. Not documented for this release."
+          "text": "> Note > All three items were created this way on 2026-08-16 and their site rows verified. Create the two purchased items first and the pair last, and do not create the pair until phase 3 has approved Production and Sales defaults. Not documented for this release."
         },
         {
           "kind": "prose",
@@ -5613,26 +5605,10 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The partner list opens. One run used "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "BP4000007"
-                    },
-                    {
-                      "t": "text",
-                      "v": " "
-                    },
-                    {
-                      "t": "chip",
-                      "v": "VISTA MACHINES INC."
-                    },
-                    {
-                      "t": "text",
-                      "v": " from the standard test partners"
+                      "v": "The partner list opens. One run used one of the standard test partners "
                     }
                   ],
-                  "text": "The partner list opens. One run used BP4000007 VISTA MACHINES INC. from the standard test partners"
+                  "text": "The partner list opens. One run used one of the standard test partners"
                 }
               ],
               "id": "9.5",
@@ -5683,15 +5659,7 @@
                   "tokens": [
                     {
                       "t": "text",
-                      "v": "The order takes a number. One run produced "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "100000677"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", Order Type "
+                      "v": "The order takes a number. One run showed Order Type "
                     },
                     {
                       "t": "literal",
@@ -5699,22 +5667,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " (Inventory Purchase Order), Purchase Office "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "401P00"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", ship-to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "CSADNA01"
+                      "v": " (Inventory Purchase Order), the partner's purchase office and the site as ship-to "
                     }
                   ],
-                  "text": "The order takes a number. One run produced 100000677, Order Type IPO (Inventory Purchase Order), Purchase Office 401P00, ship-to CSADNA01"
+                  "text": "The order takes a number. One run showed Order Type IPO (Inventory Purchase Order), the partner's purchase office and the site as ship-to"
                 }
               ],
               "id": "9.6",
@@ -5777,14 +5733,10 @@
                     },
                     {
                       "t": "text",
-                      "v": ", both to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02 RAW MATERIALS"
+                      "v": ", both to the raw-materials warehouse "
                     }
                   ],
-                  "text": "One line per component. One run booked line 10 BAM-ROD qty 2.0000 ea and line 20 BAM-SLEEVE qty 1.0000 ea, both to ADNA02 RAW MATERIALS"
+                  "text": "One line per component. One run booked line 10 BAM-ROD qty 2.0000 ea and line 20 BAM-SLEEVE qty 1.0000 ea, both to the raw-materials warehouse"
                 }
               ],
               "id": "9.7",
@@ -5840,14 +5792,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " \"Purchase Receipts\", ship-from the business partner, ship-to "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "ADNA02"
+                      "v": " \"Purchase Receipts\", ship-from the business partner, ship-to the raw-materials warehouse "
                     }
                   ],
-                  "text": "Order Type PUI \"Purchase Receipts\", ship-from the business partner, ship-to ADNA02"
+                  "text": "Order Type PUI \"Purchase Receipts\", ship-from the business partner, ship-to the raw-materials warehouse"
                 }
               ],
               "id": "9.8",
@@ -5911,34 +5859,10 @@
                     },
                     {
                       "t": "text",
-                      "v": " both set. One run produced receipt "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "100001505"
-                    },
-                    {
-                      "t": "text",
-                      "v": ", packing slips "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "123"
-                    },
-                    {
-                      "t": "text",
-                      "v": " (rod) and "
-                    },
-                    {
-                      "t": "literal",
-                      "v": "124"
-                    },
-                    {
-                      "t": "text",
-                      "v": " (sleeve)"
+                      "v": " both set "
                     }
                   ],
-                  "text": "Status = Confirmed, All Lines Final and All Lines Complete both set. One run produced receipt 100001505, packing slips 123 (rod) and 124 (sleeve)"
+                  "text": "Status = Confirmed, All Lines Final and All Lines Complete both set"
                 }
               ],
               "id": "9.9",

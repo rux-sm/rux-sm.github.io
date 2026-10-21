@@ -183,7 +183,7 @@ The grid and the panel can both be open. Only the panel is one at a time.
 
 Each driver free on one of a selected trip's days has an open slot there, a
 dashed outline the size of a mark, so a column of slots is who can take the
-trip. Rux-dark fills those days as a grey band down the grid instead.
+trip. Rux-dark draws each slot as a grey mark instead.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

@@ -1115,14 +1115,12 @@
 [data-theme="rux-dark"] { --scheduler-day-stripe: color-mix(in srgb, #000 40%, transparent); }
 [data-theme="rux-dark"] :is(.scheduler-track, .scheduler-avail__cell) { --scheduler-day-rule: transparent; }
 [data-theme="rux-dark"] :is(.scheduler-avail__name, .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
-[data-theme="rux-dark"] .scheduler-avail__cell--alt:not(.scheduler-avail__cell--on-day) {
+[data-theme="rux-dark"] .scheduler-avail__cell--alt {
   background-image: linear-gradient(var(--scheduler-day-stripe), var(--scheduler-day-stripe));
 }
-/* A selected trip's days are a band of the selected grey down the roster,
-   header included, in place of the open slots: free cells fill edge to edge
-   and a booked or day-off cell keeps its own mark. */
-[data-theme="rux-dark"] .scheduler-avail__days > .scheduler-avail__day--on-day,
-[data-theme="rux-dark"] .scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off) {
-  background-color: var(--rux-layer-selected);
+/* A free day of the selected trip is a grey mark, the size and corners of a
+   booked one, in place of the open slot's dashed outline. */
+[data-theme="rux-dark"] .scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off)::before {
+  border: 0;
+  background: var(--rux-layer-selected);
 }
-[data-theme="rux-dark"] .scheduler-avail__cell--on-day:not(.scheduler-avail__cell--busy, .scheduler-avail__cell--off)::before { content: none; }

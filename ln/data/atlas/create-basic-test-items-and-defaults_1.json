@@ -1,0 +1,353 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-basic-test-items-and-defaults_1",
+  "title": "Create two item groups",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 1,
+    "of": 11
+  },
+  "previous": {
+    "id": "create-basic-test-items-and-defaults_0",
+    "title": "Confirm the test design"
+  },
+  "next": {
+    "id": "create-basic-test-items-and-defaults_2",
+    "title": "Configure the purchased group"
+  },
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": "Master Data ➔ Items ➔ Item Classification ➔ Item Groups",
+  "session": "Item Groups",
+  "sessionCode": "tcmcs0123m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Purchase and Job Shop defaults remain isolated from each other"
+      }
+    ],
+    "text": "Purchase and Job Shop defaults remain isolated from each other"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until phase 2 attaches defaults to it."
+      }
+    ],
+    "text": "Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until phase 2 attaches defaults to it."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.1"
+                }
+              ],
+              "text": "1.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Search for the proposed purchased-group code"
+                }
+              ],
+              "text": "Search for the proposed purchased-group code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No existing row uses it"
+                }
+              ],
+              "text": "No existing row uses it"
+            }
+          ],
+          "id": "1.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.2"
+                }
+              ],
+              "text": "1.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Select New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A blank item-group row opens"
+                }
+              ],
+              "text": "A blank item-group row opens"
+            }
+          ],
+          "id": "1.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.3"
+                }
+              ],
+              "text": "1.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter "
+                },
+                {
+                  "t": "field",
+                  "v": "Item Group"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                },
+                {
+                  "t": "text",
+                  "v": " for the purchased group"
+                }
+              ],
+              "text": "Enter Item Group and Description for the purchased group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchased-supply item group"
+                }
+              ],
+              "text": "purchased-supply item group"
+            }
+          ],
+          "id": "1.3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.4"
+                }
+              ],
+              "text": "1.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Currency"
+                },
+                {
+                  "t": "text",
+                  "v": " to the approved company currency"
+                }
+              ],
+              "text": "Set Currency to the approved company currency"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The currency is populated"
+                }
+              ],
+              "text": "The currency is populated"
+            }
+          ],
+          "id": "1.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.5"
+                }
+              ],
+              "text": "1.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the purchased group"
+                }
+              ],
+              "text": "Save the purchased group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The purchased group is available for defaults"
+                }
+              ],
+              "text": "The purchased group is available for defaults"
+            }
+          ],
+          "id": "1.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.6"
+                }
+              ],
+              "text": "1.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat 1.1–1.5 for the made group"
+                }
+              ],
+              "text": "Repeat 1.1–1.5 for the made group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "made-supply item group"
+                },
+                {
+                  "t": "text",
+                  "v": " — both dedicated groups are available for defaults"
+                }
+              ],
+              "text": "made-supply item group — both dedicated groups are available for defaults"
+            }
+          ],
+          "id": "1.6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Either item-group code already exists"
+              }
+            ],
+            "text": "Either item-group code already exists"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Use new dedicated group codes rather than changing an existing group"
+              }
+            ],
+            "text": "Use new dedicated group codes rather than changing an existing group"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

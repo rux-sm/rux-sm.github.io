@@ -1,0 +1,506 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "demand-to-shipment-via-planning_4",
+  "title": "Receive the components",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 4,
+    "of": 7
+  },
+  "previous": {
+    "id": "demand-to-shipment-via-planning_3",
+    "title": "Cross the boundary"
+  },
+  "next": {
+    "id": "demand-to-shipment-via-planning_5",
+    "title": "Build the pairs"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Warehousing ➔ Orders ➔ Orders",
+  "session": "Warehousing Orders",
+  "sessionCode": "whinh2100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Rods and sleeves are on hand at the raw-material warehouse"
+      }
+    ],
+    "text": "Rods and sleeves are on hand at the raw-material warehouse"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The purchase order generated an inbound warehousing order; receiving against it and confirming the receipt books the components into the raw-material warehouse. The on-hand figure, not the receipt status, is the proof."
+      }
+    ],
+    "text": "The purchase order generated an inbound warehousing order; receiving against it and confirming the receipt books the components into the raw-material warehouse. The on-hand figure, not the receipt status, is the proof."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.1"
+                }
+              ],
+              "text": "4.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " and find the inbound order LN raised from the purchase order at 3.5, then "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Open Warehousing Orders (whinh2100m000) and find the inbound order LN raised from the purchase order at 3.5, then Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "PUI"
+                },
+                {
+                  "t": "text",
+                  "v": " \"Purchase Receipts\", ship-to the raw-materials warehouse "
+                }
+              ],
+              "text": "Order type PUI \"Purchase Receipts\", ship-to the raw-materials warehouse"
+            }
+          ],
+          "id": "4.1",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "3.5"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.2"
+                }
+              ],
+              "text": "4.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the inbound lines and run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Receive"
+                }
+              ],
+              "text": "Select the inbound lines and run Actions ➔ Receive"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3512m000",
+                  "name": "Warehouse Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Warehouse Receipt (whinh3512m000) opens"
+            }
+          ],
+          "id": "4.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.3"
+                }
+              ],
+              "text": "4.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the packing-slip reference for each line"
+                }
+              ],
+              "text": "Enter the packing-slip reference for each line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lines carry their references"
+                }
+              ],
+              "text": "The lines carry their references"
+            }
+          ],
+          "id": "4.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.4"
+                }
+              ],
+              "text": "4.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the receipt"
+                }
+              ],
+              "text": "Confirm the receipt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "warehouse receipt number"
+                },
+                {
+                  "t": "text",
+                  "v": "; "
+                },
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Final"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " both set"
+                }
+              ],
+              "text": "warehouse receipt number; Status = Confirmed, All Lines Final and All Lines Complete both set"
+            }
+          ],
+          "id": "4.4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.5"
+                }
+              ],
+              "text": "4.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Errors Logged"
+                },
+                {
+                  "t": "text",
+                  "v": ", then re-read "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " on-hand at the raw-materials warehouse from 0.3 in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Read Errors Logged, then re-read BAM-ROD on-hand at the raw-materials warehouse from 0.3 in Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "rod on-hand after receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " — up by exactly the quantity received"
+                }
+              ],
+              "text": "rod on-hand after receipt — up by exactly the quantity received"
+            }
+          ],
+          "id": "4.5",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "0.3"
+          ]
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No inbound order appears after the transfer"
+              }
+            ],
+            "text": "No inbound order appears after the transfer"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check the purchase order's "
+              },
+              {
+                "t": "chip",
+                "v": "Release to Warehousing"
+              },
+              {
+                "t": "text",
+                "v": " tab; "
+              },
+              {
+                "t": "session",
+                "code": "tdpur4534m000",
+                "name": "Purchase Order Line Status"
+              },
+              {
+                "t": "text",
+                "v": " names the activity a stuck line is waiting on"
+              }
+            ],
+            "text": "Check the purchase order's Release to Warehousing tab; Purchase Order Line Status (tdpur4534m000) names the activity a stuck line is waiting on"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "whinh0032"
+              },
+              {
+                "t": "text",
+                "v": " at the receipt"
+              }
+            ],
+            "text": "whinh0032 at the receipt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Capture the LOG detail before clearing it, and read "
+              },
+              {
+                "t": "field",
+                "v": "Errors Logged"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "session",
+                "code": "whinh3530m000",
+                "name": "Receipt Message Log"
+              },
+              {
+                "t": "text",
+                "v": " afterwards "
+              }
+            ],
+            "text": "Capture the LOG detail before clearing it, and read Errors Logged and Receipt Message Log (whinh3530m000) afterwards"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receipt confirms but on-hand does not move"
+              }
+            ],
+            "text": "The receipt confirms but on-hand does not move"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Whether "
+              },
+              {
+                "t": "field",
+                "v": "All Lines Final"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "All Lines Complete"
+              },
+              {
+                "t": "text",
+                "v": " were both set, and whether you re-read the warehouse from 0.3"
+              }
+            ],
+            "text": "Whether All Lines Final and All Lines Complete were both set, and whether you re-read the warehouse from 0.3"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Components already in stock"
+              }
+            ],
+            "text": "Components already in stock"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall "
+              }
+            ],
+            "text": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall"
+          }
+        ]
+      }
+    ]
+  }
+}

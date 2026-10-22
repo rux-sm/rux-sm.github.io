@@ -1,0 +1,325 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-order-planning-for-one-item_2",
+  "title": "Put the demand inside the horizon",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 2,
+    "of": 6
+  },
+  "previous": {
+    "id": "run-order-planning-for-one-item_1",
+    "title": "Create demand"
+  },
+  "next": {
+    "id": "run-order-planning-for-one-item_3",
+    "title": "Run MRP"
+  },
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning",
+  "session": "Items - Planning",
+  "sessionCode": "cprpd1100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planning can see the demand"
+      }
+    ],
+    "text": "Planning can see the demand"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+      }
+    ],
+    "text": "The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.1"
+                }
+              ],
+              "text": "2.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " for the finished item, "
+                },
+                {
+                  "t": "chip",
+                  "v": "Horizons"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open Items - Planning (cprpd1100m000) for the finished item, Horizons tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " as a number of days, with the resulting date beside it"
+                }
+              ],
+              "text": "Order Horizon as a number of days, with the resulting date beside it"
+            }
+          ],
+          "id": "2.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.2"
+                }
+              ],
+              "text": "2.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the delivery date from 1.3 falls beyond the horizon date, raise the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " days until it falls inside"
+                }
+              ],
+              "text": "If the delivery date from 1.3 falls beyond the horizon date, raise the Order Horizon days until it falls inside"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " — record both the days entered and the date displayed"
+                }
+              ],
+              "text": "order horizon — record both the days entered and the date displayed"
+            }
+          ],
+          "id": "2.2",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "1.3"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.3"
+                }
+              ],
+              "text": "2.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save, and reopen "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " for the item"
+                }
+              ],
+              "text": "Save, and reopen Item Order Plan (cprrp0520m000) for the item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The "
+                },
+                {
+                  "t": "chip",
+                  "v": "Horizons"
+                },
+                {
+                  "t": "text",
+                  "v": " block shows the new "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " date"
+                }
+              ],
+              "text": "The Horizons block shows the new Order Horizon date"
+            }
+          ],
+          "id": "2.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.4"
+                }
+              ],
+              "text": "2.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the demand in the grid"
+                }
+              ],
+              "text": "Find the demand in the grid"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales Order"
+                },
+                {
+                  "t": "text",
+                  "v": " row with your order number and quantity as "
+                },
+                {
+                  "t": "field",
+                  "v": "Demand"
+                }
+              ],
+              "text": "A Sales Order row with your order number and quantity as Demand"
+            }
+          ],
+          "id": "2.4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The demand does not appear in the Item Order Plan"
+              }
+            ],
+            "text": "The demand does not appear in the Item Order Plan"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The delivery date is beyond the "
+              },
+              {
+                "t": "field",
+                "v": "Order Horizon"
+              },
+              {
+                "t": "text",
+                "v": " date. Step 2.2 — and remember the date is not today plus your days "
+              }
+            ],
+            "text": "The delivery date is beyond the Order Horizon date. Step 2.2 — and remember the date is not today plus your days"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

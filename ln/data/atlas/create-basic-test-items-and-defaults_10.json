@@ -1,0 +1,420 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-basic-test-items-and-defaults_10",
+  "title": "Qualify the training case",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 10,
+    "of": 11
+  },
+  "previous": {
+    "id": "create-basic-test-items-and-defaults_9",
+    "title": "Stock the components"
+  },
+  "next": null,
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The family satisfies phase 0 of the production-order walkthrough"
+      }
+    ],
+    "text": "The family satisfies phase 0 of the production-order walkthrough"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing new. This phase checks the family against what the production-order walkthrough's phase 0 asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+      }
+    ],
+    "text": "Nothing new. This phase checks the family against what the production-order walkthrough's phase 0 asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "This phase creates nothing. It checks the family against what "
+        },
+        {
+          "t": "link",
+          "v": "Production order",
+          "href": "manual-production-order-existing-master-data.md"
+        },
+        {
+          "t": "text",
+          "v": " asks for in its phase 0, and hands over."
+        }
+      ],
+      "text": "This phase creates nothing. It checks the family against what Production order asks for in its phase 0, and hands over."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.1"
+                }
+              ],
+              "text": "10.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm all three items and their site rows still show the supply sources verified at 5.9"
+                }
+              ],
+              "text": "Confirm all three items and their site rows still show the supply sources verified at 5.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The family is intact"
+                }
+              ],
+              "text": "The family is intact"
+            }
+          ],
+          "id": "10.1",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "5.9"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.2"
+                }
+              ],
+              "text": "10.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the BOM from 6.19 is "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": ", used for planning and costing, and carries both materials"
+                }
+              ],
+              "text": "Confirm the BOM from 6.19 is Approved, used for planning and costing, and carries both materials"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pair has a manufacturable structure"
+                }
+              ],
+              "text": "The pair has a manufacturable structure"
+            }
+          ],
+          "id": "10.2",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "6.19"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.3"
+                }
+              ],
+              "text": "10.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the routing from 7.19 is "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": ", used for planning and costing, and carries its operation and work center"
+                }
+              ],
+              "text": "Confirm the routing from 7.19 is Approved, used for planning and costing, and carries its operation and work center"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pair has something to report complete"
+                }
+              ],
+              "text": "The pair has something to report complete"
+            }
+          ],
+          "id": "10.3",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "7.19"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.4"
+                }
+              ],
+              "text": "10.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm both components are on hand at the raw-material warehouse from 9.10"
+                }
+              ],
+              "text": "Confirm both components are on hand at the raw-material warehouse from 9.10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is material to issue"
+                }
+              ],
+              "text": "There is material to issue"
+            }
+          ],
+          "id": "10.4",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "9.10"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.5"
+                }
+              ],
+              "text": "10.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the finished-item warehouse from 0.6 is the one the produced pair should be received into"
+                }
+              ],
+              "text": "Confirm the finished-item warehouse from 0.6 is the one the produced pair should be received into"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receiving warehouse is a decision, not a discovery made mid-order"
+                }
+              ],
+              "text": "The receiving warehouse is a decision, not a discovery made mid-order"
+            }
+          ],
+          "id": "10.5",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "0.6"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.6"
+                }
+              ],
+              "text": "10.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the costing figures from 8.2–8.4 are still present"
+                }
+              ],
+              "text": "Confirm the costing figures from 8.2–8.4 are still present"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The estimate calculation has what it reads"
+                }
+              ],
+              "text": "The estimate calculation has what it reads"
+            }
+          ],
+          "id": "10.6",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "8.2"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10.7"
+                }
+              ],
+              "text": "10.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+                }
+              ],
+              "text": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "training case qualified"
+                }
+              ],
+              "text": "training case qualified"
+            }
+          ],
+          "id": "10.7",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order opens with no BOM or routing"
+              }
+            ],
+            "text": "The production order opens with no BOM or routing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Compare the order's reference date with the effective dates from steps 6.7 and 7.7. A revision effective after the reference date is not selected"
+              }
+            ],
+            "text": "Compare the order's reference date with the effective dates from steps 6.7 and 7.7. A revision effective after the reference date is not selected"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order has no operation to report complete"
+              }
+            ],
+            "text": "The production order has no operation to report complete"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Recheck phase 7 — an approved routing with at least one operation is what phase 5 of the production-order walkthrough reports against"
+              }
+            ],
+            "text": "Recheck phase 7 — an approved routing with at least one operation is what phase 5 of the production-order walkthrough reports against"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

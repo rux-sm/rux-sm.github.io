@@ -1,0 +1,456 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-order-planning-for-one-item_0",
+  "title": "Make the item visible to planning",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 0,
+    "of": 6
+  },
+  "previous": null,
+  "next": {
+    "id": "run-order-planning-for-one-item_1",
+    "title": "Create demand"
+  },
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The finished item and every BOM component have planning data"
+      }
+    ],
+    "text": "The finished item and every BOM component have planning data"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+      }
+    ],
+    "text": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > A finished item with an "
+        },
+        {
+          "t": "strong",
+          "v": "Approved"
+        },
+        {
+          "t": "text",
+          "v": " BOM and routing, components, and stock data — the qualified training case from "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": ". The 2026-08-20 session used "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-CHOP-PAIR"
+        },
+        {
+          "t": "text",
+          "v": " with components "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.1"
+                }
+              ],
+              "text": "0.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                }
+              ],
+              "text": "Open Item Order Plan (cprrp0520m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The plan selection screen"
+                }
+              ],
+              "text": "The plan selection screen"
+            }
+          ],
+          "id": "0.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.2"
+                }
+              ],
+              "text": "0.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Search for the finished item"
+                }
+              ],
+              "text": "Search for the finished item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item"
+                },
+                {
+                  "t": "text",
+                  "v": " — if it appears, planning data exists: go to 0.6. If it does not, the item is invisible to planning: continue"
+                }
+              ],
+              "text": "finished item — if it appears, planning data exists: go to 0.6. If it does not, the item is invisible to planning: continue"
+            }
+          ],
+          "id": "0.2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.3"
+                }
+              ],
+              "text": "0.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m000",
+                  "name": "Items"
+                },
+                {
+                  "t": "text",
+                  "v": " via "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Items ➔ Items"
+                },
+                {
+                  "t": "text",
+                  "v": " and drill into the finished item"
+                }
+              ],
+              "text": "Open Items (tcibd0501m000) via Master Data ➔ Items ➔ Items and drill into the finished item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Item (tcibd0501m100) opens"
+            }
+          ],
+          "id": "0.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.4"
+                }
+              ],
+              "text": "0.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Clusters"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, add a row with the environment's planning cluster"
+                }
+              ],
+              "text": "On the Clusters tab, add a row with the environment's planning cluster"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planning cluster"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "site"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                }
+              ],
+              "text": "planning cluster and site"
+            }
+          ],
+          "id": "0.4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.5"
+                }
+              ],
+              "text": "0.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save, then reopen "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " and search again"
+                }
+              ],
+              "text": "Save, then reopen Item Order Plan and search again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item now appears — an empty plan, but a plan"
+                }
+              ],
+              "text": "The item now appears — an empty plan, but a plan"
+            }
+          ],
+          "id": "0.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.6"
+                }
+              ],
+              "text": "0.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat 0.2–0.5 for "
+                },
+                {
+                  "t": "chip",
+                  "v": "every component in the BOM"
+                }
+              ],
+              "text": "Repeat 0.2–0.5 for every component in the BOM"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "components given plan data"
+                },
+                {
+                  "t": "text",
+                  "v": " — each appears in its own Item Order Plan"
+                }
+              ],
+              "text": "components given plan data — each appears in its own Item Order Plan"
+            }
+          ],
+          "id": "0.6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item is not in the Item Order Plan"
+              }
+            ],
+            "text": "The item is not in the Item Order Plan"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It has no planning data — no cluster row, no plan. Steps 0.3–0.5. Not an error state; nothing will tell you"
+              }
+            ],
+            "text": "It has no planning data — no cluster row, no plan. Steps 0.3–0.5. Not an error state; nothing will tell you"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

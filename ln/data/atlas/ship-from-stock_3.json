@@ -1,0 +1,771 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "ship-from-stock_3",
+  "title": "Generate outbound advice",
+  "process": {
+    "id": "ship-from-stock",
+    "title": "Ship from stock",
+    "n": 3,
+    "of": 7
+  },
+  "previous": {
+    "id": "ship-from-stock_2",
+    "title": "Release to warehousing"
+  },
+  "next": {
+    "id": "ship-from-stock_4",
+    "title": "Pick the goods"
+  },
+  "module": "Sales · Warehousing",
+  "modules": [
+    "Sales",
+    "Warehousing"
+  ],
+  "status": "approved",
+  "updated": "2026-10-04",
+  "route": "Warehousing ➔ Manager Dashboard",
+  "session": "Warehouse Manager Dashboard",
+  "sessionCode": "whinh2300m000",
+  "walked": "2026-08-09",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "LN knows what to pick, and a shipment appears"
+      }
+    ],
+    "text": "LN knows what to pick, and a shipment appears"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the "
+      },
+      {
+        "t": "em",
+        "v": "Advised"
+      },
+      {
+        "t": "text",
+        "v": " and "
+      },
+      {
+        "t": "em",
+        "v": "Released"
+      },
+      {
+        "t": "text",
+        "v": " columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+      }
+    ],
+    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the Advised and Released columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.1"
+                }
+              ],
+              "text": "3.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the order grid at the bottom, filter "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " on your sales order number"
+                }
+              ],
+              "text": "In the order grid at the bottom, filter Order on your sales order number"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Sales rows read "
+                },
+                {
+                  "t": "chip",
+                  "v": "Origin Sales"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Type 20- SO/SC Out"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Transaction Type Issue"
+                }
+              ],
+              "text": "Sales rows read Origin Sales, Type 20- SO/SC Out, Transaction Type Issue"
+            }
+          ],
+          "id": "3.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.2"
+                }
+              ],
+              "text": "3.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the row, then click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Tick the row, then click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Warehousing Order (whinh2100m100) opens"
+            }
+          ],
+          "id": "3.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.3"
+                }
+              ],
+              "text": "3.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open the Outbound Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Line Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
+                }
+              ],
+              "text": "Line Status = Open"
+            }
+          ],
+          "id": "3.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.4"
+                }
+              ],
+              "text": "3.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the outbound line"
+                }
+              ],
+              "text": "Tick the outbound line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.5"
+                }
+              ],
+              "text": "3.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar, "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                }
+              ],
+              "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "status",
+                  "v": "Advised"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " both fill — release is automatic here. Picking List by Location prints — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "Run"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "Mission"
+                }
+              ],
+              "text": "Advised and Released both fill — release is automatic here. Picking List by Location prints — Run, Mission"
+            }
+          ],
+          "id": "3.5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.6"
+                }
+              ],
+              "text": "3.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab and check for an early shipment"
+                }
+              ],
+              "text": "Open the Shipment Lines tab and check for an early shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If projected shipments are enabled, a "
+                },
+                {
+                  "t": "status",
+                  "v": "Projected"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": " line may already show a value in "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": ". If the tab is empty, continue to phase 4 — that is expected in the standard flow"
+                }
+              ],
+              "text": "If projected shipments are enabled, a Projected or Open line may already show a value in Shipment. If the tab is empty, continue to phase 4 — that is expected in the standard flow"
+            }
+          ],
+          "id": "3.6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing under "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound Open"
+              }
+            ],
+            "text": "Nothing under Outbound Open"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No warehousing order — return to phase 2"
+              }
+            ],
+            "text": "No warehousing order — return to phase 2"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Your order is not in the Outbound grid"
+              }
+            ],
+            "text": "Your order is not in the Outbound grid"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Wrong "
+              },
+              {
+                "t": "field",
+                "v": "Order"
+              },
+              {
+                "t": "text",
+                "v": " filter, or the release never ran — see 2.8"
+              }
+            ],
+            "text": "Wrong Order filter, or the release never ran — see 2.8"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Cannot find "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound Order Lines"
+              }
+            ],
+            "text": "Cannot find Outbound Order Lines"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+              }
+            ],
+            "text": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Advice"
+              },
+              {
+                "t": "text",
+                "v": " greyed out on the Actions menu"
+              }
+            ],
+            "text": "Advice greyed out on the Actions menu"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "You are on the session toolbar. The advice actions live on the "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound Lines"
+              },
+              {
+                "t": "text",
+                "v": " toolbar — see 3.5"
+              }
+            ],
+            "text": "You are on the session toolbar. The advice actions live on the Outbound Lines toolbar — see 3.5"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Generate Advice"
+              },
+              {
+                "t": "text",
+                "v": " greyed out"
+              }
+            ],
+            "text": "Generate Advice greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Advice already exists. Use "
+              },
+              {
+                "t": "chip",
+                "v": "Undo Advice"
+              },
+              {
+                "t": "text",
+                "v": " to start over"
+              }
+            ],
+            "text": "Advice already exists. Use Undo Advice to start over"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Release Advice"
+              },
+              {
+                "t": "text",
+                "v": " greyed out"
+              }
+            ],
+            "text": "Release Advice greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No advice exists yet. Run "
+              },
+              {
+                "t": "chip",
+                "v": "Generate Advice"
+              },
+              {
+                "t": "text",
+                "v": " first"
+              }
+            ],
+            "text": "No advice exists yet. Run Generate Advice first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Advice already generated before you ran it"
+              }
+            ],
+            "text": "Advice already generated before you ran it"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Some configurations generate it automatically on release. Check "
+              },
+              {
+                "t": "field",
+                "v": "Advised Quantity"
+              },
+              {
+                "t": "text",
+                "v": " first"
+              }
+            ],
+            "text": "Some configurations generate it automatically on release. Check Advised Quantity first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The outbound line's status reads "
+              },
+              {
+                "t": "chip",
+                "v": "Planned"
+              }
+            ],
+            "text": "The outbound line's status reads Planned"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A planned line cannot be advised. Activate the warehousing order with "
+              },
+              {
+                "t": "chip",
+                "v": "Activate"
+              },
+              {
+                "t": "text",
+                "v": ", and the line becomes "
+              },
+              {
+                "t": "chip",
+                "v": "Open"
+              },
+              {
+                "t": "text",
+                "v": " — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. "
+              },
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "A planned line cannot be advised. Activate the warehousing order with Activate, and the line becomes Open — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. Not documented for this release."
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Order will not advise"
+              }
+            ],
+            "text": "Order will not advise"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Header "
+              },
+              {
+                "t": "field",
+                "v": "Warehouse"
+              },
+              {
+                "t": "text",
+                "v": " does not hold the stock. Recheck against 0.4"
+              }
+            ],
+            "text": "Header Warehouse does not hold the stock. Recheck against 0.4"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No shipment number after releasing advice"
+              }
+            ],
+            "text": "No shipment number after releasing advice"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Expected in the standard flow. Continue through "
+              },
+              {
+                "t": "chip",
+                "v": "Pick Run"
+              },
+              {
+                "t": "text",
+                "v": ", then record "
+              },
+              {
+                "t": "field",
+                "v": "Shipment"
+              },
+              {
+                "t": "text",
+                "v": " from "
+              },
+              {
+                "t": "chip",
+                "v": "Shipment Lines"
+              },
+              {
+                "t": "text",
+                "v": " at 4.6. An early line appears only when projected-shipment behavior applies"
+              }
+            ],
+            "text": "Expected in the standard flow. Continue through Pick Run, then record Shipment from Shipment Lines at 4.6. An early line appears only when projected-shipment behavior applies"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

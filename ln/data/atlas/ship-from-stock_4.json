@@ -1,0 +1,561 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "ship-from-stock_4",
+  "title": "Pick the goods",
+  "process": {
+    "id": "ship-from-stock",
+    "title": "Ship from stock",
+    "n": 4,
+    "of": 7
+  },
+  "previous": {
+    "id": "ship-from-stock_3",
+    "title": "Generate outbound advice"
+  },
+  "next": {
+    "id": "ship-from-stock_5",
+    "title": "Ship"
+  },
+  "module": "Sales · Warehousing",
+  "modules": [
+    "Sales",
+    "Warehousing"
+  ],
+  "status": "approved",
+  "updated": "2026-10-04",
+  "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
+  "session": "Picking List",
+  "sessionCode": "whinh4525m100",
+  "walked": "2026-08-09",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Stock physically moves to staging"
+      }
+    ],
+    "text": "Stock physically moves to staging"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The picking list is the record of stock physically moving to staging, and confirming it is what fills "
+      },
+      {
+        "t": "em",
+        "v": "Picked"
+      },
+      {
+        "t": "text",
+        "v": ". The phase exists because this environment sets the "
+      },
+      {
+        "t": "em",
+        "v": "Picking List"
+      },
+      {
+        "t": "text",
+        "v": " activity to manual and the warehouse is location-controlled; change either and LN ticks "
+      },
+      {
+        "t": "em",
+        "v": "Picked"
+      },
+      {
+        "t": "text",
+        "v": " on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+      }
+    ],
+    "text": "The picking list is the record of stock physically moving to staging, and confirming it is what fills Picked. The phase exists because this environment sets the Picking List activity to manual and the warehouse is location-controlled; change either and LN ticks Picked on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.1"
+                }
+              ],
+              "text": "4.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Run"
+                },
+                {
+                  "t": "text",
+                  "v": " in the header"
+                }
+              ],
+              "text": "Check Run in the header"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Already the Run from 3.5. If not, search or step with "
+                },
+                {
+                  "t": "button",
+                  "label": "next"
+                },
+                {
+                  "t": "text",
+                  "v": " / "
+                },
+                {
+                  "t": "button",
+                  "label": "previous"
+                }
+              ],
+              "text": "Already the Run from 3.5. If not, search or step with next / previous"
+            }
+          ],
+          "id": "4.1",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "3.5"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.2"
+                }
+              ],
+              "text": "4.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Mission"
+                }
+              ],
+              "text": "Confirm Warehouse and Mission"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Mission is the Picking Mission from 3.5"
+                }
+              ],
+              "text": "Mission is the Picking Mission from 3.5"
+            }
+          ],
+          "id": "4.2",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "3.5"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.3"
+                }
+              ],
+              "text": "4.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the grid line"
+                }
+              ],
+              "text": "Read the grid line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "Sequence"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "Serial Number"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "From Location"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "field",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " = grey dot"
+                }
+              ],
+              "text": "Picked · Sequence · Item · Serial Number · From Location. Picked = grey dot"
+            }
+          ],
+          "id": "4.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.4"
+                }
+              ],
+              "text": "4.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the line"
+                }
+              ],
+              "text": "Tick the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.5"
+                }
+              ],
+              "text": "4.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Pick Run"
+                }
+              ],
+              "text": "Actions ➔ Pick Run"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Stock moves from "
+                },
+                {
+                  "t": "field",
+                  "v": "From Location"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "field",
+                  "v": "To Location"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "status",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " fills on Outbound Lines. Line status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Staged"
+                }
+              ],
+              "text": "Stock moves from From Location to To Location. Picked fills on Outbound Lines. Line status = Staged"
+            }
+          ],
+          "id": "4.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.6"
+                }
+              ],
+              "text": "4.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Return to the Warehousing Order and open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment Lines"
+                }
+              ],
+              "text": "Return to the Warehousing Order and open Shipment Lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A shipment line now exists in the standard flow. Read the value in "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " — not the shipment-line position — and record it: "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipment number"
+                }
+              ],
+              "text": "A shipment line now exists in the standard flow. Read the value in Shipment — not the shipment-line position — and record it: shipment number"
+            }
+          ],
+          "id": "4.6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No "
+              },
+              {
+                "t": "chip",
+                "v": "Picking"
+              },
+              {
+                "t": "text",
+                "v": " node under Warehousing"
+              }
+            ],
+            "text": "No Picking node under Warehousing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "There is none. Picking sits inside "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound/Inspections"
+              }
+            ],
+            "text": "There is none. Picking sits inside Outbound/Inspections"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Goods still need picking after Release Advice"
+              }
+            ],
+            "text": "Goods still need picking after Release Advice"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Expected. "
+              },
+              {
+                "t": "status",
+                "v": "Released"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "status",
+                "v": "Picked"
+              },
+              {
+                "t": "text",
+                "v": " are separate. Run phase 4"
+              }
+            ],
+            "text": "Expected. Released and Picked are separate. Run phase 4"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Run"
+              },
+              {
+                "t": "text",
+                "v": " empty on the Picking List"
+              }
+            ],
+            "text": "Run empty on the Picking List"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Advice was never generated, so nothing was released. Return to 3.5"
+              }
+            ],
+            "text": "Advice was never generated, so nothing was released. Return to 3.5"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Pick Mission / Pick Advice"
+              }
+            ],
+            "text": "Pick Mission / Pick Advice"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Narrower scopes than Pick Run: one picking mission, or one advice line. See 4.5"
+              }
+            ],
+            "text": "Narrower scopes than Pick Run: one picking mission, or one advice line. See 4.5"
+          }
+        ]
+      }
+    ]
+  }
+}

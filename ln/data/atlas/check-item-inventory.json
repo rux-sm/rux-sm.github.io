@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "check-item-inventory",
   "title": "Check an item's inventory",
   "module": "Warehousing",
@@ -14,6 +15,41 @@
   "sources": [
     "whwmd2515m000",
     "whwmd4300m000"
+  ],
+  "before": [],
+  "tasks": [
+    {
+      "id": "check-item-inventory_0",
+      "n": 0,
+      "title": "Find the item",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The item's on hand, blocked, on order and allocated are known"
+          }
+        ],
+        "text": "The item's on hand, blocked, on order and allocated are known"
+      },
+      "steps": 3,
+      "walked": null
+    },
+    {
+      "id": "check-item-inventory_1",
+      "n": 1,
+      "title": "Read the stock by warehouse",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The warehouse to work from, and its figures, are written down"
+          }
+        ],
+        "text": "The warehouse to work from, and its figures, are written down"
+      },
+      "steps": 4,
+      "walked": null
+    }
   ],
   "phases": [
     {

@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "ship-from-stock",
   "title": "Ship from stock",
   "module": "Sales · Warehousing",
@@ -30,6 +31,144 @@
     "whinh4630m000",
     "whwmd2515m000",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Know the item's stock before you start: Check an item's inventory."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ship-from-stock_0",
+      "n": 0,
+      "title": "Confirm there is stock",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Know what you can actually ship"
+          }
+        ],
+        "text": "Know what you can actually ship"
+      },
+      "steps": 5,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "ship-from-stock_1",
+      "n": 1,
+      "title": "Create and approve the sales order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Sales order at "
+          },
+          {
+            "t": "chip",
+            "v": "In Process"
+          }
+        ],
+        "text": "Sales order at In Process"
+      },
+      "steps": 12,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "ship-from-stock_2",
+      "n": 2,
+      "title": "Release to warehousing",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Warehousing order exists"
+          }
+        ],
+        "text": "Warehousing order exists"
+      },
+      "steps": 8,
+      "walked": "2026-08-08"
+    },
+    {
+      "id": "ship-from-stock_3",
+      "n": 3,
+      "title": "Generate outbound advice",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "LN knows what to pick, and a shipment appears"
+          }
+        ],
+        "text": "LN knows what to pick, and a shipment appears"
+      },
+      "steps": 6,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "ship-from-stock_4",
+      "n": 4,
+      "title": "Pick the goods",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Stock physically moves to staging"
+          }
+        ],
+        "text": "Stock physically moves to staging"
+      },
+      "steps": 6,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "ship-from-stock_5",
+      "n": 5,
+      "title": "Ship",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Inventory is relieved"
+          }
+        ],
+        "text": "Inventory is relieved"
+      },
+      "steps": 5,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "ship-from-stock_6",
+      "n": 6,
+      "title": "Verify it worked",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "On-hand dropped by the shipped quantity"
+          }
+        ],
+        "text": "On-hand dropped by the shipped quantity"
+      },
+      "steps": 1,
+      "walked": "2026-08-09"
+    }
   ],
   "phases": [
     {

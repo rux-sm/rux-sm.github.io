@@ -1,0 +1,434 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-order-planning-for-one-item_4",
+  "title": "Review the result",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 4,
+    "of": 6
+  },
+  "previous": {
+    "id": "run-order-planning-for-one-item_3",
+    "title": "Run MRP"
+  },
+  "next": {
+    "id": "run-order-planning-for-one-item_5",
+    "title": "Read the pegging tree"
+  },
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The planned supply is read on both the parent and the component"
+      }
+    ],
+    "text": "The planned supply is read on both the parent and the component"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+      }
+    ],
+    "text": "One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.1"
+                }
+              ],
+              "text": "4.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Reopen the finished item's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                }
+              ],
+              "text": "Reopen the finished item's Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The sales order row now has a companion"
+                }
+              ],
+              "text": "The sales order row now has a companion"
+            }
+          ],
+          "id": "4.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.2"
+                }
+              ],
+              "text": "4.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the planned supply row"
+                }
+              ],
+              "text": "Read the planned supply row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned production order number"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned production quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " — a "
+                },
+                {
+                  "t": "chip",
+                  "v": "Planned Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " whose "
+                },
+                {
+                  "t": "field",
+                  "v": "Supply"
+                },
+                {
+                  "t": "text",
+                  "v": " equals ordered quantity minus on-hand"
+                }
+              ],
+              "text": "planned production order number and planned production quantity — a Planned Production Order whose Supply equals ordered quantity minus on-hand"
+            }
+          ],
+          "id": "4.2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.3"
+                }
+              ],
+              "text": "4.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "component's"
+                },
+                {
+                  "t": "text",
+                  "v": " Item Order Plan"
+                }
+              ],
+              "text": "Open the component's Item Order Plan"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The same planned production order appears — as "
+                },
+                {
+                  "t": "field",
+                  "v": "Demand"
+                }
+              ],
+              "text": "The same planned production order appears — as Demand"
+            }
+          ],
+          "id": "4.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.4"
+                }
+              ],
+              "text": "4.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the component's planned supply row"
+                }
+              ],
+              "text": "Read the component's planned supply row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component planned purchase order"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component planned quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " — a "
+                },
+                {
+                  "t": "chip",
+                  "v": "Planned Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": " covering what stock does not"
+                }
+              ],
+              "text": "component planned purchase order and component planned quantity — a Planned Purchase Order covering what stock does not"
+            }
+          ],
+          "id": "4.4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4.5"
+                }
+              ],
+              "text": "4.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000",
+                  "name": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " for the cluster and site from 0.4"
+                }
+              ],
+              "text": "Open Planned Orders (cprrp1100m000) for the cluster and site from 0.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both planned orders listed, "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                }
+              ],
+              "text": "Both planned orders listed, Order Status Planned"
+            }
+          ],
+          "id": "4.5",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "0.4"
+          ]
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A planned quantity does not equal the raw shortfall"
+              }
+            ],
+            "text": "A planned quantity does not equal the raw shortfall"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Order-quantity rules in "
+              },
+              {
+                "t": "session",
+                "code": "tcibd2100m000",
+                "name": "Items - Ordering"
+              },
+              {
+                "t": "text",
+                "v": " round it — \"Lot sizing\", "
+              },
+              {
+                "t": "literal",
+                "v": "cpordplanug"
+              },
+              {
+                "t": "text",
+                "v": " p. 21"
+              }
+            ],
+            "text": "Order-quantity rules in Items - Ordering (tcibd2100m000) round it — \"Lot sizing\", cpordplanug p. 21"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "An expected planned purchase order is missing entirely"
+              }
+            ],
+            "text": "An expected planned purchase order is missing entirely"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — "
+              },
+              {
+                "t": "session",
+                "code": "cprrp1100m000"
+              },
+              {
+                "t": "text",
+                "v": " help"
+              }
+            ],
+            "text": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — cprrp1100m000 help"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

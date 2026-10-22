@@ -1,0 +1,485 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "demand-to-shipment-via-planning_2",
+  "title": "Run MRP",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 2,
+    "of": 7
+  },
+  "previous": {
+    "id": "demand-to-shipment-via-planning_1",
+    "title": "Create the demand"
+  },
+  "next": {
+    "id": "demand-to-shipment-via-planning_3",
+    "title": "Cross the boundary"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planned orders cover the shortfall and reconcile in the pegging tree"
+      }
+    ],
+    "text": "Planned orders cover the shortfall and reconcile in the pegging tree"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly."
+      }
+    ],
+    "text": "MRP nets the demand against stock and generates a planned production order for the pairs, then, through the BOM, planned purchase orders for the rods the pairs need. The arithmetic in the pegging tree is the test that it did so correctly."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.1"
+                }
+              ],
+              "text": "2.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                }
+              ],
+              "text": "Open Generate Order Planning (Item) (cprrp1220m000) for BAM-CHOP-PAIR"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "ACT"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Plan Item"
+                },
+                {
+                  "t": "text",
+                  "v": " are set"
+                }
+              ],
+              "text": "Scenario ACT and Plan Item are set"
+            }
+          ],
+          "id": "2.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.2"
+                }
+              ],
+              "text": "2.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "field",
+                  "v": "Include Child Items"
+                }
+              ],
+              "text": "Select Include Child Items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run will plan the rods and sleeves too"
+                }
+              ],
+              "text": "The run will plan the rods and sleeves too"
+            }
+          ],
+          "id": "2.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.3"
+                }
+              ],
+              "text": "2.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the generation"
+                }
+              ],
+              "text": "Run the generation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run completes"
+                }
+              ],
+              "text": "The run completes"
+            }
+          ],
+          "id": "2.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.4"
+                }
+              ],
+              "text": "2.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " and read the planned supply row"
+                }
+              ],
+              "text": "Open Item Order Plan (cprrp0520m000) for BAM-CHOP-PAIR and read the planned supply row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned production order"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "field",
+                  "v": "Supply"
+                },
+                {
+                  "t": "text",
+                  "v": " equals ordered quantity minus on-hand"
+                }
+              ],
+              "text": "planned production order — Supply equals ordered quantity minus on-hand"
+            }
+          ],
+          "id": "2.4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.5"
+                }
+              ],
+              "text": "2.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1100m000",
+                  "name": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " at "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the items' planning cluster and site "
+                }
+              ],
+              "text": "Open Planned Orders (cprrp1100m000) at Planning ➔ Order Planning ➔ Planned Orders, for the items' planning cluster and site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned purchase orders"
+                },
+                {
+                  "t": "text",
+                  "v": " — every row at "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                }
+              ],
+              "text": "planned purchase orders — every row at Order Status Planned"
+            }
+          ],
+          "id": "2.5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.6"
+                }
+              ],
+              "text": "2.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the planned production order and run "
+                },
+                {
+                  "t": "chip",
+                  "v": "Pegging - Upstream"
+                }
+              ],
+              "text": "Select the planned production order and run Pegging - Upstream"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "pegging arithmetic check"
+                },
+                {
+                  "t": "text",
+                  "v": " — each level's children sum to its requirement"
+                }
+              ],
+              "text": "pegging arithmetic check — each level's children sum to its requirement"
+            }
+          ],
+          "id": "2.6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The run plans the pair but not a component"
+              }
+            ],
+            "text": "The run plans the pair but not a component"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The component has no planning data of its own. Step 0.4 — MRP skips it silently"
+              }
+            ],
+            "text": "The component has no planning data of its own. Step 0.4 — MRP skips it silently"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A component has plan data and still produces nothing"
+              }
+            ],
+            "text": "A component has plan data and still produces nothing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand "
+              }
+            ],
+            "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The pegging tree is empty"
+              }
+            ],
+            "text": "The pegging tree is empty"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Pegging relations were not generated, or the demand is beyond the Pegging Horizon in "
+              },
+              {
+                "t": "session",
+                "code": "cprpd0100m000",
+                "name": "Planning Parameters"
+              }
+            ],
+            "text": "Pegging relations were not generated, or the demand is beyond the Pegging Horizon in Planning Parameters (cprpd0100m000)"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

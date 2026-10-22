@@ -1,0 +1,398 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "demand-to-shipment-via-planning_0",
+  "title": "Preflight",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 0,
+    "of": 7
+  },
+  "previous": null,
+  "next": {
+    "id": "demand-to-shipment-via-planning_1",
+    "title": "Create the demand"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "All three items are plannable, and every on-hand figure is written down"
+      }
+    ],
+    "text": "All three items are plannable, and every on-hand figure is written down"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing yet. This chain fails silently in two places, an item with no planning data and a component whose stock already covers the requirement, and both are decided by figures readable before anything is created. The Item Order Plan shows whether each item is plannable; Inventory 360 shows what MRP will net against."
+      }
+    ],
+    "text": "Nothing yet. This chain fails silently in two places, an item with no planning data and a component whose stock already covers the requirement, and both are decided by figures readable before anything is created. The Item Order Plan shows whether each item is plannable; Inventory 360 shows what MRP will net against."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > The bamboo family as section 2 describes it. If any of it is missing, "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " builds it and "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " phase 0 adds the planning data."
+        }
+      ],
+      "text": "> Prerequisite > The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Run order planning phase 0 adds the planning data."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.1"
+                }
+              ],
+              "text": "0.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                }
+              ],
+              "text": "Open Inventory 360 (whwmd4300m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item filter"
+                }
+              ],
+              "text": "The item filter"
+            }
+          ],
+          "id": "0.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.2"
+                }
+              ],
+              "text": "0.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " on-hand at the finished-goods warehouse "
+                }
+              ],
+              "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "pair on-hand before"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipping warehouse"
+                }
+              ],
+              "text": "pair on-hand before and shipping warehouse"
+            }
+          ],
+          "id": "0.2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.3"
+                }
+              ],
+              "text": "0.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " on-hand at the raw-materials warehouse "
+                }
+              ],
+              "text": "Read BAM-ROD and BAM-SLEEVE on-hand at the raw-materials warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "rod on-hand before"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sleeve on-hand before"
+                }
+              ],
+              "text": "rod on-hand before, sleeve on-hand before"
+            }
+          ],
+          "id": "0.3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.4"
+                }
+              ],
+              "text": "0.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " and search each of the three items in turn"
+                }
+              ],
+              "text": "Open Item Order Plan (cprrp0520m000) and search each of the three items in turn"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each one appears. An item that does not is invisible to MRP"
+                }
+              ],
+              "text": "Each one appears. An item that does not is invisible to MRP"
+            }
+          ],
+          "id": "0.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "0.5"
+                }
+              ],
+              "text": "0.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For any item that does not appear, add its cluster row per "
+                },
+                {
+                  "t": "link",
+                  "v": "Run order planning",
+                  "href": "run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": " steps 0.3–0.5"
+                }
+              ],
+              "text": "For any item that does not appear, add its cluster row per Run order planning steps 0.3–0.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item now appears — an empty plan, but a plan"
+                }
+              ],
+              "text": "The item now appears — an empty plan, but a plan"
+            }
+          ],
+          "id": "0.5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "An item is absent from the Item Order Plan"
+              }
+            ],
+            "text": "An item is absent from the Item Order Plan"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It has no cluster row. Step 0.5. Not an error state; nothing will tell you"
+              }
+            ],
+            "text": "It has no cluster row. Step 0.5. Not an error state; nothing will tell you"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

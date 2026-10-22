@@ -1,0 +1,332 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "purchase-order-to-warehouse-receipt_2",
+  "title": "Book the lines",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 2,
+    "of": 6
+  },
+  "previous": {
+    "id": "purchase-order-to-warehouse-receipt_1",
+    "title": "Create the purchase order"
+  },
+  "next": {
+    "id": "purchase-order-to-warehouse-receipt_3",
+    "title": "Receive against the order"
+  },
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": "2026-08-18",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Each material is ordered in the right quantity, to the right warehouse"
+      }
+    ],
+    "text": "Each material is ordered in the right quantity, to the right warehouse"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in phase 3. A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+      }
+    ],
+    "text": "Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in phase 3. A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.1"
+                }
+              ],
+              "text": "2.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the order's lines"
+                }
+              ],
+              "text": "Open the order's lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line grid is empty"
+                }
+              ],
+              "text": "The line grid is empty"
+            }
+          ],
+          "id": "2.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.2"
+                }
+              ],
+              "text": "2.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for the first material, with the quantity your downstream demand requires"
+                }
+              ],
+              "text": "Add a line for the first material, with the quantity your downstream demand requires"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 1 quantity ordered"
+                },
+                {
+                  "t": "text",
+                  "v": " — the walked run booked line "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.0000"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "ea"
+                }
+              ],
+              "text": "material 1 quantity ordered — the walked run booked line 10, BAM-ROD, 2.0000 ea"
+            }
+          ],
+          "id": "2.2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.3"
+                }
+              ],
+              "text": "2.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for the second material"
+                }
+              ],
+              "text": "Add a line for the second material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 quantity ordered"
+                },
+                {
+                  "t": "text",
+                  "v": " — the walked run booked line "
+                },
+                {
+                  "t": "literal",
+                  "v": "20"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "1.0000"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "ea"
+                }
+              ],
+              "text": "material 2 quantity ordered — the walked run booked line 20, BAM-SLEEVE, 1.0000 ea"
+            }
+          ],
+          "id": "2.3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.4"
+                }
+              ],
+              "text": "2.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the warehouse on every line to the receiving warehouse from 0.1"
+                }
+              ],
+              "text": "Set the warehouse on every line to the receiving warehouse from 0.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land "
+                }
+              ],
+              "text": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land"
+            }
+          ],
+          "id": "2.4",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "0.1"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.5"
+                }
+              ],
+              "text": "2.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the lines"
+                }
+              ],
+              "text": "Save the lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both lines are stored against the order from 1.5"
+                }
+              ],
+              "text": "Both lines are stored against the order from 1.5"
+            }
+          ],
+          "id": "2.5",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "1.5"
+          ]
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

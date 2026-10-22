@@ -1,0 +1,612 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "demand-to-shipment-via-planning_3",
+  "title": "Cross the boundary",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 3,
+    "of": 7
+  },
+  "previous": {
+    "id": "demand-to-shipment-via-planning_2",
+    "title": "Run MRP"
+  },
+  "next": {
+    "id": "demand-to-shipment-via-planning_4",
+    "title": "Receive the components"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Planning ➔ Order Planning ➔ Confirm Order Planning",
+  "session": "Confirm Order Planning",
+  "sessionCode": "cprrp1200m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The proposals become a real purchase order and a real production order"
+      }
+    ],
+    "text": "The proposals become a real purchase order and a real production order"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing."
+      }
+    ],
+    "text": "A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "The purchase half of this phase is walked; the production half has never been run here."
+        },
+        {
+          "t": "text",
+          "v": " On 2026-08-25 two planned purchase orders for "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": " became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at "
+        },
+        {
+          "t": "status",
+          "v": "Planned"
+        },
+        {
+          "t": "text",
+          "v": ". Step 3.6 is therefore the one step in this walkthrough nobody has performed — "
+        },
+        {
+          "t": "strong",
+          "v": "you are testing it, not using it."
+        },
+        {
+          "t": "text",
+          "v": " "
+        }
+      ],
+      "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 3.6 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.1"
+                }
+              ],
+              "text": "3.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " has a row on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item - Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of its purchase data"
+                }
+              ],
+              "text": "Confirm BAM-ROD has a row on the Item - Business Partner tab of its purchase data"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A buy-from business partner, added 2026-08-25 "
+                }
+              ],
+              "text": "A buy-from business partner, added 2026-08-25"
+            }
+          ],
+          "id": "3.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.2"
+                }
+              ],
+              "text": "3.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If MRP proposed a planned purchase order for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": ", check the same tab for that item"
+                }
+              ],
+              "text": "If MRP proposed a planned purchase order for BAM-SLEEVE, check the same tab for that item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A partner row, or the transfer will refuse it at 3.5"
+                }
+              ],
+              "text": "A partner row, or the transfer will refuse it at 3.5"
+            }
+          ],
+          "id": "3.2",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "3.5"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.3"
+                }
+              ],
+              "text": "3.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1200m000",
+                  "name": "Confirm Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", confirm the planned orders you intend to transfer"
+                }
+              ],
+              "text": "In Confirm Order Planning (cprrp1200m000), confirm the planned orders you intend to transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " moves from "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                }
+              ],
+              "text": "Order Status moves from Planned to Confirmed"
+            }
+          ],
+          "id": "3.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.4"
+                }
+              ],
+              "text": "3.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cppat1210m000",
+                  "name": "Transfer Order Planning"
+                },
+                {
+                  "t": "text",
+                  "v": ", select "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": ", and select "
+                },
+                {
+                  "t": "chip",
+                  "v": "Error Report"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process Report"
+                }
+              ],
+              "text": "Open Transfer Order Planning (cppat1210m000), select Purchase, and select Error Report and Process Report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The transfer is scoped to the purchase orders"
+                }
+              ],
+              "text": "The transfer is scoped to the purchase orders"
+            }
+          ],
+          "id": "3.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.5"
+                }
+              ],
+              "text": "3.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the transfer and read the report"
+                }
+              ],
+              "text": "Run the transfer and read the report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "real purchase order number"
+                },
+                {
+                  "t": "text",
+                  "v": " — the report names the order each proposal became, or why it did not transfer"
+                }
+              ],
+              "text": "real purchase order number — the report names the order each proposal became, or why it did not transfer"
+            }
+          ],
+          "id": "3.5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.6"
+                }
+              ],
+              "text": "3.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat 3.4–3.5 with "
+                },
+                {
+                  "t": "field",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": " selected instead of "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase"
+                }
+              ],
+              "text": "Repeat 3.4–3.5 with Job Shop selected instead of Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "real production order number"
+                },
+                {
+                  "t": "text",
+                  "v": " — expected in "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0501m000",
+                  "name": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " at "
+                },
+                {
+                  "t": "status",
+                  "v": "Created"
+                }
+              ],
+              "text": "real production order number — expected in Production Orders (tisfc0501m000) at Created"
+            }
+          ],
+          "id": "3.6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The transfer runs and nothing happens"
+              }
+            ],
+            "text": "The transfer runs and nothing happens"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The orders were still "
+              },
+              {
+                "t": "status",
+                "v": "Planned"
+              },
+              {
+                "t": "text",
+                "v": ". Step 3.3. There is no message for \"nothing matched\""
+              }
+            ],
+            "text": "The orders were still Planned. Step 3.3. There is no message for \"nothing matched\""
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "\"Buy-from BP cannot be determined for item …\""
+              }
+            ],
+            "text": "\"Buy-from BP cannot be determined for item …\""
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No partner row on the item's "
+              },
+              {
+                "t": "chip",
+                "v": "Item - Business Partner"
+              },
+              {
+                "t": "text",
+                "v": " tab. Steps 3.1–3.2. The failed proposal survives, so fix it and rerun "
+              }
+            ],
+            "text": "No partner row on the item's Item - Business Partner tab. Steps 3.1–3.2. The failed proposal survives, so fix it and rerun"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Purchase Order Type is blank"
+              }
+            ],
+            "text": "Purchase Order Type is blank"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN gives an error. This environment defaults "
+              },
+              {
+                "t": "literal",
+                "v": "IPO"
+              }
+            ],
+            "text": "LN gives an error. This environment defaults IPO"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Components already in stock"
+              }
+            ],
+            "text": "Components already in stock"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall "
+              }
+            ],
+            "text": "Phase 3 transfers only the production side and phase 4 does not happen. This is the likely shape of a sleeve-only shortfall"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Build by hand instead of from planning"
+              }
+            ],
+            "text": "Build by hand instead of from planning"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Skip step 3.6 and create the production order directly per "
+              },
+              {
+                "t": "link",
+                "v": "Production order",
+                "href": "manual-production-order-existing-master-data.md"
+              },
+              {
+                "t": "text",
+                "v": " phase 1. "
+              },
+              {
+                "t": "chip",
+                "v": "This is the only production path anyone here has walked"
+              },
+              {
+                "t": "text",
+                "v": " — it is the fallback if step 3.6 fails"
+              }
+            ],
+            "text": "Skip step 3.6 and create the production order directly per Production order phase 1. This is the only production path anyone here has walked — it is the fallback if step 3.6 fails"
+          }
+        ]
+      }
+    ]
+  }
+}

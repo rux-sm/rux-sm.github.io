@@ -1,0 +1,394 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-genai-prompt_3",
+  "title": "Link the prompt to a session",
+  "process": {
+    "id": "set-up-a-genai-prompt",
+    "title": "Set up a GenAI prompt",
+    "n": 3,
+    "of": 7
+  },
+  "previous": {
+    "id": "set-up-a-genai-prompt_2",
+    "title": "Write the prompt"
+  },
+  "next": {
+    "id": "set-up-a-genai-prompt_4",
+    "title": "Run it and check the answer"
+  },
+  "module": "Tools · Warehousing",
+  "modules": [
+    "Tools",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
+  "session": "GenAI Prompts by Session",
+  "sessionCode": "ttadv9160m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The command is in the Actions menu of the screen"
+      }
+    ],
+    "text": "The command is in the Actions menu of the screen"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing shows on any screen until a prompt is linked to a session code. The link is to one exact code: the command appears on that session and on no other, however alike two screens look. Three settings on the link decide whether the command is offered, to whom, and with what selected."
+      }
+    ],
+    "text": "Nothing shows on any screen until a prompt is linked to a session code. The link is to one exact code: the command appears on that session and on no other, however alike two screens look. Three settings on the link decide whether the command is offered, to whom, and with what selected."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.1"
+                }
+              ],
+              "text": "3.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the prompt and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "References ➔ GenAI Prompts by Session"
+                },
+                {
+                  "t": "text",
+                  "v": ". Do not open it from the menu"
+                }
+              ],
+              "text": "Tick the prompt and choose References ➔ GenAI Prompts by Session. Do not open it from the menu"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The prompt as the header, with no rows"
+                }
+              ],
+              "text": "The prompt as the header, with no rows"
+            }
+          ],
+          "id": "3.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.2"
+                }
+              ],
+              "text": "3.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " and type your session code across the three "
+                },
+                {
+                  "t": "field",
+                  "v": "Session"
+                },
+                {
+                  "t": "text",
+                  "v": " boxes. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "wh"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "wmd"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "4100m100"
+                }
+              ],
+              "text": "Click New and type your session code across the three Session boxes. Example: wh, wmd and 4100m100"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The screen's name appears. Example: Company - Item Inventory"
+                }
+              ],
+              "text": "The screen's name appears. Example: Company - Item Inventory"
+            }
+          ],
+          "id": "3.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.3"
+                }
+              ],
+              "text": "3.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "When Enabled"
+                },
+                {
+                  "t": "text",
+                  "v": ": "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                },
+                {
+                  "t": "text",
+                  "v": " for the row in view or the ticked rows, "
+                },
+                {
+                  "t": "literal",
+                  "v": "Records Selected"
+                },
+                {
+                  "t": "text",
+                  "v": " to wait for a tick. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                }
+              ],
+              "text": "Set When Enabled: Always for the row in view or the ticked rows, Records Selected to wait for a tick. Example: Always"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.4"
+                }
+              ],
+              "text": "3.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The row stays"
+                }
+              ],
+              "text": "The row stays"
+            }
+          ],
+          "id": "3.4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "GenAI Prompts by Session"
+              },
+              {
+                "t": "text",
+                "v": " opens with a session as its header, not the prompt"
+              }
+            ],
+            "text": "GenAI Prompts by Session opens with a session as its header, not the prompt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It was opened from the menu, or with no prompt ticked. Step to your screen with the group arrows on the toolbar, click "
+              },
+              {
+                "t": "button",
+                "label": "New"
+              },
+              {
+                "t": "text",
+                "v": " and enter the prompt's name in "
+              },
+              {
+                "t": "field",
+                "v": "GenAI Prompt"
+              },
+              {
+                "t": "text",
+                "v": "; the link is the same"
+              }
+            ],
+            "text": "It was opened from the menu, or with no prompt ticked. Step to your screen with the group arrows on the toolbar, click New and enter the prompt's name in GenAI Prompt; the link is the same"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Enter a value for the Module field."
+              }
+            ],
+            "text": "Enter a value for the Module field."
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The session is three boxes: package, module and code. Type the module in its own box, as in 3.2"
+              }
+            ],
+            "text": "The session is three boxes: package, module and code. Type the module in its own box, as in 3.2"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "The same commands on another screen"
+              }
+            ],
+            "text": "The same commands on another screen"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Repeat phase 3 with the other screen's code, or copy the links: open "
+              },
+              {
+                "t": "chip",
+                "v": "GenAI Prompts by Session"
+              },
+              {
+                "t": "text",
+                "v": " from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with "
+              },
+              {
+                "t": "field",
+                "v": "Import Only in This View"
+              },
+              {
+                "t": "text",
+                "v": " ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+              }
+            ],
+            "text": "Repeat phase 3 with the other screen's code, or copy the links: open GenAI Prompts by Session from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with Import Only in This View ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+          }
+        ]
+      }
+    ]
+  }
+}

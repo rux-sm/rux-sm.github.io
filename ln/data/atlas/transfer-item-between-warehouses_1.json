@@ -1,0 +1,507 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "transfer-item-between-warehouses_1",
+  "title": "Create the transfer order",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 1,
+    "of": 7
+  },
+  "previous": {
+    "id": "transfer-item-between-warehouses_0",
+    "title": "Confirm stock, destination, and expected order type"
+  },
+  "next": {
+    "id": "transfer-item-between-warehouses_2",
+    "title": "Confirm the processing path and create advice"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Warehousing ➔ Orders ➔ Orders",
+  "session": "Warehousing Orders",
+  "sessionCode": "whinh2100m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A warehousing order exists with transaction type "
+      },
+      {
+        "t": "chip",
+        "v": "Transfer"
+      }
+    ],
+    "text": "A warehousing order exists with transaction type Transfer"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+      }
+    ],
+    "text": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.1"
+                }
+              ],
+              "text": "1.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Warehousing ➔ Orders ➔ Orders"
+                }
+              ],
+              "text": "Open Warehousing ➔ Orders ➔ Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Warehousing Orders (whinh2100m000) opens"
+            }
+          ],
+          "id": "1.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.2"
+                }
+              ],
+              "text": "1.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A blank warehousing-order header opens"
+                }
+              ],
+              "text": "A blank warehousing-order header opens"
+            }
+          ],
+          "id": "1.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.3"
+                }
+              ],
+              "text": "1.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " origin to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Transfer (Manual)"
+                }
+              ],
+              "text": "Set Order origin to Transfer (Manual)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "This is one of the ten manual order origins listed in the session help — section 3.1"
+                }
+              ],
+              "text": "This is one of the ten manual order origins listed in the session help — section 3.1"
+            }
+          ],
+          "id": "1.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.4"
+                }
+              ],
+              "text": "1.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Transaction Type"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Transfer"
+                }
+              ],
+              "text": "Set Inventory Transaction Type to Transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only settable by hand because the order has no originating package — section 3.1"
+                }
+              ],
+              "text": "Only settable by hand because the order has no originating package — section 3.1"
+            }
+          ],
+          "id": "1.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.5"
+                }
+              ],
+              "text": "1.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-From Code"
+                },
+                {
+                  "t": "text",
+                  "v": " to the source warehouse from 0.1, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-To Code"
+                },
+                {
+                  "t": "text",
+                  "v": " to the destination warehouse from 0.2"
+                }
+              ],
+              "text": "Set Ship-From Code to the source warehouse from 0.1, and Ship-To Code to the destination warehouse from 0.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both types read "
+                },
+                {
+                  "t": "literal",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " — the condition for the Transfer transaction type"
+                }
+              ],
+              "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+            }
+          ],
+          "id": "1.5",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "0.1",
+            "0.2"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.6"
+                }
+              ],
+              "text": "1.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare the defaulted "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehousing Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " with step 0.4 and record the value actually used"
+                }
+              ],
+              "text": "Compare the defaulted Warehousing Order Type with step 0.4 and record the value actually used"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "actual warehousing order type"
+                }
+              ],
+              "text": "actual warehousing order type"
+            }
+          ],
+          "id": "1.6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.7"
+                }
+              ],
+              "text": "1.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the header"
+                }
+              ],
+              "text": "Save the header"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "transfer order number"
+                }
+              ],
+              "text": "transfer order number"
+            }
+          ],
+          "id": "1.7",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.8"
+                }
+              ],
+              "text": "1.8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add an order line: the item from 0.1 and the quantity to move"
+                }
+              ],
+              "text": "Add an order line: the item from 0.1 and the quantity to move"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "transferred quantity"
+                }
+              ],
+              "text": "transferred quantity"
+            }
+          ],
+          "id": "1.8",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "0.1"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.9"
+                }
+              ],
+              "text": "1.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the line"
+                }
+              ],
+              "text": "Save the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1.9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No order number appears"
+              }
+            ],
+            "text": "No order number appears"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Header not saved, or a required field is still blank — recheck 1.3–1.6"
+              }
+            ],
+            "text": "Header not saved, or a required field is still blank — recheck 1.3–1.6"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

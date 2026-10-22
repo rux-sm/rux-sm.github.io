@@ -1,0 +1,580 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "ship-from-stock_2",
+  "title": "Release to warehousing",
+  "process": {
+    "id": "ship-from-stock",
+    "title": "Ship from stock",
+    "n": 2,
+    "of": 7
+  },
+  "previous": {
+    "id": "ship-from-stock_1",
+    "title": "Create and approve the sales order"
+  },
+  "next": {
+    "id": "ship-from-stock_3",
+    "title": "Generate outbound advice"
+  },
+  "module": "Sales · Warehousing",
+  "modules": [
+    "Sales",
+    "Warehousing"
+  ],
+  "status": "approved",
+  "updated": "2026-10-04",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": "2026-08-08",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Warehousing order exists"
+      }
+    ],
+    "text": "Warehousing order exists"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the "
+      },
+      {
+        "t": "em",
+        "v": "Lines ready for"
+      },
+      {
+        "t": "text",
+        "v": " panel only counts."
+      }
+    ],
+    "text": "Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the Lines ready for panel only counts."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.1"
+                }
+              ],
+              "text": "2.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select your order in the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " grid"
+                }
+              ],
+              "text": "Select your order in the Sales Orders grid"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.2"
+                }
+              ],
+              "text": "2.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release ➔ Release to Warehousing…"
+                }
+              ],
+              "text": "Actions ➔ Release ➔ Release to Warehousing…"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The release session opens"
+                }
+              ],
+              "text": "The release session opens"
+            }
+          ],
+          "id": "2.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.3"
+                }
+              ],
+              "text": "2.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Upto Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " on or after the order line's "
+                },
+                {
+                  "t": "field",
+                  "v": "Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " — it defaults to the planned delivery date minus the outbound lead time"
+                }
+              ],
+              "text": "Set Upto Release Date on or after the order line's Release Date — it defaults to the planned delivery date minus the outbound lead time"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.4"
+                }
+              ],
+              "text": "2.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Leave the Options ticked"
+                }
+              ],
+              "text": "Leave the Options ticked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Print Errors"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "Print Released Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " · "
+                },
+                {
+                  "t": "field",
+                  "v": "Print to predefined Device"
+                }
+              ],
+              "text": "Print Errors · Print Released Lines · Print to predefined Device"
+            }
+          ],
+          "id": "2.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.5"
+                }
+              ],
+              "text": "2.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "RELEASE"
+                }
+              ],
+              "text": "Click RELEASE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Log Report prints"
+                }
+              ],
+              "text": "Log Report prints"
+            }
+          ],
+          "id": "2.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.6"
+                }
+              ],
+              "text": "2.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Order Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Open the Order Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2.6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.7"
+                }
+              ],
+              "text": "2.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find your order and tick it"
+                }
+              ],
+              "text": "Find your order and tick it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2.7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2.8"
+                }
+              ],
+              "text": "2.8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "References ➔ Status"
+                }
+              ],
+              "text": "References ➔ Status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdsls4534s000",
+                  "name": "Sales Order Line Status"
+                },
+                {
+                  "t": "text",
+                  "v": " opens on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Activities 1"
+                },
+                {
+                  "t": "text",
+                  "v": ". "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Sales Orders to Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Executed"
+                }
+              ],
+              "text": "Sales Order Line Status (tdsls4534s000) opens on Activities 1. Release Sales Orders to Warehousing = Executed"
+            }
+          ],
+          "id": "2.8",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Clicking "
+              },
+              {
+                "t": "chip",
+                "v": "RELEASE TO WAREHOUSING"
+              },
+              {
+                "t": "text",
+                "v": " in "
+              },
+              {
+                "t": "field",
+                "v": "Lines ready for"
+              },
+              {
+                "t": "text",
+                "v": " does nothing"
+              }
+            ],
+            "text": "Clicking RELEASE TO WAREHOUSING in Lines ready for does nothing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "That panel counts lines; it does not act. Use "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Release"
+              }
+            ],
+            "text": "That panel counts lines; it does not act. Use Actions ➔ Release"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Order absent from the release selection"
+              }
+            ],
+            "text": "Order absent from the release selection"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Upto Release Date"
+              },
+              {
+                "t": "text",
+                "v": " is earlier than the order line's "
+              },
+              {
+                "t": "field",
+                "v": "Release Date"
+              },
+              {
+                "t": "text",
+                "v": " (planned delivery date minus outbound lead time)"
+              }
+            ],
+            "text": "Upto Release Date is earlier than the order line's Release Date (planned delivery date minus outbound lead time)"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No warehousing order"
+              }
+            ],
+            "text": "No warehousing order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Release did not run. Check "
+              },
+              {
+                "t": "chip",
+                "v": "Activities 1"
+              },
+              {
+                "t": "text",
+                "v": " at 2.8 — if it reads "
+              },
+              {
+                "t": "status",
+                "v": "Free"
+              },
+              {
+                "t": "text",
+                "v": ", run it from "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Release"
+              }
+            ],
+            "text": "Release did not run. Check Activities 1 at 2.8 — if it reads Free, run it from Actions ➔ Release"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Activity shows "
+              },
+              {
+                "t": "chip",
+                "v": "Automatic: No"
+              }
+            ],
+            "text": "Activity shows Automatic: No"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "That activity never fires on approval in this configuration. Run it by hand"
+              }
+            ],
+            "text": "That activity never fires on approval in this configuration. Run it by hand"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

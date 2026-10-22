@@ -1,0 +1,684 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-basic-test-items-and-defaults_3",
+  "title": "Configure the made group",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 3,
+    "of": 11
+  },
+  "previous": {
+    "id": "create-basic-test-items-and-defaults_2",
+    "title": "Configure the purchased group"
+  },
+  "next": {
+    "id": "create-basic-test-items-and-defaults_4",
+    "title": "Verify site creation control"
+  },
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-03",
+  "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",
+  "session": "Item Defaults",
+  "sessionCode": "tcibd0102m000",
+  "walked": "2026-08-16",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "literal",
+        "v": "BAM-FG"
+      },
+      {
+        "t": "text",
+        "v": " can create Ordering, Production, Warehousing, and Sales data"
+      }
+    ],
+    "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The same mechanism as phase 2 with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined."
+      }
+    ],
+    "text": "The same mechanism as phase 2 with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing "
+        },
+        {
+          "t": "literal",
+          "v": "M010"
+        },
+        {
+          "t": "text",
+          "v": " finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. "
+        }
+      ],
+      "text": "> Warning > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.1"
+                }
+              ],
+              "text": "3.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat 2.1–2.9 for the made group from 1.6, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Default Supply Source"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                },
+                {
+                  "t": "text",
+                  "v": " and, on the site row, the finished warehouse from 0.6 and "
+                },
+                {
+                  "t": "field",
+                  "v": "Supply Source"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "Job Shop"
+                }
+              ],
+              "text": "Repeat 2.1–2.9 for the made group from 1.6, with Default Supply Source = Job Shop and, on the site row, the finished warehouse from 0.6 and Supply Source = Job Shop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "made default supply source"
+                },
+                {
+                  "t": "text",
+                  "v": " — the Product/"
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-FG"
+                },
+                {
+                  "t": "text",
+                  "v": " combination exists with its site row"
+                }
+              ],
+              "text": "made default supply source — the Product/BAM-FG combination exists with its site row"
+            }
+          ],
+          "id": "3.1",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "1.6",
+            "0.6"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.2"
+                }
+              ],
+              "text": "3.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat 2.10–2.12 for "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing"
+                },
+                {
+                  "t": "text",
+                  "v": ", comparing each with an approved finished Product/Job Shop reference"
+                }
+              ],
+              "text": "Repeat 2.10–2.12 for Ordering and Warehousing, comparing each with an approved finished Product/Job Shop reference"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both indicators active, both Create boxes selected, no unapproved planning value introduced"
+                }
+              ],
+              "text": "Both indicators active, both Create boxes selected, no unapproved planning value introduced"
+            }
+          ],
+          "id": "3.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.3"
+                }
+              ],
+              "text": "3.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the blue "
+                },
+                {
+                  "t": "button",
+                  "label": "Production"
+                },
+                {
+                  "t": "text",
+                  "v": " link"
+                }
+              ],
+              "text": "Open the blue Production link"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tiipd0102m100",
+                  "name": "Item - Production Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Item - Production Defaults (tiipd0102m100) opens"
+            }
+          ],
+          "id": "3.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.4"
+                }
+              ],
+              "text": "3.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare every visible field with the made-group Production values in the family sheet §4 and select "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Compare every visible field with the made-group Production values in the family sheet §4 and select OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Production defaults close without an error"
+                }
+              ],
+              "text": "The Production defaults close without an error"
+            }
+          ],
+          "id": "3.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.5"
+                }
+              ],
+              "text": "3.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the Production indicator is active and select the Create check box beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production"
+                }
+              ],
+              "text": "Confirm the Production indicator is active and select the Create check box beside Production"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "New items are marked to receive Production data"
+                }
+              ],
+              "text": "New items are marked to receive Production data"
+            }
+          ],
+          "id": "3.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.6"
+                }
+              ],
+              "text": "3.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the blue "
+                },
+                {
+                  "t": "button",
+                  "label": "Sales"
+                },
+                {
+                  "t": "text",
+                  "v": " link"
+                }
+              ],
+              "text": "Open the blue Sales link"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdisa0102s000",
+                  "name": "Item - Sales Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Item - Sales Defaults (tdisa0102s000) opens"
+            }
+          ],
+          "id": "3.6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.7"
+                }
+              ],
+              "text": "3.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Complete the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ordering"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Price"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Delivery"
+                },
+                {
+                  "t": "text",
+                  "v": " tabs from the made-group Sales values in the family sheet §4 and select "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Complete the Ordering, Price and Delivery tabs from the made-group Sales values in the family sheet §4 and select OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Sales defaults are saved"
+                }
+              ],
+              "text": "The Sales defaults are saved"
+            }
+          ],
+          "id": "3.7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.8"
+                }
+              ],
+              "text": "3.8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If asked "
+                },
+                {
+                  "t": "chip",
+                  "v": "Perform Global Update of Sales Items with New Defaults?"
+                },
+                {
+                  "t": "text",
+                  "v": ", select "
+                },
+                {
+                  "t": "button",
+                  "label": "No"
+                },
+                {
+                  "t": "text",
+                  "v": ". If "
+                },
+                {
+                  "t": "session",
+                  "code": "tdisa0202m000",
+                  "name": "Global Update of Item with Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, do not select "
+                },
+                {
+                  "t": "chip",
+                  "v": "Update"
+                },
+                {
+                  "t": "text",
+                  "v": "; select "
+                },
+                {
+                  "t": "button",
+                  "label": "Close"
+                }
+              ],
+              "text": "If asked Perform Global Update of Sales Items with New Defaults?, select No. If Global Update of Item with Defaults (tdisa0202m000) opens, do not select Update; select Close"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Existing Sales items are not changed"
+                }
+              ],
+              "text": "Existing Sales items are not changed"
+            }
+          ],
+          "id": "3.8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.9"
+                }
+              ],
+              "text": "3.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the Sales indicator is active and select the Create check box beside "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales"
+                }
+              ],
+              "text": "Confirm the Sales indicator is active and select the Create check box beside Sales"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "New items are marked to receive Sales data"
+                }
+              ],
+              "text": "New items are marked to receive Sales data"
+            }
+          ],
+          "id": "3.9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3.10"
+                }
+              ],
+              "text": "3.10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0502m000",
+                  "name": "Item Defaults"
+                },
+                {
+                  "t": "text",
+                  "v": ", close and reopen the Product/"
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-FG"
+                },
+                {
+                  "t": "text",
+                  "v": " default, and reopen Sales ➔ "
+                },
+                {
+                  "t": "chip",
+                  "v": "Price"
+                }
+              ],
+              "text": "Save Item Defaults (tcibd0502m000), close and reopen the Product/BAM-FG default, and reopen Sales ➔ Price"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "made global subentities"
+                },
+                {
+                  "t": "text",
+                  "v": " — four active indicators, and "
+                },
+                {
+                  "t": "literal",
+                  "v": "USD"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "ea"
+                },
+                {
+                  "t": "text",
+                  "v": ", both "
+                },
+                {
+                  "t": "literal",
+                  "v": "S10.10"
+                },
+                {
+                  "t": "text",
+                  "v": " groups and "
+                },
+                {
+                  "t": "literal",
+                  "v": "NOTAX"
+                },
+                {
+                  "t": "text",
+                  "v": " return"
+                }
+              ],
+              "text": "made global subentities — four active indicators, and USD, ea, both S10.10 groups and NOTAX return"
+            }
+          ],
+          "id": "3.10",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

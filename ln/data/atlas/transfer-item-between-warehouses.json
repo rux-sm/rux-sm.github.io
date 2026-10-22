@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "transfer-item-between-warehouses",
   "title": "Warehouse transfer",
   "module": "Warehousing",
@@ -27,6 +28,144 @@
     "whinh4630m000",
     "whwmd2515m000",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Know the item's stock before you start: Check an item's inventory."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "transfer-item-between-warehouses_0",
+      "n": 0,
+      "title": "Confirm stock, destination, and expected order type",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Stock is known and the expected transfer configuration is recorded"
+          }
+        ],
+        "text": "Stock is known and the expected transfer configuration is recorded"
+      },
+      "steps": 4,
+      "walked": "2026-08-15"
+    },
+    {
+      "id": "transfer-item-between-warehouses_1",
+      "n": 1,
+      "title": "Create the transfer order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A warehousing order exists with transaction type "
+          },
+          {
+            "t": "chip",
+            "v": "Transfer"
+          }
+        ],
+        "text": "A warehousing order exists with transaction type Transfer"
+      },
+      "steps": 9,
+      "walked": "2026-08-15"
+    },
+    {
+      "id": "transfer-item-between-warehouses_2",
+      "n": 2,
+      "title": "Confirm the processing path and create advice",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Manual and automatic activities are known before processing continues"
+          }
+        ],
+        "text": "Manual and automatic activities are known before processing continues"
+      },
+      "steps": 7,
+      "walked": "2026-08-15"
+    },
+    {
+      "id": "transfer-item-between-warehouses_3",
+      "n": 3,
+      "title": "Pick the goods",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Stock physically moves to staging at the source"
+          }
+        ],
+        "text": "Stock physically moves to staging at the source"
+      },
+      "steps": 5,
+      "walked": null
+    },
+    {
+      "id": "transfer-item-between-warehouses_4",
+      "n": 4,
+      "title": "Ship",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Goods leave the source warehouse"
+          }
+        ],
+        "text": "Goods leave the source warehouse"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "transfer-item-between-warehouses_5",
+      "n": 5,
+      "title": "Receive at the destination",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Goods are put away in the destination warehouse"
+          }
+        ],
+        "text": "Goods are put away in the destination warehouse"
+      },
+      "steps": 3,
+      "walked": null
+    },
+    {
+      "id": "transfer-item-between-warehouses_6",
+      "n": 6,
+      "title": "Verify it worked",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Source on-hand down, destination on-hand up, by the same quantity"
+          }
+        ],
+        "text": "Source on-hand down, destination on-hand up, by the same quantity"
+      },
+      "steps": 1,
+      "walked": null
+    }
   ],
   "phases": [
     {

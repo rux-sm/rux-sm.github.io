@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "purchase-order-to-warehouse-receipt",
   "title": "Purchase to receipt",
   "module": "Procurement · Warehousing",
@@ -32,6 +33,150 @@
     "whwmd1140s000",
     "whwmd2515m000",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Know the item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Know the item's stock before you start: Check an item's inventory."
+    },
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The materials exist as items with purchase defaults, and the receiving warehouse exists. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+        }
+      ],
+      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Create test items phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "purchase-order-to-warehouse-receipt_0",
+      "n": 0,
+      "title": "Read the baseline",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "On-hand at the receiving warehouse is recorded before anything is booked"
+          }
+        ],
+        "text": "On-hand at the receiving warehouse is recorded before anything is booked"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "purchase-order-to-warehouse-receipt_1",
+      "n": 1,
+      "title": "Create the purchase order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "An order exists against a buy-from business partner"
+          }
+        ],
+        "text": "An order exists against a buy-from business partner"
+      },
+      "steps": 5,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "purchase-order-to-warehouse-receipt_2",
+      "n": 2,
+      "title": "Book the lines",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Each material is ordered in the right quantity, to the right warehouse"
+          }
+        ],
+        "text": "Each material is ordered in the right quantity, to the right warehouse"
+      },
+      "steps": 5,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "purchase-order-to-warehouse-receipt_3",
+      "n": 3,
+      "title": "Receive against the order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "LN's generated inbound order is found and receiving is started"
+          }
+        ],
+        "text": "LN's generated inbound order is found and receiving is started"
+      },
+      "steps": 4,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "purchase-order-to-warehouse-receipt_4",
+      "n": 4,
+      "title": "Confirm the receipt",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The receipt reaches "
+          },
+          {
+            "t": "status",
+            "v": "Confirmed"
+          },
+          {
+            "t": "text",
+            "v": " with all lines final and complete"
+          }
+        ],
+        "text": "The receipt reaches Confirmed with all lines final and complete"
+      },
+      "steps": 6,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "purchase-order-to-warehouse-receipt_5",
+      "n": 5,
+      "title": "Verify the inventory increase",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "On-hand rose by exactly the quantity received"
+          }
+        ],
+        "text": "On-hand rose by exactly the quantity received"
+      },
+      "steps": 3,
+      "walked": null
+    }
   ],
   "phases": [
     {

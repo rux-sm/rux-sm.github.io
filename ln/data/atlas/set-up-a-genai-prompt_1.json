@@ -1,0 +1,994 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-genai-prompt_1",
+  "title": "Model the dataset",
+  "process": {
+    "id": "set-up-a-genai-prompt",
+    "title": "Set up a GenAI prompt",
+    "n": 1,
+    "of": 7
+  },
+  "previous": {
+    "id": "set-up-a-genai-prompt_0",
+    "title": "Plan the prompt"
+  },
+  "next": {
+    "id": "set-up-a-genai-prompt_2",
+    "title": "Write the prompt"
+  },
+  "module": "Tools · Warehousing",
+  "modules": [
+    "Tools",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",
+  "session": "Datasets",
+  "sessionCode": "ttrpi5100m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The fields the answer needs are ready to send"
+      }
+    ],
+    "text": "The fields the answer needs are ready to send"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
+      }
+    ],
+    "text": "A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.1"
+                }
+              ],
+              "text": "1.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Datasets"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Open Datasets and click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Dataset Configuration"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Dataset Configuration opens"
+            }
+          ],
+          "id": "1.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.2"
+                }
+              ],
+              "text": "1.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a "
+                },
+                {
+                  "t": "field",
+                  "v": "Dataset Name"
+                },
+                {
+                  "t": "text",
+                  "v": " in lowercase and a "
+                },
+                {
+                  "t": "field",
+                  "v": "Description"
+                },
+                {
+                  "t": "text",
+                  "v": ". Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "item_stock"
+                }
+              ],
+              "text": "Enter a Dataset Name in lowercase and a Description. Example: item_stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "dataset name"
+                }
+              ],
+              "text": "dataset name"
+            }
+          ],
+          "id": "1.2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.3"
+                }
+              ],
+              "text": "1.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type your table in "
+                },
+                {
+                  "t": "field",
+                  "v": "Main table"
+                },
+                {
+                  "t": "text",
+                  "v": ". Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "whwmd400"
+                }
+              ],
+              "text": "Type your table in Main table. Example: whwmd400"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.4"
+                }
+              ],
+              "text": "1.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Selection Index"
+                },
+                {
+                  "t": "text",
+                  "v": " to the screen's key. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "1 - Item"
+                }
+              ],
+              "text": "Set Selection Index to the screen's key. Example: 1 - Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.5"
+                }
+              ],
+              "text": "1.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Modeler lists the table's fields, none ticked"
+                }
+              ],
+              "text": "The Modeler lists the table's fields, none ticked"
+            }
+          ],
+          "id": "1.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.6"
+                }
+              ],
+              "text": "1.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the fields of that index. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "item"
+                }
+              ],
+              "text": "Tick the fields of that index. Example: item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1.6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.7"
+                }
+              ],
+              "text": "1.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the list above the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Tables"
+                },
+                {
+                  "t": "text",
+                  "v": " tree to "
+                },
+                {
+                  "t": "literal",
+                  "v": "By Name"
+                }
+              ],
+              "text": "Set the list above the Tables tree to By Name"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each branch lists its tables in the order of their codes"
+                }
+              ],
+              "text": "Each branch lists its tables in the order of their codes"
+            }
+          ],
+          "id": "1.7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.8"
+                }
+              ],
+              "text": "1.8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a value behind a code, expand "
+                },
+                {
+                  "t": "chip",
+                  "v": "Refers to"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose the table and tick the field. Example: Items ("
+                },
+                {
+                  "t": "literal",
+                  "v": "tcibd001"
+                },
+                {
+                  "t": "text",
+                  "v": "), then "
+                },
+                {
+                  "t": "literal",
+                  "v": "dsca"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "cuni"
+                }
+              ],
+              "text": "For a value behind a code, expand Refers to, choose the table and tick the field. Example: Items (tcibd001), then dsca and cuni"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "That table's fields. Example: Description and Inventory Unit"
+                }
+              ],
+              "text": "That table's fields. Example: Description and Inventory Unit"
+            }
+          ],
+          "id": "1.8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.9"
+                }
+              ],
+              "text": "1.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For rows that belong to the record, expand "
+                },
+                {
+                  "t": "chip",
+                  "v": "Referred by"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose the table and tick its fields. Example: Item Inventory by Warehouse ("
+                },
+                {
+                  "t": "literal",
+                  "v": "whwmd215"
+                },
+                {
+                  "t": "text",
+                  "v": "), then "
+                },
+                {
+                  "t": "literal",
+                  "v": "cwar"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "qhnd"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "qblk"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "qord"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "qall"
+                }
+              ],
+              "text": "For rows that belong to the record, expand Referred by, choose the table and tick its fields. Example: Item Inventory by Warehouse (whwmd215), then cwar, qhnd, qblk, qord and qall"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "That table's fields, none ticked until you tick them"
+                }
+              ],
+              "text": "That table's fields, none ticked until you tick them"
+            }
+          ],
+          "id": "1.9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.10"
+                }
+              ],
+              "text": "1.10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do the same for each other set of rows. Example: Planned Inventory Transactions by Item ("
+                },
+                {
+                  "t": "literal",
+                  "v": "whinp100"
+                },
+                {
+                  "t": "text",
+                  "v": "), then "
+                },
+                {
+                  "t": "literal",
+                  "v": "koor"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "orno"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "kotr"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "pono"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "qana"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "date"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "cwar"
+                }
+              ],
+              "text": "Do the same for each other set of rows. Example: Planned Inventory Transactions by Item (whinp100), then koor, orno, kotr, pono, qana, date and cwar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1.10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.11"
+                }
+              ],
+              "text": "1.11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "For a name behind a code in those rows, expand the table and then its own "
+                },
+                {
+                  "t": "chip",
+                  "v": "Refers to"
+                },
+                {
+                  "t": "text",
+                  "v": ". Example: under Item Inventory by Warehouse, Warehouses ("
+                },
+                {
+                  "t": "literal",
+                  "v": "whwmd200"
+                },
+                {
+                  "t": "text",
+                  "v": "), then Warehouses ("
+                },
+                {
+                  "t": "literal",
+                  "v": "tcmcs003"
+                },
+                {
+                  "t": "text",
+                  "v": "), and tick "
+                },
+                {
+                  "t": "literal",
+                  "v": "dsca"
+                }
+              ],
+              "text": "For a name behind a code in those rows, expand the table and then its own Refers to. Example: under Item Inventory by Warehouse, Warehouses (whwmd200), then Warehouses (tcmcs003), and tick dsca"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The path to the table, printed above the tree"
+                }
+              ],
+              "text": "The path to the table, printed above the tree"
+            }
+          ],
+          "id": "1.11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.12"
+                }
+              ],
+              "text": "1.12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Drag the bar under the two panels upward"
+                }
+              ],
+              "text": "Drag the bar under the two panels upward"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Selected Fields"
+                },
+                {
+                  "t": "text",
+                  "v": " lists every field ticked, under its table"
+                }
+              ],
+              "text": "Selected Fields lists every field ticked, under its table"
+            }
+          ],
+          "id": "1.12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.13"
+                }
+              ],
+              "text": "1.13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No message"
+                }
+              ],
+              "text": "No message"
+            }
+          ],
+          "id": "1.13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.14"
+                }
+              ],
+              "text": "1.14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "Datasets"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
+                }
+              ],
+              "text": "On Datasets, click Refresh"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Your dataset is listed"
+                }
+              ],
+              "text": "Your dataset is listed"
+            }
+          ],
+          "id": "1.14",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It is not clear which index is the screen's key"
+              }
+            ],
+            "text": "It is not clear which index is the screen's key"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Open Find on the screen. Its first way to search is the key"
+              }
+            ],
+            "text": "Open Find on the screen. Its first way to search is the key"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A table cannot be found under "
+              },
+              {
+                "t": "chip",
+                "v": "Referred by"
+              }
+            ],
+            "text": "A table cannot be found under Referred by"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Set the list above the tree to "
+              },
+              {
+                "t": "literal",
+                "v": "By Name"
+              },
+              {
+                "t": "text",
+                "v": ", as in 1.7, and go down to the table's code"
+              }
+            ],
+            "text": "Set the list above the tree to By Name, as in 1.7, and go down to the table's code"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The list under "
+              },
+              {
+                "t": "chip",
+                "v": "Referred by"
+              },
+              {
+                "t": "text",
+                "v": " is too long to work down"
+              }
+            ],
+            "text": "The list under Referred by is too long to work down"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The screen's table is too far from the data. Use a screen whose own table is one step from it"
+              }
+            ],
+            "text": "The screen's table is too far from the data. Use a screen whose own table is one step from it"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A field's code is not known"
+              }
+            ],
+            "text": "A field's code is not known"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Type part of its name in the box above "
+              },
+              {
+                "t": "field",
+                "v": "Description"
+              }
+            ],
+            "text": "Type part of its name in the box above Description"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The Dataset Modeler opens as two empty panes"
+              }
+            ],
+            "text": "The Dataset Modeler opens as two empty panes"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
+              }
+            ],
+            "text": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The lookup on "
+              },
+              {
+                "t": "field",
+                "v": "Main table"
+              },
+              {
+                "t": "text",
+                "v": " lists nothing"
+              }
+            ],
+            "text": "The lookup on Main table lists nothing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It shows one package at a time. Type the table's code, as in 1.3"
+              }
+            ],
+            "text": "It shows one package at a time. Type the table's code, as in 1.3"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

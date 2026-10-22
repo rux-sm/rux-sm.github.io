@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "manual-production-order-existing-master-data",
   "title": "Production order",
   "module": "Manufacturing · Warehousing",
@@ -33,6 +34,152 @@
     "whinh3122m000",
     "whwmd2515m000",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. "
+        },
+        {
+          "t": "strong",
+          "v": "Where a training case comes from."
+        },
+        {
+          "t": "text",
+          "v": " If none has been handed to you, "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 0.5 above asks for."
+        }
+      ],
+      "text": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. Where a training case comes from. If none has been handed to you, Create test items builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 0.5 above asks for."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "manual-production-order-existing-master-data_0",
+      "n": 0,
+      "title": "Confirm the existing foundation",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A qualified finished item, component, BOM, routing, warehouses, and stock are known"
+          }
+        ],
+        "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known"
+      },
+      "steps": 6,
+      "walked": "2026-08-12"
+    },
+    {
+      "id": "manual-production-order-existing-master-data_1",
+      "n": 1,
+      "title": "Create the production order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A quantity-one order exists at "
+          },
+          {
+            "t": "chip",
+            "v": "Created"
+          },
+          {
+            "t": "text",
+            "v": " status"
+          }
+        ],
+        "text": "A quantity-one order exists at Created status"
+      },
+      "steps": 8,
+      "walked": "2026-08-12"
+    },
+    {
+      "id": "manual-production-order-existing-master-data_2",
+      "n": 2,
+      "title": "Verify the generated foundation",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The expected BOM, routing, operation, and estimated component are attached"
+          }
+        ],
+        "text": "The expected BOM, routing, operation, and estimated component are attached"
+      },
+      "steps": 6,
+      "walked": "2026-08-12"
+    },
+    {
+      "id": "manual-production-order-existing-master-data_3",
+      "n": 3,
+      "title": "Release the order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The order is "
+          },
+          {
+            "t": "chip",
+            "v": "Released"
+          },
+          {
+            "t": "text",
+            "v": "; warehousing issue and receipt orders exist"
+          }
+        ],
+        "text": "The order is Released; warehousing issue and receipt orders exist"
+      },
+      "steps": 5,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "manual-production-order-existing-master-data_4",
+      "n": 4,
+      "title": "Issue material to the job shop",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The component is issued; the order is "
+          },
+          {
+            "t": "chip",
+            "v": "Active"
+          }
+        ],
+        "text": "The component is issued; the order is Active"
+      },
+      "steps": 8,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "manual-production-order-existing-master-data_5",
+      "n": 5,
+      "title": "Report the operation complete and confirm warehouse receipt",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The finished item is posted to inventory and on-hand increases at the receiving warehouse"
+          }
+        ],
+        "text": "The finished item is posted to inventory and on-hand increases at the receiving warehouse"
+      },
+      "steps": 8,
+      "walked": "2026-08-18"
+    }
   ],
   "phases": [
     {

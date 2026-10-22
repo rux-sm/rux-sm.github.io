@@ -1,0 +1,409 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "purchase-order-to-warehouse-receipt_1",
+  "title": "Create the purchase order",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 1,
+    "of": 6
+  },
+  "previous": {
+    "id": "purchase-order-to-warehouse-receipt_0",
+    "title": "Read the baseline"
+  },
+  "next": {
+    "id": "purchase-order-to-warehouse-receipt_2",
+    "title": "Book the lines"
+  },
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": "2026-08-18",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An order exists against a buy-from business partner"
+      }
+    ],
+    "text": "An order exists against a buy-from business partner"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The buy-from business partner decides most of the header: LN defaults the "
+      },
+      {
+        "t": "em",
+        "v": "Purchase Order Type"
+      },
+      {
+        "t": "text",
+        "v": ", "
+      },
+      {
+        "t": "em",
+        "v": "Purchase Office"
+      },
+      {
+        "t": "text",
+        "v": " and "
+      },
+      {
+        "t": "em",
+        "v": "Buyer"
+      },
+      {
+        "t": "text",
+        "v": " from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+      }
+    ],
+    "text": "The buy-from business partner decides most of the header: LN defaults the Purchase Order Type, Purchase Office and Buyer from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.1"
+                }
+              ],
+              "text": "1.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4601m200",
+                  "name": "Purchase Order Intake Workbench"
+                }
+              ],
+              "text": "Open Purchase Order Intake Workbench (tdpur4601m200)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The intake workbench opens"
+                }
+              ],
+              "text": "The intake workbench opens"
+            }
+          ],
+          "id": "1.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.2"
+                }
+              ],
+              "text": "1.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Start a new order"
+                }
+              ],
+              "text": "Start a new order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A blank "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4100m900",
+                  "name": "Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "A blank Purchase Order (tdpur4100m900) opens"
+            }
+          ],
+          "id": "1.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.3"
+                }
+              ],
+              "text": "1.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Buy-from Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": ", using the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Buy-from Business Partners"
+                },
+                {
+                  "t": "text",
+                  "v": " lookup ("
+                },
+                {
+                  "t": "session",
+                  "code": "tccom4520m000"
+                },
+                {
+                  "t": "text",
+                  "v": ")"
+                }
+              ],
+              "text": "Set Buy-from Business Partner, using the Buy-from Business Partners lookup (tccom4520m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "buy-from business partner"
+                },
+                {
+                  "t": "text",
+                  "v": " — the walked run used one of the standard test partners "
+                }
+              ],
+              "text": "buy-from business partner — the walked run used one of the standard test partners"
+            }
+          ],
+          "id": "1.3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.4"
+                }
+              ],
+              "text": "1.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Office"
+                },
+                {
+                  "t": "text",
+                  "v": " that LN defaulted from the partner selected at 1.3"
+                }
+              ],
+              "text": "Confirm the Purchase Order Type and Purchase Office that LN defaulted from the partner selected at 1.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The walked run showed "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                },
+                {
+                  "t": "text",
+                  "v": " (Inventory Purchase Order) and the partner's purchase office "
+                }
+              ],
+              "text": "The walked run showed IPO (Inventory Purchase Order) and the partner's purchase office"
+            }
+          ],
+          "id": "1.4",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "1.3"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1.5"
+                }
+              ],
+              "text": "1.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the header"
+                }
+              ],
+              "text": "Save the header"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchase order number"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order type"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                }
+              ],
+              "text": "purchase order number and order type"
+            }
+          ],
+          "id": "1.5",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Order type is not "
+              },
+              {
+                "t": "literal",
+                "v": "IPO"
+              }
+            ],
+            "text": "Order type is not IPO"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing. "
+              },
+              {
+                "t": "literal",
+                "v": "IPO"
+              },
+              {
+                "t": "text",
+                "v": " is what this environment defaulted on one dated run, not a required value"
+              }
+            ],
+            "text": "Nothing. IPO is what this environment defaulted on one dated run, not a required value"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

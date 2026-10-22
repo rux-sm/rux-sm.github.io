@@ -1,0 +1,726 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-genai-prompt_5",
+  "title": "Improve it",
+  "process": {
+    "id": "set-up-a-genai-prompt",
+    "title": "Set up a GenAI prompt",
+    "n": 5,
+    "of": 7
+  },
+  "previous": {
+    "id": "set-up-a-genai-prompt_4",
+    "title": "Run it and check the answer"
+  },
+  "next": {
+    "id": "set-up-a-genai-prompt_6",
+    "title": "Remove it"
+  },
+  "module": "Tools · Warehousing",
+  "modules": [
+    "Tools",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
+  "session": "GenAI Prompts",
+  "sessionCode": "ttrpi5150m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An answer in the form asked for, right for each kind of record"
+      }
+    ],
+    "text": "An answer in the form asked for, right for each kind of record"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
+      }
+    ],
+    "text": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.1"
+                }
+              ],
+              "text": "5.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "GenAI Prompts"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the prompt, open the text button and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Prompt"
+                }
+              ],
+              "text": "On GenAI Prompts, tick the prompt, open the text button and choose Prompt"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The text, in the editor"
+                }
+              ],
+              "text": "The text, in the editor"
+            }
+          ],
+          "id": "5.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.2"
+                }
+              ],
+              "text": "5.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line above the marker that fixes the answer's form. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Output plain text only. No heading, no table, no list marks, no bold and no emoji."
+                }
+              ],
+              "text": "Add a line above the marker that fixes the answer's form. Example: Output plain text only. No heading, no table, no list marks, no bold and no emoji."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.3"
+                }
+              ],
+              "text": "5.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line that forbids what the first answer added. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are."
+                }
+              ],
+              "text": "Add a line that forbids what the first answer added. Example: Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.4"
+                }
+              ],
+              "text": "5.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line that says how the answer opens. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "First line: the item, its description and its inventory unit."
+                }
+              ],
+              "text": "Add a line that says how the answer opens. Example: First line: the item, its description and its inventory unit."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.5"
+                }
+              ],
+              "text": "5.5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for one kind of row, with its values in order. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order."
+                }
+              ],
+              "text": "Add a line for one kind of row, with its values in order. Example: Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.6"
+                }
+              ],
+              "text": "5.6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Do the same for each other kind of row. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity."
+                }
+              ],
+              "text": "Do the same for each other kind of row. Example: Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.7"
+                }
+              ],
+              "text": "5.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add the exact words for when there is nothing to report. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "If there are no planned inventory transactions, write \"Nothing planned in or out.\""
+                }
+              ],
+              "text": "Add the exact words for when there is nothing to report. Example: If there are no planned inventory transactions, write \"Nothing planned in or out.\""
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.8"
+                }
+              ],
+              "text": "5.8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for the one thing the reader must not miss. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
+                }
+              ],
+              "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.9"
+                }
+              ],
+              "text": "5.9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for a missing value. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "If a value you need is not in the dataset, write \"[not available]\" in its place."
+                }
+              ],
+              "text": "Add a line for a missing value. Example: If a value you need is not in the dataset, write \"[not available]\" in its place."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5.9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.10"
+                }
+              ],
+              "text": "5.10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add a line for how a date is written, then save and close. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Write every date as YYYY-MM-DD."
+                }
+              ],
+              "text": "Add a line for how a date is written, then save and close. Example: Write every date as YYYY-MM-DD."
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new last-modified stamp"
+                }
+              ],
+              "text": "A new last-modified stamp"
+            }
+          ],
+          "id": "5.10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.11"
+                }
+              ],
+              "text": "5.11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose your command again on the same record, without closing the screen"
+                }
+              ],
+              "text": "Choose your command again on the same record, without closing the screen"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue"
+                }
+              ],
+              "text": "The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue"
+            }
+          ],
+          "id": "5.11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.12"
+                }
+              ],
+              "text": "5.12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare it with your expected values again"
+                }
+              ],
+              "text": "Compare it with your expected values again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The facts should match"
+                }
+              ],
+              "text": "The facts should match"
+            }
+          ],
+          "id": "5.12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.13"
+                }
+              ],
+              "text": "5.13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing"
+                }
+              ],
+              "text": "Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned"
+                }
+              ],
+              "text": "Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned"
+            }
+          ],
+          "id": "5.13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.14"
+                }
+              ],
+              "text": "5.14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+                }
+              ],
+              "text": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new field is in the answer"
+                }
+              ],
+              "text": "The new field is in the answer"
+            }
+          ],
+          "id": "5.14",
+          "optional": true,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The answer holds figures LN does not"
+              }
+            ],
+            "text": "The answer holds figures LN does not"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The line against calculating is missing, 5.3"
+              }
+            ],
+            "text": "The line against calculating is missing, 5.3"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The answer is a report or a letter again"
+              }
+            ],
+            "text": "The answer is a report or a letter again"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The form line is missing, 5.2"
+              }
+            ],
+            "text": "The form line is missing, 5.2"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A value reads "
+              },
+              {
+                "t": "literal",
+                "v": "[not available]"
+              }
+            ],
+            "text": "A value reads [not available]"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.14"
+              }
+            ],
+            "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in 5.14"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The response contradicts the screen"
+              }
+            ],
+            "text": "The response contradicts the screen"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The model reads only the dataset. Read "
+              },
+              {
+                "t": "chip",
+                "v": "Selected Fields"
+              },
+              {
+                "t": "text",
+                "v": ", as in 1.12, then open the screen again"
+              }
+            ],
+            "text": "The model reads only the dataset. Read Selected Fields, as in 1.12, then open the screen again"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Keeping the prompt"
+              }
+            ],
+            "text": "Keeping the prompt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Stop after phase 5"
+              }
+            ],
+            "text": "Stop after phase 5"
+          }
+        ]
+      }
+    ]
+  }
+}

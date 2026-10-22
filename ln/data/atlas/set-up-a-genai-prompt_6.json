@@ -1,0 +1,274 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "set-up-a-genai-prompt_6",
+  "title": "Remove it",
+  "process": {
+    "id": "set-up-a-genai-prompt",
+    "title": "Set up a GenAI prompt",
+    "n": 6,
+    "of": 7
+  },
+  "previous": {
+    "id": "set-up-a-genai-prompt_5",
+    "title": "Improve it"
+  },
+  "next": null,
+  "module": "Tools · Warehousing",
+  "modules": [
+    "Tools",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
+  "session": "GenAI Prompts",
+  "sessionCode": "ttrpi5150m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The command, the prompt and the dataset are gone"
+      }
+    ],
+    "text": "The command, the prompt and the dataset are gone"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+      }
+    ],
+    "text": "LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6.1"
+                }
+              ],
+              "text": "6.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "GenAI Prompts"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the prompt and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Delete"
+                }
+              ],
+              "text": "On GenAI Prompts, tick the prompt and click Delete"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Delete the 1 selected record(s) ?"
+                }
+              ],
+              "text": "Delete the 1 selected record(s) ?"
+            }
+          ],
+          "id": "6.1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6.2"
+                }
+              ],
+              "text": "6.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "button",
+                  "label": "Yes"
+                }
+              ],
+              "text": "Choose Yes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1 records deleted"
+                }
+              ],
+              "text": "1 records deleted"
+            }
+          ],
+          "id": "6.2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6.3"
+                }
+              ],
+              "text": "6.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "Datasets"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the dataset, click "
+                },
+                {
+                  "t": "button",
+                  "label": "Delete"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose "
+                },
+                {
+                  "t": "button",
+                  "label": "Yes"
+                }
+              ],
+              "text": "On Datasets, tick the dataset, click Delete and choose Yes"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1 records deleted"
+                }
+              ],
+              "text": "1 records deleted"
+            }
+          ],
+          "id": "6.3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6.4"
+                }
+              ],
+              "text": "6.4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the screen's tab, open the screen again and open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Actions"
+                }
+              ],
+              "text": "Close the screen's tab, open the screen again and open Actions"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The command is gone"
+                }
+              ],
+              "text": "The command is gone"
+            }
+          ],
+          "id": "6.4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Unable to delete; record being used in other table"
+              }
+            ],
+            "text": "Unable to delete; record being used in other table"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A prompt still uses the dataset. Delete the prompt first, as in 6.1"
+              }
+            ],
+            "text": "A prompt still uses the dataset. Delete the prompt first, as in 6.1"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

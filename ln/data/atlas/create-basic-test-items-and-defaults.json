@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "create-basic-test-items-and-defaults",
   "title": "Create test items",
   "module": "Common · Procurement · Manufacturing · Warehousing",
@@ -71,6 +72,296 @@
     "whwmd4101s000",
     "whwmd4300m000",
     "whwmd4600m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
+        }
+      ],
+      "text": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
+    },
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Phase 5 complete: all three items exist and each site row shows its intended "
+        },
+        {
+          "t": "em",
+          "v": "Default Supply Source"
+        },
+        {
+          "t": "text",
+          "v": ". "
+        },
+        {
+          "t": "strong",
+          "v": "Job Shop by Site"
+        },
+        {
+          "t": "text",
+          "v": " must be "
+        },
+        {
+          "t": "strong",
+          "v": "Active"
+        },
+        {
+          "t": "text",
+          "v": " or "
+        },
+        {
+          "t": "strong",
+          "v": "In Preparation"
+        },
+        {
+          "t": "text",
+          "v": " in "
+        },
+        {
+          "t": "session",
+          "code": "tcemm4600m000",
+          "name": "Concept Activation"
+        },
+        {
+          "t": "text",
+          "v": " — the same setting phase 3's Production defaults depend on. It is confirmed "
+        },
+        {
+          "t": "strong",
+          "v": "Active"
+        },
+        {
+          "t": "text",
+          "v": " here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active."
+        }
+      ],
+      "text": "Phase 5 complete: all three items exist and each site row shows its intended Default Supply Source. Job Shop by Site must be Active or In Preparation in Concept Activation (tcemm4600m000) — the same setting phase 3's Production defaults depend on. It is confirmed Active here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active."
+    },
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An existing work center and an existing reference operation for the site. "
+        },
+        {
+          "t": "strong",
+          "v": "This walkthrough does not create work centers, machines, or reference operations."
+        },
+        {
+          "t": "text",
+          "v": " Look them up first — "
+        },
+        {
+          "t": "session",
+          "code": "tirou0101m000",
+          "name": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "session",
+          "code": "tirou4150m000",
+          "name": "Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations"
+        },
+        {
+          "t": "text",
+          "v": " — and if neither has a usable entry for the site, stop and obtain one."
+        }
+      ],
+      "text": "An existing work center and an existing reference operation for the site. This walkthrough does not create work centers, machines, or reference operations. Look them up first — Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers (tirou0101m000) and Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations (tirou4150m000) — and if neither has a usable entry for the site, stop and obtain one."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "create-basic-test-items-and-defaults_0",
+      "n": 0,
+      "title": "Confirm the test design",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Site, warehouses, units, and unused item codes are known"
+          }
+        ],
+        "text": "Site, warehouses, units, and unused item codes are known"
+      },
+      "steps": 10,
+      "walked": "2026-08-15"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_1",
+      "n": 1,
+      "title": "Create two item groups",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Purchase and Job Shop defaults remain isolated from each other"
+          }
+        ],
+        "text": "Purchase and Job Shop defaults remain isolated from each other"
+      },
+      "steps": 6,
+      "walked": "2026-08-15"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_2",
+      "n": 2,
+      "title": "Configure the purchased group",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "literal",
+            "v": "BAM-RM"
+          },
+          {
+            "t": "text",
+            "v": " can create Ordering, Purchase, and Warehousing data"
+          }
+        ],
+        "text": "BAM-RM can create Ordering, Purchase, and Warehousing data"
+      },
+      "steps": 14,
+      "walked": null
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_3",
+      "n": 3,
+      "title": "Configure the made group",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "literal",
+            "v": "BAM-FG"
+          },
+          {
+            "t": "text",
+            "v": " can create Ordering, Production, Warehousing, and Sales data"
+          }
+        ],
+        "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data"
+      },
+      "steps": 10,
+      "walked": "2026-08-16"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_4",
+      "n": 4,
+      "title": "Verify site creation control",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Site-level creation agrees with the company defaults"
+          }
+        ],
+        "text": "Site-level creation agrees with the company defaults"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_5",
+      "n": 5,
+      "title": "Create the three items",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Each item inherits its group's defaults and its site row shows the intended role"
+          }
+        ],
+        "text": "Each item inherits its group's defaults and its site row shows the intended role"
+      },
+      "steps": 11,
+      "walked": null
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_6",
+      "n": 6,
+      "title": "Build the job shop bill of material",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The pair has an Approved BOM carrying both components"
+          }
+        ],
+        "text": "The pair has an Approved BOM carrying both components"
+      },
+      "steps": 19,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_7",
+      "n": 7,
+      "title": "Build the job shop routing",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The pair has an Approved routing with an operation at a work center"
+          }
+        ],
+        "text": "The pair has an Approved routing with an operation at a work center"
+      },
+      "steps": 19,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_8",
+      "n": 8,
+      "title": "Confirm costing data",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Every item in the family carries the standard cost the estimate calculation reads"
+          }
+        ],
+        "text": "Every item in the family carries the standard cost the estimate calculation reads"
+      },
+      "steps": 6,
+      "walked": "2026-08-18"
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_9",
+      "n": 9,
+      "title": "Stock the components",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The rod and sleeve are on hand at the raw-material warehouse"
+          }
+        ],
+        "text": "The rod and sleeve are on hand at the raw-material warehouse"
+      },
+      "steps": 10,
+      "walked": null
+    },
+    {
+      "id": "create-basic-test-items-and-defaults_10",
+      "n": 10,
+      "title": "Qualify the training case",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The family satisfies phase 0 of the production-order walkthrough"
+          }
+        ],
+        "text": "The family satisfies phase 0 of the production-order walkthrough"
+      },
+      "steps": 7,
+      "walked": null
+    }
   ],
   "phases": [
     {

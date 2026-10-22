@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "demand-to-shipment-via-planning",
   "title": "Plan to shipment",
   "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
@@ -47,6 +48,175 @@
     "whinh4525m100",
     "whinh4630m000",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Know each item's stock before you start: "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "Know each item's stock before you start: Check an item's inventory."
+    },
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The bamboo family as section 2 describes it. If any of it is missing, "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " builds it and "
+        },
+        {
+          "t": "link",
+          "v": "Run order planning",
+          "href": "run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": " phase 0 adds the planning data."
+        }
+      ],
+      "text": "The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Run order planning phase 0 adds the planning data."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "demand-to-shipment-via-planning_0",
+      "n": 0,
+      "title": "Preflight",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "All three items are plannable, and every on-hand figure is written down"
+          }
+        ],
+        "text": "All three items are plannable, and every on-hand figure is written down"
+      },
+      "steps": 5,
+      "walked": null
+    },
+    {
+      "id": "demand-to-shipment-via-planning_1",
+      "n": 1,
+      "title": "Create the demand",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A sales order for more pairs than exist, inside the order horizon"
+          }
+        ],
+        "text": "A sales order for more pairs than exist, inside the order horizon"
+      },
+      "steps": 6,
+      "walked": "2026-08-09"
+    },
+    {
+      "id": "demand-to-shipment-via-planning_2",
+      "n": 2,
+      "title": "Run MRP",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Planned orders cover the shortfall and reconcile in the pegging tree"
+          }
+        ],
+        "text": "Planned orders cover the shortfall and reconcile in the pegging tree"
+      },
+      "steps": 6,
+      "walked": null
+    },
+    {
+      "id": "demand-to-shipment-via-planning_3",
+      "n": 3,
+      "title": "Cross the boundary",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The proposals become a real purchase order and a real production order"
+          }
+        ],
+        "text": "The proposals become a real purchase order and a real production order"
+      },
+      "steps": 6,
+      "walked": null
+    },
+    {
+      "id": "demand-to-shipment-via-planning_4",
+      "n": 4,
+      "title": "Receive the components",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Rods and sleeves are on hand at the raw-material warehouse"
+          }
+        ],
+        "text": "Rods and sleeves are on hand at the raw-material warehouse"
+      },
+      "steps": 5,
+      "walked": null
+    },
+    {
+      "id": "demand-to-shipment-via-planning_5",
+      "n": 5,
+      "title": "Build the pairs",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The finished item is posted to inventory"
+          }
+        ],
+        "text": "The finished item is posted to inventory"
+      },
+      "steps": 7,
+      "walked": null
+    },
+    {
+      "id": "demand-to-shipment-via-planning_6",
+      "n": 6,
+      "title": "Ship",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Shipment "
+          },
+          {
+            "t": "status",
+            "v": "Confirmed"
+          },
+          {
+            "t": "text",
+            "v": ", on-hand down by the shipped quantity"
+          }
+        ],
+        "text": "Shipment Confirmed, on-hand down by the shipped quantity"
+      },
+      "steps": 7,
+      "walked": "2026-08-09"
+    }
   ],
   "phases": [
     {

@@ -1,0 +1,255 @@
+{
+  "contract": 17,
+  "tier": "export",
+  "kind": "task",
+  "id": "purchase-order-to-warehouse-receipt_5",
+  "title": "Verify the inventory increase",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 5,
+    "of": 6
+  },
+  "previous": {
+    "id": "purchase-order-to-warehouse-receipt_4",
+    "title": "Confirm the receipt"
+  },
+  "next": null,
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-09-02",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "On-hand rose by exactly the quantity received"
+      }
+    ],
+    "text": "On-hand rose by exactly the quantity received"
+  },
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing new. This phase re-reads the figure from phase 0, because the receipt reaching "
+      },
+      {
+        "t": "strong",
+        "v": "Confirmed"
+      },
+      {
+        "t": "text",
+        "v": " is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+      }
+    ],
+    "text": "Nothing new. This phase re-reads the figure from phase 0, because the receipt reaching Confirmed is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.1"
+                }
+              ],
+              "text": "5.1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read the first material at the receiving warehouse"
+                }
+              ],
+              "text": "Re-read the first material at the receiving warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 1 on-hand after"
+                },
+                {
+                  "t": "text",
+                  "v": " — up by exactly the quantity from 2.2"
+                }
+              ],
+              "text": "material 1 on-hand after — up by exactly the quantity from 2.2"
+            }
+          ],
+          "id": "5.1",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "2.2"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.2"
+                }
+              ],
+              "text": "5.2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read the second material"
+                }
+              ],
+              "text": "Re-read the second material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 on-hand after"
+                },
+                {
+                  "t": "text",
+                  "v": " — up by exactly the quantity from 2.3"
+                }
+              ],
+              "text": "material 2 on-hand after — up by exactly the quantity from 2.3"
+            }
+          ],
+          "id": "5.2",
+          "optional": false,
+          "produces": true,
+          "refs": [
+            "2.3"
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5.3"
+                }
+              ],
+              "text": "5.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare both against the baselines from 0.2 and 0.3"
+                }
+              ],
+              "text": "Compare both against the baselines from 0.2 and 0.3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each difference equals what was ordered and received, with nothing unexplained"
+                }
+              ],
+              "text": "Each difference equals what was ordered and received, with nothing unexplained"
+            }
+          ],
+          "id": "5.3",
+          "optional": false,
+          "produces": false,
+          "refs": [
+            "0.2"
+          ]
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receipt confirms but on-hand does not move"
+              }
+            ],
+            "text": "The receipt confirms but on-hand does not move"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Whether "
+              },
+              {
+                "t": "field",
+                "v": "All Lines Final"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "All Lines Complete"
+              },
+              {
+                "t": "text",
+                "v": " were both set (4.4), and whether the receiving warehouse in phase 5 is the one from 0.1"
+              }
+            ],
+            "text": "Whether All Lines Final and All Lines Complete were both set (4.4), and whether the receiving warehouse in phase 5 is the one from 0.1"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": []
+  }
+}

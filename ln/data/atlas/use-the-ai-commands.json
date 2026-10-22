@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "use-the-ai-commands",
   "title": "Use the AI commands",
   "module": "Warehousing · Sales",
@@ -20,6 +21,41 @@
     "ttrpi5100m000",
     "ttrpi5150m000",
     "ttadv9160m000"
+  ],
+  "before": [],
+  "tasks": [
+    {
+      "id": "use-the-ai-commands_0",
+      "n": 0,
+      "title": "Run the stock check",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row"
+          }
+        ],
+        "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row"
+      },
+      "steps": 7,
+      "walked": null
+    },
+    {
+      "id": "use-the-ai-commands_1",
+      "n": 1,
+      "title": "Run Status Overview",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen"
+          }
+        ],
+        "text": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen"
+      },
+      "steps": 13,
+      "walked": null
+    }
   ],
   "phases": [
     {

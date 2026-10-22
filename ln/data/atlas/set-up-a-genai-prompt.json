@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "set-up-a-genai-prompt",
   "title": "Set up a GenAI prompt",
   "module": "Tools · Warehousing",
@@ -22,6 +23,131 @@
     "whwmd4100m100",
     "whwmd4300m000",
     "tdsls4601m200"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant. "
+        }
+      ],
+      "text": "An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "set-up-a-genai-prompt_0",
+      "n": 0,
+      "title": "Plan the prompt",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The session code, the table, the values and the sentence the user sees"
+          }
+        ],
+        "text": "The session code, the table, the values and the sentence the user sees"
+      },
+      "steps": 6,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_1",
+      "n": 1,
+      "title": "Model the dataset",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The fields the answer needs are ready to send"
+          }
+        ],
+        "text": "The fields the answer needs are ready to send"
+      },
+      "steps": 14,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_2",
+      "n": 2,
+      "title": "Write the prompt",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A prompt exists with a label, a dataset and both texts"
+          }
+        ],
+        "text": "A prompt exists with a label, a dataset and both texts"
+      },
+      "steps": 11,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_3",
+      "n": 3,
+      "title": "Link the prompt to a session",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The command is in the Actions menu of the screen"
+          }
+        ],
+        "text": "The command is in the Actions menu of the screen"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_4",
+      "n": 4,
+      "title": "Run it and check the answer",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A first answer, checked against the screen"
+          }
+        ],
+        "text": "A first answer, checked against the screen"
+      },
+      "steps": 6,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_5",
+      "n": 5,
+      "title": "Improve it",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "An answer in the form asked for, right for each kind of record"
+          }
+        ],
+        "text": "An answer in the form asked for, right for each kind of record"
+      },
+      "steps": 14,
+      "walked": null
+    },
+    {
+      "id": "set-up-a-genai-prompt_6",
+      "n": 6,
+      "title": "Remove it",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The command, the prompt and the dataset are gone"
+          }
+        ],
+        "text": "The command, the prompt and the dataset are gone"
+      },
+      "steps": 4,
+      "walked": null
+    }
   ],
   "phases": [
     {

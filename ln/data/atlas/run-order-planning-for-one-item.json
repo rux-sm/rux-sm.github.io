@@ -1,6 +1,7 @@
 {
-  "contract": 16,
+  "contract": 17,
   "tier": "export",
+  "kind": "process",
   "id": "run-order-planning-for-one-item",
   "title": "Run order planning",
   "module": "Enterprise Planning · Sales",
@@ -31,6 +32,235 @@
     "tcibd2100m000",
     "tdsls4601m200",
     "whwmd4300m000"
+  ],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A finished item with an "
+        },
+        {
+          "t": "strong",
+          "v": "Approved"
+        },
+        {
+          "t": "text",
+          "v": " BOM and routing, components, and stock data — the qualified training case from "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": ". The 2026-08-20 session used "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-CHOP-PAIR"
+        },
+        {
+          "t": "text",
+          "v": " with components "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-ROD"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "literal",
+          "v": "BAM-SLEEVE"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+    },
+    {
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "An empty tree usually means pegging relations were never generated."
+        },
+        {
+          "t": "text",
+          "v": " The vendor treats generation as a precondition: relations come from "
+        },
+        {
+          "t": "em",
+          "v": "Update Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": " during the planning run (phase 3 step 3.3) or from "
+        },
+        {
+          "t": "session",
+          "code": "cprrp0240m000",
+          "name": "Generate Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": ", and LN only generates them out to the "
+        },
+        {
+          "t": "strong",
+          "v": "Pegging Horizon"
+        },
+        {
+          "t": "text",
+          "v": " in "
+        },
+        {
+          "t": "session",
+          "code": "cprpd0100m000",
+          "name": "Planning Parameters"
+        },
+        {
+          "t": "text",
+          "v": " — "
+        },
+        {
+          "t": "literal",
+          "v": "cpordplanug"
+        },
+        {
+          "t": "text",
+          "v": ", \"Pegging for planned orders\" (p. 113–114). "
+        },
+        {
+          "t": "strong",
+          "v": "In the observed environment this is not a risk"
+        },
+        {
+          "t": "text",
+          "v": ": "
+        },
+        {
+          "t": "em",
+          "v": "Update Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": " is locked on, evidenced 2026-08-25 — see phase 3's notes. "
+        },
+        {
+          "t": "strong",
+          "v": "Yours may differ"
+        },
+        {
+          "t": "text",
+          "v": ", and the check is the greyed-or-not state of that box, not its tick."
+        }
+      ],
+      "text": "An empty tree usually means pegging relations were never generated. The vendor treats generation as a precondition: relations come from Update Pegging Relations during the planning run (phase 3 step 3.3) or from Generate Pegging Relations (cprrp0240m000), and LN only generates them out to the Pegging Horizon in Planning Parameters (cprpd0100m000) — cpordplanug, \"Pegging for planned orders\" (p. 113–114). In the observed environment this is not a risk: Update Pegging Relations is locked on, evidenced 2026-08-25 — see phase 3's notes. Yours may differ, and the check is the greyed-or-not state of that box, not its tick."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "run-order-planning-for-one-item_0",
+      "n": 0,
+      "title": "Make the item visible to planning",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The finished item and every BOM component have planning data"
+          }
+        ],
+        "text": "The finished item and every BOM component have planning data"
+      },
+      "steps": 6,
+      "walked": null
+    },
+    {
+      "id": "run-order-planning-for-one-item_1",
+      "n": 1,
+      "title": "Create demand",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "A sales order exists for more than is on hand"
+          }
+        ],
+        "text": "A sales order exists for more than is on hand"
+      },
+      "steps": 3,
+      "walked": null
+    },
+    {
+      "id": "run-order-planning-for-one-item_2",
+      "n": 2,
+      "title": "Put the demand inside the horizon",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Planning can see the demand"
+          }
+        ],
+        "text": "Planning can see the demand"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "run-order-planning-for-one-item_3",
+      "n": 3,
+      "title": "Run MRP",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "Planned orders exist covering the shortfall, with pegging relations"
+          }
+        ],
+        "text": "Planned orders exist covering the shortfall, with pegging relations"
+      },
+      "steps": 4,
+      "walked": null
+    },
+    {
+      "id": "run-order-planning-for-one-item_4",
+      "n": 4,
+      "title": "Review the result",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The planned supply is read on both the parent and the component"
+          }
+        ],
+        "text": "The planned supply is read on both the parent and the component"
+      },
+      "steps": 5,
+      "walked": null
+    },
+    {
+      "id": "run-order-planning-for-one-item_5",
+      "n": 5,
+      "title": "Read the pegging tree",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "text",
+            "v": "The whole chain reconciles: demand, stock, planned make, planned buy"
+          }
+        ],
+        "text": "The whole chain reconciles: demand, stock, planned make, planned buy"
+      },
+      "steps": 4,
+      "walked": null
+    }
   ],
   "phases": [
     {

@@ -1,9 +1,9 @@
-commit   d31aeec5ccfc3af084569959098a01373f565433
-date     2026-10-21T20:09:48Z
-subject  docs(genai): Say order lines in the codes note
-contract 16 
+commit   34d4f601be5df809be256a7dfed415309b775df6
+date     2026-10-22T01:50:23Z
+subject  feat(tools): Emit a process and a task per phase
+contract 17 
 tier     export
-sha256   6e10f003cf160c47f6c5a00acb94272e25634b00c0ef672881086c88618c344b
+sha256   d810f6bc6cefa967fdcef901b66b0059f39a9002d35968b82ec80237514be558
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

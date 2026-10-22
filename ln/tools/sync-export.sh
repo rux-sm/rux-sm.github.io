@@ -47,9 +47,10 @@ elif [ "$(git -C "$ATLAS" rev-list --count "$UP..HEAD")" != "0" ]; then
 fi
 
 mkdir -p "$OUT"
-# Walkthroughs, the maps (--references), the screen reference and the glossary
-# are what LN Guide draws, and nothing else is asked for: the reviews, their
-# summaries and the experiments stay in atlas, because no page reads them.
+# The walkthroughs, each as a process with a task file per phase, the maps
+# (--references), the screen reference and the glossary are what LN Guide
+# draws, and nothing else is asked for: the reviews, their summaries and the
+# experiments stay in atlas, because no page reads them.
 # emit.py sweeps every emitted document with one FORBIDDEN list, so nothing
 # here can loosen what crosses.
 #
@@ -104,7 +105,7 @@ overwrites them, and the real fix belongs in the walkthrough in atlas.
 EOF
 
 echo "synced atlas @ $(echo "$SHA" | cut -c1-7)  ·  contract $CONTRACTS"
-ls "$OUT"/*.json | wc -l | tr -d ' ' | xargs echo "  walkthroughs:"
+ls "$OUT"/*.json | wc -l | tr -d ' ' | xargs echo "  files:"
 
 # WHAT MOVED UPSTREAM. The only channel between these repositories is a person
 # reading the other one, so a decision addressed to this side -- a reply to a

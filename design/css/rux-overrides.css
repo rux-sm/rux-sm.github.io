@@ -14,7 +14,8 @@
 
   EVERY RULE BELOW REPAIRS A BOX THAT RENDERS WRONG, except ant-dark's
   shapes at the end, which a theme needs because its reference rounds its
-  corners and fills its fields where Carbon squares and underlines them.
+  corners and fills its fields where Carbon squares and underlines them, and
+  the shell's frame on a wide window, which centres the page as Geist's are.
   Nothing else has been decided about rux's look beyond Carbon's. The
   example below is the shape of a rule that WOULD move the capture for every
   theme, commented out:
@@ -642,18 +643,12 @@
    sits on the page's own black (js/theme.js leaves it there), so the line under
    it is its only edge, and it takes border-subtle-01 -- the 14% white Geist
    draws between every region -- rather than the fainter step Carbon gives a
-   header outside any layer.
-   RUX-DARK'S HEADER HAS NO LINE, as Vercel's own docs draw theirs: the bar
-   and the page share one black, and its 68px of space parts it from the
-   content. The line turns transparent rather than going, so the bar keeps
-   its height. */
-[data-theme="geist-dark"] .rux--header,
-.rux--header[data-theme="geist-dark"] {
+   header outside any layer. Rux-dark's header is parted the same way, because
+   both themes rule the page as Geist's site does; the frame's own lines are
+   with the frame, below. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
+.rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
   border-block-end-color: var(--rux-border-subtle-01);
-}
-[data-theme="rux-dark"] .rux--header,
-.rux--header[data-theme="rux-dark"] {
-  border-block-end-color: transparent;
 }
 /* GEIST'S HEADER IS 64px, measured on its own site: 16px on every side of
    32px controls, the name 24px in. Carbon's is 48px of edge-to-edge 48px
@@ -784,6 +779,53 @@
 }
 [data-theme="rux-dark"] .rux--header ~ .rux--side-nav {
   inset-block-start: 4.25rem;
+}
+/* THE SHELL KEEPS ONE FRAME ON A WIDE WINDOW. Past Carbon's max breakpoint,
+   99rem, where its grid already stops growing, the rest of the shell stops
+   too: the header's contents, the side nav, the header's panels and the
+   content keep one 99rem frame centred in the window, and the extra width is
+   an equal margin either side, as Geist's pages keep theirs. Carbon pins each
+   of them to the window's edges, so a wide window left a page leaning on its
+   left with the open space all on its right. The header's bar and its line
+   still run the window's width. A fixed box's percentage is of the window
+   without its scroll bar, so the two margins match. A theme that insets its
+   header's contents keeps its inset inside the frame, which is why this
+   follows the themes' header rules. An app's own bar fixed to the window
+   moves with the frame in that app's own file. */
+@media (min-width: 99rem) {
+  .rux--header { padding-inline: calc((100% - 99rem) / 2); }
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
+  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { padding-inline: calc((100% - 99rem) / 2 + var(--rux-spacing-05)); }
+  .rux--side-nav { inset-inline-start: calc((100% - 99rem) / 2); }
+  .rux--header-panel { inset-inline-end: calc((100% - 99rem) / 2); }
+  .rux--content,
+  .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 99rem; margin-inline: auto; }
+}
+/* GEIST'S PAGE IS RULED, AND SO ARE BOTH DARK THEMES'. The header's hairline
+   also parts a side nav standing open beside the content from the content
+   (one that opens over the page has its own edges), and on a window wide
+   enough to have a frame, two more run the window's height down the frame's
+   edges, through the header, as Geist's site draws them. They are drawn as
+   the page's and the header's backgrounds, so they take no room and sit
+   under everything on them; the page's is fixed to the window, so a short
+   page still shows them to its foot. */
+@media (min-width: 66rem) {
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav--ux:not(.rux--side-nav--hidden) {
+    border-inline-end: 1px solid var(--rux-border-subtle-01);
+  }
+}
+@media (min-width: 99rem) {
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body,
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
+  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+    background-image: linear-gradient(to right,
+      transparent calc(50% - 49.5rem - 1px),
+      var(--rux-border-subtle-01) calc(50% - 49.5rem - 1px) calc(50% - 49.5rem),
+      transparent calc(50% - 49.5rem) calc(50% + 49.5rem),
+      var(--rux-border-subtle-01) calc(50% + 49.5rem) calc(50% + 49.5rem + 1px),
+      transparent calc(50% + 49.5rem + 1px));
+  }
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body { background-attachment: fixed; }
 }
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255

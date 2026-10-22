@@ -91,7 +91,11 @@
 /* ---- Guided: one step, what to do, what you should see, then on -----------------
    One readable column on every screen, and Back and Next fixed at the foot
    with nothing beneath them, so the thumb finds Next in one place on every
-   step. Beside the side nav, the bar lines up with the column. */
+   step. Beside the side nav, Guided stands in the middle of the space between
+   the nav and the frame's far edge, as Design's centred frame keeps it, and
+   its bar stands under it: that space's centre is half the frame's width
+   past the frame's left, plus half the nav's 16rem and the page's 2rem
+   either side, so the 36rem bar starts 10rem short of the frame's middle. */
 .ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: 7rem; }
 .ln-steps { margin: 0; padding: 0; list-style: none; }
 .ln-steps li { display: grid; gap: 1.5rem; }
@@ -105,7 +109,11 @@
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
 .ln-nav { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 2; display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; padding-block: .75rem 1rem; background: var(--rux-background); }
-@media (min-width: 66rem) { .ln-nav { inset-inline: 20rem auto; margin-inline: 0; inline-size: 36rem; } }
+@media (min-width: 66rem) {
+  .ln-pages [data-view="guided"].rux--css-grid-column { grid-column: 1 / -1; max-inline-size: none; }
+  .ln-guided { margin-inline: auto; inline-size: 100%; }
+  .ln-nav { inset-inline: calc(max(0px, (100% - 99rem) / 2) + min(100%, 99rem) / 2 - 10rem) auto; margin-inline: 0; inline-size: 36rem; }
+}
 
 /* ---- Lists, folds and what is looked up ---------------------------------------
    A reference table is drawn as a list, and one whose rows are text to type

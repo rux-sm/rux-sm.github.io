@@ -618,6 +618,58 @@ function ideaPage(c) {
 <dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>`;
   return page(`${c.name} — LN Guide`, 'ideas', column(body, 12));
 }
+// ---- the idea about how an order moves through LN -------------------------------
+// Atlas's overview map is the one account of the whole chain, so it is the
+// idea page that carries the grid: six lanes, six stages, every tile where
+// the map puts it, and the map's own lines drawn by app.js. A tile opens its
+// screen's page, or the first task that performs it. It is drawn here and
+// nowhere else, and no menu entry leads to it.
+const overview = read(MAP + '.json');
+const firstTaskOf = (n) => n.opens?.map((o) => taskOf(processById.get(o.walkthrough) ?? { tasks: [] }, o.phases[0]))?.find(Boolean);
+function tile(n) {
+  const screen = n.code && cards.has(n.code), task = !screen && firstTaskOf(n);
+  const inner = `${n.n != null ? `<span class="ln-map__n">${n.n}</span>` : ''}${esc(n.session)}`;
+  const kind = decides(n) ? ' data-kind="decision"' : '';
+  return screen ? `<a class="ln-map__tile" href="${hrefScreen(n.code)}" data-node="${esc(n.id)}"${kind}>${inner}</a>`
+    : task ? `<a class="ln-map__tile" href="${hrefTask(task.id)}" data-node="${esc(n.id)}"${kind}>${inner}</a>`
+      : `<span class="ln-map__tile" data-node="${esc(n.id)}"${kind}>${inner}</span>`;
+}
+const grid = () => `<div class="ln-map__scroll"><div class="ln-map" id="map">
+  <div class="ln-map__head"></div>${diagram.stages.map((st) => `<div class="ln-map__head">${st.n} · ${esc(st.name)}</div>`).join('')}${diagram.lanes.map((lane) => `
+  <div class="ln-map__lane">${esc(lane.name)}</div>${diagram.stages.map((st) => `<div class="ln-map__cell"${st.boundary ? ' data-boundary' : ''}>${diagram.nodes.filter((n) => n.lane === lane.name && n.stage === st.n).map(tile).join('')}</div>`).join('')}`).join('')}
+</div></div>
+<script type="application/json" id="edges">${JSON.stringify(diagram.edges.filter((e) => e.kind !== 'feed').map((e) => ({ from: e.from, to: e.to, kind: e.kind }))).replace(/</g, '\\u003c')}</script>`;
+// A reference document's blocks: prose, a list, a table read down a phone
+// with each row led by its first cell, and a heading.
+const rblock = (b) => {
+  switch (b.kind) {
+    case 'prose': return `<p>${said(b.tokens)}</p>`;
+    case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="ln-full__list">${b.items.map((i) => `<li>${tokens(i.tokens)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
+    case 'table': return `<div class="ln-full__rows">${b.rows.map((r) => `<div><b>${tokens(r.cells[0].tokens)}</b>${r.cells.slice(1).map((c, i) =>
+      c.text.trim() && c.text.trim() !== '\u2014' ? `<p>${b.columns.length > 2 && b.columns[i + 1] ? `<span class="ln-quiet">${esc(b.columns[i + 1])}</span> ` : ''}${tokens(c.tokens)}</p>` : '').join('')}</div>`).join('')}</div>`;
+    case 'heading': return `<h4 class="ln-ref__title">${esc(b.title)}</h4>`;
+    default: throw new Error(`no rendering for a "${b.kind}" block in ${MAP}`);
+  }
+};
+const overviewTitle = overview.title;
+const overviewPurpose = overview.intro[0]?.text.split('. ')[0] ?? '';
+function overviewPage() {
+  const [first, ...rest] = overview.topics;
+  const body = `${breadcrumb([[at('home.html'), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', overviewTitle]])}
+<div>
+<p class="ln-quiet">Idea</p>
+<h1 class="rux--type-productive-heading-05">${esc(overviewTitle)}</h1>
+</div>
+<div class="ln-full">${overview.intro.map(rblock).join('')}</div>
+${grid()}
+<div>
+<h2 class="rux--type-productive-heading-03" id="branch">${esc(first.title)}</h2>
+</div>
+<div class="ln-full">${first.blocks.map(rblock).join('')}</div>
+${accordion(rest.map((t) => [`topic-${t.n}`, esc(t.title), `<div class="ln-full">${t.blocks.map(rblock).join('')}</div>`]))}`;
+  return page(`${overviewTitle} \u2014 LN Guide`, 'ideas', column(body, 12));
+}
+
 const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`${breadcrumb([[at('home.html'), 'Home'], ['', title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${title}</h1>
@@ -629,8 +681,9 @@ const byName = (a, b) => a.name.localeCompare(b.name);
 const screenIndex = () => indexPage('Screens', 'Every LN screen the tasks open, by name. One the library has not described yet says so.', 'screens', [
   ...[...cards.values()].sort(byName).map((c) => `<li><b><a class="rux--link" href="${hrefScreen(c.code)}"><span>${esc(c.name)}</span></a></b><p>${exact(c.code)} <span class="ln-quiet">${esc(c.purpose)}</span></p></li>`),
   ...noCard.sort(byName).map((c) => `<li><b>${esc(c.name)}</b><p>${exact(c.code)} <span class="ln-quiet">Not documented yet.</span></p></li>`)]);
-const ideaIndex = () => indexPage('Ideas', 'What a word means in LN, and why LN works that way.', 'ideas',
-  [...concepts].sort(byName).map((c) => `<li><b><a class="rux--link" href="${hrefIdea(c.id)}"><span>${esc(c.name)}</span></a></b><p class="ln-quiet">${esc(c.purpose)}</p></li>`));
+const ideaIndex = () => indexPage('Ideas', 'What a word means in LN, and why LN works that way.', 'ideas', [
+  `<li><b><a class="rux--link" href="${hrefIdea(MAP)}"><span>${esc(overviewTitle)}</span></a></b><p class="ln-quiet">${esc(overviewPurpose)}. How an order moves through LN, on one grid.</p></li>`,
+  ...[...concepts].sort(byName).map((c) => `<li><b><a class="rux--link" href="${hrefIdea(c.id)}"><span>${esc(c.name)}</span></a></b><p class="ln-quiet">${esc(c.purpose)}</p></li>`)]);
 
 // ---- search: one file, read by search.html ------------------------------------------
 // A problem is found by its symptom, a task by its title and the words of its
@@ -649,6 +702,7 @@ const searchIndex = () => [
   ...side.map((n) => hit('Task', n.session, `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
   ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code}`, `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
   ...concepts.map((c) => hit('Idea', `${c.name} ${c.terms.join(' ')}`, `${c.name} ${c.terms.join(' ')} ${c.purpose}`, hrefIdea(c.id), esc(c.name), esc(c.purpose))),
+  hit('Idea', overviewTitle, `${overviewTitle} ${overview.intro.map((b) => b.text).join(' ')} ${diagram.nodes.map((n) => n.session).join(' ')}`, hrefIdea(MAP), esc(overviewTitle), esc(overviewPurpose) + '.'),
 ];
 const searchPage = () => page('Search — LN Guide', 'search', column(`<h1 class="rux--type-productive-heading-05">Search</h1>
 ${searchBox('find')}
@@ -672,6 +726,7 @@ drawn('../', () => {
   write('screens/index.html', screenIndex());
   for (const c of cards.values()) write(`screens/${c.code}.html`, screenPage(c));
   write('ideas/index.html', ideaIndex());
+  write(`ideas/${MAP}.html`, overviewPage());
   for (const c of concepts) write(`ideas/${c.id}.html`, ideaPage(c));
 });
 execFileSync(process.execPath, [join(ROOT, '..', 'tools', 'inline-sprite.mjs'), ...written], { stdio: 'ignore' });

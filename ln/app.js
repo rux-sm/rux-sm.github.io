@@ -98,6 +98,41 @@
     document.addEventListener('submit', (event) => { if (event.target.matches('.ln-find')) { event.preventDefault(); draw(); } });
   }
 
+  // ---- The grid: the map's lines, drawn between its tiles --------------------------
+  // A line leaves a tile's side and enters the next tile's side, turning once
+  // in the gap before the tile it reaches. Two tiles in one column are joined
+  // top to bottom. A branch is dashed.
+  const grid = document.getElementById('map');
+  if (grid) {
+    const edges = JSON.parse(document.getElementById('edges').textContent);
+    const SVG = 'http://www.w3.org/2000/svg';
+    const lines = document.createElementNS(SVG, 'svg');
+    lines.setAttribute('class', 'ln-map__lines');
+    lines.setAttribute('aria-hidden', 'true');
+    grid.append(lines);
+    const draw = () => {
+      const box = grid.getBoundingClientRect();
+      const at = (id) => {
+        const r = grid.querySelector(`[data-node="${CSS.escape(id)}"]`).getBoundingClientRect();
+        return { l: r.left - box.left, r: r.right - box.left, t: r.top - box.top, b: r.bottom - box.top, cx: r.left - box.left + r.width / 2, cy: r.top - box.top + r.height / 2 };
+      };
+      lines.innerHTML = '<defs><marker id="ln-map-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z"/></marker></defs>';
+      for (const e of edges) {
+        const a = at(e.from), b = at(e.to);
+        const d = b.l >= a.r ? `M${a.r} ${a.cy}H${b.l - 10}V${b.cy}H${b.l}`
+          : b.r <= a.l ? `M${a.l} ${a.cy}H${b.r + 10}V${b.cy}H${b.r}`
+          : b.t >= a.b ? `M${a.cx} ${a.b}V${b.t}` : `M${a.cx} ${a.t}V${b.b}`;
+        const path = document.createElementNS(SVG, 'path');
+        path.setAttribute('d', d);
+        if (e.kind === 'branch') path.setAttribute('data-branch', '');
+        path.setAttribute('marker-end', 'url(#ln-map-arrow)');
+        lines.append(path);
+      }
+    };
+    new ResizeObserver(draw).observe(grid);
+    draw();
+  }
+
   // ---- what the reader does anywhere ------------------------------------------------
   document.addEventListener('click', (event) => {
     const el = event.target.closest('a, button');

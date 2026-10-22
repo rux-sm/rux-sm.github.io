@@ -207,3 +207,14 @@ ol.ln-full__list { list-style: decimal; }
 
 /* Search: a page the query names first, then each kind under its heading. */
 .ln-results { display: grid; gap: 1.5rem; }
+
+
+/* The grid on the idea page: a tile is a link or a plain box, a decision is
+   dashed like a fork on a path, the transfer boundary is a rule, and a branch
+   line is dashed. */
+.ln-pages .ln-map__tile { text-decoration: none; }
+.ln-pages .ln-map__tile[data-kind="decision"] { border-style: dashed; }
+.ln-pages .ln-map__cell[data-boundary] { border-inline-start: 1px solid var(--rux-border-strong-01); }
+.ln-pages .ln-map__lines path[data-branch] { stroke-dasharray: 5 5; }
+.ln-pages .ln-full { display: grid; gap: 1rem; line-height: 1.5; max-inline-size: 36rem; }
+.ln-pages .ln-full h4 { margin: .5rem 0 0; }

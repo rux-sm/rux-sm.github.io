@@ -255,7 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the whole grid on the idea page about how an order moves through LN.
 - [ ] Carry the confirm buttons, Still to confirm and the private detail onto
       the new pages.
 - [ ] Add the Print button to a task and a process, write `ln/print.css`, and

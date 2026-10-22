@@ -83,6 +83,15 @@ them and nothing is entered twice.
 - **Add leg copies the leg on screen** to the day after the last leg ends:
   its routes, its vehicles with no drivers and its contacts. Remove leg takes
   one away.
+- **Add leg and Remove leg act at once,** on a saved trip with nothing
+  unsaved: Add leg makes the leg and opens it, and Remove leg asks first, so
+  the editor only ever holds saved legs.
+- **Add leg on a one-way leg reverses its route,** picking the group up
+  where it was let off and bringing it back, as a split's pickup does now; a
+  round-trip leg is copied as it is.
+- **The form's dates and Way, Round trip or One way, are the leg on
+  screen's,** and Type loses Split; `trips.trip_type` is written from the
+  legs while pages still read it.
 - **A leg is made longer by its end date,** so an overnight day is added to
   a leg and a day home is added as a leg.
 - **The Route tab shows one route at a time.** With more than one, a
@@ -158,14 +167,16 @@ None open.
 
 ## Tasks
 
-- [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
-      out of Type, and give each leg its round trip or one way. The editor
-      holds its vehicles, route and days by each leg's key and saves its
-      rows by the leg's route or id already; its hotel, its quote lines' Leg
-      and its contacts still go by the old word, so they move to the leg
-      here. Move the bar menu's hotel mark, itinerary upload and Mark as
-      told and `scheduler/print.js`'s marks and quote lines to the legs; and
-      let a draft carry legs and contacts through `scheduler/draft-fields.js`.
+- [ ] Hold each leg's days, Way, buses and hotel in the editor by its key,
+      with the form showing the leg on screen's, Save writing every leg by
+      its id, and Type's Split replaced by a Way for each leg. The editor
+      already holds its vehicles and route by key and saves its rows by the
+      leg's route or id.
+- [ ] Draw the list of legs over the tabs, and add Add leg and Remove leg.
+- [ ] Move the editor's quote lines' Leg and its contacts, the bar menu's
+      hotel mark, itinerary upload and Mark as told, and
+      `scheduler/print.js`'s marks and quote lines to the legs; and let a
+      draft carry legs and contacts through `scheduler/draft-fields.js`.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

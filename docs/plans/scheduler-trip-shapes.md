@@ -160,14 +160,12 @@ None open.
 
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way. The editor
-      holds its vehicles, route and days by each leg's key already; its
-      hotel and quote lines, and the stops, vehicles, lines and files it
-      saves, still go by the old word, so they move to the leg's id and
-      route here, with the row triggers filling a route or leg id only where
-      a page sends none; move the bar
-      menu's hotel mark, itinerary upload and Mark as told and
-      `scheduler/print.js`'s marks and quote lines to the legs; and let a
-      draft carry legs and contacts through `scheduler/draft-fields.js`.
+      holds its vehicles, route and days by each leg's key and saves its
+      rows by the leg's route or id already; its hotel, its quote lines' Leg
+      and its contacts still go by the old word, so they move to the leg
+      here. Move the bar menu's hotel mark, itinerary upload and Mark as
+      told and `scheduler/print.js`'s marks and quote lines to the legs; and
+      let a draft carry legs and contacts through `scheduler/draft-fields.js`.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

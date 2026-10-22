@@ -37,10 +37,10 @@
 
   /* A SAVED TRIP IS READ THROUGH trip-shape.js: its legs, each leg's routes,
      its day-of contacts and which papers each leg is handed. The editor still
-     writes a leg by its old word, `outbound` for the first and `return` for a
-     split trip's pickup, into the trip's columns and its rows, so it reads
-     each leg by the word it writes. A row names its leg by its route or its
-     leg's id; one a page has made and not read back names it by its word. A
+     knows a leg by its old word, `outbound` for the first and `return` for a
+     split trip's pickup, so it reads each leg by that word. A row names its
+     leg by its route or its leg's id; one a page has made and not read back
+     names it by its word. A
      trip read without its legs, as a new trip's draft is, is read by its own
      columns. */
   const SHAPE = window.SchedulerTripShape;
@@ -1316,13 +1316,13 @@
   }
 
   /* An empty slot has no row to move, so dropping one on a bus writes the row:
-     the trip, its leg, the slot's position and the bus. It returns the new row
+     the trip, its route or leg, the slot's position and the bus. It returns the new row
      as a read would, for the held week, and undo takes the bus off that row,
      which draws the slot on the No bus row where it started. */
-  async function fillSlot(tripId, leg, position, busId) {
+  async function fillSlot(tripId, place, position, busId) {
     const { data, error } = await withTimeout(client.from('trip_assignments')
-      .insert({ trip_id: tripId, leg, position, bus_id: busId })
-      .select('id,bus_id,position,leg,active_roles,needs,vehicle_type').single().then(r => r));
+      .insert({ trip_id: tripId, ...place, position, bus_id: busId })
+      .select('id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type').single().then(r => r));
     if (error) throw new Error(error.message);
     return { ...data, trip_drivers: [] };
   }
@@ -1593,7 +1593,11 @@
         const lane = pack(target, true);
         pack(bar.parentElement, false);
         schEl.setAttribute('aria-busy', 'true');
-        const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, leg || 'outbound', +slot || 0, toBus))
+        // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
+        const slotTrip = panelIndex.trips.get(tripId);
+        const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
+        const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
+        const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
           .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
         await settle(restIn(target), lane);
         /* The bar is drawn on its new bus now, marked as saving, and the copy
@@ -1603,7 +1607,8 @@
         const heldAs = assignmentId || `saving-${++standIns}`;
         holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
           saving: true, standIn: true,
-          row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
+          row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', route_id: slotRoute,
+                 active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
         });
         if (!drawHeld()) unpack();
         clear();
@@ -2219,8 +2224,9 @@
   /* THE EDITOR'S LEGS, each held by its key: its id once saved, and a
      stand-in, `new:outbound` or `new:return`, until then. The drop-off is
      the first, and a split's pickup the one after it. Its vehicles, route,
-     days and hotel are kept by that key; what Save writes still names a leg
-     by its old word, `wordOfLeg`. */
+     days and hotel are kept by that key, and Save writes its rows by the
+     leg's ids, `legIdsOf`; its hotel, contacts and quote lines still name
+     the leg by its old word, `wordOfLeg`. */
   const legKeyOf = word => editing?.legs?.find(l => l.word === word)?.key ?? `new:${word}`;
   const outKey = () => legKeyOf('outbound');
   const backKey = () => legKeyOf('return');
@@ -2236,6 +2242,28 @@
   // The leg on screen's old word, for what still goes by it: its files, its contacts and a draft's.
   const viewWord = () => (legOnScreen() == null ? null : wordOfLeg(legOnScreen()));
   const fleetLegs = () => (fleetSplit() ? [outKey(), backKey()] : [outKey()]);
+  /* WHERE SAVE PUTS A ROW: a stop or a vehicle on its leg's first route,
+     and a quote line or a file on its leg, each by id. A leg this Save made
+     has the ids its insert read back; a leg not saved yet, or a trip read
+     without its legs, goes by the old word, which the database matches to
+     the leg. */
+  function legIdsOf(key) {
+    if (editing?.madeLegs?.[key]) return editing.madeLegs[key];
+    const leg = shaped(editing?.trip) ? SHAPE.legOf(editing.trip, key) : null;
+    return leg ? { legId: leg.id, routeId: leg.routes[0]?.id ?? null } : null;
+  }
+  const onRoute = key => {
+    const routeId = legIdsOf(key)?.routeId;
+    return routeId ? { route_id: routeId } : { leg: wordOfLeg(key) };
+  };
+  // A quote line names its leg by its word, or none when it is the trip's.
+  const lineOnLeg = row => {
+    if (!('leg' in row) || !row.leg) return row;
+    const legId = legIdsOf(legKeyOf(row.leg))?.legId;
+    if (!legId) return row;
+    const { leg, ...rest } = row;
+    return { ...rest, leg_id: legId };
+  };
 
   /* THE TRIP-WIDE NEEDS SUM UP ITS VEHICLES, the ones on the legs it has, so
      the print pages and the connector, which read the trip's columns,
@@ -2324,13 +2352,13 @@
       const oldById = new Map(old.filter(b => b.id).map(b => [b.id, b]));
       const keptIds = new Set(buses.filter(b => b.id).map(b => b.id));
       const renumber = buses.length !== old.length || buses.some((b, i) => b.key !== old[i]?.key);
-      const ops = { leg: wordOfLeg(leg), inserts: [], updates: [], deletes: old.filter(b => b.id && !keptIds.has(b.id)).map(b => b.id) };
+      const ops = { leg, inserts: [], updates: [], deletes: old.filter(b => b.id && !keptIds.has(b.id)).map(b => b.id) };
       buses.forEach((b, i) => {
         const prev = b.id ? oldById.get(b.id) : null;
         const roles = activeRolesValue(b);
         if (!prev) {
           if (!busEmpty(b)) {
-            ops.inserts.push({ bus: b, row: { leg: wordOfLeg(leg), position: i, bus_id: b.busId, active_roles: roles,
+            ops.inserts.push({ bus: b, row: { position: i, bus_id: b.busId, active_roles: roles,
               needs: needsObject(needIds(b.needs)), vehicle_type: b.vehicleType ?? null } });
           }
           return;
@@ -2436,7 +2464,7 @@
       }
       for (const ins of ops.inserts) {
         const made = await write('its buses', client.from('trip_assignments')
-          .insert({ trip_id: tripId, ...ins.row }).select('id').single());
+          .insert({ trip_id: tripId, ...onRoute(ops.leg), ...ins.row }).select('id').single());
         const rows = ROLES.filter(r => seatFilled(ins.bus.seats[r.role]))
           .map(r => ({ assignment_id: made.id, ...seatRow(r.role, ins.bus.seats[r.role]) }));
         if (rows.length) await write('its drivers', client.from('trip_drivers').insert(rows));
@@ -2445,7 +2473,8 @@
     if (!work.statuses) return;
     const list = fleetLegs().flatMap(leg => editing.fleet[leg].flatMap(b => ROLES
       .filter(r => seatFilled(b.seats[r.role]))
-      .map(r => ({ driverId: b.seats[r.role].driverId, leg: wordOfLeg(leg), role: r.role,
+      .map(r => ({ driverId: b.seats[r.role].driverId,
+                   ...(legIdsOf(leg)?.legId ? { legId: legIdsOf(leg).legId } : { leg: wordOfLeg(leg) }), role: r.role,
                    status: b.seats[r.role].status, dirty: b.seats[r.role].statusDirty }))));
     await write('its driver statuses', client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list }));
   }
@@ -6432,7 +6461,7 @@
       }
       for (const ins of planned.inserts) {
         await write('its route', client.from('trip_stops')
-          .insert({ trip_id: tripId, leg: wordOfLeg(r.leg), position: ins.position, ...ins.row }));
+          .insert({ trip_id: tripId, ...onRoute(r.leg), position: ins.position, ...ins.row }));
       }
       return;
     }
@@ -6458,7 +6487,7 @@
         await write('its route', client.from('trip_stops').update({ position: x.position }).eq('id', x.id));
       }
       const saved = await write('its route', client.from('trip_stops')
-        .insert({ trip_id: tripId, leg: wordOfLeg(r.leg), position: pos, ...ins.row }).select('id').single());
+        .insert({ trip_id: tripId, ...onRoute(r.leg), position: pos, ...ins.row }).select('id').single());
       rows.push({ id: saved.id, leg: wordOfLeg(r.leg), type: ins.row.type, position: pos });
     }
   }
@@ -6512,7 +6541,7 @@
       { type: 'pickup', ...want.pickup },
       { type: 'stop', ...want.drop },
       { type: 'return', ...yard, ...want.yard },
-    ].map((row, i) => ({ trip_id: tripId, leg: 'return', position: top + 1 + i, ...row }));
+    ].map((row, i) => ({ trip_id: tripId, ...onRoute(backKey()), position: top + 1 + i, ...row }));
     await write('the pickup leg', client.from('trip_stops').insert(insert));
   }
 
@@ -11913,7 +11942,13 @@
       }
       const tripId = creating ? row.id : id;
       for (const op of legOps) {
-        if (op.op === 'insert') await write('its legs', client.from('trip_legs').insert({ trip_id: tripId, ...op.row }));
+        if (op.op === 'insert') {
+          // A new leg's first route is made by the database, so its id is read after.
+          const made = await write('its legs', client.from('trip_legs').insert({ trip_id: tripId, ...op.row }).select('id').single());
+          const routes = await write('its legs', client.from('trip_routes').select('id')
+            .eq('leg_id', made.id).order('position').limit(1));
+          editing.madeLegs = { ...editing.madeLegs, [legKeyOf(op.row.leg)]: { legId: made.id, routeId: routes?.[0]?.id ?? null } };
+        }
         else if (op.op === 'update') await write('its legs', client.from('trip_legs').update(op.row).eq('id', op.id));
         else await write('its legs', client.from('trip_legs').delete().eq('id', op.id));
       }
@@ -11960,11 +11995,12 @@
                                              ['trip_invoices', 'its invoices', invoicesPatch()],
                                              ['trip_quote_lines', 'its quote lines', linesPatch()]]) {
         if (!listWork?.work) continue;
+        const placed = row => (table === 'trip_quote_lines' ? lineOnLeg(row) : row);
         for (const item of listWork.inserts) {
-          await write(what, client.from(table).insert({ trip_id: tripId, ...item }));
+          await write(what, client.from(table).insert({ trip_id: tripId, ...placed(item) }));
         }
         for (const u of listWork.updates) {
-          await write(what, client.from(table).update(u.patch).eq('trip_id', tripId).eq('id', u.id));
+          await write(what, client.from(table).update(placed(u.patch)).eq('trip_id', tripId).eq('id', u.id));
         }
         for (const delId of listWork.deletes) {
           await write(what, client.from(table).delete().eq('trip_id', tripId).eq('id', delId));
@@ -14397,6 +14433,15 @@
   const recordFileHistory = (tripId, action, before, after, metadata) =>
     recordHistory(tripId, action, [{ field: 'document', label: 'Document', before, after }], null, metadata);
 
+  /* A file's leg by its id, from the old word a page still hands: the
+     pickup's for a split trip's pickup itinerary, or none for the trip's. */
+  function docPlace(tripId, word) {
+    if (!word) return { leg: null };
+    const trip = [panelArgs?.trip, panelIndex.trips.get(tripId)].find(t => t?.id === tripId && shaped(t));
+    const legId = trip ? SHAPE.legOfWord(trip, word)?.id : null;
+    return legId ? { leg_id: legId } : { leg: word };
+  }
+
   // Stores the file and adds its row. A row that fails takes the stored file
   // back out, so nothing is left behind. `leg` is a split trip's pickup's, or null.
   async function storeDocument(tripId, label, file, leg = null) {
@@ -14407,8 +14452,8 @@
     if (upErr) throw new Error(upErr.message);
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
-        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size, leg })
-        .select('id,label,created_at,file_name,file_path,file_size,leg').single().then(r => r));
+        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size, ...docPlace(tripId, leg) })
+        .select('id,label,created_at,file_name,file_path,file_size,leg,leg_id').single().then(r => r));
       if (error) throw new Error(error.message);
       return data;
     } catch (err) {
@@ -14452,7 +14497,7 @@
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
         .update({ file_name: fileName, file_path: path, file_size: file.size }).eq('id', old.id)
-        .select('id,label,created_at,file_name,file_path,file_size,leg').single().then(r => r));
+        .select('id,label,created_at,file_name,file_path,file_size,leg,leg_id').single().then(r => r));
       if (error) throw new Error(error.message);
       doc = data;
     } catch (err) {
@@ -14478,7 +14523,7 @@
   // A split trip's itinerary moved to the other leg, at once, as a replace is.
   const LEG_WORDS = { outbound: 'Drop-off', return: 'Pickup' };
   async function moveDocument(tripId, doc, leg) {
-    const { error } = await withTimeout(client.from('trip_documents').update({ leg }).eq('id', doc.id).then(r => r));
+    const { error } = await withTimeout(client.from('trip_documents').update(docPlace(tripId, leg)).eq('id', doc.id).then(r => r));
     if (error) throw new Error(error.message);
     await recordHistory(tripId, 'updated',
       [{ field: 'document_leg', label: 'Itinerary day', before: LEG_WORDS[docLeg(doc)], after: LEG_WORDS[leg] }],
@@ -14528,7 +14573,7 @@
   async function refreshDocuments(tripId) {
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
-        .select('id,label,created_at,file_name,file_path,file_size,leg').eq('trip_id', tripId).then(r => r));
+        .select('id,label,created_at,file_name,file_path,file_size,leg,leg_id').eq('trip_id', tripId).then(r => r));
       if (error) throw new Error(error.message);
       for (const trip of [panelArgs?.trip, panelIndex.trips.get(tripId)]) {
         if (trip?.id === tripId) trip.trip_documents = data || [];

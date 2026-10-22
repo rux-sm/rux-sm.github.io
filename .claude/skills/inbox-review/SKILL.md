@@ -46,7 +46,9 @@ no Missive tools says so and stops.
    enter, a form to fill, a quote to send, trips to enter, a question to
    answer. It is not one when the scheduler already says it by itself, such as
    a follow-up due or a leg short of a bus: read `get_trip`'s `warnings` and
-   `to_do` first.
+   `to_do` first. Nor is it one when the office has replied and only waits on
+   someone else, such as the customer's answer or a district's approval,
+   because waiting is no work for the office.
 7. **`list_to_dos`, with `include_closed`,** so a thread that already has an
    open row is changed and not doubled, and one whose row was marked Done is
    not asked again. A row is a thread's when its `thread_url` ends in the
@@ -167,12 +169,12 @@ opened.
   are.
 - **A row that reads true is left exactly as it is,** so a review changes
   only what moved.
-- **An open row whose thread has left Team Inboxes is likely done,** because
-  the office closes a conversation as it answers. Read the thread by the id
-  at the end of the row's link: an outbound message after the customer's
-  last one, with `Status: Completed` in the metadata, is the work done, and
-  a trip's `quote_sent_on` confirms a quote. Close the row with what went
-  out and when.
+- **A row is closed once the office has replied on its thread,** even when
+  the reply waits on the customer, because the next review adds a row again
+  when their answer asks something. Read the thread by the id at the end of
+  the row's link: an outbound message after the customer's last one is the
+  reply, and a trip's `quote_sent_on` confirms a quote. Close the row with
+  what went out and when.
 - **Match a row to the list by the id alone.** The office retitles a thread,
   and a sender shows under another form of their name, so the list's line may
   share no words with the row.

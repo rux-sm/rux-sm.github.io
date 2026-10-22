@@ -255,9 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, write the task class into `standards/`, its template, its
-      frontmatter and its checks, with the process shape a walkthrough takes
-      and a check that names two tasks whose steps are the same.
 - [ ] In atlas, split each walkthrough's phases into task files, one per
       phase, and rewrite each walkthrough as a process that names its tasks.
 - [ ] In atlas, move the walked stamps, the walk files and the status

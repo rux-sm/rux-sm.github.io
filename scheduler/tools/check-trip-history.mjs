@@ -84,10 +84,24 @@ expect('on a split trip read with its legs a stop names the day of its route\'s 
   said(changes(trip({ trip_type: 'dropoff_pickup', ...legs, trip_stops: [stop('s1', 0), stop('s2', 1), onRoute('R2')] }),
     trip({ trip_type: 'dropoff_pickup', ...legs, trip_stops: [stop('s1', 0), stop('s2', 1), onRoute('R2', { arrive: '11:00' })] }), names)),
   ['Stop: Place s3 (pickup): Arrives 10:00 → Arrives 11:00']);
-expect('and the rows of its legs make no line of their own',
+expect('and a leg moved is a line of its own',
   said(changes(trip({ trip_type: 'dropoff_pickup', ...legs }),
     trip({ trip_type: 'dropoff_pickup', trip_legs: [legs.trip_legs[0], { ...legs.trip_legs[1], start_date: '2027-01-11' }] }), names)),
-  []);
+  ['Leg: 2: Start 2027-01-10 → Start 2027-01-11']);
+
+// A leg's own row, as the editor now saves it: its days and buses, named by its place.
+const legRow = (more = {}) => ({ id: 'L2', trip_id: 't', leg: 'return', kind: 'one_way', start_date: '2027-01-10', end_date: '2027-01-10',
+  bus_count: 2, hotel_booked: false, hotel_itinerary_number: null, created_at: 'x', trip_routes: [{ id: 'R2', position: 1 }], ...more });
+const first = { id: 'L1', trip_id: 't', leg: 'outbound', kind: 'one_way', start_date: '2027-01-08', end_date: '2027-01-08', bus_count: 2,
+  hotel_booked: false, hotel_itinerary_number: null, created_at: 'x', trip_routes: [{ id: 'R1', position: 1 }] };
+expect('a leg moved or given more buses is a line naming the leg by its place',
+  said(changes(trip({ trip_type: 'dropoff_pickup', trip_legs: [first, legRow()] }),
+    trip({ trip_type: 'dropoff_pickup', trip_legs: [first, legRow({ start_date: '2027-01-11', end_date: '2027-01-11', bus_count: 3 })] }), names)),
+  ['Leg: 2: Start 2027-01-10, End 2027-01-10, Buses 2 → Start 2027-01-11, End 2027-01-11, Buses 3']);
+expect('a pickup added and taken away each say what it holds',
+  said(changes(trip({ trip_legs: [first] }), trip({ trip_legs: [first, legRow()] }), names)).concat(
+    said(changes(trip({ trip_legs: [first, legRow()] }), trip({ trip_legs: [first] }), names))),
+  ['Leg: 2: ∅ → Start 2027-01-10, End 2027-01-10, Buses 2, Kind one_way', 'Leg: 2: Start 2027-01-10, End 2027-01-10, Buses 2, Kind one_way → ∅']);
 
 const seatChanged = trip({ trip_assignments: [{ ...base.trip_assignments[0], bus_id: 'b2', needs: { adaLift: true },
   trip_drivers: [{ ...base.trip_assignments[0].trip_drivers[0], driver_id: 'd2', envelope_printed: true, envelope_printed_at: 'x', envelope_printed_by: 'Sam' }] }] });

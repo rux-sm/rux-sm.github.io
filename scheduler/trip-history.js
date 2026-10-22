@@ -117,6 +117,8 @@
     bus_id: '', driver_id: 'Driver', active_roles: 'Seats', needs: 'Needs', vehicle_type: 'Vehicle',
     report_time: 'Report time', pay: 'Pay', kind: 'Kind', item: 'Item', quantity: 'Quantity', cost: 'Cost',
     amount: 'Amount', ref: 'Number', number: 'Number', date: 'Date', method: 'Method', leg: 'Day',
+    start_date: 'Start', end_date: 'End', bus_count: 'Buses', hotel_booked: 'Hotel booked',
+    hotel_itinerary_number: 'Hotel confirmation',
     lat: 'Map point', lng: 'Map point', mapbox_id: 'Map place',
   };
   // How a row's column is written, where its value alone does not say.
@@ -232,7 +234,16 @@
     const word = ctx.split ? legWordOf(row, ctx) : null;
     return word ? ` (${(LEGS[word] || word).toLowerCase()})` : '';
   };
+  /* A leg is named by its place on the trip, read through trip-shape.js in
+     either read, and its old word where it has one. */
+  function legName(leg, ctx) {
+    const SHAPE = window.SchedulerTripShape;
+    const n = ctx.reads.map(t => (SHAPE && Array.isArray(t?.trip_legs) ? SHAPE.legOf(t, leg.id)?.number : null)).find(Boolean);
+    return n ? `${n}` : (LEGS[leg.leg] || 'new');
+  }
   const LISTS = [
+    { field: 'legs', label: 'Leg', rows: t => t.trip_legs, name: legName,
+      holds: ['start_date', 'end_date', 'bus_count', 'kind'] },
     { field: 'itinerary', label: 'Stop', rows: t => t.trip_stops,
       name: (s, ctx) => `${s.name || s.address || s.label || s.type || 'Stop'}${dayOf(s, ctx)}`,
       holds: ['type', 'address', 'arrive', 'spot', 'depart_prev'] },

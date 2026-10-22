@@ -1534,7 +1534,8 @@
     const legs = split ? (shapedLegs.length ? shapedLegs : ['outbound', 'return']) : [null];
     const share = Math.round((total / legs.length) * 100) / 100;
     return legs.map((leg, i) => {
-      const buses = leg ? legBuses(trip, leg) : trip.bus_count;
+      // A whole trip's buses are its first leg's, as its one rental line has always counted.
+      const buses = legBuses(trip, leg ?? firstLegOf(trip));
       const n = Math.max(Number(buses) || 0, 1);
       const legTotal = i < legs.length - 1 ? share : Math.round((total - share * (legs.length - 1)) * 100) / 100;
       return {

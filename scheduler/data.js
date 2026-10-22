@@ -2242,6 +2242,54 @@
     return legs;
   };
 
+  /* A TRIP'S LEGS ARE SAVED ON THEIR OWN ROWS. The form still reads a leg's
+     days, buses and hotel into the old leg columns, which `EDITS`, the Buses
+     tab and the Done rules work in; Save takes them out of the trip's write
+     and writes each leg's row instead: the drop-off's, and a split's pickup
+     while it has a start day, taken off when it has none. The database keeps
+     the trip's own start_date and end_date from the legs, and refuses a
+     page that still sends a leg column. */
+  const LEG_COLUMNS = ['start_date', 'end_date', 'return_start_date', 'return_end_date', 'bus_count', 'return_bus_count',
+    'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return'];
+  // Each leg row's writes, taking the leg columns out of `row`.
+  function legWork(row, creating) {
+    const given = Object.fromEntries(LEG_COLUMNS.filter(k => k in row).map(k => [k, row[k]]));
+    for (const k of LEG_COLUMNS) delete row[k];
+    const trip = creating ? {} : editing.trip;
+    const pick = (key, saved) => (key in given ? given[key] : saved);
+    const type = 'trip_type' in row ? row.trip_type : editing.before.trip_type;
+    const out = legFactsOf(trip, 'outbound'), back = legFactsOf(trip, 'return');
+    const want = { outbound: null, return: null };
+    const outStart = pick('start_date', out.from);
+    want.outbound = {
+      kind: ['one_way', SPLIT].includes(type) ? 'one_way' : 'round_trip',
+      start_date: outStart, end_date: pick('end_date', out.to) ?? outStart,
+      bus_count: pick('bus_count', out.buses),
+      hotel_booked: !!pick('hotel_booked_outbound', out.hotelBooked),
+      hotel_itinerary_number: pick('hotel_itinerary_number_outbound', out.hotelNumber) ?? null,
+    };
+    const backStart = pick('return_start_date', back.from);
+    if (type === SPLIT && backStart) {
+      want.return = {
+        kind: 'one_way', start_date: backStart, end_date: pick('return_end_date', back.to) ?? backStart,
+        // A pickup new to the trip takes the buses its Buses tab lists.
+        bus_count: pick('return_bus_count', back.buses ?? editing.fleet?.return?.length ?? want.outbound.bus_count),
+        hotel_booked: !!pick('hotel_booked_return', back.hotelBooked),
+        hotel_itinerary_number: pick('hotel_itinerary_number_return', back.hotelNumber) ?? null,
+      };
+    }
+    const ops = [];
+    for (const word of ['outbound', 'return']) {
+      const saved = (trip.trip_legs || []).find(l => l.leg === word) ?? null;
+      const wanted = want[word];
+      if (!wanted) { if (saved) ops.push({ op: 'delete', id: saved.id }); continue; }
+      if (!saved) { ops.push({ op: 'insert', row: { leg: word, ...wanted } }); continue; }
+      const patch = Object.fromEntries(Object.entries(wanted).filter(([k, v]) => !same(v, saved[k] ?? null)));
+      if (Object.keys(patch).length) ops.push({ op: 'update', id: saved.id, row: patch });
+    }
+    return ops;
+  }
+
   /* Save's work for the fleet, or null before the tab was built. Positions
      are rewritten only on a leg whose buses were added, removed or reordered,
      so an older trip numbered with gaps opens with nothing to save. The
@@ -11820,6 +11868,8 @@
       }
       const offers = [];
       const unlinked = await linkContacts(row, creating, offers);
+      // The legs' own writes, out of the trip's, made once the trip stands.
+      const legOps = legWork(row, creating);
       offers.push(...placeOffers());
       const savedCustomerId = 'customer_id' in row ? row.customer_id : editing.before.customer_id;
       /* The fleet is written last, because its rows need the trip to exist. If
@@ -11846,6 +11896,11 @@
         await write('the trip', client.from('trips').update(row).eq('id', id));
       }
       const tripId = creating ? row.id : id;
+      for (const op of legOps) {
+        if (op.op === 'insert') await write('its legs', client.from('trip_legs').insert({ trip_id: tripId, ...op.row }));
+        else if (op.op === 'update') await write('its legs', client.from('trip_legs').update(op.row).eq('id', op.id));
+        else await write('its legs', client.from('trip_legs').delete().eq('id', op.id));
+      }
       // Only once the trip stands does its contact take its customer.
       await fillContactCustomer(row);
       /* A trip started from a website request takes it, and its New quote
@@ -12412,13 +12467,14 @@
   /* Marks this leg's hotel booked or not. It saves at once, like a colour: one
      column, no form. The menu item and a shortcut slot both come here. */
   async function markHotel(bar) {
-    if (!['outbound', 'return'].includes(bar.dataset.leg)) return;
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    const leg = trip ? legByKey(trip, bar.dataset.legKey || bar.dataset.leg) : null;
+    if (!leg?.legId) return;
     const booked = !bar.dataset.hotelBooked;
     toast('working', booked ? 'Marking the hotel booked…' : 'Marking the hotel not booked…');
     try {
       const { error } = await withTimeout(
-        client.from('trips').update({ [`hotel_booked_${bar.dataset.leg}`]: booked })
-          .eq('id', bar.dataset.tripId).then(r => r));
+        client.from('trip_legs').update({ hotel_booked: booked }).eq('id', leg.legId).then(r => r));
       if (error) throw new Error(error.message);
       recordFieldChange(bar.dataset.tripId, `hotel_booked_${bar.dataset.leg}`, !booked, booked);
       await show();

@@ -826,10 +826,20 @@
    them to its foot. An app's page draws them under its header, which stays
    on the window's edges; a documentation page's header is the frame's
    width in both themes, so they run on past its ends, as Geist's
-   documentation draws them. */
+   documentation draws them. A documentation page's nav line also runs up
+   through the header beside the name, as Geist's logo cell carries it, so
+   the nav and the name share one column; the header and the nav start at
+   the same edge, so the line is 16rem into the header's own background. */
 @media (min-width: 66rem) {
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav--ux:not(.rux--side-nav--hidden) {
     border-inline-end: 1px solid var(--rux-border-subtle-01);
+  }
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :where(body:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden), > .rux--header > .rux--side-nav--ux:not(.rux--side-nav--hidden)):not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header,
+  :where(body:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden), > .rux--header > .rux--side-nav--ux:not(.rux--side-nav--hidden)):not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+    background-image: linear-gradient(to right,
+      transparent calc(16rem - 1px),
+      var(--rux-border-subtle-01) calc(16rem - 1px) 16rem,
+      transparent 16rem);
   }
 }
 @media (min-width: 76.25rem) {

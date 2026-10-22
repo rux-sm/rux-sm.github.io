@@ -6,12 +6,14 @@
 /* ---- the shell: Design's document-page --------------------------------------
    The side nav is beside the content from 66rem, where Carbon pairs them, and
    Design pads the content past it. One reading column, no wider than a
-   comfortable line, and On this page beside it, which shows only there and
-   stays while the page scrolls. */
+   comfortable line, and from 82rem, Carbon's xlg, On this page beside it,
+   which stays while the page scrolls. Below xlg the column would leave the
+   aside under 200px and itself under 600px, so the aside is not shown and
+   the column takes its room. */
 .ln-pages .rux--css-grid-column { max-inline-size: 64rem; }
 .ln-pages p, .ln-pages h1 { max-inline-size: 36rem; }
 .ln-pages .ln-aside { display: none; }
-@media (min-width: 66rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
+@media (min-width: 82rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
 .ln-ask { font-size: 2rem; line-height: 1.2; font-weight: 400; margin: 0; }
 .ln-quiet { font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); margin: 0; }
 .ln-strip { color: var(--rux-text-secondary); }

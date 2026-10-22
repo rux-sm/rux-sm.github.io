@@ -155,7 +155,7 @@ export function shell(current) {
   return `<header class="rux--header" data-theme="g100" aria-label="Rux Design">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
-  <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:2rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
+  <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.5rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
   <div class="rux--header__global">
 ${accountAction()}
   </div>

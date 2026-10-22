@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Check an item's inventory · LN Guide · Updated 22 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -34,6 +35,7 @@
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-information--filled" viewBox="0 0 32 32"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -106,38 +108,118 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Check an item's inventory</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">Check an item's inventory</h1>
 <p class="rux--type-body-long-01">Find out how much of one item is in stock, where, and how much is already committed.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
-
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/find-the-item.html?walk=1">Start</a><span class="ln-quiet">2 tasks · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>2 tasks, 8 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Note</div>
+      <div class="rux--inline-notification__subtitle">Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.</div>
+    </div>
+  </div>
 </div>
-<ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/find-the-item.html"><span class="ln-path__dot">1</span><b>Find the item</b><small>The item's on hand, blocked, on order and allocated are known. · 3 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/read-the-stock-by-warehouse.html"><span class="ln-path__dot">2</span><b>Read the stock by warehouse</b><small>The warehouse to work from, and its figures, are written down. · 5 steps</small></a></li>
-</ol>
-<ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="cases">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 1</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">One answer from an AI command</span></b><p>Where the stock check is set up, <a class="rux--link" href="../follow/use-the-ai-commands.html">Use the AI commands</a> gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens</p></li>
-</ul></div></div>
-  </li>
-</ul>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/find-the-item.html?walk=1">Start</a><span class="ln-quiet">one step at a time · 2 tasks · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__summary">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Find the item</a></td><td>The item's on hand, blocked, on order and allocated are known.</td><td>3</td></tr>
+<tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Read the stock by warehouse</a></td><td>The warehouse to work from, and its figures, are written down.</td><td>5</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
+<section class="ln-proc__task" id="task-1">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/find-the-item.html">Find the item</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The item's on hand, blocked, on order and allocated are known.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1-1"><td><b>1.1</b></td><td>Enter the item in <span class="ln-t-named">Filter Items</span> and run it</td><td>Grid shows <span class="ln-t-named">On Hand</span> · <span class="ln-t-named">Blocked</span> · <span class="ln-t-named">On Order</span> · <span class="ln-t-named">Allocated</span></td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Read the four quantities on the item's row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">on hand</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">blocked</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">on order</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">allocated</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>Tick the item row</td><td></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The item returns no row</td><td>The item has no inventory records yet, so there is nothing to report</td></tr>
+<tr><td><span class="ln-t-named">Item Order Plan</span> is greyed out in the header</td><td>Expected. Open it through Planning instead: <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> <span class="ln-t-exact">cprrp0520m000</span>, <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-2">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/read-the-stock-by-warehouse.html">Read the stock by warehouse</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The warehouse to work from, and its figures, are written down.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later task uses is chosen from its figures. <span class="ln-t-named">Economic Stock</span> on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-2-1"><td><b>2.1</b></td><td>In the <span class="ln-t-named">Inventory</span> group of the header, click <span class="ln-t-press">Warehouse Inventory</span></td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens, item carried through</td></tr>
+<tr id="step-2-2"><td><b>2.2</b></td><td>Read each row's <span class="ln-t-named">Inventory on Hand</span> and <span class="ln-t-named">Inventory on Order</span></td><td>One row per warehouse holding or expecting the item</td></tr>
+<tr id="step-2-3"><td><b>2.3</b></td><td>Read each row's <span class="ln-t-named">Inventory Allocated</span> and <span class="ln-t-named">Inventory Blocked</span></td><td></td></tr>
+<tr id="step-2-4"><td><b>2.4</b></td><td>Choose the warehouse to work from by its figures, not its name</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">on hand</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">allocated</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">blocked</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-5"><td><b>2.5</b></td><td>Read the totals beneath the grid</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">total on hand</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">total allocated</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>On hand looks sufficient but an order will not fill</td><td>Check <span class="ln-t-named">Inventory Allocated</span>. Much of the on-hand may be committed elsewhere</td></tr>
+<tr><td><span class="ln-t-named">Economic Stock</span> is negative</td><td>The warehouse is over-allocated: more is committed than it holds and expects</td></tr>
+</tbody>
+</table></div>
+</section>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">One answer from an AI command</span></td><td>Where the stock check is set up, <a class="rux--link" href="../follow/use-the-ai-commands.html">Use the AI commands</a> gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens</td><td></td></tr>
+</tbody>
+</table></div>
+</section>
+
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/whwmd4300m000.html">Inventory 360</a></td><td><span class="ln-t-exact">whwmd4300m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whwmd2515m000.html">Warehouse - Item Inventory</a></td><td><span class="ln-t-exact">whwmd2515m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory</span></span></td></tr>
+</tbody>
+</table></div>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#summary">Summary</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#procedure">Procedure</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Variations</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li></ul>
 </div>
 </div>
 </div>

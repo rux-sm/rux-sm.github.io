@@ -74,23 +74,11 @@ tutorial, reference and explanation.
 
 ### The task page
 
-- **On top, always visible, in this order:** the title; one line of What you
-  get; its verified status and its module as tags; a strip saying which task
-  of which process this is and what comes next; Before you start, naming what
-  must exist first as links to the tasks that make it; the screen's route with
-  its code as a chip that copies; one Walk it button; then the numbered steps,
-  each one short action with what you should see under it.
-
-- **The example sits under Before you start**, a line reading Example and
-  Carbon's structured list of what and its value, the value's exact text a
-  chip that copies it. In Guided, a step that names a field the example gives
-  shows that value under its headline, so the reader never leaves the step to
-  find it.
-
-- **Folded underneath, open when wanted:** Why LN works this way, If something
-  goes wrong, Variations, and Related, which names the screens, the ideas and
-  the next task. A fold's label carries its count, such as If something goes
-  wrong · 9.
+- **A task page is its Document**, as
+  [`ln-guide-document.md`](ln-guide-document.md) decides, with a strip saying
+  which task of which process this is and what comes next, and one Walk it
+  button. In Guided, a step that names a field the example gives shows that
+  value under its headline, so the reader never leaves the step to find it.
 
 - **Two views of the same task, Document and Guided.** The Document is the
   task as one readable document and is what prints. Guided is one step at a time:
@@ -113,12 +101,9 @@ tutorial, reference and explanation.
 
 ### The other pages
 
-- **A process page** lists its tasks in order, each with what it achieves and
-  its step count, and draws its decisions as dashed forks. Above the path: its
-  purpose, its tags, a Before you start line, the values its run uses as the
-  list a task's example is, and one Start button, which opens the first task
-  in Guided. Below it: a Done when line, then the folds If something goes
-  wrong, Reference, Different cases and What comes next.
+- **A process page is its Document**, every task's steps inline, with the
+  decisions the map puts between two tasks as rows of its Summary and one
+  Start button, which opens the first task in Guided.
 
 - **A screen page** gives the screen's purpose, code, menu route or how it is
   reached, and the tasks that use it. The owner sees its fields after log-in.

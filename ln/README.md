@@ -12,23 +12,27 @@ A documentation site, one file per page, with a walked mode inside it:
 - **Home**, `index.html`, asks what you are doing: a search box, the place you
   stopped, the processes in the order to learn them, and what is still to
   confirm.
-- **A process**, `follow/<id>.html`, is the path of its tasks, with each
-  decision drawn as a fork, and what to look up folded beneath.
-- **A task**, `do/<id>.html`, is a document first: its steps on one page,
-  with Why LN works this way, If something goes wrong, Variations and Related
-  folded beneath. **Walk it** turns it into Guided, one step at a time; a
-  phone opens Guided and a wide screen the Full page.
+- **A process**, `follow/<id>.html`, is its Document: a procedure to read,
+  print and share, with every task's steps numbered 2.3, Why before them,
+  troubleshooting under them, the decisions between tasks in its Summary, and
+  the screens it opens at the end.
+- **A task**, `do/<id>.html`, is the same Document for one task. **Walk it**
+  turns it into Guided, one step at a time; a phone opens Guided and a wide
+  screen the Document.
 - **A screen**, `screens/<code>.html`, and **an idea**, `ideas/<id>.html`,
   each have a page, and `do/`, `screens/` and `ideas/` each have an index.
 - **Search**, `search.html`, reads `search.json`, the one file that indexes
   every task, problem, process, screen and idea.
-- **Print**, on a task and a process, prints the Full page from the browser's
-  dialog, where Save as PDF is a destination; `print.css` keeps the paper
-  light with no fills, and the PDF takes the page's title as its name.
+- **Print**, on a task and a process, prints the Document from the browser's
+  dialog, where Save as PDF is a destination: Letter, ruled with no fills, a
+  footer of its title, its Updated date and Page N of M, and the reference by
+  title only. `print.css` holds it, and the PDF takes the page's title as its
+  name.
 
 Where the reader stopped is kept in their browser and nowhere else.
 `docs/plans/ln-guide.md` in the repository root is what it is for and what is
-still to build.
+still to build, and `docs/plans/ln-guide-document.md` what the Document and
+the Guide are.
 
 - **Still to confirm**, `confirm.html`, lists the tasks nobody has walked in
   LN; Guided carries the owner's two answers under each of their steps.

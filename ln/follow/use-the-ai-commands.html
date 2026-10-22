@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Use the AI commands · LN Guide · Updated 22 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -34,6 +35,7 @@
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-information--filled" viewBox="0 0 32 32"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -106,36 +108,143 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Use the AI commands</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">Use the AI commands</h1>
 <p class="rux--type-body-long-01">Run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Sales</span></div></div>
-
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/run-the-stock-check.html?walk=1">Start</a><span class="ln-quiet">2 tasks · 20 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></dd></div><div><dt>Module</dt><dd>Warehousing, Sales</dd></div><div><dt>Length</dt><dd>2 tasks, 20 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Note</div>
+      <div class="rux--inline-notification__subtitle">Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.</div>
+    </div>
+  </div>
 </div>
-<ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/run-the-stock-check.html"><span class="ln-path__dot">1</span><b>Run the stock check</b><small>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row. · 7 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-status-overview.html"><span class="ln-path__dot">2</span><b>Run Status Overview</b><small>Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen. · 13 steps</small></a></li>
-</ol>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/run-the-stock-check.html?walk=1">Start</a><span class="ln-quiet">one step at a time · 2 tasks · 20 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__summary">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Run the stock check</a></td><td>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</td><td>7</td></tr>
+<tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Run Status Overview</a></td><td>Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen.</td><td>13</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
+<section class="ln-proc__task" id="task-1">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/run-the-stock-check.html">Run the stock check</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> <span class="ln-t-exact">whwmd4100m100</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, Is it worth a prompt.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1-1"><td><b>1.1</b></td><td>Open <span class="ln-t-named">Company - Item Inventory</span></td><td>One row for each item, with its on hand, blocked, on order and allocated figures</td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Tick the item's row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">on hand</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">on order</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>Open <span class="ln-t-named">Actions</span> and choose <span class="ln-t-named">Item Inventory…</span></td><td>A window titled Item Inventory, with Check where this item's stock is and what is planned in and out. under Prompt and the answer under Response</td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>Read the first two lines of the answer</td><td>The description, the item code in brackets and the unit; then an Attention: line for each warehouse with more allocated than on hand or with stock blocked, or No warnings.</td></tr>
+<tr id="step-1-5"><td><b>1.5</b></td><td>Read each warehouse's section</td><td>Its code and name; ON HAND and BLOCKED on one line; ALLOCATED with the orders going out indented under it; ON ORDER with the orders coming in under it</td></tr>
+<tr id="step-1-6"><td><b>1.6</b></td><td>Read the last line</td><td>Empty: and the warehouses that hold nothing and expect nothing, or no such line</td></tr>
+<tr id="step-1-7"><td><b>1.7</b></td><td>Add up the warehouses' ON HAND, and their ON ORDER, and compare each with <a class="rux--link" href="#step-1-2">step 1.2</a></td><td>The sums equal the item's row. Where they do not, act on the row</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Item Inventory…</span> is not in <span class="ln-t-named">Actions</span></td><td>Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike</td></tr>
+<tr><td>The warehouse lines do not add up to the item's row</td><td>Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-2">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/run-status-overview.html">Run Status Overview</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen.</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked line to the model with its blocking records, its activities and its actual deliveries. An activity is a step of the line's ordering process, and LN lists each one with its status on the line's status screen, where the first Free activity is the next to be carried out. The answer gives five parts in a fixed order, and its last sentence names that next step or says the line is canceled.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-2-1"><td><b>2.1</b></td><td>Open <span class="ln-t-named">Sales Order Lines</span> by itself, from the client's list of recently used sessions</td><td>The lines of one order, with the order in the header and a tick box on each line</td></tr>
+<tr id="step-2-2"><td><b>2.2</b></td><td>Click <span class="ln-t-press">Find</span> and search by Order, Position, Sequence for your order</td><td>The order in the header and its lines in the grid</td></tr>
+<tr id="step-2-3"><td><b>2.3</b></td><td>Tick the line</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order and line</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-4"><td><b>2.4</b></td><td>Open <span class="ln-t-named">Actions</span> and choose <span class="ln-t-named">Status Overview…</span>, near the foot of the menu</td><td>A window titled Status Overview, with Check why this order line has not shipped and what to do next. under Prompt and the answer under Response</td></tr>
+<tr id="step-2-5"><td><b>2.5</b></td><td>Read the first part</td><td>The line: order, line, item, ordered, delivered and back order quantities, planned delivery date, warehouse, and whether it is canceled</td></tr>
+<tr id="step-2-6"><td><b>2.6</b></td><td>Read the second part</td><td>Line blocked: yes. or Line blocked: no., then a line for each blocking record: hold reason, credit analyst, who blocked it and expected release date</td></tr>
+<tr id="step-2-7"><td><b>2.7</b></td><td>Read the third part</td><td>One line for each step that applies to the line, in LN's order, each with its status, such as executed, changed or free</td></tr>
+<tr id="step-2-8"><td><b>2.8</b></td><td>Read the fourth part</td><td>One line for each delivery: date, quantity, shipment, shipment line and status. With none, Nothing delivered yet.</td></tr>
+<tr id="step-2-9"><td><b>2.9</b></td><td>Read the last sentence</td><td>The next step and its status, All steps are done., or This line is canceled, so no step is waiting.</td></tr>
+<tr id="step-2-10"><td><b>2.10</b></td><td>Open the line's form by its row icon. It is on the Order Lines tab of <span class="ln-t-named">Sales Order Intake Workbench</span></td><td><span class="ln-t-named">Sales Order Lines</span> opens as a form for that one line</td></tr>
+<tr id="step-2-11"><td><b>2.11</b></td><td>Choose <span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">Status</span></span></td><td><span class="ln-t-named">Sales Order Line Status</span> opens in a tab of its own</td></tr>
+<tr id="step-2-12"><td><b>2.12</b></td><td>On <span class="ln-t-named">Activities 1</span>, compare each activity and its status with <a class="rux--link" href="#step-2-7">step 2.7</a></td><td>The same steps, each with the same status</td></tr>
+<tr id="step-2-13"><td><b>2.13</b></td><td>Find the first activity whose status is Free and compare it with <a class="rux--link" href="#step-2-9">step 2.9</a></td><td>It is the step the answer names, and the one the Execute section names. On a canceled line the answer says no step is waiting, and the Canceled indicator is lit</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Status Overview…</span> is not in <span class="ln-t-named">Actions</span></td><td>The command is on Sales Order Lines opened by itself, <a class="rux--link" href="#step-2-1">step 2.1</a>, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's <span class="ln-t-named">Personalize Form</span> names in the status bar</td></tr>
+<tr><td>A step in the answer is a session code</td><td>It is a step outside the four the command names, as What the commands cannot do says</td></tr>
+<tr><td>The answer and the status screen disagree</td><td>Act on the status screen. It is LN's own record of the line, and the answer is the model's reading of it</td></tr>
+</tbody>
+</table></div>
+</section>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Building a command</span></td><td><a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> builds a command like these, improves its answer and removes it</td><td></td></tr>
+<tr><td><span class="ln-t-named">Several lines at once</span></td><td>Tick the lines on the Order Lines tab of the workbench and choose <span class="ln-t-named">Status Overview…</span> once. The answer covers each line in the list's order, with a line of dashes between them. Check each line against its own status screen</td><td></td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__ref">
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="reference">Reference</h2>
+<p class="ln-proc__print">Read the reference beside this procedure at rux-sm.github.io/ln/follow/use-the-ai-commands.html</p>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="reference">
+  <li class="rux--accordion__item" id="ref-1">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Reference</div>
+      <div class="rux--accordion__title">What it is</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><h3 class="ln-ref__title">What it is</h3>
-<p><strong>A prepared question, attached to a screen.</strong> Someone writes the question once, chooses the LN data that goes with it, and links it to one session. Everyone who uses that session then sees it as a command in the <strong>Actions</strong> menu. Choosing it sends the selected record to the Infor GenAI service, and the answer opens in a window of its own.</p><ul class="ln-list">
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p><strong>A prepared question, attached to a screen.</strong> Someone writes the question once, chooses the LN data that goes with it, and links it to one session. Everyone who uses that session then sees it as a command in the <strong>Actions</strong> menu. Choosing it sends the selected record to the Infor GenAI service, and the answer opens in a window of its own.</p><ul class="ln-list">
   <li><b>Answer one fixed question about the record selected</b><p><span class="ln-quiet">It does not</span><br>Take a typed question. There is no chat box</p></li>
   <li><b>Read only the data its dataset names</b><p><span class="ln-quiet">It does not</span><br>Change anything in LN</p></li>
   <li><b>Open the answer to read, copy or download</b><p><span class="ln-quiet">It does not</span><br>Check itself. A wrong answer reads like a right one</p></li>
-</ul><h3 class="ln-ref__title">The commands</h3><ul class="ln-list">
+</ul></div></div>
+  </li>
+  <li class="rux--accordion__item" id="ref-2">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">The commands</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">Status Overview…</span></b><p><span class="ln-quiet">Where</span><br>Sales Order Lines, and the Order Lines tab of the Order Intake Workbench</p><p><span class="ln-quiet">What it answers</span><br>Why an order line has not shipped, and which step comes next</p><p><span class="ln-quiet">Standing</span><br>Run on four lines one at a time, and each answer agreed with the line's status screen. Run on four at once from the workbench, and not yet checked</p></li>
   <li><b><span class="ln-t-named">Item Inventory…</span></b><p><span class="ln-quiet">Where</span><br>Company - Item Inventory</p><p><span class="ln-quiet">What it answers</span><br>Where an item's stock is, and what is planned in and out</p><p><span class="ln-quiet">Standing</span><br>Kept as a demonstration. LN's own inventory screens show the same figures</p></li>
-</ul><h3 class="ln-ref__title">What the commands cannot do</h3>
-<p><strong>Each command answers one question about the record ticked, from the data LN sends with it.</strong></p><ul class="ln-list">
+</ul></div></div>
+  </li>
+  <li class="rux--accordion__item" id="ref-3">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">What the commands cannot do</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p><strong>Each command answers one question about the record ticked, from the data LN sends with it.</strong></p><ul class="ln-list">
   <li><b>One fixed question</b><p><span class="ln-quiet">What it means</span><br>There is nowhere to type your own</p></li>
   <li><b>Four step names</b><p><span class="ln-quiet">What it means</span><br>Status Overview names Print Sales Order Acknowledgements/RMAs, Release Sales Orders to Warehousing, Release Sales Orders/Schedules to Invoicing and Process Delivered Sales Orders. Any other step that applies to a line is written as its session code, and no line with such a step has been tried</p></li>
   <li><b>Not tried on a blocked line</b><p><span class="ln-quiet">What it means</span><br>The lines Status Overview was checked on were open or canceled, and none was blocked at the time</p></li>
@@ -145,13 +254,25 @@
   <li><b>Can disagree with the row</b><p><span class="ln-quiet">What it means</span><br>One item's warehouses added up to 500 less on hand than its row, so the row is what to act on</p></li>
   <li><b>A demonstration</b><p><span class="ln-quiet">What it means</span><br>LN's own inventory screens show what the stock check shows; Status Overview is the one that reads and explains</p></li>
   <li><b>Shared by everyone</b><p><span class="ln-quiet">What it means</span><br>The commands are set up once for the screen, so every user of it sees them</p></li>
-</ul><h3 class="ln-ref__title">Setting one up</h3>
-<p><strong>The GenAI Embedded Experience feature must be switched on for the tenant first</strong>, in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span class="dest">Embedded GenAI</span></span>, and <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> walks each one.</p><ul class="ln-list">
+</ul></div></div>
+  </li>
+  <li class="rux--accordion__item" id="ref-4">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Setting one up</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p><strong>The GenAI Embedded Experience feature must be switched on for the tenant first</strong>, in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span class="dest">Embedded GenAI</span></span>, and <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> walks each one.</p><ul class="ln-list">
   <li><b>Dataset</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5100m000.html"><span class="ln-t-named">Datasets</span></a> <span class="ln-t-exact">ttrpi5100m000</span></p><p><span class="ln-quiet">What it holds</span><br>The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model</p></li>
   <li><b>Prompt</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5150m000.html"><span class="ln-t-named">GenAI Prompts</span></a> <span class="ln-t-exact">ttrpi5150m000</span></p><p><span class="ln-quiet">What it holds</span><br>The command's name, its dataset, the text sent to the model, and the sentence the user sees</p></li>
   <li><b>Link</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttadv9160m000.html"><span class="ln-t-named">GenAI Prompts by Session</span></a> <span class="ln-t-exact">ttadv9160m000</span></p><p><span class="ln-quiet">What it holds</span><br>The one session the command appears on, and when it is enabled</p></li>
-</ul>
-<p><strong>Then run it and check it</strong>, on one record of each kind it can meet, before anyone else relies on it. <strong>To remove it,</strong> delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.</p><h3 class="ln-ref__title">What the first prompts taught</h3><ul class="ln-list">
+</ul><p><strong>Then run it and check it</strong>, on one record of each kind it can meet, before anyone else relies on it. <strong>To remove it,</strong> delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.</p></div></div>
+  </li>
+  <li class="rux--accordion__item" id="ref-5">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">What the first prompts taught</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>Put the command where the data is</b><p><span class="ln-quiet">Why</span><br>A screen's record reaches only some tables. The stock check was wanted on the order line, which cannot reach stock</p></li>
   <li><b>Decide in the dataset, word in the prompt</b><p><span class="ln-quiet">Why</span><br>A filter applies a condition the same way every time; a sentence in the prompt is judged afresh on each run</p></li>
   <li><b>Forbid calculating</b><p><span class="ln-quiet">Why</span><br>Left free, the model added sums of its own, and one was wrong</p></li>
@@ -164,24 +285,26 @@
   <li><b>Authorization levels</b><p><span class="ln-quiet">Why</span><br><span class="ln-gap">Not documented for this release.</span></p></li>
 </ul></div></div>
   </li>
-  <li class="rux--accordion__item" id="cases">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 2</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Building a command</span></b><p><a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> builds a command like these, improves its answer and removes it</p></li>
-  <li><b><span class="ln-t-named">Several lines at once</span></b><p>Tick the lines on the Order Lines tab of the workbench and choose <span class="ln-t-named">Status Overview…</span> once. The answer covers each line in the list's order, with a line of dashes between them. Check each line against its own status screen</p></li>
-</ul></div></div>
-  </li>
 </ul>
+</section>
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/whwmd4100m100.html">Company - Item Inventory</a></td><td><span class="ln-t-exact">whwmd4100m100</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span></td></tr>
+</tbody>
+</table></div>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#reference">Reference</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#summary">Summary</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#procedure">Procedure</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Variations</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#reference">Reference</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li></ul>
 </div>
 </div>
 </div>

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // build-views.mjs -- writes LN Guide's pages from data/atlas/, one file each:
 // index.html, Home, which asks what the reader is doing; do/<task>.html, a task as a
-// document with Guided, one step at a time, inside it; follow/<process>.html,
-// a process as the path of its tasks; screens/<code>.html and ideas/<id>.html;
+// Document with Guided, one step at a time, inside it; follow/<process>.html,
+// a process as one Document of all its tasks; screens/<code>.html and ideas/<id>.html;
 // an index for each of those three folders; and search.json, the one file
 // search.html reads.
 //
@@ -325,15 +325,8 @@ const breadcrumb = (trail) => `<nav aria-label="Breadcrumb"><ol class="rux--brea
   `<li class="rux--breadcrumb-item"><a class="rux--link" href="${h}">${esc(t)}</a></li>`).join('')}<li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">${esc(trail.at(-1)[1])}</a></li></ol></nav>`;
 const copyChip = (v, label = v) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(v)}" aria-label="Copy ${esc(label)}">${esc(v)}</button>`;
 const codeChip = (code) => copyChip(code, `the code ${code}`);
-// The values a task was walked with, or a process's run uses: what, and a
-// value whose exact text is a chip that copies it.
+// A value whose exact text is a chip that copies it, as Guided shows it.
 const valueOf = (cell) => cell.tokens.map((t) => t.t === 'literal' ? copyChip(t.v) : token(t)).join('');
-const example = (rows, lead) => rows.length ? `<p><strong>Example.</strong> ${lead}</p>
-<div class="rux--structured-list rux--structured-list--condensed ln-example" role="table">
-  <div class="rux--structured-list-tbody" role="rowgroup">${rows.map((r) => `
-    <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td" role="cell">${tokens(r.cells[0].tokens)}</div><div class="rux--structured-list-td" role="cell">${valueOf(r.cells[1])}</div></div>`).join('')}
-  </div>
-</div>` : '';
 const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" method="get" role="search">
   <div class="rux--search rux--layout--size-lg">
     <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
@@ -358,7 +351,7 @@ const nav = (active) => `<ul class="rux--side-nav__items">
       ${navItem(at('ideas/index.html'), 'Ideas', active === 'ideas')}
     </ul>`;
 
-const page = (title, active, body) => `<!doctype html>
+const page = (title, active, body, head = '') => `<!doctype html>
 <html lang="en" data-theme="white">
 <head>
 <meta charset="utf-8">
@@ -381,7 +374,7 @@ const page = (title, active, body) => `<!doctype html>
 <link rel="stylesheet" href="${at('app.css')}">
 <link rel="stylesheet" href="${at('print.css')}" media="print">
 <script src="/design/js/custom-themes.js"></script>
-<script src="/design/js/theme.js"></script>
+<script src="/design/js/theme.js"></script>${head}
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -506,61 +499,121 @@ const calloutOf = (l) => l[0]?.t === 'text' && l[0].v.trim() === '>' && l[1]?.t 
 const said = (l) => { const c = calloutOf(l); return c ? `<b>${esc(c.kind)}.</b> ${tokens(c.rest)}` : tokens(l); };
 // Beside a task's steps it is Carbon's inline notification, a warning as a
 // warning and any other kind as information.
-const notice = (c) => {
+const notice = (c, html = tokens(c.rest)) => {
   const [variant, icon] = c.kind === 'Warning' ? ['rux--inline-notification--warning', 'warning--filled'] : ['rux--inline-notification--info', 'information--filled'];
   return `<div class="rux--inline-notification ${variant} rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-${icon}"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">${esc(c.kind)}</div>
-      <div class="rux--inline-notification__subtitle">${tokens(c.rest)}</div>
+      <div class="rux--inline-notification__subtitle">${html}</div>
     </div>
   </div>
 </div>`;
 };
-const referenceOf = (s) => looked(s).map((g) => `<h3 class="ln-ref__title">${esc(g.title)}</h3>${g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `
-<p>${said(x.tokens)}</p>` : '').join('')}`).join('');
 const section = (s, kind) => s.sections.find((x) => x.kind === kind)?.rows ?? [];
-const before = (lines) => lines.length ? `<p><strong>Before you start.</strong> ${lines.map((b) => tokens(b.tokens)).join(' ')}</p>` : '';
 
+// A process is one Document: its tasks in the order they run, every task's
+// steps inline, and the decisions the map puts between two tasks as rows of
+// its Summary.
 function processPage(s) {
   const ts = tasksOf(s);
   const steps = ts.reduce((n, t) => n + rowsOf(t).length, 0);
-  const stops = ts.map((t) => `
-  <li><a class="ln-path__stop" href="${hrefTask(t.id)}"><span class="ln-path__dot">${t.process.n + 1}</span><b>${esc(t.title)}</b><small>${t.achieves ? tokens(t.achieves.tokens) + ' · ' : ''}${count(rowsOf(t).length, 'step')}</small></a></li>${extrasOf(s, t).forks.map((n) => {
-    const screen = firstScreen(n.read);
-    const inner = `<span class="ln-path__dot"></span><b>${esc(n.session)}</b><small>${sentence(tokens(n.does.tokens))}</small>`;
-    return `
-  <li data-kind="fork">${screen && cards.has(screen.code) ? `<a class="ln-path__stop" href="${hrefScreen(screen.code)}">${inner}</a>` : `<span class="ln-path__stop">${inner}</span>`}</li>`;
-  }).join('')}`).join('');
-  const wrong = section(s, 'troubleshooting');
-  const variants = section(s, 'variants');
-  const next = section(s, 'downstream');
-  // A problem row leads with the task it belongs to, read from its Phase cell.
-  const wrongItems = wrong.map((row) => ({ lead: esc(taskOf(s, Number(row.cells[0].text))?.title ?? ''), title: tokens(row.cells[1].tokens), body: `<p>${tokens(row.cells[2].tokens)}</p>` }));
-  const folds = accordion([
-    wrong.length && ['wrong', `If something goes wrong · ${wrong.length}`, list(wrongItems)],
-    looked(s).length && ['reference', 'Reference', referenceOf(s)],
-    variants.length && ['cases', `Different cases · ${variants.length}`, list(problems(variants))],
-    next.length && ['next', 'What comes next', list(next.map((row) => ({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` })))],
-  ]);
-  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', s.title]])}
-<div>
+  const status = statusOf(s);
+  const updated = lastChanged([s, ...ts]);
+  const [body, aside] = documenting(numberOf(s), true, () => {
+    const K = doc.K;
+    const summary = ts.flatMap((t) => [
+      { cells: [`<b>${K.get(t.id)}</b>`, `<a class="rux--link" href="#task-${K.get(t.id)}">${esc(t.title)}</a>`, t.achieves ? docText(t.achieves.tokens, t) : '', `${rowsOf(t).length}`] },
+      ...extrasOf(s, t).forks.map((n) => {
+        const screen = firstScreen(n.read);
+        const name = screen && cards.has(screen.code) ? `<a class="rux--link" href="${hrefScreen(screen.code)}">${esc(n.session)}</a>` : esc(n.session);
+        return { quiet: true, cells: ['', `Decision: ${name}`, sentence(tokens(n.does.tokens)), ''] };
+      })]);
+    const values = valuesTable(s.values.rows);
+    // A task's prerequisite that only names tasks of this process is the
+    // process's own order, so only one that reaches outside it is listed.
+    const inside = (b) => { const links = b.tokens.filter((x) => x.t === 'link'); return links.length && links.every((x) => K.has(/^(.+)\.md$/.exec(x.href)?.[1])); };
+    const need = [...s.before.map((b) => docText(b.tokens, null, 'Before you start')),
+      ...ts.flatMap((t) => (t.before ?? []).filter((b) => !inside(b)).map((b) => docText(b.tokens, t, 'Before you start')))];
+    const procedure = ts.map((t) => {
+      const k = K.get(t.id);
+      const first = t.blocks.findIndex((b) => b.kind === 'steps');
+      const proseHtml = (list) => list.filter((b) => b.kind === 'prose').map((b) => {
+        const c = calloutOf(b.tokens);
+        const html = docText(c ? c.rest : b.tokens, t, `Task ${k}`);
+        return !html ? '' : c ? notice(c, html) : `<p>${html}</p>`;
+      }).join('');
+      const lead = t.why ? docText(t.why.tokens, t, `Task ${k}, why LN works this way`) : '';
+      const ups = proseHtml(first < 0 ? t.blocks : t.blocks.slice(0, first));
+      const stepsHtml = stepTable(t, k);
+      const downs = first < 0 ? '' : proseHtml(t.blocks.slice(first));
+      const wrong = wrongTable(s, t, k);
+      return `<section class="ln-proc__task" id="task-${k}">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">${k}</span><a class="rux--link" href="${hrefTask(t.id)}">${esc(t.title)}</a></h3>
+<dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${exact(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
+${ups}
+${stepsHtml}
+${downs}${wrong ? `
+<p class="ln-proc__h4">If something goes wrong</p>
+${wrong}` : ''}
+</section>`;
+    }).join('\n');
+    const variants = [
+      ...section(s, 'variants').map((r) => ({ cells: [docText(r.cells[0].tokens), docText(r.cells[1].tokens, null, `Variation: ${r.cells[0].text.trim()}`), ''] })),
+      ...ts.flatMap((t) => t.variants.rows.map((r) => ({ cells: [docText(r.cells[0].tokens, t), docText(r.cells[1].tokens, t, `Variation: ${r.cells[0].text.trim()}`), `${K.get(t.id)}`] })))];
+    const next = section(s, 'downstream').map((r) => ({ cells: r.cells.map((c) => docText(c.tokens, null, 'What comes next')) }));
+    const groups = looked(s);
+    // The reference is read on screen. On paper the Document stays a
+    // procedure, so only its titles print, with where to read it.
+    const reference = groups.length ? `<section class="ln-proc__ref">
+${docH2('reference', 'Reference')}
+<p class="ln-proc__print">Read the reference beside this procedure at rux-sm.github.io/ln/follow/${esc(s.id)}.html</p>
+${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `<p>${said(x.tokens)}</p>` : '').join('')]))}
+</section>` : '';
+    const html = `${breadcrumb([[hrefHome(), 'Home'], ['', s.title]])}
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
 </div>
-<div>${tag(statusOf(s))} ${s.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
-${before(s.before)}${example(s.values.rows, 'The values its tasks were walked with.')}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
-</div>
-<ol class="ln-path">${stops}
-</ol>
-${folds}`;
-  const aside = onThisPage([['#tasks', 'The tasks, in order'], wrong.length && ['#wrong', 'If something goes wrong'], looked(s).length && ['#reference', 'Reference'],
-    variants.length && ['#cases', 'Different cases'], next.length && ['#next', 'What comes next']].filter(Boolean));
-  return page(`${s.title} — LN Guide`, s.id, column(body, 10) + '\n' + column(aside, 4, 'ln-aside'));
+${docFacts([['Status', tag(status)], ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
+${notice({ kind: 'Note' }, esc(NOT_WALKED))}` : ''}
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">one step at a time · ${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+${docH2('summary', 'Summary')}
+${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
+<p class="ln-proc__h4">Values this run uses</p>
+${values}` : ''}
+</section>${need.length ? `
+<section>
+${docH2('before', 'Before you start')}
+<ul class="ln-proc__list">${need.map((x) => `<li>${x}</li>`).join('')}</ul>
+</section>` : ''}
+<section>
+${docH2('procedure', 'Procedure')}
+${procedure}
+</section>${variants.length ? `
+<section>
+${docH2('cases', 'Variations')}
+${docTable([['Case', '30%'], ['What changes'], ['Task', '4rem']], variants)}
+</section>` : ''}${next.length ? `
+<section>
+${docH2('next', 'What comes next')}
+${docTable(next[0].cells.length === 3 ? [['When', '28%'], ['Then'], ['Start at', '24%']] : [['When', '34%'], ['Then']], next)}
+</section>` : ''}
+${reference}
+${gapsSection()}
+<section>
+${docH2('screens', 'Screens used')}
+${screensTable(ts)}
+</section>`;
+    const side = onThisPage([['#summary', 'Summary'], need.length && ['#before', 'Before you start'], ['#procedure', 'Procedure'], variants.length && ['#cases', 'Variations'],
+      next.length && ['#next', 'What comes next'], groups.length && ['#reference', 'Reference'], doc.gaps.length && ['#gaps', 'Known gaps'], ['#screens', 'Screens used']].filter(Boolean));
+    return [html, side];
+  });
+  return page(`${s.title} — LN Guide`, s.id, column(body, 10) + '\n' + column(aside, 4, 'ln-aside'), updated ? paper(s.title, updated) : '');
 }
 
 // ---- a task, as a document and as Guided ------------------------------------------
@@ -584,26 +637,142 @@ const needs = (s, t) => {
   return [...seen.values()].map(([other, k]) => `step ${k} of <a class="rux--link" href="${hrefTask(other.id, k)}">${esc(other.title)}</a>`);
 };
 
+// ---- the Document --------------------------------------------------------------
+// A process, or one task, as a procedure to read, print and share. A title block
+// of five facts; the steps of each task in one table, numbered by task and
+// place, 2.3, wherever the page points at them; Why before the steps and
+// troubleshooting under them; a line to write each noted figure on; a gap
+// listed once in Known gaps rather than inside an answer; and the screens used
+// at the end. docs/plans/ln-guide-document.md decides each part.
+
+const day = (d) => { const [y, m, dd] = d.split('-'); return `${Number(dd)} ${MONTHS[Number(m) - 1]} ${y}`; };
+const isGap = (t) => t.t === 'strong' && t.v.trim() === GAP;
+let doc = null;   // { K: task id -> its number, whole: a process's Document, here: the task drawn, gaps }
+const documenting = (K, whole, fn) => { doc = { K, whole, here: null, gaps: [] }; try { return fn(); } finally { doc = null; } };
+const numberOf = (s) => new Map(s.id ? tasksOf(s).map((t, i) => [t.id, i + 1]) : []);
+// A step, by its task's number and its place: on a process's Document the
+// row itself, on a task's the row or the other task's page.
+function stepRef(t, a, b, word, sep = '–') {
+  const j = doc.K.get(t.id);
+  const n = (x) => (j ? `${j}.${x}` : x);
+  const href = doc.whole && j ? `#step-${j}-${a}` : t === doc.here ? `#step-${a}` : hrefTask(t.id, a);
+  const named = doc.whole || t === doc.here ? '' : ` (${esc(t.title)})`;
+  return `<a class="rux--link" href="${href}">${word} ${n(a)}${b ? `${sep}${n(b)}` : ''}</a>${named}`;
+}
+const STEPS = /\b([Ss]teps?) (\d+)(?!\.\d|\d)(?:([–-]| and )(\d+)(?!\.\d|\d))?(?! of)/g;
+// Atlas's words, with a gap taken out to Known gaps under `where` and every
+// step it names numbered: "step 4 of [Confirm there is stock]" anywhere, and a
+// bare "step 7" inside the task `here`.
+function docText(list = [], here = null, where = '') {
+  if (list.some(isGap)) { if (where) doc.gaps.push(where); list = list.filter((t) => !isGap(t)); }
+  let html = '';
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i], next = list[i + 1];
+    const other = next?.t === 'link' ? taskById.get(/^(.+)\.md$/.exec(next.href)?.[1]) : null;
+    const m = t.t === 'text' && other ? /\b([Ss]teps?) (\d+)(?:([–-]| and )(\d+))? of\s*$/.exec(t.v) : null;
+    if (m) {
+      html += (here ? esc(t.v.slice(0, m.index)).replace(STEPS, (x, w, a, sep, b) => stepRef(here, a, b, w, sep)) : refs(esc(t.v.slice(0, m.index))))
+        + stepRef(other, m[2], m[4], m[1], m[3]);
+      i++;
+    } else html += t.t === 'text' && here ? esc(t.v).replace(STEPS, (x, w, a, sep, b) => stepRef(here, a, b, w, sep)) : token(t);
+  }
+  return html.trim();
+}
+// What you should see, with a line to write on for each figure the step
+// marks as worth noting.
+function seeing(cell, here, where) {
+  if (!cell || cell.text.trim() === '—') return '';
+  const at = cell.tokens.findIndex((t) => t.t === 'pencil');
+  if (at < 0) return docText(cell.tokens, here, where);
+  const lead = docText(cell.tokens.slice(0, at), here, where).replace(/\s*[—–-]\s*$/, '');
+  const items = [];
+  for (const t of cell.tokens.slice(at)) {
+    if (t.t === 'pencil') items.push([]);
+    else items.at(-1).push(t.t === 'value' || t.t === 'literal' ? { t: 'text', v: t.v } : t);
+  }
+  const lines = items.map((seg) => {
+    const [label, ...note] = docText(seg, here, where).replace(/^[\s,]+|[\s,]+$/g, '').split(' — ');
+    return `<span class="ln-proc__write"><span class="ln-proc__write-label">${label}</span><span class="ln-proc__write-line"></span></span>${note.length ? `<span class="ln-proc__write-note">${note.join(' — ')}</span>` : ''}`;
+  }).join('');
+  return `${lead ? `<span class="ln-proc__see">${lead}</span>` : ''}<span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span>${lines}</span>`;
+}
+const docTable = (cols, rows, cls = '') => `<div class="rux--data-table-container ln-proc__table${cls ? ` ${cls}` : ''}">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
+<tbody>${rows.map((r) => `
+<tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}
+</tbody>
+</table></div>`;
+const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
+const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
+// The footer each printed page carries: what it is, and when its content last changed.
+const paper = (title, updated) => `\n<style>@page { @bottom-left { content: "${`${title} · LN Guide · Updated ${day(updated)}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
+const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().at(-1);
+
+// One task's steps: Value appears only where the task was walked with values.
+function stepTable(t, k) {
+  const ex = t.example?.rows ?? [];
+  const valued = rowsOf(t).some((r) => r.example?.length);
+  const rows = rowsOf(t).map((r) => {
+    const n = k ? `${k}.${r.id}` : r.id;
+    const where = `Step ${n}`;
+    const value = (r.example ?? []).map((i) => ex[i]).filter(Boolean).map((e) => `<span class="ln-proc__value"><span class="ln-proc__value-k">${docText(e.cells[0].tokens)}</span> ${docText(e.cells[1].tokens)}</span>`).join('');
+    const cells = [`<b>${n}</b>`, docText(r.cells[1].tokens, t, where), ...(valued ? [value] : []), seeing(r.cells[2], t, where)];
+    return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells };
+  });
+  return docTable(valued ? [['Step', '4rem'], ['Action'], ['Value', '24%'], ['You should see', '30%']] : [['Step', '4rem'], ['Action'], ['You should see', '40%']], rows, 'ln-proc__steps');
+}
+// The problems of one task: its own, and the process's rows that name it.
+function wrongTable(s, t, k) {
+  const own = t.problems.rows.map((r) => [r.cells[0], r.cells[1]]);
+  const theirs = s.id ? section(s, 'troubleshooting').filter((r) => taskOf(s, Number(r.cells[0].text)) === t).map((r) => [r.cells[1], r.cells[2]]) : [];
+  const rows = [...own, ...theirs].map(([sym, fix]) => ({ cells: [docText(sym.tokens, t), docText(fix.tokens, t, `${k ? `Task ${k}, if` : 'If'} something goes wrong: ${sym.text.trim()}`)] }));
+  return rows.length ? docTable([['Symptom', '36%'], ['What to do']], rows, 'ln-proc__wrong') : '';
+}
+// The task's notes atlas wrote above its steps: a callout is a notice.
+const docProse = (t, k) => t.blocks.filter((b) => b.kind === 'prose').map((b) => {
+  const c = calloutOf(b.tokens);
+  return c ? notice(c, docText(c.rest, t, `Task ${k || ''}`.trim())) : `<p>${docText(b.tokens, t, `Task ${k || ''}`.trim())}</p>`;
+}).join('');
+// The values a process's run uses, or a task was walked with, each naming the step.
+function valuesTable(rows, owner) {
+  if (!rows.length) return '';
+  const stepsOf = (r) => {
+    const t = owner ?? taskById.get(r.task);
+    if (!t) return '';
+    const i = t.example.rows.findIndex((e) => e.cells[0].text === r.cells[0].text);
+    return rowsOf(t).filter((row) => row.example?.includes(i)).map((row) => stepRef(t, row.id, null, 'Step').replace('>Step ', '>')).join(', ');
+  };
+  return docTable([['Field', '30%'], ['Value'], ['Step', '6rem']], rows.map((r) => ({ cells: [docText(r.cells[0].tokens), docText(r.cells[1].tokens), stepsOf(r)] })), 'ln-proc__values');
+}
+// The screens a Document opens, in the order it first opens them.
+function screensTable(ts) {
+  const codes = [...new Set(ts.flatMap((t) => [...codesOf(t)]))].filter((c) => cards.has(c));
+  const how = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r) : esc(cap(r ?? '—'));
+  return docTable([['Screen', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })));
+}
+const gapsSection = () => doc.gaps.length ? `<section>
+${docH2('gaps', 'Known gaps')}
+<p>The library has no source for these yet, so this Document says nothing about them rather than guess.</p>
+<ul class="ln-proc__list">${[...new Set(doc.gaps)].map((g) => `<li>${esc(g)}</li>`).join('')}</ul>
+</section>` : '';
+
 function task(s, t) {
   t = t.process ? t : { ...t, process: { n: 0, of: 1 } };
   for (const b of t.blocks) if (b.kind !== 'prose' && b.kind !== 'steps') throw new Error(`no rendering for a "${b.kind}" block in ${t.id}`);
   if (t.sessionCode && !cards.has(t.sessionCode)) report.push(`no page     ${s.title} · ${t.process.n}: ${t.session} (${t.sessionCode}) has no purpose line`);
   const rows = rowsOf(t);
   const { cases } = s.id ? extrasOf(s, t) : { cases: t.variants.rows.map((row) => ({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` })) };
-  const need = t.before?.length ? t.before.map((b) => tokens(b.tokens)) : needs(s, t);
   const first = t.process.n === s.tasks[0].n;
-  // Prose keeps its place: what comes before the steps is drawn above them,
-  // and what follows them, such as a gap, below.
+  // Prose keeps its place: what atlas wrote before the steps is drawn above
+  // them, and what follows them below.
   const firstSteps = t.blocks.findIndex((b) => b.kind === 'steps');
-  const proseOf = (list) => list.filter((b) => b.kind === 'prose').map((b) => { const c = calloutOf(b.tokens); return c ? notice(c) : `<p>${tokens(b.tokens)}</p>`; }).join('');
-  const prose = proseOf(firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));
-  const after = firstSteps < 0 ? '' : proseOf(t.blocks.slice(firstSteps));
   const screen = t.sessionCode ? cards.get(t.sessionCode) : null;
   const ideas = ideasOf(t);
   const strip = !s.id ? 'A task on its own, done beside the processes.' : `Task ${t.process.n + 1} of ${t.process.of} in <a class="rux--link" href="${hrefUp(s)}">${esc(s.title)}</a>${t.next ? ` · next: <a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a>` : ''}`;
   const wrong = problems(t.problems.rows);
   const why = t.why ? `<p>${tokens(t.why.tokens)}</p>` : '';
-  const whyFold = why && ['why', 'Why LN works this way', why];
   const stuck = (id, label) => wrong.length && [id, `${label} · ${wrong.length}`, list(wrong)];
   const related = ['related', 'Related', list([
     screen && { title: 'Screen', body: `<p>${screenLink(t.sessionCode, named(t.session))} ${exact(t.sessionCode)}<br><span class="ln-quiet">${esc(screen.purpose)}</span></p>` },
@@ -611,28 +780,74 @@ function task(s, t) {
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
   const lines = rows.map((r) => headline(r.cells[1].tokens, t.route));
-  const full = `${breadcrumb([[hrefHome(), 'Home'], [hrefUp(s), s.title], ['', t.title]])}
-<div>
+  // The Document: this task alone, its steps numbered as its process numbers
+  // them, so step 2.3 here is step 2.3 on the process's Document too.
+  const k = s.id ? t.process.n + 1 : 0;
+  const updated = lastChanged([t]) ?? lastChanged([s]);
+  const [full, aside] = documenting(numberOf(s), false, () => {
+    doc.here = t;
+    const need = t.before?.length ? t.before.map((b) => docText(b.tokens, t, 'Before you start'))
+      : first ? s.before.map((b) => docText(b.tokens, null, 'Before you start')) : needs(s, t).map((x) => `You need ${x}.`);
+    const above = (firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));
+    const below = firstSteps < 0 ? [] : t.blocks.slice(firstSteps);
+    const proseHtml = (list) => list.filter((b) => b.kind === 'prose').map((b) => {
+      const c = calloutOf(b.tokens);
+      const html = docText(c ? c.rest : b.tokens, t, 'Steps');
+      return !html ? '' : c ? notice(c, html) : `<p>${html}</p>`;
+    }).join('');
+    const values = valuesTable(t.example.rows, t);
+    const wrongHtml = wrongTable(s, t, k);
+    const caseRows = cases.map((c) => ({ cells: [c.title, c.body] }));
+    const lead = t.why ? docText(t.why.tokens, t, 'Why LN works this way') : '';
+    const stepsHtml = stepTable(t, k);
+    const ups = proseHtml(above), downs = proseHtml(below);
+    const body = `${breadcrumb([[hrefHome(), 'Home'], [hrefUp(s), s.title], ['', t.title]])}
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Task</p>
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
-<p class="rux--type-body-long-01">What you get: ${sentence(tokens(t.achieves.tokens))}</p>` : ''}
+<p class="rux--type-body-long-01">${sentence(docText(t.achieves.tokens, t))}</p>` : ''}
 </div>
-<div>${tag(taskStatus(t))} ${t.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
-<p class="ln-strip">${strip}</p>
-${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p>` : first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${example(t.example.rows, 'The values this task was walked with.')}${t.route ? `
-<div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${t.walked ? '' : `
-<p class="ln-quiet">Nobody has confirmed this task in LN yet.<span data-owner hidden> Walk it to say, at each step, whether it matched.</span></p>`}
-<div>
-<h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
-</div>${prose ? `
-<div class="ln-why">${prose}</div>` : ''}
-<ol class="ln-doc">${rows.map((r, k) => `
-  <li id="step-${k + 1}"><div class="ln-doc__do">${lines[k].head}</div>${lines[k].note ? `<p class="ln-doc__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-doc__route">${x}</p>`).join('')}${see(r) ? `<div class="ln-doc__see"><b>You should see</b> ${see(r)}</div>` : ''}</li>`).join('')}
-</ol>${after ? `
-<div class="ln-why">${after}</div>` : ''}
-${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length && ['cases', `Variations · ${cases.length}`, list(cases)], related])}`;
-  const aside = onThisPage([['#steps', 'Steps'], why && ['#why', 'Why LN works this way'], wrong.length && ['#wrong', 'If something goes wrong'],
-    cases.length && ['#cases', 'Variations'], ['#related', 'Related']].filter(Boolean));
+${docFacts([['Status', tag(taskStatus(t))], ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
+<p class="ln-strip">${strip}</p>${t.walked ? '' : `
+${notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`)}`}
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${need.length ? `
+<section>
+${docH2('before', 'Before you start')}
+<ul class="ln-proc__list">${need.map((x) => `<li>${x}</li>`).join('')}</ul>
+</section>` : ''}${values ? `
+<section>
+${docH2('values', 'Values')}
+${values}
+</section>` : ''}
+<section>
+${docH2('steps', 'Steps')}${t.route ? `
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${exact(t.sessionCode)}` : ''}</dd></div></dl>` : ''}${lead ? `
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
+${ups}
+${stepsHtml}
+${downs}
+</section>${wrongHtml ? `
+<section>
+${docH2('wrong', 'If something goes wrong')}
+${wrongHtml}
+</section>` : ''}${caseRows.length ? `
+<section>
+${docH2('cases', 'Variations')}
+${docTable([['Case', '30%'], ['What changes']], caseRows)}
+</section>` : ''}
+${gapsSection()}
+<section>
+${docH2('screens', 'Screens used')}
+${screensTable([t])}
+</section>
+<section class="ln-proc__related">
+${docH2('related', 'Related')}
+${related[2]}
+</section>`;
+    const side = onThisPage([need.length && ['#before', 'Before you start'], values && ['#values', 'Values'], ['#steps', 'Steps'], wrongHtml && ['#wrong', 'If something goes wrong'],
+      caseRows.length && ['#cases', 'Variations'], doc.gaps.length && ['#gaps', 'Known gaps'], ['#screens', 'Screens used'], ['#related', 'Related']].filter(Boolean));
+    return [body, side];
+  });
   const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
 <a class="rux--link ln-back" href="${hrefUp(s)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
 <div class="rux--progress-bar rux--progress-bar--small">
@@ -649,14 +864,14 @@ ${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length &&
 <p class="ln-step__route">${route(t.route)} ${t.sessionCode ? exact(t.sessionCode) : ''}</p>` : ''}${t.walked ? '' : `
 ${confirmBox(t.id)}`}
 ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
-<div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
+<div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
 <div class="ln-nav">
   <a class="rux--btn rux--btn--secondary" href="${hrefUp(s)}" data-prev>Back</a>
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;
   return page(`${t.title} — LN Guide`, s.id, column(full, 10, '', 'data-view="full"') + '\n' + column(aside, 4, 'ln-aside', 'data-view="full"')
-    + '\n' + column(guided, 12, '', 'data-view="guided" hidden'));
+    + '\n' + column(guided, 12, '', 'data-view="guided" hidden'), updated ? paper(t.title, updated) : '');
 }
 
 // ---- the task index ---------------------------------------------------------------

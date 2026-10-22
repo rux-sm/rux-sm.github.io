@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Production order · LN Guide · Updated 22 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,54 +107,272 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Production order</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">Production order</h1>
 <p class="rux--type-body-long-01">Make one finished item on a manual production order and receive it into the warehouse.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Manufacturing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>6 tasks, 46 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-existing-foundation.html?walk=1">Start</a><span class="ln-quiet">one step at a time · 6 tasks · 46 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__summary">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Confirm the existing foundation</a></td><td>A qualified finished item, component, BOM, routing, warehouses, and stock are known.</td><td>7</td></tr>
+<tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Create the production order</a></td><td>A quantity-one order exists at <strong>Created</strong> status.</td><td>9</td></tr>
+<tr><td><b>3</b></td><td><a class="rux--link" href="#task-3">Verify the generated foundation</a></td><td>The expected BOM, routing, operation, and estimated component are attached.</td><td>6</td></tr>
+<tr><td><b>4</b></td><td><a class="rux--link" href="#task-4">Release the order</a></td><td>The order is <strong>Released</strong>; warehousing issue and receipt orders exist.</td><td>5</td></tr>
+<tr><td><b>5</b></td><td><a class="rux--link" href="#task-5">Issue material to the job shop</a></td><td>The component is issued; the order is <strong>Active</strong></td><td>10</td></tr>
+<tr><td><b>6</b></td><td><a class="rux--link" href="#task-6">Report the operation complete and confirm warehouse receipt</a></td><td>The finished item is posted to inventory and on-hand increases at the receiving warehouse.</td><td>9</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
+<section class="ln-proc__task" id="task-1">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A qualified finished item, component, BOM, routing, warehouses, and stock are known.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them.</p>
 
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-existing-foundation.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 46 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
-</div>
-<ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/confirm-the-existing-foundation.html"><span class="ln-path__dot">1</span><b>Confirm the existing foundation</b><small>A qualified finished item, component, BOM, routing, warehouses, and stock are known. · 7 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/create-the-production-order.html"><span class="ln-path__dot">2</span><b>Create the production order</b><small>A quantity-one order exists at <strong>Created</strong> status. · 9 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/verify-the-generated-foundation.html"><span class="ln-path__dot">3</span><b>Verify the generated foundation</b><small>The expected BOM, routing, operation, and estimated component are attached. · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/release-the-order.html"><span class="ln-path__dot">4</span><b>Release the order</b><small>The order is <strong>Released</strong>; warehousing issue and receipt orders exist. · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/issue-material-to-the-job-shop.html"><span class="ln-path__dot">5</span><b>Issue material to the job shop</b><small>The component is issued; the order is <strong>Active</strong> · 10 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html"><span class="ln-path__dot">6</span><b>Report the operation complete and confirm warehouse receipt</b><small>The finished item is posted to inventory and on-hand increases at the receiving warehouse. · 9 steps</small></a></li>
-</ol>
-<ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="cases">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 2</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Revision-controlled item</span></b><p>The qualified training case must include the item revision as well as BOM and routing revisions</p></li>
-  <li><b><span class="ln-t-named">No routing</span></b><p>Outside this basic foundation. The help states that no estimated production costs are defined when the order has no routing</p></li>
-</ul></div></div>
-  </li>
-  <li class="rux--accordion__item" id="next">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">What comes next</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The finished item is on hand at the receiving warehouse</b><p><a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> — sell and ship what was produced</p></li>
-  <li><b>The finished item is on hand but belongs in another warehouse</b><p><a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a></p></li>
-  <li><b>Actual costs need calculating and posting</b><p><span class="ln-gap">Not documented for this release.</span></p></li>
-</ul></div></div>
-  </li>
-</ul>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1-1"><td><b>1.1</b></td><td>Obtain one prequalified training case from the master-data owner</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component item, with an existing valid BOM and routing</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Enter the component item in <span class="ln-t-named">Filter Items</span> and run it</td><td>The component appears with inventory totals</td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>Tick the component row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens for the component</td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>Select a warehouse row with enough unblocked stock for the quantity-one order</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component warehouse and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-5"><td><b>1.5</b></td><td>Confirm the training case names the receiving warehouse and the expected operation</td><td></td></tr>
+<tr id="step-1-6"><td><b>1.6</b></td><td>Confirm it names a valid BOM revision and a valid routing revision</td><td>All inputs needed to check the created order are known before entry begins</td></tr>
+<tr id="step-1-7"><td><b>1.7</b></td><td>Repeat <a class="rux--link" href="#step-1-2">steps 1.2–1.3</a> for the finished item. Filter at the receiving warehouse the training case names</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>No qualified item/BOM/routing combination is available</td><td>Stop. Production order does not create or repair master data; request a qualified training case</td></tr>
+<tr><td>Component has no suitable warehouse stock</td><td>Choose another qualified case or replenish it before creating an order intended for later execution</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-2">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A quantity-one order exists at <strong>Created</strong> status.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> On save LN reads the item's BOM and routing valid on the <span class="ln-t-named">Reference Date</span> and generates the order's operations and estimated materials from them. <span class="ln-t-named">Quantity Ordered</span> is what is to be produced and <span class="ln-t-named">Warehouse</span> is where the result will be received. The order exists at <strong>Created</strong>; nothing has moved.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-2-1"><td><b>2.1</b></td><td>Click <span class="ln-t-press">New</span></td><td>A new production-order record opens</td></tr>
+<tr id="step-2-2"><td><b>2.2</b></td><td>Enter the finished item from <a class="rux--link" href="#step-1-1">step 1.1</a></td><td>The item is accepted for the order</td></tr>
+<tr id="step-2-3"><td><b>2.3</b></td><td>Confirm <span class="ln-t-named">Site</span> for the training case</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-4"><td><b>2.4</b></td><td>Enter 1 in <span class="ln-t-named">Quantity Ordered</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production quantity = 1</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-5"><td><b>2.5</b></td><td>Confirm <span class="ln-t-named">Warehouse</span> is the intended receiving warehouse</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receiving warehouse</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-6"><td><b>2.6</b></td><td>Confirm <span class="ln-t-named">Production Start</span> and <span class="ln-t-named">Planned Delivery Date</span> suit the training run</td><td></td></tr>
+<tr id="step-2-7"><td><b>2.7</b></td><td>Confirm <span class="ln-t-named">Planning Method</span> suits the training run</td><td>The order dates remain within the qualified BOM and routing dates</td></tr>
+<tr id="step-2-8"><td><b>2.8</b></td><td>If the item is revision controlled, select the qualified item revision supplied with the training case</td><td>The selected revision is visible before save</td></tr>
+<tr id="step-2-9"><td><b>2.9</b></td><td>Click <span class="ln-t-press">Save</span></td><td><span class="ln-proc__see"><span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production order number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The item or revision is rejected</td><td>Stop and have the master-data owner verify the existing item and revision; do not change setup from this task</td></tr>
+<tr><td>The order does not save at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></td><td>Record the message and visible fields; do not substitute guessed values</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-3">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">3</span><a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The expected BOM, routing, operation, and estimated component are attached.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-3-1"><td><b>3.1</b></td><td>Double-click the production order recorded in <a class="rux--link" href="#step-2-9">step 2.9</a></td><td><span class="ln-t-named">Production Order</span> opens for the same order</td></tr>
+<tr id="step-3-2"><td><b>3.2</b></td><td>Compare the displayed BOM and revision with the qualified training case</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">BOM and revision match the expected foundation</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-3"><td><b>3.3</b></td><td>Compare the displayed routing and revision with the qualified training case</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">routing and revision match the expected foundation</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-4"><td><b>3.4</b></td><td>Open the production-planning area and confirm the expected operation is present</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected operation; <span class="ln-t-named">Operations Present</span> is selected in the overview</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-5"><td><b>3.5</b></td><td>Open the estimated-materials area and confirm the expected component and quantity</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">estimated component quantity for the component from <a class="rux--link" href="#step-1-1">step 1.1</a></span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-6"><td><b>3.6</b></td><td>Return to the overview without running a release or processing action</td><td>The order remains <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and no material issue has begun</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>BOM or routing is blank or unexpected</td><td>Check the qualified dates/revisions and record the mismatch</td></tr>
+<tr><td>Validation reports a multilevel BOM loop</td><td>Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented</td></tr>
+<tr><td>Expected operation or component is absent</td><td>Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and return it to the master-data owner for diagnosis</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-4">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">4</span><a class="rux--link" href="../do/release-the-order.html">Release the order</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The order is <strong>Released</strong>; warehousing issue and receipt orders exist.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Release changes the order to <strong>Released</strong>, the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a> works the first; <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> depends on the second.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-4-1"><td><b>4.1</b></td><td>Select the production order row from <a class="rux--link" href="#step-2-9">step 2.9</a></td><td>The row is highlighted</td></tr>
+<tr id="step-4-2"><td><b>4.2</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></td><td><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</td></tr>
+<tr id="step-4-3"><td><b>4.3</b></td><td>Confirm the selection range narrows to this one production order</td><td>Only this order is in scope for the release run</td></tr>
+<tr id="step-4-4"><td><b>4.4</b></td><td>Run the release</td><td><span class="ln-proc__see">The dialog closes; back in <span class="ln-t-named">Production Orders</span>,</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order status after release = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-4-5"><td><b>4.5</b></td><td>Confirm no other order changed status</td><td>Only the order from <a class="rux--link" href="#step-2-9">step 2.9</a> shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td><td>Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> <span class="ln-t-exact">tisfc0100s000</span> before assuming a fault</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-5">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The component is issued; the order is <strong>Active</strong></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to <strong>Active</strong>; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-5-1"><td><b>5.1</b></td><td>Open <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span> (<a class="rux--link" href="../screens/ticst0101m100.html"><span class="ln-t-exact">ticst0101m100</span></a>) for the order released in <a class="rux--link" href="../do/release-the-order.html">Release the order</a></td><td>The component line from <a class="rux--link" href="#step-1-1">step 1.1</a> is listed, with <span class="ln-t-named">Production Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
+<tr id="step-5-2"><td><b>5.2</b></td><td>Read <span class="ln-t-named">Estimated Quantity</span> and <span class="ln-t-named">Actual Quantity</span> for the component line</td><td><span class="ln-t-named">Actual Quantity</span> = 0</td></tr>
+<tr id="step-5-3"><td><b>5.3</b></td><td>Read <span class="ln-t-named">To Issue by Warehouse</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">material to issue = the <span class="ln-t-named">To Issue by Warehouse</span> figure</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-5-4"><td><b>5.4</b></td><td>If the line is not already unblocked, run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> for the line</td><td>The material's warehouse order line unblocks</td></tr>
+<tr id="step-5-5"><td><b>5.5</b></td><td>Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> and find the production issue order for this production order</td><td>The order shows order type <span class="ln-t-exact">30- Production (Out)</span>, source the component warehouse from <a class="rux--link" href="#step-1-4">step 1.4</a>, destination the work center from the routing</td></tr>
+<tr id="step-5-6"><td><b>5.6</b></td><td>Click <span class="ln-t-press">Drill In</span> on the issue order — <a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a> <span class="ln-t-exact">whinh2100m100</span></td><td>The order lines and the <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> <span class="ln-t-exact">whinh2129m000</span> activity list are visible</td></tr>
+<tr id="step-5-7"><td><b>5.7</b></td><td>If <span class="ln-t-named">Generate Outbound Advice</span> is unfinished and not automatic, run it</td><td>The advice is generated</td></tr>
+<tr id="step-5-8"><td><b>5.8</b></td><td>If <span class="ln-t-named">Release Outbound Advice</span> is unfinished and not automatic, run it</td><td>The advice is released</td></tr>
+<tr id="step-5-9"><td><b>5.9</b></td><td>Continue the outbound procedure until the issue order reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></td><td>Ordered and advised quantities match; the order shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></td></tr>
+<tr id="step-5-10"><td><b>5.10</b></td><td>Return to <span class="ln-t-named">Material to Issue for Production Orders</span> and <span class="ln-t-named">Production Orders</span></td><td><span class="ln-proc__see"><span class="ln-t-named">Actual Quantity</span> = the estimated quantity, <span class="ln-t-named">To Issue by Warehouse</span> = 0;</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order status after material issue = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The material line stays blocked / <span class="ln-t-named">To Issue by Warehouse</span> never appears</td><td>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, stop and record what was observed</td></tr>
+<tr><td>The issue stops short and a shortage report prints</td><td>A component's stock is short and negative inventory is not allowed. The quantity waits in <span class="ln-t-named">To Issue by Warehouse</span>; restock, then process the warehousing order by hand</td></tr>
+<tr><td>Generate/Release Outbound Advice are missing or already actioned</td><td>Do not assume a fault. <span class="ln-t-named">Direct Process Warehouse Order Line</span> may be automatic for this material — confirm in <a class="rux--link" href="../screens/whinh2104m000.html"><span class="ln-t-named">Activities by Warehousing Order</span></a> <span class="ln-t-exact">whinh2104m000</span> before troubleshooting further</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-6">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">6</span><a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The finished item is posted to inventory and on-hand increases at the receiving warehouse.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span> <span class="ln-t-exact">tisfc0130m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes <strong>Production Completed</strong> when reported and <strong>Completed</strong> only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The task ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-6-1"><td><b>6.1</b></td><td>Open <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span> (<a class="rux--link" href="../screens/tisfc0130m000.html"><span class="ln-t-exact">tisfc0130m000</span></a>) for the order's next operation</td><td>The operation line shows <span class="ln-t-named">Operation Status</span>, <span class="ln-t-named">Planned Output</span>, and the item from <a class="rux--link" href="#step-1-1">step 1.1</a></td></tr>
+<tr id="step-6-2"><td><b>6.2</b></td><td>Enter the production quantity from <a class="rux--link" href="#step-2-4">step 2.4</a> in <span class="ln-t-named">Completed</span></td><td>The quantity is accepted</td></tr>
+<tr id="step-6-3"><td><b>6.3</b></td><td>Save</td><td>If this was the last operation, LN can book the completed product into inventory</td></tr>
+<tr id="step-6-4"><td><b>6.4</b></td><td>Repeat <a class="rux--link" href="#step-6-1">steps 6.1–6.3</a> for each remaining operation, in routing sequence</td><td>Each operation reports complete in turn</td></tr>
+<tr id="step-6-5"><td><b>6.5</b></td><td>If <a class="rux--link" href="../screens/tisfc0120s000.html"><span class="ln-t-named">Report Orders Completed</span></a> <span class="ln-t-exact">tisfc0120s000</span> opens on the last operation's save, enter the completed quantity. It goes in <span class="ln-t-named">Additional Quantity to Deliver</span></td><td></td></tr>
+<tr id="step-6-6"><td><b>6.6</b></td><td>Save the quantity</td><td>LN asks <span class="ln-t-named">&quot;Automatically confirm receipt when activating warehouse order inbound line?&quot;</span> — see the note below before answering</td></tr>
+<tr id="step-6-7"><td><b>6.7</b></td><td>Answer the receipt question, and record which way you answered</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receipt answer;</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">delivered = the production quantity if you answered <span class="ln-t-named">Yes</span></span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-8"><td><b>6.8</b></td><td>Return to <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> and read <span class="ln-t-named">Order Status</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order status after reporting. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> means Warehousing has not finished the inbound procedure yet; <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Completed</span></span> means the goods are in inventory. On the <span class="ln-t-named">Yes</span> path expect <span class="ln-t-named">Quantity Delivered</span> = the production quantity and <span class="ln-t-named">Quantity to Deliver</span> = 0; on the <span class="ln-t-named">No</span> path the quantity sits in <span class="ln-t-named">Quantity to Deliver</span> until Warehousing processes the inbound line</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-9"><td><b>6.9</b></td><td>Open <a class="rux--link" href="../screens/whwmd4300m000.html"><span class="ln-t-named">Inventory 360</span></a> <span class="ln-t-exact">whwmd4300m000</span> and filter the finished item at the receiving warehouse from <a class="rux--link" href="#step-2-5">step 2.5</a></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand after; on-hand has increased by the production quantity over <a class="rux--link" href="#step-1-7">step 1.7</a>. On the <span class="ln-t-named">No</span> path this only holds once Warehousing has finished the inbound procedure</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The order cannot be reported completed</td><td>An earlier operation is not completed, an operation is blocked, or an inspection order is still open</td></tr>
+<tr><td><span class="ln-t-named">Report Orders Completed</span> does not open after the last operation</td><td>Stop and record the operation's status and any message; this dialog's trigger condition is not documented</td></tr>
+<tr><td><span class="ln-t-named">Quantity Delivered</span> stays at 0 or finished-item on-hand does not increase</td><td>The production receipt warehousing order may need manual processing, like <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a>'s issue order. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open receipt order before assuming an error</td></tr>
+</tbody>
+</table></div>
+</section>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Revision-controlled item</span></td><td>The qualified training case must include the item revision as well as BOM and routing revisions</td><td></td></tr>
+<tr><td><span class="ln-t-named">No routing</span></td><td>Outside this basic foundation. The help states that no estimated production costs are defined when the order has no routing</td><td></td></tr>
+<tr><td><span class="ln-t-named">More than one component</span></td><td>Record and compare every expected component and estimated quantity in this task; issue every material line in <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a>; the steps do not change</td><td>3</td></tr>
+<tr><td><span class="ln-t-named">More than one operation</span></td><td>Confirm every expected operation in routing sequence in this task; report each one complete in <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> (<a class="rux--link" href="#step-6-4">step 6.4</a>); the steps do not change</td><td>3</td></tr>
+<tr><td><span class="ln-t-named">More than one component</span></td><td>Record and compare every expected component and estimated quantity in <a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a>; issue every material line in this task; the steps do not change</td><td>5</td></tr>
+<tr><td><span class="ln-t-named">Fully automatic material issue</span></td><td>If <span class="ln-t-named">Direct Initiate Inventory Issue</span> and <span class="ln-t-named">Direct Process Warehouse Order Line</span> are both selected for the material, <a class="rux--link" href="#step-5-4">steps 5.4–5.9</a> complete themselves once the order is released; the steps do not change</td><td>5</td></tr>
+<tr><td><span class="ln-t-named">More than one operation</span></td><td>Confirm every expected operation in routing sequence in <a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a>; report each one complete in this task (<a class="rux--link" href="#step-6-4">step 6.4</a>); the steps do not change</td><td>6</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="next">What comes next</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:28%"><span class="rux--table-header-label">When</span></th><th scope="col"><span class="rux--table-header-label">Then</span></th><th scope="col" style="width:24%"><span class="rux--table-header-label">Start at</span></th></tr></thead>
+<tbody>
+<tr><td>The finished item is on hand at the receiving warehouse</td><td><a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> — sell and ship what was produced</td><td><a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, reading the new on-hand</td></tr>
+<tr><td>The finished item is on hand but belongs in another warehouse</td><td><a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a></td><td><a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a></td></tr>
+<tr><td>Actual costs need calculating and posting</td><td></td><td>—</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="gaps">Known gaps</h2>
+<p>The library has no source for these yet, so this Document says nothing about them rather than guess.</p>
+<ul class="ln-proc__list"><li>What comes next</li></ul>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/whwmd4300m000.html">Inventory 360</a></td><td><span class="ln-t-exact">whwmd4300m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whwmd2515m000.html">Warehouse - Item Inventory</a></td><td><span class="ln-t-exact">whwmd2515m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tisfc0501m000.html">Production Orders</a></td><td><span class="ln-t-exact">tisfc0501m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tisfc0204m000.html">Release Production Orders</a></td><td><span class="ln-t-exact">tisfc0204m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Release Production Orders</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/ticst0101m100.html">Material to Issue for Production Orders</a></td><td><span class="ln-t-exact">ticst0101m100</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tisfc0207m000.html">Initiate Inventory Issue</a></td><td><span class="ln-t-exact">tisfc0207m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Initiate Inventory Issue</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2100m000.html">Warehousing Orders</a></td><td><span class="ln-t-exact">whinh2100m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2100m100.html">Warehousing Order</a></td><td><span class="ln-t-exact">whinh2100m100</span></td><td>Drill into an order row on Warehouse Manager Dashboard (whinh2300m000), or on Orders (whinh2100m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2129m000.html">Outbound Line Status Overview</a></td><td><span class="ln-t-exact">whinh2129m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Outbound Line Status Overview</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tisfc0130m000.html">Report Operations Completed</a></td><td><span class="ln-t-exact">tisfc0130m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tisfc0120s000.html">Report Orders Completed</a></td><td><span class="ln-t-exact">tisfc0120s000</span></td><td>From the production order; the range-based variant is a separate session</td></tr>
+</tbody>
+</table></div>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#summary">Summary</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#procedure">Procedure</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Variations</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#gaps">Known gaps</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li></ul>
 </div>
 </div>
 </div>

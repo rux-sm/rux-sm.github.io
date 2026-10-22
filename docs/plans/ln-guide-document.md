@@ -98,8 +98,6 @@ And a team, after log-in, sees what the public page cannot carry.
 
 ## Tasks
 
-- [ ] In LN Guide, draw a process and a task as the Document from the mockup,
-      make it what Print prints, and check it in Chrome on screen and on paper.
 - [ ] In LN Guide, give Guided's value its own box and end a task on a card
       naming its result and the next task.
 - [ ] In atlas, move Set up a GenAI prompt's reference sections into concept

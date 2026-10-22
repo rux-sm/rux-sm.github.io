@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Create test items · LN Guide · Updated 22 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -34,6 +35,8 @@
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-warning--filled" viewBox="0 0 16 16"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" style="fill:var(--rux-icon-path-1)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
+<symbol id="i-information--filled" viewBox="0 0 32 32"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path" style="fill:var(--rux-icon-path-1,var(--rux-icon-inner,none));opacity:1"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -106,68 +109,518 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Create test items</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">Create test items</h1>
 <p class="rux--type-body-long-01">Create a small item family, purchased components and one manufactured item, ready for a production order.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Common</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Procurement</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Manufacturing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>11 tasks, 143 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-test-design.html?walk=1">Start</a><span class="ln-quiet">one step at a time · 11 tasks · 143 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__summary">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Confirm the test design</a></td><td>Site, warehouses, units, and unused item codes are known.</td><td>10</td></tr>
+<tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Create two item groups</a></td><td>Purchase and Job Shop defaults remain isolated from each other.</td><td>6</td></tr>
+<tr><td><b>3</b></td><td><a class="rux--link" href="#task-3">Configure the purchased group</a></td><td><span class="ln-t-exact">BAM-RM</span> can create Ordering, Purchase, and Warehousing data.</td><td>23</td></tr>
+<tr><td><b>4</b></td><td><a class="rux--link" href="#task-4">Configure the made group</a></td><td><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data.</td><td>18</td></tr>
+<tr><td><b>5</b></td><td><a class="rux--link" href="#task-5">Verify site creation control</a></td><td>Site-level creation agrees with the company defaults.</td><td>5</td></tr>
+<tr><td><b>6</b></td><td><a class="rux--link" href="#task-6">Create the three items</a></td><td>Each item inherits its group's defaults and its site row shows the intended role.</td><td>11</td></tr>
+<tr><td><b>7</b></td><td><a class="rux--link" href="#task-7">Build the job shop bill of material</a></td><td>The pair has an Approved BOM carrying both components.</td><td>19</td></tr>
+<tr><td><b>8</b></td><td><a class="rux--link" href="#task-8">Build the job shop routing</a></td><td>The pair has an Approved routing with an operation at a work center.</td><td>21</td></tr>
+<tr><td><b>9</b></td><td><a class="rux--link" href="#task-9">Confirm costing data</a></td><td>Every item in the family carries the standard cost the estimate calculation reads.</td><td>6</td></tr>
+<tr><td><b>10</b></td><td><a class="rux--link" href="#task-10">Stock the components</a></td><td>The rod and sleeve are on hand at the raw-material warehouse.</td><td>12</td></tr>
+<tr><td><b>11</b></td><td><a class="rux--link" href="#task-11">Qualify the training case</a></td><td>The family is qualified to start Production order.</td><td>12</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>An existing work center and an existing reference operation for the site. <strong>This task does not create work centers, machines, or reference operations.</strong> Look them up first — <a class="rux--link" href="../screens/tirou0101m000.html"><span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers</span></a> <span class="ln-t-exact">tirou0101m000</span> and <a class="rux--link" href="../screens/tirou4150m000.html"><span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations</span></a> <span class="ln-t-exact">tirou4150m000</span> — and if neither has a usable entry for the site, stop and obtain one.</li></ul>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
+<section class="ln-proc__task" id="task-1">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Site, warehouses, units, and unused item codes are known.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Warehouses</span><span class="sep">➔</span><span class="dest">Warehouses</span></span> <span class="ln-t-exact">whwmd2500m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing yet. Every later task reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. Where every physical item is of type Product, as on the walked run, buying or making is a supply-source decision rather than an item-type one.</p>
 
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-test-design.html?walk=1">Start</a><span class="ln-quiet">11 tasks · 143 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1-1"><td><b>1.1</b></td><td>Confirm the approved training company</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training company</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Select the site that will buy, store, make, and sell the test family</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>Open <a class="rux--link" href="../screens/whwmd2500m000.html"><span class="ln-t-named">Warehouses</span></a> <span class="ln-t-exact">whwmd2500m000</span></td><td>The warehouse master list opens</td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>Filter the warehouse list to the site from <a class="rux--link" href="#step-1-2">step 1.2</a></td><td>Only candidate warehouses for that site remain</td></tr>
+<tr id="step-1-5"><td><b>1.5</b></td><td>Record the approved Normal warehouse for purchased production materials</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">purchased-item warehouse</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-6"><td><b>1.6</b></td><td>Record the approved Normal warehouse for finished products</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished-item warehouse</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-7"><td><b>1.7</b></td><td>Open one approved physical Product item that uses the same counting basis</td><td>Its global item data opens</td></tr>
+<tr id="step-1-8"><td><b>1.8</b></td><td>Record its <span class="ln-t-named">Unit Set</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">Unit Set</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-9"><td><b>1.9</b></td><td>Record its <span class="ln-t-named">Inventory Unit</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">Inventory Unit</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-10"><td><b>1.10</b></td><td>Search <span class="ln-t-named">Items</span> for each proposed example code</td><td>No existing item uses any proposed code</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>An example item code already exists</td><td>Choose another unused code; do not reuse or repurpose an existing item</td></tr>
+<tr><td>A candidate “raw material” warehouse is Shop Floor</td><td>Select an approved Normal warehouse; do not rely on description alone</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-2">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Purchase and Job Shop defaults remain isolated from each other.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Item Classification</span><span class="sep">➔</span><span class="dest">Item Groups</span></span> <span class="ln-t-exact">tcmcs0123m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Item Defaults is keyed by item type and item group, so the group is the handle every default hangs on. Two groups exist because the two roles need different supply sources, and a group is nothing more than a code, a description and a currency until <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> attaches defaults to it.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-2-1"><td><b>2.1</b></td><td>Search for the proposed purchased-group code</td><td>No existing row uses it</td></tr>
+<tr id="step-2-2"><td><b>2.2</b></td><td>Select <span class="ln-t-press">New</span></td><td>A blank item-group row opens</td></tr>
+<tr id="step-2-3"><td><b>2.3</b></td><td>Enter <span class="ln-t-named">Item Group</span> and <span class="ln-t-named">Description</span> for the purchased group</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">purchased-supply item group</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-4"><td><b>2.4</b></td><td>Set <span class="ln-t-named">Currency</span> to the approved company currency</td><td>The currency is populated</td></tr>
+<tr id="step-2-5"><td><b>2.5</b></td><td>Save the purchased group</td><td>The purchased group is available for defaults</td></tr>
+<tr id="step-2-6"><td><b>2.6</b></td><td>Repeat <a class="rux--link" href="#step-2-1">steps 2.1–2.5</a> for the made group</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made-supply item group</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">both dedicated groups are available for defaults</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>Either item-group code already exists</td><td>Use new dedicated group codes rather than changing an existing group</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-3">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">3</span><a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd><span class="ln-t-exact">BAM-RM</span> can create Ordering, Purchase, and Warehousing data.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Defaults</span></span> <span class="ln-t-exact">tcibd0102m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A default combination records, per package, two separate things: whether default data exists for the subentity, shown by the indicator, and whether a new item should receive it, set by the Create check box. A green indicator with the box cleared gives a new item nothing. The Sites check box decides whether new items get a site row automatically.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-3-1"><td><b>3.1</b></td><td>Open <a class="rux--link" href="../screens/tcibd0102m000.html"><span class="ln-t-named">Item Defaults</span></a> <span class="ln-t-exact">tcibd0102m000</span></td><td>The company-level default combinations open</td></tr>
+<tr id="step-3-2"><td><b>3.2</b></td><td>Filter for <span class="ln-t-named">Item Type</span> = <span class="ln-t-exact">Product</span> and the purchased group from <a class="rux--link" href="#step-2-3">step 2.3</a></td><td>The current test row appears if already saved; otherwise no row appears</td></tr>
+<tr id="step-3-3"><td><b>3.3</b></td><td>If the test row is absent, select <span class="ln-t-press">New</span></td><td>A blank item-default record opens</td></tr>
+<tr id="step-3-4"><td><b>3.4</b></td><td>Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact">Product</span></td><td></td></tr>
+<tr id="step-3-5"><td><b>3.5</b></td><td>Set <span class="ln-t-named">Item Group</span> to the purchased group. It is the one from <a class="rux--link" href="#step-2-3">step 2.3</a></td><td></td></tr>
+<tr id="step-3-6"><td><b>3.6</b></td><td>Set <span class="ln-t-named">Default Supply Source</span> to <span class="ln-t-exact">Purchase</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">purchased default supply source</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-7"><td><b>3.7</b></td><td>Set <span class="ln-t-named">Unit Set</span> to the value recorded at <a class="rux--link" href="#step-1-8">step 1.8</a></td><td></td></tr>
+<tr id="step-3-8"><td><b>3.8</b></td><td>Set <span class="ln-t-named">Inventory Unit</span> to the value recorded at <a class="rux--link" href="#step-1-9">step 1.9</a></td><td></td></tr>
+<tr id="step-3-9"><td><b>3.9</b></td><td>Leave special-purpose typology and traceability controls at their proposed values</td><td>No new configuration, lot, or serial behaviour is introduced</td></tr>
+<tr id="step-3-10"><td><b>3.10</b></td><td>Save the global default</td><td>The Product/<span class="ln-t-exact">BAM-RM</span> combination exists</td></tr>
+<tr id="step-3-11"><td><b>3.11</b></td><td>Continue in the automatically opened <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a> <span class="ln-t-exact">tcibd0502m000</span></td><td>The multisite follow-on is active</td></tr>
+<tr id="step-3-12"><td><b>3.12</b></td><td>On the <span class="ln-t-named">Sites</span> tab, add the site. It is the one from <a class="rux--link" href="#step-1-2">step 1.2</a></td><td></td></tr>
+<tr id="step-3-13"><td><b>3.13</b></td><td>Set its <span class="ln-t-named">Warehouse</span> to the purchased warehouse. It is the one from <a class="rux--link" href="#step-1-5">step 1.5</a></td><td></td></tr>
+<tr id="step-3-14"><td><b>3.14</b></td><td>Set its <span class="ln-t-named">Supply Source</span> to <span class="ln-t-exact">Purchase</span></td><td></td></tr>
+<tr id="step-3-15"><td><b>3.15</b></td><td>Click <span class="ln-t-press">Save</span></td><td>The site row remains stored</td></tr>
+<tr id="step-3-16"><td><b>3.16</b></td><td>For <span class="ln-t-named">Ordering</span>, then <span class="ln-t-named">Purchase</span>, then <span class="ln-t-named">Warehousing</span>: open the blue link beside it</td><td>Its defaults session opens — <a class="rux--link" href="../screens/tcibd2101m000.html"><span class="ln-t-named">Item Ordering Defaults</span></a> <span class="ln-t-exact">tcibd2101m000</span>, <a class="rux--link" href="../screens/tdipu0102m000.html"><span class="ln-t-named">Items - Purchase Defaults</span></a> <span class="ln-t-exact">tdipu0102m000</span>, <a class="rux--link" href="../screens/whwmd4101s000.html"><span class="ln-t-named">Items - Warehousing Defaults</span></a> <span class="ln-t-exact">whwmd4101s000</span></td></tr>
+<tr id="step-3-17"><td><b>3.17</b></td><td>Compare every tab with the family sheet. Its purchased-group values are in §4</td><td></td></tr>
+<tr id="step-3-18"><td><b>3.18</b></td><td>Complete what the screen requires</td><td></td></tr>
+<tr id="step-3-19"><td><b>3.19</b></td><td>Select <span class="ln-t-press">OK</span></td><td>The defaults close without an error</td></tr>
+<tr id="step-3-20"><td><b>3.20</b></td><td>Confirm the subentity indicator beside the link is active</td><td>Default data exists</td></tr>
+<tr id="step-3-21"><td><b>3.21</b></td><td>Select the Create check box beside it</td><td>New items are marked to receive it</td></tr>
+<tr id="step-3-22"><td><b>3.22</b></td><td>After the third subentity, save <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a> <span class="ln-t-exact">tcibd0502m000</span></td><td>The site row and Create controls remain stored</td></tr>
+<tr id="step-3-23"><td><b>3.23</b></td><td>Close and reopen the Product/<span class="ln-t-exact">BAM-RM</span> default</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">purchased global subentities</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">three active indicators, three Create controls</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-exact">Product</span> is unavailable</td><td>Confirm the environment's Product-active setting; do not substitute Purchased or Manufactured without approval</td></tr>
+<tr><td>Ordering defaults appear to require a Warehouse, but no Warehouse field is displayed</td><td>Verify the warehouse on the parent <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-exact">tcibd0502m000</span></a> Sites row</td></tr>
+<tr><td>Ordering defaults will not save</td><td>Confirm every visible required value and retain the proposed Economic Order Quantity</td></tr>
+<tr><td>Purchase defaults will not save</td><td>Confirm the units, currency, price group and statistics group in the family sheet §4</td></tr>
+<tr><td>Warehousing defaults show an unknown required policy value</td><td>Stop and obtain the approved value; do not invent valuation, ownership, location, lot/serial, or handling-unit policy</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-4">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">4</span><a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Defaults</span></span> <span class="ln-t-exact">tcibd0102m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The same mechanism as <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined.</p>
+<div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Warning</div>
+      <div class="rux--inline-notification__subtitle">The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact">M010</span> finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks.</div>
+    </div>
+  </div>
 </div>
-<ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/confirm-the-test-design.html"><span class="ln-path__dot">1</span><b>Confirm the test design</b><small>Site, warehouses, units, and unused item codes are known. · 10 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/create-two-item-groups.html"><span class="ln-path__dot">2</span><b>Create two item groups</b><small>Purchase and Job Shop defaults remain isolated from each other. · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/configure-the-purchased-group.html"><span class="ln-path__dot">3</span><b>Configure the purchased group</b><small><span class="ln-t-exact">BAM-RM</span> can create Ordering, Purchase, and Warehousing data. · 23 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/configure-the-made-group.html"><span class="ln-path__dot">4</span><b>Configure the made group</b><small><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data. · 18 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/verify-site-creation-control.html"><span class="ln-path__dot">5</span><b>Verify site creation control</b><small>Site-level creation agrees with the company defaults. · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/create-the-three-items.html"><span class="ln-path__dot">6</span><b>Create the three items</b><small>Each item inherits its group's defaults and its site row shows the intended role. · 11 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/build-the-job-shop-bill-of-material.html"><span class="ln-path__dot">7</span><b>Build the job shop bill of material</b><small>The pair has an Approved BOM carrying both components. · 19 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/build-the-job-shop-routing.html"><span class="ln-path__dot">8</span><b>Build the job shop routing</b><small>The pair has an Approved routing with an operation at a work center. · 21 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/confirm-costing-data.html"><span class="ln-path__dot">9</span><b>Confirm costing data</b><small>Every item in the family carries the standard cost the estimate calculation reads. · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/stock-the-components.html"><span class="ln-path__dot">10</span><b>Stock the components</b><small>The rod and sleeve are on hand at the raw-material warehouse. · 12 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/qualify-the-training-case.html"><span class="ln-path__dot">11</span><b>Qualify the training case</b><small>The family is qualified to start Production order. · 12 steps</small></a></li>
-</ol>
-<ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 1</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>A package indicator is active but the item subentity is not created</b><p>Verify the separate Create Item control at the governing global or site level</p></li>
-</ul></div></div>
-  </li>
-  <li class="rux--accordion__item" id="cases">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 4</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Minimum two-item test</span></b><p>Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class</p></li>
-  <li><b><span class="ln-t-named">Recommended three-item test</span></b><p>Use this whole process: two purchased inputs and one Job Shop finished product</p></li>
-  <li><b><span class="ln-t-named">Four-item multilevel test</span></b><p>Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order</p></li>
-  <li><b><span class="ln-t-named">Purchased finished goods</span></b><p>Use another dedicated Product group with <span class="ln-t-named">Default Supply Source = Purchase</span>; no Job Shop Production defaults are required, and <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> and <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> do not apply</p></li>
-</ul></div></div>
-  </li>
-  <li class="rux--accordion__item" id="next">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">What comes next</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand</b><p><a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></p></li>
-</ul></div></div>
-  </li>
-</ul>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-4-1"><td><b>4.1</b></td><td>Repeat for the made group, with the changes below. Follow <a class="rux--link" href="#step-3-1">steps 3.1–3.15</a>; the made group is the one from <a class="rux--link" href="#step-2-6">step 2.6</a></td><td></td></tr>
+<tr id="step-4-2"><td><b>4.2</b></td><td>Set <span class="ln-t-named">Default Supply Source</span> to <span class="ln-t-exact">Job Shop</span></td><td></td></tr>
+<tr id="step-4-3"><td><b>4.3</b></td><td>On the site row, set <span class="ln-t-named">Warehouse</span> to the finished warehouse. It is the one from <a class="rux--link" href="#step-1-6">step 1.6</a></td><td></td></tr>
+<tr id="step-4-4"><td><b>4.4</b></td><td>On the site row, set <span class="ln-t-named">Supply Source</span> to <span class="ln-t-exact">Job Shop</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made default supply source</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the Product/BAM-FG combination exists with its site row</span></span></td></tr>
+<tr id="step-4-5"><td><b>4.5</b></td><td>Repeat for <span class="ln-t-named">Ordering</span> and <span class="ln-t-named">Warehousing</span>. Follow <a class="rux--link" href="#step-3-16">steps 3.16–3.21</a></td><td></td></tr>
+<tr id="step-4-6"><td><b>4.6</b></td><td>Compare each with an approved finished Product/Job Shop reference</td><td>Both indicators active, both Create boxes selected, no unapproved planning value introduced</td></tr>
+<tr id="step-4-7"><td><b>4.7</b></td><td>Open the blue <span class="ln-t-press">Production</span> link</td><td><a class="rux--link" href="../screens/tiipd0102m100.html"><span class="ln-t-named">Item - Production Defaults</span></a> <span class="ln-t-exact">tiipd0102m100</span> opens</td></tr>
+<tr id="step-4-8"><td><b>4.8</b></td><td>Compare every visible field with the family sheet. Its made-group Production values are in §4</td><td></td></tr>
+<tr id="step-4-9"><td><b>4.9</b></td><td>Select <span class="ln-t-press">OK</span></td><td>The Production defaults close without an error</td></tr>
+<tr id="step-4-10"><td><b>4.10</b></td><td>Confirm the Production indicator is active and select the Create check box beside <span class="ln-t-named">Production</span></td><td>New items are marked to receive Production data</td></tr>
+<tr id="step-4-11"><td><b>4.11</b></td><td>Open the blue <span class="ln-t-press">Sales</span> link</td><td><a class="rux--link" href="../screens/tdisa0102s000.html"><span class="ln-t-named">Item - Sales Defaults</span></a> <span class="ln-t-exact">tdisa0102s000</span> opens</td></tr>
+<tr id="step-4-12"><td><b>4.12</b></td><td>Complete the <span class="ln-t-named">Ordering</span>, <span class="ln-t-named">Price</span> and <span class="ln-t-named">Delivery</span> tabs from the family sheet. Its made-group Sales values are in §4</td><td></td></tr>
+<tr id="step-4-13"><td><b>4.13</b></td><td>Select <span class="ln-t-press">OK</span></td><td>The Sales defaults are saved</td></tr>
+<tr id="step-4-14"><td><b>4.14</b></td><td>If asked <span class="ln-t-named">Perform Global Update of Sales Items with New Defaults?</span>, select <span class="ln-t-press">No</span>. If <a class="rux--link" href="../screens/tdisa0202m000.html"><span class="ln-t-named">Global Update of Item with Defaults</span></a> <span class="ln-t-exact">tdisa0202m000</span> opens, do not select <span class="ln-t-named">Update</span>; select <span class="ln-t-press">Close</span></td><td>Existing Sales items are not changed</td></tr>
+<tr id="step-4-15"><td><b>4.15</b></td><td>Confirm the Sales indicator is active and select the Create check box beside <span class="ln-t-named">Sales</span></td><td>New items are marked to receive Sales data</td></tr>
+<tr id="step-4-16"><td><b>4.16</b></td><td>Save <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a> <span class="ln-t-exact">tcibd0502m000</span></td><td></td></tr>
+<tr id="step-4-17"><td><b>4.17</b></td><td>Close and reopen the Product/<span class="ln-t-exact">BAM-FG</span> default</td><td></td></tr>
+<tr id="step-4-18"><td><b>4.18</b></td><td>Reopen Sales ➔ <span class="ln-t-named">Price</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made global subentities</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">four active indicators, and USD, ea, both S10.10 groups and NOTAX return</span></span></td></tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="ln-proc__task" id="task-5">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Site-level creation agrees with the company defaults.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Control and Defaults by Site</span></span> <span class="ln-t-exact">tcibd1552m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The Create controls can be governed at the site instead of the company. When <span class="ln-t-named">Centrally Managed</span> is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site's own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause.</p>
+<div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Warning</div>
+      <div class="rux--inline-notification__subtitle">This task has not been walked for the new groups. Note the <span class="ln-t-named">Centrally Managed</span> state and the saved Create controls as you go.</div>
+    </div>
+  </div>
+</div>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-5-1"><td><b>5.1</b></td><td>Open the row for the site, <span class="ln-t-named">Product</span> and the purchased group. The site is from <a class="rux--link" href="#step-1-2">step 1.2</a>, and the group from <a class="rux--link" href="#step-2-3">step 2.3</a></td><td>The purchased site-control row opens</td></tr>
+<tr id="step-5-2"><td><b>5.2</b></td><td>Read <span class="ln-t-named">Centrally Managed</span></td><td>The source of the Create controls is visible</td></tr>
+<tr id="step-5-3"><td><b>5.3</b></td><td>If centrally managed, check the subentities are disabled locally. Ordering, Purchase and Warehousing mirror <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a></td><td></td></tr>
+<tr id="step-5-4"><td><b>5.4</b></td><td>If not, select them and save</td><td>The purchased site is marked to create those subentities</td></tr>
+<tr id="step-5-5"><td><b>5.5</b></td><td>Repeat <a class="rux--link" href="#step-5-1">steps 5.1–5.4</a> for the made group. Use Ordering, Production, Warehousing and Sales; the made group is the one from <a class="rux--link" href="#step-2-6">step 2.6</a></td><td>The made site is marked to create those subentities</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>Site Create controls are disabled</td><td>Read <span class="ln-t-named">Centrally Managed</span>; when selected, correct the governing <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-exact">tcibd0502m000</span></a> control instead of the site row</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-6">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">6</span><a class="rux--link" href="../do/create-the-three-items.html">Create the three items</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Each item inherits its group's defaults and its site row shows the intended role.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span> <span class="ln-t-exact">tcibd0501m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> to <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a>, which is why nothing inheritable is typed here.</p>
+<div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Note</div>
+      <div class="rux--inline-notification__subtitle">Create the two purchased items first and the pair last, and do not create the pair until <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> has approved Production and Sales defaults.</div>
+    </div>
+  </div>
+</div><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Note</div>
+      <div class="rux--inline-notification__subtitle">The Item identifier has separate <span class="ln-t-named">Project</span> and <span class="ln-t-named">Item</span> portions. These are standard test items: leave <span class="ln-t-named">Project</span> blank and enter the <span class="ln-t-exact">BAM-*</span> code in the <span class="ln-t-named">Item</span> portion. If <a class="rux--link" href="../screens/tcmcs0152s000.html"><span class="ln-t-named">General Projects</span></a> <span class="ln-t-exact">tcmcs0152s000</span> opens from the Project lookup, close it without creating a project.</div>
+    </div>
+  </div>
+</div>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-6-1"><td><b>6.1</b></td><td>Open <a class="rux--link" href="../screens/tcibd0501m000.html"><span class="ln-t-named">Items</span></a> <span class="ln-t-exact">tcibd0501m000</span></td><td>The global item overview opens</td></tr>
+<tr id="step-6-2"><td><b>6.2</b></td><td>Select <span class="ln-t-press">New</span></td><td>A blank Item record opens</td></tr>
+<tr id="step-6-3"><td><b>6.3</b></td><td>With <span class="ln-t-named">Project</span> blank, enter the item's code in the <span class="ln-t-named">Item</span> portion and its <span class="ln-t-named">Description</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item code</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-4"><td><b>6.4</b></td><td>Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact">Product</span> and <span class="ln-t-named">Item Group</span> to the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></td><td>Supply source, Unit Set, and Inventory Unit default from <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> or 3</td></tr>
+<tr id="step-6-5"><td><b>6.5</b></td><td>Complete any remaining field the screen marks required, using the family values</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item Grade, if the screen requires one</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-6"><td><b>6.6</b></td><td>Save the item header before working in the <span class="ln-t-named">Sites</span> grid</td><td>The item header is saved</td></tr>
+<tr id="step-6-7"><td><b>6.7</b></td><td>In the <span class="ln-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="ln-t-exact">=</span>. If no saved row begins with the site from <a class="rux--link" href="#step-1-2">step 1.2</a>, run <span class="ln-t-named">Create Items by Site</span> from the tab's appropriate menu; if that produces nothing, select <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, select that site, and save the record</td><td>A saved site line beginning with the actual site code exists</td></tr>
+<tr id="step-6-8"><td><b>6.8</b></td><td>Select the saved site line and open it with the row-arrow button</td><td><span class="ln-t-named">Items by Site</span> opens for this item and site</td></tr>
+<tr id="step-6-9"><td><b>6.9</b></td><td>Verify <span class="ln-t-named">Default Supply Source</span> matches the item's role — <span class="ln-t-exact">Purchase</span> for the rod and the sleeve, <span class="ln-t-exact">Job Shop</span> for the pair</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site supply source</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-10"><td><b>6.10</b></td><td>Verify the site subentity indicators — Ordering, Purchase, and Warehousing for a purchased item; Ordering, Production, Warehousing, and Sales for the pair</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">site subentities</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6-11"><td><b>6.11</b></td><td>Repeat <a class="rux--link" href="#step-6-2">steps 6.2–6.10</a> for the remaining items, each with its own group</td><td>All three items and their site rows match the family sheet §1</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The item code is rejected</td><td>Follow the current item-code segmentation; do not modify segmentation for the experiment</td></tr>
+<tr><td>The save is refused for a field this task does not name</td><td>Record the field label and the message. Do not clear another value to force the save. <span class="ln-t-named">Grade</span> was found this way</td></tr>
+<tr><td>A subentity is missing after save</td><td>Recheck <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> for a purchased item, <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> for the pair, and <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> for both</td></tr>
+<tr><td>Actual supply differs from the default</td><td>Check for item-level overrides and date-effective supply source before changing the default</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-7">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">7</span><a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The pair has an Approved BOM carrying both components.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Engineering</span><span class="sep">➔</span><span class="dest">Bills of Material</span></span> <span class="ln-t-exact">tibom3100m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A bill of material is written against the item, per site, and cannot be used for manufacture until its revision is approved; approval and the two use indicators, for planning and for costing, are three separate actions. The material lines carry the issuing warehouse, and the revision's effective date decides whether a production order's reference date selects it.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-7-1"><td><b>7.1</b></td><td>Open <a class="rux--link" href="../screens/tibom3100m000.html"><span class="ln-t-named">Job Shop Bills of Material</span></a> <span class="ln-t-exact">tibom3100m000</span></td><td>The BOM overview opens for one site</td></tr>
+<tr id="step-7-2"><td><b>7.2</b></td><td>Confirm <span class="ln-t-named">Site</span> is the site from <a class="rux--link" href="#step-1-2">step 1.2</a></td><td>Only that site's bills of material are listed</td></tr>
+<tr id="step-7-3"><td><b>7.3</b></td><td>Filter <span class="ln-t-named">Product</span> for the finished item from <a class="rux--link" href="../do/create-the-three-items.html">Create the three items</a></td><td>No bill of material exists yet for the chopstick pair</td></tr>
+<tr id="step-7-4"><td><b>7.4</b></td><td>Select <span class="ln-t-press">New</span></td><td>A blank BOM header opens</td></tr>
+<tr id="step-7-5"><td><b>7.5</b></td><td>Set <span class="ln-t-named">Product</span> to the finished item</td><td><span class="ln-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
+<tr id="step-7-6"><td><b>7.6</b></td><td>Set <span class="ln-t-named">BOM Quantity</span> to 1</td><td>The material quantities below are the quantities for one pair</td></tr>
+<tr id="step-7-7"><td><b>7.7</b></td><td>Set <span class="ln-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td>The revision will be valid on that order's reference date</td></tr>
+<tr id="step-7-8"><td><b>7.8</b></td><td>Leave <span class="ln-t-named">Routing</span> blank</td><td>The BOM stays usable with any routing</td></tr>
+<tr id="step-7-9"><td><b>7.9</b></td><td>Save the header</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">BOM and revision; <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-7-10"><td><b>7.10</b></td><td>Open the saved BOM and go to its material lines</td><td><a class="rux--link" href="../screens/tibom3110m000.html"><span class="ln-t-named">Job Shop List of Materials</span></a> <span class="ln-t-exact">tibom3110m000</span> opens for this BOM and revision</td></tr>
+<tr id="step-7-11"><td><b>7.11</b></td><td>Add a line: <span class="ln-t-named">Item</span> = the bamboo rod, <span class="ln-t-named">Net Quantity</span> = 2</td><td>Two rods per pair</td></tr>
+<tr id="step-7-12"><td><b>7.12</b></td><td>Add a line: <span class="ln-t-named">Item</span> = the paper sleeve, <span class="ln-t-named">Net Quantity</span> = 1</td><td>One sleeve per pair</td></tr>
+<tr id="step-7-13"><td><b>7.13</b></td><td>On both lines, set <span class="ln-t-named">Warehouse</span> to the raw-material warehouse. It is the one from <a class="rux--link" href="#step-1-5">step 1.5</a></td><td>Each material will be issued from the warehouse <a class="rux--link" href="../do/stock-the-components.html">Stock the components</a> stocks</td></tr>
+<tr id="step-7-14"><td><b>7.14</b></td><td>Leave <span class="ln-t-named">Scrap Percentage</span> and <span class="ln-t-named">Scrap Quantity</span> at zero</td><td>No material loss is modelled in this test</td></tr>
+<tr id="step-7-15"><td><b>7.15</b></td><td>Save the material lines</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">BOM materials stored</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">both lines belong to this BOM revision</span></span></td></tr>
+<tr id="step-7-16"><td><b>7.16</b></td><td>Select the BOM row and run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span></td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</td></tr>
+<tr id="step-7-17"><td><b>7.17</b></td><td>With the same row selected, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Planning Indicator</span></span></td><td><span class="ln-t-named">Use for Planning</span> is selected on the row</td></tr>
+<tr id="step-7-18"><td><b>7.18</b></td><td>With the same row selected, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Use for Costing Indicator</span></span></td><td><span class="ln-t-named">Use for Costing</span> is selected on the row</td></tr>
+<tr id="step-7-19"><td><b>7.19</b></td><td>Close and reopen the BOM</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">BOM approved and in use</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, both indicators set, both material lines present</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The BOM header will not save</td><td>Confirm <span class="ln-t-named">Site</span>, <span class="ln-t-named">Product</span>, <span class="ln-t-named">BOM Quantity</span>, and <span class="ln-t-named">Effective Date</span>. Do not clear a proposed required value to make the save pass</td></tr>
+<tr><td>The BOM stays at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td><td>Only Approved bills of material can be used for manufacture. Run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Approve Revision</span></span> on the selected row</td></tr>
+<tr><td><span class="ln-t-named">Use for Planning</span> is refused</td><td>Another BOM already holds it for this item and site — one per item and site for planning, one per product for costing</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-8">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">8</span><a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The pair has an Approved routing with an operation at a work center.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Engineering</span><span class="sep">➔</span><span class="dest">Job Shop Routings</span></span> <span class="ln-t-exact">tirou4100m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The routing gives the production order operations to report complete; without one there are no estimated production costs and nothing triggers the finished-goods receipt. A reference operation is a template that carries its own times into the operation line, and the routing quantity is what makes those times the times for one pair.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-8-1"><td><b>8.1</b></td><td>Open <a class="rux--link" href="../screens/tirou4100m000.html"><span class="ln-t-named">Job Shop Routings</span></a> <span class="ln-t-exact">tirou4100m000</span></td><td>The routing overview opens</td></tr>
+<tr id="step-8-2"><td><b>8.2</b></td><td>Confirm <span class="ln-t-named">Site</span> is the site from <a class="rux--link" href="#step-1-2">step 1.2</a></td><td>Only that site's routings are listed</td></tr>
+<tr id="step-8-3"><td><b>8.3</b></td><td>Filter <span class="ln-t-named">Product</span> for the finished item from <a class="rux--link" href="../do/create-the-three-items.html">Create the three items</a></td><td>No routing exists yet for the chopstick pair</td></tr>
+<tr id="step-8-4"><td><b>8.4</b></td><td>Select <span class="ln-t-press">New</span> and open <a class="rux--link" href="../screens/tirou4600m000.html"><span class="ln-t-named">Job Shop Routing</span></a> <span class="ln-t-exact">tirou4600m000</span></td><td>A blank routing header opens</td></tr>
+<tr id="step-8-5"><td><b>8.5</b></td><td>Set <span class="ln-t-named">Product</span> to the finished item</td><td><span class="ln-t-exact">BAM-CHOP-PAIR</span> is selected</td></tr>
+<tr id="step-8-6"><td><b>8.6</b></td><td>Enter the <span class="ln-t-named">Routing</span> code and confirm the <span class="ln-t-named">Revision</span></td><td>The routing is identified; <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">New</span></span></td></tr>
+<tr id="step-8-7"><td><b>8.7</b></td><td>Set <span class="ln-t-named">Effective Date</span> on or before the date of the production order you intend to run</td><td>The revision will be valid on that order's reference date</td></tr>
+<tr id="step-8-8"><td><b>8.8</b></td><td>Set <span class="ln-t-named">Routing Quantity</span> to 1</td><td>Operation times entered below are the times for one pair</td></tr>
+<tr id="step-8-9"><td><b>8.9</b></td><td>Retain the proposed <span class="ln-t-named">Minimum Quantity</span> and <span class="ln-t-named">Maximum Quantity</span></td><td>The routing is not restricted to a quantity band the test did not choose</td></tr>
+<tr id="step-8-10"><td><b>8.10</b></td><td>Leave <span class="ln-t-named">Calculate</span> and the lead-time fields at their proposed values</td><td>No invented lead time enters the test data</td></tr>
+<tr id="step-8-11"><td><b>8.11</b></td><td>On the <span class="ln-t-named">Operations</span> grid, select <span class="ln-t-press">New</span></td><td>A blank operation line opens</td></tr>
+<tr id="step-8-12"><td><b>8.12</b></td><td>Enter <span class="ln-t-named">Operation</span> = <span class="ln-t-exact">10</span></td><td>The pair has a first operation</td></tr>
+<tr id="step-8-13"><td><b>8.13</b></td><td>Set <span class="ln-t-named">Reference Operation</span> and <span class="ln-t-named">Work Center</span> to existing values from the prerequisite lookups</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">routing operation and work center</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-8-14"><td><b>8.14</b></td><td>Check what the reference operation brought with it</td><td>A reference operation carries its own times; do not overwrite them with an invented value</td></tr>
+<tr id="step-8-15"><td><b>8.15</b></td><td>Enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank</td><td></td></tr>
+<tr id="step-8-16"><td><b>8.16</b></td><td>Confirm <span class="ln-t-named">Production Rate</span> is filled. Where <span class="ln-t-named">Use Production Rates</span> is selected in the current parameter set, that is the value LN uses for the operation time</td><td>The production rate is expressed per hour here</td></tr>
+<tr id="step-8-17"><td><b>8.17</b></td><td>Save the operation line</td><td>The operation is stored against the routing revision</td></tr>
+<tr id="step-8-18"><td><b>8.18</b></td><td>Select the routing and approve the revision from the <span class="ln-t-named">Actions</span> menu</td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</td></tr>
+<tr id="step-8-19"><td><b>8.19</b></td><td>Set <span class="ln-t-named">Use for Planning</span> on the routing</td><td><span class="ln-t-named">Use for Planning</span> is selected</td></tr>
+<tr id="step-8-20"><td><b>8.20</b></td><td>Set <span class="ln-t-named">Use for Costing</span> on the routing</td><td><span class="ln-t-named">Use for Costing</span> is selected</td></tr>
+<tr id="step-8-21"><td><b>8.21</b></td><td>Close and reopen the routing</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">routing and revision</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Work Center</span> or <span class="ln-t-named">Reference Operation</span> is rejected</td><td>Use an existing approved value. Do not create a work center, task, or machine here</td></tr>
+<tr><td>The operation line will not save</td><td>Every column the screen marks required must be filled — <span class="ln-t-named">Operation</span>, <span class="ln-t-named">Reference Operation</span>, and <span class="ln-t-named">Work Center</span> at minimum</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-9">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">9</span><a class="rux--link" href="../do/confirm-costing-data.html">Confirm costing data</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Every item in the family carries the standard cost the estimate calculation reads.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span class="dest">Item - Costing</span></span> <span class="ln-t-exact">ticpr0107m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A production order's estimate reads each material's standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until <a class="rux--link" href="../do/stock-the-components.html">Stock the components</a> buys them in.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-9-1"><td><b>9.1</b></td><td>Open <a class="rux--link" href="../screens/ticpr0107m000.html"><span class="ln-t-named">Item - Costing</span></a> <span class="ln-t-exact">ticpr0107m000</span> for the bamboo rod</td><td>The item's costing record opens for an enterprise unit</td></tr>
+<tr id="step-9-2"><td><b>9.2</b></td><td>Read <span class="ln-t-named">Standard Cost</span>, <span class="ln-t-named">Material Costs</span>, and <span class="ln-t-named">Costing Source</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the rod's figures</span></span></td></tr>
+<tr id="step-9-3"><td><b>9.3</b></td><td>Repeat for the paper sleeve</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the sleeve's figures</span></span></td></tr>
+<tr id="step-9-4"><td><b>9.4</b></td><td>Open the record for the finished item</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished-item standard cost</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-9-5"><td><b>9.5</b></td><td>Open <a class="rux--link" href="../screens/ticpr3501m000.html"><span class="ln-t-named">Item Standard Costs</span></a> <span class="ln-t-exact">ticpr3501m000</span> for each item whose cost is missing or unexpected. Use the item's effective date</td><td>The actual and historical standard cost structure is shown, or confirms none exists</td></tr>
+<tr id="step-9-6"><td><b>9.6</b></td><td>If an item still has no standard cost, stop. Obtain the approved cost route before continuing</td><td>The estimate calculation is not left to run against missing material costs</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>A purchased component has no standard cost</td><td>Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-10">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">10</span><a class="rux--link" href="../do/stock-the-components.html">Stock the components</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The rod and sleeve are on hand at the raw-material warehouse.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-10-1"><td><b>10.1</b></td><td>Open <span class="ln-t-named">Inventory 360</span> and filter for the bamboo rod</td><td>The rod appears with inventory totals</td></tr>
+<tr id="step-10-2"><td><b>10.2</b></td><td>Click <span class="ln-t-press">Warehouse Inventory</span></td><td></td></tr>
+<tr id="step-10-3"><td><b>10.3</b></td><td>Read the raw-material warehouse. It is the one from <a class="rux--link" href="#step-1-5">step 1.5</a></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">rod on hand before, expected to be 0 for a new item</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-10-4"><td><b>10.4</b></td><td>Repeat <a class="rux--link" href="#step-10-1">steps 10.1–10.3</a> for the paper sleeve</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">sleeve on hand before</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">both baselines recorded before anything is booked</span></span></td></tr>
+<tr id="step-10-5"><td><b>10.5</b></td><td>Create a purchase order in <a class="rux--link" href="../screens/tdpur4601m200.html"><span class="ln-t-named">Purchase Order Intake Workbench</span></a> <span class="ln-t-exact">tdpur4601m200</span></td><td><span class="ln-proc__see"><a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> <span class="ln-t-exact">tdpur4100m900</span> opens</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component stocking route used</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-10-6"><td><b>10.6</b></td><td>Open the lookup on <span class="ln-t-named">Buy-from Business Partner</span>. It is <a class="rux--link" href="../screens/tccom4520m000.html"><span class="ln-t-named">Buy-from Business Partners</span></a> <span class="ln-t-exact">tccom4520m000</span></td><td>The partner list opens</td></tr>
+<tr id="step-10-7"><td><b>10.7</b></td><td>Select the partner</td><td>One run used one of the standard test partners</td></tr>
+<tr id="step-10-8"><td><b>10.8</b></td><td>Set <span class="ln-t-named">Order Type</span>, <span class="ln-t-named">Purchase Office</span> and <span class="ln-t-named">Ship-to</span></td><td>The order takes a number. One run showed Order Type <span class="ln-t-exact">IPO</span> (Inventory Purchase Order), the partner's purchase office and the site as ship-to</td></tr>
+<tr id="step-10-9"><td><b>10.9</b></td><td>Book the order lines from the BOM, not from habit</td><td>One line per component. One run booked line 10 <span class="ln-t-exact">BAM-ROD</span> qty <span class="ln-t-exact">2.0000 ea</span> and line 20 <span class="ln-t-exact">BAM-SLEEVE</span> qty <span class="ln-t-exact">1.0000 ea</span>, both to the raw-materials warehouse</td></tr>
+<tr id="step-10-10"><td><b>10.10</b></td><td>On the generated <a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a> <span class="ln-t-exact">whinh2100m100</span>, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receive</span></span> on the inbound lines</td><td>Order Type <span class="ln-t-exact">PUI</span> &quot;Purchase Receipts&quot;, ship-from the business partner, ship-to the raw-materials warehouse</td></tr>
+<tr id="step-10-11"><td><b>10.11</b></td><td>Confirm the <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> <span class="ln-t-exact">whinh3512m000</span></td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> both set</td></tr>
+<tr id="step-10-12"><td><b>10.12</b></td><td>Re-read both items in <span class="ln-t-named">Inventory 360</span> at the raw-material warehouse</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">rod on hand after and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">sleeve on hand after</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">each increased by the booked quantity</span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>On-hand does not increase after booking</td><td>Do not book again. Find the order or transaction that was created and check its status first — a second booking doubles the error</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-11">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">11</span><a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The family is qualified to start Production order.</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. This task checks the family against what Production order's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order.</p>
+<p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, and hands over.</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-11-1"><td><b>11.1</b></td><td>Confirm all three items and their site rows show the right supply sources. They were verified at <a class="rux--link" href="#step-6-9">step 6.9</a></td><td>The family is intact</td></tr>
+<tr id="step-11-2"><td><b>11.2</b></td><td>Open the BOM from <a class="rux--link" href="#step-7-19">step 7.19</a></td><td></td></tr>
+<tr id="step-11-3"><td><b>11.3</b></td><td>Confirm it is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span> and used for planning and costing</td><td></td></tr>
+<tr id="step-11-4"><td><b>11.4</b></td><td>Confirm it carries both materials</td><td>The pair has a manufacturable structure</td></tr>
+<tr id="step-11-5"><td><b>11.5</b></td><td>Open the routing from <a class="rux--link" href="#step-8-21">step 8.21</a></td><td></td></tr>
+<tr id="step-11-6"><td><b>11.6</b></td><td>Confirm it is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span> and used for planning and costing</td><td></td></tr>
+<tr id="step-11-7"><td><b>11.7</b></td><td>Confirm it carries its operation and work center</td><td>The pair has something to report complete</td></tr>
+<tr id="step-11-8"><td><b>11.8</b></td><td>Confirm both components are on hand at the raw-material warehouse. It is the one from <a class="rux--link" href="#step-10-12">step 10.12</a></td><td>There is material to issue</td></tr>
+<tr id="step-11-9"><td><b>11.9</b></td><td>Confirm the pair should be received into the finished-item warehouse. It is the one from <a class="rux--link" href="#step-1-6">step 1.6</a></td><td>The receiving warehouse is a decision, not a discovery made mid-order</td></tr>
+<tr id="step-11-10"><td><b>11.10</b></td><td>Confirm the costing figures from <a class="rux--link" href="#step-9-2">steps 9.2–9.4</a> are still present</td><td>The estimate calculation has what it reads</td></tr>
+<tr id="step-11-11"><td><b>11.11</b></td><td>Take the values from <a class="rux--link" href="#step-11-1">steps 11.1–11.10</a> to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></td><td></td></tr>
+<tr id="step-11-12"><td><b>11.12</b></td><td>Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> with them</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training case qualified</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>The production order opens with no BOM or routing</td><td>Compare the order's reference date with the effective dates from <a class="rux--link" href="#step-7-7">step 7.7</a> and <a class="rux--link" href="#step-8-7">step 8.7</a>. A revision effective after the reference date is not selected</td></tr>
+<tr><td>The production order has no operation to report complete</td><td>Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> reports against</td></tr>
+</tbody>
+</table></div>
+</section>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Minimum two-item test</span></td><td>Create only one purchased material and one Job Shop finished product. This proves the two supply patterns but gives the later BOM only one material class</td><td></td></tr>
+<tr><td><span class="ln-t-named">Recommended three-item test</span></td><td>Use this whole process: two purchased inputs and one Job Shop finished product</td><td></td></tr>
+<tr><td><span class="ln-t-named">Four-item multilevel test</span></td><td>Add a semi-finished level only after the single-level case works; it requires another made-item master, BOM, routing, and costing layer, and a second production order</td><td></td></tr>
+<tr><td><span class="ln-t-named">Purchased finished goods</span></td><td>Use another dedicated Product group with <span class="ln-t-named">Default Supply Source = Purchase</span>; no Job Shop Production defaults are required, and <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> and <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> do not apply</td><td></td></tr>
+<tr><td><span class="ln-t-named">Items only</span></td><td>Stop after this task. The family exists as master data but cannot be produced; <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> to <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a> are what make it runnable</td><td>6</td></tr>
+<tr><td><span class="ln-t-named">Production quantity greater than one</span></td><td>Book proportionally more component stock in this task — 2 rods and 1 sleeve per pair. The steps do not change</td><td>10</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="next">What comes next</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:28%"><span class="rux--table-header-label">When</span></th><th scope="col"><span class="rux--table-header-label">Then</span></th><th scope="col" style="width:24%"><span class="rux--table-header-label">Start at</span></th></tr></thead>
+<tbody>
+<tr><td>The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand</td><td><a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></td><td><a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>, using the handoff table in <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a></td></tr>
+</tbody>
+</table></div>
+</section>
+
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/whwmd2500m000.html">Warehouses</a></td><td><span class="ln-t-exact">whwmd2500m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Warehouses</span><span class="sep">➔</span><span class="dest">Warehouses</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tcmcs0123m000.html">Item Groups</a></td><td><span class="ln-t-exact">tcmcs0123m000</span></td><td><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Item Classification</span><span class="sep">➔</span><span class="dest">Item Groups</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tcibd0102m000.html">Item Defaults</a></td><td><span class="ln-t-exact">tcibd0102m000</span></td><td><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Defaults</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tcibd0502m000.html">Item Defaults</a></td><td><span class="ln-t-exact">tcibd0502m000</span></td><td>From Item Defaults (tcibd0102m000), by specifying or modifying a global item default</td></tr>
+<tr><td><a class="rux--link" href="../screens/tcibd2101m000.html">Item - Ordering Defaults</a></td><td><span class="ln-t-exact">tcibd2101m000</span></td><td>The blue [Ordering] link on Item Defaults (tcibd0502m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tdipu0102m000.html">Items - Purchase Defaults</a></td><td><span class="ln-t-exact">tdipu0102m000</span></td><td><span class="ln-t-route"><span>Procurement</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Item Purchase Defaults</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whwmd4101s000.html">Item - Warehousing Defaults</a></td><td><span class="ln-t-exact">whwmd4101s000</span></td><td>The blue [Warehousing] link on Item Defaults (tcibd0502m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tiipd0102m100.html">Item - Production Defaults</a></td><td><span class="ln-t-exact">tiipd0102m100</span></td><td>The blue [Production] link on Item Defaults (tcibd0502m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tdisa0102s000.html">Item - Sales Defaults</a></td><td><span class="ln-t-exact">tdisa0102s000</span></td><td>The blue [Sales] link on Item Defaults (tcibd0502m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tdisa0202m000.html">Global Update of Item with Defaults</a></td><td><span class="ln-t-exact">tdisa0202m000</span></td><td>Starts automatically from Item - Sales Defaults (tdisa0102s000) on answering Yes to the global update question</td></tr>
+<tr><td><a class="rux--link" href="../screens/tcibd1552m000.html">Item Control and Defaults by Site</a></td><td><span class="ln-t-exact">tcibd1552m000</span></td><td><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Control and Defaults by Site</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tcibd0501m000.html">Items</a></td><td><span class="ln-t-exact">tcibd0501m000</span></td><td><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span class="dest">Items</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tcmcs0152s000.html">General Projects</a></td><td><span class="ln-t-exact">tcmcs0152s000</span></td><td>The Project lookup on the Item identifier</td></tr>
+<tr><td><a class="rux--link" href="../screens/tibom3100m000.html">Job Shop Bills of Material</a></td><td><span class="ln-t-exact">tibom3100m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Engineering</span><span class="sep">➔</span><span class="dest">Bills of Material</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tibom3110m000.html">Job Shop List of Materials</a></td><td><span class="ln-t-exact">tibom3110m000</span></td><td>The Materials tab of Job Shop Bill of Material (tibom3600m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tirou4100m000.html">Job Shop Routings</a></td><td><span class="ln-t-exact">tirou4100m000</span></td><td><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Engineering</span><span class="sep">➔</span><span class="dest">Job Shop Routings</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tirou4600m000.html">Job Shop Routing</a></td><td><span class="ln-t-exact">tirou4600m000</span></td><td>Drill in from Job Shop Routings (tirou4100m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/ticpr0107m000.html">Item - Costing</a></td><td><span class="ln-t-exact">ticpr0107m000</span></td><td><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span class="dest">Item - Costing</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/ticpr3501m000.html">Item Standard Costs</a></td><td><span class="ln-t-exact">ticpr3501m000</span></td><td><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Item Costs</span><span class="sep">➔</span><span class="dest">Item Standard Costs</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whwmd4300m000.html">Inventory 360</a></td><td><span class="ln-t-exact">whwmd4300m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tdpur4601m200.html">Purchase Order Intake Workbench</a></td><td><span class="ln-t-exact">tdpur4601m200</span></td><td><span class="ln-t-route"><span>Procurement</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tdpur4100m900.html">Purchase Order</a></td><td><span class="ln-t-exact">tdpur4100m900</span></td><td>Drill in from the purchase order list, or from Purchase Order Intake Workbench (tdpur4601m200)</td></tr>
+<tr><td><a class="rux--link" href="../screens/tccom4520m000.html">Buy-from Business Partners</a></td><td><span class="ln-t-exact">tccom4520m000</span></td><td><span class="ln-t-route"><span>Product Lifecycle Management</span><span class="sep">➔</span><span>PLM Administration</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Business Partners</span><span class="sep">➔</span><span class="dest">Buy-from Business Partners</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2100m100.html">Warehousing Order</a></td><td><span class="ln-t-exact">whinh2100m100</span></td><td>Drill into an order row on Warehouse Manager Dashboard (whinh2300m000), or on Orders (whinh2100m000)</td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh3512m000.html">Warehouse Receipt</a></td><td><span class="ln-t-exact">whinh3512m000</span></td><td>Actions - Receive from the inbound order line, or drill in from the receipt list</td></tr>
+</tbody>
+</table></div>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#summary">Summary</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#before">Before you start</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#procedure">Procedure</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Variations</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li></ul>
 </div>
 </div>
 </div>

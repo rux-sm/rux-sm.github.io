@@ -114,9 +114,9 @@
     }
   }
 
-  // ---- a task: Full page, or Guided one step at a time -----------------------
+  // ---- a task: the Document, or Guided one step at a time ---------------------
   // The screen's shape picks the view: a phone opens Guided, a wide screen the
-  // Full page, and ?walk=<step> or ?full in the address asks for one by name.
+  // Document, and ?walk=<step> or ?full in the address asks for one by name.
   const guided = document.querySelector('.ln-guided');
   if (guided) {
     const steps = [...guided.querySelectorAll('.ln-steps li')];
@@ -273,7 +273,7 @@
   document.addEventListener('change', (event) => {
     if (event.target.name === 'shot') event.target.closest('label').querySelector('[data-file-name]').textContent = event.target.files[0]?.name ?? 'Add a screenshot';
   });
-  // ---- Print: the Full page, in the lightest theme, whatever was on screen ------
+  // ---- Print: the Document, in the lightest theme, whatever was on screen -------
   // print.css hides the chrome and opens the folds; this puts g10 on the page
   // while it prints, because a dark theme's ink is pale on white paper, and
   // puts back what the screen had. g10 and not white: Carbon writes no rule

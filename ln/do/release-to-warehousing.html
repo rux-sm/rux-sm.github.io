@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Release to warehousing · LN Guide · Updated 21 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -107,67 +108,75 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item"><a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Release to warehousing</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Task</p>
 <h1 class="rux--type-productive-heading-05">Release to warehousing</h1>
-<p class="rux--type-body-long-01">What you get: Warehousing order exists.</p>
+<p class="rux--type-body-long-01">Warehousing order exists.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--green rux--tag--sm"><span class="rux--tag__label">Verified</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Sales</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--green rux--tag--sm"><span class="rux--tag__label">Verified</span></div></dd></div><div><dt>Module</dt><dd>Sales, Warehousing</dd></div><div><dt>Length</dt><dd>8 steps</dd></div><div><dt>Updated</dt><dd>21 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 3 of 7 in <a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> · next: <a class="rux--link" href="../do/generate-outbound-advice.html">Generate outbound advice</a></p>
-
-<div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tdsls4601m200" aria-label="Copy the code tdsls4601m200">tdsls4601m200</button></div>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
-</div>
-<ol class="ln-doc">
-  <li id="step-1"><div class="ln-doc__do">Select your order in the <span class="ln-t-named">Sales Orders</span> grid</div></li>
-  <li id="step-2"><div class="ln-doc__do"><span class="ln-t-named">Release to Warehousing…</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Release</span><span class="sep">➔</span><span class="dest">Release to Warehousing…</span></span></p><div class="ln-doc__see"><b>You should see</b> The release session opens</div></li>
-  <li id="step-3"><div class="ln-doc__do">Set <span class="ln-t-named">Upto Release Date</span> on or after the order line's <span class="ln-t-named">Release Date</span></div><p class="ln-doc__note">It defaults to the planned delivery date minus the outbound lead time</p></li>
-  <li id="step-4"><div class="ln-doc__do">Leave the Options ticked</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Print Errors</span> · <span class="ln-t-named">Print Released Lines</span> · <span class="ln-t-named">Print to predefined Device</span></div></li>
-  <li id="step-5"><div class="ln-doc__do">Click <span class="ln-t-press">RELEASE</span></div><div class="ln-doc__see"><b>You should see</b> Log Report prints</div></li>
-  <li id="step-6"><div class="ln-doc__do">Open the <span class="ln-t-named">Order Lines</span> tab</div></li>
-  <li id="step-7"><div class="ln-doc__do">Find your order and tick it</div></li>
-  <li id="step-8"><div class="ln-doc__do"><span class="ln-t-named">Status</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">Status</span></span></p><div class="ln-doc__see"><b>You should see</b> <a class="rux--link" href="../screens/tdsls4534s000.html"><span class="ln-t-named">Sales Order Line Status</span></a> <span class="ln-t-exact">tdsls4534s000</span> opens on <span class="ln-t-named">Activities 1</span>. <span class="ln-t-named">Release Sales Orders to Warehousing</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Executed</span></span></div></li>
-</ol>
-<ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="why">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Why LN works this way</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the <span class="ln-t-named">Lines ready for</span> panel only counts.</p></div></div>
-  </li>
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 4</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>Clicking <span class="ln-t-named">RELEASE TO WAREHOUSING</span> in <span class="ln-t-named">Lines ready for</span> does nothing</b><p>That panel counts lines; it does not act. Use <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></p></li>
-  <li><b>Order absent from the release selection</b><p><span class="ln-t-named">Upto Release Date</span> is earlier than the order line's <span class="ln-t-named">Release Date</span> (planned delivery date minus outbound lead time)</p></li>
-  <li><b>No warehousing order</b><p>Release did not run. Check <span class="ln-t-named">Activities 1</span> at step 8 — if it reads <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span>, run it from <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></p></li>
-  <li><b>Activity shows <span class="ln-t-named">Automatic: No</span></b><p>That activity never fires on approval in this configuration. Run it by hand</p></li>
-</ul></div></div>
-  </li>
-  <li class="rux--accordion__item" id="related">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Related</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span> <span class="ln-t-exact">tdsls4601m200</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the <span class="ln-t-named">Lines ready for</span> panel only counts.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1"><td><b>3.1</b></td><td>Select your order in the <span class="ln-t-named">Sales Orders</span> grid</td><td></td></tr>
+<tr id="step-2"><td><b>3.2</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Release</span><span class="sep">➔</span><span class="dest">Release to Warehousing…</span></span></td><td>The release session opens</td></tr>
+<tr id="step-3"><td><b>3.3</b></td><td>Set <span class="ln-t-named">Upto Release Date</span> on or after the order line's <span class="ln-t-named">Release Date</span> — it defaults to the planned delivery date minus the outbound lead time</td><td></td></tr>
+<tr id="step-4"><td><b>3.4</b></td><td>Leave the Options ticked</td><td><span class="ln-t-named">Print Errors</span> · <span class="ln-t-named">Print Released Lines</span> · <span class="ln-t-named">Print to predefined Device</span></td></tr>
+<tr id="step-5"><td><b>3.5</b></td><td>Click <span class="ln-t-press">RELEASE</span></td><td>Log Report prints</td></tr>
+<tr id="step-6"><td><b>3.6</b></td><td>Open the <span class="ln-t-named">Order Lines</span> tab</td><td></td></tr>
+<tr id="step-7"><td><b>3.7</b></td><td>Find your order and tick it</td><td></td></tr>
+<tr id="step-8"><td><b>3.8</b></td><td><span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">Status</span></span></td><td><a class="rux--link" href="../screens/tdsls4534s000.html"><span class="ln-t-named">Sales Order Line Status</span></a> <span class="ln-t-exact">tdsls4534s000</span> opens on <span class="ln-t-named">Activities 1</span>. <span class="ln-t-named">Release Sales Orders to Warehousing</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Executed</span></span></td></tr>
+</tbody>
+</table></div>
+
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="wrong">If something goes wrong</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>Clicking <span class="ln-t-named">RELEASE TO WAREHOUSING</span> in <span class="ln-t-named">Lines ready for</span> does nothing</td><td>That panel counts lines; it does not act. Use <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></td></tr>
+<tr><td>Order absent from the release selection</td><td><span class="ln-t-named">Upto Release Date</span> is earlier than the order line's <span class="ln-t-named">Release Date</span> (planned delivery date minus outbound lead time)</td></tr>
+<tr><td>No warehousing order</td><td>Release did not run. Check <span class="ln-t-named">Activities 1</span> at <a class="rux--link" href="#step-8">step 3.8</a> — if it reads <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Free</span></span>, run it from <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release</span></span></td></tr>
+<tr><td>Activity shows <span class="ln-t-named">Automatic: No</span></td><td>That activity never fires on approval in this configuration. Run it by hand</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/tdsls4601m200.html">Sales Order Intake Workbench</a></td><td><span class="ln-t-exact">tdsls4601m200</span></td><td><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/tdsls4534s000.html">Sales Order Line Status</a></td><td><span class="ln-t-exact">tdsls4534s000</span></td><td>References ➔ Status on the form of one order line, Sales Order Lines (tdsls4101m000); the help names Status on the appropriate menu of the Lines tab of Sales Order (tdsls4100m900)</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__related">
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
+<ul class="ln-list">
   <li><b>Screen</b><p><a class="rux--link" href="../screens/tdsls4601m200.html"><span class="ln-t-named">Sales Order Intake Workbench</span></a> <span class="ln-t-exact">tdsls4601m200</span><br><span class="ln-quiet">A dashboard of sales-order activity awaiting attention.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/business-partner.html">Business partner</a> · <a class="rux--link" href="../ideas/embedded-genai.html">Embedded GenAI</a> · <a class="rux--link" href="../ideas/order-type.html">Order type</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/generate-outbound-advice.html">Generate outbound advice</a> in Ship from stock</p></li>
-</ul></div></div>
-  </li>
 </ul>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#steps">Steps</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#why">Why LN works this way</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#related">Related</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#steps">Steps</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#related">Related</a></div></li></ul>
 </div>
 </div>
 </div>
@@ -232,7 +241,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the <span class="ln-t-named">Lines ready for</span> panel only counts.</p></div></div>
   </li>
 </ul>
-<div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
+<div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
 <div class="ln-nav">
   <a class="rux--btn rux--btn--secondary" href="../follow/ship-from-stock.html" data-prev>Back</a>

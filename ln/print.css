@@ -1,32 +1,44 @@
-/* print.css -- a task's or a process's Full page on paper, linked with
-   media="print" so nothing here touches the screen. app.js puts the lightest
-   theme on the page while it prints, so every --rux-* token resolves to ink on
-   paper whatever theme the screen keeps, and shows the Full page where Guided
-   was open. The PDF takes the page's title as its name, which the browser's
-   dialog does by itself.
+/* print.css -- the Document on paper, linked with media="print" so nothing
+   here touches the screen. app.js puts the lightest theme on the page while it
+   prints, so every --rux-* token resolves to ink on paper whatever theme the
+   screen keeps, and shows the Document where Guided was open. The PDF takes
+   the page's title as its name, which the browser's dialog does by itself.
 
    NO BACKGROUND FILLS. Chrome's print dialog leaves Background graphics off
    and nobody ticks it, so a tinted box prints as nothing. Every division on
    paper is a rule, a border or weight. */
 
 /* The paper's measures are fixed, so a page is the same size on paper
-   whatever text size the theme or the browser keeps. */
-html { font-size: 12pt; }
-@page { margin: 18mm 16mm; }
+   whatever text size the theme or the browser keeps. Each page's footer says
+   what it is and which page of how many; a Document's page writes its title
+   and its Updated date into the left of it. */
+html { font-size: 10pt; }
+@page {
+  size: letter;
+  margin: 13mm 14mm 15mm;
+  @bottom-left { font: 8pt 'IBM Plex Sans', sans-serif; color: var(--rux-text-secondary); }
+  @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt 'IBM Plex Sans', sans-serif; color: var(--rux-text-secondary); }
+}
 
 /* The chrome goes: the header with its menu and account, the side nav, On
-   this page, Guided and its bar, the buttons, the search and the owner's box. */
+   this page, Guided and its bar, the buttons, the search, the owner's box and
+   a task's Related links, which the screens table and the strip already give. */
 .rux--header, .ln-aside, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
-.ln-confirm, .rux--breadcrumb, .ln-task__code, .ln-type__name .rux--btn { display: none; }
+.ln-confirm, .rux--breadcrumb, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related { display: none; }
 
-/* The Full page prints whichever view was open. */
+/* The Document prints whichever view was open. */
 .ln-pages [data-view="full"][hidden] { display: block; }
 
 /* One column on the paper, with no inset for a nav that is not there. */
 .ln-pages.rux--content { margin: 0; padding: 0; }
 .ln-pages .rux--css-grid { display: block; margin: 0; padding: 0; }
 .ln-pages .rux--css-grid-column { max-inline-size: none; }
-.ln-pages p, .ln-pages h1, .ln-doc { max-inline-size: none; }
+.ln-pages p, .ln-pages h1 { max-inline-size: none; }
+/* No fill, and no screen-high minimum, which on paper is a blank last page. */
+html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
+.ln-pages .rux--stack-vertical { gap: .75rem; }
+/* The last thing on the paper ends it, with no margin to spill onto a page of its own. */
+.ln-pages .rux--stack-vertical > :last-child, .ln-pages .rux--stack-vertical > :last-child > :last-child { margin-block-end: 0; }
 
 /* A fold is open on paper, its arrow gone, its heading a heading. */
 .rux--accordion .rux--accordion__item .rux--accordion__wrapper { display: block; block-size: auto; max-block-size: none; visibility: visible; opacity: 1; overflow: visible; }
@@ -34,20 +46,40 @@ html { font-size: 12pt; }
 .rux--accordion__arrow { display: none; }
 .rux--accordion__heading { padding-inline-start: 0; }
 
+/* The Document stays a procedure: its reference prints as titles, with where
+   to read it. */
+.ln-proc__ref .rux--accordion .rux--accordion__item .rux--accordion__wrapper { display: none; }
+.ln-proc__print { display: block; font-size: 9pt; color: var(--rux-text-secondary); }
+
+/* Tables are rules, not fills, with each page repeating the header row. */
+.ln-proc__table { overflow: visible; }
+.ln-pages .ln-proc__table .rux--data-table thead,
+.ln-pages .ln-proc__table .rux--data-table th, .ln-pages .ln-proc__table .rux--data-table td { background: none; }
+.ln-proc__table td { padding-block: .25rem; }
+.ln-proc__table th { block-size: auto; padding-block: .25rem; border-block-end: 1px solid var(--rux-text-primary); }
+.ln-proc__table thead { display: table-header-group; }
+.ln-proc__steps tr:target td { background: none; }
+.ln-proc__h2 { font-size: 15pt; padding-block-start: .5rem; margin-block-end: .5rem; }
+.ln-proc__task-title { font-size: 12pt; }
+.ln-proc__task + .ln-proc__task { margin-block-start: 1.25rem; }
+.ln-proc__meta { margin-block-end: .5rem; }
+.ln-pages .ln-proc__lead { margin-block-end: .625rem; line-height: 1.4; }
+.ln-proc__facts > div { padding-block: .5rem; }
+.ln-proc__h4 { margin-block: .75rem .25rem; }
+/* A line to write a figure on is a pen's height. */
+.ln-proc__write { margin-block-end: .125rem; }
+.ln-proc__write-line { block-size: 1.35em; }
+
 /* What you should see keeps its place under the step as a rule, not a fill. */
-.ln-doc__see, .ln-step__see, .ln-type__text, .ln-full__note, .ln-full__code { background: none; border-inline-start: 2px solid var(--rux-border-strong-01); padding-inline-start: .75rem; }
-.ln-doc > li:target::before { background: none; border-color: var(--rux-border-strong-01); color: var(--rux-text-primary); }
+.ln-step__see, .ln-type__text, .ln-full__note, .ln-full__code { background: none; border-inline-start: 2px solid var(--rux-border-strong-01); padding-inline-start: .75rem; }
 
 /* A link is text in ink, and a tag an outlined word. */
 .rux--link, .rux--link:visited { color: inherit; text-decoration: none; }
 .rux--tag { background: none; border: 1px solid var(--rux-border-strong-01); color: var(--rux-text-primary); }
 
-/* A warning or a note above the steps keeps its border and its icon. */
-.rux--inline-notification { background: none; break-inside: avoid; }
+/* A warning or a note keeps its border and its icon. */
+.ln-pages .rux--inline-notification.rux--inline-notification--low-contrast { background: none; break-inside: avoid; }
 
-/* A step, a row and a fold's heading do not break across pages. */
-.ln-doc > li, .ln-list > li, .ln-path li, .ln-full__rows > div { break-inside: avoid; }
-h1, h2, h3, h4, .rux--accordion__heading { break-after: avoid; }
-
-/* The path's line between stops is a rule already; its dots keep no fill. */
-.ln-path__dot { background: none; }
+/* A row does not break across pages, and a heading stays with what follows. */
+.ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div { break-inside: avoid; }
+h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc__lead { break-after: avoid; }

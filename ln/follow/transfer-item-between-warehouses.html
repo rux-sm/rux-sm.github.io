@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
+<style>@page { @bottom-left { content: "Warehouse transfer · LN Guide · Updated 22 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -34,6 +35,7 @@
 <symbol id="i-chevron--down" viewBox="0 0 16 16"><path d="M8 11 3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-warning--filled" viewBox="0 0 16 16"><path d="M8,1C4.2,1,1,4.2,1,8s3.2,7,7,7s7-3.1,7-7S11.9,1,8,1z M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2	c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" style="fill:var(--rux-icon-path-1)"/><path d="M7.5,4h1v5h-1C7.5,9,7.5,4,7.5,4z M8,12.2c-0.4,0-0.8-0.4-0.8-0.8s0.3-0.8,0.8-0.8	c0.4,0,0.8,0.4,0.8,0.8S8.4,12.2,8,12.2z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -106,54 +108,264 @@
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash"><li class="rux--breadcrumb-item"><a class="rux--link" href="../">Home</a></li><li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">Warehouse transfer</a></li></ol></nav>
-<div>
+<div class="ln-proc__head">
+<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
 <h1 class="rux--type-productive-heading-05">Warehouse transfer</h1>
 <p class="rux--type-body-long-01">Move a quantity of one item between two warehouses, and check both on-hand figures.</p>
 </div>
-<div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
-<p><strong>Before you start.</strong> Know the item's stock before you start: <a class="rux--link" href="../follow/check-item-inventory.html">Check an item's inventory</a>.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-stock-destination-and-expected-order-type.html?walk=1">Start</a><span class="ln-quiet">7 tasks · 39 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
-<div>
-<h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>7 tasks, 39 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-stock-destination-and-expected-order-type.html?walk=1">Start</a><span class="ln-quiet">one step at a time · 7 tasks · 39 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__summary">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
+<tbody>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Confirm stock, destination, and expected order type</a></td><td>Stock is known and the expected transfer configuration is recorded.</td><td>6</td></tr>
+<tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Create the transfer order</a></td><td>A warehousing order exists with transaction type <strong>Transfer</strong></td><td>12</td></tr>
+<tr><td><b>3</b></td><td><a class="rux--link" href="#task-3">Confirm the processing path and create advice</a></td><td>Manual and automatic activities are known before processing continues.</td><td>8</td></tr>
+<tr><td><b>4</b></td><td><a class="rux--link" href="#task-4">Pick the goods</a></td><td>Stock physically moves to staging at the source.</td><td>5</td></tr>
+<tr><td><b>5</b></td><td><a class="rux--link" href="#task-5">Ship</a></td><td>Goods leave the source warehouse.</td><td>4</td></tr>
+<tr><td><b>6</b></td><td><a class="rux--link" href="#task-6">Receive at the destination</a></td><td>Goods are put away in the destination warehouse.</td><td>3</td></tr>
+<tr><td><b>7</b></td><td><a class="rux--link" href="#task-7">Verify it worked</a></td><td>Source on-hand down, destination on-hand up, by the same quantity.</td><td>1</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>Know the item's stock before you start: <a class="rux--link" href="../follow/check-item-inventory.html">Check an item's inventory</a>.</li></ul>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
+<section class="ln-proc__task" id="task-1">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Stock is known and the expected transfer configuration is recorded.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-1-1"><td><b>1.1</b></td><td>Enter the item in <span class="ln-t-named">Filter Items</span> and run it</td><td></td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Tick the item row</td><td></td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>In the <span class="ln-t-named">Inventory</span> group, click <span class="ln-t-press">Warehouse Inventory</span></td><td><span class="ln-proc__see"><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens, item carried through</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>In the same grid, find the row for the intended destination warehouse</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">destination warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">destination on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-5"><td><b>1.5</b></td><td>Open <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Default Order Types by Origin</span></span> (<a class="rux--link" href="../screens/whinh0120m000.html"><span class="ln-t-exact">whinh0120m000</span></a>)</td><td>The default-order-type table opens</td></tr>
+<tr id="step-1-6"><td><b>1.6</b></td><td>Find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span>, and ship-to <span class="ln-t-exact">Warehouse</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected warehousing order type;</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">Create Shipment. For different source and destination warehouses, official help states <span class="ln-t-named">Create Shipment</span> = Always</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="ln-proc__task" id="task-2">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A warehousing order exists with transaction type <strong>Transfer</strong></dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span> <span class="ln-t-exact">whinh2100m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-2-1"><td><b>2.1</b></td><td>Open <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></td><td><a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> opens</td></tr>
+<tr id="step-2-2"><td><b>2.2</b></td><td>Click <span class="ln-t-press">New</span></td><td>A blank warehousing-order header opens</td></tr>
+<tr id="step-2-3"><td><b>2.3</b></td><td>Set <span class="ln-t-named">Order</span> origin to <span class="ln-t-exact">Transfer (Manual)</span></td><td>This is one of the ten manual order origins listed in the session help — section <a class="rux--link" href="#step-4-1">step 4.1</a></td></tr>
+<tr id="step-2-4"><td><b>2.4</b></td><td>Set <span class="ln-t-named">Inventory Transaction Type</span> to <span class="ln-t-exact">Transfer</span></td><td>Only settable by hand because the order has no originating package — section <a class="rux--link" href="#step-4-1">step 4.1</a></td></tr>
+<tr id="step-2-5"><td><b>2.5</b></td><td>Set <span class="ln-t-named">Ship-From Code</span> to the source warehouse. It is the one from <a class="rux--link" href="#step-1-3">step 1.3</a></td><td></td></tr>
+<tr id="step-2-6"><td><b>2.6</b></td><td>Set <span class="ln-t-named">Ship-To Code</span> to the destination warehouse. It is the one from <a class="rux--link" href="#step-1-4">step 1.4</a></td><td>Both types read <span class="ln-t-exact">Warehouse</span> — the condition for the Transfer transaction type</td></tr>
+<tr id="step-2-7"><td><b>2.7</b></td><td>Compare the defaulted <span class="ln-t-named">Warehousing Order Type</span> with the one you expected. You recorded it at <a class="rux--link" href="#step-1-6">step 1.6</a></td><td></td></tr>
+<tr id="step-2-8"><td><b>2.8</b></td><td>Record the value actually used</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">actual warehousing order type</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-9"><td><b>2.9</b></td><td>Save the header</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">transfer order number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-10"><td><b>2.10</b></td><td>Add an order line with the item. It is the item from <a class="rux--link" href="#step-1-3">step 1.3</a></td><td></td></tr>
+<tr id="step-2-11"><td><b>2.11</b></td><td>Enter the quantity to move</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">transferred quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2-12"><td><b>2.12</b></td><td>Save the line</td><td></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>No order number appears</td><td>Header not saved, or a required field is still blank — recheck <a class="rux--link" href="#step-2-3">steps 2.3–2.8</a></td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-3">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">3</span><a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Manual and automatic activities are known before processing continues.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Outbound Line Status Overview</span></span> <span class="ln-t-exact">whinh2129m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-3-1"><td><b>3.1</b></td><td>Open <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> <span class="ln-t-exact">whinh2129m000</span></td><td>The outbound-line overview opens</td></tr>
+<tr id="step-3-2"><td><b>3.2</b></td><td>Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></td><td>The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from <a class="rux--link" href="#step-2-7">step 2.7</a></td></tr>
+<tr id="step-3-3"><td><b>3.3</b></td><td>Read every row in the <span class="ln-t-named">Activities</span> table, especially <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></td><td><span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">Yes</span> means LN runs it; <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span> means it is an operator step</td></tr>
+<tr id="step-3-4"><td><b>3.4</b></td><td>Record the activities marked <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">manual outbound activities; these determine which later steps you perform</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-5"><td><b>3.5</b></td><td>If the next activity is automatic, choose <span class="ln-t-press">Process</span> on the warehousing order</td><td>LN executes consecutive automatic activities and stops at the next manual activity</td></tr>
+<tr id="step-3-6"><td><b>3.6</b></td><td>If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span> and select the line</td><td></td></tr>
+<tr id="step-3-7"><td><b>3.7</b></td><td>Then choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></td><td><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</td></tr>
+<tr id="step-3-8"><td><b>3.8</b></td><td>If <span class="ln-t-named">Release Outbound Advice</span> is manual and <span class="ln-t-named">Released</span> is still blank, choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></td><td><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Advice</span> greyed out</td><td>You are on the session toolbar, not the <span class="ln-t-named">Outbound Lines</span> toolbar — see <a class="rux--link" href="#step-3-6">step 3.6</a></td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-4">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">4</span><a class="rux--link" href="../do/pick-the-goods_transfer-item-between-warehouses.html">Pick the goods</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Stock physically moves to staging at the source.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span> <span class="ln-t-exact">whinh4525m100</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise <span class="ln-t-named">Picked</span> fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-4-1"><td><b>4.1</b></td><td>Check the <span class="ln-t-named">Picking List</span> row recorded in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td>If absent or already finished automatically, record <span class="ln-t-exact">Automatic / not applicable</span> and skip <a class="rux--link" href="#step-4-2">steps 4.2–4.5</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
+<tr id="step-4-2"><td><b>4.2</b></td><td>Find the Run for this order</td><td>The line for your item and source warehouse</td></tr>
+<tr id="step-4-3"><td><b>4.3</b></td><td>Tick the line</td><td></td></tr>
+<tr id="step-4-4"><td><b>4.4</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></td><td>Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</td></tr>
+<tr id="step-4-5"><td><b>4.5</b></td><td>Record the Run number from the header</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">picking list Run number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>No Run appears on the Picking List</td><td>If the order already advanced, record <span class="ln-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-5">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/ship_transfer-item-between-warehouses.html">Ship</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Goods leave the source warehouse.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span> <span class="ln-t-exact">whinh4130m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a>'s activity table answers.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-5-1"><td><b>5.1</b></td><td>Check the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row. You recorded it in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td>If already finished automatically, record <span class="ln-t-exact">Automatic / not observed</span> and skip <a class="rux--link" href="#step-5-2">steps 5.2–5.4</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
+<tr id="step-5-2"><td><b>5.2</b></td><td>Find the shipment for this order, then click <span class="ln-t-press">Drill In</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipment number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-5-3"><td><b>5.3</b></td><td>If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
+<tr id="step-5-4"><td><b>5.4</b></td><td>Choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</td></tr>
+</tbody>
+</table></div>
+
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>No shipment is visible for a different-warehouse transfer</td><td>Official help says <span class="ln-t-named">Create Shipment</span> is <span class="ln-t-exact">Always</span>. Check Shipment Lines and the <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a> activity status before continuing</td></tr>
+<tr><td>Confirm greyed out</td><td>Shipment not yet Frozen, or <span class="ln-t-named">Freeze Mandatory</span> requires it — run <a class="rux--link" href="#step-5-3">step 5.3</a> first</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-proc__task" id="task-6">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">6</span><a class="rux--link" href="../do/receive-at-the-destination.html">Receive at the destination</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Goods are put away in the destination warehouse.</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order's inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-6-1"><td><b>6.1</b></td><td>Open the <span class="ln-t-named">Inbound Lines</span> tab on the transfer order</td><td>The inbound side of the same order, ship-to = destination warehouse</td></tr>
+<tr id="step-6-2"><td><b>6.2</b></td><td>Select the inbound line and choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receipt</span></span></td><td><a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> <span class="ln-t-exact">whinh3512m000</span> opens for the transfer line</td></tr>
+<tr id="step-6-3"><td><b>6.3</b></td><td>Select the receipt line and choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td>The receipt is confirmed and the destination inventory is updated</td></tr>
+</tbody>
+</table></div>
+
+</section>
+<section class="ln-proc__task" id="task-7">
+<h3 class="ln-proc__task-title"><span class="ln-proc__n">7</span><a class="rux--link" href="../do/verify-it-worked_transfer-item-between-warehouses.html">Verify it worked</a></h3>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Source on-hand down, destination on-hand up, by the same quantity.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. A run can satisfy one half and not the other, which is why this task reads both.</p>
+
+<div class="rux--data-table-container ln-proc__table ln-proc__steps">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
+<tbody>
+<tr id="step-7-1"><td><b>7.1</b></td><td>Read on-hand for the item at both warehouses</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">source on-hand after</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">destination on-hand after</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+</tbody>
+</table></div>
+<p><strong>Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure.</strong> Warehouse transfer is complete only when both hold.</p><div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">Warning</div>
+      <div class="rux--inline-notification__subtitle">No recorded run has passed this proof yet. Read both warehouses' rows in one view at <a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a>, immediately before the transfer, and read them again here in the same view.</div>
+    </div>
+  </div>
 </div>
-<ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/confirm-stock-destination-and-expected-order-type.html"><span class="ln-path__dot">1</span><b>Confirm stock, destination, and expected order type</b><small>Stock is known and the expected transfer configuration is recorded. · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/create-the-transfer-order.html"><span class="ln-path__dot">2</span><b>Create the transfer order</b><small>A warehousing order exists with transaction type <strong>Transfer</strong> · 12 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/confirm-the-processing-path-and-create-advice.html"><span class="ln-path__dot">3</span><b>Confirm the processing path and create advice</b><small>Manual and automatic activities are known before processing continues. · 8 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/pick-the-goods_transfer-item-between-warehouses.html"><span class="ln-path__dot">4</span><b>Pick the goods</b><small>Stock physically moves to staging at the source. · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/ship_transfer-item-between-warehouses.html"><span class="ln-path__dot">5</span><b>Ship</b><small>Goods leave the source warehouse. · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/receive-at-the-destination.html"><span class="ln-path__dot">6</span><b>Receive at the destination</b><small>Goods are put away in the destination warehouse. · 3 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/verify-it-worked_transfer-item-between-warehouses.html"><span class="ln-path__dot">7</span><b>Verify it worked</b><small>Source on-hand down, destination on-hand up, by the same quantity. · 1 step</small></a></li>
-</ol>
-<ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="cases">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 3</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Multicompany warehouse transfer</span> — source and destination warehouses in different logistic companies</b><p>LN generates <span class="ln-t-named">two</span> warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. <span class="ln-t-named">Ship-to Code</span> becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here</p></li>
-  <li><b><span class="ln-t-named">Planned/automated transfer, driven by Order Planning</span></b><p><a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a> <span class="ln-t-exact">cppat1210m000</span>, reached via <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span>, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process. </p></li>
-  <li><b><span class="ln-t-named">Serialized or lot-controlled item</span></b><p>The order header's <span class="ln-t-named">Reclassification</span> tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process</p></li>
-</ul></div></div>
-  </li>
-  <li class="rux--accordion__item" id="next">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">What comes next</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The quantity is on hand at the destination warehouse</b><p><a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> — ship from the destination</p></li>
-</ul></div></div>
-  </li>
-</ul>
+<p class="ln-proc__h4">If something goes wrong</p>
+<div class="rux--data-table-container ln-proc__table ln-proc__wrong">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<tbody>
+<tr><td>Destination on-hand did not rise</td><td>The receipt in <a class="rux--link" href="../do/receive-at-the-destination.html">Receive at the destination</a> was not confirmed — return to the inbound line and Warehouse Receipt</td></tr>
+<tr><td>Source and destination changes do not both equal the transfer quantity</td><td>Do not approve the run. Recheck the <a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a> values and investigate unrelated inventory activity</td></tr>
+</tbody>
+</table></div>
+</section>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="cases">Variations</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th></tr></thead>
+<tbody>
+<tr><td><span class="ln-t-named">Multicompany warehouse transfer</span> — source and destination warehouses in different logistic companies</td><td>LN generates <span class="ln-t-named">two</span> warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. <span class="ln-t-named">Ship-to Code</span> becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here</td><td></td></tr>
+<tr><td><span class="ln-t-named">Planned/automated transfer, driven by Order Planning</span></td><td><a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a> <span class="ln-t-exact">cppat1210m000</span>, reached via <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Plan Transfer</span><span class="sep">➔</span><span class="dest">Transfer Order Planning</span></span>, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process.</td><td></td></tr>
+<tr><td><span class="ln-t-named">Serialized or lot-controlled item</span></td><td>The order header's <span class="ln-t-named">Reclassification</span> tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process</td><td></td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="next">What comes next</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:28%"><span class="rux--table-header-label">When</span></th><th scope="col"><span class="rux--table-header-label">Then</span></th><th scope="col" style="width:24%"><span class="rux--table-header-label">Start at</span></th></tr></thead>
+<tbody>
+<tr><td>The quantity is on hand at the destination warehouse</td><td><a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> — ship from the destination</td><td><a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a>, reading the destination's on-hand</td></tr>
+</tbody>
+</table></div>
+</section>
+
+
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="screens">Screens used</h2>
+<div class="rux--data-table-container ln-proc__table">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
+<tbody>
+<tr><td><a class="rux--link" href="../screens/whwmd4300m000.html">Inventory 360</a></td><td><span class="ln-t-exact">whwmd4300m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whwmd2515m000.html">Warehouse - Item Inventory</a></td><td><span class="ln-t-exact">whwmd2515m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh0120m000.html">Default Order Types by Origin</a></td><td><span class="ln-t-exact">whinh0120m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Order Procedures</span><span class="sep">➔</span><span class="dest">Default Order Types by Origin</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2100m000.html">Warehousing Orders</a></td><td><span class="ln-t-exact">whinh2100m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Orders</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh2129m000.html">Outbound Line Status Overview</a></td><td><span class="ln-t-exact">whinh2129m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Outbound Line Status Overview</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh4525m100.html">Picking List</a></td><td><span class="ln-t-exact">whinh4525m100</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td><span class="ln-t-exact">whinh4130m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></td></tr>
+<tr><td><a class="rux--link" href="../screens/whinh3512m000.html">Warehouse Receipt</a></td><td><span class="ln-t-exact">whinh3512m000</span></td><td>Actions - Receive from the inbound order line, or drill in from the receipt list</td></tr>
+</tbody>
+</table></div>
+</section>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-4 ln-aside">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#summary">Summary</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#before">Before you start</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#procedure">Procedure</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Variations</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#screens">Screens used</a></div></li></ul>
 </div>
 </div>
 </div>

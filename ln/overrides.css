@@ -24,7 +24,10 @@
 .ln-step__see .rux--link,
 .ln-pages p .rux--link,
 .ln-pages .ln-list .rux--link,
-.ln-pages .ln-doc .rux--link { display: inline; font-size: inherit; line-height: inherit; letter-spacing: inherit; }
+.ln-pages .ln-proc__table .rux--link,
+.ln-pages .ln-proc__list .rux--link,
+.ln-pages .ln-proc__meta .rux--link,
+.ln-pages .ln-proc__task-title .rux--link { display: inline; font-size: inherit; line-height: inherit; letter-spacing: inherit; }
 
 /* The way back is the least important thing on a screen, so it is quiet until
    it is pointed at. Carbon's link is the page's one colour. */

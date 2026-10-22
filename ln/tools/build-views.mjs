@@ -686,7 +686,8 @@ function ideaPage(c) {
 <p class="ln-quiet">Idea</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
-</div>
+</div>${c.explanation ? `
+<p>${esc(c.explanation)}</p>` : ''}
 <dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>
 <div class="ln-full" data-full="${esc(c.id)}" hidden></div>`;
   return page(`${c.name} — LN Guide`, 'ideas', column(body, 12));

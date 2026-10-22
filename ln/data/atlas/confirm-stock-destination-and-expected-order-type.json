@@ -1,5 +1,5 @@
 {
-  "contract": 19,
+  "contract": 20,
   "tier": "export",
   "kind": "task",
   "id": "confirm-stock-destination-and-expected-order-type",

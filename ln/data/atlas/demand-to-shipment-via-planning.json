@@ -1,5 +1,5 @@
 {
-  "contract": 19,
+  "contract": 20,
   "tier": "export",
   "kind": "process",
   "id": "demand-to-shipment-via-planning",

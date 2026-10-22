@@ -1,9 +1,9 @@
-commit   3505a5ebed18e974694a82480e906c17e9973f8f
-date     2026-10-22T05:41:13Z
-subject  feat(sessions): File Inventory by Production Order
-contract 19 
+commit   31a1a307de6281860105cdd71837967b6034dea6
+date     2026-10-22T05:44:37Z
+subject  feat(concepts): Explain each idea for a reader
+contract 20 
 tier     export
-sha256   adcf12ceda846cb9b7cf76a0071b1061202649166c0a2d7053d29ecaa71cda6a
+sha256   eec680b58a430784e0f0bd0527a00ef081e9eb38cc0f0bbfb72b5b6bc4a6f819
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

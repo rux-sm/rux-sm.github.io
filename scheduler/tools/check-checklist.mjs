@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../billing.js', '../leg-papers.js', '../checklist.js', '../trip-shape.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+for (const f of ['../billing.js', '../leg-papers.js', '../checklist.js', '../trip-shape.js', '../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
 const { checklist, leftOf } = window.SchedulerChecklist;
 
 let failed = 0;

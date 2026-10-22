@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['../trip-shape.js', '../route-figures.js']) {
+for (const file of ['../past-midnight.js', '../trip-shape.js', '../route-figures.js']) {
   runInNewContext(readFileSync(new URL(file, import.meta.url), 'utf8'), { window });
 }
 const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo, stretches, nightDwell } = window.SchedulerRouteFigures;

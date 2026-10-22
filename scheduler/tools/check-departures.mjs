@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-papers.js', 'leg-facts.js', 'trip-shape.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
+for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-papers.js', 'leg-facts.js', 'trip-shape.js', 'past-midnight.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window, Intl, Date });
 }
 const D = window.SchedulerDepartures;

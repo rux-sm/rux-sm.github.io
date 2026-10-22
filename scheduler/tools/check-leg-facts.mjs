@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../requirements.js', '../leg-papers.js', '../leg-facts.js', '../trip-shape.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+for (const f of ['../requirements.js', '../leg-papers.js', '../leg-facts.js', '../trip-shape.js', '../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
 const { seatsOf, overSeats, dayContactsOf, dayOfContact } = window.SchedulerLegFacts;
 
 let failed = 0;

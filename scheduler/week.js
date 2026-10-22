@@ -70,16 +70,12 @@
     };
   };
 
-  /* The midnights a one-day leg's return comes after its departure. The leg's
-     times are read in the order they happen, the yard out, the spot, the
-     group's departure, each stop and the yard back, and a time earlier on the
-     clock than the one before it is past midnight. The count starts at the
-     group's departure, which is on the leg's day, so a yard departure the
-     night before is not counted. A longer leg's end is on its last day. */
-  const clockMin = t => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-  };
+  /* The midnights a one-day leg's return comes after its departure, by
+     past-midnight.js's rule. The leg's times are read in the order they
+     happen, the yard out, the spot, the group's departure, each stop and the
+     yard back. The count starts at the group's departure, which is on the
+     leg's day, so a yard departure the night before is not counted. A longer
+     leg's end is on its last day. */
   const midnightsOf = (stops, pickup, back, depart) => {
     if (!back?.arrive) return 0;
     const rows = stops.slice(Math.max(stops.indexOf(pickup), 0), stops.indexOf(back) + 1);
@@ -88,16 +84,8 @@
     for (const s of rows.slice(1)) run.push(s.depart_prev, s.arrive, s.spot);
     // The group's departure is the row after the pickup's `depart_prev`.
     const group = rows.length > 1 ? 3 : 0;
-    let last = null, days = 0, start = 0;
-    run.forEach((t, i) => {
-      const m = clockMin(t);
-      if (m != null) {
-        if (last != null && m < last) days++;
-        last = m;
-      }
-      if (i === group) start = days;
-    });
-    return days - start;
+    const days = window.SchedulerPastMidnight.daysPast(run);
+    return days.at(-1) - days[group];
   };
 
   /* A leg's times as saved, by its key or its old word: the yard departure,
@@ -170,10 +158,10 @@
      +1; back at or after that hour, it takes the day it is back on. A leg
      with no yard return takes its own dates. */
   const takes = (from, to, times) => {
-    const back = clockMin(times?.back);
+    const PAST = window.SchedulerPastMidnight;
+    const back = PAST.minutesOf(times?.back);
     if (back == null) return { to, backDays: 0 };
-    const end = clockMin(times.end);
-    const backOn = dayFrom(to, to > from ? (end != null && back < end ? 1 : 0) : times.nights ?? 0);
+    const backOn = dayFrom(to, to > from ? (PAST.after(times.end, times.back) ? 1 : 0) : times.nights ?? 0);
     return back < lateBefore && backOn > from ? { to: dayFrom(backOn, -1), backDays: 1 } : { to: backOn, backDays: 0 };
   };
 

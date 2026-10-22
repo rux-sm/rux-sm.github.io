@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 runInNewContext(readFileSync(new URL('../trip-shape.js', import.meta.url), 'utf8'), { window, Date });
-runInNewContext(readFileSync(new URL('../week.js', import.meta.url), 'utf8'), { window });
+for (const file of ['../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(file, import.meta.url), 'utf8'), { window });
 const { legsOf, legKeyOfVehicle, legByKey, clip, setLateReturn } = window.SchedulerWeek;
 
 let failed = 0;

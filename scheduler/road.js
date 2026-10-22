@@ -69,10 +69,6 @@
     return 3958.8 * 2 * Math.asin(Math.sqrt(h));
   };
 
-  const clockMin = t => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-  };
   const dayFrom = (day, n) => {
     const [y, m, d] = String(day).split('-').map(Number);
     const t = new Date(Date.UTC(y, m - 1, d + n));
@@ -83,7 +79,7 @@
      its name, its map point and when the bus is due there, an instant on
      the office's clock or null. A time saved with no date is on the leg's
      first day, or the next day where it is earlier on the clock than the
-     time before it. */
+     time before it, by past-midnight.js's rule. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
     const legOf = W.legByKey(trip, leg);
@@ -96,8 +92,8 @@
       let due = null;
       if (time) {
         if (date) day = date;
-        else if (last != null && clockMin(time) < last) day = dayFrom(day, 1);
-        last = clockMin(time);
+        else if (window.SchedulerPastMidnight.after(last, time)) day = dayFrom(day, 1);
+        last = time;
         due = W.officeInstant(day, time);
       }
       return {

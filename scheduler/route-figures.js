@@ -147,14 +147,8 @@
     const run = [['depart', t.depart], ['spot', t.spot], ['leave', t.leave],
       ...m.list.flatMap((st, i) => [[`${i}:arrive`, st.arrive], [`${i}:leave`, st.leave]]),
       ['endtrip', t.endtrip], ['return', t.back]];
-    let last = null, days = 0;
-    for (const [key, time] of run) {
-      const n = toMin(time);
-      if (n == null) continue;
-      if (last != null && n < last) days++;
-      last = n;
-      at.set(key, days);
-    }
+    const days = window.SchedulerPastMidnight.daysPast(run.map(([, time]) => time));
+    run.forEach(([key, time], i) => { if (toMin(time) != null) at.set(key, days[i]); });
     const start = at.get('leave') ?? 0;
     for (const [key, n] of at) at.set(key, n - start);
     return at;
@@ -219,12 +213,7 @@
     for (const st of mine) { put(st.arrive); if (left(st) === d) put(st.leave); }
     if (d === last) { put(t.endtrip); put(t.back, -m.post); }
     // A time earlier than the one before it is past midnight.
-    let roll = 0;
-    const run = [];
-    for (const n of times) {
-      if (run.length && n + roll < run.at(-1)) roll += 1440;
-      run.push(n + roll);
-    }
+    const run = window.SchedulerPastMidnight.daysPast(times).map((days, i) => times[i] + 1440 * days);
     // A night's wait belongs to neither day, which each end or start at it.
     const rest = restOf(m, mine.filter(st => left(st) === d));
     const span = run.length > 1 ? run.at(-1) - run[0] : null;
@@ -264,8 +253,7 @@
     const put = (time, date, shift = 0) => {
       const n = toMin(time);
       if (n == null) return null;
-      let at = (many && date && m.from ? daysFrom(m.from, date) * 1440 : 0) + n;
-      while (prev != null && at < prev) at += 1440;
+      const at = window.SchedulerPastMidnight.forward([prev, (many && date && m.from ? daysFrom(m.from, date) * 1440 : 0) + n])[1];
       prev = at;
       if (cur.first == null) cur.first = at + Math.min(shift, 0);
       cur.last = at + Math.max(shift, 0);

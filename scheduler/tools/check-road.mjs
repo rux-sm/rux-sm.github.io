@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../trip-shape.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../trip-shape.js', '../past-midnight.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const { stopsOf, whereOn, clockOf, lateBy, pickupLate, arrivals, live } = window.SchedulerRoad;
 const { officeInstant } = window.SchedulerWeek;
 

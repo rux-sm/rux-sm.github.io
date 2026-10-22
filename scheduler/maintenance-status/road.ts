@@ -116,6 +116,68 @@ const window = {};
   };
 })();
 
+// ── past-midnight.js
+/* ==========================================================================
+   Rux Scheduler — PAST MIDNIGHT, the day each of a leg's times falls on
+   --------------------------------------------------------------------------
+   The one rule for a leg's times that carry no date: read in the order they
+   happen, a time earlier on the clock than the last one before it is the
+   next day's. The board's +1, the Route tab's Summary, the Detailed
+   itinerary, the driver's road, the quote's words and the Route tab's stop
+   order all count days by it, so 1:00 AM after an evening is never read as
+   the morning the leg starts.
+
+     daysPast(times)   the midnights passed at each of `times`, from the
+                       first: a time is "HH:MM", or minutes after midnight,
+                       and an empty one takes the count so far
+     after(last, time) whether `time` is past a midnight after `last`
+     forward(minutes)  each value moved on by whole days until it is not
+                       before the one before it, an empty one kept empty
+
+   Nothing here reads the page or the database, and it needs nothing loaded
+   first. Its sample cases are in tools/check-past-midnight.mjs.
+   ========================================================================== */
+(() => {
+  'use strict';
+
+  const DAY = 1440;
+  // Minutes after midnight, from "HH:MM", "HH:MM:SS" or a number; null for none.
+  const minutesOf = t => {
+    if (typeof t === 'number') return Number.isFinite(t) ? t : null;
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''));
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  };
+
+  const after = (last, time) => {
+    const a = minutesOf(last), b = minutesOf(time);
+    return a != null && b != null && b < a;
+  };
+
+  function daysPast(times) {
+    let last = null, days = 0;
+    return times.map(t => {
+      const n = minutesOf(t);
+      if (n == null) return days;
+      if (last != null && n < last) days += 1;
+      last = n;
+      return days;
+    });
+  }
+
+  function forward(minutes) {
+    let prev = null;
+    return minutes.map(v => {
+      if (v == null) return null;
+      let at = v;
+      while (prev != null && at < prev) at += DAY;
+      prev = at;
+      return at;
+    });
+  }
+
+  window.SchedulerPastMidnight = { minutesOf, after, daysPast, forward };
+})();
+
 // ── week.js
 /* ==========================================================================
    Rux Scheduler — WEEK, where a trip sits on a week and what colour it paints
@@ -189,16 +251,12 @@ const window = {};
     };
   };
 
-  /* The midnights a one-day leg's return comes after its departure. The leg's
-     times are read in the order they happen, the yard out, the spot, the
-     group's departure, each stop and the yard back, and a time earlier on the
-     clock than the one before it is past midnight. The count starts at the
-     group's departure, which is on the leg's day, so a yard departure the
-     night before is not counted. A longer leg's end is on its last day. */
-  const clockMin = t => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-  };
+  /* The midnights a one-day leg's return comes after its departure, by
+     past-midnight.js's rule. The leg's times are read in the order they
+     happen, the yard out, the spot, the group's departure, each stop and the
+     yard back. The count starts at the group's departure, which is on the
+     leg's day, so a yard departure the night before is not counted. A longer
+     leg's end is on its last day. */
   const midnightsOf = (stops, pickup, back, depart) => {
     if (!back?.arrive) return 0;
     const rows = stops.slice(Math.max(stops.indexOf(pickup), 0), stops.indexOf(back) + 1);
@@ -207,16 +265,8 @@ const window = {};
     for (const s of rows.slice(1)) run.push(s.depart_prev, s.arrive, s.spot);
     // The group's departure is the row after the pickup's `depart_prev`.
     const group = rows.length > 1 ? 3 : 0;
-    let last = null, days = 0, start = 0;
-    run.forEach((t, i) => {
-      const m = clockMin(t);
-      if (m != null) {
-        if (last != null && m < last) days++;
-        last = m;
-      }
-      if (i === group) start = days;
-    });
-    return days - start;
+    const days = window.SchedulerPastMidnight.daysPast(run);
+    return days.at(-1) - days[group];
   };
 
   /* A leg's times as saved, by its key or its old word: the yard departure,
@@ -289,10 +339,10 @@ const window = {};
      +1; back at or after that hour, it takes the day it is back on. A leg
      with no yard return takes its own dates. */
   const takes = (from, to, times) => {
-    const back = clockMin(times?.back);
+    const PAST = window.SchedulerPastMidnight;
+    const back = PAST.minutesOf(times?.back);
     if (back == null) return { to, backDays: 0 };
-    const end = clockMin(times.end);
-    const backOn = dayFrom(to, to > from ? (end != null && back < end ? 1 : 0) : times.nights ?? 0);
+    const backOn = dayFrom(to, to > from ? (PAST.after(times.end, times.back) ? 1 : 0) : times.nights ?? 0);
     return back < lateBefore && backOn > from ? { to: dayFrom(backOn, -1), backDays: 1 } : { to: backOn, backDays: 0 };
   };
 
@@ -447,10 +497,6 @@ const window = {};
     return 3958.8 * 2 * Math.asin(Math.sqrt(h));
   };
 
-  const clockMin = t => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(t || '');
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-  };
   const dayFrom = (day, n) => {
     const [y, m, d] = String(day).split('-').map(Number);
     const t = new Date(Date.UTC(y, m - 1, d + n));
@@ -461,7 +507,7 @@ const window = {};
      its name, its map point and when the bus is due there, an instant on
      the office's clock or null. A time saved with no date is on the leg's
      first day, or the next day where it is earlier on the clock than the
-     time before it. */
+     time before it, by past-midnight.js's rule. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
     const legOf = W.legByKey(trip, leg);
@@ -474,8 +520,8 @@ const window = {};
       let due = null;
       if (time) {
         if (date) day = date;
-        else if (last != null && clockMin(time) < last) day = dayFrom(day, 1);
-        last = clockMin(time);
+        else if (window.SchedulerPastMidnight.after(last, time)) day = dayFrom(day, 1);
+        last = time;
         due = W.officeInstant(day, time);
       }
       return {

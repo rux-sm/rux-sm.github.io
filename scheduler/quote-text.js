@@ -79,16 +79,11 @@
   }
 
   /* A one-day trip that is back at an earlier hour than it left is back the
-     next day, past midnight, and the quote says which day, so 1:00 AM is not
-     read as the morning the trip starts. */
-  const minutes = t => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''));
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-  };
+     next day, past midnight, by past-midnight.js's rule, and the quote says
+     which day, so 1:00 AM is not read as the morning the trip starts. */
   function backDay(trip) {
     const from = trip.from || null;
-    const left = minutes(trip.leave), back = minutes(trip.back);
-    if (!from || (trip.to || from) !== from || left == null || back == null || back >= left) return null;
+    if (!from || (trip.to || from) !== from || !window.SchedulerPastMidnight.after(trip.leave, trip.back)) return null;
     const next = parseDay(from);
     next.setDate(next.getDate() + 1);
     return next.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });

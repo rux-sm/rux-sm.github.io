@@ -8,7 +8,7 @@ import { runInNewContext } from 'node:vm';
 
 const window = {};
 const context = { window, Intl, Date, Math, Number, String, Map, Set, Array, JSON, Promise };
-for (const file of ['road.js', 'live-trip.js']) {
+for (const file of ['past-midnight.js', 'road.js', 'live-trip.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context);
 }
 const { warningsOf, phaseOf, watching } = window.SchedulerLiveTrip;

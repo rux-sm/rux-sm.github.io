@@ -48,7 +48,7 @@ expect('no route is no drive', H.driveMinutes(null, null), null);
 
 // ── the board's road ────────────────────────────────────────────────────────
 const window = {};
-for (const f of ['../trip-shape.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../trip-shape.js', '../past-midnight.js', '../week.js', '../road.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const week = window.SchedulerWeek, road = window.SchedulerRoad;
 
 const LAT = 26.2, YARD_LNG = -98.2, MILE = 1 / (69.17 * Math.cos(LAT * Math.PI / 180));

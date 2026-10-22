@@ -1219,15 +1219,15 @@
        weekday, so 1:00 AM is never read as the morning the trip starts. */
     const lateDays = (() => {
       if (manyDays || !legFrom) return null;
-      const { toMin } = window.SchedulerRouteFigures;
-      let last = null, days = 0, start = null;
-      const seen = stops.map((stop, i) => itineraryTimes(stop, stops[i + 1] || null, null).map(([label, time]) => {
-        const n = toMin(time);
-        if (n == null) return [label, null];
-        if (last != null && n < last) days += 1;
-        last = n;
-        if (stop.type === 'pickup' && label === 'Dep') start = days;
-        return [label, days];
+      const PAST = window.SchedulerPastMidnight;
+      const lines = stops.map((stop, i) => itineraryTimes(stop, stops[i + 1] || null, null));
+      const days = PAST.daysPast(lines.flat().map(([, time]) => time));
+      let k = 0, start = null;
+      const seen = lines.map((times, i) => times.map(([label, time]) => {
+        const n = days[k++];
+        if (PAST.minutesOf(time) == null) return [label, null];
+        if (stops[i].type === 'pickup' && label === 'Dep') start = n;
+        return [label, n];
       }));
       return seen.map(lines => new Map(lines.filter(([, n]) => n != null && n !== (start ?? 0))
         .map(([label, n]) => [label, dayShift(legFrom, n - (start ?? 0))])));

@@ -72,7 +72,8 @@
       const t = {
         id, destination: 'San Antonio, TX', customer: 'Lakeview High School', confirmed: true, trip_type: 'round_trip',
         start_date: day(0), end_date: day(1), bus_count: 1, passengers: 24,
-        booking_contact_name: 'Dana Flores', booking_contact_phone: '9565550142', trip_contact_1_name: 'Coach Ortiz',
+        booking_contact_name: 'Dana Flores', booking_contact_phone: '9565550142',
+        trip_contacts: [{ id: `k${++ids}`, position: 1, name: 'Coach Ortiz', phone: null, leg_id: null }],
         itinerary_not_needed: true, created_at: new Date(now - 20 * DAY).toISOString(),
         trip_updates: [], trip_documents: [],
         ...rest,
@@ -136,7 +137,7 @@
       ['Today', 3 * HOUR, true], ['This week', 4 * DAY, true], ['Older', 12 * DAY, true], ['Settled', 12 * DAY, false],
     ].map(([customer, ago, open], i) => row(BUSES[i].number, bar(trip({
       customer, buses: [crewed(BUSES[i].id)], trip_updates: [update('Pickup moved to the gym doors', ago)],
-      ...(open ? { trip_contact_1_name: null } : {}),
+      ...(open ? { trip_contacts: [] } : {}),
     }))));
 
     const tripBar = {
@@ -211,7 +212,7 @@
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },
         { name: 'No one to call on the day', note: 'No day-of contact on a trip not marked as needing none.', days: 3,
-          rows: [row('102', bar(trip({ customer: 'Harbor Tours', trip_contact_1_name: null, buses: [crewed('b102')] })))] },
+          rows: [row('102', bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [crewed('b102')] })))] },
         { name: 'More passengers than seats', note: 'Said on every bar of the leg.', days: 3,
           rows: [row('103', bar(trip({ customer: 'Northside Band', passengers: 52, buses: [crewed('b103')] })))] },
         { name: 'A driver said no', note: 'The Contact list puts it right.', days: 3,
@@ -224,7 +225,7 @@
         { name: 'A bus short of a need', note: 'The trip asks for a sleeper this bus lacks.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ ...crewed('b102'), needs: { sleeper: true } }] })))] },
         { name: 'Both', note: 'A trip with a mistake and a job shows red, counting both.', days: 3,
-          rows: [row('103', bar(trip({ customer: 'Harbor Tours', trip_contact_1_name: null, buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })))] },
+          rows: [row('103', bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })))] },
       ],
     };
 

@@ -37,84 +37,6 @@ const window = {};
   };
 })();
 
-// ── leg-papers.js
-/* ==========================================================================
-   Rux Scheduler — LEG PAPERS, the itinerary and the contacts a leg is handed
-   --------------------------------------------------------------------------
-   The one reading of which of a trip's itinerary files and day-of contacts
-   belong to a leg, loaded by every page that hands a leg's papers to anyone:
-   the board, the forms, the driver pages and the connector's rules.
-
-   A FILE AND A CONTACT CARRY THE LEG THEY WERE ENTERED UNDER, in
-   `trip_documents.leg` and `trips.trip_contact_<n>_leg`: `outbound` is a
-   split trip's drop-off, `return` its pickup. One with none, which is every
-   one saved before the column, is the
-   drop-off's. The pickup takes the drop-off's until it has its own, so a
-   customer's one paper and one set of contacts for the whole trip are
-   entered once. Only a split trip has a pickup leg of its own, so on any
-   other trip every file and contact is the trip's whatever its leg says.
-
-   Nothing here reads the page or the database, and it needs nothing loaded
-   first.
-   ========================================================================== */
-(() => {
-  'use strict';
-
-  const SPLIT = 'dropoff_pickup';
-  const clean = v => String(v ?? '').trim();
-  const isSplit = trip => trip?.trip_type === SPLIT;
-
-  /* A split trip's rows for a leg: the pickup's own, or the drop-off's while
-     it has none; the drop-off's are every row not the pickup's. On any other
-     trip, every row. */
-  function forLeg(trip, leg, rows) {
-    if (!isSplit(trip)) return rows;
-    const pickup = rows.filter(r => r.leg === 'return');
-    const dropoff = rows.filter(r => r.leg !== 'return');
-    return leg === 'return' && pickup.length ? pickup : dropoff;
-  }
-
-  /* THE ITINERARY, by the office's rule: a file whose type is Itinerary and
-     no other, so a file named after one is not one. A leg's are newest
-     first, and the first is the one its drivers are handed. */
-  const isItinerary = d => clean(d?.label).toLowerCase() === 'itinerary';
-  const newestFirst = (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0);
-  const allItineraries = trip => (trip?.trip_documents || []).filter(isItinerary).sort(newestFirst);
-  const itinerariesFor = (trip, leg) => forLeg(trip, leg, allItineraries(trip));
-  const itineraryFor = (trip, leg) => itinerariesFor(trip, leg)[0] ?? null;
-  // The itineraries no leg is handed any more, newest first: the earlier versions.
-  const earlierItineraries = trip => {
-    const current = new Set([itineraryFor(trip, 'outbound'), ...(isSplit(trip) ? [itineraryFor(trip, 'return')] : [])]);
-    return allItineraries(trip).filter(d => !current.has(d));
-  };
-
-  /* THE DAY-OF CONTACTS, slots 1 to 5, as the trip records them: the trip's
-     own copy of the name and phone, and a slot with neither the contact
-     linked beside it. `read` may read a slot another
-     way, as leg-facts.js does; it answers `{ name, phone }` or null. */
-  function slotContact(trip, n) {
-    const name = clean(trip[`trip_contact_${n}_name`]);
-    const phone = clean(trip[`trip_contact_${n}_phone`]);
-    if (name || phone) return { id: trip[`trip_contact_${n}_id`] ?? null, name, phone };
-    const linked = trip[`c${n}`];
-    return linked && (clean(linked.name) || clean(linked.phone))
-      ? { id: linked.id ?? null, name: clean(linked.name), phone: clean(linked.phone) } : null;
-  }
-  // A leg's contacts in slot order, each with its `slot` and stored `leg`.
-  function contactsFor(trip, leg, read = slotContact) {
-    const filled = [1, 2, 3, 4, 5]
-      .map(n => { const c = read(trip, n); return c ? { ...c, slot: n, leg: trip[`trip_contact_${n}_leg`] ?? null } : null; })
-      .filter(Boolean);
-    return forLeg(trip, leg, filled);
-  }
-
-  window.SchedulerLegPapers = {
-    SPLIT, isSplit, forLeg,
-    isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
-    slotContact, contactsFor,
-  };
-})();
-
 // ── leg-facts.js
 /* ==========================================================================
    leg-facts.js — WHAT A LEG'S BUSES, SEATS AND CONTACT SAY
@@ -136,7 +58,7 @@ const window = {};
    client, so every page and the connector ask the same questions:
    `readDriverForms`, and `readBasics`, the buses, the drivers and the
    office's settings every rule needs set first. Needs requirements.js and
-   leg-papers.js loaded first.
+   trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -354,16 +276,11 @@ const window = {};
   }
 
   /* A leg's day-of contacts in their order, and its day-of contact, the
-     first of them, or null; the card says when there is none. A trip read
-     with its legs and `trip_contacts` is read through trip-shape.js, by the
-     leg's key, so a leg with none of its own takes the first leg's. One
-     read without them is read from its slots by leg-papers.js and the old
-     word, so a split trip's pickup with none takes the drop-off's. */
-  const dayContactsOf = (trip, leg = 'outbound') => {
-    const on = Array.isArray(trip?.trip_contacts) && window.SchedulerTripShape ? weekLeg(trip, leg) : null;
-    return on ? window.SchedulerTripShape.contactsFor(trip, on.key)
-      : window.SchedulerLegPapers.contactsFor(trip, leg, tripContact);
-  };
+     first of them, or null; the card says when there is none. The trip is
+     read with its legs and `trip_contacts`, through trip-shape.js by the
+     leg's key, so a leg with none of its own takes the first leg's. */
+  const dayContactsOf = (trip, leg = 'outbound') =>
+    window.SchedulerTripShape.contactsFor(trip, weekLeg(trip, leg)?.key);
   const dayOfContact = (trip, leg = 'outbound') => dayContactsOf(trip, leg)[0] ?? null;
 
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of
@@ -651,7 +568,7 @@ const window = {};
 
    The wait and the window are the office's `follow-up-v1` settings row,
    `{ wait_days, chase_days }`.
-   Needs billing.js and leg-papers.js loaded first.
+   Needs billing.js and trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -693,8 +610,11 @@ const window = {};
   // Whole days until the trip leaves, 0 on the day, or null with no date.
   const daysToGo = trip => (trip.start_date
     ? Math.round((parseISO(trip.start_date) - parseISO(today())) / 864e5) : null);
-  // The drop-off's itinerary, by leg-papers.js, which a split trip's pickup is handed too until it has its own.
-  const hasItinerary = trip => !!window.SchedulerLegPapers.itineraryFor(trip, 'outbound');
+  // The first leg's itinerary, by trip-shape.js, which every later leg is handed too until it has its own.
+  const hasItinerary = trip => {
+    const SHAPE = window.SchedulerTripShape;
+    return !!SHAPE.itineraryFor(trip, SHAPE.firstLeg(trip)?.id);
+  };
 
   function waitsOf(trip) {
     if (placeholder(trip) || trip.cancelled_at) return [];
@@ -1563,14 +1483,13 @@ const window = {};
 
    Nothing here reads the page or the database. The words a line is written
    in are the page's, handed in; what Accept keeps is always English. Needs
-   share/driver-words.js, leg-papers.js and trip-shape.js loaded first.
+   share/driver-words.js and trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
 
   const TZ = 'America/Chicago';
   const WORDS = window.SchedulerDriverWords;
-  const PAPERS = window.SchedulerLegPapers;
   const SHAPE = window.SchedulerTripShape;
   const clean = v => String(v ?? '').trim();
 
@@ -1645,15 +1564,13 @@ const window = {};
     return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
   };
 
-  /* A trip read with its papers the new way: its contacts as `trip_contacts`
-     and its files with `leg_id`, as the driver's link, Departures and the board
-     read them. Another is handed its papers by leg-papers.js and the old
-     word. */
-  const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
+  /* A leg's papers, its day-of contacts and its files, as trip-shape.js
+     hands them: the trip is read with its legs, `trip_contacts` and its
+     files, as the driver's link, Departures and the board read it. */
+  const papersLeg = (trip, leg) => shapeLeg(trip, leg)?.id;
   /* The leg's day-of contacts, or with none whoever booked. */
   const contactsOf = (trip, leg) => {
-    const day = (papersLeg(trip, leg) ? SHAPE.contactsFor(trip, papersLeg(trip, leg).id) : PAPERS.contactsFor(trip, leg))
-      .map(c => ({ name: c.name, phone: c.phone }));
+    const day = SHAPE.contactsFor(trip, papersLeg(trip, leg)).map(c => ({ name: c.name, phone: c.phone }));
     const booked = { name: clean(trip.booking_contact_name), phone: clean(trip.booking_contact_phone) };
     return day.length ? day : booked.name || booked.phone ? [booked] : [];
   };
@@ -1662,7 +1579,7 @@ const window = {};
   /* The leg's itinerary, read as its contacts are: the newest is the one
      shown, marked Updated when it replaced another of the leg's. */
   const itinerariesOf = (trip, leg) => {
-    const same = papersLeg(trip, leg) ? SHAPE.itinerariesFor(trip, papersLeg(trip, leg).id) : PAPERS.itinerariesFor(trip, leg);
+    const same = SHAPE.itinerariesFor(trip, papersLeg(trip, leg));
     if (!same.length) return [];
     const newest = same[0];
     return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
@@ -1719,10 +1636,10 @@ const window = {};
           || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
       } : null,
       requirements: requirementsOf(trip, names),
-      contacts: contactsOf(trip, papersLeg(trip, leg) ? leg : word),
-      contact: contactOf(trip, papersLeg(trip, leg) ? leg : word),
+      contacts: contactsOf(trip, leg),
+      contact: contactOf(trip, leg),
       crew,
-      itineraries: itinerariesOf(trip, papersLeg(trip, leg) ? leg : word),
+      itineraries: itinerariesOf(trip, leg),
       activeRoles: mine.active_roles || [],
     };
   }
@@ -2303,8 +2220,6 @@ const window = {};
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    // The five contact slots, which driver-job.js still reads a driver's job from.
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_assignments(id,bus_id,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 
@@ -2595,8 +2510,6 @@ const window = {};
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    // The five contact slots, which driver-job.js still reads a driver's job from.
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
     `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.

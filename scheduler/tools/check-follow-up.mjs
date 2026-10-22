@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'leg-papers.js', 'follow-up.js']) {
+for (const file of ['billing.js', 'trip-shape.js', 'follow-up.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
 const { waitsOf, quietSince, asks, set } = window.SchedulerFollowUp;

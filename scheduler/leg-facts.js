@@ -18,7 +18,7 @@
    client, so every page and the connector ask the same questions:
    `readDriverForms`, and `readBasics`, the buses, the drivers and the
    office's settings every rule needs set first. Needs requirements.js and
-   leg-papers.js loaded first.
+   trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -236,16 +236,11 @@
   }
 
   /* A leg's day-of contacts in their order, and its day-of contact, the
-     first of them, or null; the card says when there is none. A trip read
-     with its legs and `trip_contacts` is read through trip-shape.js, by the
-     leg's key, so a leg with none of its own takes the first leg's. One
-     read without them is read from its slots by leg-papers.js and the old
-     word, so a split trip's pickup with none takes the drop-off's. */
-  const dayContactsOf = (trip, leg = 'outbound') => {
-    const on = Array.isArray(trip?.trip_contacts) && window.SchedulerTripShape ? weekLeg(trip, leg) : null;
-    return on ? window.SchedulerTripShape.contactsFor(trip, on.key)
-      : window.SchedulerLegPapers.contactsFor(trip, leg, tripContact);
-  };
+     first of them, or null; the card says when there is none. The trip is
+     read with its legs and `trip_contacts`, through trip-shape.js by the
+     leg's key, so a leg with none of its own takes the first leg's. */
+  const dayContactsOf = (trip, leg = 'outbound') =>
+    window.SchedulerTripShape.contactsFor(trip, weekLeg(trip, leg)?.key);
   const dayOfContact = (trip, leg = 'outbound') => dayContactsOf(trip, leg)[0] ?? null;
 
   /* THE DRIVER FORMS A CUSTOMER ASKS FOR. A customer names kinds of

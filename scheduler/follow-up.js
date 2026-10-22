@@ -20,7 +20,7 @@
 
    The wait and the window are the office's `follow-up-v1` settings row,
    `{ wait_days, chase_days }`.
-   Needs billing.js and leg-papers.js loaded first.
+   Needs billing.js and trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
@@ -62,8 +62,11 @@
   // Whole days until the trip leaves, 0 on the day, or null with no date.
   const daysToGo = trip => (trip.start_date
     ? Math.round((parseISO(trip.start_date) - parseISO(today())) / 864e5) : null);
-  // The drop-off's itinerary, by leg-papers.js, which a split trip's pickup is handed too until it has its own.
-  const hasItinerary = trip => !!window.SchedulerLegPapers.itineraryFor(trip, 'outbound');
+  // The first leg's itinerary, by trip-shape.js, which every later leg is handed too until it has its own.
+  const hasItinerary = trip => {
+    const SHAPE = window.SchedulerTripShape;
+    return !!SHAPE.itineraryFor(trip, SHAPE.firstLeg(trip)?.id);
+  };
 
   function waitsOf(trip) {
     if (placeholder(trip) || trip.cancelled_at) return [];

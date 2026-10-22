@@ -16,14 +16,13 @@
 
    Nothing here reads the page or the database. The words a line is written
    in are the page's, handed in; what Accept keeps is always English. Needs
-   share/driver-words.js, leg-papers.js and trip-shape.js loaded first.
+   share/driver-words.js and trip-shape.js loaded first.
    ========================================================================== */
 (() => {
   'use strict';
 
   const TZ = 'America/Chicago';
   const WORDS = window.SchedulerDriverWords;
-  const PAPERS = window.SchedulerLegPapers;
   const SHAPE = window.SchedulerTripShape;
   const clean = v => String(v ?? '').trim();
 
@@ -98,15 +97,13 @@
     return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
   };
 
-  /* A trip read with its papers the new way: its contacts as `trip_contacts`
-     and its files with `leg_id`, as the driver's link, Departures and the board
-     read them. Another is handed its papers by leg-papers.js and the old
-     word. */
-  const papersLeg = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? shapeLeg(trip, leg) : null);
+  /* A leg's papers, its day-of contacts and its files, as trip-shape.js
+     hands them: the trip is read with its legs, `trip_contacts` and its
+     files, as the driver's link, Departures and the board read it. */
+  const papersLeg = (trip, leg) => shapeLeg(trip, leg)?.id;
   /* The leg's day-of contacts, or with none whoever booked. */
   const contactsOf = (trip, leg) => {
-    const day = (papersLeg(trip, leg) ? SHAPE.contactsFor(trip, papersLeg(trip, leg).id) : PAPERS.contactsFor(trip, leg))
-      .map(c => ({ name: c.name, phone: c.phone }));
+    const day = SHAPE.contactsFor(trip, papersLeg(trip, leg)).map(c => ({ name: c.name, phone: c.phone }));
     const booked = { name: clean(trip.booking_contact_name), phone: clean(trip.booking_contact_phone) };
     return day.length ? day : booked.name || booked.phone ? [booked] : [];
   };
@@ -115,7 +112,7 @@
   /* The leg's itinerary, read as its contacts are: the newest is the one
      shown, marked Updated when it replaced another of the leg's. */
   const itinerariesOf = (trip, leg) => {
-    const same = papersLeg(trip, leg) ? SHAPE.itinerariesFor(trip, papersLeg(trip, leg).id) : PAPERS.itinerariesFor(trip, leg);
+    const same = SHAPE.itinerariesFor(trip, papersLeg(trip, leg));
     if (!same.length) return [];
     const newest = same[0];
     return [{ id: newest.id, label: newest.label, path: newest.file_path, updated: same.length > 1 }];
@@ -172,10 +169,10 @@
           || activeSeats(mine).find(d => (d.role || 'driver') === 'driver' && String(d.driver_id) !== String(driverId))?.drivers?.name),
       } : null,
       requirements: requirementsOf(trip, names),
-      contacts: contactsOf(trip, papersLeg(trip, leg) ? leg : word),
-      contact: contactOf(trip, papersLeg(trip, leg) ? leg : word),
+      contacts: contactsOf(trip, leg),
+      contact: contactOf(trip, leg),
       crew,
-      itineraries: itinerariesOf(trip, papersLeg(trip, leg) ? leg : word),
+      itineraries: itinerariesOf(trip, leg),
       activeRoles: mine.active_roles || [],
     };
   }

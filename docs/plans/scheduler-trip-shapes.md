@@ -55,8 +55,8 @@ them and nothing is entered twice.
 - **Its dates, its bus count and its workflow marks,** which are pairs of
   `_outbound` and `_return` columns on `trips` now.
 - **Its files and contacts, with the first leg's standing in** where a leg
-  has none of its own, as the pickup takes the drop-off's now in
-  `scheduler/leg-papers.js`. A file and a contact name a leg, never a route,
+  has none of its own, as `scheduler/trip-shape.js` hands them. A file and
+  a contact name a leg, never a route,
   so every route of a leg is handed the leg's.
 
 ### The contacts
@@ -148,11 +148,6 @@ None open.
 
 ## Tasks
 
-- [ ] Retire `scheduler/leg-papers.js`: move `scheduler/follow-up.js`'s
-      itinerary, and the reads of a trip without its legs in
-      `scheduler/leg-facts.js`, `scheduler/driver-job.js` and
-      `scheduler/print.js`, to `scheduler/trip-shape.js`, then take it out
-      of every page, the connector's rules and the checks.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way. The editor's
       own state, the bar's ref and the quote lines, which still name a leg by

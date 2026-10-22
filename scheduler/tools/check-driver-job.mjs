@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../leg-papers.js', '../trip-shape.js', '../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
+for (const f of ['../trip-shape.js', '../share/driver-words.js', '../driver-job.js', '../driver-text.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window, Intl, Date });
 const { legOf, jobView, changesBetween, stateOf, keyOf } = window.SchedulerDriverJob;
 const en = window.SchedulerDriverWords.en;
 // The English page's words, as share/driver.js hands them in.
@@ -22,7 +22,7 @@ function expect(name, got, want) {
 const trip = {
   id: 't1', destination: 'Austin, TX', customer: 'Lone Oak High School', trip_type: 'round_trip',
   start_date: '2026-11-07', end_date: '2026-11-08', updated_at: '2026-10-01T10:00:00Z',
-  trip_contact_1_name: 'Pat Lee', trip_contact_1_phone: '5550142',
+  trip_contacts: [{ position: 1, name: 'Pat Lee', phone: '5550142', leg_id: null }],
   trip_reqs: { sleeper: true },
   trip_documents: [{ id: 'f1', label: 'Itinerary', file_path: 'a.pdf', created_at: '2026-10-01' }],
   trip_stops: [
@@ -41,52 +41,40 @@ expect('the leg as the driver works it', [l.role, l.bus, l.time, l.place.name, l
   ['driver', '763', '06:30', 'Lone Oak HS', 'Austin, TX', ['Sleeper berth'], 'Ana', 'Pat Lee']);
 expect('a driver on no bus of the leg is told it is not theirs', legOf(ref, trip, 'd9'), { error: 'notYours' });
 
-// A split trip whose customer sent each day its own paper and contacts.
+// A split trip whose customer sent each day its own paper and contacts,
+// read with its legs as the driver's link reads it: each leg named by its
+// id, with its route, its contacts in trip_contacts and its files by leg_id.
+const route = word => (word === 'return' ? 'r2' : 'r1');
+const stops = [...trip.trip_stops, { leg: 'return', position: 3, type: 'pickup', name: 'Arena', spot: '15:00' },
+  { leg: 'return', position: 4, type: 'return', name: 'Yard', arrive: '20:00' }];
+const vehicles = [...trip.trip_assignments, { leg: 'return', active_roles: null, buses: { number: 897 }, trip_drivers: [
+  { driver_id: 'd3', role: 'driver', drivers: { short_name: 'Luis' } }] }];
 const split = {
   ...trip, trip_type: 'dropoff_pickup', return_start_date: '2026-11-08',
-  trip_contact_1_name: 'Pat Lee', trip_contact_1_phone: '5550142',
-  trip_contact_2_name: 'Sam Ortiz', trip_contact_2_phone: '5550143', trip_contact_2_leg: 'return',
-  trip_contact_3_name: 'Kim Diaz', trip_contact_3_phone: '5550144', trip_contact_3_leg: 'return',
-  trip_documents: [
-    { id: 'tue', label: 'Itinerary', file_path: 'tue.pdf', created_at: '2026-10-01', leg: 'outbound' },
-    { id: 'wed', label: 'Itinerary', file_path: 'wed.pdf', created_at: '2026-10-02', leg: 'return' },
-  ],
-  trip_stops: [...trip.trip_stops, { leg: 'return', position: 3, type: 'pickup', name: 'Arena', spot: '15:00' },
-    { leg: 'return', position: 4, type: 'return', name: 'Yard', arrive: '20:00' }],
-  trip_assignments: [...trip.trip_assignments, { leg: 'return', active_roles: null, buses: { number: 897 }, trip_drivers: [
-    { driver_id: 'd3', role: 'driver', drivers: { short_name: 'Luis' } }] }],
-};
-const dropoff = legOf(ref, split, 'd1');
-const pickup = legOf({ tripId: 't1', leg: 'return' }, split, 'd3');
-expect('a split trip\'s drop-off driver is handed the drop-off\'s file and contact',
-  [dropoff.itineraries[0].path, dropoff.contacts.map(c => c.name)], ['tue.pdf', ['Pat Lee']]);
-expect('and its pickup driver the pickup\'s, the second as backup',
-  [pickup.itineraries[0].path, pickup.contacts.map(c => c.name), pickup.contact.name], ['wed.pdf', ['Sam Ortiz', 'Kim Diaz'], 'Sam Ortiz']);
-expect('a leg with no day-of contact is handed whoever booked',
-  legOf(ref, { ...trip, trip_contact_1_name: null, trip_contact_1_phone: null, booking_contact_name: 'Office Desk' }, 'd1').contacts.map(c => c.name), ['Office Desk']);
-
-/* The same split trip read with its legs, as the driver's link reads it:
-   each leg named by its id, with its route, its contacts in trip_contacts
-   and its files by leg_id. Read so, each driver works the same leg. */
-const route = word => (word === 'return' ? 'r2' : 'r1');
-const shaped = { ...split,
   trip_legs: [{ id: 'l2', leg: 'return', start_date: '2026-11-08', end_date: '2026-11-08', trip_routes: [{ id: 'r2', position: 1 }] },
     { id: 'l1', leg: 'outbound', start_date: '2026-11-07', end_date: '2026-11-08', trip_routes: [{ id: 'r1', position: 1 }] }],
   trip_contacts: [{ position: 1, name: 'Pat Lee', phone: '5550142', leg_id: null }, { position: 2, name: 'Sam Ortiz', phone: '5550143', leg_id: 'l2' },
     { position: 3, name: 'Kim Diaz', phone: '5550144', leg_id: 'l2' }],
-  trip_documents: split.trip_documents.map(d => ({ ...d, leg_id: d.leg === 'return' ? 'l2' : 'l1' })),
-  trip_stops: split.trip_stops.map(x => ({ ...x, route_id: route(x.leg) })),
-  trip_assignments: split.trip_assignments.map(x => ({ ...x, route_id: route(x.leg) })) };
-// The leg's own reading, its stops without the route the sample gave them.
-const bare = x => { const { trip, leg, word, ...rest } = x; return { ...rest, stops: rest.stops.map(({ route_id, ...st }) => st) }; };
-const byId = legOf({ tripId: 't1', legId: 'l2', leg: 'return' }, shaped, 'd3');
-expect('a trip read with its legs gives each driver the same leg, named by its id',
-  [bare(legOf({ tripId: 't1', legId: 'l1' }, shaped, 'd1')), bare(byId), [byId.leg, byId.word]],
-  [bare(dropoff), bare(pickup), ['l2', 'return']]);
+  trip_documents: [
+    { id: 'tue', label: 'Itinerary', file_path: 'tue.pdf', created_at: '2026-10-01', leg_id: 'l1' },
+    { id: 'wed', label: 'Itinerary', file_path: 'wed.pdf', created_at: '2026-10-02', leg_id: 'l2' },
+  ],
+  trip_stops: stops.map(x => ({ ...x, route_id: route(x.leg) })),
+  trip_assignments: vehicles.map(x => ({ ...x, route_id: route(x.leg) })),
+};
+const dropoff = legOf({ tripId: 't1', legId: 'l1' }, split, 'd1');
+const pickup = legOf({ tripId: 't1', legId: 'l2', leg: 'return' }, split, 'd3');
+expect('a split trip\'s drop-off driver is handed the drop-off\'s file and contact',
+  [dropoff.itineraries[0].path, dropoff.contacts.map(c => c.name)], ['tue.pdf', ['Pat Lee']]);
+expect('and its pickup driver the pickup\'s, the second as backup, the leg named by its id',
+  [pickup.itineraries[0].path, pickup.contacts.map(c => c.name), pickup.contact.name, pickup.leg, pickup.word],
+  ['wed.pdf', ['Sam Ortiz', 'Kim Diaz'], 'Sam Ortiz', 'l2', 'return']);
+// The leg's own reading, without the trip it was read from.
+const bare = x => { const { trip, ...rest } = x; return rest; };
 expect('an older link or the board names the leg by its word, and is read the same',
-  [bare(legOf({ tripId: 't1', leg: 'return' }, shaped, 'd3')), legOf({ tripId: 't1', leg: 'return' }, shaped, 'd3').leg], [bare(pickup), 'l2']);
-expect('a trip read with its legs but not its papers, as the board reads one, is handed its papers by the old word',
-  bare(legOf({ tripId: 't1', leg: 'return' }, { ...shaped, trip_contacts: undefined, trip_documents: split.trip_documents }, 'd3')), bare(pickup));
+  bare(legOf({ tripId: 't1', leg: 'return' }, split, 'd3')), bare(pickup));
+expect('a leg with no day-of contact is handed whoever booked',
+  legOf(ref, { ...trip, trip_contacts: [], booking_contact_name: 'Office Desk' }, 'd1').contacts.map(c => c.name), ['Office Desk']);
 
 const view = jobView(l);
 expect('what Accept keeps, as text the card writes', [view.dates, view.time, view.bus, view.role, view.stops.length, view.itinerary],

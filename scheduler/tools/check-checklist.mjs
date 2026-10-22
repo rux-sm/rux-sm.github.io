@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const f of ['../billing.js', '../leg-papers.js', '../checklist.js', '../trip-shape.js', '../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
+for (const f of ['../billing.js', '../checklist.js', '../trip-shape.js', '../past-midnight.js', '../week.js']) runInNewContext(readFileSync(new URL(f, import.meta.url), 'utf8'), { window });
 const { checklist, leftOf } = window.SchedulerChecklist;
 
 let failed = 0;
@@ -82,7 +82,7 @@ expect('a missing form is said by driver and kind',
 
 /* The facts behind that item, from leg-facts.js: which form a driver's leg
    takes, and what a leg counts as missing or not printed. */
-for (const file of ['requirements.js', 'leg-papers.js', 'leg-facts.js']) {
+for (const file of ['requirements.js', 'trip-shape.js', 'leg-facts.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
 const Facts = window.SchedulerLegFacts;

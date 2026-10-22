@@ -184,8 +184,6 @@
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    // The five contact slots, which driver-job.js still reads a driver's job from.
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_assignments(id,bus_id,leg,route_id,active_roles,needs,vehicle_type,trip_drivers(driver_id,role,envelope_printed,report_time,instructions))',
     'trip_stops(position,leg,route_id,type,label,name,address,arrive,spot,depart_prev)'].join(',');
 

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'leg-papers.js', 'follow-up.js', 'checklist.js', 'trip-shape.js', 'past-midnight.js', 'week.js', 'to-do.js']) {
+for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'trip-shape.js', 'past-midnight.js', 'week.js', 'to-do.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window });
 }
 /* Each sample is read with its legs, as the page reads a trip: the leg on

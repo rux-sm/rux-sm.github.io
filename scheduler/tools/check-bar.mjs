@@ -115,7 +115,7 @@ const document = {
 const window = {};
 const context = { window, document, Intl, Date, Math, Number, String, Map, Set, Array, Object, JSON, Promise, WeakMap, RegExp,
   setTimeout: () => 0, console };
-for (const file of ['requirements.js', 'leg-papers.js', 'leg-facts.js', 'phone.js', 'billing.js', 'follow-up.js', 'past-midnight.js', 'week.js', 'road.js', 'live-trip.js',
+for (const file of ['requirements.js', 'trip-shape.js', 'leg-facts.js', 'phone.js', 'billing.js', 'follow-up.js', 'past-midnight.js', 'week.js', 'road.js', 'live-trip.js',
   'share/driver-words.js', 'driver-job.js', 'clashes.js', 'close-out.js', 'bar.js', 'road-bar.js', 'components-data.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), context, { filename: file });
 }

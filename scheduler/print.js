@@ -175,13 +175,9 @@
   // Whether a stop or a vehicle is on the leg: on one of its routes, or naming its word.
   const onLeg = (trip, leg, row) => (legRow(trip, leg)
     ? legRow(trip, leg).routes.some(r => r.id === row?.route_id) : (row?.leg || 'outbound') === wordOf(trip, leg));
-  /* The leg's papers through trip-shape.js where the trip was read with its
-     contacts, and by the old word with leg-papers.js where it was not. */
-  const papersRow = (trip, leg) => (Array.isArray(trip?.trip_contacts) ? legRow(trip, leg) : null);
-  const legContacts = (trip, leg) => (papersRow(trip, leg)
-    ? SHAPE.contactsFor(trip, papersRow(trip, leg).id) : window.SchedulerLegPapers.contactsFor(trip, wordOf(trip, leg)));
-  const legItinerary = (trip, leg) => (papersRow(trip, leg)
-    ? SHAPE.itineraryFor(trip, papersRow(trip, leg).id) : window.SchedulerLegPapers.itineraryFor(trip, wordOf(trip, leg)));
+  // The leg's papers, its day-of contacts and its itinerary, as trip-shape.js hands them.
+  const legContacts = (trip, leg) => SHAPE.contactsFor(trip, legRow(trip, leg)?.id);
+  const legItinerary = (trip, leg) => SHAPE.itineraryFor(trip, legRow(trip, leg)?.id);
 
   /* The contacts the envelope carries are the leg's day-of contacts: the
      first as Contact and the second as Backup, the room a 6 by 9 envelope

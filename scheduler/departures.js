@@ -250,8 +250,6 @@
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
-    // The five contact slots, which driver-job.js still reads a driver's job from.
-    ...[1, 2, 3, 4, 5].flatMap(n => [`trip_contact_${n}_name`, `trip_contact_${n}_leg`, `c${n}:trip_contact_${n}_id(id,name,phone)`]),
     'trip_prep(driver_info_sent,driver_info_sent_at,driver_info_sent_by)',
     `trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,trip_drivers(id,driver_id,role,report_time,instructions,${STEPS.flatMap(s => [s, `${s}_at`, `${s}_by`]).join(',')}))`,
     // What a driver's job reads as, for a change they have not been told of.

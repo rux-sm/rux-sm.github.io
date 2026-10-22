@@ -255,9 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, move the walked stamps, the walk files and the status
-      computation from the phase to the task, with their checks and self-test
-      fixtures.
 - [ ] In atlas, turn each side task of `maps/tasks.md` that has steps into a
       task file.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its

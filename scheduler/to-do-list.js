@@ -26,11 +26,12 @@
    the reason Deleted, so it goes to Done today with that said, and nothing
    is removed.
 
-   The rows are grouped Overdue, Today, This week, Later and No date, then
-   Done today: the rows closed today behind one line that says how many and
-   is shut until pressed, each a tile struck through, with Undo. Everyone on
-   the staff sees every row. The count on Tasks is its Overdue
-   and Today rows; the count on Departures is the one departures-panel.js gives.
+   The rows stand in one list in due order, overdue first, then today, this
+   week, later and no date, under no headings, since each row says its day;
+   then Done today: the rows closed today behind one line that says how many
+   and is shut until pressed, each a tile struck through, with Undo. Everyone
+   on the staff sees every row. The count on Tasks is its overdue and today
+   rows; the count on Departures is the one departures-panel.js gives.
 
    A change to a row arrives on the `scheduler-to-do` channel and redraws.
 
@@ -100,11 +101,11 @@
   const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
   const monthDay = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
   const monthDayYear = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-  /* A due day in the fewest words: nothing on the day itself, which its
-     group names, "Yesterday" and "Tomorrow", the weekday for the rest of this
-     week, else "Oct 30", with the year where it is not this one. */
+  /* A due day in the fewest words: "Today", "Yesterday" and "Tomorrow", the
+     weekday for the rest of this week, else "Oct 30", with the year where it
+     is not this one. */
   const dueWords = day => {
-    if (day === iso(new Date())) return '';
+    if (day === iso(new Date())) return 'Today';
     if (day === dayFrom(-1)) return 'Yesterday';
     if (day === dayFrom(1)) return 'Tomorrow';
     const d = parseISO(day);
@@ -576,15 +577,12 @@
   function listParts() {
     const rows = grouped();
     const parts = [];
-    for (const g of GROUPS) {
-      const items = rows.get(g);
-      if (!items.length) continue;
+    // One list, the groups in their order with no heading between, since each row says its day.
+    const open = GROUPS.flatMap(g => rows.get(g));
+    if (open.length) {
       const ul = tileList();
-      for (const row of items) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
-      // A group's heading says how many rows it holds.
-      const head = el('h3', 'scheduler-to-do__group', g);
-      head.append(' ', el('span', 'scheduler-to-do__count', String(items.length)));
-      parts.push(head, ul);
+      for (const row of open) ul.appendChild(row.id === editingId ? editForm(row) : storedRow(row, false));
+      parts.push(ul);
     }
     const done = stored.filter(r => r.closed_at);
     if (done.length) parts.push(doneGroup(done));

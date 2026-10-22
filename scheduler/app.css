@@ -5378,12 +5378,9 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-to-do__body { color: var(--rux-text-primary); }
 .scheduler-to-do__error { margin: 0; color: var(--rux-text-error); font-size: 0.875rem; }
 .scheduler-to-do__error[hidden] { display: none; }
-/* A group's heading is an h3, whose letters Design sets for a heading twice
-   this size, so it takes a label's spacing with a label's size, as Done
-   today's words do. It stands 24px under the tiles above it and 8px over its
-   own, so it reads as the head of what follows; on Tasks its count follows
-   its name, not bold. */
-.scheduler-to-do__group,
+/* Done today's words sit in an h3, whose letters Design sets for a heading
+   twice this size, so they take a label's spacing with a label's size; the
+   count follows the name, not bold. */
 .scheduler-to-do__done-title {
   color: var(--rux-text-secondary);
   font-size: 0.75rem;
@@ -5391,8 +5388,6 @@ html:has(.scheduler-page[data-takeover]) {
   line-height: 1.33333;
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
-.scheduler-to-do__group { margin: var(--rux-spacing-06) 0 var(--rux-spacing-03); }
-.scheduler-to-do__group:first-child { margin-block-start: 0; }
 .scheduler-to-do__count { margin-inline-start: var(--rux-spacing-01); font-weight: 400; }
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink; a closed row's line must end in an ellipsis
@@ -5423,7 +5418,7 @@ html:has(.scheduler-page[data-takeover]) {
    row in a list stands the same height. The first is who the row is about,
    a task's person or a leg's customer, with when at the line's end, quiet
    and smaller: a task's due day, in the error colour once the day is past,
-   or a leg's spot time. The second is the row's words in bold, a task's
+   or a leg's spot day and time. The second is the row's words in bold, a task's
    words or a leg's place. The third is a tag, a task's kind in the kind's
    colour or what a leg has left, then a number in the quiet colour, the
    task's own or the leg's trip's, so a person can name either aloud. */
@@ -5538,19 +5533,13 @@ html:has(.scheduler-page[data-takeover]) {
 /* ══ Departures ═══════════════════════════════════════════════════════════
    The Departures list, drawn by departures-panel.js: the legs leaving on the days
    to prep for, each a tile that opens, Design's tile around an item of its
-   accordion, the weekend's days each under a heading. Closed, a leg is two
-   lines, as a task is, drawn by the same rules above; open, it holds a block
+   accordion, in one list. Closed, a leg is three lines, as a task is,
+   drawn by the same rules above; open, it holds a block
    for the trip and one for each bus. Every status is one line, its mark on
    the left and its time, its face or its action on the right. */
 .scheduler-departures { color: var(--rux-text-primary); }
 .scheduler-departures[hidden] { display: none; }
 .scheduler-to-do__body[hidden] { display: none; }
-.scheduler-departures__head { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-03); }
-/* The day's row spans the panel, as the legs' tiles under it do: an arrow at
-   each end and the day, which opens the calendar, all the room between. */
-.scheduler-departures__stepper { display: flex; flex: 1 1 auto; align-items: center; position: relative; }
-/* The calendar's own field has no size and takes no press: the day opens it. */
-.scheduler-departures__picker { position: absolute; inset-block-end: 0; inset-inline-end: 0; inline-size: 1px; block-size: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
 /* The list is a cell of the panel's grid, which is as wide as its longest
    line unless it may shrink. */
 .scheduler-departures__list { min-inline-size: 0; }

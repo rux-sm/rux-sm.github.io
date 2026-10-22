@@ -15,11 +15,11 @@
    whose own lines are all done folds them into one line, Trip ready, which a
    press unfolds.
 
-   One day shows under no heading of its own, since the day above the list
-   names it; the weekend's three days each take one. A day with nothing
-   leaving says so in a tile where its legs would be. What a trip leaving on
-   another day still needs is on its card and the Trips page, not here. The
-   arrows and the calendar go to any one day, which then shows alone.
+   The legs stand in one list under no heading, each saying its day with its
+   spot time, Tomorrow 9:00a or Saturday 7:00a, so the weekend's three days
+   read as one list. With nothing leaving a tile says so where the legs
+   would be. What a trip leaving on another day still needs is on its card
+   and the Trips page, not here, and the list goes to no other day.
 
    Every line of a leg is one line: a mark, a short name, then the word or
    two departures.js gives it, with the day it was done, or when it was done
@@ -67,7 +67,7 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   const dayFrom = (n, from = new Date()) => { const d = new Date(from); d.setDate(d.getDate() + n); return iso(d); };
-  const longDay = new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  const longWeekday = new Intl.DateTimeFormat(undefined, { weekday: 'long' });
   const weekday = new Intl.DateTimeFormat(undefined, { weekday: 'short' });
   // "7:08a", the board's short clock, from a time of day or a moment.
   const clock = (h, m) => `${h % 12 || 12}:${String(m).padStart(2, '0')}${h < 12 ? 'a' : 'p'}`;
@@ -84,7 +84,8 @@
     const ago = Math.round((parseISO(iso(new Date())) - parseISO(iso(d))) / 86_400_000);
     return ago === 0 ? 'today' : ago > 0 && ago < 7 ? weekday.format(d) : `${d.getMonth() + 1}/${d.getDate()}`;
   };
-  const dayWords = day => `${day === dayFrom(1) ? 'Tomorrow · ' : day === dayFrom(0) ? 'Today · ' : ''}${longDay.format(parseISO(day))}`;
+  // The day a leg's spot time falls on, in a word: Today, Tomorrow, or else the weekday.
+  const dayWord = day => (day === dayFrom(0) ? 'Today' : day === dayFrom(1) ? 'Tomorrow' : longWeekday.format(parseISO(day)));
   const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
   // The dot between the parts of a line, tied to the word before it, so a wrapped line never starts with one.
   const DOT = '\u00A0· ';
@@ -180,33 +181,12 @@
   };
 
   // -- the frame ------------------------------------------------------------
-  const ghost = (href, label) => {
-    const b = el('button', 'rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md rux--btn--icon-only');
-    b.type = 'button';
-    b.setAttribute('aria-label', label);
-    b.title = label;
-    b.appendChild(svgUse(href));
-    return b;
-  };
   const body = el('div', 'rux--layer-two rux--stack-vertical rux--stack-scale-5 scheduler-departures');
   body.hidden = true;
-  const head = el('div', 'scheduler-departures__head');
-  const stepper = el('div', 'scheduler-departures__stepper');
-  const before = ghost('#m-arrow_back', 'The day before');
-  const after = ghost('#m-arrow_forward', 'The day after');
-  const dayButton = el('button', 'rux--btn rux--btn--ghost rux--btn--md rux--layout--size-md scheduler-departures__date');
-  dayButton.type = 'button';
-  // The browser's own calendar, opened from the day; it takes no room of its own.
-  const dayInput = el('input', 'scheduler-departures__picker');
-  dayInput.type = 'date';
-  dayInput.tabIndex = -1;
-  dayInput.setAttribute('aria-hidden', 'true');
-  stepper.append(before, dayButton, dayInput, after);
   const error = el('p', 'scheduler-to-do__error');
   error.setAttribute('role', 'alert');
   const list = el('div', 'scheduler-departures__list');
-  head.append(stepper);
-  body.append(head, error, list);
+  body.append(error, list);
   panel.appendChild(body);
 
   // -- drawing --------------------------------------------------------------
@@ -417,8 +397,8 @@
      script opens and shuts it. The heading is the closed leg, three lines
      with no arrow, since the tile says it opens, laid out as a task's are:
      its customer, and on a split trip which leg, with at the line's end its
-     spot time, with the day where it falls on another, with Spot said for a
-     reader; then its place in bold; then what is left in its tag, and the
+     spot day and time, Tomorrow 9:00a, with Spot said for a reader; then its
+     place in bold; then what is left in its tag, and the
      trip's number, with Trip said for a reader. A ready leg reads quiet, so
      the legs still to prep stand out. */
   function legItem(page) {
@@ -437,8 +417,7 @@
     if (at) {
       const [h, m] = at.time.split(':').map(Number);
       const when = el('span', 'scheduler-to-do__when');
-      when.append(el('span', 'rux--visually-hidden', 'Spot '),
-        `${at.day === page.day ? '' : `${weekday.format(parseISO(at.day))} `}${clock(h, m)}`);
+      when.append(el('span', 'rux--visually-hidden', 'Spot '), `${dayWord(at.day)} ${clock(h, m)}`);
       top.appendChild(when);
     }
     const what = el('div', 'scheduler-to-do__what', placeName(page.trip.destination));
@@ -478,30 +457,20 @@
 
   // A day with nothing leaving: a tile saying so, where its legs would be.
   const none = words => el('p', 'rux--tile scheduler-to-do__none', words);
-  const nothing = (d, alone) => none(reading ? 'Loading…'
-    : !alone ? 'No trips leaving.' : d === dayFrom(1) ? 'No trips leaving tomorrow.' : 'No trips leaving that day.');
+  const nothing = alone => none(reading ? 'Loading…' : alone ? 'No trips leaving tomorrow.' : 'No trips leaving this weekend or Monday.');
 
   function draw() {
-    dayButton.textContent = days.length > 1 ? `${longDay.format(parseISO(days[0]))} – ${longDay.format(parseISO(days.at(-1)))}` : dayWords(days[0]);
-    dayInput.value = days[0];
     const wrong = failure;
     error.textContent = wrong;
     error.hidden = !wrong;
     // The list is built again, so a heading that had the focus is given it back.
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     steps.clear();
-    if (days.length === 1) {
-      // One day, the one the day above names: its legs, with no heading over them.
-      list.replaceChildren(pages.length ? legList(pages) : failure ? '' : nothing(days[0], true));
-    } else {
-      /* The weekend's days, each under its heading and there whatever leaves
-         on it, since on a Friday nothing leaving is an answer about the
-         weekend. */
-      list.replaceChildren(...days.flatMap(d => {
-        const legs = pages.filter(p => p.day === d);
-        return [el('h3', 'scheduler-to-do__group', dayWords(d)), legs.length ? legList(legs) : nothing(d, false)];
-      }));
-    }
+    /* One list, the days' legs in order with no heading between, since each
+       leg says its day; with nothing leaving a tile says so, and while the
+       read fails the error above stands alone. */
+    const legs = days.flatMap(d => pages.filter(p => p.day === d));
+    list.replaceChildren(legs.length ? legList(legs) : failure ? '' : nothing(days.length === 1));
     if (asking && !steps.has(asking)) asking = null;
     if (held) focusHeld(held);
   }
@@ -522,12 +491,6 @@
     shown = false;
     body.hidden = true;
   }
-  // The arrows step off either end of what is listed, to one day.
-  const go = to => { days = [to]; openKey = null; unfolded.clear(); asking = null; pages = []; draw(); load(); };
-  before.addEventListener('click', () => go(dayFrom(-1, parseISO(days[0]))));
-  after.addEventListener('click', () => go(dayFrom(1, parseISO(days.at(-1)))));
-  dayButton.addEventListener('click', () => { try { dayInput.showPicker(); } catch { dayInput.focus(); } });
-  dayInput.addEventListener('change', () => { if (/^\d{4}-\d{2}-\d{2}$/.test(dayInput.value)) go(dayInput.value); });
   /* One leg open at a time, as a task's row is: Design's accordion
      leaves every opened item open, so opening one shuts the rest, and the
      open leg is remembered, as a redraw builds the list again. The leg shut

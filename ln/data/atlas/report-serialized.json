@@ -12,7 +12,7 @@
     "Manufacturing"
   ],
   "status": null,
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
   "session": "Report a serialized item completed",
   "sessionCode": "tisfc0130m000",

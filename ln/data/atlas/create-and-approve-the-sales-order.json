@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
@@ -688,14 +688,14 @@
               },
               {
                 "t": "text",
-                "v": " is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. "
+                "v": " is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Where Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. Not documented for this release."
+            "text": "Where Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
           }
         ]
       },

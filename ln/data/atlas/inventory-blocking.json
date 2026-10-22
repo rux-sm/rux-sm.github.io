@@ -12,7 +12,7 @@
     "Warehousing"
   ],
   "status": null,
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location",
   "session": "Inventory Blocking by Zone/Location",
   "sessionCode": "whwmd6110m000",

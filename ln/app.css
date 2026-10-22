@@ -35,6 +35,8 @@
 .ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }
 .ln-t-said { color: var(--rux-text-secondary); }
 .ln-t-gap { font-weight: 600; color: var(--rux-text-primary); }
+/* What the library has not documented, on a line of its own under the answer. */
+.ln-gap { display: block; margin-block-start: .25rem; font-size: .875rem; color: var(--rux-text-secondary); }
 
 /* ---- Home: what to carry on with, then the processes ------------------------
    The processes two abreast once there is room, a single card alone. */

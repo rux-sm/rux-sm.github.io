@@ -37,17 +37,7 @@
     ],
     "text": "Site, warehouses, units, and unused item codes are known."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
-        }
-      ],
-      "text": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {

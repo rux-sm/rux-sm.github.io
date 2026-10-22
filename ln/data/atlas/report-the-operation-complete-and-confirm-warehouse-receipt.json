@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
   "session": "Report Operations",
   "sessionCode": "tisfc0130m000",
@@ -640,19 +640,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; "
-              },
-              {
-                "t": "session",
-                "code": "tisfc0130m000",
-                "name": "Report Operations Completed"
-              },
-              {
-                "t": "text",
-                "v": " §4 has each rule"
+                "v": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open"
               }
             ],
-            "text": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; Report Operations Completed (tisfc0130m000) §4 has each rule"
+            "text": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open"
           }
         ]
       },

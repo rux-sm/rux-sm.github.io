@@ -1,9 +1,9 @@
-commit   15323e878c885c96611eee27c7dfa737e473fa40
-date     2026-10-22T05:07:08Z
-subject  feat(tasks): Ask a task's questions in two tables
+commit   c398e652842cb7e73fef2de7cb7afa86179be34d
+date     2026-10-22T05:17:03Z
+subject  feat(tasks): Keep sources out of reader text
 contract 19 
 tier     export
-sha256   f5915a36ee233779b7ef9b53c9080e541e42f84490ff5ba80f93476aa909f714
+sha256   d87ea39b413fdf828ed8b9a6bd64426ad41e862633c839e19fbd7615a60be0f9
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

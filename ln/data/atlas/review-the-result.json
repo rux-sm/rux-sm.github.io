@@ -24,7 +24,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -398,18 +398,10 @@
               },
               {
                 "t": "text",
-                "v": " round it — \"Lot sizing\", "
-              },
-              {
-                "t": "literal",
-                "v": "cpordplanug"
-              },
-              {
-                "t": "text",
-                "v": " p. 21"
+                "v": " round it"
               }
             ],
-            "text": "Order-quantity rules in Items - Ordering (tcibd2100m000) round it — \"Lot sizing\", cpordplanug p. 21"
+            "text": "Order-quantity rules in Items - Ordering (tcibd2100m000) round it"
           }
         ]
       },

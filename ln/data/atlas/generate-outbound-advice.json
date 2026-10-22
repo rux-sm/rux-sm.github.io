@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
@@ -691,14 +691,14 @@
               },
               {
                 "t": "text",
-                "v": " — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. "
+                "v": ". "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "A planned line cannot be advised. Activate the warehousing order with Activate, and the line becomes Open — Infor LN Warehousing User Guide for the Outbound and Shipment Goods Flows, pp. 13–15. Not documented for this release."
+            "text": "A planned line cannot be advised. Activate the warehousing order with Activate, and the line becomes Open. Not documented for this release."
           }
         ]
       },

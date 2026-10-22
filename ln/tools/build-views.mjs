@@ -140,7 +140,8 @@ const refs = (html, to) => {
 function token(t) {
   switch (t.t) {
     case 'text': return refs(esc(t.v));
-    case 'strong': return `<strong>${esc(t.v)}</strong>`;
+    // A gap is a line of its own, never appended to an answer.
+    case 'strong': return t.v.trim() === GAP ? `<span class="ln-gap">${esc(GAP)}</span>` : `<strong>${esc(t.v)}</strong>`;
     case 'em': return `<em>${esc(t.v)}</em>`;
     case 'chip': case 'field': return named(t.v);
     case 'value': case 'literal': return exact(t.v);

@@ -8,7 +8,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "move a quantity of one item between two warehouses, and check both on-hand figures.",
   "order": 8,
@@ -669,35 +669,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough. Source: Infor LN help for "
-                },
-                {
-                  "t": "session",
-                  "code": "whinh2100m100",
-                  "name": "Warehousing Order"
-                },
-                {
-                  "t": "text",
-                  "v": ", Field Information — Reclassification ("
-                },
-                {
-                  "t": "field",
-                  "v": "Rental Product Transfer"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "field",
-                  "v": "Serial Number"
-                },
-                {
-                  "t": "text",
-                  "v": ")"
+                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough"
                 }
               ],
-              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough. Source: Infor LN help for Warehousing Order (whinh2100m100), Field Information — Reclassification (Rental Product Transfer, Serial Number)"
+              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough"
             }
           ]
         }

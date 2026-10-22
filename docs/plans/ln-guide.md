@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, move source citations out of reader sentences into the
-      task's sources, and give a gap a line of its own.
 - [ ] In atlas, split each step that still runs past three lines on a phone,
       which is one that sets several things at once.
 - [ ] In atlas, write a screen file for the five screens still without one, once

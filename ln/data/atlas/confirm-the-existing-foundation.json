@@ -35,34 +35,7 @@
     ],
     "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. "
-        },
-        {
-          "t": "strong",
-          "v": "Where a training case comes from."
-        },
-        {
-          "t": "text",
-          "v": " If none has been handed to you, "
-        },
-        {
-          "t": "link",
-          "v": "Create test items",
-          "href": "create-basic-test-items-and-defaults.md"
-        },
-        {
-          "t": "text",
-          "v": " builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 5 above asks for."
-        }
-      ],
-      "text": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. Where a training case comes from. If none has been handed to you, Create test items builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 5 above asks for."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {

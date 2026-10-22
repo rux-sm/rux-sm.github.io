@@ -12,7 +12,7 @@
     "Warehousing"
   ],
   "status": null,
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Orders ➔ Assembly Orders",
   "session": "Assembly Orders",
   "sessionCode": "whinh2101m000",

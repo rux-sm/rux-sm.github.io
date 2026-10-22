@@ -798,15 +798,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " first. Source: Infor LN help for "
-                },
-                {
-                  "t": "session",
-                  "code": "whinh0120m000",
-                  "name": "Default Order Types by Origin"
+                  "v": " first"
                 }
               ],
-              "text": "Depends on the warehousing procedure attached to the order type. Check Advised Quantity first. Source: Infor LN help for Default Order Types by Origin (whinh0120m000)"
+              "text": "Depends on the warehousing procedure attached to the order type. Check Advised Quantity first"
             }
           ]
         },

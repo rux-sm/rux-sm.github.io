@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -659,10 +659,10 @@
               },
               {
                 "t": "text",
-                "v": "; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+                "v": "; restock, then process the warehousing order by hand"
               }
             ],
-            "text": "A component's stock is short and negative inventory is not allowed. The quantity waits in To Issue by Warehouse; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+            "text": "A component's stock is short and negative inventory is not allowed. The quantity waits in To Issue by Warehouse; restock, then process the warehousing order by hand"
           }
         ]
       },

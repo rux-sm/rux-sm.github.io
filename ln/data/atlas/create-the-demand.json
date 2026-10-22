@@ -1,0 +1,619 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-the-demand",
+  "title": "Create the demand",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 1,
+    "of": 7
+  },
+  "previous": {
+    "id": "preflight",
+    "title": "Preflight"
+  },
+  "next": {
+    "id": "run-mrp_demand-to-shipment-via-planning",
+    "title": "Run MRP"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": "2026-08-09",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A sales order for more pairs than exist, inside the order horizon."
+      }
+    ],
+    "text": "A sales order for more pairs than exist, inside the order horizon."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Preflight",
+          "href": "preflight.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 2 of Preflight."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A sales order for more pairs than exist creates the shortfall the rest of the chain answers. Planning will see it only if its delivery date falls inside the item's order horizon, which LN computes in workdays on a calendar, and the order is approved now because "
+      },
+      {
+        "t": "link",
+        "v": "Ship",
+        "href": "ship_demand-to-shipment-via-planning.md"
+      },
+      {
+        "t": "text",
+        "v": "'s release needs it, not because planning does."
+      }
+    ],
+    "text": "A sales order for more pairs than exist creates the shortfall the rest of the chain answers. Planning will see it only if its delivery date falls inside the item's order horizon, which LN computes in workdays on a calendar, and the order is approved now because Ship's release needs it, not because planning does."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create a sales order for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " per "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " steps step 1–1.11, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " = the warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Preflight",
+                  "href": "preflight.md"
+                }
+              ],
+              "text": "Create a sales order for BAM-CHOP-PAIR per Ship from stock steps step 1–1.11, with Warehouse = the warehouse from step 2 of Preflight"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An order at "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                }
+              ],
+              "text": "An order at Free"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " above the on-hand from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Preflight",
+                  "href": "preflight.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": " a few days out"
+                }
+              ],
+              "text": "Set Ordered Quantity above the on-hand from step 2 of Preflight, and Planned Delivery Date a few days out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sales order number"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "ordered quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned delivery date"
+                }
+              ],
+              "text": "sales order number, ordered quantity, planned delivery date"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Approve"
+                }
+              ],
+              "text": "Actions ➔ Approve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "In Process"
+                }
+              ],
+              "text": "Status = In Process"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Horizons"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, and read the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " date"
+                }
+              ],
+              "text": "Open Items - Planning (cprpd1100m000) for BAM-CHOP-PAIR, Horizons tab, and read the Order Horizon date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order horizon date"
+                }
+              ],
+              "text": "order horizon date"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the date from step 2 falls beyond it, raise the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " days until it does not"
+                }
+              ],
+              "text": "If the date from step 2 falls beyond it, raise the Order Horizon days until it does not"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The displayed date moves past your delivery date"
+                }
+              ],
+              "text": "The displayed date moves past your delivery date"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Reopen "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                }
+              ],
+              "text": "Reopen Item Order Plan (cprrp0520m000) for BAM-CHOP-PAIR"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sales Order"
+                },
+                {
+                  "t": "text",
+                  "v": " row with your number and quantity as "
+                },
+                {
+                  "t": "field",
+                  "v": "Demand"
+                }
+              ],
+              "text": "A Sales Order row with your number and quantity as Demand"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN refuses the item on the sales order"
+              }
+            ],
+            "text": "LN refuses the item on the sales order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No row for the order's sales office on the "
+              },
+              {
+                "t": "chip",
+                "v": "Sales Offices"
+              },
+              {
+                "t": "text",
+                "v": " tab of "
+              },
+              {
+                "t": "session",
+                "code": "tcibd0501m100",
+                "name": "Item"
+              },
+              {
+                "t": "text",
+                "v": ". Add it, then close and reopen the order session"
+              }
+            ],
+            "text": "No row for the order's sales office on the Sales Offices tab of Item (tcibd0501m100). Add it, then close and reopen the order session"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The demand does not appear in the Item Order Plan"
+              }
+            ],
+            "text": "The demand does not appear in the Item Order Plan"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The delivery date is beyond the "
+              },
+              {
+                "t": "field",
+                "v": "Order Horizon"
+              },
+              {
+                "t": "text",
+                "v": " date. Step 5 — and the date is not today plus your days "
+              }
+            ],
+            "text": "The delivery date is beyond the Order Horizon date. Step 5 — and the date is not today plus your days"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Build by hand instead of from planning"
+              }
+            ],
+            "text": "Build by hand instead of from planning"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Skip step 6 of "
+              },
+              {
+                "t": "link",
+                "v": "Cross the boundary",
+                "href": "cross-the-boundary.md"
+              },
+              {
+                "t": "text",
+                "v": " and create the production order directly per "
+              },
+              {
+                "t": "link",
+                "v": "Production order",
+                "href": "manual-production-order-existing-master-data.md"
+              },
+              {
+                "t": "text",
+                "v": " this task. "
+              },
+              {
+                "t": "chip",
+                "v": "This is the only production path anyone here has walked"
+              },
+              {
+                "t": "text",
+                "v": " — it is the fallback if step 6 of "
+              },
+              {
+                "t": "link",
+                "v": "Cross the boundary",
+                "href": "cross-the-boundary.md"
+              },
+              {
+                "t": "text",
+                "v": " fails"
+              }
+            ],
+            "text": "Skip step 6 of Cross the boundary and create the production order directly per Production order this task. This is the only production path anyone here has walked — it is the fallback if step 6 of Cross the boundary fails"
+          }
+        ]
+      }
+    ]
+  }
+}

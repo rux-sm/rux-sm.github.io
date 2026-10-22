@@ -1,0 +1,385 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "release-the-order",
+  "title": "Release the order",
+  "process": {
+    "id": "manual-production-order-existing-master-data",
+    "title": "Production order",
+    "n": 3,
+    "of": 6
+  },
+  "previous": {
+    "id": "verify-the-generated-foundation",
+    "title": "Verify the generated foundation"
+  },
+  "next": {
+    "id": "issue-material-to-the-job-shop",
+    "title": "Issue material to the job shop"
+  },
+  "module": "Manufacturing · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": "2026-08-18",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The order is "
+      },
+      {
+        "t": "strong",
+        "v": "Released"
+      },
+      {
+        "t": "text",
+        "v": "; warehousing issue and receipt orders exist."
+      }
+    ],
+    "text": "The order is Released; warehousing issue and receipt orders exist."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 8 of "
+        },
+        {
+          "t": "link",
+          "v": "Create the production order",
+          "href": "create-the-production-order.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 8 of Create the production order."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Release changes the order to "
+      },
+      {
+        "t": "strong",
+        "v": "Released"
+      },
+      {
+        "t": "text",
+        "v": ", the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. "
+      },
+      {
+        "t": "link",
+        "v": "Issue material to the job shop",
+        "href": "issue-material-to-the-job-shop.md"
+      },
+      {
+        "t": "text",
+        "v": " works the first; "
+      },
+      {
+        "t": "link",
+        "v": "Report the operation complete and confirm warehouse receipt",
+        "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
+      },
+      {
+        "t": "text",
+        "v": " depends on the second."
+      }
+    ],
+    "text": "Release changes the order to Released, the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. Issue material to the job shop works the first; Report the operation complete and confirm warehouse receipt depends on the second."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the production order row from step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the production order",
+                  "href": "create-the-production-order.md"
+                }
+              ],
+              "text": "Select the production order row from step 8 of Create the production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The row is highlighted"
+                }
+              ],
+              "text": "The row is highlighted"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release Orders"
+                }
+              ],
+              "text": "Actions ➔ Release Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000",
+                  "name": "Release Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Release Production Orders (tisfc0204m000) opens"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the selection range narrows to this one production order"
+                }
+              ],
+              "text": "Confirm the selection range narrows to this one production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only this order is in scope for the release run"
+                }
+              ],
+              "text": "Only this order is in scope for the release run"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the release"
+                }
+              ],
+              "text": "Run the release"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The dialog closes; back in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order status after release"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                }
+              ],
+              "text": "The dialog closes; back in Production Orders, order status after release = Released"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm no other order changed status"
+                }
+              ],
+              "text": "Confirm no other order changed status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only the order from step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the production order",
+                  "href": "create-the-production-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": " shows "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                }
+              ],
+              "text": "Only the order from step 8 of Create the production order shows Released"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order does not reach "
+              },
+              {
+                "t": "status",
+                "v": "Released"
+              }
+            ],
+            "text": "The order does not reach Released"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against "
+              },
+              {
+                "t": "session",
+                "code": "tisfc0100s000",
+                "name": "Production Order Parameters"
+              },
+              {
+                "t": "text",
+                "v": " before assuming a fault "
+              }
+            ],
+            "text": "Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against Production Order Parameters (tisfc0100s000) before assuming a fault"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

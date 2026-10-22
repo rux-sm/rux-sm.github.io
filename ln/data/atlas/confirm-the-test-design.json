@@ -1,0 +1,533 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "confirm-the-test-design",
+  "title": "Confirm the test design",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 0,
+    "of": 11
+  },
+  "previous": null,
+  "next": {
+    "id": "create-two-item-groups",
+    "title": "Create two item groups"
+  },
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",
+  "session": "Warehouses",
+  "sessionCode": "whwmd2500m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Site, warehouses, units, and unused item codes are known."
+      }
+    ],
+    "text": "Site, warehouses, units, and unused item codes are known."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
+        }
+      ],
+      "text": "Obtain approval to create shared item groups and default rows. Stop if the company is not a disposable training environment or the proposed codes are not isolated from other trainees."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product."
+      }
+    ],
+    "text": "Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the approved training company"
+                }
+              ],
+              "text": "Confirm the approved training company"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "training company"
+                }
+              ],
+              "text": "training company"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the site that will buy, store, make, and sell the test family"
+                }
+              ],
+              "text": "Select the site that will buy, store, make, and sell the test family"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "site"
+                }
+              ],
+              "text": "site"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd2500m000",
+                  "name": "Warehouses"
+                }
+              ],
+              "text": "Open Warehouses (whwmd2500m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The warehouse master list opens"
+                }
+              ],
+              "text": "The warehouse master list opens"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Filter the warehouse list to the site from step 2"
+                }
+              ],
+              "text": "Filter the warehouse list to the site from step 2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only candidate warehouses for that site remain"
+                }
+              ],
+              "text": "Only candidate warehouses for that site remain"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the approved Normal warehouse for purchased production materials"
+                }
+              ],
+              "text": "Record the approved Normal warehouse for purchased production materials"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchased-item warehouse"
+                }
+              ],
+              "text": "purchased-item warehouse"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the approved Normal warehouse for finished products"
+                }
+              ],
+              "text": "Record the approved Normal warehouse for finished products"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished-item warehouse"
+                }
+              ],
+              "text": "finished-item warehouse"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open one approved physical Product item that uses the same counting basis"
+                }
+              ],
+              "text": "Open one approved physical Product item that uses the same counting basis"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its global item data opens"
+                }
+              ],
+              "text": "Its global item data opens"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record its "
+                },
+                {
+                  "t": "field",
+                  "v": "Unit Set"
+                }
+              ],
+              "text": "Record its Unit Set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "Unit Set"
+                }
+              ],
+              "text": "Unit Set"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record its "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Unit"
+                }
+              ],
+              "text": "Record its Inventory Unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "Inventory Unit"
+                }
+              ],
+              "text": "Inventory Unit"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Search "
+                },
+                {
+                  "t": "chip",
+                  "v": "Items"
+                },
+                {
+                  "t": "text",
+                  "v": " for each proposed example code"
+                }
+              ],
+              "text": "Search Items for each proposed example code"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No existing item uses any proposed code"
+                }
+              ],
+              "text": "No existing item uses any proposed code"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "An example item code already exists"
+              }
+            ],
+            "text": "An example item code already exists"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Choose another unused code; do not reuse or repurpose an existing item"
+              }
+            ],
+            "text": "Choose another unused code; do not reuse or repurpose an existing item"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A candidate “raw material” warehouse is Shop Floor"
+              }
+            ],
+            "text": "A candidate “raw material” warehouse is Shop Floor"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Select an approved Normal warehouse; do not rely on description alone"
+              }
+            ],
+            "text": "Select an approved Normal warehouse; do not rely on description alone"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

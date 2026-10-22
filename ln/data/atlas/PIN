@@ -1,9 +1,9 @@
-commit   34d4f601be5df809be256a7dfed415309b775df6
-date     2026-10-22T01:50:23Z
-subject  feat(tools): Emit a process and a task per phase
-contract 17 
+commit   0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22
+date     2026-10-22T03:07:07Z
+subject  fix(tools): Emit a task's lead lines once
+contract 18 
 tier     export
-sha256   d810f6bc6cefa967fdcef901b66b0059f39a9002d35968b82ec80237514be558
+sha256   07724d5e72e61ba31638909f050aedd52e61fab6b0c8e24010c22f0358e62692
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

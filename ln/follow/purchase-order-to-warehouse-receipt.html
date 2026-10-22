@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="34d4f601be5df809be256a7dfed415309b775df6">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -111,34 +111,20 @@
 <p class="rux--type-body-long-01">Buy raw materials on a purchase order and receive them into a warehouse.</p>
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Procurement</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
-<p><strong>Before you start.</strong> Know the item's stock before you start: <a class="rux--link" href="../follow/check-item-inventory.html">Check an item's inventory</a>. The materials exist as items with purchase defaults, and the receiving warehouse exists. <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/purchase-order-to-warehouse-receipt_0.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 27 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p><strong>Before you start.</strong> Know the item's stock before you start: <a class="rux--link" href="../follow/check-item-inventory.html">Check an item's inventory</a>.</p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/read-the-baseline.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 27 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
 </div>
 <ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_0.html"><span class="ln-path__dot">1</span><b>Read the baseline</b><small>On-hand at the receiving warehouse is recorded before anything is booked · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_1.html"><span class="ln-path__dot">2</span><b>Create the purchase order</b><small>An order exists against a buy-from business partner · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_2.html"><span class="ln-path__dot">3</span><b>Book the lines</b><small>Each material is ordered in the right quantity, to the right warehouse · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_3.html"><span class="ln-path__dot">4</span><b>Receive against the order</b><small>LN's generated inbound order is found and receiving is started · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_4.html"><span class="ln-path__dot">5</span><b>Confirm the receipt</b><small>The receipt reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span> with all lines final and complete · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/purchase-order-to-warehouse-receipt_5.html"><span class="ln-path__dot">6</span><b>Verify the inventory increase</b><small>On-hand rose by exactly the quantity received · 3 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/read-the-baseline.html"><span class="ln-path__dot">1</span><b>Read the baseline</b><small>On-hand at the receiving warehouse is recorded before anything is booked. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/create-the-purchase-order.html"><span class="ln-path__dot">2</span><b>Create the purchase order</b><small>An order exists against a buy-from business partner. · 5 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/book-the-lines.html"><span class="ln-path__dot">3</span><b>Book the lines</b><small>Each material is ordered in the right quantity, to the right warehouse. · 5 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/receive-against-the-order.html"><span class="ln-path__dot">4</span><b>Receive against the order</b><small>LN's generated inbound order is found and receiving is started. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/confirm-the-receipt.html"><span class="ln-path__dot">5</span><b>Confirm the receipt</b><small>The receipt reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span> with all lines final and complete. · 6 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/verify-the-inventory-increase.html"><span class="ln-path__dot">6</span><b>Verify the inventory increase</b><small>On-hand rose by exactly the quantity received. · 3 steps</small></a></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 6</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><small class="ln-quiet">Create the purchase order</small><b>Order type is not <span class="ln-t-exact">IPO</span></b><p>Nothing. <span class="ln-t-exact">IPO</span> is what this environment defaulted on one dated run, not a required value</p></li>
-  <li><small class="ln-quiet">Receive against the order</small><b>No warehousing order appears after saving the purchase order</b><p>The warehouse on the order lines (<a class="rux--link" href="../do/purchase-order-to-warehouse-receipt_2.html#step-4">Book the lines, step 4</a>). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's <span class="ln-t-named">Release to Warehousing</span> tab: a line still sitting there has not been released, and <a class="rux--link" href="../screens/tdpur4534m000.html"><span class="ln-t-named">Purchase Order Line Status</span></a> <span class="ln-t-exact">tdpur4534m000</span> names the activity it is waiting on</p></li>
-  <li><small class="ln-quiet">Receive against the order</small><b>The Actions menu offers no receive command</b><p>The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from <a class="rux--link" href="../do/purchase-order-to-warehouse-receipt_3.html#step-1">Receive against the order, step 1</a>, not the purchase order</p></li>
-  <li><small class="ln-quiet">Confirm the receipt</small><b><span class="ln-t-exact">whinh0032</span> at the receipt</b><p>The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> <span class="ln-t-exact">whinh3530m000</span>, which hold the messages once the dialog is gone </p></li>
-  <li><small class="ln-quiet">Confirm the receipt</small><b>The receipt looks confirmed but nothing was received</b><p>Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</p></li>
-  <li><small class="ln-quiet">Verify the inventory increase</small><b>The receipt confirms but on-hand does not move</b><p>Whether <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> were both set (<a class="rux--link" href="../do/purchase-order-to-warehouse-receipt_4.html#step-4">Confirm the receipt, step 4</a>), and whether the receiving warehouse in <a class="rux--link" href="../do/purchase-order-to-warehouse-receipt_5.html">Verify the inventory increase</a> is the one from <a class="rux--link" href="../do/purchase-order-to-warehouse-receipt_0.html#step-1">Read the baseline, step 1</a></p></li>
-</ul></div></div>
-  </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -147,7 +133,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">Purchase with inspection</span></b><p>An inspection activity sits between receipt and put-away. <a class="rux--link" href="../screens/whinh3122m000.html"><span class="ln-t-named">Warehouse Inspections</span></a> <span class="ln-t-exact">whinh3122m000</span> runs against a receipt in this environment. This adds a phase and would earn its own walkthrough. </p></li>
   <li><b><span class="ln-t-named">Direct-delivery purchase</span></b><p>Goods ship from the supplier to a customer without entering your warehouse. That removes phases 3–5 entirely, so it is a different process, not a variant of this one</p></li>
-  <li><b><span class="ln-t-named">Booking opening stock instead of buying</span></b><p>The adjustment route the notes of <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> <a class="rux--link" href="../do/create-basic-test-items-and-defaults_9.html">Stock the components</a> describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured </p></li>
+  <li><b><span class="ln-t-named">Booking opening stock instead of buying</span></b><p>The adjustment route the notes of <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> <a class="rux--link" href="../do/stock-the-components.html">Stock the components</a> describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured </p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="next">
@@ -167,7 +153,7 @@
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
 </div>
 </div>
 </div>

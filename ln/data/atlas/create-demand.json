@@ -1,0 +1,354 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-demand",
+  "title": "Create demand",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 1,
+    "of": 6
+  },
+  "previous": {
+    "id": "make-the-item-visible-to-planning",
+    "title": "Make the item visible to planning"
+  },
+  "next": {
+    "id": "put-the-demand-inside-the-horizon",
+    "title": "Put the demand inside the horizon"
+  },
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A sales order exists for more than is on hand."
+      }
+    ],
+    "text": "A sales order exists for more than is on hand."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+      }
+    ],
+    "text": "Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", read the finished item's on-hand at its warehouse"
+                }
+              ],
+              "text": "In Inventory 360 (whwmd4300m000), read the finished item's on-hand at its warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item on-hand before"
+                },
+                {
+                  "t": "text",
+                  "v": " — the demand must exceed this"
+                }
+              ],
+              "text": "finished item on-hand before — the demand must exceed this"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create a sales order for the finished item, following "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " this task steps step 1–1.11"
+                }
+              ],
+              "text": "Create a sales order for the finished item, following Ship from stock this task steps step 1–1.11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An order exists at "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                }
+              ],
+              "text": "An order exists at Free"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " above the on-hand from step 1, and the "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": " no more than a few days out"
+                }
+              ],
+              "text": "Set Ordered Quantity above the on-hand from step 1, and the Planned Delivery Date no more than a few days out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sales order number"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "ordered quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned delivery date"
+                },
+                {
+                  "t": "text",
+                  "v": " — the observed run booked "
+                },
+                {
+                  "t": "literal",
+                  "v": "5"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "ea"
+                },
+                {
+                  "t": "text",
+                  "v": " against "
+                },
+                {
+                  "t": "literal",
+                  "v": "1"
+                },
+                {
+                  "t": "text",
+                  "v": " on hand"
+                }
+              ],
+              "text": "sales order number, ordered quantity, planned delivery date — the observed run booked 5 ea against 1 on hand"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+              }
+            ],
+            "text": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item has no row for the order's sales office. Add it on the "
+              },
+              {
+                "t": "chip",
+                "v": "Sales Offices"
+              },
+              {
+                "t": "text",
+                "v": " tab of "
+              },
+              {
+                "t": "session",
+                "code": "tcibd0501m100",
+                "name": "Item"
+              },
+              {
+                "t": "text",
+                "v": ", then close and reopen the order session"
+              }
+            ],
+            "text": "The item has no row for the order's sales office. Add it on the Sales Offices tab of Item (tcibd0501m100), then close and reopen the order session"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A master-data fix appears to have no effect"
+              }
+            ],
+            "text": "A master-data fix appears to have no effect"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+              }
+            ],
+            "text": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

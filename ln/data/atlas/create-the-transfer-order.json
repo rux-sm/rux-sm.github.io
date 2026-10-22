@@ -1,0 +1,586 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-the-transfer-order",
+  "title": "Create the transfer order",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 1,
+    "of": 7
+  },
+  "previous": {
+    "id": "confirm-stock-destination-and-expected-order-type",
+    "title": "Confirm stock, destination, and expected order type"
+  },
+  "next": {
+    "id": "confirm-the-processing-path-and-create-advice",
+    "title": "Confirm the processing path and create advice"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Orders ➔ Orders",
+  "session": "Warehousing Orders",
+  "sessionCode": "whinh2100m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A warehousing order exists with transaction type "
+      },
+      {
+        "t": "strong",
+        "v": "Transfer"
+      }
+    ],
+    "text": "A warehousing order exists with transaction type Transfer"
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 1 of "
+        },
+        {
+          "t": "link",
+          "v": "Pick the goods",
+          "href": "pick-the-goods_transfer-item-between-warehouses.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 1 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm stock, destination, and expected order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm stock, destination, and expected order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 4 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm stock, destination, and expected order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 1 of Pick the goods; step 1 of Confirm stock, destination, and expected order type; step 2 of Confirm stock, destination, and expected order type; step 4 of Confirm stock, destination, and expected order type."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+      }
+    ],
+    "text": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Warehousing ➔ Orders ➔ Orders"
+                }
+              ],
+              "text": "Open Warehousing ➔ Orders ➔ Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Warehousing Orders (whinh2100m000) opens"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A blank warehousing-order header opens"
+                }
+              ],
+              "text": "A blank warehousing-order header opens"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " origin to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Transfer (Manual)"
+                }
+              ],
+              "text": "Set Order origin to Transfer (Manual)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "This is one of the ten manual order origins listed in the session help — section step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Pick the goods",
+                  "href": "pick-the-goods_transfer-item-between-warehouses.md"
+                }
+              ],
+              "text": "This is one of the ten manual order origins listed in the session help — section step 1 of Pick the goods"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Transaction Type"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Transfer"
+                }
+              ],
+              "text": "Set Inventory Transaction Type to Transfer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Only settable by hand because the order has no originating package — section step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Pick the goods",
+                  "href": "pick-the-goods_transfer-item-between-warehouses.md"
+                }
+              ],
+              "text": "Only settable by hand because the order has no originating package — section step 1 of Pick the goods"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-From Code"
+                },
+                {
+                  "t": "text",
+                  "v": " to the source warehouse from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-To Code"
+                },
+                {
+                  "t": "text",
+                  "v": " to the destination warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                }
+              ],
+              "text": "Set Ship-From Code to the source warehouse from step 1 of Confirm stock, destination, and expected order type, and Ship-To Code to the destination warehouse from step 2 of Confirm stock, destination, and expected order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both types read "
+                },
+                {
+                  "t": "literal",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " — the condition for the Transfer transaction type"
+                }
+              ],
+              "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare the defaulted "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehousing Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " with step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and record the value actually used"
+                }
+              ],
+              "text": "Compare the defaulted Warehousing Order Type with step 4 of Confirm stock, destination, and expected order type and record the value actually used"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "actual warehousing order type"
+                }
+              ],
+              "text": "actual warehousing order type"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the header"
+                }
+              ],
+              "text": "Save the header"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "transfer order number"
+                }
+              ],
+              "text": "transfer order number"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add an order line: the item from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and the quantity to move"
+                }
+              ],
+              "text": "Add an order line: the item from step 1 of Confirm stock, destination, and expected order type and the quantity to move"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "transferred quantity"
+                }
+              ],
+              "text": "transferred quantity"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the line"
+                }
+              ],
+              "text": "Save the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No order number appears"
+              }
+            ],
+            "text": "No order number appears"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Header not saved, or a required field is still blank — recheck steps 3–6"
+              }
+            ],
+            "text": "Header not saved, or a required field is still blank — recheck steps 3–6"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

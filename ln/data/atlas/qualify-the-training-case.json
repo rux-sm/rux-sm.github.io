@@ -1,0 +1,573 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "qualify-the-training-case",
+  "title": "Qualify the training case",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 10,
+    "of": 11
+  },
+  "previous": {
+    "id": "stock-the-components",
+    "title": "Stock the components"
+  },
+  "next": null,
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The family satisfies phase 0 of the production-order walkthrough."
+      }
+    ],
+    "text": "The family satisfies phase 0 of the production-order walkthrough."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 9 of "
+        },
+        {
+          "t": "link",
+          "v": "Create the three items",
+          "href": "create-the-three-items.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 19 of "
+        },
+        {
+          "t": "link",
+          "v": "Build the job shop bill of material",
+          "href": "build-the-job-shop-bill-of-material.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 19 of "
+        },
+        {
+          "t": "link",
+          "v": "Build the job shop routing",
+          "href": "build-the-job-shop-routing.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 10 of "
+        },
+        {
+          "t": "link",
+          "v": "Stock the components",
+          "href": "stock-the-components.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 6 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the test design",
+          "href": "confirm-the-test-design.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm costing data",
+          "href": "confirm-costing-data.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 4 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm costing data",
+          "href": "confirm-costing-data.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 9 of Create the three items; step 19 of Build the job shop bill of material; step 19 of Build the job shop routing; step 10 of Stock the components; step 6 of Confirm the test design; step 2 of Confirm costing data; step 4 of Confirm costing data."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing new. This phase checks the family against what the production-order walkthrough's "
+      },
+      {
+        "t": "link",
+        "v": "Confirm the test design",
+        "href": "confirm-the-test-design.md"
+      },
+      {
+        "t": "text",
+        "v": " asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+      }
+    ],
+    "text": "Nothing new. This phase checks the family against what the production-order walkthrough's Confirm the test design asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+  },
+  "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "This phase creates nothing. It checks the family against what "
+        },
+        {
+          "t": "link",
+          "v": "Production order",
+          "href": "manual-production-order-existing-master-data.md"
+        },
+        {
+          "t": "text",
+          "v": " asks for in its "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the test design",
+          "href": "confirm-the-test-design.md"
+        },
+        {
+          "t": "text",
+          "v": ", and hands over."
+        }
+      ],
+      "text": "This phase creates nothing. It checks the family against what Production order asks for in its Confirm the test design, and hands over."
+    },
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm all three items and their site rows still show the supply sources verified at step 9 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the three items",
+                  "href": "create-the-three-items.md"
+                }
+              ],
+              "text": "Confirm all three items and their site rows still show the supply sources verified at step 9 of Create the three items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The family is intact"
+                }
+              ],
+              "text": "The family is intact"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the BOM from step 19 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the job shop bill of material",
+                  "href": "build-the-job-shop-bill-of-material.md"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": ", used for planning and costing, and carries both materials"
+                }
+              ],
+              "text": "Confirm the BOM from step 19 of Build the job shop bill of material is Approved, used for planning and costing, and carries both materials"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pair has a manufacturable structure"
+                }
+              ],
+              "text": "The pair has a manufacturable structure"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the routing from step 19 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the job shop routing",
+                  "href": "build-the-job-shop-routing.md"
+                },
+                {
+                  "t": "text",
+                  "v": " is "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": ", used for planning and costing, and carries its operation and work center"
+                }
+              ],
+              "text": "Confirm the routing from step 19 of Build the job shop routing is Approved, used for planning and costing, and carries its operation and work center"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pair has something to report complete"
+                }
+              ],
+              "text": "The pair has something to report complete"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm both components are on hand at the raw-material warehouse from step 10 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Stock the components",
+                  "href": "stock-the-components.md"
+                }
+              ],
+              "text": "Confirm both components are on hand at the raw-material warehouse from step 10 of Stock the components"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is material to issue"
+                }
+              ],
+              "text": "There is material to issue"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the finished-item warehouse from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the test design",
+                  "href": "confirm-the-test-design.md"
+                },
+                {
+                  "t": "text",
+                  "v": " is the one the produced pair should be received into"
+                }
+              ],
+              "text": "Confirm the finished-item warehouse from step 6 of Confirm the test design is the one the produced pair should be received into"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receiving warehouse is a decision, not a discovery made mid-order"
+                }
+              ],
+              "text": "The receiving warehouse is a decision, not a discovery made mid-order"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the costing figures from steps 2–4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm costing data",
+                  "href": "confirm-costing-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " are still present"
+                }
+              ],
+              "text": "Confirm the costing figures from steps 2–4 of Confirm costing data are still present"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The estimate calculation has what it reads"
+                }
+              ],
+              "text": "The estimate calculation has what it reads"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+                }
+              ],
+              "text": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "training case qualified"
+                }
+              ],
+              "text": "training case qualified"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order opens with no BOM or routing"
+              }
+            ],
+            "text": "The production order opens with no BOM or routing"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Compare the order's reference date with the effective dates from steps step 7 of "
+              },
+              {
+                "t": "link",
+                "v": "Build the job shop bill of material",
+                "href": "build-the-job-shop-bill-of-material.md"
+              },
+              {
+                "t": "text",
+                "v": " and step 7 of "
+              },
+              {
+                "t": "link",
+                "v": "Build the job shop routing",
+                "href": "build-the-job-shop-routing.md"
+              },
+              {
+                "t": "text",
+                "v": ". A revision effective after the reference date is not selected"
+              }
+            ],
+            "text": "Compare the order's reference date with the effective dates from steps step 7 of Build the job shop bill of material and step 7 of Build the job shop routing. A revision effective after the reference date is not selected"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The production order has no operation to report complete"
+              }
+            ],
+            "text": "The production order has no operation to report complete"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Recheck "
+              },
+              {
+                "t": "link",
+                "v": "Build the job shop routing",
+                "href": "build-the-job-shop-routing.md"
+              },
+              {
+                "t": "text",
+                "v": " — an approved routing with at least one operation is what "
+              },
+              {
+                "t": "link",
+                "v": "Create the three items",
+                "href": "create-the-three-items.md"
+              },
+              {
+                "t": "text",
+                "v": " of the production-order walkthrough reports against"
+              }
+            ],
+            "text": "Recheck Build the job shop routing — an approved routing with at least one operation is what Create the three items of the production-order walkthrough reports against"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

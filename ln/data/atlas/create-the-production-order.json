@@ -1,0 +1,561 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-the-production-order",
+  "title": "Create the production order",
+  "process": {
+    "id": "manual-production-order-existing-master-data",
+    "title": "Production order",
+    "n": 1,
+    "of": 6
+  },
+  "previous": {
+    "id": "confirm-the-existing-foundation",
+    "title": "Confirm the existing foundation"
+  },
+  "next": {
+    "id": "verify-the-generated-foundation",
+    "title": "Verify the generated foundation"
+  },
+  "module": "Manufacturing · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": "2026-08-12",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A quantity-one order exists at "
+      },
+      {
+        "t": "strong",
+        "v": "Created"
+      },
+      {
+        "t": "text",
+        "v": " status."
+      }
+    ],
+    "text": "A quantity-one order exists at Created status."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 1 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the existing foundation",
+          "href": "confirm-the-existing-foundation.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 1 of Confirm the existing foundation."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "On save LN reads the item's BOM and routing valid on the "
+      },
+      {
+        "t": "em",
+        "v": "Reference Date"
+      },
+      {
+        "t": "text",
+        "v": " and generates the order's operations and estimated materials from them. "
+      },
+      {
+        "t": "em",
+        "v": "Quantity Ordered"
+      },
+      {
+        "t": "text",
+        "v": " is what is to be produced and "
+      },
+      {
+        "t": "em",
+        "v": "Warehouse"
+      },
+      {
+        "t": "text",
+        "v": " is where the result will be received. The order exists at "
+      },
+      {
+        "t": "strong",
+        "v": "Created"
+      },
+      {
+        "t": "text",
+        "v": "; nothing has moved."
+      }
+    ],
+    "text": "On save LN reads the item's BOM and routing valid on the Reference Date and generates the order's operations and estimated materials from them. Quantity Ordered is what is to be produced and Warehouse is where the result will be received. The order exists at Created; nothing has moved."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new production-order record opens"
+                }
+              ],
+              "text": "A new production-order record opens"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the finished item from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the existing foundation",
+                  "href": "confirm-the-existing-foundation.md"
+                }
+              ],
+              "text": "Enter the finished item from step 1 of Confirm the existing foundation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item is accepted for the order"
+                }
+              ],
+              "text": "The item is accepted for the order"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " for the training case"
+                }
+              ],
+              "text": "Confirm Site for the training case"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "site"
+                }
+              ],
+              "text": "site"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter 1 in "
+                },
+                {
+                  "t": "field",
+                  "v": "Quantity Ordered"
+                }
+              ],
+              "text": "Enter 1 in Quantity Ordered"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "production quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " = 1"
+                }
+              ],
+              "text": "production quantity = 1"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " is the intended receiving warehouse"
+                }
+              ],
+              "text": "Confirm Warehouse is the intended receiving warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "receiving warehouse"
+                }
+              ],
+              "text": "receiving warehouse"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Production Start"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Method"
+                },
+                {
+                  "t": "text",
+                  "v": " are suitable for the training run"
+                }
+              ],
+              "text": "Confirm Production Start, Planned Delivery Date, and Planning Method are suitable for the training run"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order dates remain within the qualified BOM and routing dates"
+                }
+              ],
+              "text": "The order dates remain within the qualified BOM and routing dates"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+                }
+              ],
+              "text": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The selected revision is visible before save"
+                }
+              ],
+              "text": "The selected revision is visible before save"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Created"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "production order number"
+                }
+              ],
+              "text": "Order Status = Created — production order number"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item or revision is rejected"
+              }
+            ],
+            "text": "The item or revision is rejected"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this walkthrough"
+              }
+            ],
+            "text": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this walkthrough"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order does not save at "
+              },
+              {
+                "t": "status",
+                "v": "Created"
+              }
+            ],
+            "text": "The order does not save at Created"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Record the message and visible fields; do not substitute guessed values"
+              }
+            ],
+            "text": "Record the message and visible fields; do not substitute guessed values"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

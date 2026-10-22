@@ -1,0 +1,682 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "ship_demand-to-shipment-via-planning",
+  "title": "Ship",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 6,
+    "of": 7
+  },
+  "previous": {
+    "id": "build-the-pairs",
+    "title": "Build the pairs"
+  },
+  "next": null,
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Manager Dashboard",
+  "session": "Warehouse Manager Dashboard",
+  "sessionCode": "whinh2300m000",
+  "walked": "2026-08-09",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Shipment "
+      },
+      {
+        "t": "status",
+        "v": "Confirmed"
+      },
+      {
+        "t": "text",
+        "v": ", on-hand down by the shipped quantity."
+      }
+    ],
+    "text": "Shipment Confirmed, on-hand down by the shipped quantity."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Run MRP",
+          "href": "run-mrp_demand-to-shipment-via-planning.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 5 of "
+        },
+        {
+          "t": "link",
+          "v": "Run MRP",
+          "href": "run-mrp_demand-to-shipment-via-planning.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Preflight",
+          "href": "preflight.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 2 of Run MRP; step 5 of Run MRP; step 2 of Preflight."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The sales order from "
+      },
+      {
+        "t": "link",
+        "v": "Create the demand",
+        "href": "create-the-demand.md"
+      },
+      {
+        "t": "text",
+        "v": " is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock walkthrough. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+      }
+    ],
+    "text": "The sales order from Create the demand is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock walkthrough. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the sales order, "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release ➔ Release to Warehousing…"
+                },
+                {
+                  "t": "text",
+                  "v": " per "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship from stock",
+                  "href": "ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " steps 2–5 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Run MRP",
+                  "href": "run-mrp_demand-to-shipment-via-planning.md"
+                }
+              ],
+              "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per Ship from stock steps 2–5 of Run MRP"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Log Report prints; a warehousing order exists under your sales order number"
+                }
+              ],
+              "text": "Log Report prints; a warehousing order exists under your sales order number"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2300m000",
+                  "name": "Warehouse Manager Dashboard"
+                },
+                {
+                  "t": "text",
+                  "v": ", filter on your sales order number and "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "In Warehouse Manager Dashboard (whinh2300m000), filter on your sales order number and Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Origin Sales"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Type 20- SO/SC Out"
+                }
+              ],
+              "text": "Warehousing Order (whinh2100m100), Origin Sales, Type 20- SO/SC Out"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, tick the line and run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                }
+              ],
+              "text": "On the Outbound Lines tab, tick the line and run Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "status",
+                  "v": "Advised"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " both fill; Picking List by Location prints"
+                }
+              ],
+              "text": "Advised and Released both fill; Picking List by Location prints"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4525m100",
+                  "name": "Picking List"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the line and run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Pick Run"
+                },
+                {
+                  "t": "text",
+                  "v": ", then read "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " on the order's "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "In Picking List (whinh4525m100), tick the line and run Actions ➔ Pick Run, then read Shipment on the order's Shipment Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Line status "
+                },
+                {
+                  "t": "status",
+                  "v": "Staged"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipment number"
+                }
+              ],
+              "text": "Line status Staged — shipment number"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh4130m000",
+                  "name": "Shipments"
+                },
+                {
+                  "t": "text",
+                  "v": ", find the shipment and "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                },
+                {
+                  "t": "text",
+                  "v": ", then "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Freeze"
+                }
+              ],
+              "text": "In Shipments (whinh4130m000), find the shipment and Drill In, then Actions ➔ Freeze"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Frozen"
+                },
+                {
+                  "t": "text",
+                  "v": "; "
+                },
+                {
+                  "t": "chip",
+                  "v": "Confirm"
+                },
+                {
+                  "t": "text",
+                  "v": " becomes available"
+                }
+              ],
+              "text": "Status = Frozen; Confirm becomes available"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Confirm"
+                }
+              ],
+              "text": "Actions ➔ Confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipped quantity"
+                },
+                {
+                  "t": "text",
+                  "v": "; "
+                },
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", inventory relieved"
+                }
+              ],
+              "text": "shipped quantity; Status = Confirmed, inventory relieved"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " on-hand at the warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Preflight",
+                  "href": "preflight.md"
+                }
+              ],
+              "text": "Re-read BAM-CHOP-PAIR on-hand at the warehouse from step 2 of Preflight"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "pair on-hand after shipping"
+                },
+                {
+                  "t": "text",
+                  "v": " — down by exactly the shipped quantity"
+                }
+              ],
+              "text": "pair on-hand after shipping — down by exactly the shipped quantity"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Advice"
+              },
+              {
+                "t": "text",
+                "v": " greyed out"
+              }
+            ],
+            "text": "Advice greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "You are on the session toolbar. The advice actions live on the "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound Lines"
+              },
+              {
+                "t": "text",
+                "v": " toolbar — step 3"
+              }
+            ],
+            "text": "You are on the session toolbar. The advice actions live on the Outbound Lines toolbar — step 3"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order will not advise"
+              }
+            ],
+            "text": "The order will not advise"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The header "
+              },
+              {
+                "t": "field",
+                "v": "Warehouse"
+              },
+              {
+                "t": "text",
+                "v": " does not hold the stock. Recheck against step 2 of "
+              },
+              {
+                "t": "link",
+                "v": "Preflight",
+                "href": "preflight.md"
+              }
+            ],
+            "text": "The header Warehouse does not hold the stock. Recheck against step 2 of Preflight"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The shipment will not confirm"
+              }
+            ],
+            "text": "The shipment will not confirm"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The line was never picked, or the shipment was never frozen. Steps step 4 and step 5"
+              }
+            ],
+            "text": "The line was never picked, or the shipment was never frozen. Steps step 4 and step 5"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

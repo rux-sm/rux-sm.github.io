@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="34d4f601be5df809be256a7dfed415309b775df6">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -111,53 +111,28 @@
 <p class="rux--type-body-long-01">Make one finished item on a manual production order and receive it into the warehouse.</p>
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Manufacturing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
-<p><strong>Before you start.</strong> Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. <strong>Where a training case comes from.</strong> If none has been handed to you, <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its <a class="rux--link" href="../do/create-basic-test-items-and-defaults_10.html">Qualify the training case</a> hands over exactly the values <a class="rux--link" href="../do/create-basic-test-items-and-defaults_0.html#step-5">Confirm the test design, step 5</a> above asks for.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/manual-production-order-existing-master-data_0.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 41 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-existing-foundation.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 41 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
 </div>
 <ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_0.html"><span class="ln-path__dot">1</span><b>Confirm the existing foundation</b><small>A qualified finished item, component, BOM, routing, warehouses, and stock are known · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_1.html"><span class="ln-path__dot">2</span><b>Create the production order</b><small>A quantity-one order exists at <span class="ln-t-named">Created</span> status · 8 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_2.html"><span class="ln-path__dot">3</span><b>Verify the generated foundation</b><small>The expected BOM, routing, operation, and estimated component are attached · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_3.html"><span class="ln-path__dot">4</span><b>Release the order</b><small>The order is <span class="ln-t-named">Released</span>; warehousing issue and receipt orders exist · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_4.html"><span class="ln-path__dot">5</span><b>Issue material to the job shop</b><small>The component is issued; the order is <span class="ln-t-named">Active</span> · 8 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/manual-production-order-existing-master-data_5.html"><span class="ln-path__dot">6</span><b>Report the operation complete and confirm warehouse receipt</b><small>The finished item is posted to inventory and on-hand increases at the receiving warehouse · 8 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/confirm-the-existing-foundation.html"><span class="ln-path__dot">1</span><b>Confirm the existing foundation</b><small>A qualified finished item, component, BOM, routing, warehouses, and stock are known. · 6 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/create-the-production-order.html"><span class="ln-path__dot">2</span><b>Create the production order</b><small>A quantity-one order exists at <strong>Created</strong> status. · 8 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/verify-the-generated-foundation.html"><span class="ln-path__dot">3</span><b>Verify the generated foundation</b><small>The expected BOM, routing, operation, and estimated component are attached. · 6 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/release-the-order.html"><span class="ln-path__dot">4</span><b>Release the order</b><small>The order is <strong>Released</strong>; warehousing issue and receipt orders exist. · 5 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/issue-material-to-the-job-shop.html"><span class="ln-path__dot">5</span><b>Issue material to the job shop</b><small>The component is issued; the order is <strong>Active</strong> · 8 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html"><span class="ln-path__dot">6</span><b>Report the operation complete and confirm warehouse receipt</b><small>The finished item is posted to inventory and on-hand increases at the receiving warehouse. · 8 steps</small></a></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 14</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><small class="ln-quiet">Confirm the existing foundation</small><b>No qualified item/BOM/routing combination is available</b><p>Stop. This walkthrough does not create or repair master data; request a qualified training case</p></li>
-  <li><small class="ln-quiet">Confirm the existing foundation</small><b>Component has no suitable warehouse stock</b><p>Choose another qualified case or replenish it before creating an order intended for later execution</p></li>
-  <li><small class="ln-quiet">Create the production order</small><b>The item or revision is rejected</b><p>Stop and have the master-data owner verify the existing item and revision; do not change setup from this walkthrough</p></li>
-  <li><small class="ln-quiet">Create the production order</small><b>The order does not save at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></b><p>Record the message and visible fields; do not substitute guessed values</p></li>
-  <li><small class="ln-quiet">Verify the generated foundation</small><b>BOM or routing is blank or unexpected</b><p>Check the qualified dates/revisions and record the mismatch </p></li>
-  <li><small class="ln-quiet">Verify the generated foundation</small><b>Validation reports a multilevel BOM loop</b><p>Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented </p></li>
-  <li><small class="ln-quiet">Verify the generated foundation</small><b>Expected operation or component is absent</b><p>Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and return it to the master-data owner for diagnosis</p></li>
-  <li><small class="ln-quiet">Release the order</small><b>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></b><p>Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> <span class="ln-t-exact">tisfc0100s000</span> before assuming a fault </p></li>
-  <li><small class="ln-quiet">Issue material to the job shop</small><b>The material line stays blocked / <span class="ln-t-named">To Issue by Warehouse</span> never appears</b><p>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, stop and record what was observed </p></li>
-  <li><small class="ln-quiet">Issue material to the job shop</small><b>The issue stops short and a shortage report prints</b><p>A component's stock is short and negative inventory is not allowed. The quantity waits in <span class="ln-t-named">To Issue by Warehouse</span>; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89</p></li>
-  <li><small class="ln-quiet">Issue material to the job shop</small><b>Generate/Release Outbound Advice are missing or already actioned</b><p>Do not assume a fault. <span class="ln-t-named">Direct Process Warehouse Order Line</span> may be automatic for this material — confirm in <a class="rux--link" href="../screens/whinh2104m000.html"><span class="ln-t-named">Activities by Warehousing Order</span></a> <span class="ln-t-exact">whinh2104m000</span> before troubleshooting further</p></li>
-  <li><small class="ln-quiet">Report the operation complete and confirm warehouse receipt</small><b>The order cannot be reported completed</b><p>An earlier operation is not completed, an operation is blocked, or an inspection order is still open — Infor LN User Guide for Manufacturing, pp. 20 and 23; <a class="rux--link" href="../screens/tisfc0130m000.html"><span class="ln-t-named">Report Operations Completed</span></a> <span class="ln-t-exact">tisfc0130m000</span> §4 has each rule</p></li>
-  <li><small class="ln-quiet">Report the operation complete and confirm warehouse receipt</small><b><span class="ln-t-named">Report Orders Completed</span> does not open after the last operation</b><p>Stop and record the operation's status and any message; this dialog's trigger condition is not documented </p></li>
-  <li><small class="ln-quiet">Report the operation complete and confirm warehouse receipt</small><b><span class="ln-t-named">Quantity Delivered</span> stays at 0 or finished-item on-hand does not increase</b><p>The production receipt warehousing order may need manual processing, like <a class="rux--link" href="../do/manual-production-order-existing-master-data_4.html">Issue material to the job shop</a>'s issue order. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open receipt order before assuming an error </p></li>
-</ul></div></div>
-  </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Different cases · 5</div>
+      <div class="rux--accordion__title">Different cases · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">More than one component</span></b><p>Record and compare every expected component and estimated quantity in <a class="rux--link" href="../do/manual-production-order-existing-master-data_2.html">Verify the generated foundation</a>; issue every material line in <a class="rux--link" href="../do/manual-production-order-existing-master-data_4.html">Issue material to the job shop</a>; the phase structure does not change</p></li>
-  <li><b><span class="ln-t-named">More than one operation</span></b><p>Confirm every expected operation in routing sequence in <a class="rux--link" href="../do/manual-production-order-existing-master-data_2.html">Verify the generated foundation</a>; report each one complete in <a class="rux--link" href="../do/manual-production-order-existing-master-data_5.html">Report the operation complete and confirm warehouse receipt</a> (<a class="rux--link" href="../do/manual-production-order-existing-master-data_5.html#step-4">Report the operation complete and confirm warehouse receipt, step 4</a>); the phase structure does not change</p></li>
   <li><b><span class="ln-t-named">Revision-controlled item</span></b><p>The qualified training case must include the item revision as well as BOM and routing revisions</p></li>
   <li><b><span class="ln-t-named">No routing</span></b><p>Outside this basic foundation. The help states that no estimated production costs are defined when the order has no routing</p></li>
-  <li><b><span class="ln-t-named">Fully automatic material issue</span></b><p>If <span class="ln-t-named">Direct Initiate Inventory Issue</span> and <span class="ln-t-named">Direct Process Warehouse Order Line</span> are both selected for the material, <a class="rux--link" href="../do/manual-production-order-existing-master-data_4.html#step-3">Issue material to the job shop, steps 3–7</a> complete themselves once the order is released; the phase structure does not change</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="next">
@@ -178,7 +153,7 @@
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
 </div>
 </div>
 </div>

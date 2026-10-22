@@ -148,11 +148,12 @@ function token(t) {
     case 'session': return t.name ? `${screenLink(t.code, named(t.name))}${t.bare && cards.has(t.code) ? '' : ` ${exact(t.code)}`}` : screenLink(t.code, exact(t.code));
     case 'dest': return named(t.v);
     case 'pencil': return '<svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>';
-    // A link names another atlas document. A process opens its page; any
-    // other keeps its words and has nowhere to go yet.
+    // A link names another atlas document. A process or a task opens its
+    // page; any other keeps its words and has nowhere to go yet.
     case 'link': {
       const id = /^(.+)\.md$/.exec(t.href)?.[1];
-      return processById.has(id) ? `<a class="rux--link" href="${hrefProcess(id)}">${esc(t.v)}</a>` : esc(t.v);
+      return processById.has(id) ? `<a class="rux--link" href="${hrefProcess(id)}">${esc(t.v)}</a>`
+        : taskById.has(id) ? `<a class="rux--link" href="${hrefTask(id)}">${esc(t.v)}</a>` : esc(t.v);
     }
     default: throw new Error(`no rendering for token type "${t.t}": ${JSON.stringify(t)}`);
   }
@@ -387,7 +388,7 @@ ${body}
 // A task atlas has no walked date for says so, and the owner can answer on the
 // spot, step by step in Guided: it matched, or it was different, with a line
 // and a screenshot. The answer is evidence for atlas and changes nothing here.
-// A row is keyed as atlas's sync reads it: the process's id and the step's.
+// A row is keyed as atlas's sync reads it: the task's id and the step's.
 let boxes = 0;
 const confirmBox = (scenario) => `<div class="ln-confirm" data-confirm="${esc(scenario)}">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
@@ -406,7 +407,7 @@ const confirmBox = (scenario) => `<div class="ln-confirm" data-confirm="${esc(sc
     <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
   </form>
 </div>`;
-const waitingTasks = processes.flatMap((s) => tasksOf(s).filter((t) => !t.walked).map((t) => ({ s, t, scenario: s.id, steps: rowsOf(t).map((r) => r.id) })));
+const waitingTasks = processes.flatMap((s) => tasksOf(s).filter((t) => !t.walked).map((t) => ({ s, t, scenario: t.id, steps: rowsOf(t).map((r) => r.id) })));
 const waitingSide = side.map((n) => ({ n, scenario: 'tasks', steps: [n.id] }));
 const waiting = waitingTasks.length + waitingSide.length;
 const waitingJson = () => `<script type="application/json" id="waiting">${JSON.stringify([...waitingTasks, ...waitingSide].map((w) => ({ scenario: w.scenario, steps: w.steps }))).replace(/</g, '\\u003c')}</script>`;
@@ -550,7 +551,7 @@ function task(s, t) {
   if (t.sessionCode && !cards.has(t.sessionCode)) report.push(`no page     ${s.title} · ${t.process.n}: ${t.session} (${t.sessionCode}) has no purpose line`);
   const rows = rowsOf(t);
   const { cases } = extrasOf(s, t);
-  const need = needs(s, t);
+  const need = t.before?.length ? t.before.map((b) => tokens(b.tokens)) : needs(s, t);
   const first = t.process.n === s.tasks[0].n;
   const prose = t.blocks.filter((b) => b.kind === 'prose').map((b) => `<p>${tokens(b.tokens)}</p>`).join('');
   const screen = t.sessionCode ? cards.get(t.sessionCode) : null;
@@ -573,7 +574,7 @@ function task(s, t) {
 </div>
 <div>${tag(taskStatus(t))} ${t.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
 <p class="ln-strip">${strip}</p>
-${first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
+${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p>` : first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${t.walked ? '' : `
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>`}
@@ -601,7 +602,7 @@ ${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length &&
   </li>`).join('')}
 </ol>${t.route ? `
 <p class="ln-step__route">${route(t.route)} ${t.sessionCode ? exact(t.sessionCode) : ''}</p>` : ''}${t.walked ? '' : `
-${confirmBox(s.id)}`}
+${confirmBox(t.id)}`}
 ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
 <div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>

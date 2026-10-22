@@ -1,0 +1,371 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "confirm-stock-destination-and-expected-order-type",
+  "title": "Confirm stock, destination, and expected order type",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 0,
+    "of": 7
+  },
+  "previous": null,
+  "next": {
+    "id": "create-the-transfer-order",
+    "title": "Create the transfer order"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Stock is known and the expected transfer configuration is recorded."
+      }
+    ],
+    "text": "Stock is known and the expected transfer configuration is recorded."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself."
+      }
+    ],
+    "text": "Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the item in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Filter Items"
+                },
+                {
+                  "t": "text",
+                  "v": ", run it, tick the row, and open "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " in the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " group"
+                }
+              ],
+              "text": "Enter the item in Filter Items, run it, tick the row, and open Warehouse Inventory in the Inventory group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, item carried through — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "item"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "source warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "source on-hand before"
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through — item, source warehouse, source on-hand before"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the same grid, find the row for the intended destination warehouse"
+                }
+              ],
+              "text": "In the same grid, find the row for the intended destination warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "destination warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "destination on-hand before"
+                }
+              ],
+              "text": "destination warehouse, destination on-hand before"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Warehousing ➔ Master Data ➔ Order Procedures ➔ Default Order Types by Origin"
+                },
+                {
+                  "t": "text",
+                  "v": " ("
+                },
+                {
+                  "t": "session",
+                  "code": "whinh0120m000"
+                },
+                {
+                  "t": "text",
+                  "v": ")"
+                }
+              ],
+              "text": "Open Warehousing ➔ Master Data ➔ Order Procedures ➔ Default Order Types by Origin (whinh0120m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The default-order-type table opens"
+                }
+              ],
+              "text": "The default-order-type table opens"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the row with transaction type "
+                },
+                {
+                  "t": "literal",
+                  "v": "Transfer"
+                },
+                {
+                  "t": "text",
+                  "v": ", ship-from "
+                },
+                {
+                  "t": "literal",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", and ship-to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Warehouse"
+                }
+              ],
+              "text": "Find the row with transaction type Transfer, ship-from Warehouse, and ship-to Warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "expected warehousing order type"
+                },
+                {
+                  "t": "text",
+                  "v": "; "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "Create Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": ". For different source and destination warehouses, official help states "
+                },
+                {
+                  "t": "field",
+                  "v": "Create Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                }
+              ],
+              "text": "expected warehousing order type; Create Shipment. For different source and destination warehouses, official help states Create Shipment = Always"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

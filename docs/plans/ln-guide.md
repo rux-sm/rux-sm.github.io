@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, split each walkthrough's phases into task files, one per
-      phase, and rewrite each walkthrough as a process that names its tasks.
 - [ ] In atlas, move the walked stamps, the walk files and the status
       computation from the phase to the task, with their checks and self-test
       fixtures.

@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="34d4f601be5df809be256a7dfed415309b775df6">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -111,38 +111,20 @@
 <p class="rux--type-body-long-01">Give one item a demand stock cannot cover, run MRP, and read the plan it makes.</p>
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Enterprise Planning</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Sales</span></div></div>
-<p><strong>Before you start.</strong> A finished item with an <strong>Approved</strong> BOM and routing, components, and stock data — the qualified training case from <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a>. The 2026-08-20 session used <span class="ln-t-exact">BAM-CHOP-PAIR</span> with components <span class="ln-t-exact">BAM-ROD</span> and <span class="ln-t-exact">BAM-SLEEVE</span>. <strong>An empty tree usually means pegging relations were never generated.</strong> The vendor treats generation as a precondition: relations come from <em>Update Pegging Relations</em> during the planning run (<a class="rux--link" href="../do/run-order-planning-for-one-item_3.html">Run MRP</a> <a class="rux--link" href="../do/run-order-planning-for-one-item_3.html#step-3">Run MRP, step 3</a>) or from <a class="rux--link" href="../screens/cprrp0240m000.html"><span class="ln-t-named">Generate Pegging Relations</span></a> <span class="ln-t-exact">cprrp0240m000</span>, and LN only generates them out to the <strong>Pegging Horizon</strong> in <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Planning Parameters</span></a> <span class="ln-t-exact">cprpd0100m000</span> — <span class="ln-t-exact">cpordplanug</span>, &quot;Pegging for planned orders&quot; (p. 113–114). <strong>In the observed environment this is not a risk</strong>: <em>Update Pegging Relations</em> is locked on, evidenced 2026-08-25 — see <a class="rux--link" href="../do/run-order-planning-for-one-item_3.html">Run MRP</a>'s notes. <strong>Yours may differ</strong>, and the check is the greyed-or-not state of that box, not its tick.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/run-order-planning-for-one-item_0.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 26 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/make-the-item-visible-to-planning.html?walk=1">Start</a><span class="ln-quiet">6 tasks · 26 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
 </div>
 <ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_0.html"><span class="ln-path__dot">1</span><b>Make the item visible to planning</b><small>The finished item and every BOM component have planning data · 6 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_1.html"><span class="ln-path__dot">2</span><b>Create demand</b><small>A sales order exists for more than is on hand · 3 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_2.html"><span class="ln-path__dot">3</span><b>Put the demand inside the horizon</b><small>Planning can see the demand · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_3.html"><span class="ln-path__dot">4</span><b>Run MRP</b><small>Planned orders exist covering the shortfall, with pegging relations · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_4.html"><span class="ln-path__dot">5</span><b>Review the result</b><small>The planned supply is read on both the parent and the component · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/run-order-planning-for-one-item_5.html"><span class="ln-path__dot">6</span><b>Read the pegging tree</b><small>The whole chain reconciles: demand, stock, planned make, planned buy · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/make-the-item-visible-to-planning.html"><span class="ln-path__dot">1</span><b>Make the item visible to planning</b><small>The finished item and every BOM component have planning data. · 6 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/create-demand.html"><span class="ln-path__dot">2</span><b>Create demand</b><small>A sales order exists for more than is on hand. · 3 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/put-the-demand-inside-the-horizon.html"><span class="ln-path__dot">3</span><b>Put the demand inside the horizon</b><small>Planning can see the demand. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/run-mrp_run-order-planning-for-one-item.html"><span class="ln-path__dot">4</span><b>Run MRP</b><small>Planned orders exist covering the shortfall, with pegging relations. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/review-the-result.html"><span class="ln-path__dot">5</span><b>Review the result</b><small>The planned supply is read on both the parent and the component. · 5 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/read-the-pegging-tree.html"><span class="ln-path__dot">6</span><b>Read the pegging tree</b><small>The whole chain reconciles: demand, stock, planned make, planned buy. · 4 steps</small></a></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 10</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><small class="ln-quiet">Make the item visible to planning</small><b>The item is not in the Item Order Plan</b><p>It has no planning data — no cluster row, no plan. Steps <a class="rux--link" href="../do/run-order-planning-for-one-item_0.html#step-3">Make the item visible to planning, steps 3–5</a>. Not an error state; nothing will tell you</p></li>
-  <li><small class="ln-quiet">Create demand</small><b>LN refuses the item on the sales order — &quot;item sales by sales office not present&quot;</b><p>The item has no row for the order's sales office. Add it on the <span class="ln-t-named">Sales Offices</span> tab of <a class="rux--link" href="../screens/tcibd0501m100.html"><span class="ln-t-named">Item</span></a> <span class="ln-t-exact">tcibd0501m100</span>, then close and reopen the order session</p></li>
-  <li><small class="ln-quiet">Create demand</small><b>A master-data fix appears to have no effect</b><p>The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20</p></li>
-  <li><small class="ln-quiet">Put the demand inside the horizon</small><b>The demand does not appear in the Item Order Plan</b><p>The delivery date is beyond the <span class="ln-t-named">Order Horizon</span> date. Step <a class="rux--link" href="../do/run-order-planning-for-one-item_2.html#step-2">Put the demand inside the horizon, step 2</a> — and remember the date is not today plus your days </p></li>
-  <li><small class="ln-quiet">Run MRP</small><b>The run plans the parent but not a component</b><p>The component has no planning data of its own. Step <a class="rux--link" href="../do/run-order-planning-for-one-item_0.html#step-6">Make the item visible to planning, step 6</a> — MRP skips it silently</p></li>
-  <li><small class="ln-quiet">Run MRP</small><b>The run produces nothing at all, or nothing propagates to the parent</b><p>Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per <a class="rux--link" href="../do/run-order-planning-for-one-item_3.html#step-1">Run MRP, step 1</a></p></li>
-  <li><small class="ln-quiet">Review the result</small><b>A planned quantity does not equal the raw shortfall</b><p>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> round it — &quot;Lot sizing&quot;, <span class="ln-t-exact">cpordplanug</span> p. 21</p></li>
-  <li><small class="ln-quiet">Review the result</small><b>An expected planned purchase order is missing entirely</b><p>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-exact">cprrp1100m000</span></a> help</p></li>
-  <li><small class="ln-quiet">Read the pegging tree</small><b>The pegging tree is empty</b><p>Pegging relations were not generated, or the demand lies beyond the <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Pegging Horizon</span></a> <span class="ln-t-exact">cprpd0100m000</span>. See the <a class="rux--link" href="../do/run-order-planning-for-one-item_5.html">Read the pegging tree</a> Prerequisite</p></li>
-  <li><small class="ln-quiet">Run MRP</small><b>A component was given planning data and still does not appear</b><p>It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own <span class="ln-t-named">Item Order Plan</span> and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 </p></li>
-</ul></div></div>
-  </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -161,7 +143,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>Planned orders cover the shortfall and reconcile in the pegging tree</b><p><strong>Not documented for this release.</strong></p></li>
-  <li><b>The planned quantities look wrong against supplier reality</b><p>Adjust order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> and rerun <a class="rux--link" href="../do/run-order-planning-for-one-item_3.html">Run MRP</a></p></li>
+  <li><b>The planned quantities look wrong against supplier reality</b><p>Adjust order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> and rerun <a class="rux--link" href="../do/run-mrp_run-order-planning-for-one-item.html">Run MRP</a></p></li>
 </ul></div></div>
   </li>
 </ul>
@@ -171,7 +153,7 @@
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
 </div>
 </div>
 </div>

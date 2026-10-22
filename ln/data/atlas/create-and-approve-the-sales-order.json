@@ -1,0 +1,744 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-and-approve-the-sales-order",
+  "title": "Create and approve the sales order",
+  "process": {
+    "id": "ship-from-stock",
+    "title": "Ship from stock",
+    "n": 1,
+    "of": 7
+  },
+  "previous": {
+    "id": "confirm-there-is-stock",
+    "title": "Confirm there is stock"
+  },
+  "next": {
+    "id": "release-to-warehousing",
+    "title": "Release to warehousing"
+  },
+  "module": "Sales · Warehousing",
+  "modules": [
+    "Sales",
+    "Warehousing"
+  ],
+  "status": "approved",
+  "updated": "2026-10-21",
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": "2026-08-09",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Sales order at "
+      },
+      {
+        "t": "strong",
+        "v": "In Process"
+      }
+    ],
+    "text": "Sales order at In Process"
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 4 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm there is stock",
+          "href": "confirm-there-is-stock.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 4 of Confirm there is stock."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+      }
+    ],
+    "text": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New",
+                  "location": "header"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter "
+                },
+                {
+                  "t": "field",
+                  "v": "Sold-to Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": ", press Tab"
+                }
+              ],
+              "text": "Enter Sold-to Business Partner, press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Address"
+                },
+                {
+                  "t": "text",
+                  "v": " autofills"
+                }
+              ],
+              "text": "Address autofills"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                }
+              ],
+              "text": "Select the Order Type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Receipt Date"
+                }
+              ],
+              "text": "Set Planned Delivery Date and Planned Receipt Date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Sales Office"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Currency"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                }
+              ],
+              "text": "Confirm Sales Office, Currency, Site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " to the warehouse recorded at step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm there is stock",
+                  "href": "confirm-there-is-stock.md"
+                }
+              ],
+              "text": "Set Warehouse to the warehouse recorded at step 4 of Confirm there is stock"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sales order number"
+                }
+              ],
+              "text": "Status = Free — sales order number"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "New",
+                  "location": "line"
+                }
+              ],
+              "text": "Click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Search for and select the "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                }
+              ],
+              "text": "Search for and select the Item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
+                }
+              ],
+              "text": "Enter the Ordered Quantity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "ordered quantity"
+                }
+              ],
+              "text": "ordered quantity"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the header, "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Approve"
+                }
+              ],
+              "text": "In the header, Actions ➔ Approve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": ". Order Acknowledgement prints"
+                }
+              ],
+              "text": "Status = In Process. Order Acknowledgement prints"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Status"
+              },
+              {
+                "t": "text",
+                "v": " stuck on "
+              },
+              {
+                "t": "status",
+                "v": "Free"
+              }
+            ],
+            "text": "Status stuck on Free"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Not approved — "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Approve"
+              }
+            ],
+            "text": "Not approved — Actions ➔ Approve"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order cannot be approved yet"
+              }
+            ],
+            "text": "The order cannot be approved yet"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Where "
+              },
+              {
+                "t": "chip",
+                "v": "Use Confirmation"
+              },
+              {
+                "t": "text",
+                "v": " is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. "
+              },
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "Where Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first — Infor LN Sales User Guide for Sales Orders, p. 8. Not documented for this release."
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On-hand looks sufficient but the order will not fill"
+              }
+            ],
+            "text": "On-hand looks sufficient but the order will not fill"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check "
+              },
+              {
+                "t": "field",
+                "v": "Allocated"
+              },
+              {
+                "t": "text",
+                "v": " — much of the on-hand may be committed elsewhere. See step 4 of "
+              },
+              {
+                "t": "link",
+                "v": "Confirm there is stock",
+                "href": "confirm-there-is-stock.md"
+              }
+            ],
+            "text": "Check Allocated — much of the on-hand may be committed elsewhere. See step 4 of Confirm there is stock"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "confirm-the-existing-foundation",
+  "title": "Confirm the existing foundation",
+  "process": {
+    "id": "manual-production-order-existing-master-data",
+    "title": "Production order",
+    "n": 0,
+    "of": 6
+  },
+  "previous": null,
+  "next": {
+    "id": "create-the-production-order",
+    "title": "Create the production order"
+  },
+  "module": "Manufacturing · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": "2026-08-12",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
+      }
+    ],
+    "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. "
+        },
+        {
+          "t": "strong",
+          "v": "Where a training case comes from."
+        },
+        {
+          "t": "text",
+          "v": " If none has been handed to you, "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 5 above asks for."
+        }
+      ],
+      "text": "Use existing master data only. Do not create, approve, expire, or repair an item, BOM, routing, work center, warehouse relationship, or costing record while following this walkthrough. Where a training case comes from. If none has been handed to you, Create test items builds one: its phases 0–5 create the items, phases 6–9 add the BOM, routing, costing, and component stock, and its phase 10 hands over exactly the values step 5 above asks for."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+      }
+    ],
+    "text": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Obtain one prequalified training case from the master-data owner"
+                }
+              ],
+              "text": "Obtain one prequalified training case from the master-data owner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component item"
+                },
+                {
+                  "t": "text",
+                  "v": ", with an existing valid BOM and routing"
+                }
+              ],
+              "text": "finished item and component item, with an existing valid BOM and routing"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the component item in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Filter Items"
+                },
+                {
+                  "t": "text",
+                  "v": " and run it"
+                }
+              ],
+              "text": "Enter the component item in Filter Items and run it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The component appears with inventory totals"
+                }
+              ],
+              "text": "The component appears with inventory totals"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the component row and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " in the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " group"
+                }
+              ],
+              "text": "Tick the component row and click Warehouse Inventory in the Inventory group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the component"
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens for the component"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+                }
+              ],
+              "text": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component on-hand before"
+                }
+              ],
+              "text": "component warehouse and component on-hand before"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+                }
+              ],
+              "text": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "All inputs needed to check the created order are known before entry begins"
+                }
+              ],
+              "text": "All inputs needed to check the created order are known before entry begins"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies"
+                }
+              ],
+              "text": "Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item on-hand before"
+                }
+              ],
+              "text": "finished item on-hand before"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No qualified item/BOM/routing combination is available"
+              }
+            ],
+            "text": "No qualified item/BOM/routing combination is available"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Stop. This walkthrough does not create or repair master data; request a qualified training case"
+              }
+            ],
+            "text": "Stop. This walkthrough does not create or repair master data; request a qualified training case"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Component has no suitable warehouse stock"
+              }
+            ],
+            "text": "Component has no suitable warehouse stock"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Choose another qualified case or replenish it before creating an order intended for later execution"
+              }
+            ],
+            "text": "Choose another qualified case or replenish it before creating an order intended for later execution"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

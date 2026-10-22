@@ -1,0 +1,392 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "read-the-stock-by-warehouse",
+  "title": "Read the stock by warehouse",
+  "process": {
+    "id": "check-item-inventory",
+    "title": "Check an item's inventory",
+    "n": 1,
+    "of": 2
+  },
+  "previous": {
+    "id": "find-the-item",
+    "title": "Find the item"
+  },
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The warehouse to work from, and its figures, are written down."
+      }
+    ],
+    "text": "The warehouse to work from, and its figures, are written down."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. "
+      },
+      {
+        "t": "em",
+        "v": "Economic Stock"
+      },
+      {
+        "t": "text",
+        "v": " on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+      }
+    ],
+    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " group of the header, click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                }
+              ],
+              "text": "In the Inventory group of the header, click Warehouse Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, item carried through"
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read each row's "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory on Hand"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory on Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Allocated"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Blocked"
+                }
+              ],
+              "text": "Read each row's Inventory on Hand, Inventory on Order, Inventory Allocated and Inventory Blocked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One row per warehouse holding or expecting the item"
+                }
+              ],
+              "text": "One row per warehouse holding or expecting the item"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose the warehouse to work from by its figures, not its name"
+                }
+              ],
+              "text": "Choose the warehouse to work from by its figures, not its name"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "on hand"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "allocated"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "blocked"
+                }
+              ],
+              "text": "warehouse, on hand, allocated, blocked"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the totals beneath the grid"
+                }
+              ],
+              "text": "Read the totals beneath the grid"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "total on hand"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "total allocated"
+                }
+              ],
+              "text": "total on hand, total allocated"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On hand looks sufficient but an order will not fill"
+              }
+            ],
+            "text": "On hand looks sufficient but an order will not fill"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check "
+              },
+              {
+                "t": "field",
+                "v": "Inventory Allocated"
+              },
+              {
+                "t": "text",
+                "v": ". Much of the on-hand may be committed elsewhere"
+              }
+            ],
+            "text": "Check Inventory Allocated. Much of the on-hand may be committed elsewhere"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Economic Stock"
+              },
+              {
+                "t": "text",
+                "v": " is negative"
+              }
+            ],
+            "text": "Economic Stock is negative"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The warehouse is over-allocated: more is committed than it holds and expects"
+              }
+            ],
+            "text": "The warehouse is over-allocated: more is committed than it holds and expects"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

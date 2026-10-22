@@ -1,0 +1,343 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-mrp_run-order-planning-for-one-item",
+  "title": "Run MRP",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 3,
+    "of": 6
+  },
+  "previous": {
+    "id": "put-the-demand-inside-the-horizon",
+    "title": "Put the demand inside the horizon"
+  },
+  "next": {
+    "id": "review-the-result",
+    "title": "Review the result"
+  },
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planned orders exist covering the shortfall, with pegging relations."
+      }
+    ],
+    "text": "Planned orders exist covering the shortfall, with pegging relations."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what "
+      },
+      {
+        "t": "link",
+        "v": "Read the pegging tree",
+        "href": "read-the-pegging-tree.md"
+      },
+      {
+        "t": "text",
+        "v": " reads."
+      }
+    ],
+    "text": "The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what Read the pegging tree reads."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp1220m000",
+                  "name": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " for the finished item"
+                }
+              ],
+              "text": "Open Generate Order Planning (Item) (cprrp1220m000) for the finished item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Plan Item"
+                },
+                {
+                  "t": "text",
+                  "v": " are set"
+                }
+              ],
+              "text": "Scenario and Plan Item are set"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "field",
+                  "v": "Include Child Items"
+                }
+              ],
+              "text": "Select Include Child Items"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run will also plan the BOM components — multi-level, top-down"
+                }
+              ],
+              "text": "The run will also plan the BOM components — multi-level, top-down"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Update Pegging Relations"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected, where the field is open"
+                }
+              ],
+              "text": "Confirm Update Pegging Relations is selected, where the field is open"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Read the pegging tree",
+                  "href": "read-the-pegging-tree.md"
+                },
+                {
+                  "t": "text",
+                  "v": " depends on it — see the notes"
+                }
+              ],
+              "text": "Read the pegging tree depends on it — see the notes"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the generation"
+                }
+              ],
+              "text": "Run the generation"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The run completes; exception messages print or store if selected"
+                }
+              ],
+              "text": "The run completes; exception messages print or store if selected"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The run plans the parent but not a component"
+              }
+            ],
+            "text": "The run plans the parent but not a component"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The component has no planning data of its own. Step 6 of "
+              },
+              {
+                "t": "link",
+                "v": "Make the item visible to planning",
+                "href": "make-the-item-visible-to-planning.md"
+              },
+              {
+                "t": "text",
+                "v": " — MRP skips it silently"
+              }
+            ],
+            "text": "The component has no planning data of its own. Step 6 of Make the item visible to planning — MRP skips it silently"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The run produces nothing at all, or nothing propagates to the parent"
+              }
+            ],
+            "text": "The run produces nothing at all, or nothing propagates to the parent"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 1"
+              }
+            ],
+            "text": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 1"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A component was given planning data and still does not appear"
+              }
+            ],
+            "text": "A component was given planning data and still does not appear"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own "
+              },
+              {
+                "t": "chip",
+                "v": "Item Order Plan"
+              },
+              {
+                "t": "text",
+                "v": " and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 "
+              }
+            ],
+            "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own Item Order Plan and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

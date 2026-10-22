@@ -1,0 +1,375 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "ship_transfer-item-between-warehouses",
+  "title": "Ship",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 4,
+    "of": 7
+  },
+  "previous": {
+    "id": "pick-the-goods_transfer-item-between-warehouses",
+    "title": "Pick the goods"
+  },
+  "next": {
+    "id": "receive-at-the-destination",
+    "title": "Receive at the destination"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Shipments ➔ Shipments",
+  "session": "Shipments",
+  "sessionCode": "whinh4130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Goods leave the source warehouse."
+      }
+    ],
+    "text": "Goods leave the source warehouse."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question "
+      },
+      {
+        "t": "link",
+        "v": "Confirm the processing path and create advice",
+        "href": "confirm-the-processing-path-and-create-advice.md"
+      },
+      {
+        "t": "text",
+        "v": "'s activity table answers."
+      }
+    ],
+    "text": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question Confirm the processing path and create advice's activity table answers."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Freeze/Confirm Shipments/Loads"
+                },
+                {
+                  "t": "text",
+                  "v": " row recorded in "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the processing path and create advice",
+                  "href": "confirm-the-processing-path-and-create-advice.md"
+                }
+              ],
+              "text": "Check the Freeze/Confirm Shipments/Loads row recorded in Confirm the processing path and create advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If already finished automatically, record "
+                },
+                {
+                  "t": "literal",
+                  "v": "Automatic / not observed"
+                },
+                {
+                  "t": "text",
+                  "v": " and skip steps 2–4; if "
+                },
+                {
+                  "t": "field",
+                  "v": "Automatic"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "No"
+                },
+                {
+                  "t": "text",
+                  "v": ", continue"
+                }
+              ],
+              "text": "If already finished automatically, record Automatic / not observed and skip steps 2–4; if Automatic = No, continue"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the shipment for this order, then click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Find the shipment for this order, then click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipment number"
+                }
+              ],
+              "text": "shipment number"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "field",
+                  "v": "Freeze Mandatory"
+                },
+                {
+                  "t": "text",
+                  "v": " is ticked, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Freeze"
+                }
+              ],
+              "text": "If Freeze Mandatory is ticked, choose Actions ➔ Freeze"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Frozen"
+                }
+              ],
+              "text": "Status = Frozen"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Confirm"
+                }
+              ],
+              "text": "Choose Actions ➔ Confirm"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ". Inventory leaves the source warehouse"
+                }
+              ],
+              "text": "Status = Confirmed. Inventory leaves the source warehouse"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No shipment is visible for a different-warehouse transfer"
+              }
+            ],
+            "text": "No shipment is visible for a different-warehouse transfer"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Official help says "
+              },
+              {
+                "t": "field",
+                "v": "Create Shipment"
+              },
+              {
+                "t": "text",
+                "v": " is "
+              },
+              {
+                "t": "literal",
+                "v": "Always"
+              },
+              {
+                "t": "text",
+                "v": ". Check Shipment Lines and the "
+              },
+              {
+                "t": "link",
+                "v": "Confirm the processing path and create advice",
+                "href": "confirm-the-processing-path-and-create-advice.md"
+              },
+              {
+                "t": "text",
+                "v": " activity status before continuing"
+              }
+            ],
+            "text": "Official help says Create Shipment is Always. Check Shipment Lines and the Confirm the processing path and create advice activity status before continuing"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Confirm greyed out"
+              }
+            ],
+            "text": "Confirm greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Shipment not yet Frozen, or "
+              },
+              {
+                "t": "field",
+                "v": "Freeze Mandatory"
+              },
+              {
+                "t": "text",
+                "v": " requires it — run step 3 first"
+              }
+            ],
+            "text": "Shipment not yet Frozen, or Freeze Mandatory requires it — run step 3 first"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

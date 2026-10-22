@@ -1,0 +1,390 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "read-the-pegging-tree",
+  "title": "Read the pegging tree",
+  "process": {
+    "id": "run-order-planning-for-one-item",
+    "title": "Run order planning",
+    "n": 5,
+    "of": 6
+  },
+  "previous": {
+    "id": "review-the-result",
+    "title": "Review the result"
+  },
+  "next": null,
+  "module": "Enterprise Planning · Sales",
+  "modules": [
+    "Enterprise Planning",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The whole chain reconciles: demand, stock, planned make, planned buy."
+      }
+    ],
+    "text": "The whole chain reconciles: demand, stock, planned make, planned buy."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 5 of "
+        },
+        {
+          "t": "link",
+          "v": "Review the result",
+          "href": "review-the-result.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 5 of Review the result."
+    },
+    {
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "An empty tree usually means pegging relations were never generated."
+        },
+        {
+          "t": "text",
+          "v": " The vendor treats generation as a precondition: relations come from "
+        },
+        {
+          "t": "em",
+          "v": "Update Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": " during the planning run (step 3 of "
+        },
+        {
+          "t": "link",
+          "v": "Run MRP",
+          "href": "run-mrp_run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": ") or from "
+        },
+        {
+          "t": "session",
+          "code": "cprrp0240m000",
+          "name": "Generate Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": ", and LN only generates them out to the "
+        },
+        {
+          "t": "strong",
+          "v": "Pegging Horizon"
+        },
+        {
+          "t": "text",
+          "v": " in "
+        },
+        {
+          "t": "session",
+          "code": "cprpd0100m000",
+          "name": "Planning Parameters"
+        },
+        {
+          "t": "text",
+          "v": " — "
+        },
+        {
+          "t": "literal",
+          "v": "cpordplanug"
+        },
+        {
+          "t": "text",
+          "v": ", \"Pegging for planned orders\" (p. 113–114). "
+        },
+        {
+          "t": "strong",
+          "v": "In the observed environment this is not a risk"
+        },
+        {
+          "t": "text",
+          "v": ": "
+        },
+        {
+          "t": "em",
+          "v": "Update Pegging Relations"
+        },
+        {
+          "t": "text",
+          "v": " is locked on, evidenced 2026-08-25 — see "
+        },
+        {
+          "t": "link",
+          "v": "Run MRP",
+          "href": "run-mrp_run-order-planning-for-one-item.md"
+        },
+        {
+          "t": "text",
+          "v": "'s notes. "
+        },
+        {
+          "t": "strong",
+          "v": "Yours may differ"
+        },
+        {
+          "t": "text",
+          "v": ", and the check is the greyed-or-not state of that box, not its tick."
+        }
+      ],
+      "text": "An empty tree usually means pegging relations were never generated. The vendor treats generation as a precondition: relations come from Update Pegging Relations during the planning run (step 3 of Run MRP) or from Generate Pegging Relations (cprrp0240m000), and LN only generates them out to the Pegging Horizon in Planning Parameters (cprpd0100m000) — cpordplanug, \"Pegging for planned orders\" (p. 113–114). In the observed environment this is not a risk: Update Pegging Relations is locked on, evidenced 2026-08-25 — see Run MRP's notes. Yours may differ, and the check is the greyed-or-not state of that box, not its tick."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+      }
+    ],
+    "text": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In "
+                },
+                {
+                  "t": "chip",
+                  "v": "Planned Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", select the planned production order from step 5 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Review the result",
+                  "href": "review-the-result.md"
+                }
+              ],
+              "text": "In Planned Orders, select the planned production order from step 5 of Review the result"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "chip",
+                  "v": "Pegging - Upstream"
+                }
+              ],
+              "text": "Run Pegging - Upstream"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "cprrp0740m200",
+                  "name": "Order Pegging"
+                },
+                {
+                  "t": "text",
+                  "v": " opens as a tree"
+                }
+              ],
+              "text": "Order Pegging (cprrp0740m200) opens as a tree"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the tree from the top"
+                }
+              ],
+              "text": "Read the tree from the top"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The sales order, then each level of stock and planned supply beneath it"
+                }
+              ],
+              "text": "The sales order, then each level of stock and planned supply beneath it"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the arithmetic at every level against the BOM and the stock figures"
+                }
+              ],
+              "text": "Check the arithmetic at every level against the BOM and the stock figures"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "pegging arithmetic check"
+                },
+                {
+                  "t": "text",
+                  "v": " — each level's children sum to its requirement"
+                }
+              ],
+              "text": "pegging arithmetic check — each level's children sum to its requirement"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The pegging tree is empty"
+              }
+            ],
+            "text": "The pegging tree is empty"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Pegging relations were not generated, or the demand lies beyond the "
+              },
+              {
+                "t": "session",
+                "code": "cprpd0100m000",
+                "name": "Pegging Horizon"
+              },
+              {
+                "t": "text",
+                "v": ". See the this task Prerequisite"
+              }
+            ],
+            "text": "Pegging relations were not generated, or the demand lies beyond the Pegging Horizon (cprpd0100m000). See the this task Prerequisite"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

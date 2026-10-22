@@ -1,0 +1,788 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "issue-material-to-the-job-shop",
+  "title": "Issue material to the job shop",
+  "process": {
+    "id": "manual-production-order-existing-master-data",
+    "title": "Production order",
+    "n": 4,
+    "of": 6
+  },
+  "previous": {
+    "id": "release-the-order",
+    "title": "Release the order"
+  },
+  "next": {
+    "id": "report-the-operation-complete-and-confirm-warehouse-receipt",
+    "title": "Report the operation complete and confirm warehouse receipt"
+  },
+  "module": "Manufacturing · Warehousing",
+  "modules": [
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": "2026-08-18",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The component is issued; the order is "
+      },
+      {
+        "t": "strong",
+        "v": "Active"
+      }
+    ],
+    "text": "The component is issued; the order is Active"
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 1 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the existing foundation",
+          "href": "confirm-the-existing-foundation.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 4 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the existing foundation",
+          "href": "confirm-the-existing-foundation.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 1 of Confirm the existing foundation; step 4 of Confirm the existing foundation."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to "
+      },
+      {
+        "t": "strong",
+        "v": "Active"
+      },
+      {
+        "t": "text",
+        "v": "; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line."
+      }
+    ],
+    "text": "Material issue turns the estimated quantities into an outbound warehousing order from the raw-material warehouse to the work center, and each issued quantity books a WIP transaction. That first WIP transaction is what moves the order to Active; release alone does not. How much of the outbound procedure LN runs for you depends on two check boxes on the material line."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "command",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " ("
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100"
+                },
+                {
+                  "t": "text",
+                  "v": ") for the order released in "
+                },
+                {
+                  "t": "link",
+                  "v": "Release the order",
+                  "href": "release-the-order.md"
+                }
+              ],
+              "text": "Open Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders (ticst0101m100) for the order released in Release the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The component line from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the existing foundation",
+                  "href": "confirm-the-existing-foundation.md"
+                },
+                {
+                  "t": "text",
+                  "v": " is listed, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Production Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                }
+              ],
+              "text": "The component line from step 1 of Confirm the existing foundation is listed, with Production Order Status = Released"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Estimated Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Actual Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": ", and "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " for the component line"
+                }
+              ],
+              "text": "Read Estimated Quantity, Actual Quantity, and To Issue by Warehouse for the component line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material to issue"
+                },
+                {
+                  "t": "text",
+                  "v": " = the "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " figure; "
+                },
+                {
+                  "t": "field",
+                  "v": "Actual Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " = 0"
+                }
+              ],
+              "text": "material to issue = the To Issue by Warehouse figure; Actual Quantity = 0"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the line is not already unblocked, run "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0207m000",
+                  "name": "Initiate Inventory Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " for the line"
+                }
+              ],
+              "text": "If the line is not already unblocked, run Initiate Inventory Issue (tisfc0207m000) for the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The material's warehouse order line unblocks"
+                }
+              ],
+              "text": "The material's warehouse order line unblocks"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " and find the production issue order for this production order"
+                }
+              ],
+              "text": "Open Warehousing Orders (whinh2100m000) and find the production issue order for this production order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order shows order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "30- Production (Out)"
+                },
+                {
+                  "t": "text",
+                  "v": ", source the component warehouse from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the existing foundation",
+                  "href": "confirm-the-existing-foundation.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", destination the work center from the routing"
+                }
+              ],
+              "text": "The order shows order type 30- Production (Out), source the component warehouse from step 4 of Confirm the existing foundation, destination the work center from the routing"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                },
+                {
+                  "t": "text",
+                  "v": " on the issue order — "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                }
+              ],
+              "text": "Click Drill In on the issue order — Warehousing Order (whinh2100m100)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order lines and the "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2129m000",
+                  "name": "Outbound Line Status Overview"
+                },
+                {
+                  "t": "text",
+                  "v": " activity list are visible"
+                }
+              ],
+              "text": "The order lines and the Outbound Line Status Overview (whinh2129m000) activity list are visible"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " show unfinished and not automatic, run them"
+                }
+              ],
+              "text": "If Generate Outbound Advice and Release Outbound Advice show unfinished and not automatic, run them"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advice is generated and released"
+                }
+              ],
+              "text": "The advice is generated and released"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Continue the outbound procedure until the issue order reaches "
+                },
+                {
+                  "t": "status",
+                  "v": "Shipped"
+                }
+              ],
+              "text": "Continue the outbound procedure until the issue order reaches Shipped"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ordered and advised quantities match; the order shows "
+                },
+                {
+                  "t": "status",
+                  "v": "Shipped"
+                }
+              ],
+              "text": "Ordered and advised quantities match; the order shows Shipped"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Return to "
+                },
+                {
+                  "t": "chip",
+                  "v": "Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production Orders"
+                }
+              ],
+              "text": "Return to Material to Issue for Production Orders and Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Actual Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " = the estimated quantity, "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " = 0; "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order status after material issue"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Active"
+                }
+              ],
+              "text": "Actual Quantity = the estimated quantity, To Issue by Warehouse = 0; order status after material issue = Active"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The material line stays blocked / "
+              },
+              {
+                "t": "field",
+                "v": "To Issue by Warehouse"
+              },
+              {
+                "t": "text",
+                "v": " never appears"
+              }
+            ],
+            "text": "The material line stays blocked / To Issue by Warehouse never appears"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Run "
+              },
+              {
+                "t": "session",
+                "code": "tisfc0207m000",
+                "name": "Initiate Inventory Issue"
+              },
+              {
+                "t": "text",
+                "v": " manually; if still blocked, stop and record what was observed "
+              }
+            ],
+            "text": "Run Initiate Inventory Issue (tisfc0207m000) manually; if still blocked, stop and record what was observed"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The issue stops short and a shortage report prints"
+              }
+            ],
+            "text": "The issue stops short and a shortage report prints"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A component's stock is short and negative inventory is not allowed. The quantity waits in "
+              },
+              {
+                "t": "field",
+                "v": "To Issue by Warehouse"
+              },
+              {
+                "t": "text",
+                "v": "; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+              }
+            ],
+            "text": "A component's stock is short and negative inventory is not allowed. The quantity waits in To Issue by Warehouse; restock, then process the warehousing order by hand — Infor LN User Guide for Manufacturing, p. 89"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Generate/Release Outbound Advice are missing or already actioned"
+              }
+            ],
+            "text": "Generate/Release Outbound Advice are missing or already actioned"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Do not assume a fault. "
+              },
+              {
+                "t": "chip",
+                "v": "Direct Process Warehouse Order Line"
+              },
+              {
+                "t": "text",
+                "v": " may be automatic for this material — confirm in "
+              },
+              {
+                "t": "session",
+                "code": "whinh2104m000",
+                "name": "Activities by Warehousing Order"
+              },
+              {
+                "t": "text",
+                "v": " before troubleshooting further"
+              }
+            ],
+            "text": "Do not assume a fault. Direct Process Warehouse Order Line may be automatic for this material — confirm in Activities by Warehousing Order (whinh2104m000) before troubleshooting further"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "More than one component"
+              }
+            ],
+            "text": "More than one component"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Record and compare every expected component and estimated quantity in "
+              },
+              {
+                "t": "link",
+                "v": "Verify the generated foundation",
+                "href": "verify-the-generated-foundation.md"
+              },
+              {
+                "t": "text",
+                "v": "; issue every material line in this task; the phase structure does not change"
+              }
+            ],
+            "text": "Record and compare every expected component and estimated quantity in Verify the generated foundation; issue every material line in this task; the phase structure does not change"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Fully automatic material issue"
+              }
+            ],
+            "text": "Fully automatic material issue"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "If "
+              },
+              {
+                "t": "field",
+                "v": "Direct Initiate Inventory Issue"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "Direct Process Warehouse Order Line"
+              },
+              {
+                "t": "text",
+                "v": " are both selected for the material, steps 3–7 complete themselves once the order is released; the phase structure does not change"
+              }
+            ],
+            "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 3–7 complete themselves once the order is released; the phase structure does not change"
+          }
+        ]
+      }
+    ]
+  }
+}

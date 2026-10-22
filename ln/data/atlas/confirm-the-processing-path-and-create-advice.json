@@ -1,0 +1,513 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "confirm-the-processing-path-and-create-advice",
+  "title": "Confirm the processing path and create advice",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 2,
+    "of": 7
+  },
+  "previous": {
+    "id": "create-the-transfer-order",
+    "title": "Create the transfer order"
+  },
+  "next": {
+    "id": "pick-the-goods_transfer-item-between-warehouses",
+    "title": "Pick the goods"
+  },
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
+  "session": "Outbound Line Status Overview",
+  "sessionCode": "whinh2129m000",
+  "walked": "2026-08-15",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Manual and automatic activities are known before processing continues."
+      }
+    ],
+    "text": "Manual and automatic activities are known before processing continues."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 6 of "
+        },
+        {
+          "t": "link",
+          "v": "Create the transfer order",
+          "href": "create-the-transfer-order.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 6 of Create the transfer order."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+      }
+    ],
+    "text": "The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2129m000",
+                  "name": "Outbound Line Status Overview"
+                }
+              ],
+              "text": "Open Outbound Line Status Overview (whinh2129m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The outbound-line overview opens"
+                }
+              ],
+              "text": "The outbound-line overview opens"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the transfer order line from "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                }
+              ],
+              "text": "Find the transfer order line from Create the transfer order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item and order line match; "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " matches the actual value from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                }
+              ],
+              "text": "The item and order line match; Order Type matches the actual value from step 6 of Create the transfer order"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read every row in the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Activities"
+                },
+                {
+                  "t": "text",
+                  "v": " table, especially "
+                },
+                {
+                  "t": "field",
+                  "v": "Finished"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Automatic"
+                }
+              ],
+              "text": "Read every row in the Activities table, especially Finished and Automatic"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Automatic"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "Yes"
+                },
+                {
+                  "t": "text",
+                  "v": " means LN runs it; "
+                },
+                {
+                  "t": "field",
+                  "v": "Automatic"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "No"
+                },
+                {
+                  "t": "text",
+                  "v": " means it is an operator step"
+                }
+              ],
+              "text": "Automatic = Yes means LN runs it; Automatic = No means it is an operator step"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the activities marked "
+                },
+                {
+                  "t": "field",
+                  "v": "Automatic"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "literal",
+                  "v": "No"
+                }
+              ],
+              "text": "Record the activities marked Automatic = No"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "manual outbound activities"
+                },
+                {
+                  "t": "text",
+                  "v": "; these determine which later steps you perform"
+                }
+              ],
+              "text": "manual outbound activities; these determine which later steps you perform"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the first unfinished activity is automatic, return to the warehousing order and choose "
+                },
+                {
+                  "t": "button",
+                  "label": "Process"
+                }
+              ],
+              "text": "If the first unfinished activity is automatic, return to the warehousing order and choose Process"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN executes consecutive automatic activities and stops at the next manual activity"
+                }
+              ],
+              "text": "LN executes consecutive automatic activities and stops at the next manual activity"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " is manual, open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": ", select the line, and choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                }
+              ],
+              "text": "If Generate Outbound Advice is manual, open Outbound Lines, select the line, and choose Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "status",
+                  "v": "Advised"
+                },
+                {
+                  "t": "text",
+                  "v": " fills; automatic follow-on activities may also finish"
+                }
+              ],
+              "text": "Advised fills; automatic follow-on activities may also finish"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " is manual and "
+                },
+                {
+                  "t": "field",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " is still blank, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Release Advice"
+                }
+              ],
+              "text": "If Release Outbound Advice is manual and Released is still blank, choose Actions ➔ Advice ➔ Release Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " fills"
+                }
+              ],
+              "text": "Released fills"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Advice"
+              },
+              {
+                "t": "text",
+                "v": " greyed out"
+              }
+            ],
+            "text": "Advice greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "You are on the session toolbar, not the "
+              },
+              {
+                "t": "chip",
+                "v": "Outbound Lines"
+              },
+              {
+                "t": "text",
+                "v": " toolbar — see step 6"
+              }
+            ],
+            "text": "You are on the session toolbar, not the Outbound Lines toolbar — see step 6"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

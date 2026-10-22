@@ -1,0 +1,396 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "receive-against-the-order",
+  "title": "Receive against the order",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 3,
+    "of": 6
+  },
+  "previous": {
+    "id": "book-the-lines",
+    "title": "Book the lines"
+  },
+  "next": {
+    "id": "confirm-the-receipt",
+    "title": "Confirm the receipt"
+  },
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Orders ➔ Orders",
+  "session": "Warehousing Orders",
+  "sessionCode": "whinh2100m000",
+  "walked": "2026-08-18",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "LN's generated inbound order is found and receiving is started."
+      }
+    ],
+    "text": "LN's generated inbound order is found and receiving is started."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 3 of "
+        },
+        {
+          "t": "link",
+          "v": "Create the purchase order",
+          "href": "create-the-purchase-order.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 1 of "
+        },
+        {
+          "t": "link",
+          "v": "Read the baseline",
+          "href": "read-the-baseline.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 3 of Create the purchase order; step 1 of Read the baseline."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own "
+      },
+      {
+        "t": "strong",
+        "v": "Release to Warehousing"
+      },
+      {
+        "t": "text",
+        "v": " tab shows which lines are still waiting, and its line status session says which activity has to happen first."
+      }
+    ],
+    "text": "You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own Release to Warehousing tab shows which lines are still waiting, and its line status session says which activity has to happen first."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", find the order LN generated from the purchase order, and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Open Warehousing Orders (whinh2100m000), find the order LN generated from the purchase order, and click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An inbound order exists that you did not create by hand"
+                }
+              ],
+              "text": "An inbound order exists that you did not create by hand"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm its "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " and ship-from"
+                }
+              ],
+              "text": "Confirm its Order Type and ship-from"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "warehousing order number"
+                },
+                {
+                  "t": "text",
+                  "v": " — the walked run showed order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "PUI"
+                },
+                {
+                  "t": "text",
+                  "v": " \"Purchase Receipts\", ship-from the partner from step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the purchase order",
+                  "href": "create-the-purchase-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", ship-to the receiving warehouse from step 1 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                }
+              ],
+              "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from the partner from step 3 of Create the purchase order, ship-to the receiving warehouse from step 1 of Read the baseline"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the inbound lines"
+                }
+              ],
+              "text": "Select the inbound lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The lines correspond to the purchase order lines from "
+                },
+                {
+                  "t": "link",
+                  "v": "Book the lines",
+                  "href": "book-the-lines.md"
+                }
+              ],
+              "text": "The lines correspond to the purchase order lines from Book the lines"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Receive"
+                },
+                {
+                  "t": "text",
+                  "v": " on the selected inbound lines"
+                }
+              ],
+              "text": "Run Actions ➔ Receive on the selected inbound lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3512m000",
+                  "name": "Warehouse Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Warehouse Receipt (whinh3512m000) opens"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No warehousing order appears after saving the purchase order"
+              }
+            ],
+            "text": "No warehousing order appears after saving the purchase order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The warehouse on the order lines (step 4 of "
+              },
+              {
+                "t": "link",
+                "v": "Book the lines",
+                "href": "book-the-lines.md"
+              },
+              {
+                "t": "text",
+                "v": "). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's "
+              },
+              {
+                "t": "chip",
+                "v": "Release to Warehousing"
+              },
+              {
+                "t": "text",
+                "v": " tab: a line still sitting there has not been released, and "
+              },
+              {
+                "t": "session",
+                "code": "tdpur4534m000",
+                "name": "Purchase Order Line Status"
+              },
+              {
+                "t": "text",
+                "v": " names the activity it is waiting on"
+              }
+            ],
+            "text": "The warehouse on the order lines (step 4 of Book the lines). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's Release to Warehousing tab: a line still sitting there has not been released, and Purchase Order Line Status (tdpur4534m000) names the activity it is waiting on"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The Actions menu offers no receive command"
+              }
+            ],
+            "text": "The Actions menu offers no receive command"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from step 1, not the purchase order"
+              }
+            ],
+            "text": "The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from step 1, not the purchase order"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

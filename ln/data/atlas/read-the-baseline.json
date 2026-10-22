@@ -1,0 +1,289 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "read-the-baseline",
+  "title": "Read the baseline",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 0,
+    "of": 6
+  },
+  "previous": null,
+  "next": {
+    "id": "create-the-purchase-order",
+    "title": "Create the purchase order"
+  },
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "On-hand at the receiving warehouse is recorded before anything is booked."
+      }
+    ],
+    "text": "On-hand at the receiving warehouse is recorded before anything is booked."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The materials exist as items with purchase defaults, and the receiving warehouse exists. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+        }
+      ],
+      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Create test items phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+      }
+    ],
+    "text": "Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whwmd4300m000",
+                  "name": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": " and identify the raw-material warehouse you are buying into"
+                }
+              ],
+              "text": "Open Inventory 360 (whwmd4300m000) and identify the raw-material warehouse you are buying into"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "receiving warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " — the walked run used the raw-materials warehouse "
+                }
+              ],
+              "text": "receiving warehouse — the walked run used the raw-materials warehouse"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Filter for the first material and read its on-hand at that warehouse"
+                }
+              ],
+              "text": "Filter for the first material and read its on-hand at that warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 1 code"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 1 on-hand before"
+                }
+              ],
+              "text": "material 1 code and material 1 on-hand before"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat for the second material"
+                }
+              ],
+              "text": "Repeat for the second material"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 code"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 on-hand before"
+                }
+              ],
+              "text": "material 2 code and material 2 on-hand before"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record both figures before booking anything"
+                }
+              ],
+              "text": "Record both figures before booking anything"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both baselines are written down, not remembered"
+                }
+              ],
+              "text": "Both baselines are written down, not remembered"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

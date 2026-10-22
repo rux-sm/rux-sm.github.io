@@ -1,0 +1,701 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "build-the-pairs",
+  "title": "Build the pairs",
+  "process": {
+    "id": "demand-to-shipment-via-planning",
+    "title": "Plan to shipment",
+    "n": 5,
+    "of": 7
+  },
+  "previous": {
+    "id": "receive-the-components",
+    "title": "Receive the components"
+  },
+  "next": {
+    "id": "ship_demand-to-shipment-via-planning",
+    "title": "Ship"
+  },
+  "module": "Sales · Enterprise Planning · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Sales",
+    "Enterprise Planning",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The finished item is posted to inventory."
+      }
+    ],
+    "text": "The finished item is posted to inventory."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 6 of "
+        },
+        {
+          "t": "link",
+          "v": "Cross the boundary",
+          "href": "cross-the-boundary.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Receive the components",
+          "href": "receive-the-components.md"
+        },
+        {
+          "t": "text",
+          "v": "; step 2 of "
+        },
+        {
+          "t": "link",
+          "v": "Preflight",
+          "href": "preflight.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 6 of Cross the boundary; step 2 of Receive the components; step 2 of Preflight."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. "
+      },
+      {
+        "t": "strong",
+        "v": "Production Completed"
+      },
+      {
+        "t": "text",
+        "v": " is the handoff to Warehousing, not a failed "
+      },
+      {
+        "t": "strong",
+        "v": "Completed"
+      },
+      {
+        "t": "text",
+        "v": "."
+      }
+    ],
+    "text": "The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. Production Completed is the handoff to Warehousing, not a failed Completed."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the production order from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Cross the boundary",
+                  "href": "cross-the-boundary.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and check its BOM, routing and estimated materials"
+                }
+              ],
+              "text": "Open the production order from step 6 of Cross the boundary and check its BOM, routing and estimated materials"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "BOM rev "
+                },
+                {
+                  "t": "literal",
+                  "v": "000002"
+                },
+                {
+                  "t": "text",
+                  "v": ", routing "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " rev "
+                },
+                {
+                  "t": "literal",
+                  "v": "000001"
+                },
+                {
+                  "t": "text",
+                  "v": ", operation "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": ", rods and sleeves listed "
+                }
+              ],
+              "text": "BOM rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the order and run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Release Orders"
+                }
+              ],
+              "text": "Select the order and run Actions ➔ Release Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tisfc0204m000",
+                  "name": "Release Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Release Production Orders (tisfc0204m000) opens"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the release for this order only"
+                }
+              ],
+              "text": "Run the release for this order only"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": "; warehousing issue and receipt orders now exist"
+                }
+              ],
+              "text": "Order Status = Released; warehousing issue and receipt orders now exist"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "ticst0101m100",
+                  "name": "Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " at "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", and issue the materials per "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " steps step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Receive the components",
+                  "href": "receive-the-components.md"
+                },
+                {
+                  "t": "text",
+                  "v": "–4.7"
+                }
+              ],
+              "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per Production order steps step 2 of Receive the components–4.7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Actual Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " = the estimated quantity; "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Active"
+                }
+              ],
+              "text": "Actual Quantity = the estimated quantity; Order Status = Active"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tisfc0130m000",
+                  "name": "Report Operations"
+                },
+                {
+                  "t": "text",
+                  "v": " at "
+                },
+                {
+                  "t": "path",
+                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
+                },
+                {
+                  "t": "text",
+                  "v": ", enter the built quantity in "
+                },
+                {
+                  "t": "field",
+                  "v": "Completed"
+                },
+                {
+                  "t": "text",
+                  "v": ", and save"
+                }
+              ],
+              "text": "Open Report Operations (tisfc0130m000) at Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations, enter the built quantity in Completed, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN may ask whether to confirm the receipt automatically — record which way you answer"
+                }
+              ],
+              "text": "LN may ask whether to confirm the receipt automatically — record which way you answer"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Return to "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " and read "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                }
+              ],
+              "text": "Return to Production Orders and read Order Status"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "production order status after reporting"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "status",
+                  "v": "Production Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " or "
+                },
+                {
+                  "t": "status",
+                  "v": "Completed"
+                }
+              ],
+              "text": "production order status after reporting — Production Completed or Completed"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-CHOP-PAIR"
+                },
+                {
+                  "t": "text",
+                  "v": " on-hand at the finished-goods warehouse from step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Preflight",
+                  "href": "preflight.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                }
+              ],
+              "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse from step 2 of Preflight in Inventory 360"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "pair on-hand after build"
+                },
+                {
+                  "t": "text",
+                  "v": " — up by the built quantity over step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Preflight",
+                  "href": "preflight.md"
+                }
+              ],
+              "text": "pair on-hand after build — up by the built quantity over step 2 of Preflight"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order will not release"
+              }
+            ],
+            "text": "The order will not release"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Printing Production Order Documents Mandatory"
+              },
+              {
+                "t": "text",
+                "v": " in "
+              },
+              {
+                "t": "session",
+                "code": "tisfc0100s000"
+              },
+              {
+                "t": "text",
+                "v": " may require "
+              },
+              {
+                "t": "status",
+                "v": "Printed"
+              },
+              {
+                "t": "text",
+                "v": " first "
+              }
+            ],
+            "text": "Printing Production Order Documents Mandatory in tisfc0100s000 may require Printed first"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The material line stays blocked"
+              }
+            ],
+            "text": "The material line stays blocked"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Run "
+              },
+              {
+                "t": "session",
+                "code": "tisfc0207m000",
+                "name": "Initiate Inventory Issue"
+              },
+              {
+                "t": "text",
+                "v": " manually; if still blocked, record what you saw "
+              }
+            ],
+            "text": "Run Initiate Inventory Issue (tisfc0207m000) manually; if still blocked, record what you saw"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Status reaches "
+              },
+              {
+                "t": "status",
+                "v": "Production Completed"
+              },
+              {
+                "t": "text",
+                "v": " and on-hand does not move"
+              }
+            ],
+            "text": "Status reaches Production Completed and on-hand does not move"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "That is the "
+              },
+              {
+                "t": "chip",
+                "v": "No"
+              },
+              {
+                "t": "text",
+                "v": " path at step 5. Check "
+              },
+              {
+                "t": "session",
+                "code": "whinh2100m000",
+                "name": "Warehousing Orders"
+              },
+              {
+                "t": "text",
+                "v": " for an open production receipt order"
+              }
+            ],
+            "text": "That is the No path at step 5. Check Warehousing Orders (whinh2100m000) for an open production receipt order"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

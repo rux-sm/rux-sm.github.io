@@ -1,0 +1,734 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "stock-the-components",
+  "title": "Stock the components",
+  "process": {
+    "id": "create-basic-test-items-and-defaults",
+    "title": "Create test items",
+    "n": 9,
+    "of": 11
+  },
+  "previous": {
+    "id": "confirm-costing-data",
+    "title": "Confirm costing data"
+  },
+  "next": {
+    "id": "qualify-the-training-case",
+    "title": "Qualify the training case"
+  },
+  "module": "Common · Procurement · Manufacturing · Warehousing",
+  "modules": [
+    "Common",
+    "Procurement",
+    "Manufacturing",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The rod and sleeve are on hand at the raw-material warehouse."
+      }
+    ],
+    "text": "The rod and sleeve are on hand at the raw-material warehouse."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 5 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm the test design",
+          "href": "confirm-the-test-design.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 5 of Confirm the test design."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof."
+      }
+    ],
+    "text": "A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": " and filter for the bamboo rod"
+                }
+              ],
+              "text": "Open Inventory 360 and filter for the bamboo rod"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The rod appears with inventory totals"
+                }
+              ],
+              "text": "The rod appears with inventory totals"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " and read the raw-material warehouse from step 5 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the test design",
+                  "href": "confirm-the-test-design.md"
+                }
+              ],
+              "text": "Click Warehouse Inventory and read the raw-material warehouse from step 5 of Confirm the test design"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "rod on hand before"
+                },
+                {
+                  "t": "text",
+                  "v": ", expected to be "
+                },
+                {
+                  "t": "literal",
+                  "v": "0"
+                },
+                {
+                  "t": "text",
+                  "v": " for a new item"
+                }
+              ],
+              "text": "rod on hand before, expected to be 0 for a new item"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat steps 1–2 for the paper sleeve"
+                }
+              ],
+              "text": "Repeat steps 1–2 for the paper sleeve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sleeve on hand before"
+                },
+                {
+                  "t": "text",
+                  "v": " — both baselines recorded before anything is booked"
+                }
+              ],
+              "text": "sleeve on hand before — both baselines recorded before anything is booked"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Create a purchase order in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdpur4601m200",
+                  "name": "Purchase Order Intake Workbench"
+                }
+              ],
+              "text": "Create a purchase order in Purchase Order Intake Workbench (tdpur4601m200)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tdpur4100m900",
+                  "name": "Purchase Order"
+                },
+                {
+                  "t": "text",
+                  "v": " opens — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "component stocking route used"
+                }
+              ],
+              "text": "Purchase Order (tdpur4100m900) opens — component stocking route used"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the "
+                },
+                {
+                  "t": "field",
+                  "v": "Buy-from Business Partner"
+                },
+                {
+                  "t": "text",
+                  "v": " through the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Buy-from Business Partners"
+                },
+                {
+                  "t": "text",
+                  "v": " lookup ("
+                },
+                {
+                  "t": "session",
+                  "code": "tccom4520m000"
+                },
+                {
+                  "t": "text",
+                  "v": ")"
+                }
+              ],
+              "text": "Select the Buy-from Business Partner through the Buy-from Business Partners lookup (tccom4520m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The partner list opens. One run used one of the standard test partners "
+                }
+              ],
+              "text": "The partner list opens. One run used one of the standard test partners"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Office"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-to"
+                }
+              ],
+              "text": "Set Order Type, Purchase Office and Ship-to"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order takes a number. One run showed Order Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
+                },
+                {
+                  "t": "text",
+                  "v": " (Inventory Purchase Order), the partner's purchase office and the site as ship-to "
+                }
+              ],
+              "text": "The order takes a number. One run showed Order Type IPO (Inventory Purchase Order), the partner's purchase office and the site as ship-to"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Book the order lines from the BOM, not from habit"
+                }
+              ],
+              "text": "Book the order lines from the BOM, not from habit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One line per component. One run booked line 10 "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-ROD"
+                },
+                {
+                  "t": "text",
+                  "v": " qty "
+                },
+                {
+                  "t": "literal",
+                  "v": "2.0000 ea"
+                },
+                {
+                  "t": "text",
+                  "v": " and line 20 "
+                },
+                {
+                  "t": "literal",
+                  "v": "BAM-SLEEVE"
+                },
+                {
+                  "t": "text",
+                  "v": " qty "
+                },
+                {
+                  "t": "literal",
+                  "v": "1.0000 ea"
+                },
+                {
+                  "t": "text",
+                  "v": ", both to the raw-materials warehouse "
+                }
+              ],
+              "text": "One line per component. One run booked line 10 BAM-ROD qty 2.0000 ea and line 20 BAM-SLEEVE qty 1.0000 ea, both to the raw-materials warehouse"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the generated "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": ", run "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Receive"
+                },
+                {
+                  "t": "text",
+                  "v": " on the inbound lines"
+                }
+              ],
+              "text": "On the generated Warehousing Order (whinh2100m100), run Actions ➔ Receive on the inbound lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Order Type "
+                },
+                {
+                  "t": "literal",
+                  "v": "PUI"
+                },
+                {
+                  "t": "text",
+                  "v": " \"Purchase Receipts\", ship-from the business partner, ship-to the raw-materials warehouse "
+                }
+              ],
+              "text": "Order Type PUI \"Purchase Receipts\", ship-from the business partner, ship-to the raw-materials warehouse"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh3512m000",
+                  "name": "Warehouse Receipt"
+                }
+              ],
+              "text": "Confirm the Warehouse Receipt (whinh3512m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Final"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " both set "
+                }
+              ],
+              "text": "Status = Confirmed, All Lines Final and All Lines Complete both set"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read both items in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": " at the raw-material warehouse"
+                }
+              ],
+              "text": "Re-read both items in Inventory 360 at the raw-material warehouse"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "rod on hand after"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sleeve on hand after"
+                },
+                {
+                  "t": "text",
+                  "v": " — each increased by the booked quantity"
+                }
+              ],
+              "text": "rod on hand after and sleeve on hand after — each increased by the booked quantity"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On-hand does not increase after booking"
+              }
+            ],
+            "text": "On-hand does not increase after booking"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Do not book again. Find the order or transaction that was created and check its status first — a second booking doubles the error"
+              }
+            ],
+            "text": "Do not book again. Find the order or transaction that was created and check its status first — a second booking doubles the error"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Production quantity greater than one"
+              }
+            ],
+            "text": "Production quantity greater than one"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Book proportionally more component stock in this task — 2 rods and 1 sleeve per pair. Nothing in the phase structure changes"
+              }
+            ],
+            "text": "Book proportionally more component stock in this task — 2 rods and 1 sleeve per pair. Nothing in the phase structure changes"
+          }
+        ]
+      }
+    ]
+  }
+}

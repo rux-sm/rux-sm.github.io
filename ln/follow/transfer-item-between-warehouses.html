@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="34d4f601be5df809be256a7dfed415309b775df6">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -112,35 +112,20 @@
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
 <p><strong>Before you start.</strong> Know the item's stock before you start: <a class="rux--link" href="../follow/check-item-inventory.html">Check an item's inventory</a>.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/transfer-item-between-warehouses_0.html?walk=1">Start</a><span class="ln-quiet">7 tasks · 33 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-stock-destination-and-expected-order-type.html?walk=1">Start</a><span class="ln-quiet">7 tasks · 33 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
 </div>
 <ol class="ln-path">
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_0.html"><span class="ln-path__dot">1</span><b>Confirm stock, destination, and expected order type</b><small>Stock is known and the expected transfer configuration is recorded · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_1.html"><span class="ln-path__dot">2</span><b>Create the transfer order</b><small>A warehousing order exists with transaction type <span class="ln-t-named">Transfer</span> · 9 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_2.html"><span class="ln-path__dot">3</span><b>Confirm the processing path and create advice</b><small>Manual and automatic activities are known before processing continues · 7 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_3.html"><span class="ln-path__dot">4</span><b>Pick the goods</b><small>Stock physically moves to staging at the source · 5 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_4.html"><span class="ln-path__dot">5</span><b>Ship</b><small>Goods leave the source warehouse · 4 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_5.html"><span class="ln-path__dot">6</span><b>Receive at the destination</b><small>Goods are put away in the destination warehouse · 3 steps</small></a></li>
-  <li><a class="ln-path__stop" href="../do/transfer-item-between-warehouses_6.html"><span class="ln-path__dot">7</span><b>Verify it worked</b><small>Source on-hand down, destination on-hand up, by the same quantity · 1 step</small></a></li>
+  <li><a class="ln-path__stop" href="../do/confirm-stock-destination-and-expected-order-type.html"><span class="ln-path__dot">1</span><b>Confirm stock, destination, and expected order type</b><small>Stock is known and the expected transfer configuration is recorded. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/create-the-transfer-order.html"><span class="ln-path__dot">2</span><b>Create the transfer order</b><small>A warehousing order exists with transaction type <strong>Transfer</strong> · 9 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/confirm-the-processing-path-and-create-advice.html"><span class="ln-path__dot">3</span><b>Confirm the processing path and create advice</b><small>Manual and automatic activities are known before processing continues. · 7 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/pick-the-goods_transfer-item-between-warehouses.html"><span class="ln-path__dot">4</span><b>Pick the goods</b><small>Stock physically moves to staging at the source. · 5 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/ship_transfer-item-between-warehouses.html"><span class="ln-path__dot">5</span><b>Ship</b><small>Goods leave the source warehouse. · 4 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/receive-at-the-destination.html"><span class="ln-path__dot">6</span><b>Receive at the destination</b><small>Goods are put away in the destination warehouse. · 3 steps</small></a></li>
+  <li><a class="ln-path__stop" href="../do/verify-it-worked_transfer-item-between-warehouses.html"><span class="ln-path__dot">7</span><b>Verify it worked</b><small>Source on-hand down, destination on-hand up, by the same quantity. · 1 step</small></a></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="wrong">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">If something goes wrong · 7</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><small class="ln-quiet">Create the transfer order</small><b>No order number appears</b><p>Header not saved, or a required field is still blank — recheck <a class="rux--link" href="../do/transfer-item-between-warehouses_1.html#step-3">Create the transfer order, steps 3–6</a></p></li>
-  <li><small class="ln-quiet">Confirm the processing path and create advice</small><b><span class="ln-t-named">Advice</span> greyed out</b><p>You are on the session toolbar, not the <span class="ln-t-named">Outbound Lines</span> toolbar — see <a class="rux--link" href="../do/transfer-item-between-warehouses_2.html#step-6">Confirm the processing path and create advice, step 6</a></p></li>
-  <li><small class="ln-quiet">Pick the goods</small><b>No Run appears on the Picking List</b><p>If the order already advanced, record <span class="ln-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to <a class="rux--link" href="../do/transfer-item-between-warehouses_2.html">Confirm the processing path and create advice</a></p></li>
-  <li><small class="ln-quiet">Ship</small><b>No shipment is visible for a different-warehouse transfer</b><p>Official help says <span class="ln-t-named">Create Shipment</span> is <span class="ln-t-exact">Always</span>. Check Shipment Lines and the <a class="rux--link" href="../do/transfer-item-between-warehouses_2.html">Confirm the processing path and create advice</a> activity status before continuing</p></li>
-  <li><small class="ln-quiet">Ship</small><b>Confirm greyed out</b><p>Shipment not yet Frozen, or <span class="ln-t-named">Freeze Mandatory</span> requires it — run <a class="rux--link" href="../do/transfer-item-between-warehouses_4.html#step-3">Ship, step 3</a> first</p></li>
-  <li><small class="ln-quiet">Verify it worked</small><b>Destination on-hand did not rise</b><p>The receipt in <a class="rux--link" href="../do/transfer-item-between-warehouses_5.html">Receive at the destination</a> was not confirmed — return to the inbound line and Warehouse Receipt</p></li>
-  <li><small class="ln-quiet">Verify it worked</small><b>Source and destination changes do not both equal the transfer quantity</b><p>Do not approve the run. Recheck the <a class="rux--link" href="../do/transfer-item-between-warehouses_0.html">Confirm stock, destination, and expected order type</a> values and investigate unrelated inventory activity </p></li>
-</ul></div></div>
-  </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -168,7 +153,7 @@
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
   <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#wrong">If something goes wrong</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
+  <ul role="list"><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#tasks">The tasks, in order</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#cases">Different cases</a></div></li><li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="#next">What comes next</a></div></li></ul>
 </div>
 </div>
 </div>

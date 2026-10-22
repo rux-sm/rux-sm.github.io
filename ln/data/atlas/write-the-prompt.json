@@ -1,0 +1,707 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "write-the-prompt",
+  "title": "Write the prompt",
+  "process": {
+    "id": "set-up-a-genai-prompt",
+    "title": "Set up a GenAI prompt",
+    "n": 2,
+    "of": 7
+  },
+  "previous": {
+    "id": "model-the-dataset",
+    "title": "Model the dataset"
+  },
+  "next": {
+    "id": "link-the-prompt-to-a-session",
+    "title": "Link the prompt to a session"
+  },
+  "module": "Tools · Warehousing",
+  "modules": [
+    "Tools",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
+  "session": "GenAI Prompts",
+  "sessionCode": "ttrpi5150m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A prompt exists with a label, a dataset and both texts."
+      }
+    ],
+    "text": "A prompt exists with a label, a dataset and both texts."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: what the data is, the task, one rule and the marker."
+      }
+    ],
+    "text": "A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: what the data is, the task, one rule and the marker."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "GenAI Prompts"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Open GenAI Prompts and click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new row, filled with another prompt's values"
+                }
+              ],
+              "text": "A new row, filled with another prompt's values"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type your prompt's name over the one in "
+                },
+                {
+                  "t": "field",
+                  "v": "GenAI Prompt"
+                },
+                {
+                  "t": "text",
+                  "v": ". Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "stock_check"
+                }
+              ],
+              "text": "Type your prompt's name over the one in GenAI Prompt. Example: stock_check"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "prompt name"
+                }
+              ],
+              "text": "prompt name"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the "
+                },
+                {
+                  "t": "field",
+                  "v": "Label"
+                },
+                {
+                  "t": "text",
+                  "v": " lookup, enter "
+                },
+                {
+                  "t": "literal",
+                  "v": "2"
+                },
+                {
+                  "t": "text",
+                  "v": " under "
+                },
+                {
+                  "t": "field",
+                  "v": "Language"
+                },
+                {
+                  "t": "text",
+                  "v": " and a word under "
+                },
+                {
+                  "t": "field",
+                  "v": "Label Description"
+                },
+                {
+                  "t": "text",
+                  "v": ", and press Enter. Example: Inventory"
+                }
+              ],
+              "text": "In the Label lookup, enter 2 under Language and a word under Label Description, and press Enter. Example: Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Labels with that word"
+                }
+              ],
+              "text": "Labels with that word"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick a label that reads as the command's name and click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                },
+                {
+                  "t": "text",
+                  "v": ". Pick one no command on the screen uses. Example: Item Inventory"
+                }
+              ],
+              "text": "Tick a label that reads as the command's name and click OK. Pick one no command on the screen uses. Example: Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "command name"
+                }
+              ],
+              "text": "command name"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Replace what "
+                },
+                {
+                  "t": "field",
+                  "v": "Dataset"
+                },
+                {
+                  "t": "text",
+                  "v": " holds with your dataset name"
+                }
+              ],
+              "text": "Replace what Dataset holds with your dataset name"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its description shows beside it"
+                }
+              ],
+              "text": "Its description shows beside it"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Usage Type"
+                },
+                {
+                  "t": "text",
+                  "v": ". Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Report"
+                }
+              ],
+              "text": "Set Usage Type. Example: Report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A grey dot under each text column"
+                }
+              ],
+              "text": "A grey dot under each text column"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the row, open the text button and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Instruction"
+                }
+              ],
+              "text": "Tick the row, open the text button and choose Instruction"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "No text present; Create, Duplicate, Select or Exit?"
+                }
+              ],
+              "text": "No text present; Create, Duplicate, Select or Exit?"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "button",
+                  "label": "Create"
+                },
+                {
+                  "t": "text",
+                  "v": ", type your sentence and save"
+                }
+              ],
+              "text": "Choose Create, type your sentence and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A last-modified stamp"
+                }
+              ],
+              "text": "A last-modified stamp"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the editor, then open the text button, "
+                },
+                {
+                  "t": "chip",
+                  "v": "Prompt"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "button",
+                  "label": "Create"
+                }
+              ],
+              "text": "Close the editor, then open the text button, Prompt and Create"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An empty "
+                },
+                {
+                  "t": "chip",
+                  "v": "Text Editor"
+                }
+              ],
+              "text": "An empty Text Editor"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the first prompt text, one line each, then save and close. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "You are given an XML dataset for one item: its description and unit, its inventory in each warehouse, and its planned inventory transactions."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "Write a stock check for someone about to promise this item to a customer."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "Use only the information present in the dataset."
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "#data,XML#"
+                }
+              ],
+              "text": "Type the first prompt text, one line each, then save and close. Example: You are given an XML dataset for one item: its description and unit, its inventory in each warehouse, and its planned inventory transactions. Write a stock check for someone about to promise this item to a customer. Use only the information present in the dataset. #data,XML#"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A green tick under both text columns"
+                }
+              ],
+              "text": "A green tick under both text columns"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No text present"
+              },
+              {
+                "t": "text",
+                "v": " when a text is opened"
+              }
+            ],
+            "text": "No text present when a text is opened"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Nothing. The text has not been written yet; choose "
+              },
+              {
+                "t": "button",
+                "label": "Create"
+              },
+              {
+                "t": "text",
+                "v": ", as in step 9"
+              }
+            ],
+            "text": "Nothing. The text has not been written yet; choose Create, as in step 9"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The new row holds another prompt's values"
+              }
+            ],
+            "text": "The new row holds another prompt's values"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A new row is a copy of the row the cursor was on. Replace them, as in step 4 and step 5"
+              }
+            ],
+            "text": "A new row is a copy of the row the cursor was on. Replace them, as in step 4 and step 5"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Another model"
+              }
+            ],
+            "text": "Another model"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Name it in "
+              },
+              {
+                "t": "field",
+                "v": "LLM Name"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "LLM Version"
+              },
+              {
+                "t": "text",
+                "v": " on the prompt, after step 6"
+              }
+            ],
+            "text": "Name it in LLM Name and LLM Version on the prompt, after step 6"
+          }
+        ]
+      }
+    ]
+  }
+}

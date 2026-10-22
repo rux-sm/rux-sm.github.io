@@ -1,0 +1,483 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "run-the-stock-check",
+  "title": "Run the stock check",
+  "process": {
+    "id": "use-the-ai-commands",
+    "title": "Use the AI commands",
+    "n": 0,
+    "of": 2
+  },
+  "previous": null,
+  "next": {
+    "id": "run-status-overview",
+    "title": "Run Status Overview"
+  },
+  "module": "Warehousing · Sales",
+  "modules": [
+    "Warehousing",
+    "Sales"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
+  "session": "Company - Item Inventory",
+  "sessionCode": "whwmd4100m100",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+      }
+    ],
+    "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in "
+      },
+      {
+        "t": "link",
+        "v": "Set up a GenAI prompt",
+        "href": "set-up-a-genai-prompt.md"
+      },
+      {
+        "t": "text",
+        "v": ", Is it worth a prompt."
+      }
+    ],
+    "text": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in Set up a GenAI prompt, Is it worth a prompt."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Company - Item Inventory"
+                }
+              ],
+              "text": "Open Company - Item Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One row for each item, with its on hand, blocked, on order and allocated figures"
+                }
+              ],
+              "text": "One row for each item, with its on hand, blocked, on order and allocated figures"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the item's row"
+                }
+              ],
+              "text": "Tick the item's row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "on hand"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "on order"
+                }
+              ],
+              "text": "on hand, on order"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Actions"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Inventory…"
+                }
+              ],
+              "text": "Open Actions and choose Item Inventory…"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A window titled Item Inventory, with "
+                },
+                {
+                  "t": "text",
+                  "v": "Check where this item's stock is and what is planned in and out."
+                },
+                {
+                  "t": "text",
+                  "v": " under Prompt and the answer under Response"
+                }
+              ],
+              "text": "A window titled Item Inventory, with Check where this item's stock is and what is planned in and out. under Prompt and the answer under Response"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the first two lines of the answer"
+                }
+              ],
+              "text": "Read the first two lines of the answer"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The description, the item code in brackets and the unit; then an "
+                },
+                {
+                  "t": "text",
+                  "v": "Attention:"
+                },
+                {
+                  "t": "text",
+                  "v": " line for each warehouse with more allocated than on hand or with stock blocked, or "
+                },
+                {
+                  "t": "text",
+                  "v": "No warnings."
+                }
+              ],
+              "text": "The description, the item code in brackets and the unit; then an Attention: line for each warehouse with more allocated than on hand or with stock blocked, or No warnings."
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read each warehouse's section"
+                }
+              ],
+              "text": "Read each warehouse's section"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Its code and name; "
+                },
+                {
+                  "t": "text",
+                  "v": "ON HAND"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "text",
+                  "v": "BLOCKED"
+                },
+                {
+                  "t": "text",
+                  "v": " on one line; "
+                },
+                {
+                  "t": "text",
+                  "v": "ALLOCATED"
+                },
+                {
+                  "t": "text",
+                  "v": " with the orders going out indented under it; "
+                },
+                {
+                  "t": "text",
+                  "v": "ON ORDER"
+                },
+                {
+                  "t": "text",
+                  "v": " with the orders coming in under it"
+                }
+              ],
+              "text": "Its code and name; ON HAND and BLOCKED on one line; ALLOCATED with the orders going out indented under it; ON ORDER with the orders coming in under it"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read the last line"
+                }
+              ],
+              "text": "Read the last line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Empty:"
+                },
+                {
+                  "t": "text",
+                  "v": " and the warehouses that hold nothing and expect nothing, or no such line"
+                }
+              ],
+              "text": "Empty: and the warehouses that hold nothing and expect nothing, or no such line"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Add up the warehouses' "
+                },
+                {
+                  "t": "text",
+                  "v": "ON HAND"
+                },
+                {
+                  "t": "text",
+                  "v": ", and their "
+                },
+                {
+                  "t": "text",
+                  "v": "ON ORDER"
+                },
+                {
+                  "t": "text",
+                  "v": ", and compare each with step 2"
+                }
+              ],
+              "text": "Add up the warehouses' ON HAND, and their ON ORDER, and compare each with step 2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The sums equal the item's row. Where they do not, act on the row"
+                }
+              ],
+              "text": "The sums equal the item's row. Where they do not, act on the row"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "Item Inventory…"
+              },
+              {
+                "t": "text",
+                "v": " is not in "
+              },
+              {
+                "t": "chip",
+                "v": "Actions"
+              }
+            ],
+            "text": "Item Inventory… is not in Actions"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike"
+              }
+            ],
+            "text": "Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The warehouse lines do not add up to the item's row"
+              }
+            ],
+            "text": "The warehouse lines do not add up to the item's row"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one"
+              }
+            ],
+            "text": "Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "contract": 18,
+  "tier": "export",
+  "kind": "task",
+  "id": "verify-it-worked_transfer-item-between-warehouses",
+  "title": "Verify it worked",
+  "process": {
+    "id": "transfer-item-between-warehouses",
+    "title": "Warehouse transfer",
+    "n": 6,
+    "of": 7
+  },
+  "previous": {
+    "id": "receive-at-the-destination",
+    "title": "Receive at the destination"
+  },
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Inventory 360",
+  "session": "Inventory 360",
+  "sessionCode": "whwmd4300m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Source on-hand down, destination on-hand up, by the same quantity."
+      }
+    ],
+    "text": "Source on-hand down, destination on-hand up, by the same quantity."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+      }
+    ],
+    "text": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read on-hand for the item at both warehouses"
+                }
+              ],
+              "text": "Read on-hand for the item at both warehouses"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "source on-hand after"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "destination on-hand after"
+                }
+              ],
+              "text": "source on-hand after, destination on-hand after"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure."
+        },
+        {
+          "t": "text",
+          "v": " The walkthrough is complete only when both hold."
+        }
+      ],
+      "text": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure. The walkthrough is complete only when both hold."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat "
+        },
+        {
+          "t": "link",
+          "v": "Confirm stock, destination, and expected order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
+          "v": " immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat this task in the same view. "
+        },
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "> Warning > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat Confirm stock, destination, and expected order type immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat this task in the same view. Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Destination on-hand did not rise"
+              }
+            ],
+            "text": "Destination on-hand did not rise"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receipt in "
+              },
+              {
+                "t": "link",
+                "v": "Receive at the destination",
+                "href": "receive-at-the-destination.md"
+              },
+              {
+                "t": "text",
+                "v": " was not confirmed — return to the inbound line and Warehouse Receipt"
+              }
+            ],
+            "text": "The receipt in Receive at the destination was not confirmed — return to the inbound line and Warehouse Receipt"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Source and destination changes do not both equal the transfer quantity"
+              }
+            ],
+            "text": "Source and destination changes do not both equal the transfer quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Do not approve the run. Recheck the "
+              },
+              {
+                "t": "link",
+                "v": "Confirm stock, destination, and expected order type",
+                "href": "confirm-stock-destination-and-expected-order-type.md"
+              },
+              {
+                "t": "text",
+                "v": " values and investigate unrelated inventory activity "
+              }
+            ],
+            "text": "Do not approve the run. Recheck the Confirm stock, destination, and expected order type values and investigate unrelated inventory activity"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

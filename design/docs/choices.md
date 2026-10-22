@@ -81,8 +81,9 @@ dark tool.
 
 ## Grid width — capped or full
 
-A capped page sits in the shell's frame, 76.25rem (1220px) centred in the
-window as Geist's pages are: a reading width, right for prose and forms,
+A capped page's content sits in a frame, 76.25rem (1220px) centred in the
+room beside the side nav as Geist's pages are, while the header and the
+side nav stay on the window's edges: a reading width, right for prose and forms,
 and the default on every template. Carbon's own `--full-width` modifier on
 the page's outer grid takes the frame off, so the page keeps the window's
 whole width; it is the choice for a page that is worked in rather than

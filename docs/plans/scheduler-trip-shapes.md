@@ -157,18 +157,26 @@ None open.
 
 ## Tasks
 
+- [ ] Key the editor's own state by leg id: its vehicles, route, days,
+      hotel, contacts and quote lines, the leg switch and the bar's ref,
+      still saving the old columns and words for the two legs that have
+      them. A save's recorded writes are the same before and after on the
+      same edits.
+- [ ] Flip the saves to the legs, the SQL shown to rux and applied on a yes
+      with the editor's save shipped beside it: `trips.start_date` and
+      `end_date` kept from the legs by trigger, the old trips-to-legs and
+      slots-to-contacts triggers dropped, the row triggers filling a route
+      or leg id only where a page sends none, a save that still writes an
+      old leg column refused with "reload the page", `trips_clear_done`,
+      `trips_steps_off` and `get_maintenance_schedule_changes` reading the
+      legs, and the trip history naming a leg's changes. The editor saves
+      legs, routes, stops and vehicles by route, quote lines and files by
+      leg, and the contact list; the connector stops listing the old columns.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
-      out of Type, and give each leg its round trip or one way. The editor's
-      own state, the bar's ref and the quote lines, which still name a leg by
-      its old word because the editor writes by it, name it by its id; and
-      the bar menu's hotel mark, itinerary upload and Mark as told,
-      `scheduler/print.js`'s marks and quote lines, `trips_clear_done`,
-      which clears a tab's Done from the trip's own columns, `trips_steps_off`,
-      which turns a driver's steps off when the trip's dates move, and
-      `get_maintenance_schedule_changes`, which reads a move from the trip
-      history's column names, move with them, with the trigger that keeps
-      `trips.start_date` and `end_date`. A draft carries legs and contacts
-      through `scheduler/draft-fields.js` once the editor can type them.
+      out of Type, and give each leg its round trip or one way; move the bar
+      menu's hotel mark, itinerary upload and Mark as told and
+      `scheduler/print.js`'s marks and quote lines to the legs; and let a
+      draft carry legs and contacts through `scheduler/draft-fields.js`.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

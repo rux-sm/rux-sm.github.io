@@ -685,7 +685,7 @@
                 },
                 {
                   "t": "text",
-                  "v": "), then Warehouses ("
+                  "v": "), then the Warehouses ("
                 },
                 {
                   "t": "literal",
@@ -693,14 +693,14 @@
                 },
                 {
                   "t": "text",
-                  "v": "), and tick "
+                  "v": ") via Warehouse, and tick "
                 },
                 {
                   "t": "literal",
                   "v": "dsca"
                 }
               ],
-              "text": "For a name behind a code in those rows, expand the table and then its own Refers to. Example: under Item Inventory by Warehouse, Warehouses (whwmd200), then Warehouses (tcmcs003), and tick dsca"
+              "text": "For a name behind a code in those rows, expand the table and then its own Refers to. Example: under Item Inventory by Warehouse, Warehouses (whwmd200), then the Warehouses (tcmcs003) via Warehouse, and tick dsca"
             },
             {
               "tokens": [
@@ -971,19 +971,65 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The Dataset Modeler opens as two empty panes"
+                "v": "The Dataset Modeler has no toolbar, or no "
+              },
+              {
+                "t": "chip",
+                "v": "Tables"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "chip",
+                "v": "Fields"
+              },
+              {
+                "t": "text",
+                "v": " panels"
               }
             ],
-            "text": "The Dataset Modeler opens as two empty panes"
+            "text": "The Dataset Modeler has no toolbar, or no Tables and Fields panels"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
+                "v": "The window is too short, and a wider one does not help. Use a screen tall enough for a page of about 1,040 px, close the Modeler's tab and open the dataset again"
               }
             ],
-            "text": "It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again"
+            "text": "The window is too short, and a wider one does not help. Use a screen tall enough for a page of about 1,040 px, close the Modeler's tab and open the dataset again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The "
+              },
+              {
+                "t": "chip",
+                "v": "Tables"
+              },
+              {
+                "t": "text",
+                "v": " tree goes blank after a search"
+              }
+            ],
+            "text": "The Tables tree goes blank after a search"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The search is still running. Clear the box above the tree and press Enter"
+              }
+            ],
+            "text": "The search is still running. Clear the box above the tree and press Enter"
           }
         ]
       },

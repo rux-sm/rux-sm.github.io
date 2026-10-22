@@ -1,9 +1,9 @@
-commit   171d3699b62046b8f2e580b148f8de3e985edacb
-date     2026-10-22T14:21:46Z
-subject  fix(tasks): Set an example's notes off with a dash
+commit   adb209dbf76478050e92d7a9bbfbab7f8845a95a
+date     2026-10-22T23:21:57Z
+subject  fix(tasks): Correct the GenAI steps from a walk
 contract 22 
 tier     export
-sha256   d74a4bb6bcb9281e0f7a8e5cc8782e2676ac7971d7aeb128a62aea2da3cd1387
+sha256   b192567484eb272138c7fe043cc8399230afdc74cd646c0a77e6cc1b67a9c495
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

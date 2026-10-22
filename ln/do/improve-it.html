@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="171d3699b62046b8f2e580b148f8de3e985edacb">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="adb209dbf76478050e92d7a9bbfbab7f8845a95a">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16 rux--xlg:col-span-12" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -135,7 +135,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>6.1</b></td><td>On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the text button and choose <span class="ln-t-named">Prompt</span></td><td>The text, in the editor</td></tr>
+<tr id="step-1"><td><b>6.1</b></td><td>On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the arrow beside <span class="ln-t-press">Edit Text</span> and choose <span class="ln-t-named">Prompt</span></td><td>The text, in the editor</td></tr>
 <tr id="step-2"><td><b>6.2</b></td><td>Add a line above the marker that fixes the answer's form. Example: <span class="ln-t-exact">Output plain text only. No heading, no table, no list marks, no bold and no emoji.</span></td><td></td></tr>
 <tr id="step-3"><td><b>6.3</b></td><td>Add a line that forbids what the first answer added. Example: <span class="ln-t-exact">Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are.</span></td><td></td></tr>
 <tr id="step-4"><td><b>6.4</b></td><td>Add a line that says how the answer opens. Example: <span class="ln-t-exact">First line: the item, its description and its inventory unit.</span></td><td></td></tr>
@@ -162,7 +162,9 @@
 <tbody>
 <tr><td>The answer holds figures LN does not</td><td>The line against calculating is missing, <a class="rux--link" href="#step-3">step 6.3</a></td></tr>
 <tr><td>The answer is a report or a letter again</td><td>The form line is missing, <a class="rux--link" href="#step-2">step 6.2</a></td></tr>
-<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-14">step 6.14</a></td></tr>
+<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-15">step 6.15</a></td></tr>
+<tr><td>A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></td><td>Add a line that names each code, as in A template for the two texts</td></tr>
+<tr><td>The closing sentence names something that does not qualify</td><td>Check it against the screen like any other line. The model can get a comparison wrong</td></tr>
 <tr><td>The response contradicts the screen</td><td>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in <a class="rux--link" href="../do/model-the-dataset.html#step-13">step 2.13</a> (Model the dataset), then open the screen again</td></tr>
 </tbody>
 </table></div>
@@ -217,7 +219,7 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the text button and choose <span class="ln-t-named">Prompt</span></h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the arrow beside <span class="ln-t-press">Edit Text</span> and choose <span class="ln-t-named">Prompt</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The text, in the editor</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
@@ -290,12 +292,14 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 4</div>
+      <div class="rux--accordion__title">Stuck? · 6</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The answer holds figures LN does not</b><p>The line against calculating is missing, step 3</p></li>
   <li><b>The answer is a report or a letter again</b><p>The form line is missing, step 2</p></li>
-  <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 14</p></li>
+  <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 15</p></li>
+  <li><b>A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></b><p>Add a line that names each code, as in A template for the two texts</p></li>
+  <li><b>The closing sentence names something that does not qualify</b><p>Check it against the screen like any other line. The model can get a comparison wrong</p></li>
   <li><b>The response contradicts the screen</b><p>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in step 13 of <a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a>, then open the screen again</p></li>
 </ul></div></div>
   </li>

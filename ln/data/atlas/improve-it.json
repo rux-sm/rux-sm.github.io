@@ -80,14 +80,22 @@
                 },
                 {
                   "t": "text",
-                  "v": ", tick the prompt, open the text button and choose "
+                  "v": ", tick the prompt, open the arrow beside "
+                },
+                {
+                  "t": "button",
+                  "label": "Edit Text"
+                },
+                {
+                  "t": "text",
+                  "v": " and choose "
                 },
                 {
                   "t": "chip",
                   "v": "Prompt"
                 }
               ],
-              "text": "On GenAI Prompts, tick the prompt, open the text button and choose Prompt"
+              "text": "On GenAI Prompts, tick the prompt, open the arrow beside Edit Text and choose Prompt"
             },
             {
               "tokens": [
@@ -693,10 +701,58 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 14"
+                "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 15"
               }
             ],
-            "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 14"
+            "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 15"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A type or a status prints as its code, such as "
+              },
+              {
+                "t": "literal",
+                "v": "act.sls"
+              }
+            ],
+            "text": "A type or a status prints as its code, such as act.sls"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Add a line that names each code, as in A template for the two texts"
+              }
+            ],
+            "text": "Add a line that names each code, as in A template for the two texts"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The closing sentence names something that does not qualify"
+              }
+            ],
+            "text": "The closing sentence names something that does not qualify"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check it against the screen like any other line. The model can get a comparison wrong"
+              }
+            ],
+            "text": "Check it against the screen like any other line. The model can get a comparison wrong"
           }
         ]
       },

@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
@@ -209,14 +209,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Note the table the screen's records are in. Example: "
+                  "v": "Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: "
                 },
                 {
                   "t": "literal",
                   "v": "whwmd400"
                 }
               ],
-              "text": "Note the table the screen's records are in. Example: whwmd400"
+              "text": "Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: whwmd400"
             },
             {
               "tokens": [
@@ -323,24 +323,35 @@
                 },
                 {
                   "t": "text",
-                  "v": " ticked"
+                  "v": " ticked. That model answers a prompt that names none"
                 }
               ],
-              "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs and find the row with Is default ticked"
+              "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs and find the row with Is default ticked. That model answers a prompt that names none"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One model is the default"
+                  "v": "One model is the default — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "model"
                 }
               ],
-              "text": "One model is the default"
+              "text": "One model is the default — model"
             }
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": true
         }
       ]
     }

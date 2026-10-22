@@ -159,10 +159,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The screen's name appears. Example: Company - Item Inventory"
+                  "v": "The screen's name appears, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Active"
+                },
+                {
+                  "t": "text",
+                  "v": " is ticked. Example: Company - Item Inventory"
                 }
               ],
-              "text": "The screen's name appears. Example: Company - Item Inventory"
+              "text": "The screen's name appears, and Active is ticked. Example: Company - Item Inventory"
             }
           ],
           "id": "2",
@@ -221,10 +229,38 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Four values: "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "One Record Selected"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "literal",
+                  "v": "Records Selected"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "literal",
+                  "v": "Never"
                 }
               ],
-              "text": "—"
+              "text": "Four values: Always, One Record Selected, Records Selected and Never"
             }
           ],
           "id": "3",

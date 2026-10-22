@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="171d3699b62046b8f2e580b148f8de3e985edacb">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="adb209dbf76478050e92d7a9bbfbab7f8845a95a">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16 rux--xlg:col-span-12">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -158,9 +158,9 @@
 <tr id="step-1-1"><td><b>1.1</b></td><td>List the values the answer must state. Example: an item's stock in each warehouse, and each planned receipt and issue</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">values</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-2"><td><b>1.2</b></td><td>Open a screen that lists the record those values belong to. Example: <span class="ln-t-named">Company - Item Inventory</span></td><td>One row for each record. Example: an item on each row</td></tr>
 <tr id="step-1-3"><td><b>1.3</b></td><td>Read the code in the status bar at the foot of the screen. On a tab of a workbench, read it in the tab's own <span class="ln-t-route"><span>Personalization</span><span class="sep">➔</span><span class="dest">Personalize Form…</span></span> instead</td><td><span class="ln-proc__see">Example: <a class="rux--link" href="../screens/whwmd4100m100.html"><span class="ln-t-exact">whwmd4100m100</span></a></span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">session code</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-1-4"><td><b>1.4</b></td><td>Note the table the screen's records are in. Example: <span class="ln-t-exact">whwmd400</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">table</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: <span class="ln-t-exact">whwmd400</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">table</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-5"><td><b>1.5</b></td><td>Write the one sentence the user will see. Example: <span class="ln-t-exact">Check where this item's stock is and what is planned in and out.</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">instruction text</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-1-6"><td><b>1.6</b></td><td>Open <span class="ln-t-named">GenAI LLMs</span>, <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span> and find the row with <span class="ln-t-named">Is default</span> ticked</td><td>One model is the default</td></tr>
+<tr id="step-1-6"><td><b>1.6</b></td><td>Open <span class="ln-t-named">GenAI LLMs</span>, <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span> and find the row with <span class="ln-t-named">Is default</span> ticked. That model answers a prompt that names none</td><td><span class="ln-proc__see">One model is the default</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">model</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -194,7 +194,7 @@
 <tr id="step-2-9"><td><b>2.9</b></td><td>For rows that belong to the record, expand <span class="ln-t-named">Referred by</span></td><td></td></tr>
 <tr id="step-2-10"><td><b>2.10</b></td><td>Choose the table and tick its fields. Example: Item Inventory by Warehouse (<span class="ln-t-exact">whwmd215</span>), then <span class="ln-t-exact">cwar</span>, <span class="ln-t-exact">qhnd</span>, <span class="ln-t-exact">qblk</span>, <span class="ln-t-exact">qord</span> and <span class="ln-t-exact">qall</span></td><td>That table's fields, none ticked until you tick them</td></tr>
 <tr id="step-2-11"><td><b>2.11</b></td><td>Do the same for each other set of rows. Example: Planned Inventory Transactions by Item (<span class="ln-t-exact">whinp100</span>), then <span class="ln-t-exact">koor</span>, <span class="ln-t-exact">orno</span>, <span class="ln-t-exact">kotr</span>, <span class="ln-t-exact">pono</span>, <span class="ln-t-exact">qana</span>, <span class="ln-t-exact">date</span> and <span class="ln-t-exact">cwar</span></td><td></td></tr>
-<tr id="step-2-12"><td><b>2.12</b></td><td>For a name behind a code in those rows, expand the table and then its own <span class="ln-t-named">Refers to</span>. Example: under Item Inventory by Warehouse, Warehouses (<span class="ln-t-exact">whwmd200</span>), then Warehouses (<span class="ln-t-exact">tcmcs003</span>), and tick <span class="ln-t-exact">dsca</span></td><td>The path to the table, printed above the tree</td></tr>
+<tr id="step-2-12"><td><b>2.12</b></td><td>For a name behind a code in those rows, expand the table and then its own <span class="ln-t-named">Refers to</span>. Example: under Item Inventory by Warehouse, Warehouses (<span class="ln-t-exact">whwmd200</span>), then the Warehouses (<span class="ln-t-exact">tcmcs003</span>) via Warehouse, and tick <span class="ln-t-exact">dsca</span></td><td>The path to the table, printed above the tree</td></tr>
 <tr id="step-2-13"><td><b>2.13</b></td><td>Drag the bar under the two panels upward</td><td><span class="ln-t-named">Selected Fields</span> lists every field ticked, under its table</td></tr>
 <tr id="step-2-14"><td><b>2.14</b></td><td>Click <span class="ln-t-press">Save</span></td><td>No message</td></tr>
 <tr id="step-2-15"><td><b>2.15</b></td><td>On <span class="ln-t-named">Datasets</span>, click <span class="ln-t-press">Refresh</span></td><td>Your dataset is listed</td></tr>
@@ -210,7 +210,8 @@
 <tr><td>A table cannot be found under <span class="ln-t-named">Referred by</span></td><td>Set the list above the tree to <span class="ln-t-exact">By Name</span>, as in <a class="rux--link" href="#step-2-7">step 2.7</a>, and go down to the table's code</td></tr>
 <tr><td>The list under <span class="ln-t-named">Referred by</span> is too long to work down</td><td>The screen's table is too far from the data. Use a screen whose own table is one step from it</td></tr>
 <tr><td>A field's code is not known</td><td>Type part of its name in the box above <span class="ln-t-named">Description</span></td></tr>
-<tr><td>The Dataset Modeler opens as two empty panes</td><td>It was seen in a smaller window whose panel dividers had been dragged. Close its tab, widen the window and open the dataset again</td></tr>
+<tr><td>The Dataset Modeler has no toolbar, or no <span class="ln-t-named">Tables</span> and <span class="ln-t-named">Fields</span> panels</td><td>The window is too short, and a wider one does not help. Use a screen tall enough for a page of about 1,040 px, close the Modeler's tab and open the dataset again</td></tr>
+<tr><td>The <span class="ln-t-named">Tables</span> tree goes blank after a search</td><td>The search is still running. Clear the box above the tree and press Enter</td></tr>
 <tr><td>The lookup on <span class="ln-t-named">Main table</span> lists nothing</td><td>It shows one package at a time. Type the table's code, as in <a class="rux--link" href="#step-2-3">step 2.3</a></td></tr>
 </tbody>
 </table></div>
@@ -224,17 +225,17 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-3-1"><td><b>3.1</b></td><td>Open <span class="ln-t-named">GenAI Prompts</span> and click <span class="ln-t-press">New</span></td><td>A new row, filled with another prompt's values</td></tr>
+<tr id="step-3-1"><td><b>3.1</b></td><td>Open <span class="ln-t-named">GenAI Prompts</span> and click <span class="ln-t-press">New</span></td><td>A new row, holding another prompt's name and label</td></tr>
 <tr id="step-3-2"><td><b>3.2</b></td><td>Type your prompt's name over the one in <span class="ln-t-named">GenAI Prompt</span>. Example: <span class="ln-t-exact">stock_check</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">prompt name</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-3-3"><td><b>3.3</b></td><td>In the <span class="ln-t-named">Label</span> lookup, enter <span class="ln-t-exact">2</span> under <span class="ln-t-named">Language</span></td><td></td></tr>
+<tr id="step-3-3"><td><b>3.3</b></td><td>In the <span class="ln-t-named">Label</span> lookup, enter <span class="ln-t-exact">2</span> under <span class="ln-t-named">Language</span>. 2 is English</td><td></td></tr>
 <tr id="step-3-4"><td><b>3.4</b></td><td>Enter a word under <span class="ln-t-named">Label Description</span> and press Enter. Example: Inventory</td><td>Labels with that word</td></tr>
-<tr id="step-3-5"><td><b>3.5</b></td><td>Tick a label that reads as the command's name and click <span class="ln-t-press">OK</span>. Pick one no command on the screen uses. Example: Item Inventory</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">command name</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-3-6"><td><b>3.6</b></td><td>Replace what <span class="ln-t-named">Dataset</span> holds with your dataset name</td><td>Its description shows beside it</td></tr>
-<tr id="step-3-7"><td><b>3.7</b></td><td>Set <span class="ln-t-named">Usage Type</span>. Example: <span class="ln-t-exact">Report</span></td><td></td></tr>
+<tr id="step-3-5"><td><b>3.5</b></td><td>Tick a label that reads as the command's name and click <span class="ln-t-press">OK</span>. Pick one no command on the screen uses. Example: Item Inventory</td><td><span class="ln-proc__see">The label's name beside its code. Two labels can share a code, so check it is the one you ticked</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">command name</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3-6"><td><b>3.6</b></td><td>Type your dataset name in <span class="ln-t-named">Dataset</span>, over anything it holds</td><td>Its description shows beside it</td></tr>
+<tr id="step-3-7"><td><b>3.7</b></td><td>Set <span class="ln-t-named">Usage Type</span>, which sets the command's icon. Example: <span class="ln-t-exact">Report</span></td><td></td></tr>
 <tr id="step-3-8"><td><b>3.8</b></td><td>Click <span class="ln-t-press">Save</span></td><td>A grey dot under each text column</td></tr>
-<tr id="step-3-9"><td><b>3.9</b></td><td>Tick the row, open the text button and choose <span class="ln-t-named">Instruction</span></td><td>No text present; Create, Duplicate, Select or Exit?</td></tr>
+<tr id="step-3-9"><td><b>3.9</b></td><td>Tick the row, open the arrow beside <span class="ln-t-press">Edit Text</span> on the toolbar and choose <span class="ln-t-named">Instruction</span></td><td>No text present; Create, Duplicate, Select or Exit?</td></tr>
 <tr id="step-3-10"><td><b>3.10</b></td><td>Choose <span class="ln-t-press">Create</span>, type your sentence and save</td><td>A last-modified stamp</td></tr>
-<tr id="step-3-11"><td><b>3.11</b></td><td>Close the editor, then open the text button, <span class="ln-t-named">Prompt</span> and <span class="ln-t-press">Create</span></td><td>An empty <span class="ln-t-named">Text Editor</span></td></tr>
+<tr id="step-3-11"><td><b>3.11</b></td><td>Close the editor, then open the arrow beside <span class="ln-t-press">Edit Text</span>, choose <span class="ln-t-named">Prompt</span> and <span class="ln-t-press">Create</span></td><td>An empty <span class="ln-t-named">Text Editor</span></td></tr>
 <tr id="step-3-12"><td><b>3.12</b></td><td>Type the first prompt text, one line each, then save and close. Example: <span class="ln-t-exact">You are given an XML dataset for one item: its description and unit, its inventory in each warehouse, and its planned inventory transactions.</span> <span class="ln-t-exact">Write a stock check for someone about to promise this item to a customer.</span> <span class="ln-t-exact">Use only the information present in the dataset.</span> <span class="ln-t-exact">#data,XML#</span></td><td>A green tick under both text columns</td></tr>
 </tbody>
 </table></div>
@@ -246,6 +247,7 @@
 <tbody>
 <tr><td>No text present when a text is opened</td><td>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="#step-3-10">step 3.10</a></td></tr>
 <tr><td>The new row holds another prompt's values</td><td>A new row is a copy of the row the cursor was on. Replace them, as in <a class="rux--link" href="#step-3-5">step 3.5</a> and <a class="rux--link" href="#step-3-6">step 3.6</a></td></tr>
+<tr><td>The name beside the label is not the one ticked</td><td>Two labels share that code. Pick a label whose code has one name, as in <a class="rux--link" href="#step-3-5">step 3.5</a></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -259,8 +261,8 @@
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-4-1"><td><b>4.1</b></td><td>Tick the prompt and choose <span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span>. Do not open it from the menu</td><td>The prompt as the header, with no rows</td></tr>
-<tr id="step-4-2"><td><b>4.2</b></td><td>Click <span class="ln-t-press">New</span> and type your session code across the three <span class="ln-t-named">Session</span> boxes. Example: <span class="ln-t-exact">wh</span>, <span class="ln-t-exact">wmd</span> and <span class="ln-t-exact">4100m100</span></td><td>The screen's name appears. Example: Company - Item Inventory</td></tr>
-<tr id="step-4-3"><td><b>4.3</b></td><td>Set <span class="ln-t-named">When Enabled</span>. <span class="ln-t-exact">Always</span> acts on the row in view or the ticked rows; <span class="ln-t-exact">Records Selected</span> waits for a tick. Example: <span class="ln-t-exact">Always</span></td><td></td></tr>
+<tr id="step-4-2"><td><b>4.2</b></td><td>Click <span class="ln-t-press">New</span> and type your session code across the three <span class="ln-t-named">Session</span> boxes. Example: <span class="ln-t-exact">wh</span>, <span class="ln-t-exact">wmd</span> and <span class="ln-t-exact">4100m100</span></td><td>The screen's name appears, and <span class="ln-t-named">Active</span> is ticked. Example: Company - Item Inventory</td></tr>
+<tr id="step-4-3"><td><b>4.3</b></td><td>Set <span class="ln-t-named">When Enabled</span>. <span class="ln-t-exact">Always</span> acts on the row in view or the ticked rows; <span class="ln-t-exact">Records Selected</span> waits for a tick. Example: <span class="ln-t-exact">Always</span></td><td>Four values: <span class="ln-t-exact">Always</span>, <span class="ln-t-exact">One Record Selected</span>, <span class="ln-t-exact">Records Selected</span> and <span class="ln-t-exact">Never</span></td></tr>
 <tr id="step-4-4"><td><b>4.4</b></td><td>Click <span class="ln-t-press">Save</span></td><td>The row stays</td></tr>
 </tbody>
 </table></div>
@@ -314,7 +316,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-6-1"><td><b>6.1</b></td><td>On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the text button and choose <span class="ln-t-named">Prompt</span></td><td>The text, in the editor</td></tr>
+<tr id="step-6-1"><td><b>6.1</b></td><td>On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the arrow beside <span class="ln-t-press">Edit Text</span> and choose <span class="ln-t-named">Prompt</span></td><td>The text, in the editor</td></tr>
 <tr id="step-6-2"><td><b>6.2</b></td><td>Add a line above the marker that fixes the answer's form. Example: <span class="ln-t-exact">Output plain text only. No heading, no table, no list marks, no bold and no emoji.</span></td><td></td></tr>
 <tr id="step-6-3"><td><b>6.3</b></td><td>Add a line that forbids what the first answer added. Example: <span class="ln-t-exact">Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are.</span></td><td></td></tr>
 <tr id="step-6-4"><td><b>6.4</b></td><td>Add a line that says how the answer opens. Example: <span class="ln-t-exact">First line: the item, its description and its inventory unit.</span></td><td></td></tr>
@@ -339,7 +341,9 @@
 <tbody>
 <tr><td>The answer holds figures LN does not</td><td>The line against calculating is missing, <a class="rux--link" href="#step-6-3">step 6.3</a></td></tr>
 <tr><td>The answer is a report or a letter again</td><td>The form line is missing, <a class="rux--link" href="#step-6-2">step 6.2</a></td></tr>
-<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-6-14">step 6.14</a></td></tr>
+<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-6-15">step 6.15</a></td></tr>
+<tr><td>A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></td><td>Add a line that names each code, as in A template for the two texts</td></tr>
+<tr><td>The closing sentence names something that does not qualify</td><td>Check it against the screen like any other line. The model can get a comparison wrong</td></tr>
 <tr><td>The response contradicts the screen</td><td>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in <a class="rux--link" href="#step-2-13">step 2.13</a>, then open the screen again</td></tr>
 </tbody>
 </table></div>
@@ -444,7 +448,7 @@
   <li><b>Which rows to print</b><p><span class="ln-quiet">What it is for</span><br>A filter the model applies to the rows it is sent</p><p><span class="ln-quiet">Seen without it</span><br>The same prompt printed every activity of the line, most of them not applicable. Told only to name the first activity not executed, it named one that did not apply</p></li>
   <li><b>A name for a code</b><p><span class="ln-quiet">What it is for</span><br>The name behind a code the dataset cannot reach</p><p><span class="ln-quiet">Seen without it</span><br>The next step came back as a session code</p></li>
   <li><b>Nothing to report</b><p><span class="ln-quiet">What it is for</span><br>The exact words for when no row qualifies</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. Given the words, the model used them for a record with no rows and, on another prompt, for a dataset that arrived empty</p></li>
-  <li><b>The thing not to miss</b><p><span class="ln-quiet">What it is for</span><br>One closing sentence on what the reader must see</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none</p></li>
+  <li><b>The thing not to miss</b><p><span class="ln-quiet">What it is for</span><br>One closing sentence on what the reader must see</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none. Once, with none over, it named a warehouse all the same</p></li>
   <li><b>A case of its own</b><p><span class="ln-quiet">What it is for</span><br>The words for a kind of record the general rule misreads</p><p><span class="ln-quiet">Seen without it</span><br>A canceled order line was given a next step</p></li>
   <li><b>A missing value</b><p><span class="ln-quiet">What it is for</span><br>What to write for a value the dataset did not send</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, a blank description read <span class="ln-t-exact">[not available]</span></p></li>
   <li><b>How a value is written</b><p><span class="ln-quiet">What it is for</span><br>One way of writing a date</p><p><span class="ln-quiet">Seen without it</span><br>Full timestamps on some runs of another prompt</p></li>

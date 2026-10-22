@@ -93,10 +93,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A new row, filled with another prompt's values"
+                  "v": "A new row, holding another prompt's name and label"
                 }
               ],
-              "text": "A new row, filled with another prompt's values"
+              "text": "A new row, holding another prompt's name and label"
             }
           ],
           "id": "1",
@@ -192,9 +192,13 @@
                 {
                   "t": "field",
                   "v": "Language"
+                },
+                {
+                  "t": "text",
+                  "v": ". 2 is English"
                 }
               ],
-              "text": "In the Label lookup, enter 2 under Language"
+              "text": "In the Label lookup, enter 2 under Language. 2 is English"
             },
             {
               "tokens": [
@@ -283,6 +287,10 @@
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "The label's name beside its code. Two labels can share a code, so check it is the one you ticked — "
+                },
+                {
                   "t": "pencil"
                 },
                 {
@@ -294,7 +302,7 @@
                   "v": "command name"
                 }
               ],
-              "text": "command name"
+              "text": "The label's name beside its code. Two labels can share a code, so check it is the one you ticked — command name"
             }
           ],
           "id": "5",
@@ -316,7 +324,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Replace what "
+                  "v": "Type your dataset name in "
                 },
                 {
                   "t": "field",
@@ -324,10 +332,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " holds with your dataset name"
+                  "v": ", over anything it holds"
                 }
               ],
-              "text": "Replace what Dataset holds with your dataset name"
+              "text": "Type your dataset name in Dataset, over anything it holds"
             },
             {
               "tokens": [
@@ -366,14 +374,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ". Example: "
+                  "v": ", which sets the command's icon. Example: "
                 },
                 {
                   "t": "literal",
                   "v": "Report"
                 }
               ],
-              "text": "Set Usage Type. Example: Report"
+              "text": "Set Usage Type, which sets the command's icon. Example: Report"
             },
             {
               "tokens": [
@@ -442,14 +450,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the row, open the text button and choose "
+                  "v": "Tick the row, open the arrow beside "
+                },
+                {
+                  "t": "button",
+                  "label": "Edit Text"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar and choose "
                 },
                 {
                   "t": "chip",
                   "v": "Instruction"
                 }
               ],
-              "text": "Tick the row, open the text button and choose Instruction"
+              "text": "Tick the row, open the arrow beside Edit Text on the toolbar and choose Instruction"
             },
             {
               "tokens": [
@@ -522,7 +538,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Close the editor, then open the text button, "
+                  "v": "Close the editor, then open the arrow beside "
+                },
+                {
+                  "t": "button",
+                  "label": "Edit Text"
+                },
+                {
+                  "t": "text",
+                  "v": ", choose "
                 },
                 {
                   "t": "chip",
@@ -537,7 +561,7 @@
                   "label": "Create"
                 }
               ],
-              "text": "Close the editor, then open the text button, Prompt and Create"
+              "text": "Close the editor, then open the arrow beside Edit Text, choose Prompt and Create"
             },
             {
               "tokens": [
@@ -687,6 +711,28 @@
               }
             ],
             "text": "A new row is a copy of the row the cursor was on. Replace them, as in step 5 and step 6"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The name beside the label is not the one ticked"
+              }
+            ],
+            "text": "The name beside the label is not the one ticked"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Two labels share that code. Pick a label whose code has one name, as in step 5"
+              }
+            ],
+            "text": "Two labels share that code. Pick a label whose code has one name, as in step 5"
           }
         ]
       }

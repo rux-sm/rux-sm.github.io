@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled"
+                  "v": "give the item a fixed pick location; only fixed pick locations are refilled"
                 }
               ],
-              "text": "give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled"
+              "text": "give the item a fixed pick location; only fixed pick locations are refilled"
             },
             {
               "tokens": [
@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "link bulk locations to pick locations in the replenishment matrix"
+                  "v": "give that location a minimum inventory and a minimum replenishment quantity"
                 }
               ],
-              "text": "link bulk locations to pick locations in the replenishment matrix"
+              "text": "give that location a minimum inventory and a minimum replenishment quantity"
             },
             {
               "tokens": [
@@ -120,6 +120,40 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "link bulk locations to pick locations in the replenishment matrix"
+                }
+              ],
+              "text": "link bulk locations to pick locations in the replenishment matrix"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "run this session to start the refill; it can create the transfer orders and process them"
                 }
               ],
@@ -135,7 +169,7 @@
               "text": "—"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         }

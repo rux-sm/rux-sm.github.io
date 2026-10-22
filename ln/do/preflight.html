@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -114,7 +114,7 @@
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Sales</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Enterprise Planning</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Procurement</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Manufacturing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
 <p class="ln-strip">Task 1 of 7 in <a class="rux--link" href="../follow/demand-to-shipment-via-planning.html">Plan to shipment</a> · next: <a class="rux--link" href="../do/create-the-demand.html">Create the demand</a></p>
-<p><strong>Before you start.</strong> The bamboo family as section 2 describes it. If any of it is missing, <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> builds it and <a class="rux--link" href="../follow/run-order-planning-for-one-item.html">Run order planning</a> this task adds the planning data.</p>
+<p><strong>Before you start.</strong> The bamboo family as section 2 describes it. If any of it is missing, <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> builds it and <a class="rux--link" href="../do/make-the-item-visible-to-planning.html">Make the item visible to planning</a> adds the planning data.</p>
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd4300m000" aria-label="Copy the code whwmd4300m000">whwmd4300m000</button></div>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 5 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
@@ -126,7 +126,7 @@
   <li id="step-2"><div class="ln-doc__do">Read <span class="ln-t-exact">BAM-CHOP-PAIR</span> on-hand at the finished-goods warehouse </div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">pair on-hand before</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipping warehouse</span></div></li>
   <li id="step-3"><div class="ln-doc__do">Read <span class="ln-t-exact">BAM-ROD</span> and <span class="ln-t-exact">BAM-SLEEVE</span> on-hand at the raw-materials warehouse </div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">rod on-hand before</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">sleeve on-hand before</span></div></li>
   <li id="step-4"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> and search each of the three items in turn</div><div class="ln-doc__see"><b>You should see</b> Each one appears. An item that does not is invisible to MRP</div></li>
-  <li id="step-5"><div class="ln-doc__do">For any item that does not appear, add its cluster row per <a class="rux--link" href="../follow/run-order-planning-for-one-item.html">Run order planning</a> steps 3–5</div><div class="ln-doc__see"><b>You should see</b> The item now appears — an empty plan, but a plan</div></li>
+  <li id="step-5"><div class="ln-doc__do">For any item that does not appear, add its cluster row</div><p class="ln-doc__note">Follow steps 3–5 of <a class="rux--link" href="../do/make-the-item-visible-to-planning.html">Make the item visible to planning</a></p><div class="ln-doc__see"><b>You should see</b> The item now appears — an empty plan, but a plan</div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -194,7 +194,7 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each one appears. An item that does not is invisible to MRP</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">For any item that does not appear, add its cluster row per <a class="rux--link" href="../follow/run-order-planning-for-one-item.html">Run order planning</a> steps 3–5</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">For any item that does not appear, add its cluster row</h1><p class="ln-step__note">Follow steps 3–5 of <a class="rux--link" href="../do/make-the-item-visible-to-planning.html">Make the item visible to planning</a></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item now appears — an empty plan, but a plan</p></div>
   </li>
 </ol>

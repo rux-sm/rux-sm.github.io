@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
@@ -55,16 +55,7 @@
         },
         {
           "t": "text",
-          "v": "; step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm stock, destination, and expected order type",
-          "href": "confirm-stock-destination-and-expected-order-type.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 2 of "
+          "v": "; step 3 of "
         },
         {
           "t": "link",
@@ -82,10 +73,19 @@
         },
         {
           "t": "text",
+          "v": "; step 6 of "
+        },
+        {
+          "t": "link",
+          "v": "Confirm stock, destination, and expected order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 1 of Pick the goods; step 1 of Confirm stock, destination, and expected order type; step 2 of Confirm stock, destination, and expected order type; step 4 of Confirm stock, destination, and expected order type."
+      "text": "You need step 1 of Pick the goods; step 3 of Confirm stock, destination, and expected order type; step 4 of Confirm stock, destination, and expected order type; step 6 of Confirm stock, destination, and expected order type."
     }
   ],
   "why": {
@@ -312,24 +312,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the source warehouse from step 1 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
-                  "href": "confirm-stock-destination-and-expected-order-type.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", and "
-                },
-                {
-                  "t": "field",
-                  "v": "Ship-To Code"
-                },
-                {
-                  "t": "text",
-                  "v": " to the destination warehouse from step 2 of "
+                  "v": " to the source warehouse. It is the one from step 3 of "
                 },
                 {
                   "t": "link",
@@ -337,24 +320,16 @@
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Set Ship-From Code to the source warehouse from step 1 of Confirm stock, destination, and expected order type, and Ship-To Code to the destination warehouse from step 2 of Confirm stock, destination, and expected order type"
+              "text": "Set Ship-From Code to the source warehouse. It is the one from step 3 of Confirm stock, destination, and expected order type"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both types read "
-                },
-                {
-                  "t": "literal",
-                  "v": "Warehouse"
-                },
-                {
-                  "t": "text",
-                  "v": " — the condition for the Transfer transaction type"
+                  "v": "—"
                 }
               ],
-              "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+              "text": "—"
             }
           ],
           "id": "5",
@@ -376,6 +351,61 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Ship-To Code"
+                },
+                {
+                  "t": "text",
+                  "v": " to the destination warehouse. It is the one from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                }
+              ],
+              "text": "Set Ship-To Code to the destination warehouse. It is the one from step 4 of Confirm stock, destination, and expected order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both types read "
+                },
+                {
+                  "t": "literal",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " — the condition for the Transfer transaction type"
+                }
+              ],
+              "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Compare the defaulted "
                 },
                 {
@@ -384,19 +414,49 @@
                 },
                 {
                   "t": "text",
-                  "v": " with step 4 of "
+                  "v": " with the one you expected. You recorded it at step 6 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm stock, destination, and expected order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and record the value actually used"
                 }
               ],
-              "text": "Compare the defaulted Warehousing Order Type with step 4 of Confirm stock, destination, and expected order type and record the value actually used"
+              "text": "Compare the defaulted Warehousing Order Type with the one you expected. You recorded it at step 6 of Confirm stock, destination, and expected order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Record the value actually used"
+                }
+              ],
+              "text": "Record the value actually used"
             },
             {
               "tokens": [
@@ -415,7 +475,7 @@
               "text": "actual warehousing order type"
             }
           ],
-          "id": "6",
+          "id": "8",
           "optional": false,
           "produces": true
         },
@@ -425,10 +485,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "9"
                 }
               ],
-              "text": "7"
+              "text": "9"
             },
             {
               "tokens": [
@@ -456,7 +516,7 @@
               "text": "transfer order number"
             }
           ],
-          "id": "7",
+          "id": "9",
           "optional": false,
           "produces": true
         },
@@ -466,28 +526,58 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "10"
                 }
               ],
-              "text": "8"
+              "text": "10"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add an order line: the item from step 1 of "
+                  "v": "Add an order line with the item. It is the item from step 3 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm stock, destination, and expected order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and the quantity to move"
                 }
               ],
-              "text": "Add an order line: the item from step 1 of Confirm stock, destination, and expected order type and the quantity to move"
+              "text": "Add an order line with the item. It is the item from step 3 of Confirm stock, destination, and expected order type"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the quantity to move"
+                }
+              ],
+              "text": "Enter the quantity to move"
             },
             {
               "tokens": [
@@ -506,7 +596,7 @@
               "text": "transferred quantity"
             }
           ],
-          "id": "8",
+          "id": "11",
           "optional": false,
           "produces": true
         },
@@ -516,10 +606,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "12"
                 }
               ],
-              "text": "9"
+              "text": "12"
             },
             {
               "tokens": [
@@ -540,7 +630,7 @@
               "text": "—"
             }
           ],
-          "id": "9",
+          "id": "12",
           "optional": false,
           "produces": false
         }
@@ -569,10 +659,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Header not saved, or a required field is still blank — recheck steps 3–6"
+                "v": "Header not saved, or a required field is still blank — recheck steps 3–8"
               }
             ],
-            "text": "Header not saved, or a required field is still blank — recheck steps 3–6"
+            "text": "Header not saved, or a required field is still blank — recheck steps 3–8"
           }
         ]
       }

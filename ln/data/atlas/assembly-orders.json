@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN makes an outbound line for each component and one inbound line for the assembled item"
+                  "v": "LN makes an outbound line for each component"
                 }
               ],
-              "text": "LN makes an outbound line for each component and one inbound line for the assembled item"
+              "text": "LN makes an outbound line for each component"
             },
             {
               "tokens": [
@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
+                  "v": "it makes one inbound line for the assembled item"
                 }
               ],
-              "text": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
+              "text": "it makes one inbound line for the assembled item"
             },
             {
               "tokens": [
@@ -154,10 +154,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "the order cannot be changed once a component line is past Open, or deleted while it has component lines"
+                  "v": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
                 }
               ],
-              "text": "the order cannot be changed once a component line is past Open, or deleted while it has component lines"
+              "text": "receive the inbound line to say the assembly is done, and put the item away like any receipt"
             },
             {
               "tokens": [
@@ -170,6 +170,74 @@
             }
           ],
           "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "the order cannot be changed once a component line is past Open"
+                }
+              ],
+              "text": "the order cannot be changed once a component line is past Open"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "it cannot be deleted while it has component lines"
+                }
+              ],
+              "text": "it cannot be deleted while it has component lines"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
           "optional": false,
           "produces": false
         }

@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",
   "session": "Item Defaults",
   "sessionCode": "tcibd0102m000",
@@ -278,63 +278,23 @@
                 {
                   "t": "literal",
                   "v": "Product"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "field",
-                  "v": "Item Group"
-                },
-                {
-                  "t": "text",
-                  "v": " to the purchased group from step 3 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create two item groups",
-                  "href": "create-two-item-groups.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", and "
-                },
-                {
-                  "t": "field",
-                  "v": "Default Supply Source"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "literal",
-                  "v": "Purchase"
                 }
               ],
-              "text": "Set Item Type to Product, Item Group to the purchased group from step 3 of Create two item groups, and Default Supply Source to Purchase"
+              "text": "Set Item Type to Product"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "purchased default supply source"
+                  "v": "—"
                 }
               ],
-              "text": "purchased default supply source"
+              "text": "—"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -355,36 +315,19 @@
                 },
                 {
                   "t": "field",
-                  "v": "Unit Set"
+                  "v": "Item Group"
                 },
                 {
                   "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Inventory Unit"
-                },
-                {
-                  "t": "text",
-                  "v": " to the values recorded at step 8 of "
+                  "v": " to the purchased group. It is the one from step 3 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and step 9 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
+                  "v": "Create two item groups",
+                  "href": "create-two-item-groups.md"
                 }
               ],
-              "text": "Set Unit Set and Inventory Unit to the values recorded at step 8 of Confirm the test design and step 9 of Confirm the test design"
+              "text": "Set Item Group to the purchased group. It is the one from step 3 of Create two item groups"
             },
             {
               "tokens": [
@@ -415,6 +358,153 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Default Supply Source"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "literal",
+                  "v": "Purchase"
+                }
+              ],
+              "text": "Set Default Supply Source to Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "purchased default supply source"
+                }
+              ],
+              "text": "purchased default supply source"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Unit Set"
+                },
+                {
+                  "t": "text",
+                  "v": " to the value recorded at step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the test design",
+                  "href": "confirm-the-test-design.md"
+                }
+              ],
+              "text": "Set Unit Set to the value recorded at step 8 of Confirm the test design"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Unit"
+                },
+                {
+                  "t": "text",
+                  "v": " to the value recorded at step 9 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the test design",
+                  "href": "confirm-the-test-design.md"
+                }
+              ],
+              "text": "Set Inventory Unit to the value recorded at step 9 of Confirm the test design"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Leave special-purpose typology and traceability controls at their proposed values"
                 }
               ],
@@ -430,7 +520,7 @@
               "text": "No new configuration, lot, or serial behaviour is introduced"
             }
           ],
-          "id": "6",
+          "id": "9",
           "optional": false,
           "produces": false
         },
@@ -440,10 +530,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "10"
                 }
               ],
-              "text": "7"
+              "text": "10"
             },
             {
               "tokens": [
@@ -472,7 +562,7 @@
               "text": "The Product/BAM-RM combination exists"
             }
           ],
-          "id": "7",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -482,10 +572,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "11"
                 }
               ],
-              "text": "8"
+              "text": "11"
             },
             {
               "tokens": [
@@ -511,7 +601,7 @@
               "text": "The multisite follow-on is active"
             }
           ],
-          "id": "8",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -521,10 +611,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "12"
                 }
               ],
-              "text": "9"
+              "text": "12"
             },
             {
               "tokens": [
@@ -538,16 +628,46 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab add the site from step 2 of "
+                  "v": " tab, add the site. It is the one from step 2 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm the test design",
                   "href": "confirm-the-test-design.md"
-                },
+                }
+              ],
+              "text": "On the Sites tab, add the site. It is the one from step 2 of Confirm the test design"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", set its "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set its "
                 },
                 {
                   "t": "field",
@@ -555,16 +675,46 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the purchased warehouse from step 5 of "
+                  "v": " to the purchased warehouse. It is the one from step 5 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm the test design",
                   "href": "confirm-the-test-design.md"
-                },
+                }
+              ],
+              "text": "Set its Warehouse to the purchased warehouse. It is the one from step 5 of Confirm the test design"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": " and its "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set its "
                 },
                 {
                   "t": "field",
@@ -577,13 +727,47 @@
                 {
                   "t": "literal",
                   "v": "Purchase"
-                },
-                {
-                  "t": "text",
-                  "v": ", and save"
                 }
               ],
-              "text": "On the Sites tab add the site from step 2 of Confirm the test design, set its Warehouse to the purchased warehouse from step 5 of Confirm the test design and its Supply Source to Purchase, and save"
+              "text": "Set its Supply Source to Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
             },
             {
               "tokens": [
@@ -595,7 +779,7 @@
               "text": "The site row remains stored"
             }
           ],
-          "id": "9",
+          "id": "15",
           "optional": false,
           "produces": false
         },
@@ -605,10 +789,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "16"
                 }
               ],
-              "text": "10"
+              "text": "16"
             },
             {
               "tokens": [
@@ -676,7 +860,7 @@
               "text": "Its defaults session opens — Item Ordering Defaults (tcibd2101m000), Items - Purchase Defaults (tdipu0102m000), Items - Warehousing Defaults (whwmd4101s000)"
             }
           ],
-          "id": "10",
+          "id": "16",
           "optional": false,
           "produces": false
         },
@@ -686,23 +870,91 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "11"
+                  "v": "17"
                 }
               ],
-              "text": "11"
+              "text": "17"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select "
+                  "v": "Compare every tab with the family sheet. Its purchased-group values are in §4"
+                }
+              ],
+              "text": "Compare every tab with the family sheet. Its purchased-group values are in §4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "17",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "18"
+                }
+              ],
+              "text": "18"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Complete what the screen requires"
+                }
+              ],
+              "text": "Complete what the screen requires"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "18",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "19"
+                }
+              ],
+              "text": "19"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
                 },
                 {
                   "t": "button",
                   "label": "OK"
                 }
               ],
-              "text": "Compare every tab with the purchased-group values in the family sheet §4, complete what the screen requires, and select OK"
+              "text": "Select OK"
             },
             {
               "tokens": [
@@ -714,7 +966,7 @@
               "text": "The defaults close without an error"
             }
           ],
-          "id": "11",
+          "id": "19",
           "optional": false,
           "produces": false
         },
@@ -724,31 +976,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "12"
+                  "v": "20"
                 }
               ],
-              "text": "12"
+              "text": "20"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the subentity indicator beside the link is active, and select the Create check box beside it"
+                  "v": "Confirm the subentity indicator beside the link is active"
                 }
               ],
-              "text": "Confirm the subentity indicator beside the link is active, and select the Create check box beside it"
+              "text": "Confirm the subentity indicator beside the link is active"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Default data exists, and new items are marked to receive it"
+                  "v": "Default data exists"
                 }
               ],
-              "text": "Default data exists, and new items are marked to receive it"
+              "text": "Default data exists"
             }
           ],
-          "id": "12",
+          "id": "20",
           "optional": false,
           "produces": false
         },
@@ -758,10 +1010,44 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "13"
+                  "v": "21"
                 }
               ],
-              "text": "13"
+              "text": "21"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the Create check box beside it"
+                }
+              ],
+              "text": "Select the Create check box beside it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "New items are marked to receive it"
+                }
+              ],
+              "text": "New items are marked to receive it"
+            }
+          ],
+          "id": "21",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "22"
+                }
+              ],
+              "text": "22"
             },
             {
               "tokens": [
@@ -787,7 +1073,7 @@
               "text": "The site row and Create controls remain stored"
             }
           ],
-          "id": "13",
+          "id": "22",
           "optional": false,
           "produces": false
         },
@@ -797,10 +1083,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "14"
+                  "v": "23"
                 }
               ],
-              "text": "14"
+              "text": "23"
             },
             {
               "tokens": [
@@ -840,7 +1126,7 @@
               "text": "purchased global subentities — three active indicators, three Create controls"
             }
           ],
-          "id": "14",
+          "id": "23",
           "optional": false,
           "produces": true
         }

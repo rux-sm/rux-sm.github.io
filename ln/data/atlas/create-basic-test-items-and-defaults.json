@@ -124,7 +124,7 @@
         ],
         "text": "BAM-RM can create Ordering, Purchase, and Warehousing data."
       },
-      "steps": 14,
+      "steps": 23,
       "walked": null
     },
     {
@@ -144,7 +144,7 @@
         ],
         "text": "BAM-FG can create Ordering, Production, Warehousing, and Sales data."
       },
-      "steps": 10,
+      "steps": 18,
       "walked": "2026-08-16"
     },
     {
@@ -160,7 +160,7 @@
         ],
         "text": "Site-level creation agrees with the company defaults."
       },
-      "steps": 4,
+      "steps": 5,
       "walked": null
     },
     {
@@ -208,7 +208,7 @@
         ],
         "text": "The pair has an Approved routing with an operation at a work center."
       },
-      "steps": 19,
+      "steps": 21,
       "walked": "2026-08-18"
     },
     {
@@ -240,7 +240,7 @@
         ],
         "text": "The rod and sleeve are on hand at the raw-material warehouse."
       },
-      "steps": 10,
+      "steps": 12,
       "walked": null
     },
     {
@@ -256,7 +256,7 @@
         ],
         "text": "The family satisfies phase 0 of the production-order walkthrough."
       },
-      "steps": 7,
+      "steps": 12,
       "walked": null
     }
   ],

@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -116,7 +116,7 @@
 <p class="ln-strip">Task 8 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/confirm-costing-data.html">Confirm costing data</a></p>
 <p><strong>Before you start.</strong> You need step 2 of <a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>. An existing work center and an existing reference operation for the site. <strong>This walkthrough does not create work centers, machines, or reference operations.</strong> Look them up first — <a class="rux--link" href="../screens/tirou0101m000.html"><span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers</span></a> <span class="ln-t-exact">tirou0101m000</span> and <a class="rux--link" href="../screens/tirou4150m000.html"><span class="ln-t-named">Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations</span></a> <span class="ln-t-exact">tirou4150m000</span> — and if neither has a usable entry for the site, stop and obtain one.</p>
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Engineering</span><span class="sep">➔</span><span class="dest">Job Shop Routings</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tirou4100m000" aria-label="Copy the code tirou4100m000">tirou4100m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 19 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 21 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
@@ -134,12 +134,14 @@
   <li id="step-11"><div class="ln-doc__do">On the <span class="ln-t-named">Operations</span> grid, select <span class="ln-t-press">New</span></div><div class="ln-doc__see"><b>You should see</b> A blank operation line opens</div></li>
   <li id="step-12"><div class="ln-doc__do">Enter <span class="ln-t-named">Operation</span> = <span class="ln-t-exact">10</span></div><div class="ln-doc__see"><b>You should see</b> The pair has a first operation</div></li>
   <li id="step-13"><div class="ln-doc__do">Set <span class="ln-t-named">Reference Operation</span> and <span class="ln-t-named">Work Center</span> to existing values from the prerequisite lookups</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing operation and work center</span></div></li>
-  <li id="step-14"><div class="ln-doc__do">Check what the reference operation brought with it, and enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank</div><p class="ln-doc__note">With <span class="ln-t-named">Use Production Rates</span> selected in the current parameter set, confirm <span class="ln-t-named">Production Rate</span> is filled, since that is the value LN uses for the operation time</p><div class="ln-doc__see"><b>You should see</b> A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here</div></li>
-  <li id="step-15"><div class="ln-doc__do">Save the operation line</div><div class="ln-doc__see"><b>You should see</b> The operation is stored against the routing revision</div></li>
-  <li id="step-16"><div class="ln-doc__do">Select the routing and approve the revision from the <span class="ln-t-named">Actions</span> menu</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</div></li>
-  <li id="step-17"><div class="ln-doc__do">Set <span class="ln-t-named">Use for Planning</span> on the routing</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Use for Planning</span> is selected</div></li>
-  <li id="step-18"><div class="ln-doc__do">Set <span class="ln-t-named">Use for Costing</span> on the routing</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Use for Costing</span> is selected</div></li>
-  <li id="step-19"><div class="ln-doc__do">Close and reopen the routing</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing and revision</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present</div></li>
+  <li id="step-14"><div class="ln-doc__do">Check what the reference operation brought with it</div><div class="ln-doc__see"><b>You should see</b> A reference operation carries its own times; do not overwrite them with an invented value</div></li>
+  <li id="step-15"><div class="ln-doc__do">Enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank</div></li>
+  <li id="step-16"><div class="ln-doc__do">Confirm <span class="ln-t-named">Production Rate</span> is filled</div><p class="ln-doc__note">Where <span class="ln-t-named">Use Production Rates</span> is selected in the current parameter set, that is the value LN uses for the operation time</p><div class="ln-doc__see"><b>You should see</b> The production rate is expressed per hour here</div></li>
+  <li id="step-17"><div class="ln-doc__do">Save the operation line</div><div class="ln-doc__see"><b>You should see</b> The operation is stored against the routing revision</div></li>
+  <li id="step-18"><div class="ln-doc__do">Select the routing and approve the revision from the <span class="ln-t-named">Actions</span> menu</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</div></li>
+  <li id="step-19"><div class="ln-doc__do">Set <span class="ln-t-named">Use for Planning</span> on the routing</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Use for Planning</span> is selected</div></li>
+  <li id="step-20"><div class="ln-doc__do">Set <span class="ln-t-named">Use for Costing</span> on the routing</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Use for Costing</span> is selected</div></li>
+  <li id="step-21"><div class="ln-doc__do">Close and reopen the routing</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing and revision</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present</div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -243,26 +245,33 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing operation and work center</span></p></div>
   </li>
   <li data-k="14" data-ref="14" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Check what the reference operation brought with it, and enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank</h1><p class="ln-step__note">With <span class="ln-t-named">Use Production Rates</span> selected in the current parameter set, confirm <span class="ln-t-named">Production Rate</span> is filled, since that is the value LN uses for the operation time</p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check what the reference operation brought with it</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A reference operation carries its own times; do not overwrite them with an invented value</p></div>
   </li>
   <li data-k="15" data-ref="15" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Enter <span class="ln-t-named">Cycle Time (min)</span> only if it is still blank</h1></div>
+  </li>
+  <li data-k="16" data-ref="16" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Confirm <span class="ln-t-named">Production Rate</span> is filled</h1><p class="ln-step__note">Where <span class="ln-t-named">Use Production Rates</span> is selected in the current parameter set, that is the value LN uses for the operation time</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The production rate is expressed per hour here</p></div>
+  </li>
+  <li data-k="17" data-ref="17" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Save the operation line</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The operation is stored against the routing revision</p></div>
   </li>
-  <li data-k="16" data-ref="16" hidden>
+  <li data-k="18" data-ref="18" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the routing and approve the revision from the <span class="ln-t-named">Actions</span> menu</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>; <span class="ln-t-named">Approved By</span> and <span class="ln-t-named">Approved On</span> are filled</p></div>
   </li>
-  <li data-k="17" data-ref="17" hidden>
+  <li data-k="19" data-ref="19" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Use for Planning</span> on the routing</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Use for Planning</span> is selected</p></div>
   </li>
-  <li data-k="18" data-ref="18" hidden>
+  <li data-k="20" data-ref="20" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Use for Costing</span> on the routing</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Use for Costing</span> is selected</p></div>
   </li>
-  <li data-k="19" data-ref="19" hidden>
+  <li data-k="21" data-ref="21" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Close and reopen the routing</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">routing and revision</span> — <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, indicators set, operation present</p></div>
   </li>

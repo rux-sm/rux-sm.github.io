@@ -84,7 +84,7 @@
         ],
         "text": "An order exists against a buy-from business partner."
       },
-      "steps": 5,
+      "steps": 7,
       "walked": "2026-08-18"
     },
     {
@@ -116,7 +116,7 @@
         ],
         "text": "LN's generated inbound order is found and receiving is started."
       },
-      "steps": 4,
+      "steps": 6,
       "walked": "2026-08-18"
     },
     {
@@ -140,7 +140,7 @@
         ],
         "text": "The receipt reaches Confirmed with all lines final and complete."
       },
-      "steps": 6,
+      "steps": 7,
       "walked": "2026-08-18"
     },
     {
@@ -588,15 +588,15 @@
                 },
                 {
                   "t": "link",
-                  "v": "Create test items",
-                  "href": "create-basic-test-items-and-defaults.md"
+                  "v": "Stock the components",
+                  "href": "stock-the-components.md"
                 },
                 {
                   "t": "text",
-                  "v": " phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
+                  "v": " describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
                 }
               ],
-              "text": "The adjustment route the notes of Create test items phase 9 describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
+              "text": "The adjustment route the notes of Stock the components describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
             }
           ]
         }

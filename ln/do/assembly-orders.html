@@ -102,7 +102,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -115,16 +115,18 @@
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Assembly Orders</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh2101m000" aria-label="Copy the code whinh2101m000">whinh2101m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 4 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 6 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
 <ol class="ln-doc">
   <li id="step-1"><div class="ln-doc__do">Create the assembly order by hand for the item to be assembled</div><p class="ln-doc__note">Its components come from the item's list of components</p></li>
-  <li id="step-2"><div class="ln-doc__do">LN makes an outbound line for each component and one inbound line for the assembled item</div></li>
-  <li id="step-3"><div class="ln-doc__do">Receive the inbound line to say the assembly is done, and put the item away like any receipt</div></li>
-  <li id="step-4"><div class="ln-doc__do">The order cannot be changed once a component line is past Open, or deleted while it has component lines</div></li>
+  <li id="step-2"><div class="ln-doc__do">LN makes an outbound line for each component</div></li>
+  <li id="step-3"><div class="ln-doc__do">It makes one inbound line for the assembled item</div></li>
+  <li id="step-4"><div class="ln-doc__do">Receive the inbound line to say the assembly is done, and put the item away like any receipt</div></li>
+  <li id="step-5"><div class="ln-doc__do">The order cannot be changed once a component line is past Open</div></li>
+  <li id="step-6"><div class="ln-doc__do">It cannot be deleted while it has component lines</div></li>
 </ol>
 <div class="ln-why"><p><span class="ln-gap">Not documented for this release.</span></p></div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
@@ -161,13 +163,19 @@
     <div class="ln-step__main"><h1 class="ln-step__do">Create the assembly order by hand for the item to be assembled</h1><p class="ln-step__note">Its components come from the item's list of components</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">LN makes an outbound line for each component and one inbound line for the assembled item</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">LN makes an outbound line for each component</h1></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Receive the inbound line to say the assembly is done, and put the item away like any receipt</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">It makes one inbound line for the assembled item</h1></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">The order cannot be changed once a component line is past Open, or deleted while it has component lines</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Receive the inbound line to say the assembly is done, and put the item away like any receipt</h1></div>
+  </li>
+  <li data-k="5" data-ref="5" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">The order cannot be changed once a component line is past Open</h1></div>
+  </li>
+  <li data-k="6" data-ref="6" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">It cannot be deleted while it has component lines</h1></div>
   </li>
 </ol>
 <p class="ln-step__route"><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Assembly Orders</span></span> <span class="ln-t-exact">whinh2101m000</span></p>

@@ -24,7 +24,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning",
   "session": "Items - Planning",
   "sessionCode": "cprpd1100m000",
@@ -43,7 +43,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 3 of "
+          "v": "You need step 4 of "
         },
         {
           "t": "link",
@@ -55,7 +55,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 3 of Create demand."
+      "text": "You need step 4 of Create demand."
     }
   ],
   "why": {
@@ -146,16 +146,46 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If the delivery date from step 3 of "
+                  "v": "Compare the delivery date with the horizon date. The delivery date is from step 4 of "
                 },
                 {
                   "t": "link",
                   "v": "Create demand",
                   "href": "create-demand.md"
-                },
+                }
+              ],
+              "text": "Compare the delivery date with the horizon date. The delivery date is from step 4 of Create demand"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": " falls beyond the horizon date, raise the "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If it falls beyond, raise the "
                 },
                 {
                   "t": "field",
@@ -166,7 +196,7 @@
                   "v": " days until it falls inside"
                 }
               ],
-              "text": "If the delivery date from step 3 of Create demand falls beyond the horizon date, raise the Order Horizon days until it falls inside"
+              "text": "If it falls beyond, raise the Order Horizon days until it falls inside"
             },
             {
               "tokens": [
@@ -189,7 +219,7 @@
               "text": "order horizon — record both the days entered and the date displayed"
             }
           ],
-          "id": "2",
+          "id": "3",
           "optional": false,
           "produces": true
         },
@@ -199,10 +229,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "4"
                 }
               ],
-              "text": "3"
+              "text": "4"
             },
             {
               "tokens": [
@@ -248,7 +278,7 @@
               "text": "The Horizons block shows the new Order Horizon date"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -258,10 +288,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -294,7 +324,7 @@
               "text": "A Sales Order row with your order number and quantity as Demand"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": false
         }

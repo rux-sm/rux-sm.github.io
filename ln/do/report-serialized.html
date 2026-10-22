@@ -102,7 +102,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -115,17 +115,20 @@
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="tisfc0130m000" aria-label="Copy the code tisfc0130m000">tisfc0130m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 5 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
 <ol class="ln-doc">
-  <li id="step-1"><div class="ln-doc__do">Find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual</div></li>
-  <li id="step-2"><div class="ln-doc__do">Automatic, one item: on the last operation enter the quantity completed and its serial number, then save</div></li>
-  <li id="step-3"><div class="ln-doc__do">Automatic, several items: enter the quantity alone</div><p class="ln-doc__note">LN takes that many serials still at Created, in the order they are listed</p></li>
-  <li id="step-4"><div class="ln-doc__do">Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned</div></li>
-  <li id="step-5"><div class="ln-doc__do">Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save</div></li>
+  <li id="step-1"><div class="ln-doc__do">Find out who sets the serial status</div><p class="ln-doc__note">As-Built Status Handling in Production Order Parameters reads Automatic or Manual</p></li>
+  <li id="step-2"><div class="ln-doc__do">Automatic, one item: enter the quantity completed on the last operation</div></li>
+  <li id="step-3"><div class="ln-doc__do">Automatic, one item: enter its serial number, then save</div></li>
+  <li id="step-4"><div class="ln-doc__do">Automatic, several items: enter the quantity alone</div><p class="ln-doc__note">LN takes that many serials still at Created, in the order they are listed</p></li>
+  <li id="step-5"><div class="ln-doc__do">Manual: from the operation, open Serial Numbers</div></li>
+  <li id="step-6"><div class="ln-doc__do">Manual: set each finished serial from Created to Assigned</div></li>
+  <li id="step-7"><div class="ln-doc__do">Manual: back on the operation, click Default Qty Completed</div><p class="ln-doc__note">It fills in the number set to Assigned</p></li>
+  <li id="step-8"><div class="ln-doc__do">Manual: save the operation</div></li>
 </ol>
 <div class="ln-why"><p><span class="ln-gap">Not documented for this release.</span></p></div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
@@ -160,19 +163,28 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Find out who sets the serial status</h1><p class="ln-step__note">As-Built Status Handling in Production Order Parameters reads Automatic or Manual</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Automatic, one item: on the last operation enter the quantity completed and its serial number, then save</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Automatic, one item: enter the quantity completed on the last operation</h1></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Automatic, several items: enter the quantity alone</h1><p class="ln-step__note">LN takes that many serials still at Created, in the order they are listed</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Automatic, one item: enter its serial number, then save</h1></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Automatic, several items: enter the quantity alone</h1><p class="ln-step__note">LN takes that many serials still at Created, in the order they are listed</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Manual: from the operation, open Serial Numbers</h1></div>
+  </li>
+  <li data-k="6" data-ref="6" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Manual: set each finished serial from Created to Assigned</h1></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Manual: back on the operation, click Default Qty Completed</h1><p class="ln-step__note">It fills in the number set to Assigned</p></div>
+  </li>
+  <li data-k="8" data-ref="8" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Manual: save the operation</h1></div>
   </li>
 </ol>
 <p class="ln-step__route"><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span> <span class="ln-t-exact">tisfc0130m000</span></p>

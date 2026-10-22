@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -114,20 +114,21 @@
 </div>
 <div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
 <p class="ln-strip">Task 3 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/pick-the-goods_transfer-item-between-warehouses.html">Pick the goods</a></p>
-<p><strong>Before you start.</strong> You need step 6 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>.</p>
+<p><strong>Before you start.</strong> You need step 7 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>.</p>
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Outbound Line Status Overview</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whinh2129m000" aria-label="Copy the code whinh2129m000">whinh2129m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 7 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
 <ol class="ln-doc">
   <li id="step-1"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a></div><div class="ln-doc__see"><b>You should see</b> The outbound-line overview opens</div></li>
-  <li id="step-2"><div class="ln-doc__do">Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></div><div class="ln-doc__see"><b>You should see</b> The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from step 6 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></div></li>
+  <li id="step-2"><div class="ln-doc__do">Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></div><div class="ln-doc__see"><b>You should see</b> The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from step 7 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></div></li>
   <li id="step-3"><div class="ln-doc__do">Read every row in the <span class="ln-t-named">Activities</span> table, especially <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">Yes</span> means LN runs it; <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span> means it is an operator step</div></li>
   <li id="step-4"><div class="ln-doc__do">Record the activities marked <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span></div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">manual outbound activities</span>; these determine which later steps you perform</div></li>
-  <li id="step-5"><div class="ln-doc__do">If the first unfinished activity is automatic, return to the warehousing order and choose <span class="ln-t-press">Process</span></div><div class="ln-doc__see"><b>You should see</b> LN executes consecutive automatic activities and stops at the next manual activity</div></li>
-  <li id="step-6"><div class="ln-doc__do">If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span>, select the line, and choose <span class="ln-t-named">Generate Advice</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></p><div class="ln-doc__see"><b>You should see</b> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</div></li>
-  <li id="step-7"><div class="ln-doc__do">If <span class="ln-t-named">Release Outbound Advice</span> is manual and <span class="ln-t-named">Released</span> is still blank, choose <span class="ln-t-named">Release Advice</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></p><div class="ln-doc__see"><b>You should see</b> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</div></li>
+  <li id="step-5"><div class="ln-doc__do">If the next activity is automatic, choose <span class="ln-t-press">Process</span> on the warehousing order</div><div class="ln-doc__see"><b>You should see</b> LN executes consecutive automatic activities and stops at the next manual activity</div></li>
+  <li id="step-6"><div class="ln-doc__do">If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span> and select the line</div></li>
+  <li id="step-7"><div class="ln-doc__do">Then choose <span class="ln-t-named">Generate Advice</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></p><div class="ln-doc__see"><b>You should see</b> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</div></li>
+  <li id="step-8"><div class="ln-doc__do">If <span class="ln-t-named">Release Outbound Advice</span> is manual and <span class="ln-t-named">Released</span> is still blank, choose <span class="ln-t-named">Release Advice</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></p><div class="ln-doc__see"><b>You should see</b> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -184,7 +185,7 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from step 6 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item and order line match; <span class="ln-t-named">Order Type</span> matches the actual value from step 7 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Read every row in the <span class="ln-t-named">Activities</span> table, especially <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></h1></div>
@@ -195,14 +196,17 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">manual outbound activities</span>; these determine which later steps you perform</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">If the first unfinished activity is automatic, return to the warehousing order and choose <span class="ln-t-press">Process</span></h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">If the next activity is automatic, choose <span class="ln-t-press">Process</span> on the warehousing order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>LN executes consecutive automatic activities and stops at the next manual activity</p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span>, select the line, and choose <span class="ln-t-named">Generate Advice</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Generate Outbound Advice</span> is manual, open <span class="ln-t-named">Outbound Lines</span> and select the line</h1></div>
   </li>
   <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Then choose <span class="ln-t-named">Generate Advice</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> fills; automatic follow-on activities may also finish</p></div>
+  </li>
+  <li data-k="8" data-ref="8" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Release Outbound Advice</span> is manual and <span class="ln-t-named">Released</span> is still blank, choose <span class="ln-t-named">Release Advice</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Release Advice</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> fills</p></div>
   </li>

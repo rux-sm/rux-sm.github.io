@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
@@ -363,7 +363,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
+                  "v": " and "
                 },
                 {
                   "t": "field",
@@ -371,27 +371,19 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and "
-                },
-                {
-                  "t": "field",
-                  "v": "Planning Method"
-                },
-                {
-                  "t": "text",
-                  "v": " are suitable for the training run"
+                  "v": " suit the training run"
                 }
               ],
-              "text": "Confirm Production Start, Planned Delivery Date, and Planning Method are suitable for the training run"
+              "text": "Confirm Production Start and Planned Delivery Date suit the training run"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The order dates remain within the qualified BOM and routing dates"
+                  "v": "—"
                 }
               ],
-              "text": "The order dates remain within the qualified BOM and routing dates"
+              "text": "—"
             }
           ],
           "id": "6",
@@ -413,19 +405,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Method"
+                },
+                {
+                  "t": "text",
+                  "v": " suits the training run"
                 }
               ],
-              "text": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+              "text": "Confirm Planning Method suits the training run"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The selected revision is visible before save"
+                  "v": "The order dates remain within the qualified BOM and routing dates"
                 }
               ],
-              "text": "The selected revision is visible before save"
+              "text": "The order dates remain within the qualified BOM and routing dates"
             }
           ],
           "id": "7",
@@ -442,6 +442,40 @@
                 }
               ],
               "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+                }
+              ],
+              "text": "If the item is revision controlled, select the qualified item revision supplied with the training case"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The selected revision is visible before save"
+                }
+              ],
+              "text": "The selected revision is visible before save"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
             },
             {
               "tokens": [
@@ -489,7 +523,7 @@
               "text": "Order Status = Created — production order number"
             }
           ],
-          "id": "8",
+          "id": "9",
           "optional": false,
           "produces": true
         }

@@ -102,7 +102,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -114,17 +114,18 @@
 <div><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Sales</span></div></div>
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 5 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 6 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
 <ol class="ln-doc">
-  <li id="step-1"><div class="ln-doc__do">Set up a return order type in <span class="ln-t-named">Order Types</span> <span class="ln-t-exact">tdsls0594m000</span>, as Return Inventory or Return Rejects, with a warehousing order type that receives</div><p class="ln-doc__route"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p></li>
-  <li id="step-2"><div class="ln-doc__do">Create a sales order of that type, and give it the original document and a return reason</div></li>
-  <li id="step-3"><div class="ln-doc__do">Copy the lines from the original document</div><p class="ln-doc__note">They arrive with a negative quantity and amount</p></li>
-  <li id="step-4"><div class="ln-doc__do">Approve the order and release it to warehousing, which receives the goods</div></li>
-  <li id="step-5"><div class="ln-doc__do">Release it to invoicing, then process it</div></li>
+  <li id="step-1"><div class="ln-doc__do">Set up a return order type in <span class="ln-t-named">Order Types</span> <span class="ln-t-exact">tdsls0594m000</span></div><p class="ln-doc__route"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p></li>
+  <li id="step-2"><div class="ln-doc__do">Make it Return Inventory or Return Rejects</div><p class="ln-doc__note">Give it a warehousing order type that receives</p></li>
+  <li id="step-3"><div class="ln-doc__do">Create a sales order of that type, and give it the original document and a return reason</div></li>
+  <li id="step-4"><div class="ln-doc__do">Copy the lines from the original document</div><p class="ln-doc__note">They arrive with a negative quantity and amount</p></li>
+  <li id="step-5"><div class="ln-doc__do">Approve the order and release it to warehousing, which receives the goods</div></li>
+  <li id="step-6"><div class="ln-doc__do">Release it to invoicing, then process it</div></li>
 </ol>
 <div class="ln-why"><p><span class="ln-gap">Not documented for this release.</span></p></div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
@@ -158,18 +159,21 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Set up a return order type in <span class="ln-t-named">Order Types</span> <span class="ln-t-exact">tdsls0594m000</span>, as Return Inventory or Return Rejects, with a warehousing order type that receives</h1><p class="ln-step__route"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Set up a return order type in <span class="ln-t-named">Order Types</span> <span class="ln-t-exact">tdsls0594m000</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span></p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Create a sales order of that type, and give it the original document and a return reason</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Make it Return Inventory or Return Rejects</h1><p class="ln-step__note">Give it a warehousing order type that receives</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Copy the lines from the original document</h1><p class="ln-step__note">They arrive with a negative quantity and amount</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Create a sales order of that type, and give it the original document and a return reason</h1></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Approve the order and release it to warehousing, which receives the goods</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Copy the lines from the original document</h1><p class="ln-step__note">They arrive with a negative quantity and amount</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Approve the order and release it to warehousing, which receives the goods</h1></div>
+  </li>
+  <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Release it to invoicing, then process it</h1></div>
   </li>
 </ol>

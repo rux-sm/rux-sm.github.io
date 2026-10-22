@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -115,19 +115,21 @@
 <div><div class="rux--tag rux--layout--size-sm rux--tag--teal rux--tag--sm"><span class="rux--tag__label">Walked in LN, Aug 2026</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Manufacturing</span></div> <div class="rux--tag rux--layout--size-sm rux--tag--cool-gray rux--tag--sm"><span class="rux--tag__label">Warehousing</span></div></div>
 <p class="ln-strip">Task 5 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a></p>
 <p><strong>Before you start.</strong> You need step 1 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>; step 4 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>.</p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 10 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
 <ol class="ln-doc">
   <li id="step-1"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/ticst0101m100.html"><span class="ln-t-named">Material to Issue for Production Orders</span></a> for the order released in <a class="rux--link" href="../do/release-the-order.html">Release the order</a></div><p class="ln-doc__route"><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></p><div class="ln-doc__see"><b>You should see</b> The component line from step 1 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> is listed, with <span class="ln-t-named">Production Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></div></li>
-  <li id="step-2"><div class="ln-doc__do">Read <span class="ln-t-named">Estimated Quantity</span>, <span class="ln-t-named">Actual Quantity</span>, and <span class="ln-t-named">To Issue by Warehouse</span> for the component line</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">material to issue</span> = the <span class="ln-t-named">To Issue by Warehouse</span> figure; <span class="ln-t-named">Actual Quantity</span> = 0</div></li>
-  <li id="step-3"><div class="ln-doc__do">If the line is not already unblocked, run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> for the line</div><div class="ln-doc__see"><b>You should see</b> The material's warehouse order line unblocks</div></li>
-  <li id="step-4"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> and find the production issue order for this production order</div><div class="ln-doc__see"><b>You should see</b> The order shows order type <span class="ln-t-exact">30- Production (Out)</span>, source the component warehouse from step 4 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, destination the work center from the routing</div></li>
-  <li id="step-5"><div class="ln-doc__do">Click <span class="ln-t-press">Drill In</span> on the issue order</div><p class="ln-doc__note"><a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a></p><div class="ln-doc__see"><b>You should see</b> The order lines and the <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> <span class="ln-t-exact">whinh2129m000</span> activity list are visible</div></li>
-  <li id="step-6"><div class="ln-doc__do">If <span class="ln-t-named">Generate Outbound Advice</span> and <span class="ln-t-named">Release Outbound Advice</span> show unfinished and not automatic, run them</div><div class="ln-doc__see"><b>You should see</b> The advice is generated and released</div></li>
-  <li id="step-7"><div class="ln-doc__do">Continue the outbound procedure until the issue order reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></div><div class="ln-doc__see"><b>You should see</b> Ordered and advised quantities match; the order shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></div></li>
-  <li id="step-8"><div class="ln-doc__do">Return to <span class="ln-t-named">Material to Issue for Production Orders</span> and <span class="ln-t-named">Production Orders</span></div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Actual Quantity</span> = the estimated quantity, <span class="ln-t-named">To Issue by Warehouse</span> = 0; <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">order status after material issue</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></div></li>
+  <li id="step-2"><div class="ln-doc__do">Read <span class="ln-t-named">Estimated Quantity</span> and <span class="ln-t-named">Actual Quantity</span> for the component line</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Actual Quantity</span> = 0</div></li>
+  <li id="step-3"><div class="ln-doc__do">Read <span class="ln-t-named">To Issue by Warehouse</span></div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">material to issue</span> = the <span class="ln-t-named">To Issue by Warehouse</span> figure</div></li>
+  <li id="step-4"><div class="ln-doc__do">If the line is not already unblocked, run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> for the line</div><div class="ln-doc__see"><b>You should see</b> The material's warehouse order line unblocks</div></li>
+  <li id="step-5"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> and find the production issue order for this production order</div><div class="ln-doc__see"><b>You should see</b> The order shows order type <span class="ln-t-exact">30- Production (Out)</span>, source the component warehouse from step 4 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, destination the work center from the routing</div></li>
+  <li id="step-6"><div class="ln-doc__do">Click <span class="ln-t-press">Drill In</span> on the issue order</div><p class="ln-doc__note"><a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a></p><div class="ln-doc__see"><b>You should see</b> The order lines and the <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> <span class="ln-t-exact">whinh2129m000</span> activity list are visible</div></li>
+  <li id="step-7"><div class="ln-doc__do">If <span class="ln-t-named">Generate Outbound Advice</span> is unfinished and not automatic, run it</div><div class="ln-doc__see"><b>You should see</b> The advice is generated</div></li>
+  <li id="step-8"><div class="ln-doc__do">If <span class="ln-t-named">Release Outbound Advice</span> is unfinished and not automatic, run it</div><div class="ln-doc__see"><b>You should see</b> The advice is released</div></li>
+  <li id="step-9"><div class="ln-doc__do">Continue the outbound procedure until the issue order reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></div><div class="ln-doc__see"><b>You should see</b> Ordered and advised quantities match; the order shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></div></li>
+  <li id="step-10"><div class="ln-doc__do">Return to <span class="ln-t-named">Material to Issue for Production Orders</span> and <span class="ln-t-named">Production Orders</span></div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Actual Quantity</span> = the estimated quantity, <span class="ln-t-named">To Issue by Warehouse</span> = 0; <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">order status after material issue</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -155,7 +157,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">More than one component</span></b><p>Record and compare every expected component and estimated quantity in <a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a>; issue every material line in this task; the phase structure does not change</p></li>
-  <li><b><span class="ln-t-named">Fully automatic material issue</span></b><p>If <span class="ln-t-named">Direct Initiate Inventory Issue</span> and <span class="ln-t-named">Direct Process Warehouse Order Line</span> are both selected for the material, steps 3–7 complete themselves once the order is released; the phase structure does not change</p></li>
+  <li><b><span class="ln-t-named">Fully automatic material issue</span></b><p>If <span class="ln-t-named">Direct Initiate Inventory Issue</span> and <span class="ln-t-named">Direct Process Warehouse Order Line</span> are both selected for the material, steps 4–9 complete themselves once the order is released; the phase structure does not change</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="related">
@@ -194,30 +196,38 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The component line from step 1 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> is listed, with <span class="ln-t-named">Production Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">Estimated Quantity</span>, <span class="ln-t-named">Actual Quantity</span>, and <span class="ln-t-named">To Issue by Warehouse</span> for the component line</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">material to issue</span> = the <span class="ln-t-named">To Issue by Warehouse</span> figure; <span class="ln-t-named">Actual Quantity</span> = 0</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">Estimated Quantity</span> and <span class="ln-t-named">Actual Quantity</span> for the component line</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Actual Quantity</span> = 0</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">To Issue by Warehouse</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">material to issue</span> = the <span class="ln-t-named">To Issue by Warehouse</span> figure</p></div>
+  </li>
+  <li data-k="4" data-ref="4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">If the line is not already unblocked, run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> for the line</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The material's warehouse order line unblocks</p></div>
   </li>
-  <li data-k="4" data-ref="4" hidden>
+  <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> and find the production issue order for this production order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The order shows order type <span class="ln-t-exact">30- Production (Out)</span>, source the component warehouse from step 4 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, destination the work center from the routing</p></div>
   </li>
-  <li data-k="5" data-ref="5" hidden>
+  <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span> on the issue order</h1><p class="ln-step__note"><a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The order lines and the <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> <span class="ln-t-exact">whinh2129m000</span> activity list are visible</p></div>
   </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Generate Outbound Advice</span> and <span class="ln-t-named">Release Outbound Advice</span> show unfinished and not automatic, run them</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The advice is generated and released</p></div>
-  </li>
   <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Generate Outbound Advice</span> is unfinished and not automatic, run it</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The advice is generated</p></div>
+  </li>
+  <li data-k="8" data-ref="8" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Release Outbound Advice</span> is unfinished and not automatic, run it</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The advice is released</p></div>
+  </li>
+  <li data-k="9" data-ref="9" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Continue the outbound procedure until the issue order reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Ordered and advised quantities match; the order shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></p></div>
   </li>
-  <li data-k="8" data-ref="8" hidden>
+  <li data-k="10" data-ref="10" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Return to <span class="ln-t-named">Material to Issue for Production Orders</span> and <span class="ln-t-named">Production Orders</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Actual Quantity</span> = the estimated quantity, <span class="ln-t-named">To Issue by Warehouse</span> = 0; <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">order status after material issue</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></p></div>
   </li>

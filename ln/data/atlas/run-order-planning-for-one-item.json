@@ -64,7 +64,7 @@
         ],
         "text": "A sales order exists for more than is on hand."
       },
-      "steps": 3,
+      "steps": 4,
       "walked": null
     },
     {
@@ -80,7 +80,7 @@
         ],
         "text": "Planning can see the demand."
       },
-      "steps": 4,
+      "steps": 5,
       "walked": null
     },
     {

@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+                  "v": "counted fewer: leave the adjusted quantity at 0"
                 }
               ],
-              "text": "counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial"
+              "text": "counted fewer: leave the adjusted quantity at 0"
             },
             {
               "tokens": [
@@ -136,6 +136,40 @@
             }
           ],
           "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "counted fewer: enter a negative variance for each missing serial"
+                }
+              ],
+              "text": "counted fewer: enter a negative variance for each missing serial"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
           "optional": false,
           "produces": false
         }

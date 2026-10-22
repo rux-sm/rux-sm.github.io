@@ -102,7 +102,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -115,7 +115,7 @@
 <p class="ln-strip">Task 6 of 7 in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> · next: <a class="rux--link" href="../do/remove-it.html">Remove it</a></p>
 
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="ttrpi5150m000" aria-label="Copy the code ttrpi5150m000">ttrpi5150m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 14 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 15 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
@@ -134,7 +134,8 @@
   <li id="step-11"><div class="ln-doc__do">Choose your command again on the same record, without closing the screen</div><div class="ln-doc__see"><b>You should see</b> The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue</div></li>
   <li id="step-12"><div class="ln-doc__do">Compare it with your expected values again</div><div class="ln-doc__see"><b>You should see</b> The facts should match</div></li>
   <li id="step-13"><div class="ln-doc__do">Choose your command on a record of each other kind</div><p class="ln-doc__note">Example: an item with no stock that customers have ordered, and an item with nothing</p><div class="ln-doc__see"><b>You should see</b> Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned</div></li>
-  <li id="step-14"><div class="ln-doc__do">Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again</div><div class="ln-doc__see"><b>You should see</b> The new field is in the answer</div></li>
+  <li id="step-14"><div class="ln-doc__do">Optional: tick a field the answer still lacks in the Modeler, and save</div></li>
+  <li id="step-15"><div class="ln-doc__do">Optional: close the screen's tab and open the record again</div><div class="ln-doc__see"><b>You should see</b> The new field is in the answer</div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -153,7 +154,7 @@
   <li><b>The answer holds figures LN does not</b><p>The line against calculating is missing, step 3</p></li>
   <li><b>The answer is a report or a letter again</b><p>The form line is missing, step 2</p></li>
   <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 14</p></li>
-  <li><b>The response contradicts the screen</b><p>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in step 12 of <a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a>, then open the screen again</p></li>
+  <li><b>The response contradicts the screen</b><p>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in step 13 of <a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a>, then open the screen again</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="cases">
@@ -242,7 +243,10 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned</p></div>
   </li>
   <li data-k="14" data-ref="14" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Optional: tick a field the answer still lacks in the Modeler, and save</h1></div>
+  </li>
+  <li data-k="15" data-ref="15" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Optional: close the screen's tab and open the record again</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The new field is in the answer</p></div>
   </li>
 </ol>
@@ -274,7 +278,7 @@
   <li><b>The answer holds figures LN does not</b><p>The line against calculating is missing, step 3</p></li>
   <li><b>The answer is a report or a letter again</b><p>The form line is missing, step 2</p></li>
   <li><b>A value reads <span class="ln-t-exact">[not available]</span></b><p>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 14</p></li>
-  <li><b>The response contradicts the screen</b><p>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in step 12 of <a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a>, then open the screen again</p></li>
+  <li><b>The response contradicts the screen</b><p>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in step 13 of <a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a>, then open the screen again</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

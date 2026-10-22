@@ -27,7 +27,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
@@ -46,7 +46,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 6 of "
+          "v": "You need step 8 of "
         },
         {
           "t": "link",
@@ -55,7 +55,7 @@
         },
         {
           "t": "text",
-          "v": "; step 2 of "
+          "v": "; step 4 of "
         },
         {
           "t": "link",
@@ -76,7 +76,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 6 of Cross the boundary; step 2 of Receive the components; step 2 of Preflight."
+      "text": "You need step 8 of Cross the boundary; step 4 of Receive the components; step 2 of Preflight."
     }
   ],
   "why": {
@@ -128,19 +128,49 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the production order from step 6 of "
+                  "v": "Open the production order from step 8 of "
                 },
                 {
                   "t": "link",
                   "v": "Cross the boundary",
                   "href": "cross-the-boundary.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and check its BOM, routing and estimated materials"
                 }
               ],
-              "text": "Open the production order from step 6 of Cross the boundary and check its BOM, routing and estimated materials"
+              "text": "Open the production order from step 8 of Cross the boundary"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check its BOM, routing and estimated materials"
+                }
+              ],
+              "text": "Check its BOM, routing and estimated materials"
             },
             {
               "tokens": [
@@ -184,7 +214,7 @@
               "text": "BOM rev 000002, routing 0 rev 000001, operation 10, rods and sleeves listed"
             }
           ],
-          "id": "1",
+          "id": "2",
           "optional": false,
           "produces": false
         },
@@ -194,10 +224,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2"
+                  "v": "3"
                 }
               ],
-              "text": "2"
+              "text": "3"
             },
             {
               "tokens": [
@@ -227,7 +257,7 @@
               "text": "Release Production Orders (tisfc0204m000) opens"
             }
           ],
-          "id": "2",
+          "id": "3",
           "optional": false,
           "produces": false
         },
@@ -237,10 +267,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "4"
                 }
               ],
-              "text": "3"
+              "text": "4"
             },
             {
               "tokens": [
@@ -273,7 +303,7 @@
               "text": "Order Status = Released; warehousing issue and receipt orders now exist"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -283,10 +313,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -306,31 +336,48 @@
                 {
                   "t": "path",
                   "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
-                },
-                {
-                  "t": "text",
-                  "v": ", and issue the materials per "
-                },
-                {
-                  "t": "link",
-                  "v": "Production order",
-                  "href": "manual-production-order-existing-master-data.md"
-                },
-                {
-                  "t": "text",
-                  "v": " steps step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Receive the components",
-                  "href": "receive-the-components.md"
-                },
-                {
-                  "t": "text",
-                  "v": "–4.7"
                 }
               ],
-              "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders, and issue the materials per Production order steps step 2 of Receive the components–4.7"
+              "text": "Open Material to Issue for Production Orders (ticst0101m100) at Manufacturing ➔ Job Shop ➔ Production Materials ➔ Material to Issue for Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Issue the materials. Follow steps 2–9 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Issue material to the job shop",
+                  "href": "issue-material-to-the-job-shop.md"
+                }
+              ],
+              "text": "Issue the materials. Follow steps 2–9 of Issue material to the job shop"
             },
             {
               "tokens": [
@@ -358,7 +405,7 @@
               "text": "Actual Quantity = the estimated quantity; Order Status = Active"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -368,10 +415,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "7"
                 }
               ],
-              "text": "5"
+              "text": "7"
             },
             {
               "tokens": [
@@ -417,7 +464,7 @@
               "text": "LN may ask whether to confirm the receipt automatically — record which way you answer"
             }
           ],
-          "id": "5",
+          "id": "7",
           "optional": false,
           "produces": false
         },
@@ -427,10 +474,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "8"
                 }
               ],
-              "text": "6"
+              "text": "8"
             },
             {
               "tokens": [
@@ -486,7 +533,7 @@
               "text": "production order status after reporting — Production Completed or Completed"
             }
           ],
-          "id": "6",
+          "id": "8",
           "optional": false,
           "produces": true
         },
@@ -496,10 +543,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "9"
                 }
               ],
-              "text": "7"
+              "text": "9"
             },
             {
               "tokens": [
@@ -513,23 +560,23 @@
                 },
                 {
                   "t": "text",
-                  "v": " on-hand at the finished-goods warehouse from step 2 of "
+                  "v": " on-hand at the finished-goods warehouse in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": ". The warehouse is from step 2 of "
                 },
                 {
                   "t": "link",
                   "v": "Preflight",
                   "href": "preflight.md"
-                },
-                {
-                  "t": "text",
-                  "v": " in "
-                },
-                {
-                  "t": "chip",
-                  "v": "Inventory 360"
                 }
               ],
-              "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse from step 2 of Preflight in Inventory 360"
+              "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse in Inventory 360. The warehouse is from step 2 of Preflight"
             },
             {
               "tokens": [
@@ -557,7 +604,7 @@
               "text": "pair on-hand after build — up by the built quantity over step 2 of Preflight"
             }
           ],
-          "id": "7",
+          "id": "9",
           "optional": false,
           "produces": true
         }
@@ -675,7 +722,7 @@
               },
               {
                 "t": "text",
-                "v": " path at step 5. Check "
+                "v": " path at step 7. Check "
               },
               {
                 "t": "session",
@@ -687,7 +734,7 @@
                 "v": " for an open production receipt order"
               }
             ],
-            "text": "That is the No path at step 5. Check Warehousing Orders (whinh2100m000) for an open production receipt order"
+            "text": "That is the No path at step 7. Check Warehousing Orders (whinh2100m000) for an open production receipt order"
           }
         ]
       }

@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand"
+                  "v": "read why it is blocked. It may be over the credit limit, have overdue invoices or exceed a margin, fail an export or letter-of-credit check, or carry a reason someone set by hand"
                 }
               ],
-              "text": "read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand"
+              "text": "read why it is blocked. It may be over the credit limit, have overdue invoices or exceed a margin, fail an export or letter-of-credit check, or carry a reason someone set by hand"
             },
             {
               "tokens": [
@@ -129,7 +129,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a user can release only the kinds of hold their profile allows, set in "
+                  "v": "a user can release only the kinds of hold their profile allows. The profile is set in "
                 },
                 {
                   "t": "session",
@@ -145,7 +145,7 @@
                   "route": "Sales ➔ Master Data ➔ General ➔ User Profiles"
                 }
               ],
-              "text": "a user can release only the kinds of hold their profile allows, set in User Profiles (tdsls0139m000), Sales ➔ Master Data ➔ General ➔ User Profiles"
+              "text": "a user can release only the kinds of hold their profile allows. The profile is set in User Profiles (tdsls0139m000), Sales ➔ Master Data ➔ General ➔ User Profiles"
             },
             {
               "tokens": [

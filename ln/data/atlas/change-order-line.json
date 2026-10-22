@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "if the change is allowed, the outbound line follows it, and its advice and picking list are deleted"
+                  "v": "if the change is allowed, the outbound line follows it"
                 }
               ],
-              "text": "if the change is allowed, the outbound line follows it, and its advice and picking list are deleted"
+              "text": "if the change is allowed, the outbound line follows it"
             },
             {
               "tokens": [
@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order"
+                  "v": "its advice and picking list are deleted then"
                 }
               ],
-              "text": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order"
+              "text": "its advice and picking list are deleted then"
             },
             {
               "tokens": [
@@ -154,10 +154,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment"
+                  "v": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0"
                 }
               ],
-              "text": "a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment"
+              "text": "if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0"
             },
             {
               "tokens": [
@@ -188,6 +188,108 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "return the goods to stock with a transfer order"
+                }
+              ],
+              "text": "return the goods to stock with a transfer order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "if the line already has a shipment, clear Allow Changes to Shipment on it first"
+                }
+              ],
+              "text": "if the line already has a shipment, clear Allow Changes to Shipment on it first"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "then cancel the line"
+                }
+              ],
+              "text": "then cancel the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0"
                 }
               ],
@@ -203,7 +305,7 @@
               "text": "—"
             }
           ],
-          "id": "5",
+          "id": "8",
           "optional": false,
           "produces": false
         }

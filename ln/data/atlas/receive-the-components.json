@@ -27,7 +27,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
@@ -46,7 +46,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 5 of "
+          "v": "You need step 7 of "
         },
         {
           "t": "link",
@@ -67,7 +67,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 5 of Cross the boundary; step 3 of Preflight."
+      "text": "You need step 7 of Cross the boundary; step 3 of Preflight."
     }
   ],
   "why": {
@@ -109,19 +109,79 @@
                   "t": "session",
                   "code": "whinh2100m000",
                   "name": "Warehousing Orders"
-                },
+                }
+              ],
+              "text": "Open Warehousing Orders (whinh2100m000)"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": " and find the inbound order LN raised from the purchase order at step 5 of "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the inbound order LN raised from the purchase order. It is the order from step 7 of "
                 },
                 {
                   "t": "link",
                   "v": "Cross the boundary",
                   "href": "cross-the-boundary.md"
-                },
+                }
+              ],
+              "text": "Find the inbound order LN raised from the purchase order. It is the order from step 7 of Cross the boundary"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", then "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
                 },
                 {
                   "t": "button",
@@ -129,7 +189,7 @@
                   "location": "line"
                 }
               ],
-              "text": "Open Warehousing Orders (whinh2100m000) and find the inbound order LN raised from the purchase order at step 5 of Cross the boundary, then Drill In"
+              "text": "Click Drill In"
             },
             {
               "tokens": [
@@ -149,7 +209,7 @@
               "text": "Order type PUI \"Purchase Receipts\", ship-to the raw-materials warehouse"
             }
           ],
-          "id": "1",
+          "id": "3",
           "optional": false,
           "produces": false
         },
@@ -159,10 +219,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2"
+                  "v": "4"
                 }
               ],
-              "text": "2"
+              "text": "4"
             },
             {
               "tokens": [
@@ -192,7 +252,7 @@
               "text": "Warehouse Receipt (whinh3512m000) opens"
             }
           ],
-          "id": "2",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -202,10 +262,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "5"
                 }
               ],
-              "text": "3"
+              "text": "5"
             },
             {
               "tokens": [
@@ -226,7 +286,7 @@
               "text": "The lines carry their references"
             }
           ],
-          "id": "3",
+          "id": "5",
           "optional": false,
           "produces": false
         },
@@ -236,10 +296,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "6"
                 }
               ],
-              "text": "4"
+              "text": "6"
             },
             {
               "tokens": [
@@ -303,7 +363,7 @@
               "text": "warehouse receipt number; Status = Confirmed, All Lines Final and All Lines Complete both set"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": true
         },
@@ -313,10 +373,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "7"
                 }
               ],
-              "text": "5"
+              "text": "7"
             },
             {
               "tokens": [
@@ -327,10 +387,40 @@
                 {
                   "t": "field",
                   "v": "Errors Logged"
-                },
+                }
+              ],
+              "text": "Read Errors Logged"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", then re-read "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Re-read "
                 },
                 {
                   "t": "literal",
@@ -338,23 +428,23 @@
                 },
                 {
                   "t": "text",
-                  "v": " on-hand at the raw-materials warehouse from step 3 of "
+                  "v": " on-hand at the raw-materials warehouse in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": ". The warehouse is from step 3 of "
                 },
                 {
                   "t": "link",
                   "v": "Preflight",
                   "href": "preflight.md"
-                },
-                {
-                  "t": "text",
-                  "v": " in "
-                },
-                {
-                  "t": "chip",
-                  "v": "Inventory 360"
                 }
               ],
-              "text": "Read Errors Logged, then re-read BAM-ROD on-hand at the raw-materials warehouse from step 3 of Preflight in Inventory 360"
+              "text": "Re-read BAM-ROD on-hand at the raw-materials warehouse in Inventory 360. The warehouse is from step 3 of Preflight"
             },
             {
               "tokens": [
@@ -377,7 +467,7 @@
               "text": "rod on-hand after receipt — up by exactly the quantity received"
             }
           ],
-          "id": "5",
+          "id": "8",
           "optional": false,
           "produces": true
         }

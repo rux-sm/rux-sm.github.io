@@ -20,7 +20,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -135,30 +135,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "field",
-                  "v": "Inventory on Order"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "field",
-                  "v": "Inventory Allocated"
-                },
-                {
-                  "t": "text",
                   "v": " and "
                 },
                 {
                   "t": "field",
-                  "v": "Inventory Blocked"
+                  "v": "Inventory on Order"
                 }
               ],
-              "text": "Read each row's Inventory on Hand, Inventory on Order, Inventory Allocated and Inventory Blocked"
+              "text": "Read each row's Inventory on Hand and Inventory on Order"
             },
             {
               "tokens": [
@@ -184,6 +168,52 @@
                 }
               ],
               "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read each row's "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Allocated"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory Blocked"
+                }
+              ],
+              "text": "Read each row's Inventory Allocated and Inventory Blocked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
             },
             {
               "tokens": [
@@ -256,7 +286,7 @@
               "text": "warehouse, on hand, allocated, blocked"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": true
         },
@@ -266,10 +296,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -312,7 +342,7 @@
               "text": "total on hand, total allocated"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": true
         }

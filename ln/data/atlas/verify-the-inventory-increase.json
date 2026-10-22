@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -232,16 +232,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare both against the baselines from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Read the baseline",
-                  "href": "read-the-baseline.md"
-                },
-                {
-                  "t": "text",
-                  "v": " and step 3 of "
+                  "v": "Compare both against the baselines from steps 2 and 3 of "
                 },
                 {
                   "t": "link",
@@ -249,7 +240,7 @@
                   "href": "read-the-baseline.md"
                 }
               ],
-              "text": "Compare both against the baselines from step 2 of Read the baseline and step 3 of Read the baseline"
+              "text": "Compare both against the baselines from steps 2 and 3 of Read the baseline"
             },
             {
               "tokens": [

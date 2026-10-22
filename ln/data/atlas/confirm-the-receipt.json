@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -342,7 +342,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", or on the "
+                  "v": ". They are also on the "
                 },
                 {
                   "t": "chip",
@@ -350,10 +350,44 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab in this session's lines pane, and capture them"
+                  "v": " tab in this session's lines pane"
                 }
               ],
-              "text": "If Errors Logged is set, read the messages in Receipt Message Log (whinh3530m000), or on the Message Log tab in this session's lines pane, and capture them"
+              "text": "If Errors Logged is set, read the messages in Receipt Message Log (whinh3530m000). They are also on the Message Log tab in this session's lines pane"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Then capture them"
+                }
+              ],
+              "text": "Then capture them"
             },
             {
               "tokens": [
@@ -365,7 +399,7 @@
               "text": "The messages behind the confirmation are on record."
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": false
         }

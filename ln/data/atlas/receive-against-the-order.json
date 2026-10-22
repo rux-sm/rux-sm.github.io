@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
@@ -43,7 +43,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 3 of "
+          "v": "You need step 4 of "
         },
         {
           "t": "link",
@@ -64,7 +64,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 3 of Create the purchase order; step 1 of Read the baseline."
+      "text": "You need step 4 of Create the purchase order; step 1 of Read the baseline."
     }
   ],
   "why": {
@@ -114,27 +114,18 @@
                   "t": "session",
                   "code": "whinh2100m000",
                   "name": "Warehousing Orders"
-                },
-                {
-                  "t": "text",
-                  "v": ", find the order LN generated from the purchase order, and click "
-                },
-                {
-                  "t": "button",
-                  "label": "Drill In",
-                  "location": "line"
                 }
               ],
-              "text": "Open Warehousing Orders (whinh2100m000), find the order LN generated from the purchase order, and click Drill In"
+              "text": "Open Warehousing Orders (whinh2100m000)"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "An inbound order exists that you did not create by hand"
+                  "v": "—"
                 }
               ],
-              "text": "An inbound order exists that you did not create by hand"
+              "text": "—"
             }
           ],
           "id": "1",
@@ -151,6 +142,79 @@
                 }
               ],
               "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the order LN generated from the purchase order"
+                }
+              ],
+              "text": "Find the order LN generated from the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An inbound order exists that you did not create by hand"
+                }
+              ],
+              "text": "An inbound order exists that you did not create by hand"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
             },
             {
               "tokens": [
@@ -192,7 +256,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " \"Purchase Receipts\", ship-from the partner from step 3 of "
+                  "v": " \"Purchase Receipts\", ship-from the partner from step 4 of "
                 },
                 {
                   "t": "link",
@@ -213,10 +277,10 @@
                   "v": " "
                 }
               ],
-              "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from the partner from step 3 of Create the purchase order, ship-to the receiving warehouse from step 1 of Read the baseline"
+              "text": "warehousing order number — the walked run showed order type PUI \"Purchase Receipts\", ship-from the partner from step 4 of Create the purchase order, ship-to the receiving warehouse from step 1 of Read the baseline"
             }
           ],
-          "id": "2",
+          "id": "4",
           "optional": false,
           "produces": true
         },
@@ -226,10 +290,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "5"
                 }
               ],
-              "text": "3"
+              "text": "5"
             },
             {
               "tokens": [
@@ -255,7 +319,7 @@
               "text": "The lines correspond to the purchase order lines from Book the lines"
             }
           ],
-          "id": "3",
+          "id": "5",
           "optional": false,
           "produces": false
         },
@@ -265,10 +329,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "6"
                 }
               ],
-              "text": "4"
+              "text": "6"
             },
             {
               "tokens": [
@@ -302,7 +366,7 @@
               "text": "Warehouse Receipt (whinh3512m000) opens"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": false
         }

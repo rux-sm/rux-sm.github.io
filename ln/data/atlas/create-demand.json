@@ -24,7 +24,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
@@ -126,19 +126,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Create a sales order for the finished item, following "
+                  "v": "Create a sales order for the finished item. Follow steps 1–11 of "
                 },
                 {
                   "t": "link",
-                  "v": "Ship from stock",
-                  "href": "ship-from-stock.md"
-                },
-                {
-                  "t": "text",
-                  "v": " this task steps step 1–1.11"
+                  "v": "Create and approve the sales order",
+                  "href": "create-and-approve-the-sales-order.md"
                 }
               ],
-              "text": "Create a sales order for the finished item, following Ship from stock this task steps step 1–1.11"
+              "text": "Create a sales order for the finished item. Follow steps 1–11 of Create and approve the sales order"
             },
             {
               "tokens": [
@@ -181,18 +177,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " above the on-hand from step 1, and the "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Delivery Date"
-                },
-                {
-                  "t": "text",
-                  "v": " no more than a few days out"
+                  "v": " above the on-hand from step 1"
                 }
               ],
-              "text": "Set Ordered Quantity above the on-hand from step 1, and the Planned Delivery Date no more than a few days out"
+              "text": "Set Ordered Quantity above the on-hand from step 1"
             },
             {
               "tokens": [
@@ -224,21 +212,6 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "planned delivery date"
-                },
-                {
-                  "t": "text",
                   "v": " — the observed run booked "
                 },
                 {
@@ -266,10 +239,59 @@
                   "v": " on hand"
                 }
               ],
-              "text": "sales order number, ordered quantity, planned delivery date — the observed run booked 5 ea against 1 on hand"
+              "text": "sales order number, ordered quantity — the observed run booked 5 ea against 1 on hand"
             }
           ],
           "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": " no more than a few days out"
+                }
+              ],
+              "text": "Set Planned Delivery Date no more than a few days out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned delivery date"
+                }
+              ],
+              "text": "planned delivery date"
+            }
+          ],
+          "id": "4",
           "optional": false,
           "produces": true
         }

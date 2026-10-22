@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
   "session": "GenAI Prompts by Session",
   "sessionCode": "ttadv9160m000",
@@ -192,7 +192,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ": "
+                  "v": ". "
                 },
                 {
                   "t": "literal",
@@ -200,7 +200,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " for the row in view or the ticked rows, "
+                  "v": " acts on the row in view or the ticked rows; "
                 },
                 {
                   "t": "literal",
@@ -208,14 +208,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " to wait for a tick. Example: "
+                  "v": " waits for a tick. Example: "
                 },
                 {
                   "t": "literal",
                   "v": "Always"
                 }
               ],
-              "text": "Set When Enabled: Always for the row in view or the ticked rows, Records Selected to wait for a tick. Example: Always"
+              "text": "Set When Enabled. Always acts on the row in view or the ticked rows; Records Selected waits for a tick. Example: Always"
             },
             {
               "tokens": [

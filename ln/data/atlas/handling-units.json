@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+                  "v": "LN can make them by itself at the pick, where the stock had none"
                 }
               ],
-              "text": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+              "text": "LN can make them by itself at the pick, where the stock had none"
             },
             {
               "tokens": [
@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+                  "v": "it can also make them from a shipment notice, where the warehouse or item says so"
                 }
               ],
-              "text": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+              "text": "it can also make them from a shipment notice, where the warehouse or item says so"
             },
             {
               "tokens": [
@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "its lot and serial numbers must match its order line, or confirming fails"
+                  "v": "a handling unit is received only while it is Open, or In Transit on a transfer"
                 }
               ],
-              "text": "its lot and serial numbers must match its order line, or confirming fails"
+              "text": "a handling unit is received only while it is Open, or In Transit on a transfer"
             },
             {
               "tokens": [
@@ -154,6 +154,74 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "it is advised only once it is Received or Approved"
+                }
+              ],
+              "text": "it is advised only once it is Received or Approved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "its lot and serial numbers must match its order line, or confirming fails"
+                }
+              ],
+              "text": "its lot and serial numbers must match its order line, or confirming fails"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot"
                 }
               ],
@@ -169,7 +237,7 @@
               "text": "—"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": false
         }

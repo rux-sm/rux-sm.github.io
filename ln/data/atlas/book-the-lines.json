@@ -52,7 +52,7 @@
         },
         {
           "t": "text",
-          "v": "; step 5 of "
+          "v": "; step 7 of "
         },
         {
           "t": "link",
@@ -64,7 +64,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 1 of Read the baseline; step 5 of Create the purchase order."
+      "text": "You need step 1 of Read the baseline; step 7 of Create the purchase order."
     }
   ],
   "why": {
@@ -337,7 +337,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both lines are stored against the order from step 5 of "
+                  "v": "Both lines are stored against the order from step 7 of "
                 },
                 {
                   "t": "link",
@@ -345,7 +345,7 @@
                   "href": "create-the-purchase-order.md"
                 }
               ],
-              "text": "Both lines are stored against the order from step 5 of Create the purchase order"
+              "text": "Both lines are stored against the order from step 7 of Create the purchase order"
             }
           ],
           "id": "5",

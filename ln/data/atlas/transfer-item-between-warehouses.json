@@ -63,7 +63,7 @@
         ],
         "text": "Stock is known and the expected transfer configuration is recorded."
       },
-      "steps": 4,
+      "steps": 6,
       "walked": "2026-08-15"
     },
     {
@@ -83,7 +83,7 @@
         ],
         "text": "A warehousing order exists with transaction type Transfer"
       },
-      "steps": 9,
+      "steps": 12,
       "walked": "2026-08-15"
     },
     {
@@ -99,7 +99,7 @@
         ],
         "text": "Manual and automatic activities are known before processing continues."
       },
-      "steps": 7,
+      "steps": 8,
       "walked": "2026-08-15"
     },
     {

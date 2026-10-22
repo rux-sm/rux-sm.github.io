@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -60,7 +60,7 @@
         },
         {
           "t": "text",
-          "v": "; step 19 of "
+          "v": "; step 21 of "
         },
         {
           "t": "link",
@@ -69,7 +69,7 @@
         },
         {
           "t": "text",
-          "v": "; step 10 of "
+          "v": "; step 12 of "
         },
         {
           "t": "link",
@@ -108,7 +108,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 9 of Create the three items; step 19 of Build the job shop bill of material; step 19 of Build the job shop routing; step 10 of Stock the components; step 6 of Confirm the test design; step 2 of Confirm costing data; step 4 of Confirm costing data."
+      "text": "You need step 9 of Create the three items; step 19 of Build the job shop bill of material; step 21 of Build the job shop routing; step 12 of Stock the components; step 6 of Confirm the test design; step 2 of Confirm costing data; step 4 of Confirm costing data."
     }
   ],
   "why": {
@@ -148,15 +148,15 @@
         },
         {
           "t": "link",
-          "v": "Confirm the test design",
-          "href": "confirm-the-test-design.md"
+          "v": "Confirm the existing foundation",
+          "href": "confirm-the-existing-foundation.md"
         },
         {
           "t": "text",
           "v": ", and hands over."
         }
       ],
-      "text": "This phase creates nothing. It checks the family against what Production order asks for in its Confirm the test design, and hands over."
+      "text": "This phase creates nothing. It checks the family against what Production order asks for in its Confirm the existing foundation, and hands over."
     },
     {
       "kind": "steps",
@@ -181,7 +181,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm all three items and their site rows still show the supply sources verified at step 9 of "
+                  "v": "Confirm all three items and their site rows show the right supply sources. They were verified at step 9 of "
                 },
                 {
                   "t": "link",
@@ -189,7 +189,7 @@
                   "href": "create-the-three-items.md"
                 }
               ],
-              "text": "Confirm all three items and their site rows still show the supply sources verified at step 9 of Create the three items"
+              "text": "Confirm all three items and their site rows show the right supply sources. They were verified at step 9 of Create the three items"
             },
             {
               "tokens": [
@@ -220,36 +220,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the BOM from step 19 of "
+                  "v": "Open the BOM from step 19 of "
                 },
                 {
                   "t": "link",
                   "v": "Build the job shop bill of material",
                   "href": "build-the-job-shop-bill-of-material.md"
-                },
-                {
-                  "t": "text",
-                  "v": " is "
-                },
-                {
-                  "t": "status",
-                  "v": "Approved"
-                },
-                {
-                  "t": "text",
-                  "v": ", used for planning and costing, and carries both materials"
                 }
               ],
-              "text": "Confirm the BOM from step 19 of Build the job shop bill of material is Approved, used for planning and costing, and carries both materials"
+              "text": "Open the BOM from step 19 of Build the job shop bill of material"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pair has a manufacturable structure"
+                  "v": "—"
                 }
               ],
-              "text": "The pair has a manufacturable structure"
+              "text": "—"
             }
           ],
           "id": "2",
@@ -271,16 +259,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the routing from step 19 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Build the job shop routing",
-                  "href": "build-the-job-shop-routing.md"
-                },
-                {
-                  "t": "text",
-                  "v": " is "
+                  "v": "Confirm it is "
                 },
                 {
                   "t": "status",
@@ -288,19 +267,19 @@
                 },
                 {
                   "t": "text",
-                  "v": ", used for planning and costing, and carries its operation and work center"
+                  "v": " and used for planning and costing"
                 }
               ],
-              "text": "Confirm the routing from step 19 of Build the job shop routing is Approved, used for planning and costing, and carries its operation and work center"
+              "text": "Confirm it is Approved and used for planning and costing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pair has something to report complete"
+                  "v": "—"
                 }
               ],
-              "text": "The pair has something to report complete"
+              "text": "—"
             }
           ],
           "id": "3",
@@ -322,24 +301,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm both components are on hand at the raw-material warehouse from step 10 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Stock the components",
-                  "href": "stock-the-components.md"
+                  "v": "Confirm it carries both materials"
                 }
               ],
-              "text": "Confirm both components are on hand at the raw-material warehouse from step 10 of Stock the components"
+              "text": "Confirm it carries both materials"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "There is material to issue"
+                  "v": "The pair has a manufacturable structure"
                 }
               ],
-              "text": "There is material to issue"
+              "text": "The pair has a manufacturable structure"
             }
           ],
           "id": "4",
@@ -361,28 +335,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the finished-item warehouse from step 6 of "
+                  "v": "Open the routing from step 21 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm the test design",
-                  "href": "confirm-the-test-design.md"
-                },
-                {
-                  "t": "text",
-                  "v": " is the one the produced pair should be received into"
+                  "v": "Build the job shop routing",
+                  "href": "build-the-job-shop-routing.md"
                 }
               ],
-              "text": "Confirm the finished-item warehouse from step 6 of Confirm the test design is the one the produced pair should be received into"
+              "text": "Open the routing from step 21 of Build the job shop routing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receiving warehouse is a decision, not a discovery made mid-order"
+                  "v": "—"
                 }
               ],
-              "text": "The receiving warehouse is a decision, not a discovery made mid-order"
+              "text": "—"
             }
           ],
           "id": "5",
@@ -399,6 +369,160 @@
                 }
               ],
               "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm it is "
+                },
+                {
+                  "t": "status",
+                  "v": "Approved"
+                },
+                {
+                  "t": "text",
+                  "v": " and used for planning and costing"
+                }
+              ],
+              "text": "Confirm it is Approved and used for planning and costing"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm it carries its operation and work center"
+                }
+              ],
+              "text": "Confirm it carries its operation and work center"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The pair has something to report complete"
+                }
+              ],
+              "text": "The pair has something to report complete"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm both components are on hand at the raw-material warehouse. It is the one from step 12 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Stock the components",
+                  "href": "stock-the-components.md"
+                }
+              ],
+              "text": "Confirm both components are on hand at the raw-material warehouse. It is the one from step 12 of Stock the components"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "There is material to issue"
+                }
+              ],
+              "text": "There is material to issue"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the pair should be received into the finished-item warehouse. It is the one from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm the test design",
+                  "href": "confirm-the-test-design.md"
+                }
+              ],
+              "text": "Confirm the pair should be received into the finished-item warehouse. It is the one from step 6 of Confirm the test design"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receiving warehouse is a decision, not a discovery made mid-order"
+                }
+              ],
+              "text": "The receiving warehouse is a decision, not a discovery made mid-order"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
             },
             {
               "tokens": [
@@ -428,7 +552,7 @@
               "text": "The estimate calculation has what it reads"
             }
           ],
-          "id": "6",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -438,19 +562,53 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "11"
                 }
               ],
-              "text": "7"
+              "text": "11"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+                  "v": "Take the values in the handoff table below to the production-order walkthrough"
                 }
               ],
-              "text": "Carry every value in the handoff table below into the production-order walkthrough, and run it there"
+              "text": "Take the values in the handoff table below to the production-order walkthrough"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run the production-order walkthrough with them"
+                }
+              ],
+              "text": "Run the production-order walkthrough with them"
             },
             {
               "tokens": [
@@ -469,7 +627,7 @@
               "text": "training case qualified"
             }
           ],
-          "id": "7",
+          "id": "12",
           "optional": false,
           "produces": true
         }
@@ -498,7 +656,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Compare the order's reference date with the effective dates from steps step 7 of "
+                "v": "Compare the order's reference date with the effective dates from step 7 of "
               },
               {
                 "t": "link",
@@ -519,7 +677,7 @@
                 "v": ". A revision effective after the reference date is not selected"
               }
             ],
-            "text": "Compare the order's reference date with the effective dates from steps step 7 of Build the job shop bill of material and step 7 of Build the job shop routing. A revision effective after the reference date is not selected"
+            "text": "Compare the order's reference date with the effective dates from step 7 of Build the job shop bill of material and step 7 of Build the job shop routing. A revision effective after the reference date is not selected"
           }
         ]
       },

@@ -21,7 +21,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -450,18 +450,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On "
+                  "v": "Open the line's form by its row icon. It is on the Order Lines tab of "
                 },
                 {
                   "t": "chip",
                   "v": "Sales Order Intake Workbench"
-                },
-                {
-                  "t": "text",
-                  "v": ", open the line's form by its row icon on the Order Lines tab"
                 }
               ],
-              "text": "On Sales Order Intake Workbench, open the line's form by its row icon on the Order Lines tab"
+              "text": "Open the line's form by its row icon. It is on the Order Lines tab of Sales Order Intake Workbench"
             },
             {
               "tokens": [

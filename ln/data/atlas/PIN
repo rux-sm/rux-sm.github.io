@@ -1,9 +1,9 @@
-commit   c398e652842cb7e73fef2de7cb7afa86179be34d
-date     2026-10-22T05:17:03Z
-subject  feat(tasks): Keep sources out of reader text
+commit   20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e
+date     2026-10-22T05:38:04Z
+subject  fix(tasks): Shorten six more long steps
 contract 19 
 tier     export
-sha256   d87ea39b413fdf828ed8b9a6bd64426ad41e862633c839e19fbd7615a60be0f9
+sha256   427bde69796544d70b4f8bf7563898a4c547a65c6ba49fd662a060b46116157e
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

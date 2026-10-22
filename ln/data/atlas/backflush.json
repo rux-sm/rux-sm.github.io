@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+                  "v": "a backflushed material is issued by itself. That happens when a quantity of the end product is reported completed or rejected"
                 }
               ],
-              "text": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+              "text": "a backflushed material is issued by itself. That happens when a quantity of the end product is reported completed or rejected"
             },
             {
               "tokens": [

@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Bills of Material",
   "session": "Job Shop Bills of Material",
   "sessionCode": "tibom3100m000",
@@ -721,7 +721,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the raw-material warehouse from step 5 of "
+                  "v": " to the raw-material warehouse. It is the one from step 5 of "
                 },
                 {
                   "t": "link",
@@ -729,7 +729,7 @@
                   "href": "confirm-the-test-design.md"
                 }
               ],
-              "text": "On both lines, set Warehouse to the raw-material warehouse from step 5 of Confirm the test design"
+              "text": "On both lines, set Warehouse to the raw-material warehouse. It is the one from step 5 of Confirm the test design"
             },
             {
               "tokens": [

@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -116,19 +116,21 @@
 <p class="ln-strip">Task 4 of 7 in <a class="rux--link" href="../follow/demand-to-shipment-via-planning.html">Plan to shipment</a> · next: <a class="rux--link" href="../do/receive-the-components.html">Receive the components</a></p>
 
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="cprrp1200m000" aria-label="Copy the code cprrp1200m000">cprrp1200m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 6 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 8 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
-<div class="ln-why"><p>&gt; <strong>Warning</strong> &gt; <strong>The purchase half of this phase is walked; the production half has never been run here.</strong> On 2026-08-25 two planned purchase orders for <span class="ln-t-exact">BAM-ROD</span> became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step 6 is therefore the one step in this walkthrough nobody has performed — <strong>you are testing it, not using it.</strong> </p></div>
+<div class="ln-why"><p>&gt; <strong>Warning</strong> &gt; <strong>The purchase half of this phase is walked; the production half has never been run here.</strong> On 2026-08-25 two planned purchase orders for <span class="ln-t-exact">BAM-ROD</span> became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step 8 is therefore the one step in this walkthrough nobody has performed — <strong>you are testing it, not using it.</strong> </p></div>
 <ol class="ln-doc">
   <li id="step-1"><div class="ln-doc__do">Confirm <span class="ln-t-exact">BAM-ROD</span> has a row on the <span class="ln-t-named">Item - Business Partner</span> tab of its purchase data</div><div class="ln-doc__see"><b>You should see</b> A buy-from business partner, added 2026-08-25 </div></li>
-  <li id="step-2"><div class="ln-doc__do">If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</div><div class="ln-doc__see"><b>You should see</b> A partner row, or the transfer will refuse it at step 5</div></li>
+  <li id="step-2"><div class="ln-doc__do">If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</div><div class="ln-doc__see"><b>You should see</b> A partner row, or the transfer will refuse it at step 7</div></li>
   <li id="step-3"><div class="ln-doc__do">In <a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a>, confirm the planned orders you intend to transfer</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Order Status</span> moves from <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> to <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></div></li>
-  <li id="step-4"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a>, select <span class="ln-t-named">Purchase</span>, and select <span class="ln-t-named">Error Report</span> and <span class="ln-t-named">Process Report</span></div><div class="ln-doc__see"><b>You should see</b> The transfer is scoped to the purchase orders</div></li>
-  <li id="step-5"><div class="ln-doc__do">Run the transfer and read the report</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real purchase order number</span> — the report names the order each proposal became, or why it did not transfer</div></li>
-  <li id="step-6"><div class="ln-doc__do">Repeat steps 4–5 with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real production order number</span> — expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></div></li>
+  <li id="step-4"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a></div></li>
+  <li id="step-5"><div class="ln-doc__do">Select <span class="ln-t-named">Purchase</span></div><div class="ln-doc__see"><b>You should see</b> The transfer is scoped to the purchase orders</div></li>
+  <li id="step-6"><div class="ln-doc__do">Select <span class="ln-t-named">Error Report</span> and <span class="ln-t-named">Process Report</span></div></li>
+  <li id="step-7"><div class="ln-doc__do">Run the transfer and read the report</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real purchase order number</span> — the report names the order each proposal became, or why it did not transfer</div></li>
+  <li id="step-8"><div class="ln-doc__do">Repeat steps 4–7 with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real production order number</span> — expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -156,7 +158,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">Components already in stock</span></b><p>this task transfers only the production side and <a class="rux--link" href="../do/receive-the-components.html">Receive the components</a> does not happen. This is the likely shape of a sleeve-only shortfall </p></li>
-  <li><b><span class="ln-t-named">Build by hand instead of from planning</span></b><p>Skip step 6 and create the production order directly per <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> <a class="rux--link" href="../do/create-the-demand.html">Create the demand</a>. <span class="ln-t-named">This is the only production path anyone here has walked</span> — it is the fallback if step 6 fails</p></li>
+  <li><b><span class="ln-t-named">Build by hand instead of from planning</span></b><p>Skip step 8 and create the production order directly per <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a>. <span class="ln-t-named">This is the only production path anyone here has walked</span> — it is the fallback if step 8 fails</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="related">
@@ -197,22 +199,28 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A partner row, or the transfer will refuse it at step 5</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A partner row, or the transfer will refuse it at step 7</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In <a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a>, confirm the planned orders you intend to transfer</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Order Status</span> moves from <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> to <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a>, select <span class="ln-t-named">Purchase</span>, and select <span class="ln-t-named">Error Report</span> and <span class="ln-t-named">Process Report</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The transfer is scoped to the purchase orders</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a></h1></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-named">Purchase</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The transfer is scoped to the purchase orders</p></div>
+  </li>
+  <li data-k="6" data-ref="6" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-named">Error Report</span> and <span class="ln-t-named">Process Report</span></h1></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Run the transfer and read the report</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real purchase order number</span> — the report names the order each proposal became, or why it did not transfer</p></div>
   </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 4–5 with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></h1></div>
+  <li data-k="8" data-ref="8" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 4–7 with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">real production order number</span> — expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></p></div>
   </li>
 </ol>

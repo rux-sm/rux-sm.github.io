@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
@@ -562,10 +562,44 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+                  "v": "Optional: tick a field the answer still lacks in the Modeler, and save"
                 }
               ],
-              "text": "Optional: tick a field the answer still lacks in the Modeler, save, then close the screen's tab and open the record again"
+              "text": "Optional: tick a field the answer still lacks in the Modeler, and save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "14",
+          "optional": true,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Optional: close the screen's tab and open the record again"
+                }
+              ],
+              "text": "Optional: close the screen's tab and open the record again"
             },
             {
               "tokens": [
@@ -577,7 +611,7 @@
               "text": "The new field is in the answer"
             }
           ],
-          "id": "14",
+          "id": "15",
           "optional": true,
           "produces": false
         }
@@ -684,7 +718,7 @@
               },
               {
                 "t": "text",
-                "v": ", as in step 12 of "
+                "v": ", as in step 13 of "
               },
               {
                 "t": "link",
@@ -696,7 +730,7 @@
                 "v": ", then open the screen again"
               }
             ],
-            "text": "The model reads only the dataset. Read Selected Fields, as in step 12 of Model the dataset, then open the screen again"
+            "text": "The model reads only the dataset. Read Selected Fields, as in step 13 of Model the dataset, then open the screen again"
           }
         ]
       }

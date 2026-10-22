@@ -196,7 +196,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
+                  "v": " and "
                 },
                 {
                   "t": "field",
@@ -204,18 +204,52 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and "
+                  "v": " for the component line"
+                }
+              ],
+              "text": "Read Estimated Quantity and Actual Quantity for the component line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Actual Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " = 0"
+                }
+              ],
+              "text": "Actual Quantity = 0"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
                 },
                 {
                   "t": "field",
                   "v": "To Issue by Warehouse"
-                },
-                {
-                  "t": "text",
-                  "v": " for the component line"
                 }
               ],
-              "text": "Read Estimated Quantity, Actual Quantity, and To Issue by Warehouse for the component line"
+              "text": "Read To Issue by Warehouse"
             },
             {
               "tokens": [
@@ -240,21 +274,13 @@
                 },
                 {
                   "t": "text",
-                  "v": " figure; "
-                },
-                {
-                  "t": "field",
-                  "v": "Actual Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " = 0"
+                  "v": " figure"
                 }
               ],
-              "text": "material to issue = the To Issue by Warehouse figure; Actual Quantity = 0"
+              "text": "material to issue = the To Issue by Warehouse figure"
             }
           ],
-          "id": "2",
+          "id": "3",
           "optional": false,
           "produces": true
         },
@@ -264,10 +290,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "4"
                 }
               ],
-              "text": "3"
+              "text": "4"
             },
             {
               "tokens": [
@@ -297,7 +323,7 @@
               "text": "The material's warehouse order line unblocks"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -307,10 +333,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -357,7 +383,7 @@
               "text": "The order shows order type 30- Production (Out), source the component warehouse from step 4 of Confirm the existing foundation, destination the work center from the routing"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": false
         },
@@ -367,10 +393,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "6"
                 }
               ],
-              "text": "5"
+              "text": "6"
             },
             {
               "tokens": [
@@ -414,56 +440,6 @@
               "text": "The order lines and the Outbound Line Status Overview (whinh2129m000) activity list are visible"
             }
           ],
-          "id": "5",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "6"
-                }
-              ],
-              "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "If "
-                },
-                {
-                  "t": "chip",
-                  "v": "Generate Outbound Advice"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "chip",
-                  "v": "Release Outbound Advice"
-                },
-                {
-                  "t": "text",
-                  "v": " show unfinished and not automatic, run them"
-                }
-              ],
-              "text": "If Generate Outbound Advice and Release Outbound Advice show unfinished and not automatic, run them"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The advice is generated and released"
-                }
-              ],
-              "text": "The advice is generated and released"
-            }
-          ],
           "id": "6",
           "optional": false,
           "produces": false
@@ -478,6 +454,90 @@
                 }
               ],
               "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "chip",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " is unfinished and not automatic, run it"
+                }
+              ],
+              "text": "If Generate Outbound Advice is unfinished and not automatic, run it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advice is generated"
+                }
+              ],
+              "text": "The advice is generated"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " is unfinished and not automatic, run it"
+                }
+              ],
+              "text": "If Release Outbound Advice is unfinished and not automatic, run it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The advice is released"
+                }
+              ],
+              "text": "The advice is released"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
             },
             {
               "tokens": [
@@ -506,7 +566,7 @@
               "text": "Ordered and advised quantities match; the order shows Shipped"
             }
           ],
-          "id": "7",
+          "id": "9",
           "optional": false,
           "produces": false
         },
@@ -516,10 +576,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "10"
                 }
               ],
-              "text": "8"
+              "text": "10"
             },
             {
               "tokens": [
@@ -583,7 +643,7 @@
               "text": "Actual Quantity = the estimated quantity, To Issue by Warehouse = 0; order status after material issue = Active"
             }
           ],
-          "id": "8",
+          "id": "10",
           "optional": false,
           "produces": true
         }
@@ -776,10 +836,10 @@
               },
               {
                 "t": "text",
-                "v": " are both selected for the material, steps 3–7 complete themselves once the order is released; the phase structure does not change"
+                "v": " are both selected for the material, steps 4–9 complete themselves once the order is released; the phase structure does not change"
               }
             ],
-            "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 3–7 complete themselves once the order is released; the phase structure does not change"
+            "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 4–9 complete themselves once the order is released; the phase structure does not change"
           }
         ]
       }

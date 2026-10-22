@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+                  "v": "production and purchase count as sources only where the item allows it. Its Production Plan or Purchase Plan is set to Generate or Always Update"
                 }
               ],
-              "text": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+              "text": "production and purchase count as sources only where the item allows it. Its Production Plan or Purchase Plan is set to Generate or Always Update"
             },
             {
               "tokens": [

@@ -67,7 +67,7 @@
         },
         {
           "t": "text",
-          "v": "; step 6 of "
+          "v": "; step 7 of "
         },
         {
           "t": "link",
@@ -79,7 +79,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 1 of Confirm the existing foundation; step 4 of Create the production order; step 5 of Create the production order; step 6 of Confirm the existing foundation."
+      "text": "You need step 1 of Confirm the existing foundation; step 4 of Create the production order; step 5 of Create the production order; step 7 of Confirm the existing foundation."
     }
   ],
   "why": {
@@ -317,7 +317,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the last operation's save, if "
+                  "v": "If "
                 },
                 {
                   "t": "session",
@@ -326,18 +326,48 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens, enter the completed quantity in "
+                  "v": " opens on the last operation's save, enter the completed quantity. It goes in "
                 },
                 {
                   "t": "field",
                   "v": "Additional Quantity to Deliver"
-                },
-                {
-                  "t": "text",
-                  "v": " and save"
                 }
               ],
-              "text": "On the last operation's save, if Report Orders Completed (tisfc0120s000) opens, enter the completed quantity in Additional Quantity to Deliver and save"
+              "text": "If Report Orders Completed (tisfc0120s000) opens on the last operation's save, enter the completed quantity. It goes in Additional Quantity to Deliver"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the quantity"
+                }
+              ],
+              "text": "Save the quantity"
             },
             {
               "tokens": [
@@ -357,7 +387,7 @@
               "text": "LN asks \"Automatically confirm receipt when activating warehouse order inbound line?\" — see the note below before answering"
             }
           ],
-          "id": "5",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -367,10 +397,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "7"
                 }
               ],
-              "text": "6"
+              "text": "7"
             },
             {
               "tokens": [
@@ -421,7 +451,7 @@
               "text": "receipt answer; delivered = the production quantity if you answered Yes"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": true
         },
@@ -431,10 +461,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "8"
                 }
               ],
-              "text": "7"
+              "text": "8"
             },
             {
               "tokens": [
@@ -535,7 +565,7 @@
               "text": "order status after reporting. Production Completed means Warehousing has not finished the inbound procedure yet; Completed means the goods are in inventory. On the Yes path expect Quantity Delivered = the production quantity and Quantity to Deliver = 0; on the No path the quantity sits in Quantity to Deliver until Warehousing processes the inbound line"
             }
           ],
-          "id": "7",
+          "id": "8",
           "optional": false,
           "produces": true
         },
@@ -545,10 +575,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "9"
                 }
               ],
-              "text": "8"
+              "text": "9"
             },
             {
               "tokens": [
@@ -588,7 +618,7 @@
                 },
                 {
                   "t": "text",
-                  "v": "; on-hand has increased by the production quantity over step 6 of "
+                  "v": "; on-hand has increased by the production quantity over step 7 of "
                 },
                 {
                   "t": "link",
@@ -608,10 +638,10 @@
                   "v": " path this only holds once Warehousing has finished the inbound procedure"
                 }
               ],
-              "text": "finished item on-hand after; on-hand has increased by the production quantity over step 6 of Confirm the existing foundation. On the No path this only holds once Warehousing has finished the inbound procedure"
+              "text": "finished item on-hand after; on-hand has increased by the production quantity over step 7 of Confirm the existing foundation. On the No path this only holds once Warehousing has finished the inbound procedure"
             }
           ],
-          "id": "8",
+          "id": "9",
           "optional": false,
           "produces": true
         }

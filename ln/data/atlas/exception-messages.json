@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+                  "v": "planning compares the receipts that exist with what is needed"
                 }
               ],
-              "text": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+              "text": "planning compares the receipts that exist with what is needed"
             },
             {
               "tokens": [
@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+                  "v": "it raises a message where they differ"
                 }
               ],
-              "text": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+              "text": "it raises a message where they differ"
             },
             {
               "tokens": [
@@ -120,6 +120,74 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "a reschedule message asks for a receipt earlier or later"
+                }
+              ],
+              "text": "a reschedule message asks for a receipt earlier or later"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a cancel message marks a receipt nothing needs"
+                }
+              ],
+              "text": "a cancel message marks a receipt nothing needs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "a tolerance in days, set per message type, keeps small shifts quiet"
                 }
               ],
@@ -135,7 +203,7 @@
               "text": "—"
             }
           ],
-          "id": "3",
+          "id": "5",
           "optional": false,
           "produces": false
         }

@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -282,19 +282,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+                  "v": "Confirm the training case names the receiving warehouse and the expected operation"
                 }
               ],
-              "text": "Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation"
+              "text": "Confirm the training case names the receiving warehouse and the expected operation"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "All inputs needed to check the created order are known before entry begins"
+                  "v": "—"
                 }
               ],
-              "text": "All inputs needed to check the created order are known before entry begins"
+              "text": "—"
             }
           ],
           "id": "5",
@@ -316,10 +316,44 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies"
+                  "v": "Confirm it names a valid BOM revision and a valid routing revision"
                 }
               ],
-              "text": "Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies"
+              "text": "Confirm it names a valid BOM revision and a valid routing revision"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "All inputs needed to check the created order are known before entry begins"
+                }
+              ],
+              "text": "All inputs needed to check the created order are known before entry begins"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Repeat steps 2–3 for the finished item. Filter at the receiving warehouse the training case names"
+                }
+              ],
+              "text": "Repeat steps 2–3 for the finished item. Filter at the receiving warehouse the training case names"
             },
             {
               "tokens": [
@@ -338,7 +372,7 @@
               "text": "finished item on-hand before"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": true
         }

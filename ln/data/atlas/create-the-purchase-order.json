@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
   "session": "Purchase Order Intake Workbench",
   "sessionCode": "tdpur4601m200",
@@ -178,7 +178,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Open the lookup on "
                 },
                 {
                   "t": "field",
@@ -186,26 +186,49 @@
                 },
                 {
                   "t": "text",
-                  "v": ", using the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Buy-from Business Partners"
-                },
-                {
-                  "t": "text",
-                  "v": " lookup ("
+                  "v": ". It is "
                 },
                 {
                   "t": "session",
-                  "code": "tccom4520m000"
-                },
-                {
-                  "t": "text",
-                  "v": ")"
+                  "code": "tccom4520m000",
+                  "name": "Buy-from Business Partners"
                 }
               ],
-              "text": "Set Buy-from Business Partner, using the Buy-from Business Partners lookup (tccom4520m000)"
+              "text": "Open the lookup on Buy-from Business Partner. It is Buy-from Business Partners (tccom4520m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select the partner"
+                }
+              ],
+              "text": "Select the partner"
             },
             {
               "tokens": [
@@ -228,7 +251,7 @@
               "text": "buy-from business partner — the walked run used one of the standard test partners"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": true
         },
@@ -238,10 +261,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -255,18 +278,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Purchase Office"
-                },
-                {
-                  "t": "text",
-                  "v": " that LN defaulted from the partner selected at step 3"
+                  "v": " LN defaulted from the partner"
                 }
               ],
-              "text": "Confirm the Purchase Order Type and Purchase Office that LN defaulted from the partner selected at step 3"
+              "text": "Confirm the Purchase Order Type LN defaulted from the partner"
             },
             {
               "tokens": [
@@ -280,13 +295,13 @@
                 },
                 {
                   "t": "text",
-                  "v": " (Inventory Purchase Order) and the partner's purchase office "
+                  "v": " (Inventory Purchase Order)"
                 }
               ],
-              "text": "The walked run showed IPO (Inventory Purchase Order) and the partner's purchase office"
+              "text": "The walked run showed IPO (Inventory Purchase Order)"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": false
         },
@@ -296,10 +311,52 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "6"
                 }
               ],
-              "text": "5"
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm the "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase Office"
+                },
+                {
+                  "t": "text",
+                  "v": " LN defaulted from the partner"
+                }
+              ],
+              "text": "Confirm the Purchase Office LN defaulted from the partner"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The partner's purchase office "
+                }
+              ],
+              "text": "The partner's purchase office"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
             },
             {
               "tokens": [
@@ -346,7 +403,7 @@
               "text": "purchase order number and order type"
             }
           ],
-          "id": "5",
+          "id": "7",
           "optional": false,
           "produces": true
         }

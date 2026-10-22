@@ -66,13 +66,9 @@
                 {
                   "t": "path",
                   "route": "Sales ➔ Master Data ➔ Orders ➔ Order Types"
-                },
-                {
-                  "t": "text",
-                  "v": ", as Return Inventory or Return Rejects, with a warehousing order type that receives"
                 }
               ],
-              "text": "set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types, as Return Inventory or Return Rejects, with a warehousing order type that receives"
+              "text": "set up a return order type in Order Types (tdsls0594m000), Sales ➔ Master Data ➔ Orders ➔ Order Types"
             },
             {
               "tokens": [
@@ -103,10 +99,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "create a sales order of that type, and give it the original document and a return reason"
+                  "v": "make it Return Inventory or Return Rejects. Give it a warehousing order type that receives"
                 }
               ],
-              "text": "create a sales order of that type, and give it the original document and a return reason"
+              "text": "make it Return Inventory or Return Rejects. Give it a warehousing order type that receives"
             },
             {
               "tokens": [
@@ -137,10 +133,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "copy the lines from the original document; they arrive with a negative quantity and amount"
+                  "v": "create a sales order of that type, and give it the original document and a return reason"
                 }
               ],
-              "text": "copy the lines from the original document; they arrive with a negative quantity and amount"
+              "text": "create a sales order of that type, and give it the original document and a return reason"
             },
             {
               "tokens": [
@@ -171,10 +167,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "approve the order and release it to warehousing, which receives the goods"
+                  "v": "copy the lines from the original document; they arrive with a negative quantity and amount"
                 }
               ],
-              "text": "approve the order and release it to warehousing, which receives the goods"
+              "text": "copy the lines from the original document; they arrive with a negative quantity and amount"
             },
             {
               "tokens": [
@@ -205,6 +201,40 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "approve the order and release it to warehousing, which receives the goods"
+                }
+              ],
+              "text": "approve the order and release it to warehousing, which receives the goods"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "release it to invoicing, then process it"
                 }
               ],
@@ -220,7 +250,7 @@
               "text": "—"
             }
           ],
-          "id": "5",
+          "id": "6",
           "optional": false,
           "produces": false
         }

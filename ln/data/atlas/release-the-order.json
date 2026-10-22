@@ -51,7 +51,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 8 of "
+          "v": "You need step 9 of "
         },
         {
           "t": "link",
@@ -63,7 +63,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 8 of Create the production order."
+      "text": "You need step 9 of Create the production order."
     }
   ],
   "why": {
@@ -125,7 +125,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the production order row from step 8 of "
+                  "v": "Select the production order row from step 9 of "
                 },
                 {
                   "t": "link",
@@ -133,7 +133,7 @@
                   "href": "create-the-production-order.md"
                 }
               ],
-              "text": "Select the production order row from step 8 of Create the production order"
+              "text": "Select the production order row from step 9 of Create the production order"
             },
             {
               "tokens": [
@@ -307,7 +307,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Only the order from step 8 of "
+                  "v": "Only the order from step 9 of "
                 },
                 {
                   "t": "link",
@@ -323,7 +323,7 @@
                   "v": "Released"
                 }
               ],
-              "text": "Only the order from step 8 of Create the production order shows Released"
+              "text": "Only the order from step 9 of Create the production order shows Released"
             }
           ],
           "id": "5",

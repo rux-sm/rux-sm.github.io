@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, split each step that still runs past three lines on a phone,
-      which is one that sets several things at once.
 - [ ] In atlas, write a screen file for the five screens still without one, once
       a source says how each is opened.
 - [ ] In atlas, write the short explanation for each of the sixteen ideas.

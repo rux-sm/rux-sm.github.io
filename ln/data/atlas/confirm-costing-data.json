@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing",
   "session": "Item - Costing",
   "sessionCode": "ticpr0107m000",
@@ -277,7 +277,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "For any item whose standard cost is missing or unexpected, open "
+                  "v": "Open "
                 },
                 {
                   "t": "session",
@@ -286,10 +286,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " for that item and effective date"
+                  "v": " for each item whose cost is missing or unexpected. Use the item's effective date"
                 }
               ],
-              "text": "For any item whose standard cost is missing or unexpected, open Item Standard Costs (ticpr3501m000) for that item and effective date"
+              "text": "Open Item Standard Costs (ticpr3501m000) for each item whose cost is missing or unexpected. Use the item's effective date"
             },
             {
               "tokens": [
@@ -320,10 +320,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If any of the three still has no standard cost, stop and obtain the approved cost route before continuing"
+                  "v": "If an item still has no standard cost, stop. Obtain the approved cost route before continuing"
                 }
               ],
-              "text": "If any of the three still has no standard cost, stop and obtain the approved cost route before continuing"
+              "text": "If an item still has no standard cost, stop. Obtain the approved cost route before continuing"
             },
             {
               "tokens": [

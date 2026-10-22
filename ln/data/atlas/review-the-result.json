@@ -328,7 +328,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " for the cluster and site from step 4 of "
+                  "v": " for the cluster and site. They are the ones from step 4 of "
                 },
                 {
                   "t": "link",
@@ -336,7 +336,7 @@
                   "href": "make-the-item-visible-to-planning.md"
                 }
               ],
-              "text": "Open Planned Orders (cprrp1100m000) for the cluster and site from step 4 of Make the item visible to planning"
+              "text": "Open Planned Orders (cprrp1100m000) for the cluster and site. They are the ones from step 4 of Make the item visible to planning"
             },
             {
               "tokens": [

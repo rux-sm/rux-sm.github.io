@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
   "session": "Outbound Line Status Overview",
   "sessionCode": "whinh2129m000",
@@ -42,7 +42,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 6 of "
+          "v": "You need step 7 of "
         },
         {
           "t": "link",
@@ -54,7 +54,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 6 of Create the transfer order."
+      "text": "You need step 7 of Create the transfer order."
     }
   ],
   "why": {
@@ -151,7 +151,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " matches the actual value from step 6 of "
+                  "v": " matches the actual value from step 7 of "
                 },
                 {
                   "t": "link",
@@ -159,7 +159,7 @@
                   "href": "create-the-transfer-order.md"
                 }
               ],
-              "text": "The item and order line match; Order Type matches the actual value from step 6 of Create the transfer order"
+              "text": "The item and order line match; Order Type matches the actual value from step 7 of Create the transfer order"
             }
           ],
           "id": "2",
@@ -320,14 +320,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If the first unfinished activity is automatic, return to the warehousing order and choose "
+                  "v": "If the next activity is automatic, choose "
                 },
                 {
                   "t": "button",
                   "label": "Process"
+                },
+                {
+                  "t": "text",
+                  "v": " on the warehousing order"
                 }
               ],
-              "text": "If the first unfinished activity is automatic, return to the warehousing order and choose Process"
+              "text": "If the next activity is automatic, choose Process on the warehousing order"
             },
             {
               "tokens": [
@@ -374,27 +378,19 @@
                 },
                 {
                   "t": "text",
-                  "v": ", select the line, and choose "
-                },
-                {
-                  "t": "command",
-                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                  "v": " and select the line"
                 }
               ],
-              "text": "If Generate Outbound Advice is manual, open Outbound Lines, select the line, and choose Actions ➔ Advice ➔ Generate Advice"
+              "text": "If Generate Outbound Advice is manual, open Outbound Lines and select the line"
             },
             {
               "tokens": [
                 {
-                  "t": "status",
-                  "v": "Advised"
-                },
-                {
                   "t": "text",
-                  "v": " fills; automatic follow-on activities may also finish"
+                  "v": "—"
                 }
               ],
-              "text": "Advised fills; automatic follow-on activities may also finish"
+              "text": "—"
             }
           ],
           "id": "6",
@@ -411,6 +407,48 @@
                 }
               ],
               "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Then choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                }
+              ],
+              "text": "Then choose Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "status",
+                  "v": "Advised"
+                },
+                {
+                  "t": "text",
+                  "v": " fills; automatic follow-on activities may also finish"
+                }
+              ],
+              "text": "Advised fills; automatic follow-on activities may also finish"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
             },
             {
               "tokens": [
@@ -455,7 +493,7 @@
               "text": "Released fills"
             }
           ],
-          "id": "7",
+          "id": "8",
           "optional": false,
           "produces": false
         }

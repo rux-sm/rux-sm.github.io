@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",
   "session": "Datasets",
   "sessionCode": "ttrpi5100m000",
@@ -464,10 +464,40 @@
                 {
                   "t": "chip",
                   "v": "Referred by"
-                },
+                }
+              ],
+              "text": "For rows that belong to the record, expand Referred by"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", choose the table and tick its fields. Example: Item Inventory by Warehouse ("
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose the table and tick its fields. Example: Item Inventory by Warehouse ("
                 },
                 {
                   "t": "literal",
@@ -514,7 +544,7 @@
                   "v": "qall"
                 }
               ],
-              "text": "For rows that belong to the record, expand Referred by, choose the table and tick its fields. Example: Item Inventory by Warehouse (whwmd215), then cwar, qhnd, qblk, qord and qall"
+              "text": "Choose the table and tick its fields. Example: Item Inventory by Warehouse (whwmd215), then cwar, qhnd, qblk, qord and qall"
             },
             {
               "tokens": [
@@ -526,7 +556,7 @@
               "text": "That table's fields, none ticked until you tick them"
             }
           ],
-          "id": "9",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -536,10 +566,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "11"
                 }
               ],
-              "text": "10"
+              "text": "11"
             },
             {
               "tokens": [
@@ -620,7 +650,7 @@
               "text": "—"
             }
           ],
-          "id": "10",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -630,10 +660,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "11"
+                  "v": "12"
                 }
               ],
-              "text": "11"
+              "text": "12"
             },
             {
               "tokens": [
@@ -682,7 +712,7 @@
               "text": "The path to the table, printed above the tree"
             }
           ],
-          "id": "11",
+          "id": "12",
           "optional": false,
           "produces": false
         },
@@ -692,10 +722,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "12"
+                  "v": "13"
                 }
               ],
-              "text": "12"
+              "text": "13"
             },
             {
               "tokens": [
@@ -720,7 +750,7 @@
               "text": "Selected Fields lists every field ticked, under its table"
             }
           ],
-          "id": "12",
+          "id": "13",
           "optional": false,
           "produces": false
         },
@@ -730,10 +760,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "13"
+                  "v": "14"
                 }
               ],
-              "text": "13"
+              "text": "14"
             },
             {
               "tokens": [
@@ -758,7 +788,7 @@
               "text": "No message"
             }
           ],
-          "id": "13",
+          "id": "14",
           "optional": false,
           "produces": false
         },
@@ -768,10 +798,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "14"
+                  "v": "15"
                 }
               ],
-              "text": "14"
+              "text": "15"
             },
             {
               "tokens": [
@@ -804,7 +834,7 @@
               "text": "Your dataset is listed"
             }
           ],
-          "id": "14",
+          "id": "15",
           "optional": false,
           "produces": false
         }

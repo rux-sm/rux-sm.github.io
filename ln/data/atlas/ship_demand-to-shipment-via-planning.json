@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
@@ -134,24 +134,15 @@
                 },
                 {
                   "t": "text",
-                  "v": " per "
+                  "v": " per steps 2–5 of "
                 },
                 {
                   "t": "link",
-                  "v": "Ship from stock",
-                  "href": "ship-from-stock.md"
-                },
-                {
-                  "t": "text",
-                  "v": " steps 2–5 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Run MRP",
-                  "href": "run-mrp_demand-to-shipment-via-planning.md"
+                  "v": "Release to warehousing",
+                  "href": "release-to-warehousing.md"
                 }
               ],
-              "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per Ship from stock steps 2–5 of Run MRP"
+              "text": "In the sales order, Actions ➔ Release ➔ Release to Warehousing… per steps 2–5 of Release to warehousing"
             },
             {
               "tokens": [
@@ -314,15 +305,83 @@
                 },
                 {
                   "t": "text",
-                  "v": ", tick the line and run "
+                  "v": ", tick the line"
+                }
+              ],
+              "text": "In Picking List (whinh4525m100), tick the line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Pick Run"
-                },
+                }
+              ],
+              "text": "Run Actions ➔ Pick Run"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", then read "
+                  "v": "Line status "
+                },
+                {
+                  "t": "status",
+                  "v": "Staged"
+                }
+              ],
+              "text": "Line status Staged"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
                 },
                 {
                   "t": "field",
@@ -341,22 +400,10 @@
                   "v": " tab"
                 }
               ],
-              "text": "In Picking List (whinh4525m100), tick the line and run Actions ➔ Pick Run, then read Shipment on the order's Shipment Lines tab"
+              "text": "Read Shipment on the order's Shipment Lines tab"
             },
             {
               "tokens": [
-                {
-                  "t": "text",
-                  "v": "Line status "
-                },
-                {
-                  "t": "status",
-                  "v": "Staged"
-                },
-                {
-                  "t": "text",
-                  "v": " — "
-                },
                 {
                   "t": "pencil"
                 },
@@ -369,10 +416,10 @@
                   "v": "shipment number"
                 }
               ],
-              "text": "Line status Staged — shipment number"
+              "text": "shipment number"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": true
         },
@@ -382,10 +429,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "7"
                 }
               ],
-              "text": "5"
+              "text": "7"
             },
             {
               "tokens": [
@@ -448,7 +495,7 @@
               "text": "Status = Frozen; Confirm becomes available"
             }
           ],
-          "id": "5",
+          "id": "7",
           "optional": false,
           "produces": false
         },
@@ -458,10 +505,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "8"
                 }
               ],
-              "text": "6"
+              "text": "8"
             },
             {
               "tokens": [
@@ -509,7 +556,7 @@
               "text": "shipped quantity; Status = Confirmed, inventory relieved"
             }
           ],
-          "id": "6",
+          "id": "8",
           "optional": false,
           "produces": true
         },
@@ -519,10 +566,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "9"
                 }
               ],
-              "text": "7"
+              "text": "9"
             },
             {
               "tokens": [
@@ -567,7 +614,7 @@
               "text": "pair on-hand after shipping — down by exactly the shipped quantity"
             }
           ],
-          "id": "7",
+          "id": "9",
           "optional": false,
           "produces": true
         }
@@ -665,10 +712,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The line was never picked, or the shipment was never frozen. Steps step 4 and step 5"
+                "v": "The line was never picked, or the shipment was never frozen. Steps step 6 and step 7"
               }
             ],
-            "text": "The line was never picked, or the shipment was never frozen. Steps step 4 and step 5"
+            "text": "The line was never picked, or the shipment was never frozen. Steps step 6 and step 7"
           }
         ]
       }

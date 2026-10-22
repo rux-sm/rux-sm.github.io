@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -56,15 +56,15 @@
         },
         {
           "t": "link",
-          "v": "Run order planning",
-          "href": "run-order-planning-for-one-item.md"
+          "v": "Make the item visible to planning",
+          "href": "make-the-item-visible-to-planning.md"
         },
         {
           "t": "text",
-          "v": " this task adds the planning data."
+          "v": " adds the planning data."
         }
       ],
-      "text": "The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Run order planning this task adds the planning data."
+      "text": "The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Make the item visible to planning adds the planning data."
     }
   ],
   "why": {
@@ -318,19 +318,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "For any item that does not appear, add its cluster row per "
+                  "v": "For any item that does not appear, add its cluster row. Follow steps 3–5 of "
                 },
                 {
                   "t": "link",
-                  "v": "Run order planning",
-                  "href": "run-order-planning-for-one-item.md"
-                },
-                {
-                  "t": "text",
-                  "v": " steps 3–5"
+                  "v": "Make the item visible to planning",
+                  "href": "make-the-item-visible-to-planning.md"
                 }
               ],
-              "text": "For any item that does not appear, add its cluster row per Run order planning steps 3–5"
+              "text": "For any item that does not appear, add its cluster row. Follow steps 3–5 of Make the item visible to planning"
             },
             {
               "tokens": [

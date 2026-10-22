@@ -27,7 +27,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Planning ➔ Order Planning ➔ Confirm Order Planning",
   "session": "Confirm Order Planning",
   "sessionCode": "cprrp1200m000",
@@ -89,7 +89,7 @@
         },
         {
           "t": "text",
-          "v": ". Step 6 is therefore the one step in this walkthrough nobody has performed — "
+          "v": ". Step 8 is therefore the one step in this walkthrough nobody has performed — "
         },
         {
           "t": "strong",
@@ -100,7 +100,7 @@
           "v": " "
         }
       ],
-      "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 6 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
+      "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 8 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
     },
     {
       "kind": "steps",
@@ -192,10 +192,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A partner row, or the transfer will refuse it at step 5"
+                  "v": "A partner row, or the transfer will refuse it at step 7"
                 }
               ],
-              "text": "A partner row, or the transfer will refuse it at step 5"
+              "text": "A partner row, or the transfer will refuse it at step 7"
             }
           ],
           "id": "2",
@@ -282,42 +282,18 @@
                   "t": "session",
                   "code": "cppat1210m000",
                   "name": "Transfer Order Planning"
-                },
-                {
-                  "t": "text",
-                  "v": ", select "
-                },
-                {
-                  "t": "field",
-                  "v": "Purchase"
-                },
-                {
-                  "t": "text",
-                  "v": ", and select "
-                },
-                {
-                  "t": "chip",
-                  "v": "Error Report"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "chip",
-                  "v": "Process Report"
                 }
               ],
-              "text": "Open Transfer Order Planning (cppat1210m000), select Purchase, and select Error Report and Process Report"
+              "text": "Open Transfer Order Planning (cppat1210m000)"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The transfer is scoped to the purchase orders"
+                  "v": "—"
                 }
               ],
-              "text": "The transfer is scoped to the purchase orders"
+              "text": "—"
             }
           ],
           "id": "4",
@@ -334,6 +310,90 @@
                 }
               ],
               "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "field",
+                  "v": "Purchase"
+                }
+              ],
+              "text": "Select Purchase"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The transfer is scoped to the purchase orders"
+                }
+              ],
+              "text": "The transfer is scoped to the purchase orders"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
+                {
+                  "t": "chip",
+                  "v": "Error Report"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "chip",
+                  "v": "Process Report"
+                }
+              ],
+              "text": "Select Error Report and Process Report"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
             },
             {
               "tokens": [
@@ -365,7 +425,7 @@
               "text": "real purchase order number — the report names the order each proposal became, or why it did not transfer"
             }
           ],
-          "id": "5",
+          "id": "7",
           "optional": false,
           "produces": true
         },
@@ -375,16 +435,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "8"
                 }
               ],
-              "text": "6"
+              "text": "8"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 4–5 with "
+                  "v": "Repeat steps 4–7 with "
                 },
                 {
                   "t": "field",
@@ -399,7 +459,7 @@
                   "v": "Purchase"
                 }
               ],
-              "text": "Repeat steps 4–5 with Job Shop selected instead of Purchase"
+              "text": "Repeat steps 4–7 with Job Shop selected instead of Purchase"
             },
             {
               "tokens": [
@@ -435,7 +495,7 @@
               "text": "real production order number — expected in Production Orders (tisfc0501m000) at Created"
             }
           ],
-          "id": "6",
+          "id": "8",
           "optional": false,
           "produces": true
         }
@@ -590,21 +650,12 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Skip step 6 and create the production order directly per "
+                "v": "Skip step 8 and create the production order directly per "
               },
               {
                 "t": "link",
-                "v": "Production order",
-                "href": "manual-production-order-existing-master-data.md"
-              },
-              {
-                "t": "text",
-                "v": " "
-              },
-              {
-                "t": "link",
-                "v": "Create the demand",
-                "href": "create-the-demand.md"
+                "v": "Create the production order",
+                "href": "create-the-production-order.md"
               },
               {
                 "t": "text",
@@ -616,10 +667,10 @@
               },
               {
                 "t": "text",
-                "v": " — it is the fallback if step 6 fails"
+                "v": " — it is the fallback if step 8 fails"
               }
             ],
-            "text": "Skip step 6 and create the production order directly per Production order Create the demand. This is the only production path anyone here has walked — it is the fallback if step 6 fails"
+            "text": "Skip step 8 and create the production order directly per Create the production order. This is the only production path anyone here has walked — it is the fallback if step 8 fails"
           }
         ]
       }

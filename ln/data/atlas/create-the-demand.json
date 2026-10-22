@@ -27,7 +27,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
@@ -111,16 +111,16 @@
                 },
                 {
                   "t": "text",
-                  "v": " per "
+                  "v": ". Follow steps 1–11 of "
                 },
                 {
                   "t": "link",
-                  "v": "Ship from stock",
-                  "href": "ship-from-stock.md"
+                  "v": "Create and approve the sales order",
+                  "href": "create-and-approve-the-sales-order.md"
                 },
                 {
                   "t": "text",
-                  "v": " steps step 1–1.11, with "
+                  "v": ", with "
                 },
                 {
                   "t": "field",
@@ -128,7 +128,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " = the warehouse from step 2 of "
+                  "v": " from step 2 of "
                 },
                 {
                   "t": "link",
@@ -136,7 +136,7 @@
                   "href": "preflight.md"
                 }
               ],
-              "text": "Create a sales order for BAM-CHOP-PAIR per Ship from stock steps step 1–1.11, with Warehouse = the warehouse from step 2 of Preflight"
+              "text": "Create a sales order for BAM-CHOP-PAIR. Follow steps 1–11 of Create and approve the sales order, with Warehouse from step 2 of Preflight"
             },
             {
               "tokens": [
@@ -185,21 +185,9 @@
                   "t": "link",
                   "v": "Preflight",
                   "href": "preflight.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", and "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Delivery Date"
-                },
-                {
-                  "t": "text",
-                  "v": " a few days out"
                 }
               ],
-              "text": "Set Ordered Quantity above the on-hand from step 2 of Preflight, and Planned Delivery Date a few days out"
+              "text": "Set Ordered Quantity above the on-hand from step 2 of Preflight"
             },
             {
               "tokens": [
@@ -228,24 +216,9 @@
                 {
                   "t": "value",
                   "v": "ordered quantity"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "planned delivery date"
                 }
               ],
-              "text": "sales order number, ordered quantity, planned delivery date"
+              "text": "sales order number, ordered quantity"
             }
           ],
           "id": "2",
@@ -262,6 +235,55 @@
                 }
               ],
               "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Planned Delivery Date"
+                },
+                {
+                  "t": "text",
+                  "v": " a few days out"
+                }
+              ],
+              "text": "Set Planned Delivery Date a few days out"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned delivery date"
+                }
+              ],
+              "text": "planned delivery date"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
             },
             {
               "tokens": [
@@ -290,7 +312,7 @@
               "text": "Status = In Process"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -300,10 +322,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -364,7 +386,7 @@
               "text": "order horizon date"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": true
         },
@@ -374,10 +396,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "6"
                 }
               ],
-              "text": "5"
+              "text": "6"
             },
             {
               "tokens": [
@@ -406,7 +428,7 @@
               "text": "The displayed date moves past your delivery date"
             }
           ],
-          "id": "5",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -416,10 +438,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "7"
                 }
               ],
-              "text": "6"
+              "text": "7"
             },
             {
               "tokens": [
@@ -465,7 +487,7 @@
               "text": "A Sales Order row with your number and quantity as Demand"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": false
         }
@@ -541,10 +563,10 @@
               },
               {
                 "t": "text",
-                "v": " date. Step 5 — and the date is not today plus your days "
+                "v": " date. Step 6 — and the date is not today plus your days "
               }
             ],
-            "text": "The delivery date is beyond the Order Horizon date. Step 5 — and the date is not today plus your days"
+            "text": "The delivery date is beyond the Order Horizon date. Step 6 — and the date is not today plus your days"
           }
         ]
       }
@@ -572,7 +594,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Skip step 6 of "
+                "v": "Skip step 8 of "
               },
               {
                 "t": "link",
@@ -585,12 +607,12 @@
               },
               {
                 "t": "link",
-                "v": "Production order",
-                "href": "manual-production-order-existing-master-data.md"
+                "v": "Create the production order",
+                "href": "create-the-production-order.md"
               },
               {
                 "t": "text",
-                "v": " this task. "
+                "v": ". "
               },
               {
                 "t": "chip",
@@ -598,7 +620,7 @@
               },
               {
                 "t": "text",
-                "v": " — it is the fallback if step 6 of "
+                "v": " — it is the fallback if step 8 of "
               },
               {
                 "t": "link",
@@ -610,7 +632,7 @@
                 "v": " fails"
               }
             ],
-            "text": "Skip step 6 of Cross the boundary and create the production order directly per Production order this task. This is the only production path anyone here has walked — it is the fallback if step 6 of Cross the boundary fails"
+            "text": "Skip step 8 of Cross the boundary and create the production order directly per Create the production order. This is the only production path anyone here has walked — it is the fallback if step 8 of Cross the boundary fails"
           }
         ]
       }

@@ -43,7 +43,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 8 of "
+          "v": "You need step 9 of "
         },
         {
           "t": "link",
@@ -64,7 +64,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 8 of Create the production order; step 1 of Confirm the existing foundation."
+      "text": "You need step 9 of Create the production order; step 1 of Confirm the existing foundation."
     }
   ],
   "why": {
@@ -100,7 +100,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Double-click the production order recorded in step 8 of "
+                  "v": "Double-click the production order recorded in step 9 of "
                 },
                 {
                   "t": "link",
@@ -108,7 +108,7 @@
                   "href": "create-the-production-order.md"
                 }
               ],
-              "text": "Double-click the production order recorded in step 8 of Create the production order"
+              "text": "Double-click the production order recorded in step 9 of Create the production order"
             },
             {
               "tokens": [

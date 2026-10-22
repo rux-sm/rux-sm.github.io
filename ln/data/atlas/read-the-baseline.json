@@ -44,15 +44,24 @@
         },
         {
           "t": "link",
-          "v": "Create test items",
-          "href": "create-basic-test-items-and-defaults.md"
+          "v": "Configure the purchased group",
+          "href": "configure-the-purchased-group.md"
         },
         {
           "t": "text",
-          "v": " phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+          "v": " and "
+        },
+        {
+          "t": "link",
+          "v": "Create the three items",
+          "href": "create-the-three-items.md"
+        },
+        {
+          "t": "text",
+          "v": " build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
         }
       ],
-      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Create test items phases 2 and 5 build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Configure the purchased group and Create the three items build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
     }
   ],
   "why": {

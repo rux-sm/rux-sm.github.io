@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line"
+                  "v": "with no delivery lines linked, work on the order line"
                 }
               ],
-              "text": "with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line"
+              "text": "with no delivery lines linked, work on the order line"
             },
             {
               "tokens": [
@@ -86,10 +86,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
+                  "v": "change its planned delivery date or its ordered quantity"
                 }
               ],
-              "text": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
+              "text": "change its planned delivery date or its ordered quantity"
             },
             {
               "tokens": [
@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+                  "v": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
                 }
               ],
-              "text": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+              "text": "with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning"
             },
             {
               "tokens": [
@@ -154,6 +154,40 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+                }
+              ],
+              "text": "changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "where the CTP check for sales is on, LN refuses a new date the item is not available on"
                 }
               ],
@@ -169,7 +203,7 @@
               "text": "—"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": false
         }

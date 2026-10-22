@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
@@ -192,30 +192,18 @@
                 {
                   "t": "field",
                   "v": "Language"
-                },
-                {
-                  "t": "text",
-                  "v": " and a word under "
-                },
-                {
-                  "t": "field",
-                  "v": "Label Description"
-                },
-                {
-                  "t": "text",
-                  "v": ", and press Enter. Example: Inventory"
                 }
               ],
-              "text": "In the Label lookup, enter 2 under Language and a word under Label Description, and press Enter. Example: Inventory"
+              "text": "In the Label lookup, enter 2 under Language"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Labels with that word"
+                  "v": "—"
                 }
               ],
-              "text": "Labels with that word"
+              "text": "—"
             }
           ],
           "id": "3",
@@ -232,6 +220,48 @@
                 }
               ],
               "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter a word under "
+                },
+                {
+                  "t": "field",
+                  "v": "Label Description"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Enter. Example: Inventory"
+                }
+              ],
+              "text": "Enter a word under Label Description and press Enter. Example: Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Labels with that word"
+                }
+              ],
+              "text": "Labels with that word"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
             },
             {
               "tokens": [
@@ -267,7 +297,7 @@
               "text": "command name"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": true
         },
@@ -277,10 +307,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "6"
                 }
               ],
-              "text": "5"
+              "text": "6"
             },
             {
               "tokens": [
@@ -309,7 +339,7 @@
               "text": "Its description shows beside it"
             }
           ],
-          "id": "5",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -319,10 +349,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "7"
                 }
               ],
-              "text": "6"
+              "text": "7"
             },
             {
               "tokens": [
@@ -355,7 +385,7 @@
               "text": "—"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": false
         },
@@ -365,10 +395,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "8"
                 }
               ],
-              "text": "7"
+              "text": "8"
             },
             {
               "tokens": [
@@ -393,7 +423,7 @@
               "text": "A grey dot under each text column"
             }
           ],
-          "id": "7",
+          "id": "8",
           "optional": false,
           "produces": false
         },
@@ -403,10 +433,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "9"
                 }
               ],
-              "text": "8"
+              "text": "9"
             },
             {
               "tokens": [
@@ -431,7 +461,7 @@
               "text": "No text present; Create, Duplicate, Select or Exit?"
             }
           ],
-          "id": "8",
+          "id": "9",
           "optional": false,
           "produces": false
         },
@@ -441,10 +471,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "10"
                 }
               ],
-              "text": "9"
+              "text": "10"
             },
             {
               "tokens": [
@@ -473,7 +503,7 @@
               "text": "A last-modified stamp"
             }
           ],
-          "id": "9",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -483,10 +513,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "11"
                 }
               ],
-              "text": "10"
+              "text": "11"
             },
             {
               "tokens": [
@@ -523,7 +553,7 @@
               "text": "An empty Text Editor"
             }
           ],
-          "id": "10",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -533,10 +563,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "11"
+                  "v": "12"
                 }
               ],
-              "text": "11"
+              "text": "12"
             },
             {
               "tokens": [
@@ -585,7 +615,7 @@
               "text": "A green tick under both text columns"
             }
           ],
-          "id": "11",
+          "id": "12",
           "optional": false,
           "produces": false
         }
@@ -626,10 +656,10 @@
               },
               {
                 "t": "text",
-                "v": ", as in step 9"
+                "v": ", as in step 10"
               }
             ],
-            "text": "Nothing. The text has not been written yet; choose Create, as in step 9"
+            "text": "Nothing. The text has not been written yet; choose Create, as in step 10"
           }
         ]
       },
@@ -648,10 +678,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A new row is a copy of the row the cursor was on. Replace them, as in step 4 and step 5"
+                "v": "A new row is a copy of the row the cursor was on. Replace them, as in step 5 and step 6"
               }
             ],
-            "text": "A new row is a copy of the row the cursor was on. Replace them, as in step 4 and step 5"
+            "text": "A new row is a copy of the row the cursor was on. Replace them, as in step 5 and step 6"
           }
         ]
       }
@@ -695,10 +725,10 @@
               },
               {
                 "t": "text",
-                "v": " on the prompt, after step 6"
+                "v": " on the prompt, after step 7"
               }
             ],
-            "text": "Name it in LLM Name and LLM Version on the prompt, after step 6"
+            "text": "Name it in LLM Name and LLM Version on the prompt, after step 7"
           }
         ]
       }

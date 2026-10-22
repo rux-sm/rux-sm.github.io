@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="c398e652842cb7e73fef2de7cb7afa86179be34d">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -116,7 +116,7 @@
 <p class="ln-strip">Task 1 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a></p>
 
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="whwmd4300m000" aria-label="Copy the code whwmd4300m000">whwmd4300m000</button></div>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 6 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 7 steps</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
@@ -125,8 +125,9 @@
   <li id="step-2"><div class="ln-doc__do">Enter the component item in <span class="ln-t-named">Filter Items</span> and run it</div><div class="ln-doc__see"><b>You should see</b> The component appears with inventory totals</div></li>
   <li id="step-3"><div class="ln-doc__do">Tick the component row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</div><div class="ln-doc__see"><b>You should see</b> <a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens for the component</div></li>
   <li id="step-4"><div class="ln-doc__do">Select a warehouse row with enough unblocked stock for the quantity-one order</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component warehouse</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component on-hand before</span></div></li>
-  <li id="step-5"><div class="ln-doc__do">Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation</div><div class="ln-doc__see"><b>You should see</b> All inputs needed to check the created order are known before entry begins</div></li>
-  <li id="step-6"><div class="ln-doc__do">Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished item on-hand before</span></div></li>
+  <li id="step-5"><div class="ln-doc__do">Confirm the training case names the receiving warehouse and the expected operation</div></li>
+  <li id="step-6"><div class="ln-doc__do">Confirm it names a valid BOM revision and a valid routing revision</div><div class="ln-doc__see"><b>You should see</b> All inputs needed to check the created order are known before entry begins</div></li>
+  <li id="step-7"><div class="ln-doc__do">Repeat steps 2–3 for the finished item</div><p class="ln-doc__note">Filter at the receiving warehouse the training case names</p><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished item on-hand before</span></div></li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why">
@@ -195,11 +196,14 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component warehouse</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component on-hand before</span></p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>All inputs needed to check the created order are known before entry begins</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Confirm the training case names the receiving warehouse and the expected operation</h1></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 2–3 for the finished item, filtered at the receiving warehouse the training case identifies</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Confirm it names a valid BOM revision and a valid routing revision</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>All inputs needed to check the created order are known before entry begins</p></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 2–3 for the finished item</h1><p class="ln-step__note">Filter at the receiving warehouse the training case names</p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished item on-hand before</span></p></div>
   </li>
 </ol>

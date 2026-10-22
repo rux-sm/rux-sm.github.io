@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Defaults",
   "session": "Item Defaults",
   "sessionCode": "tcibd0102m000",
@@ -58,7 +58,7 @@
         },
         {
           "t": "text",
-          "v": "; step 9 of "
+          "v": "; step 12 of "
         },
         {
           "t": "link",
@@ -85,7 +85,7 @@
         },
         {
           "t": "text",
-          "v": "; step 10 of "
+          "v": "; step 16 of "
         },
         {
           "t": "link",
@@ -94,7 +94,7 @@
         },
         {
           "t": "text",
-          "v": "; step 12 of "
+          "v": "; step 20 of "
         },
         {
           "t": "link",
@@ -106,7 +106,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 1 of Configure the purchased group; step 9 of Configure the purchased group; step 6 of Create two item groups; step 6 of Confirm the test design; step 10 of Configure the purchased group; step 12 of Configure the purchased group."
+      "text": "You need step 1 of Configure the purchased group; step 12 of Configure the purchased group; step 6 of Create two item groups; step 6 of Confirm the test design; step 16 of Configure the purchased group; step 20 of Configure the purchased group."
     }
   ],
   "why": {
@@ -177,7 +177,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 1–9 of "
+                  "v": "Repeat for the made group, with the changes below. Follow steps 1–15 of "
                 },
                 {
                   "t": "link",
@@ -186,16 +186,46 @@
                 },
                 {
                   "t": "text",
-                  "v": " for the made group from step 6 of "
+                  "v": "; the made group is the one from step 6 of "
                 },
                 {
                   "t": "link",
                   "v": "Create two item groups",
                   "href": "create-two-item-groups.md"
-                },
+                }
+              ],
+              "text": "Repeat for the made group, with the changes below. Follow steps 1–15 of Configure the purchased group; the made group is the one from step 6 of Create two item groups"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", with "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set "
                 },
                 {
                   "t": "field",
@@ -203,24 +233,92 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " to "
                 },
                 {
                   "t": "literal",
                   "v": "Job Shop"
+                }
+              ],
+              "text": "Set Default Supply Source to Job Shop"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the site row, set "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
                 },
                 {
                   "t": "text",
-                  "v": " and, on the site row, the finished warehouse from step 6 of "
+                  "v": " to the finished warehouse. It is the one from step 6 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm the test design",
                   "href": "confirm-the-test-design.md"
-                },
+                }
+              ],
+              "text": "On the site row, set Warehouse to the finished warehouse. It is the one from step 6 of Confirm the test design"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": " and "
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the site row, set "
                 },
                 {
                   "t": "field",
@@ -228,14 +326,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " to "
                 },
                 {
                   "t": "literal",
                   "v": "Job Shop"
                 }
               ],
-              "text": "Repeat steps 1–9 of Configure the purchased group for the made group from step 6 of Create two item groups, with Default Supply Source = Job Shop and, on the site row, the finished warehouse from step 6 of Confirm the test design and Supply Source = Job Shop"
+              "text": "On the site row, set Supply Source to Job Shop"
             },
             {
               "tokens": [
@@ -266,7 +364,7 @@
               "text": "made default supply source — the Product/BAM-FG combination exists with its site row"
             }
           ],
-          "id": "1",
+          "id": "4",
           "optional": false,
           "produces": true
         },
@@ -276,25 +374,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2"
+                  "v": "5"
                 }
               ],
-              "text": "2"
+              "text": "5"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 10–12 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Configure the purchased group",
-                  "href": "configure-the-purchased-group.md"
-                },
-                {
-                  "t": "text",
-                  "v": " for "
+                  "v": "Repeat for "
                 },
                 {
                   "t": "chip",
@@ -310,10 +399,49 @@
                 },
                 {
                   "t": "text",
-                  "v": ", comparing each with an approved finished Product/Job Shop reference"
+                  "v": ". Follow steps 16–21 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Configure the purchased group",
+                  "href": "configure-the-purchased-group.md"
                 }
               ],
-              "text": "Repeat steps 10–12 of Configure the purchased group for Ordering and Warehousing, comparing each with an approved finished Product/Job Shop reference"
+              "text": "Repeat for Ordering and Warehousing. Follow steps 16–21 of Configure the purchased group"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Compare each with an approved finished Product/Job Shop reference"
+                }
+              ],
+              "text": "Compare each with an approved finished Product/Job Shop reference"
             },
             {
               "tokens": [
@@ -325,7 +453,7 @@
               "text": "Both indicators active, both Create boxes selected, no unapproved planning value introduced"
             }
           ],
-          "id": "2",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -335,10 +463,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "7"
                 }
               ],
-              "text": "3"
+              "text": "7"
             },
             {
               "tokens": [
@@ -372,7 +500,7 @@
               "text": "Item - Production Defaults (tiipd0102m100) opens"
             }
           ],
-          "id": "3",
+          "id": "7",
           "optional": false,
           "produces": false
         },
@@ -382,23 +510,57 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "8"
                 }
               ],
-              "text": "4"
+              "text": "8"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare every visible field with the made-group Production values in the family sheet §4 and select "
+                  "v": "Compare every visible field with the family sheet. Its made-group Production values are in §4"
+                }
+              ],
+              "text": "Compare every visible field with the family sheet. Its made-group Production values are in §4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
                 },
                 {
                   "t": "button",
                   "label": "OK"
                 }
               ],
-              "text": "Compare every visible field with the made-group Production values in the family sheet §4 and select OK"
+              "text": "Select OK"
             },
             {
               "tokens": [
@@ -410,7 +572,7 @@
               "text": "The Production defaults close without an error"
             }
           ],
-          "id": "4",
+          "id": "9",
           "optional": false,
           "produces": false
         },
@@ -420,10 +582,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "10"
                 }
               ],
-              "text": "5"
+              "text": "10"
             },
             {
               "tokens": [
@@ -448,7 +610,7 @@
               "text": "New items are marked to receive Production data"
             }
           ],
-          "id": "5",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -458,10 +620,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "11"
                 }
               ],
-              "text": "6"
+              "text": "11"
             },
             {
               "tokens": [
@@ -495,7 +657,7 @@
               "text": "Item - Sales Defaults (tdisa0102s000) opens"
             }
           ],
-          "id": "6",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -505,10 +667,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "12"
                 }
               ],
-              "text": "7"
+              "text": "12"
             },
             {
               "tokens": [
@@ -538,14 +700,48 @@
                 },
                 {
                   "t": "text",
-                  "v": " tabs from the made-group Sales values in the family sheet §4 and select "
+                  "v": " tabs from the family sheet. Its made-group Sales values are in §4"
+                }
+              ],
+              "text": "Complete the Ordering, Price and Delivery tabs from the family sheet. Its made-group Sales values are in §4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
                 },
                 {
                   "t": "button",
                   "label": "OK"
                 }
               ],
-              "text": "Complete the Ordering, Price and Delivery tabs from the made-group Sales values in the family sheet §4 and select OK"
+              "text": "Select OK"
             },
             {
               "tokens": [
@@ -557,7 +753,7 @@
               "text": "The Sales defaults are saved"
             }
           ],
-          "id": "7",
+          "id": "13",
           "optional": false,
           "produces": false
         },
@@ -567,10 +763,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "14"
                 }
               ],
-              "text": "8"
+              "text": "14"
             },
             {
               "tokens": [
@@ -628,7 +824,7 @@
               "text": "Existing Sales items are not changed"
             }
           ],
-          "id": "8",
+          "id": "14",
           "optional": false,
           "produces": false
         },
@@ -638,10 +834,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "15"
                 }
               ],
-              "text": "9"
+              "text": "15"
             },
             {
               "tokens": [
@@ -666,7 +862,7 @@
               "text": "New items are marked to receive Sales data"
             }
           ],
-          "id": "9",
+          "id": "15",
           "optional": false,
           "produces": false
         },
@@ -676,10 +872,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "16"
                 }
               ],
-              "text": "10"
+              "text": "16"
             },
             {
               "tokens": [
@@ -691,10 +887,40 @@
                   "t": "session",
                   "code": "tcibd0502m000",
                   "name": "Item Defaults"
-                },
+                }
+              ],
+              "text": "Save Item Defaults (tcibd0502m000)"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", close and reopen the Product/"
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "16",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "17"
+                }
+              ],
+              "text": "17"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close and reopen the Product/"
                 },
                 {
                   "t": "literal",
@@ -702,14 +928,48 @@
                 },
                 {
                   "t": "text",
-                  "v": " default, and reopen Sales ➔ "
+                  "v": " default"
+                }
+              ],
+              "text": "Close and reopen the Product/BAM-FG default"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "17",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "18"
+                }
+              ],
+              "text": "18"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Reopen Sales ➔ "
                 },
                 {
                   "t": "chip",
                   "v": "Price"
                 }
               ],
-              "text": "Save Item Defaults (tcibd0502m000), close and reopen the Product/BAM-FG default, and reopen Sales ➔ Price"
+              "text": "Reopen Sales ➔ Price"
             },
             {
               "tokens": [
@@ -764,7 +1024,7 @@
               "text": "made global subentities — four active indicators, and USD, ea, both S10.10 groups and NOTAX return"
             }
           ],
-          "id": "10",
+          "id": "18",
           "optional": false,
           "produces": true
         }

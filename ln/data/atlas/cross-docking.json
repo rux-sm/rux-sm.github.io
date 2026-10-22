@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short"
+                  "v": "set the line's delivery type to Cross-docking. Set it by hand, or from the shortage menu that appears when stock is short"
                 }
               ],
-              "text": "set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short"
+              "text": "set the line's delivery type to Cross-docking. Set it by hand, or from the shortage menu that appears when stock is short"
             },
             {
               "tokens": [

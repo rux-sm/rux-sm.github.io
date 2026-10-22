@@ -52,10 +52,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
+                  "v": "before turning locations on, clear what is in flight. That is unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
                 }
               ],
-              "text": "before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
+              "text": "before turning locations on, clear what is in flight. That is unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders"
             },
             {
               "tokens": [
@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "run Change Location System for the warehouse, then give each stock its location in Assign Locations"
+                  "v": "run Change Location System for the warehouse"
                 }
               ],
-              "text": "run Change Location System for the warehouse, then give each stock its location in Assign Locations"
+              "text": "run Change Location System for the warehouse"
             },
             {
               "tokens": [
@@ -154,10 +154,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "set up at least one receiving location and one staging location, which a warehouse with locations must have"
+                  "v": "give each stock its location in Assign Locations"
                 }
               ],
-              "text": "set up at least one receiving location and one staging location, which a warehouse with locations must have"
+              "text": "give each stock its location in Assign Locations"
             },
             {
               "tokens": [
@@ -170,6 +170,40 @@
             }
           ],
           "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "set up at least one receiving location and one staging location. A warehouse with locations must have both"
+                }
+              ],
+              "text": "set up at least one receiving location and one staging location. A warehouse with locations must have both"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
           "optional": false,
           "produces": false
         }

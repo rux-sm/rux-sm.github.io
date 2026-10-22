@@ -50,7 +50,7 @@
         ],
         "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
       },
-      "steps": 6,
+      "steps": 7,
       "walked": "2026-08-12"
     },
     {
@@ -74,7 +74,7 @@
         ],
         "text": "A quantity-one order exists at Created status."
       },
-      "steps": 8,
+      "steps": 9,
       "walked": "2026-08-12"
     },
     {
@@ -134,7 +134,7 @@
         ],
         "text": "The component is issued; the order is Active"
       },
-      "steps": 8,
+      "steps": 10,
       "walked": "2026-08-18"
     },
     {
@@ -150,7 +150,7 @@
         ],
         "text": "The finished item is posted to inventory and on-hand increases at the receiving warehouse."
       },
-      "steps": 8,
+      "steps": 9,
       "walked": "2026-08-18"
     }
   ],

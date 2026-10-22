@@ -99,7 +99,7 @@
         ],
         "text": "A sales order for more pairs than exist, inside the order horizon."
       },
-      "steps": 6,
+      "steps": 7,
       "walked": "2026-08-09"
     },
     {
@@ -131,7 +131,7 @@
         ],
         "text": "The proposals become a real purchase order and a real production order."
       },
-      "steps": 6,
+      "steps": 8,
       "walked": null
     },
     {
@@ -147,7 +147,7 @@
         ],
         "text": "Rods and sleeves are on hand at the raw-material warehouse."
       },
-      "steps": 5,
+      "steps": 8,
       "walked": null
     },
     {
@@ -163,7 +163,7 @@
         ],
         "text": "The finished item is posted to inventory."
       },
-      "steps": 7,
+      "steps": 9,
       "walked": null
     },
     {
@@ -187,7 +187,7 @@
         ],
         "text": "Shipment Confirmed, on-hand down by the shipped quantity."
       },
-      "steps": 7,
+      "steps": 9,
       "walked": "2026-08-09"
     }
   ],

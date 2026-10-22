@@ -120,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+                  "v": "in the dialog, choose whether the goods go back to stock"
                 }
               ],
-              "text": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+              "text": "in the dialog, choose whether the goods go back to stock"
             },
             {
               "tokens": [
@@ -154,6 +154,40 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "choose whether the order line is finalized, then continue"
+                }
+              ],
+              "text": "choose whether the order line is finalized, then continue"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment"
                 }
               ],
@@ -169,7 +203,7 @@
               "text": "—"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
           "produces": false
         }

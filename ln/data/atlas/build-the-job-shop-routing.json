@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Engineering ➔ Job Shop Routings",
   "session": "Job Shop Routings",
   "sessionCode": "tirou4100m000",
@@ -733,43 +733,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check what the reference operation brought with it, and enter "
-                },
-                {
-                  "t": "field",
-                  "v": "Cycle Time (min)"
-                },
-                {
-                  "t": "text",
-                  "v": " only if it is still blank. With "
-                },
-                {
-                  "t": "field",
-                  "v": "Use Production Rates"
-                },
-                {
-                  "t": "text",
-                  "v": " selected in the current parameter set, confirm "
-                },
-                {
-                  "t": "field",
-                  "v": "Production Rate"
-                },
-                {
-                  "t": "text",
-                  "v": " is filled, since that is the value LN uses for the operation time"
+                  "v": "Check what the reference operation brought with it"
                 }
               ],
-              "text": "Check what the reference operation brought with it, and enter Cycle Time (min) only if it is still blank. With Use Production Rates selected in the current parameter set, confirm Production Rate is filled, since that is the value LN uses for the operation time"
+              "text": "Check what the reference operation brought with it"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here"
+                  "v": "A reference operation carries its own times; do not overwrite them with an invented value"
                 }
               ],
-              "text": "A reference operation carries its own times; do not overwrite them with an invented value. The production rate is expressed per hour here"
+              "text": "A reference operation carries its own times; do not overwrite them with an invented value"
             }
           ],
           "id": "14",
@@ -791,19 +767,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the operation line"
+                  "v": "Enter "
+                },
+                {
+                  "t": "field",
+                  "v": "Cycle Time (min)"
+                },
+                {
+                  "t": "text",
+                  "v": " only if it is still blank"
                 }
               ],
-              "text": "Save the operation line"
+              "text": "Enter Cycle Time (min) only if it is still blank"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The operation is stored against the routing revision"
+                  "v": "—"
                 }
               ],
-              "text": "The operation is stored against the routing revision"
+              "text": "—"
             }
           ],
           "id": "15",
@@ -820,6 +804,90 @@
                 }
               ],
               "text": "16"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Confirm "
+                },
+                {
+                  "t": "field",
+                  "v": "Production Rate"
+                },
+                {
+                  "t": "text",
+                  "v": " is filled. Where "
+                },
+                {
+                  "t": "field",
+                  "v": "Use Production Rates"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected in the current parameter set, that is the value LN uses for the operation time"
+                }
+              ],
+              "text": "Confirm Production Rate is filled. Where Use Production Rates is selected in the current parameter set, that is the value LN uses for the operation time"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The production rate is expressed per hour here"
+                }
+              ],
+              "text": "The production rate is expressed per hour here"
+            }
+          ],
+          "id": "16",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "17"
+                }
+              ],
+              "text": "17"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Save the operation line"
+                }
+              ],
+              "text": "Save the operation line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The operation is stored against the routing revision"
+                }
+              ],
+              "text": "The operation is stored against the routing revision"
+            }
+          ],
+          "id": "17",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "18"
+                }
+              ],
+              "text": "18"
             },
             {
               "tokens": [
@@ -876,7 +944,7 @@
               "text": "Status = Approved; Approved By and Approved On are filled"
             }
           ],
-          "id": "16",
+          "id": "18",
           "optional": false,
           "produces": false
         },
@@ -886,10 +954,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "17"
+                  "v": "19"
                 }
               ],
-              "text": "17"
+              "text": "19"
             },
             {
               "tokens": [
@@ -922,7 +990,7 @@
               "text": "Use for Planning is selected"
             }
           ],
-          "id": "17",
+          "id": "19",
           "optional": false,
           "produces": false
         },
@@ -932,10 +1000,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "18"
+                  "v": "20"
                 }
               ],
-              "text": "18"
+              "text": "20"
             },
             {
               "tokens": [
@@ -968,7 +1036,7 @@
               "text": "Use for Costing is selected"
             }
           ],
-          "id": "18",
+          "id": "20",
           "optional": false,
           "produces": false
         },
@@ -978,10 +1046,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "19"
+                  "v": "21"
                 }
               ],
-              "text": "19"
+              "text": "21"
             },
             {
               "tokens": [
@@ -1021,7 +1089,7 @@
               "text": "routing and revision — Approved, indicators set, operation present"
             }
           ],
-          "id": "19",
+          "id": "21",
           "optional": false,
           "produces": true
         }

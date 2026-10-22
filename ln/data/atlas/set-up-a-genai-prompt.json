@@ -65,7 +65,7 @@
         ],
         "text": "The fields the answer needs are ready to send."
       },
-      "steps": 14,
+      "steps": 15,
       "walked": null
     },
     {
@@ -81,7 +81,7 @@
         ],
         "text": "A prompt exists with a label, a dataset and both texts."
       },
-      "steps": 11,
+      "steps": 12,
       "walked": null
     },
     {
@@ -129,7 +129,7 @@
         ],
         "text": "An answer in the form asked for, right for each kind of record."
       },
-      "steps": 14,
+      "steps": 15,
       "walked": null
     },
     {

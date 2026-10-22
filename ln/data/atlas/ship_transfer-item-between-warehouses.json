@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
@@ -88,7 +88,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " row recorded in "
+                  "v": " row. You recorded it in "
                 },
                 {
                   "t": "link",
@@ -96,7 +96,7 @@
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Check the Freeze/Confirm Shipments/Loads row recorded in Confirm the processing path and create advice"
+              "text": "Check the Freeze/Confirm Shipments/Loads row. You recorded it in Confirm the processing path and create advice"
             },
             {
               "tokens": [

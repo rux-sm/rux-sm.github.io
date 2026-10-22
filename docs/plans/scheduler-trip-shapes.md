@@ -159,10 +159,6 @@ None open.
 
 - [ ] Hand rux the deploy of `scheduler/trip-document-link/index.ts`,
       which reads a trip's last day from its legs.
-- [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
-      its unique key, and let the status functions, which take a leg by id
-      already, answer for a leg with no old word, so a third leg's driver
-      can accept.
 - [ ] Return a trip's legs, routes and contacts from `get_trip` in
       `scheduler/connector/index.ts`, let a draft carry them through
       `scheduler/draft-fields.js`, which the editor types too, rebuild the

@@ -3561,9 +3561,9 @@
         let href = null;
         let need = null;
         const tripHref = `print.html?form=${form.id}&trip=${encodeURIComponent(trip)}&from=forms`;
-        if (form.binds === null || form.binds === 'week') href = `print.html?form=${form.id}`;
+        if (form.binds === null || form.binds === 'week') href = `print.html?form=${form.id}&from=forms`;
         else if (!trip) {
-          if (form.blank) href = `print.html?form=${form.id}&blank=1`;
+          if (form.blank) href = `print.html?form=${form.id}&blank=1&from=forms`;
           else need = 'Open it from a trip on the board.';
         } else if (found.why) need = found.why;
         else if (form.binds === 'trip+leg') href = `${tripHref}&leg=${encodeURIComponent(found.legs[0] || 'outbound')}`;
@@ -3885,12 +3885,13 @@
 
   async function showForm(form) {
     host?.setToolbarShown?.(true);
-    /* Reached from a trip's list in the panel, it goes back to that list. It
-       loads the list by address rather than stepping back, because a frame's
-       history is the whole page's, and the board may have moved since. */
-    const fromTrip = params.get('from') === 'forms' && params.get('trip');
-    host?.setViewerBack?.(fromTrip
-      ? () => location.replace(`print.html?trip=${encodeURIComponent(fromTrip)}`)
+    /* Reached from a Forms list in the panel, a trip's or the plain one, it
+       goes back to that list. It loads the list by address rather than
+       stepping back, because a frame's history is the whole page's, and the
+       board may have moved since. */
+    const fromTrip = params.get('trip');
+    host?.setViewerBack?.(params.get('from') === 'forms'
+      ? () => location.replace(fromTrip ? `print.html?trip=${encodeURIComponent(fromTrip)}` : 'print.html')
       : null);
     title.textContent = form.name;
     // Named from the address first, so a form that cannot be drawn still has a

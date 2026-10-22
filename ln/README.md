@@ -27,9 +27,12 @@ Where the reader stopped is kept in their browser and nowhere else.
 `docs/plans/ln-guide.md` in the repository root is what it is for and what is
 still to build.
 
+- **Still to confirm**, `confirm.html`, lists the tasks nobody has walked in
+  LN; Guided carries the owner's two answers under each of their steps.
+
 **The one-page guide is still here.** `index.html`, written by
-`tools/build-page.mjs` with `page.js`, keeps the confirm buttons, the private
-detail and the map until the pages carry them; the plan says when it goes.
+`tools/build-page.mjs` with `page.js`, stays until the pages print; the plan
+says when it goes.
 
 ## How the page is made
 
@@ -38,8 +41,8 @@ detail and the map until the pages carry them; the plan says when it goes.
    the bytes. `tools/check-data.mjs` refuses data that does not match it.
 2. `tools/build-views.mjs` writes the pages from that data, one file each,
    and lists what the export does not yet say. `app.css` and `app.js` are
-   their styles and behaviour, `data.js` the one-page guide's reads and writes
-   for the owner, and `tools/shell.mjs` is the site header.
+   their styles and behaviour, `data.js` the reads and writes for the owner,
+   and `tools/shell.mjs` is the site header.
 
 The data contract is atlas's `standards/export-json.md`. Every control on the
 page is Design's, linked at `/design/`.
@@ -84,8 +87,8 @@ machine has to be able to reproduce.
 
 ## Never edited by hand
 
-`data/atlas/`, `index.html`, `home.html`, `search.html`, `search.json` and
-every page under `do/`, `follow/`, `screens/` and `ideas/` are generated, and
+`data/atlas/`, `index.html`, `home.html`, `search.html`, `search.json`,
+`confirm.html` and every page under `do/`, `follow/`, `screens/` and `ideas/` are generated, and
 the next sync or build overwrites them. Fix content in atlas, a component in
 Design, markup in `tools/build-views.mjs`. `theme.css` and `overrides.css` are this app's
 override hooks, linked after Design's own.

@@ -175,23 +175,23 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="1.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/tdpur4601m200.html"><span class="ln-t-named">Purchase Order Intake Workbench</span></a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The intake workbench opens</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="1.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Start a new order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank <a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> <span class="ln-t-exact">tdpur4100m900</span> opens</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="1.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Buy-from Business Partner</span>, using the <span class="ln-t-named">Buy-from Business Partners</span> lookup (<a class="rux--link" href="../screens/tccom4520m000.html"><span class="ln-t-exact">tccom4520m000</span></a>)</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">buy-from business partner</span> — the walked run used one of the standard test partners </p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="1.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the <span class="ln-t-named">Purchase Order Type</span> and <span class="ln-t-named">Purchase Office</span> that LN defaulted from the partner selected at <a class="rux--link" href="#step-3">step 3</a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The walked run showed <span class="ln-t-exact">IPO</span> (Inventory Purchase Order) and the partner's purchase office </p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="1.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Save the header</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchase order number</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">order type</span> </p></div>
   </li>
@@ -234,6 +234,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

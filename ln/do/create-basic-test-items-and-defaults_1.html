@@ -175,27 +175,27 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="1.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Search for the proposed purchased-group code</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>No existing row uses it</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="1.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-press">New</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A blank item-group row opens</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="1.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Enter <span class="ln-t-named">Item Group</span> and <span class="ln-t-named">Description</span> for the purchased group</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">purchased-supply item group</span></p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="1.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Currency</span> to the approved company currency</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The currency is populated</p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="1.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Save the purchased group</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The purchased group is available for defaults</p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="1.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Repeat <a class="rux--link" href="#step-1">steps 1–5</a> for the made group</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">made-supply item group</span> — both dedicated groups are available for defaults</p></div>
   </li>
@@ -238,6 +238,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

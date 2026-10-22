@@ -178,31 +178,31 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="6.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In the sales order, <span class="ln-t-named">Release to Warehousing…</span> per <a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> <a class="rux--link" href="../do/ship-from-stock_2.html#step-2">Release to warehousing, steps 2–5</a></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Release</span><span class="sep">➔</span><span class="dest">Release to Warehousing…</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Log Report prints; a warehousing order exists under your sales order number</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="6.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In <a class="rux--link" href="../screens/whinh2300m000.html"><span class="ln-t-named">Warehouse Manager Dashboard</span></a>, filter on your sales order number and <span class="ln-t-press">Drill In</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a> <span class="ln-t-exact">whinh2100m100</span>, <span class="ln-t-named">Origin Sales</span>, <span class="ln-t-named">Type 20- SO/SC Out</span></p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="6.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">On the <span class="ln-t-named">Outbound Lines</span> tab, tick the line and run <span class="ln-t-named">Generate Advice</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span>Advice</span><span class="sep">➔</span><span class="dest">Generate Advice</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Advised</span></span> and <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span> both fill; Picking List by Location prints</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="6.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In <a class="rux--link" href="../screens/whinh4525m100.html"><span class="ln-t-named">Picking List</span></a>, tick the line and run <span class="ln-t-named">Pick Run</span>, then read <span class="ln-t-named">Shipment</span> on the order's <span class="ln-t-named">Shipment Lines</span> tab</h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Line status <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Staged</span></span> — <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipment number</span></p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="6.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In <a class="rux--link" href="../screens/whinh4130m000.html"><span class="ln-t-named">Shipments</span></a>, find the shipment and <span class="ln-t-press">Drill In</span>, then <span class="ln-t-named">Freeze</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>; <span class="ln-t-named">Confirm</span> becomes available</p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="6.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do"><span class="ln-t-named">Confirm</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">shipped quantity</span>; <span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, inventory relieved</p></div>
   </li>
-  <li data-k="7" hidden>
+  <li data-k="7" data-ref="6.7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Re-read <span class="ln-t-exact">BAM-CHOP-PAIR</span> on-hand at the warehouse from <a class="rux--link" href="../do/demand-to-shipment-via-planning_0.html#step-2">Preflight, step 2</a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">pair on-hand after shipping</span> — down by exactly the shipped quantity</p></div>
   </li>
@@ -247,6 +247,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

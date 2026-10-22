@@ -175,23 +175,23 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="3.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the production order row from <a class="rux--link" href="../do/manual-production-order-existing-master-data_1.html#step-8">Create the production order, step 8</a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The row is highlighted</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="3.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do"><span class="ln-t-named">Release Orders</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="3.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the selection range narrows to this one production order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Only this order is in scope for the release run</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="3.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Run the release</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The dialog closes; back in <span class="ln-t-named">Production Orders</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">order status after release</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="3.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm no other order changed status</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Only the order from <a class="rux--link" href="../do/manual-production-order-existing-master-data_1.html#step-8">Create the production order, step 8</a> shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
   </li>
@@ -234,6 +234,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

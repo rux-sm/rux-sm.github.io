@@ -115,6 +115,7 @@
 <p class="ln-strip">Task 3 of 7 in <a class="rux--link" href="../follow/demand-to-shipment-via-planning.html">Plan to shipment</a> · next: <a class="rux--link" href="../do/demand-to-shipment-via-planning_3.html">Cross the boundary</a></p>
 
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 6 steps</span></p>
+<p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
@@ -176,31 +177,48 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="2.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/cprrp1220m000.html"><span class="ln-t-named">Generate Order Planning (Item)</span></a> for <span class="ln-t-exact">BAM-CHOP-PAIR</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Scenario</span> <span class="ln-t-exact">ACT</span> and <span class="ln-t-named">Plan Item</span> are set</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="2.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select <span class="ln-t-named">Include Child Items</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The run will plan the rods and sleeves too</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="2.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Run the generation</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The run completes</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="2.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> for <span class="ln-t-exact">BAM-CHOP-PAIR</span> and read the planned supply row</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">planned production order</span> — <span class="ln-t-named">Supply</span> equals ordered quantity minus on-hand</p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="2.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-named">Planned Orders</span></a>, for the items' planning cluster and site </h1><p class="ln-step__route"><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">planned purchase orders</span> — every row at <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="2.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the planned production order and run <span class="ln-t-named">Pegging - Upstream</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">pegging arithmetic check</span> — each level's children sum to its requirement</p></div>
   </li>
 </ol>
+<div class="ln-confirm" data-confirm="demand-to-shipment-via-planning">
+  <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+  <div class="ln-confirm__ask" data-owner hidden>
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+  </div>
+  <form class="ln-confirm__form" data-different hidden>
+    <div class="rux--form-item rux--text-input-wrapper">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-21">What was different?</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="diff-21" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+      </div></div>
+    </div>
+    <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+    <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+  </form>
+</div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -240,6 +258,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

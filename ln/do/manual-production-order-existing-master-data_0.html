@@ -177,27 +177,27 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="0.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Obtain one prequalified training case from the master-data owner</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished item</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component item</span>, with an existing valid BOM and routing</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="0.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Enter the component item in <span class="ln-t-named">Filter Items</span> and run it</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The component appears with inventory totals</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="0.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Tick the component row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens for the component</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="0.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select a warehouse row with enough unblocked stock for the quantity-one order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component warehouse</span> and <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">component on-hand before</span></p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="0.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the training case identifies the receiving warehouse, valid BOM revision, valid routing revision, and expected operation</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>All inputs needed to check the created order are known before entry begins</p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="0.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Repeat <a class="rux--link" href="#step-2">steps 2–3</a> for the finished item, filtered at the receiving warehouse the training case identifies</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">finished item on-hand before</span></p></div>
   </li>
@@ -241,6 +241,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

@@ -115,6 +115,7 @@
 <p class="ln-strip">Task 11 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a></p>
 <p><strong>Before you start.</strong> You need step 9 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_5.html#step-9">Create the three items</a> and step 19 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_6.html#step-19">Build the job shop bill of material</a> and step 19 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_7.html#step-19">Build the job shop routing</a> and step 10 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_9.html#step-10">Stock the components</a> and step 6 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_0.html#step-6">Confirm the test design</a> and step 2 of <a class="rux--link" href="../do/create-basic-test-items-and-defaults_8.html#step-2">Confirm costing data</a>.</p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 7 steps</span></p>
+<p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
@@ -175,35 +176,52 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="10.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm all three items and their site rows still show the supply sources verified at <a class="rux--link" href="../do/create-basic-test-items-and-defaults_5.html#step-9">Create the three items, step 9</a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The family is intact</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="10.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the BOM from <a class="rux--link" href="../do/create-basic-test-items-and-defaults_6.html#step-19">Build the job shop bill of material, step 19</a> is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries both materials</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The pair has a manufacturable structure</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="10.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the routing from <a class="rux--link" href="../do/create-basic-test-items-and-defaults_7.html#step-19">Build the job shop routing, step 19</a> is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Approved</span></span>, used for planning and costing, and carries its operation and work center</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The pair has something to report complete</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="10.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm both components are on hand at the raw-material warehouse from <a class="rux--link" href="../do/create-basic-test-items-and-defaults_9.html#step-10">Stock the components, step 10</a></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>There is material to issue</p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="10.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the finished-item warehouse from <a class="rux--link" href="../do/create-basic-test-items-and-defaults_0.html#step-6">Confirm the test design, step 6</a> is the one the produced pair should be received into</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The receiving warehouse is a decision, not a discovery made mid-order</p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="10.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the costing figures from <a class="rux--link" href="../do/create-basic-test-items-and-defaults_8.html#step-2">Confirm costing data, steps 2–4</a> are still present</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The estimate calculation has what it reads</p></div>
   </li>
-  <li data-k="7" hidden>
+  <li data-k="7" data-ref="10.7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Carry every value in the handoff table below into the production-order walkthrough, and run it there</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">training case qualified</span></p></div>
   </li>
 </ol>
+<div class="ln-confirm" data-confirm="create-basic-test-items-and-defaults">
+  <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+  <div class="ln-confirm__ask" data-owner hidden>
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+  </div>
+  <form class="ln-confirm__form" data-different hidden>
+    <div class="rux--form-item rux--text-input-wrapper">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-13">What was different?</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="diff-13" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+      </div></div>
+    </div>
+    <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+    <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+  </form>
+</div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -242,6 +260,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

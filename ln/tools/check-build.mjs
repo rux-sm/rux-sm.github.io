@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process';
 // Two builds while the old page lasts: build-page.mjs writes index.html, and
 // build-views.mjs the pages under do/, follow/, screens/ and ideas/, home.html
 // and search.json. Every one of them is generated, so every one is compared.
-const GENERATED = ['index.html', 'home.html', 'search.html', 'search.json', 'do', 'follow', 'screens', 'ideas'];
+const GENERATED = ['index.html', 'home.html', 'search.html', 'search.json', 'confirm.html', 'do', 'follow', 'screens', 'ideas'];
 for (const build of ['tools/build-page.mjs', 'tools/build-views.mjs']) {
   try {
     execFileSync(process.execPath, [build], { stdio: 'inherit' });

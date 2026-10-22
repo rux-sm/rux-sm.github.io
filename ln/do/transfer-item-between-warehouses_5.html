@@ -114,6 +114,7 @@
 <p class="ln-strip">Task 6 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/transfer-item-between-warehouses_6.html">Verify it worked</a></p>
 
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · 3 steps</span></p>
+<p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>
@@ -160,19 +161,36 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="5.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Inbound Lines</span> tab on the transfer order</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The inbound side of the same order, ship-to = destination warehouse</p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="5.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the inbound line and choose <span class="ln-t-named">Receipt</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receipt</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> <span class="ln-t-exact">whinh3512m000</span> opens for the transfer line</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="5.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the receipt line and choose <span class="ln-t-named">Confirm</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The receipt is confirmed and the destination inventory is updated</p></div>
   </li>
 </ol>
+<div class="ln-confirm" data-confirm="transfer-item-between-warehouses">
+  <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+  <div class="ln-confirm__ask" data-owner hidden>
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+  </div>
+  <form class="ln-confirm__form" data-different hidden>
+    <div class="rux--form-item rux--text-input-wrapper">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-7">What was different?</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="diff-7" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+      </div></div>
+    </div>
+    <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+    <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+  </form>
+</div>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="why-guided">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -201,6 +219,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

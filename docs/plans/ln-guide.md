@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Carry the confirm buttons, Still to confirm and the private detail onto
-      the new pages.
 - [ ] Add the Print button to a task and a process, write `ln/print.css`, and
       add it to the print rule in `tools/check.mjs`.
 - [ ] Retire `ln/index.html` with its three tabs, and what in `ln/app.js` and

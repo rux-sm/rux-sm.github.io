@@ -2,7 +2,9 @@
 // tools/build-views.mjs wrote it. This picks a task page's view and walks
 // Guided one step at a time, keeps where the reader stopped in this browser
 // and offers it back on Home, reads search.json for search.html, copies a
-// code, and reads a step aloud. Nothing here talks to the database yet.
+// code, and reads a step aloud. For the owner, logged in, data.js adds two
+// things from the database: a screen's or an idea's whole text, and the
+// answers given where a step is unconfirmed.
 
 (function () {
   const KEY = 'ln-progress';
@@ -11,6 +13,107 @@
   const params = () => new URLSearchParams(location.search);
   const phone = () => matchMedia('(max-width: 41.98rem)').matches;
   const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const ln = window.Rux?.ln;
+  const commit = document.getElementById('main-content')?.dataset.lnCommit;
+  let owner = false;
+  const said = new Map();   // "scenario step" -> the last outcome the owner gave
+
+  // ---- The owner: what was confirmed ----------------------------------------
+  // A task nobody has walked carries a box under the step in view. The owner
+  // answers for that step, and the last answer given for it is the one shown.
+  const confirm = document.querySelector('[data-confirm]');
+  const stepOf = () => document.querySelector('.ln-steps li[data-ref]:not([hidden])')?.dataset.ref;
+  let none = null;
+  function box() {
+    if (!confirm) return;
+    const line = confirm.querySelector('[data-said]');
+    none ??= line.textContent;
+    const answer = said.get(`${confirm.dataset.confirm} ${stepOf()}`);
+    line.textContent = answer === 'matched' ? 'You said it matched.' : answer === 'different' ? 'You said it was different.' : none;
+    confirm.querySelector('[data-owner]').hidden = !owner;
+    confirm.querySelector('[data-different]').hidden = true;
+  }
+  async function say(outcome, form) {
+    const step = stepOf(), line = confirm.querySelector('[data-said]');
+    const buttons = [...confirm.querySelectorAll('button')];
+    for (const b of buttons) b.disabled = true;
+    try {
+      await ln.say({ scenario: confirm.dataset.confirm, step, outcome, commit,
+        note: form?.elements.note.value.trim(), file: form?.elements.shot.files[0] });
+      said.set(`${confirm.dataset.confirm} ${step}`, outcome);
+      if (form) { form.reset(); form.querySelector('[data-file-name]').textContent = 'Add a screenshot'; }
+      box();
+    } catch (e) {
+      line.textContent = 'That did not save. Try again.';
+    }
+    for (const b of buttons) b.disabled = false;
+  }
+  // How many steps of one waiting task have an answer.
+  const answered = (steps, scenario) => steps.filter((id) => said.has(`${scenario} ${id}`)).length;
+  function waiting() {
+    for (const li of document.querySelectorAll('[data-wait]')) {
+      const steps = li.dataset.steps.split(' '), n = owner ? answered(steps, li.dataset.wait) : 0;
+      li.querySelector('[data-answered]').textContent = n === 0 ? '' : n === steps.length ? '· you answered it' : `· ${n} of ${steps.length} answered`;
+    }
+    const count = document.querySelector('[data-waiting]'), list = document.getElementById('waiting');
+    if (count && list && owner) {
+      const left = JSON.parse(list.textContent).filter((w) => answered(w.steps, w.scenario) < w.steps.length).length;
+      count.textContent = `${left === 1 ? '1 task' : `${left} tasks`} nobody has walked in LN yet`;
+      count.closest('a').hidden = left === 0;
+    }
+  }
+
+  // ---- The owner: a screen's or an idea's whole text ---------------------------
+  // Atlas sends it as typed blocks. The opening lines show, and each section
+  // waits behind its heading. Nothing in it links out: the page above already
+  // names the screens, ideas and tasks that belong with it.
+  const bare = (v) => esc(v).replace(/(^|[\s(])_([^_]+)_(?=$|[\s).,;:])/g, '$1$2');
+  const token = (t) => {
+    switch (t.t) {
+      case 'text': return esc(t.v);
+      case 'strong': case 'field': case 'chip': return `<span class="ln-t-named">${bare(t.v)}</span>`;
+      case 'em': case 'quote': return `<span class="ln-t-said">${bare(t.v)}</span>`;
+      case 'literal': case 'status': return `<span class="ln-t-exact">${esc(t.v)}</span>`;
+      case 'button': return `<span class="ln-t-press">${esc(t.label)}</span>`;
+      case 'path': case 'command': return `<span class="ln-t-route">${t.route.split(' \u2794 ').map((x, i, all) => (i ? '<span class="sep">\u2794</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;
+      case 'session': return `<span class="ln-t-named">${esc(t.name || t.code)}</span>${t.name ? ` <span class="ln-t-exact">${esc(t.code)}</span>` : ''}`;
+      case 'link': return `<span>${esc(t.v)}</span>`;
+      case 'gap': return '<span class="ln-t-gap">Not known yet:</span> ';
+      default: return esc(t.v ?? '');
+    }
+  };
+  const tokens = (list) => (list ?? []).map(token).join('');
+  const LABEL = { note: 'Note', warning: 'Watch out', prerequisite: 'First' };
+  const block = (b) => {
+    switch (b.kind) {
+      case 'prose': case 'source': return `<p${b.kind === 'source' ? ' class="ln-quiet"' : ''}>${tokens(b.tokens)}</p>`;
+      case 'list': return `<${b.ordered ? 'ol' : 'ul'} class="ln-full__list">${b.items.map((i) => `<li>${tokens(i.tokens)}</li>`).join('')}</${b.ordered ? 'ol' : 'ul'}>`;
+      case 'callout': return `<div class="ln-full__note"><span class="ln-quiet">${LABEL[b.variant] ?? 'Note'}</span>${b.blocks.map(block).join('')}</div>`;
+      case 'code': return `<pre class="ln-full__code">${esc(b.text)}</pre>`;
+      case 'heading': return `<h4 class="ln-ref__title">${esc(b.title ?? b.text)}</h4>`;
+      case 'table': return `<div class="ln-full__rows">${b.rows.map((r) => `<div><b>${tokens(r.cells[0].tokens)}</b>${r.cells.slice(1).map((c, i) =>
+        c.text.trim() && c.text.trim() !== '\u2014' ? `<p>${b.columns.length > 2 ? `<span class="ln-quiet">${esc(b.columns[i + 1])}</span> ` : ''}${tokens(c.tokens)}</p>` : '').join('')}</div>`).join('')}</div>`;
+      default: return '';
+    }
+  };
+  const ARROW = '<svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>';
+  async function full() {
+    const el = document.querySelector('[data-full]');
+    if (!el || !owner || el.dataset.drawn) return;
+    el.dataset.drawn = 'yes';
+    try {
+      const body = await ln.detail(el.dataset.full);
+      if (!body) return;
+      el.innerHTML = body.intro.map(block).join('') + `<ul class="rux--accordion rux--accordion--end rux--layout--size-md">${body.topics.map((t) => `
+        <li class="rux--accordion__item">
+          <button type="button" class="rux--accordion__heading" aria-expanded="false">${ARROW}<div class="rux--accordion__title">${esc(t.title)}</div></button>
+          <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold">${t.blocks.map(block).join('')}</div></div>
+        </li>`).join('')}</ul>`;
+      el.hidden = false;
+    } catch (e) {
+      delete el.dataset.drawn;
+    }
+  }
 
   // ---- a task: Full page, or Guided one step at a time -----------------------
   // The screen's shape picks the view: a phone opens Guided, a wide screen the
@@ -32,6 +135,7 @@
       next.href = k < steps.length ? `?walk=${k + 1}` : (guided.dataset.nextHref ?? guided.dataset.processHref);
       next.textContent = k < steps.length ? 'Next' : (guided.dataset.nextHref ? 'Next task' : 'Done');
       remember({ last: { href: `do/${guided.dataset.task}.html?walk=${k}`, label: `${guided.dataset.process} · ${guided.dataset.title} · step ${k} of ${steps.length}` } });
+      box();
       window.scrollTo(0, 0);
     }
     const apply = () => { const p = params(); if (p.has('walk')) walk(p.get('walk')); else if (p.has('full') || !phone()) show('full'); else walk(1); };
@@ -138,6 +242,12 @@
     const el = event.target.closest('a, button');
     if (!el) return;
     if (el.matches('[data-copy]')) return void navigator.clipboard?.writeText(el.dataset.copy);
+    if (el.matches('[data-say]')) {
+      if (el.dataset.say === 'matched') return void say('matched');
+      const form = confirm.querySelector('[data-different]');
+      form.hidden = false;
+      return void form.elements.note.focus();
+    }
     if (el.matches('[data-clear]')) { const input = el.closest('.rux--search').querySelector('input'); input.value = ''; input.dispatchEvent(new Event('input', { bubbles: true })); return void input.focus(); }
     if (el.matches('[data-listen]')) {
       event.preventDefault();
@@ -148,4 +258,22 @@
       speechSynthesis.speak(new SpeechSynthesisUtterance(step.innerText.replace(/\s+/g, ' ')));
     }
   });
+  document.addEventListener('submit', (event) => {
+    if (!event.target.matches('[data-different]')) return;
+    event.preventDefault();
+    say('different', event.target);
+  });
+  document.addEventListener('change', (event) => {
+    if (event.target.name === 'shot') event.target.closest('label').querySelector('[data-file-name]').textContent = event.target.files[0]?.name ?? 'Add a screenshot';
+  });
+  waiting();
+  // The owner's answers and the private shelf arrive after the page shows.
+  ln?.owner().then(async (yes) => {
+    if (!yes) return;
+    for (const row of await ln.said()) said.set(`${row.scenario} ${row.step}`, row.outcome);
+    owner = true;
+    box();
+    waiting();
+    full();
+  }).catch(() => { /* without the database the page is as it was built */ });
 })();

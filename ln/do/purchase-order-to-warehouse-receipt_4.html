@@ -174,27 +174,27 @@
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">
-  <li data-k="1" hidden>
+  <li data-k="1" data-ref="4.1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Read the receipt number LN assigned</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">receipt number</span> </p></div>
   </li>
-  <li data-k="2" hidden>
+  <li data-k="2" data-ref="4.2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Enter the packing-slip reference for each line as delivered</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The walked run recorded packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</p></div>
   </li>
-  <li data-k="3" hidden>
+  <li data-k="3" data-ref="4.3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the receipt</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the header's <span class="ln-t-named">Confirmed</span> check box is set once every receipt line is confirmed</p></div>
   </li>
-  <li data-k="4" hidden>
+  <li data-k="4" data-ref="4.4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Both are set — a receipt confirmed with either clear has left something behind</p></div>
   </li>
-  <li data-k="5" hidden>
+  <li data-k="5" data-ref="4.5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">Errors Logged</span> before leaving the session</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Clear means the receipt logged nothing. Set means it did, whatever the status says</p></div>
   </li>
-  <li data-k="6" hidden>
+  <li data-k="6" data-ref="4.6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Errors Logged</span> is set, read the messages in <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a>, or on the <span class="ln-t-named">Message Log</span> tab in this session's lines pane, and capture them</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The messages behind the confirmation are on record. </p></div>
   </li>
@@ -237,6 +237,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

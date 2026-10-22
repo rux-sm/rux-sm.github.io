@@ -375,13 +375,61 @@ ${body}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="${at('data.js')}"></script>
 <script src="${at('app.js')}"></script>
 </body>
 </html>
 `;
 
+// ---- what nobody has confirmed -----------------------------------------------
+// A task atlas has no walked date for says so, and the owner can answer on the
+// spot, step by step in Guided: it matched, or it was different, with a line
+// and a screenshot. The answer is evidence for atlas and changes nothing here.
+// A row is keyed as atlas's sync reads it: the process's id and the step's.
+let boxes = 0;
+const confirmBox = (scenario) => `<div class="ln-confirm" data-confirm="${esc(scenario)}">
+  <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
+  <div class="ln-confirm__ask" data-owner hidden>
+    <button type="button" class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm" data-say="matched">It matched</button>
+    <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-say="different">It was different</button>
+  </div>
+  <form class="ln-confirm__form" data-different hidden>
+    <div class="rux--form-item rux--text-input-wrapper">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-${++boxes}">What was different?</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="diff-${boxes}" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+      </div></div>
+    </div>
+    <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
+    <button type="submit" class="rux--btn rux--btn--primary rux--btn--sm rux--layout--size-sm">Send</button>
+  </form>
+</div>`;
+const waitingTasks = processes.flatMap((s) => tasksOf(s).filter((t) => !t.walked).map((t) => ({ s, t, scenario: s.id, steps: rowsOf(t).map((r) => r.id) })));
+const waitingSide = side.map((n) => ({ n, scenario: 'tasks', steps: [n.id] }));
+const waiting = waitingTasks.length + waitingSide.length;
+const waitingJson = () => `<script type="application/json" id="waiting">${JSON.stringify([...waitingTasks, ...waitingSide].map((w) => ({ scenario: w.scenario, steps: w.steps }))).replace(/</g, '\\u003c')}</script>`;
+function confirmPage() {
+  const body = `${breadcrumb([[at('home.html'), 'Home'], ['', 'Still to confirm']])}
+<div>
+<h1 class="rux--type-productive-heading-05">Still to confirm</h1>
+<p class="rux--type-body-long-01">Nobody has checked these in LN yet. Open one, walk it in LN, and say at each step whether it matched.</p>
+</div>${processes.filter((s) => waitingTasks.some((w) => w.s === s)).map((s) => `
+<div>
+<h2 class="rux--type-productive-heading-03" id="${esc(s.id)}">${esc(s.title)}</h2>
+</div>
+<ul class="ln-list">${waitingTasks.filter((w) => w.s === s).map((w) => `
+  <li data-wait="${esc(w.scenario)}" data-steps="${esc(w.steps.join(' '))}"><b><a class="rux--link" href="${hrefTask(w.t.id)}?walk=1"><span>${esc(w.t.title)}</span></a></b><p class="ln-quiet">${count(w.steps.length, 'step')} <span data-answered></span></p></li>`).join('')}
+</ul>`).join('')}${waitingSide.length ? `
+<div>
+<h2 class="rux--type-productive-heading-03" id="other">Other tasks</h2>
+</div>
+<ul class="ln-list">${waitingSide.map((w) => `
+  <li data-wait="tasks" data-steps="${esc(w.n.id)}"><b><a class="rux--link" href="${at('do/index.html')}#${esc(w.n.id)}"><span>${esc(w.n.session)}</span></a></b><p class="ln-quiet"><span data-answered></span></p></li>`).join('')}
+</ul>` : ''}`;
+  return page('Still to confirm \u2014 LN Guide', 'confirm', column(body, 12));
+}
+
 // ---- Home --------------------------------------------------------------------
-const waiting = tasks.filter((t) => !t.walked).length;
 const home = () => page('LN Guide', 'home', column(`<h1 class="ln-ask">What are you doing?</h1>
 ${searchBox('ask')}
 <div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable ln-resume" href="${at('home.html')}" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a></div>
@@ -392,7 +440,8 @@ ${searchBox('ask')}
 <div class="ln-cards">${processes.map((s) => `
 <a class="rux--tile rux--tile--clickable" href="${hrefProcess(s.id)}"><b>${esc(s.title)}</b><span class="ln-quiet">${count(s.tasks.length, 'task')}</span><div>${tag(statusOf(s))}</div></a>`).join('')}
 </div>${waiting ? `
-<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable" href="${at('do/index.html')}"><span class="ln-quiet">Still to confirm</span><b>${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>` : ''}`, 12));
+<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable" href="${at('confirm.html')}"><span class="ln-quiet">Still to confirm</span><b data-waiting="${waiting}">${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>
+${waitingJson()}` : ''}`, 12));
 
 // ---- a process -----------------------------------------------------------------
 // A reference section is what a reader looks up and does not walk: each
@@ -524,7 +573,8 @@ function task(s, t) {
 <p class="ln-strip">${strip}</p>
 ${first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span></p>${t.walked ? '' : `
+<p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>`}
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>${prose ? `
@@ -543,12 +593,13 @@ ${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length &&
   <div class="rux--progress-bar__helper-text" data-where></div>
 </div>
 <ol class="ln-steps">${rows.map((r, k) => `
-  <li data-k="${k + 1}" hidden>
+  <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}</div>${see(r) ? `
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>${see(r)}</p></div>` : ''}
   </li>`).join('')}
 </ol>${t.route ? `
-<p class="ln-step__route">${route(t.route)} ${t.sessionCode ? exact(t.sessionCode) : ''}</p>` : ''}
+<p class="ln-step__route">${route(t.route)} ${t.sessionCode ? exact(t.sessionCode) : ''}</p>` : ''}${t.walked ? '' : `
+${confirmBox(s.id)}`}
 ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
 <div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
@@ -604,7 +655,8 @@ function screenPage(c) {
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
 </div>
-<dl class="ln-card__facts">${fact('Code', codeChip(c.code))}${c.route ? fact(isRoute(c.route) ? 'Route' : 'Reached', isRoute(c.route) ? route(c.route) : esc(c.route)) : ''}${fact('Used in', taskLinks(usedIn.get(c.code) ?? []))}${fact('Ideas', ideas.map((x) => `<a class="rux--link" href="${hrefIdea(x.id)}">${esc(x.name)}</a>`).join('<br>'))}</dl>`;
+<dl class="ln-card__facts">${fact('Code', codeChip(c.code))}${c.route ? fact(isRoute(c.route) ? 'Route' : 'Reached', isRoute(c.route) ? route(c.route) : esc(c.route)) : ''}${fact('Used in', taskLinks(usedIn.get(c.code) ?? []))}${fact('Ideas', ideas.map((x) => `<a class="rux--link" href="${hrefIdea(x.id)}">${esc(x.name)}</a>`).join('<br>'))}</dl>
+<div class="ln-full" data-full="${esc(c.code)}" hidden></div>`;
   return page(`${c.name} — LN Guide`, 'screens', column(body, 12));
 }
 function ideaPage(c) {
@@ -615,7 +667,8 @@ function ideaPage(c) {
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
 </div>
-<dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>`;
+<dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>
+<div class="ln-full" data-full="${esc(c.id)}" hidden></div>`;
   return page(`${c.name} — LN Guide`, 'ideas', column(body, 12));
 }
 // ---- the idea about how an order moves through LN -------------------------------
@@ -716,6 +769,7 @@ for (const dir of ['do', 'follow', 'screens', 'ideas']) rmSync(join(ROOT, dir), 
 
 write('home.html', home());
 write('search.html', searchPage());
+write('confirm.html', confirmPage());
 writeFileSync(join(ROOT, 'search.json'), JSON.stringify(searchIndex()) + '\n');
 drawn('../', () => {
   write('do/index.html', taskIndex());

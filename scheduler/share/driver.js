@@ -495,7 +495,7 @@
     const shaped = Array.isArray(trip.trip_legs)
       ? Shape.legOf(trip, ref.legId) ?? Shape.legOfWord(trip, ref.leg) : null;
     const leg = shaped?.id ?? ref.leg ?? 'outbound';
-    const inbound = (shaped?.word ?? leg) === 'return' && trip.trip_type === 'dropoff_pickup';
+    const inbound = !!shaped && Shape.isPickup(trip, shaped.id);
     return {
       cancelled: true, trip, leg,
       start: shaped ? shaped.start : inbound ? trip.return_start_date : trip.start_date,

@@ -16,7 +16,7 @@ const withLegs = t => {
   const route = word => (word === 'return' ? 'rl2' : 'rl1');
   return { ...t,
     trip_legs: legs.filter(l => l[2]).map(([id, leg, start_date, end_date, bus_count]) =>
-      ({ id, leg, start_date, end_date, bus_count, trip_routes: [{ id: `r${id}`, position: 1 }] })),
+      ({ id, leg, kind: t.trip_type && t.trip_type !== 'round_trip' ? 'one_way' : 'round_trip', start_date, end_date, bus_count, trip_routes: [{ id: `r${id}`, position: 1 }] })),
     trip_stops: (t.trip_stops || []).map(x => ({ ...x, route_id: route(x.leg) })),
     trip_assignments: (t.trip_assignments || []).map(x => ({ ...x, route_id: route(x.leg) })) };
 };

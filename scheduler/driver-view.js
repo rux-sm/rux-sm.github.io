@@ -81,7 +81,7 @@
       if (!shaped) return null;
       const leg = shaped.word || 'outbound';
       // A split trip's pickup is every leg after its first.
-      const inbound = trip.trip_type === 'dropoff_pickup' && shaped.number > 1;
+      const inbound = Shape.isPickup(trip, shaped.id);
       const start = shaped.start;
       const end = shaped.end || start;
       if (!dateOf(start) || String(end).slice(0, 10) < now) return null;

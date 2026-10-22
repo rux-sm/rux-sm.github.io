@@ -161,8 +161,7 @@ them and nothing is entered twice.
       `get_driver_share_trips` and the share functions, `trips_steps_off`,
       each as SQL shown to rux and applied on a yes; the
       `trip-document-link` and `samsara-miles` functions, their deploys
-      handed to rux; and every page's `dropoff_pickup` check, which reads a
-      split from the trip's legs.
+      handed to rux.
 - [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
       its unique key, and let the status functions, which take a leg by id
       already, answer for a leg with no old word, so a third leg's driver

@@ -3111,7 +3111,7 @@
   const fileRow = (trip, doc, previous) => {
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
-    const legged = trip.trip_type === SPLIT && SHAPE.isItinerary(doc);
+    const legged = SHAPE.isSplit(trip) && SHAPE.isItinerary(doc);
     const on = wordOfRow(trip, doc) === 'return' ? 'return' : 'outbound';
     const other = on === 'return' ? 'outbound' : 'return';
     const li = listRow({
@@ -14852,7 +14852,7 @@
     const last = legs.reduce((end, l) => (l.to > end ? l.to : end), legs[0].to);
     const when = first === last ? `on ${monthDay(first)}` : `from ${monthDay(first)} to ${monthDay(last)}`;
     const same = legs.every(l => l.lines.join() === legs[0].lines.join());
-    const split = trip.trip_type === SPLIT;
+    const split = SHAPE.isSplit(trip);
     const lists = same ? [legs[0].lines.join('\r\n')]
       : legs.map(l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
     const body = [
@@ -14907,7 +14907,7 @@
        days and every route's stops come through the shape rule, and a split
        trip's pickup is every leg after the first. */
     const driverText = window.SchedulerDriverText;
-    const inbound = trip.trip_type === SPLIT && (on?.number ?? 1) > 1;
+    const inbound = SHAPE.isPickup(trip, on?.key);
     const legStart = saved?.start ?? null;
     const legEnd = saved?.end || legStart;
     const legStops = window.SchedulerWeek.stopsOfKey(trip, leg);

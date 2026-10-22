@@ -70,13 +70,13 @@
   const dayFrom = n => { const d = parseISO(FollowUp.today()); d.setDate(d.getDate() + n); return iso(d); };
   const within = (day, days) => { const n = daysTo(day); return n != null && n >= 0 && n <= days; };
 
-  const split = trip => trip.trip_type === 'dropoff_pickup';
   const Week = () => window.SchedulerWeek;
   const legOf = (trip, leg) => Week().legByKey(trip, leg);
   // The day a leg leaves, as the Departures list reads it.
   const legDay = (trip, leg) => legOf(trip, leg)?.from ?? null;
-  // A split trip's leg in the office's words; any other trip has one leg and names none.
-  const legName = (trip, leg) => (split(trip) ? (legOf(trip, leg)?.leg === 'return' ? 'Pickup' : 'Drop-off') : null);
+  // A split trip's leg in the office's words, by trip-shape.js; any other trip names none.
+  const legName = (trip, leg) => (window.SchedulerTripShape.isSplit(trip)
+    ? (window.SchedulerTripShape.isPickup(trip, legOf(trip, leg)?.key) ? 'Pickup' : 'Drop-off') : null);
   const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
   const needed = (trip, leg) => legOf(trip, leg)?.count || 1;

@@ -888,6 +888,11 @@ const window = {};
     if (!legs.length) return null;
     return { first: legs[0].start, last: legs.reduce((d, l) => (l.end > d ? l.end : d), legs[0].end) };
   }
+  /* A SPLIT, the drop-off and the pickup: a trip whose first leg is one way
+     and that has a later leg. Every leg after the first is its pickup,
+     bringing the group home; a trip of one one-way leg is one way. */
+  const isSplit = trip => { const legs = legsOf(trip); return legs.length > 1 && legs[0].kind === 'one_way'; };
+  const isPickup = (trip, legId) => isSplit(trip) && (legOf(trip, legId)?.number ?? 1) > 1;
   // The leg a route is on.
   const legOfRoute = (trip, routeId) => legsOf(trip).find(l => l.routes.some(r => r.id === routeId)) ?? null;
 
@@ -935,7 +940,7 @@ const window = {};
   const vehiclesOfRoute = (trip, routeId) => (trip?.trip_assignments || []).filter(a => a.route_id === routeId).sort(byPosition);
 
   window.SchedulerTripShape = {
-    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg, daysOf,
+    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg, daysOf, isSplit, isPickup,
     isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
     allContacts, contactsFor, stopsOfRoute, vehiclesOfRoute,
   };
@@ -1610,7 +1615,7 @@ const window = {};
     if (!mine) return { error: 'notYours' };
     const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
     const role = seat.role || 'driver';
-    const inbound = word === 'return' && trip.trip_type === 'dropoff_pickup';
+    const inbound = SHAPE.isPickup(trip, shaped?.id);
     const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};
@@ -2113,13 +2118,13 @@ const window = {};
   const dayFrom = n => { const d = parseISO(FollowUp.today()); d.setDate(d.getDate() + n); return iso(d); };
   const within = (day, days) => { const n = daysTo(day); return n != null && n >= 0 && n <= days; };
 
-  const split = trip => trip.trip_type === 'dropoff_pickup';
   const Week = () => window.SchedulerWeek;
   const legOf = (trip, leg) => Week().legByKey(trip, leg);
   // The day a leg leaves, as the Departures list reads it.
   const legDay = (trip, leg) => legOf(trip, leg)?.from ?? null;
-  // A split trip's leg in the office's words; any other trip has one leg and names none.
-  const legName = (trip, leg) => (split(trip) ? (legOf(trip, leg)?.leg === 'return' ? 'Pickup' : 'Drop-off') : null);
+  // A split trip's leg in the office's words, by trip-shape.js; any other trip names none.
+  const legName = (trip, leg) => (window.SchedulerTripShape.isSplit(trip)
+    ? (window.SchedulerTripShape.isPickup(trip, legOf(trip, leg)?.key) ? 'Pickup' : 'Drop-off') : null);
   const live = trip => !trip.cancelled_at && !window.SchedulerBilling.placeholder(trip);
 
   const needed = (trip, leg) => legOf(trip, leg)?.count || 1;

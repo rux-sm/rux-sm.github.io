@@ -66,15 +66,18 @@ expect('a stop added and one taken away are each one line, and the rest moving d
 expect('stops put in another order say the order once',
   said(changes(base, stops(stop('s1', 0), stop('s3', 1), stop('s2', 2)), names)),
   ['Stop order: Place s1, Place s2, Place s3 → Place s1, Place s3, Place s2']);
+// A split is two one-way legs; a stop the page has made and not read back names its day by its word.
+const twoWays = { trip_legs: [{ id: 'W1', leg: 'outbound', kind: 'one_way', start_date: '2027-01-08', trip_routes: [] },
+  { id: 'W2', leg: 'return', kind: 'one_way', start_date: '2027-01-10', trip_routes: [] }] };
 expect('on a split trip a stop names its day',
-  said(changes(trip({ trip_type: 'dropoff_pickup' }), trip({ trip_type: 'dropoff_pickup', trip_stops: [stop('s1', 0), stop('s2', 1), stop('s3', 2, { leg: 'return', arrive: '11:00' })] }), names)),
+  said(changes(trip({ trip_type: 'dropoff_pickup', ...twoWays }), trip({ trip_type: 'dropoff_pickup', ...twoWays, trip_stops: [stop('s1', 0), stop('s2', 1), stop('s3', 2, { leg: 'return', arrive: '11:00' })] }), names)),
   ['Stop: Place s3 (drop-off): Day Drop-off, Arrives 10:00 → Day Pickup, Arrives 11:00']);
 
 // The same trip read with its legs: a stop names the day its route's leg is,
 // a pickup being every leg after the first, whatever word it carries.
 const legs = { trip_legs: [
-  { id: 'L1', leg: 'outbound', start_date: '2027-01-08', trip_routes: [{ id: 'R1', position: 1 }] },
-  { id: 'L2', leg: 'return', start_date: '2027-01-10', trip_routes: [{ id: 'R2', position: 1 }] },
+  { id: 'L1', leg: 'outbound', kind: 'one_way', start_date: '2027-01-08', trip_routes: [{ id: 'R1', position: 1 }] },
+  { id: 'L2', leg: 'return', kind: 'one_way', start_date: '2027-01-10', trip_routes: [{ id: 'R2', position: 1 }] },
 ] };
 const onRoute = (route, more) => stop('s3', 2, { route_id: route, leg: undefined, ...more });
 expect('on a split trip read with its legs a stop names the day of its route\'s leg',

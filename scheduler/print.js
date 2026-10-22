@@ -1983,9 +1983,10 @@
     }
     // A leg that leaves the group or fetches it is striped at one end, as the
     // board stripes it. The strip lies inside a continuing edge's squares.
-    const split = trip.trip_type === 'dropoff_pickup';
-    const stripe = trip.trip_type === 'one_way' || (split && bar.leg.leg !== 'return') ? 'end'
-      : split ? 'start' : null;
+    const split = SHAPE.isSplit(trip);
+    const pickup = split && SHAPE.isPickup(trip, bar.leg.key);
+    const oneWay = !split && SHAPE.legOf(trip, bar.leg.key)?.kind === 'one_way';
+    const stripe = oneWay || (split && !pickup) ? 'end' : pickup ? 'start' : null;
     if (stripe) {
       card.classList.add(`scheduler-week__trip--stripe-${stripe}`);
       const inside = stripe === 'start' ? place.fromPrev : place.toNext;

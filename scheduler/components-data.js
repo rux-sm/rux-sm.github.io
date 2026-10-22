@@ -78,10 +78,22 @@
         trip_updates: [], trip_documents: [],
         ...rest,
       };
+      /* Its legs and their one route each, as the board reads a trip: the
+         drop-off and, on a split, the pickup, named by the old words too. */
+      const legId = word => `${id}-${word}`;
+      const routeId = word => `${legId(word)}-r`;
+      t.trip_legs = [['outbound', t.start_date, t.end_date, t.bus_count],
+        ...(t.return_start_date ? [['return', t.return_start_date, t.return_end_date, t.return_bus_count ?? t.bus_count]] : [])]
+        .map(([word, start, end, count]) => ({
+          id: legId(word), leg: word, kind: t.trip_type === 'round_trip' ? 'round_trip' : 'one_way',
+          start_date: start, end_date: end ?? start, bus_count: count ?? 1,
+          hotel_booked: !!t[`hotel_booked_${word}`], hotel_itinerary_number: t[`hotel_itinerary_number_${word}`] ?? null,
+          created_at: t.created_at, trip_routes: [{ id: routeId(word), position: 1, name: null }],
+        }));
       t.trip_stops = [...stopsFor('outbound', depart, back),
-        ...(t.return_start_date ? stopsFor('return', returnDepart, returnBack) : [])];
+        ...(t.return_start_date ? stopsFor('return', returnDepart, returnBack) : [])].map(st => ({ ...st, route_id: routeId(st.leg) }));
       t.trip_assignments = buses.map((b, i) => ({
-        id: `a${++ids}`, leg: b.leg ?? 'outbound', position: b.position ?? i, bus_id: b.bus ?? null,
+        id: `a${++ids}`, leg: b.leg ?? 'outbound', route_id: routeId(b.leg ?? 'outbound'), position: b.position ?? i, bus_id: b.bus ?? null,
         vehicle_type: b.type ?? null, needs: b.needs ?? {}, active_roles: b.roles,
         actual_yard_return_at: b.backAt ? new Date(window.SchedulerWeek.officeInstant(...b.backAt)).toISOString() : null,
         pickup_at: b.spotAt ? new Date(window.SchedulerWeek.officeInstant(...b.spotAt)).toISOString() : null,
@@ -93,7 +105,7 @@
           const row = { status, source: more?.source ?? 'driver', updatedAt: new Date(now - 2 * DAY).toISOString() };
           if (status === 'confirmed') row.acceptedAt = row.updatedAt;
           if (status === 'declined') row.declinedAt = row.updatedAt;
-          statuses.set(statusKey(t.id, driverId, a.leg, role), row);
+          statuses.set(statusKey(t.id, driverId, legId(a.leg), role), row);
         }
       });
       return t;
@@ -202,8 +214,8 @@
        view they accepted is the leg with its old pickup time. */
     const told = trip({ customer: 'Northside Band', destination: 'Austin, TX', buses: [{ bus: 'b105', crew: [['d4', 'driver', 'confirmed']] }] });
     const before = { ...told, trip_stops: told.trip_stops.map(s => (s.type === 'pickup' ? { ...s, depart_prev: '06:15' } : s)) };
-    const toldRow = statuses.get(statusKey(told.id, 'd4', 'outbound', 'driver'));
-    toldRow.acceptedView = window.SchedulerDriverJob?.viewNow(before, 'outbound', 'd4',
+    const toldRow = statuses.get(statusKey(told.id, 'd4', `${told.id}-outbound`, 'driver'));
+    toldRow.acceptedView = window.SchedulerDriverJob?.viewNow(before, `${told.id}-outbound`, 'd4',
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;
     const alerts = {
       id: 'alerts', title: 'Alerts',

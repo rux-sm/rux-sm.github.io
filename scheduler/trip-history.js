@@ -291,7 +291,7 @@
      lists of rows; null before is a new trip. */
   function changes(before, after, names = {}) {
     if (!before) return [{ field: 'trip', label: 'Trip', before: null, after: 'Created' }];
-    const ctx = { names, split: [before.trip_type, after.trip_type].includes('dropoff_pickup'), reads: [after, before] };
+    const ctx = { names, split: [before, after].some(t => window.SchedulerTripShape?.isSplit(t)), reads: [after, before] };
     return [...columnLines(before, after, names), ...LISTS.flatMap(list => rowLines(list, before, after, ctx))];
   }
 

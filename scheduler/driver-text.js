@@ -157,7 +157,7 @@
   function legLines(l, { itinerary = false, lang = 'en' } = {}) {
     const w = wordsFor(lang);
     const lines = [];
-    const legWord = l.trip.trip_type === 'dropoff_pickup' ? (l.inbound ? w.inbound : w.outbound) : '';
+    const legWord = window.SchedulerTripShape.isSplit(l.trip) ? (l.inbound ? w.inbound : w.outbound) : '';
     lines.push([messageDate(l.start, l.end, lang), l.bus ? w.bus(l.bus) : w.busNotSet, roleLabel(l.role, lang), legWord].filter(Boolean).join(' • '));
     if (isRelief(l.role)) {
       lines.push(l.swap ? w.swapAt(timeText(l.swap)) : l.partner ? w.swapWith(l.partner) : w.swapNotSet);

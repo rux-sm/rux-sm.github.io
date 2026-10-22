@@ -73,5 +73,13 @@ expect('a trip read without its legs has none, and hands nothing out', [S.legsOf
 const undated = { trip_legs: [leg('later', null, { leg: 'return' }), leg('first', '2027-01-13', { leg: 'outbound' })] };
 expect('a leg with no date comes after every dated one', S.legsOf(undated).map(l => [l.id, l.number]), [['first', 1], ['later', 2]]);
 
+// A trip's days and whether it is a split.
+expect('a trip\'s days run from its first leg\'s start to the latest day any leg ends, and none without legs',
+  [S.daysOf(booking), S.daysOf(both), S.daysOf({})], [{ first: '2027-03-01', last: '2027-03-04' }, { first: '2027-01-13', last: '2027-01-15' }, null]);
+const oneWay = { trip_legs: [leg('out', '2027-01-13', { kind: 'one_way' })] };
+expect('two one-way legs are a split, the later the pickup; one one-way leg and round-trip legs are not',
+  [S.isSplit(both), S.isPickup(both, 'out'), S.isPickup(both, 'back'), S.isSplit(oneWay), S.isPickup(oneWay, 'out'), S.isSplit(booking), S.isPickup(booking, 'b')],
+  [true, false, true, false, false, false, false]);
+
 console.log(failed ? `\n  ${failed} trip shape case(s) failed` : '\n  trip shape: every case passed');
 process.exit(failed ? 1 : 0);

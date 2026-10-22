@@ -51,8 +51,8 @@ const vehicles = [...trip.trip_assignments, { leg: 'return', active_roles: null,
   { driver_id: 'd3', role: 'driver', drivers: { short_name: 'Luis' } }] }];
 const split = {
   ...trip, trip_type: 'dropoff_pickup', return_start_date: '2026-11-08',
-  trip_legs: [{ id: 'l2', leg: 'return', start_date: '2026-11-08', end_date: '2026-11-08', trip_routes: [{ id: 'r2', position: 1 }] },
-    { id: 'l1', leg: 'outbound', start_date: '2026-11-07', end_date: '2026-11-08', trip_routes: [{ id: 'r1', position: 1 }] }],
+  trip_legs: [{ id: 'l2', leg: 'return', kind: 'one_way', start_date: '2026-11-08', end_date: '2026-11-08', trip_routes: [{ id: 'r2', position: 1 }] },
+    { id: 'l1', leg: 'outbound', kind: 'one_way', start_date: '2026-11-07', end_date: '2026-11-08', trip_routes: [{ id: 'r1', position: 1 }] }],
   trip_contacts: [{ position: 1, name: 'Pat Lee', phone: '5550142', leg_id: null }, { position: 2, name: 'Sam Ortiz', phone: '5550143', leg_id: 'l2' },
     { position: 3, name: 'Kim Diaz', phone: '5550144', leg_id: 'l2' }],
   trip_documents: [
@@ -130,7 +130,7 @@ expect('a role, a need and a removed itinerary each say what, and only the first
 expect('Spanish agrees in number', opening([{ key: 'bus' }, { key: 'time' }], 'es'), 'Hola Ana, cambiaron el autobús y la hora de llegada de tu viaje de hoy.');
 
 // A split trip's leg says which way it runs, Inbound for its pickup, every leg after the first.
-const way = (inbound, lang) => window.SchedulerDriverText.legLines({ ...told, trip: { trip_type: 'dropoff_pickup' }, inbound }, { lang })[0].split(' • ').at(-1);
+const way = (inbound, lang) => window.SchedulerDriverText.legLines({ ...told, trip: split, inbound }, { lang })[0].split(' • ').at(-1);
 expect('a split trip\'s leg says which way it runs, in the driver\'s language, and another trip\'s says neither',
   [way(false), way(true), way(true, 'es'), /Outbound|Inbound/.test(window.SchedulerDriverText.legLines(told)[0])],
   ['Outbound', 'Inbound', 'Regreso', false]);

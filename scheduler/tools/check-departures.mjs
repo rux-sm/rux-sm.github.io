@@ -20,7 +20,7 @@ const withLegs = t => {
     ...(t.return_start_date ? [['l2', 'return', t.return_start_date, t.return_end_date, t.return_bus_count]] : [])];
   const route = word => `r${KEY[word || 'outbound']}`;
   return { ...t,
-    trip_legs: legs.map(([id, leg, start_date, end_date, bus_count]) => ({ id, leg, start_date, end_date, bus_count,
+    trip_legs: legs.map(([id, leg, start_date, end_date, bus_count]) => ({ id, leg, kind: t.trip_type && t.trip_type !== 'round_trip' ? 'one_way' : 'round_trip', start_date, end_date, bus_count,
       hotel_booked: !!t[`hotel_booked_${leg}`], hotel_itinerary_number: t[`hotel_itinerary_number_${leg}`] ?? null,
       trip_routes: [{ id: `r${id}`, position: 1 }] })),
     trip_contacts: [1, 2, 3, 4, 5].filter(n => t[`trip_contact_${n}_name`])

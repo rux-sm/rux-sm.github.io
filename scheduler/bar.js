@@ -39,7 +39,6 @@
   } = window.SchedulerLegFacts;
   const { tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
   const { waitsOf, updatesOf, asks: asksFollowUp, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
-  const SPLIT = 'dropoff_pickup';
   const DAY = 864e5;
 
   const el = (tag, cls, text) => {
@@ -406,8 +405,9 @@
        one-way trip, down for a split's drop-off, where the group is set down,
        up for its pickup, every leg after the first. The pill says which leg
        of a split this is, so the reference is only its count. */
-    const split = trip.trip_type === SPLIT;
-    const kind = trip.trip_type === 'one_way' ? 'one way' : !split ? null : (leg.number ?? 1) > 1 ? 'pickup' : 'drop-off';
+    const SHAPE = window.SchedulerTripShape;
+    const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
+      : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
     /* How many buses the leg takes, written after the destination on a leg of
        more than one: `×3`. Which of them a bar is goes unsaid, because its row
        is the bus. */

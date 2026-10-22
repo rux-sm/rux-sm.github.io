@@ -136,7 +136,7 @@
     if (!mine) return { error: 'notYours' };
     const seat = activeSeats(mine).find(d => String(d.driver_id) === String(driverId));
     const role = seat.role || 'driver';
-    const inbound = word === 'return' && trip.trip_type === 'dropoff_pickup';
+    const inbound = SHAPE.isPickup(trip, shaped?.id);
     const stops = shaped ? [...routes].flatMap(id => SHAPE.stopsOfRoute(trip, id)) : stopsForLeg(trip, word);
     const pickup = stops.find(s => s.type === 'pickup') || {};
     const back = [...stops].reverse().find(s => s.type === 'return') || {};

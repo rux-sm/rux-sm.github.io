@@ -53,9 +53,11 @@ tutorial, reference and explanation.
 | **Idea** | What does this mean, and why does LN work this way? | A `concepts/` file |
 
 - **A task is one action on one or two screens**, named as a verb and its
-  object: Create and approve a sales order, Generate outbound advice. The same
-  action in two processes is one task, so Run order planning links to Create
-  and approve a sales order rather than saying to follow another's steps.
+  object: Create and approve a sales order, Generate outbound advice. Each
+  task is one file, today one per walkthrough phase, and a task that needs
+  another's work links to it rather than repeating its steps. Two tasks merge
+  only when a check shows the same steps, because Ship in a sales order is
+  not Ship in a transfer.
 
 - **A process is a path of tasks**, with each decision a fork between the two
   tasks it separates, as the scenario path draws it now. Ship from stock and
@@ -85,8 +87,10 @@ tutorial, reference and explanation.
 - **Two views of the same task, Full page and Guided.** Full page is the task
   as one readable document and is what prints. Guided is one step at a time:
   a progress bar under the task's name, the step in large type, what you should
-  see, the route, three quiet links reading Stuck? with its count, Full page
-  and Read it to me, and Back and Next fixed at the foot, with the arrow keys.
+  see, the route, two closed folds reading Stuck? with its count and Why LN
+  works this way, two quiet links reading Full page and Read it to me, and
+  Back and Next fixed at the foot, with the arrow keys. It is one column on
+  every screen, because one layout stays right where a second one drifts.
 
 - **The screen's shape decides which view opens, not a memory.** A phone opens
   Guided, a wide screen opens Full page, and the other view is one tap away. A
@@ -160,9 +164,9 @@ tutorial, reference and explanation.
   Verified, Walked in LN with its month, or Not walked yet. It is computed from
   atlas and shown on the page, the process, the index and Home.
 
-- **A walk stamps a task, not a process**, so a task walked in one process
-  counts in every other. Atlas's status, phase and walk checks move from the
-  phase to the task.
+- **A walk stamps a task, not a process.** Atlas's status, phase and walk
+  checks move from the phase to the task, and a stamp counts in every process
+  that shares the task once two are merged.
 
 - **A task nobody has walked says so**, with two buttons for the owner: it
   matched, and it was different. The second asks for one line and takes a
@@ -209,8 +213,9 @@ tutorial, reference and explanation.
   phase does now. A walkthrough becomes a process: its tasks in order, its
   decisions, and what the process itself adds.
 
-- **The export gains the task and process kinds**, under a new contract number,
-  and LN Guide reads them.
+- **The export gains the task and process kinds first**, under a new contract
+  number, with each phase written as a task and each walkthrough as a process
+  until task files exist, so the site builds from it at once.
 
 - **A new area of LN is its tasks and the processes that use them.**
 
@@ -229,8 +234,8 @@ tutorial, reference and explanation.
   colour a `--rux-*` token: the path, the step, the step list and Guided's bar.
 
 - **Design's button set runs off a phone**, because each button keeps a fixed
-  width. Until Design has a set that fits, the two rules that size Back, Next
-  and a choice live in `ln/overrides.css`.
+  width, so the two rules that size Back, Next and a choice live in
+  `ln/overrides.css` until a second app needs a set that fits.
 
 ### What carries over
 
@@ -246,20 +251,37 @@ two processes to compare them; and landings for old page addresses.
 
 ## Questions
 
-- **Does Guided on a wide screen stay one step alone**, with the rest of the
-  window empty, or show Stuck? and Why LN works this way open beside the step?
+None open.
 
 ## Tasks
 
-- [ ] Keep the mockup redrawable: its generator, written in a session's
-      scratchpad, becomes the first shape of the new `ln/tools/build-views.mjs`,
-      rebuilding `design/m/ln-guide/` from the export, with Guided on a wide
-      screen mocked both ways.
+- [ ] In atlas, emit the task and process kinds from `tools/emit.py` under the
+      new contract number, each phase a task and each walkthrough a process
+      until task files exist, and document them in `standards/export-json.md`.
+- [ ] Build Home, the task index, and the task, process, screen and idea
+      pages in `ln/tools/build-views.mjs` from the new contract, grown from
+      the mockup's generator in `design/m/ln-guide/`, one file per page, with
+      both views on the task page and the search index as one file.
+- [ ] Group search results by kind, with a page the query names put first.
+- [ ] Lay out the wide screen from `document-page`, with the process menu and
+      On this page, and the phone as one column with no bar.
+- [ ] Draw the whole grid on the idea page about how an order moves through LN.
+- [ ] Carry the confirm buttons, Still to confirm and the private detail onto
+      the new pages.
+- [ ] Add the Print button to a task and a process, write `ln/print.css`, and
+      add it to the print rule in `tools/check.mjs`.
+- [ ] Retire `ln/index.html` with its three tabs, and what in `ln/app.js` and
+      the old build draws them, once the new pages replace them.
+- [ ] Say in `ln/README.md` what each kind of page is, where it comes from, and
+      how a page is printed.
+- [ ] Check every kind of page in Chrome on :8641, at a phone width and a wide
+      one, in a light theme and a dark one, and the Full page of one task in
+      print preview.
 - [ ] In atlas, write the task class into `standards/`, its template, its
-      frontmatter and its checks, with the process shape a walkthrough takes.
-- [ ] In atlas, split each walkthrough's phases into task files, joining the
-      phases that are the same action, and rewrite each walkthrough as a process
-      that names its tasks.
+      frontmatter and its checks, with the process shape a walkthrough takes
+      and a check that names two tasks whose steps are the same.
+- [ ] In atlas, split each walkthrough's phases into task files, one per
+      phase, and rewrite each walkthrough as a process that names its tasks.
 - [ ] In atlas, move the walked stamps, the walk files and the status
       computation from the phase to the task, with their checks and self-test
       fixtures.
@@ -276,25 +298,3 @@ two processes to compare them; and landings for old page addresses.
 - [ ] In atlas, write the short explanation for each of the sixteen ideas.
 - [ ] In atlas, give a field's name its own token where it sits inside bold or
       quoted words, and take the underscore tidy out of `ln/app.js`.
-- [ ] In atlas, emit the task and process kinds from `tools/emit.py` under the
-      new contract number, and document them in `standards/export-json.md`.
-- [ ] Build Home, the task index, and the task, process, screen and idea
-      pages in `ln/tools/build-views.mjs` from the new contract, one file per
-      page, with both views on the task page and the search index as one file.
-- [ ] Group search results by kind, and put a page whose name the query names
-      first.
-- [ ] Lay out the wide screen from `document-page`, with the process menu and
-      On this page, and the phone as one column with no bar.
-- [ ] Draw the whole grid on the idea page about how an order moves through
-      LN, and remove the Map tab.
-- [ ] Carry the confirm buttons, Still to confirm and the private detail onto
-      the new pages.
-- [ ] Add the Print button to a task and a process, write `ln/print.css`, and
-      add it to the print rule in `tools/check.mjs`.
-- [ ] Give Design a button set that fits a phone, and take the two rules out of
-      `ln/overrides.css`.
-- [ ] Say in `ln/README.md` what each kind of page is, where it comes from, and
-      how a page is printed.
-- [ ] Check every kind of page in Chrome on :8641, at a phone width and a wide
-      one, in a light theme and a dark one, and the Full page of one task in
-      print preview.

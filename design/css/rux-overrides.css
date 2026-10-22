@@ -3184,6 +3184,81 @@
   [data-theme="pixel-dark"] :is(.rux--btn--primary, .rux--btn--secondary, .rux--btn--tertiary, .rux--btn--danger):active { transform: none; }
 }
 
+/* Pixel switches keep Carbon's sizes, thumb travel and state colours. The
+   track is square; the stepped thumb and keyboard ring follow its grid. */
+[data-theme="pixel-dark"] .rux--toggle__switch {
+  border-radius: 0;
+  box-shadow: inset 0 0 0 2px var(--rux-background);
+}
+[data-theme="pixel-dark"] .rux--toggle__switch::before {
+  border-radius: 0;
+  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
+  transition-timing-function: steps(2, end);
+}
+[data-theme="pixel-dark"] .rux--toggle__button:focus-visible + .rux--toggle__label .rux--toggle__switch::after,
+[data-theme="pixel-dark"] .rux--toggle:not(.rux--toggle--disabled):active .rux--toggle__switch::after {
+  border-radius: 0;
+}
+[data-theme="pixel-dark"] .rux--toggle--readonly .rux--toggle__switch {
+  box-shadow: none;
+}
+[data-theme="pixel-dark"] .rux--toggle--skeleton .rux--toggle__skeleton-circle {
+  border-radius: 0;
+}
+
+/* A recessed frame holds pixel keys. Selection uses the theme's blue
+   surface and an inset edge, with a separate ring for keyboard focus. */
+[data-theme="pixel-dark"] .rux--content-switcher {
+  block-size: auto;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 0;
+  outline: none;
+  background: var(--rux-field-01);
+  box-shadow: inset 0 0 0 2px var(--rux-border-subtle-01);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn:is(:first-child, :last-child, :nth-child(n)) {
+  justify-content: center;
+  min-block-size: var(--rux-layout-size-height-local);
+  border: 0;
+  border-radius: 0;
+  background: var(--rux-layer-01);
+  color: var(--rux-text-secondary);
+  clip-path: none;
+  box-shadow: inset 0 -3px 0 var(--rux-background);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn::before,
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn::after {
+  display: none;
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn:hover:not(:disabled) {
+  background: var(--rux-layer-hover-01);
+  color: var(--rux-text-primary);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected,
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected:hover:not(:disabled) {
+  background: var(--rux-layer-selected-01);
+  color: var(--rux-link-primary);
+  box-shadow: inset 0 0 0 2px var(--rux-border-interactive), inset 0 4px 0 var(--rux-background);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn:focus-visible {
+  outline: 2px solid var(--rux-focus);
+  outline-offset: -4px;
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn:disabled {
+  color: var(--rux-text-disabled);
+  background: var(--rux-layer-01);
+  box-shadow: inset 0 0 0 1px var(--rux-border-disabled);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected:disabled {
+  background: var(--rux-layer-selected-disabled);
+}
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn svg,
+[data-theme="pixel-dark"] .rux--content-switcher .rux--content-switcher-btn.rux--content-switcher--selected svg { fill: currentColor; }
+
+/* Slider handles use the same square geometry as the toggle thumb. */
+[data-theme="pixel-dark"] .rux--slider__thumb { border-radius: 0; }
+
 /* THE SWITCH IS A KEY IN A SLOT. The track is 56 by 28, its corners cut a
    pixel in, with the theme's 2px black edge and a dark band along its top
    that sinks it; dark when off, green when on. In the part the thumb leaves

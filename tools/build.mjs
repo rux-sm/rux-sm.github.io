@@ -4,7 +4,7 @@
 // stylesheet and generated pages (its own `npm run verify` does that and
 // checks it), LN Guide's page from data/atlas/, the account panel and the
 // sprite written into the apps' pages, the home screen icons drawn from an
-// installed app's favicon, and the Scheduler connector's rule file.
+// installed app's favicon and Home's, and the Scheduler connector's rule file.
 // Publishing is `git push`; this only writes.
 //
 //   npm run build

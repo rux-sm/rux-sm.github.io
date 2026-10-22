@@ -23,7 +23,7 @@ rux's side.
 | `draft_trip`, `draft_trip_change` | a new trip, or a change, as a link that opens the editor filled in | |
 | rux's Chrome, through Claude in Chrome, logged in | the trip editor and the forms on the published site, `https://rux-sm.github.io/scheduler/`, for every real Save, since it runs only checked code | the built-in browser pane, which cannot pass the log-in; `http://localhost:8641/scheduler/`, which is for testing a change with its writes recorded (`scheduler/docs/proving-a-save.md`) |
 | Missive connector: `get_conversations`, `search_conversations`, `get_search_results`, `get_conversation_entries` | the customer's emails, quotes and itineraries | `change_labels` and `manage_calendar_events`, which write to Missive |
-| Missive's `compose_draft` and `deliver_draft` | sending an email as rux when he asks in chat for it to be sent (see Missive below) | an email he has not asked to send: a reply is drafted in chat |
+| Missive's `compose_draft` and `deliver_draft` | drafting every customer email in its thread, for rux to review and send there; sending one only when he asks in chat (see Missive below) | sending an email he has not asked to send |
 | Gmail connector | nothing: it is rux's personal mail | |
 | Supabase | a read the connector lacks | writing a trip: the editor's Save is the only writer |
 
@@ -123,7 +123,7 @@ reads only the ones before it. Nothing is written until step 10.
 11. **After the save.** Read it back with `get_trip`, then Forms on the
     bar's right-click menu, Itinerary, Detailed: one sheet with the stops, each wait's status,
     the hours, the miles, the rate and the price, as the save wrote them.
-12. **Reply.** Draft the email in chat by `emails.md`. rux prints the quote
+12. **Reply.** Draft the email in Missive by `emails.md`. rux prints the quote
     from Forms, Quote, which is two sheets, and sends it himself.
 13. **Quote sent.** Press the Billing tile's Quote sent row and mark it sent, then Mark billing done and
     Save, only when rux asks for the mark in words. "Done" or "sent" alone is
@@ -234,13 +234,14 @@ reads only the ones before it. Nothing is written until step 10.
 - Link the thread while reviewing: Details, Booking contact ⋮, Add email
   thread. The dialog's field has the focus and takes the conversation's
   `link`.
-- An email rux asks in chat to send goes out from Missive as him, written
-  by `emails.md`. `compose_draft` in `reply` mode drafts it in the
-  customer's thread, replying to their last message, with `to` set to the
-  people the thread writes to and `reply_all` false. `get_conversations`
-  then reads the draft back: its author is rux, its sender the office's
-  address, and its recipients the customer's. `deliver_draft` sends it only
-  once all three are right, because a sent email cannot be taken back.
+- Every customer email is drafted in Missive as rux, written by
+  `emails.md`, because he reviews and sends it there. `compose_draft` in
+  `reply` mode drafts it in the customer's thread, replying to their last
+  message, with `to` set to the people the thread writes to and `reply_all`
+  false. `get_conversations` then reads the draft back: its author is rux,
+  its sender the office's address, and its recipients the customer's.
+  `deliver_draft` sends it only when rux asks in chat for it to be sent, and
+  only once all three are right, because a sent email cannot be taken back.
 
 ## Traps in the editor
 

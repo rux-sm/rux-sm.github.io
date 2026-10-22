@@ -746,8 +746,13 @@
   line-height: 1rem;
   letter-spacing: 0;
 }
+/* The name is 16px, as Geist sets its own beside its mark: Carbon's 14px is
+   sized for its 48px bar and reads small in a bar this tall. The weights stay
+   Carbon's, the prefix regular and the app's name semibold. */
 :is(:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header, .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"])) .rux--header__name {
   padding-inline-start: var(--rux-spacing-03);
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 /* The menu toggle is set to the header's top, above, so that in Carbon's bar
    it spans the full 48px its neighbours do. Here it is a button inset from

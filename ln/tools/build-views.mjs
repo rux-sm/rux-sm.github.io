@@ -173,10 +173,20 @@ function token(t) {
 }
 // Step numbers written straight after a link to another process are that
 // process's, so they are counted and linked there.
-const tokens = (list) => list.map((t, i) => {
-  const other = t.t === 'text' && list[i - 1]?.t === 'link' && processById.get(/^(.+)\.md$/.exec(list[i - 1].href)?.[1]);
-  return other ? refs(esc(t.v), other) : token(t);
-}).join('');
+// While a Document is drawn, "step 9 of [Model the dataset]" is numbered as
+// the page numbers it, as docText does for a task's own text.
+const tokens = (list) => {
+  let html = '';
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i], next = list[i + 1];
+    const task = doc && t.t === 'text' && next?.t === 'link' ? taskById.get(/^(.+)\.md$/.exec(next.href)?.[1]) : null;
+    const m = task ? /\b([Ss]teps?) (\d+)(?:([–-]| and )(\d+))? of\s*$/.exec(t.v) : null;
+    if (m) { html += refs(esc(t.v.slice(0, m.index))) + stepRef(task, m[2], m[4], m[1], m[3]); i++; continue; }
+    const other = t.t === 'text' && list[i - 1]?.t === 'link' && processById.get(/^(.+)\.md$/.exec(list[i - 1].href)?.[1]);
+    html += other ? refs(esc(t.v), other) : token(t);
+  }
+  return html;
+};
 const plain = (list) => list.map((t) => t.v ?? t.label ?? t.route ?? t.name ?? t.code ?? '').join('');
 
 // ---- a step's headline ---------------------------------------------------------

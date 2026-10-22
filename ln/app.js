@@ -242,6 +242,7 @@
     const el = event.target.closest('a, button');
     if (!el) return;
     if (el.matches('[data-copy]')) return void navigator.clipboard?.writeText(el.dataset.copy);
+    if (el.matches('[data-print]')) return void window.print();
     if (el.matches('[data-say]')) {
       if (el.dataset.say === 'matched') return void say('matched');
       const form = confirm.querySelector('[data-different]');
@@ -265,6 +266,19 @@
   });
   document.addEventListener('change', (event) => {
     if (event.target.name === 'shot') event.target.closest('label').querySelector('[data-file-name]').textContent = event.target.files[0]?.name ?? 'Add a screenshot';
+  });
+  // ---- Print: the Full page, in the lightest theme, whatever was on screen ------
+  // print.css hides the chrome and opens the folds; this puts g10 on the page
+  // while it prints, because a dark theme's ink is pale on white paper, and
+  // puts back what the screen had. g10 and not white: Carbon writes no rule
+  // for white, so a dark page asking for it would keep its own tokens.
+  let kept = null;
+  window.addEventListener('beforeprint', () => {
+    kept = document.documentElement.dataset.theme ?? null;
+    document.documentElement.dataset.theme = 'g10';
+  });
+  window.addEventListener('afterprint', () => {
+    if (kept == null) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = kept;
   });
   waiting();
   // The owner's answers and the private shelf arrive after the page shows.

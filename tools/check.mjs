@@ -132,7 +132,7 @@ if (open.length) failed.push('funnel');
 // print.css; the pages round them hold only the screen's header and menus.
 // What sits in an `@media screen` block never prints, so it is left out.
 console.log('\n── print');
-const FORMS = ['scheduler/print.css', 'scheduler/print.js'];
+const FORMS = ['scheduler/print.css', 'scheduler/print.js', 'ln/print.css'];
 const PAINTED = [
   [/gradient\(/, 'a gradient'], [/(?:^|[\s;{])(?:-webkit-)?(?:backdrop-)?filter\s*:/m, 'a filter'],
   [/(?:^|[\s;{])(?:-webkit-)?mask(?:-[a-z]+)?\s*:/m, 'a mask'], [/(?:box|text)-shadow\s*:/, 'a shadow'],

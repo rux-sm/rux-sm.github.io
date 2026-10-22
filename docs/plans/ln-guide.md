@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Add the Print button to a task and a process, write `ln/print.css`, and
-      add it to the print rule in `tools/check.mjs`.
 - [ ] Retire `ln/index.html` with its three tabs, and what in `ln/app.js` and
       the old build draws them, once the new pages replace them.
 - [ ] Say in `ln/README.md` what each kind of page is, where it comes from, and

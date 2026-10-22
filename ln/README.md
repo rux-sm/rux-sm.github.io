@@ -22,6 +22,9 @@ A documentation site, one file per page, with a walked mode inside it:
   each have a page, and `do/`, `screens/` and `ideas/` each have an index.
 - **Search**, `search.html`, reads `search.json`, the one file that indexes
   every task, problem, process, screen and idea.
+- **Print**, on a task and a process, prints the Full page from the browser's
+  dialog, where Save as PDF is a destination; `print.css` keeps the paper
+  light with no fills, and the PDF takes the page's title as its name.
 
 Where the reader stopped is kept in their browser and nowhere else.
 `docs/plans/ln-guide.md` in the repository root is what it is for and what is

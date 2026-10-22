@@ -354,6 +354,7 @@ const page = (title, active, body) => `<!doctype html>
 <link rel="stylesheet" href="${at('theme.css')}">
 <link rel="stylesheet" href="${at('overrides.css')}">
 <link rel="stylesheet" href="${at('app.css')}">
+<link rel="stylesheet" href="${at('print.css')}" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
 </head>
@@ -510,7 +511,7 @@ function processPage(s) {
 </div>
 <div>${tag(statusOf(s))} ${s.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
 ${before(s.before)}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">${count(ts.length, 'task')} · ${count(steps, 'step')}</span></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
 </div>
@@ -573,7 +574,7 @@ function task(s, t) {
 <p class="ln-strip">${strip}</p>
 ${first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span></p>${t.walked ? '' : `
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${t.walked ? '' : `
 <p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>`}
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>

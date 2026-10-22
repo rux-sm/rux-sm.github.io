@@ -287,6 +287,8 @@ reads only the ones before it. Nothing is written until step 10.
 - `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` is named in the note at the top and left for the Buses tab.
 - A draft's `departure_time` fills Departs, but a Spot saved apart from it stays, since the editor keeps a customer's own spot time: set Spot in the pickup's window and read the Summary's Start back.
 - Any Save on a trip whose Estimated miles is blank writes the route's miles into it, even a route with a stop not yet measured, so a save made only to link a thread can write a wrong figure: check the Route tab's miles before such a save.
+- Add leg saves the moment its update box is answered, a copy of every bus on the day after the trip, and the leg list over the tabs asks to save before it switches: ask rux before pressing it, and plan one Save a leg.
+- A Bus rental line counts the first leg's buses, and the calculator opened on a later leg reads the first leg's route: a later leg's own rental goes in as an Other line, quantity 1, its cost typed.
 
 ## When rux teaches something new
 

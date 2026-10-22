@@ -27,6 +27,9 @@ const LegFacts = rules.SchedulerLegFacts
 const ToDo = rules.SchedulerToDo
 const Departures = rules.SchedulerDepartures
 const FollowUp = rules.SchedulerFollowUp
+const Week = rules.SchedulerWeek
+const Shape = rules.SchedulerTripShape
+const Past = rules.SchedulerPastMidnight
 
 // Where a draft link points. The scheduler's trip editor reads `?draft=<id>`.
 const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io/scheduler/'
@@ -54,7 +57,11 @@ const TRIP_DETAIL = [
   'trip_contact_5_phone',
   // The leg of a split trip each trip contact is for, null being the drop-off's.
   'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg',
-  'trip_contact_4_leg', 'trip_contact_5_leg', 'req_sleeper', 'req_56pax', 'req_ada',
+  'trip_contact_4_leg', 'trip_contact_5_leg',
+  // The trip's legs in date order, each with its days, buses and routes, and
+  // its day-of contacts as a list, each naming the leg it is for, or none.
+  TRIP_LEGS, 'trip_contacts(position, leg_id, name, phone)',
+  'req_sleeper', 'req_56pax', 'req_ada',
   'need_hotel', 'need_fuel_card', 'trip_reqs',
   'cancellation_reason', 'updated_at',
   // What a save writes to the Details and Billing tabs and the three Done
@@ -96,14 +103,10 @@ function safeSearch(text: string) {
   return text.replace(/[,()*\\]/g, ' ').trim()
 }
 
-/** The last day something covers, for a row that may leave its end open. */
-function lastDay(row: { start_date?: string | null; end_date?: string | null; return_end_date?: string | null }) {
-  return row.return_end_date ?? row.end_date ?? row.start_date ?? ''
-}
-
-function overlaps(row: Parameters<typeof lastDay>[0], from: string, to: string) {
+/** Whether a row with its own days, a bus's days out or a driver's time off, overlaps a range. */
+function overlaps(row: { start_date?: string | null; end_date?: string | null }, from: string, to: string) {
   const start = row.start_date ?? ''
-  return start <= to && lastDay(row) >= from
+  return start <= to && (row.end_date ?? start) >= from
 }
 
 /** The day `n` days from a day, as YYYY-MM-DD. */
@@ -116,99 +119,33 @@ function dayFrom(day: string, n: number) {
 /** A placeholder is not a trip yet, as billing.js reads one. The board asks no bus of it. */
 const isPlaceholder = (trip: Record<string, unknown>): boolean => Billing.placeholder(trip)
 
-type TripLegs = {
-  trip_type?: string | null; bus_count?: number | null; return_bus_count?: number | null
-  start_date?: string | null; end_date?: string | null
-  return_start_date?: string | null; return_end_date?: string | null
-}
+/*
+ * A TRIP'S LEGS ARE READ AS THE BOARD READS THEM, by the pages' own rule
+ * files: trip-shape.js for the legs, their routes and contacts, week.js for
+ * the days each leg takes, and past-midnight.js for the day an undated time
+ * falls on. A trip is read with `TRIP_LEGS`, and its stops and vehicles with
+ * the route each is on.
+ */
+const TRIP_LEGS = 'trip_legs(id, leg, kind, start_date, end_date, bus_count, hotel_booked, hotel_itinerary_number, created_at, trip_routes(id, position, name))'
+type Leg = { key: string; leg: string | null; number: number; from: string; to: string; ends: string; count: number; backDays: number; back: string | null }
 
 /**
- * The legs a trip's buses are counted on, with their days and how many buses
- * each needs. Only a drop-off and pickup has a return leg of its own, as the
- * editor keeps it; every other trip is one outbound leg.
+ * Each leg with the days it takes, as week.js counts them, so an answer here
+ * agrees with the board: `end` its last day counted, and `back` the day and
+ * time it is back at the yard when that is past the late-return hour's night,
+ * the leg then taking the days up to the one before. `needed` is how many
+ * buses it takes. The office's late-return hour is set first, with
+ * week.js's `setLateReturn`.
  */
-function legsOf(trip: TripLegs) {
-  const start = trip.start_date ?? ''
-  const legs = [{ leg: 'outbound', start, end: trip.end_date ?? start, needed: trip.bus_count || 1 }]
-  if (trip.trip_type === 'dropoff_pickup') {
-    const rStart = trip.return_start_date ?? trip.end_date ?? start
-    legs.push({
-      leg: 'return', start: rStart, end: trip.return_end_date ?? rStart,
-      needed: trip.return_bus_count || trip.bus_count || 1,
-    })
-  }
-  return legs
+function legsTaken(trip: Record<string, unknown>) {
+  return (Week.legsOf(trip) as Leg[]).map((l) => ({
+    key: l.key, leg: l.leg, number: l.number, start: l.from, end: l.to, needed: l.count,
+    back: l.backDays ? `${dayFrom(l.to, 1)} ${String(l.back).slice(0, 5)}` : null as string | null,
+  }))
 }
 
-type LegStop = {
-  leg?: string | null; position?: number | null; type?: string | null
-  depart_prev?: string | null; arrive?: string | null; spot?: string | null
-}
-
-/** Minutes after midnight, from "HH:MM" or "HH:MM:SS". */
-function clockMinutes(t?: string | null) {
-  const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''))
-  return m ? Number(m[1]) * 60 + Number(m[2]) : null
-}
-
-/**
- * The office's late-return hour as minutes after midnight, from `settings`'
- * `late-return-v1`; 4:00 AM with no row, as week.js has it.
- */
-function lateReturnMinutes(value: unknown) {
-  const given = (value as { hour?: unknown } | null)?.hour
-  const hour = Number(given)
-  return (given != null && Number.isFinite(hour) && hour >= 0 && hour <= 12 ? hour : 4) * 60
-}
-
-/**
- * The days a leg takes, as week.js's `takes` counts them, so an answer here
- * agrees with the board. The bus is back on the leg's last day, or the day
- * after when the yard return is earlier on the clock than the trip's end; on a
- * one-day leg it is back as many days on as its times pass midnight, counted
- * from the group's departure. Back before the late-return hour, it came back
- * the night before: the leg takes the days up to the one before, and `back` is
- * the day and time it is really back. Back at or after that hour, the leg
- * takes the day it is back on. A leg with no yard return takes its own dates.
- */
-function takes(
-  trip: { departure_time?: string | null; return_time?: string | null },
-  l: { leg: string; start: string; end: string },
-  stops: LegStop[],
-  lateBefore: number,
-) {
-  const rows = stops.filter((s) => (s.leg ?? 'outbound') === l.leg)
-    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-  const pickup = rows.find((s) => s.type === 'pickup') ?? rows[0]
-  const back = [...rows].reverse().find((s) => s.type === 'return')
-  const home = clockMinutes(back?.arrive)
-  if (!l.start || !back || home == null) return { end: l.end, back: null as string | null }
-  let over = 0
-  if (l.end > l.start) {
-    const end = clockMinutes(back.depart_prev)
-    over = end != null && home < end ? 1 : 0
-  } else {
-    const run = rows.slice(Math.max(rows.indexOf(pickup), 0), rows.indexOf(back) + 1)
-    const depart = pickup?.depart_prev || (l.leg === 'outbound' ? trip.departure_time : trip.return_time)
-    const times = [depart, pickup?.arrive, pickup?.spot, ...run.slice(1).flatMap((s) => [s.depart_prev, s.arrive, s.spot])]
-    // The group's departure is the row after the pickup's `depart_prev`.
-    const group = run.length > 1 ? 3 : 0
-    let last: number | null = null, days = 0, start = 0
-    times.forEach((t, i) => {
-      const n = clockMinutes(t)
-      if (n != null) {
-        if (last != null && n < last) days += 1
-        last = n
-      }
-      if (i === group) start = days
-    })
-    over = days - start
-  }
-  const backOn = dayFrom(l.end, over)
-  return home < lateBefore && backOn > l.start
-    ? { end: dayFrom(backOn, -1), back: `${backOn} ${String(back.arrive).slice(0, 5)}` }
-    : { end: backOn, back: null as string | null }
-}
+/** A leg in words: its old word where it has one, or its place on the trip. */
+const legWords = (l: { leg: string | null; number: number }) => (l.leg ? `the ${l.leg} leg` : `leg ${l.number}`)
 
 /** What the trip needs from a bus, in words, as the editor's Buses tab asks. */
 function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; req_sleeper?: boolean | null; vehicle_type?: string | null }) {
@@ -223,21 +160,22 @@ function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; 
  * before, and the group let off past midnight.
  */
 function stopDateWarnings(
-  trip: TripLegs,
+  trip: Record<string, unknown>,
   stops: {
-    leg: string; position: number; name?: string | null
+    route_id?: string | null; position: number; name?: string | null
     arrive_date?: string | null; spot_date?: string | null; depart_prev_date?: string | null
   }[],
 ) {
   const warnings: string[] = []
-  for (const l of legsOf(trip)) {
+  for (const l of Shape.legsOf(trip)) {
     // A leg with no day has none to be outside of.
     if (!l.start) continue
     const first = dayFrom(l.start, -1), last = dayFrom(l.end, 1)
-    for (const s of stops.filter((x) => x.leg === l.leg)) {
+    const routes = new Set(l.routes.map((r: { id: string }) => r.id))
+    for (const s of stops.filter((x) => routes.has(x.route_id))) {
       for (const day of [s.arrive_date, s.spot_date, s.depart_prev_date]) {
         if (day && (day < first || day > last)) {
-          warnings.push(`Stop ${s.position + 1}${s.name ? ` (${s.name})` : ''} is dated ${day}, outside the ${l.leg} leg's ${l.start} to ${l.end}.`)
+          warnings.push(`Stop ${s.position + 1}${s.name ? ` (${s.name})` : ''} is dated ${day}, outside ${legWords({ leg: l.word, number: l.number })}'s ${l.start} to ${l.end}.`)
         }
       }
     }
@@ -268,39 +206,29 @@ function prepWords(p: Row) {
 
 /**
  * A one-day leg's rows keep the leg's own date on a time past midnight. This
- * counts the day as the Route tab does: down the times in order, one earlier
- * than the one before it is the next day's, and the day the group leaves the
- * pickup is the leg's. A time on another day gains `<time>_on`, its real
- * day; the row's own date is left as saved.
+ * counts the day by past-midnight.js's rule, as the Route tab does: down the
+ * times in order, one earlier than the one before it is the next day's, and
+ * the day the group leaves the pickup is the leg's. A time on another day
+ * gains `<time>_on`, its real day; the row's own date is left as saved.
  */
 function markPastMidnight<T extends {
-  leg: string; position: number; type?: string | null
+  route_id?: string | null; position: number; type?: string | null
   depart_prev?: string | null; arrive?: string | null; spot?: string | null
-}>(trip: TripLegs, stops: T[]) {
-  const minutes = (t?: string | null) => {
-    const m = /^(\d{1,2}):(\d{2})/.exec(String(t ?? ''))
-    return m ? Number(m[1]) * 60 + Number(m[2]) : null
-  }
-  for (const l of legsOf(trip)) {
+}>(trip: Record<string, unknown>, stops: T[]) {
+  for (const l of Shape.legsOf(trip)) {
     if (!l.start || l.start !== l.end) continue
-    const rows = stops.filter((s) => s.leg === l.leg).sort((a, b) => a.position - b.position)
-    const seen: { row: T; key: 'depart_prev' | 'spot' | 'arrive'; days: number }[] = []
-    let last: number | null = null, days = 0, start: number | null = null
-    for (const row of rows) {
-      for (const key of ['depart_prev', 'spot', 'arrive'] as const) {
-        const n = minutes(row[key])
-        if (n == null) continue
-        if (last != null && n < last) days += 1
-        last = n
-        // The group leaves the pickup at the first stop's departure.
-        if (start == null && key === 'depart_prev' && row.type !== 'pickup') start = days
-        seen.push({ row, key, days })
-      }
-    }
-    for (const t of seen) {
-      const off = t.days - (start ?? 0)
+    const routes = new Set(l.routes.map((r: { id: string }) => r.id))
+    const rows = stops.filter((s) => routes.has(s.route_id)).sort((a, b) => a.position - b.position)
+    const seen = rows.flatMap((row) => (['depart_prev', 'spot', 'arrive'] as const)
+      .filter((key) => Past.minutesOf(row[key]) != null).map((key) => ({ row, key })))
+    const days: number[] = Past.daysPast(seen.map((t) => t.row[t.key]))
+    // The group leaves the pickup at the first stop's departure.
+    const group = seen.findIndex((t) => t.key === 'depart_prev' && t.row.type !== 'pickup')
+    const start = group >= 0 ? days[group] : 0
+    seen.forEach((t, i) => {
+      const off = days[i] - start
       if (off !== 0) (t.row as Record<string, unknown>)[`${t.key}_on`] = dayFrom(l.start, off)
-    }
+    })
   }
   return stops
 }
@@ -328,10 +256,11 @@ Deno.serve(
             annotations: { readOnlyHint: true },
           },
           async ({ from, to, search, include_cancelled, limit }) => {
-            let q = supabase.from('trips').select(TRIP_SUMMARY, { count: 'exact' })
+            // A trip with a leg that ends, or with no end starts, on or after `from`, by `ends`, an embed that returns nothing.
+            let q = supabase.from('trips').select(from ? `${TRIP_SUMMARY}, ends:trip_legs!inner()` : TRIP_SUMMARY, { count: 'exact' })
               .order('start_date', { ascending: true }).limit(limit)
             if (to) q = q.lte('start_date', to)
-            if (from) q = q.or(`end_date.gte.${from},return_end_date.gte.${from},start_date.gte.${from}`)
+            if (from) q = q.or(`end_date.gte.${from},start_date.gte.${from}`, { referencedTable: 'ends' })
             const text = search ? safeSearch(search) : ''
             if (text) q = q.or(`destination.ilike.*${text}*,customer.ilike.*${text}*,trip_ref.ilike.*${text}*,booking_contact_name.ilike.*${text}*,booking_contact_email.ilike.*${text}*`)
             if (!include_cancelled) q = q.is('cancelled_at', null)
@@ -350,7 +279,7 @@ Deno.serve(
           {
             title: 'Get one trip',
             description:
-              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Departures panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the scheduler\'s to-do rules say of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. On a split trip (trip_type dropoff_pickup) a document\'s leg and each trip_contact_<n>_leg say which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
+              'One trip in full, with the buses and drivers on it, its stops, its quote lines, and what it lacks. warnings are each leg\'s gaps as the board\'s Departures panel lists them, such as a bus not assigned, a driver not confirmed or an itinerary missing, each a line, and a stop dated more than a day outside its leg. to_do is what the scheduler\'s to-do rules say of the trip, such as a follow-up due or a driver to tell of a change; neither is a stored row, and each goes once the trip is fixed. A placeholder and a cancelled trip lack nothing. An amber trip_bar_color (or its old names orange and yellow) on a trip not confirmed and with no quote_sent_price or quote_sent_on is a placeholder, not quoted yet, and needs no bus. booking_contact_missive_url, when filled, is the trip\'s email thread in Missive. updates are what has been said about the trip, newest first, as its card lists them. quote_lines are the Billing tab\'s lines, which add up to quoted_price; route_done_at, buses_done_at and billing_done_at say when each tab was marked Done, and quote_sent_price and quote_sent_on what the customer was sent. On a one-day leg a stop\'s time past midnight also has depart_prev_on, spot_on or arrive_on, the day it falls on. documents are the files on its Files tab, newest first, each with its label, such as Itinerary, PO or Contract, the day it was added, and its leg. trip_legs are the trip\'s legs, each one time a bus leaves the yard and comes back, with its id, its old word (outbound, return, or null for a leg that has none), its kind (round_trip or one_way), its days, its bus_count and its routes; legs run in date order, and a split is a first leg one way with a later one, the pickup. Each stop and bus names its route_id, and is on the leg whose trip_routes hold it. trip_contacts are the day-of contacts in order, each with the leg_id it is for, or null for the whole trip. On a split trip (trip_type dropoff_pickup) a document\'s leg and each trip_contact_<n>_leg say which day it is for: return is the pickup\'s, and outbound or null the drop-off\'s, which the pickup is handed too while it has none of its own; on any other trip they mean nothing. read_trip_document reads one. Give either a trip id or a trip reference.',
             inputSchema: z.object({
               trip_id: z.string().uuid().optional(),
               trip_ref: z.string().max(40).optional(),
@@ -366,11 +295,11 @@ Deno.serve(
             if (!trip) throw new Error('No such trip, or it is not one you can see.')
 
             const buses = orThrow(await supabase.from('trip_assignments')
-              .select('position, leg, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, report_time, pay, instructions, drivers(name, short_name, phone))')
+              .select('position, leg, route_id, active_roles, buses(number, type, capacity, ada_lift, sleeper), trip_drivers(role, report_time, pay, instructions, drivers(name, short_name, phone))')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             const stops = orThrow(await supabase.from('trip_stops')
-              .select('id, leg, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
+              .select('id, leg, route_id, position, type, label, name, address, depart_prev, depart_prev_date, arrive, arrive_date, spot, spot_date, miles, drive, dwell_status')
               .eq('trip_id', trip.id).order('leg').order('position'))
 
             // The Billing tab's lines, which add up to `quoted_price`.
@@ -393,7 +322,7 @@ Deno.serve(
 
             // The Files tab, newest first, so the customer's latest paper leads.
             const documents = orThrow(await supabase.from('trip_documents')
-              .select('id, label, file_name, file_size, created_at, leg')
+              .select('id, label, file_name, file_size, created_at, leg, leg_id')
               .eq('trip_id', trip.id).order('created_at', { ascending: false }))
 
             return answer({
@@ -482,40 +411,44 @@ Deno.serve(
               busQuery.then(orThrow),
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
-              supabase.from('trips').select('id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, return_start_date, return_end_date, departure_time, return_time, bus_count, return_bus_count, vehicle_type, req_56pax, req_ada, req_sleeper, trip_stops(leg, position, type, depart_prev, arrive, spot)')
+              // A trip with a leg that ends, or with no end starts, on or after the day before, by `ends`.
+              supabase.from('trips').select(`id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, departure_time, return_time, vehicle_type, req_56pax, req_ada, req_sleeper, ${TRIP_LEGS}, trip_stops(leg, route_id, position, type, depart_prev, arrive, spot), ends:trip_legs!inner()`)
                 .is('cancelled_at', null).lte('start_date', until)
-                .or(`end_date.gte.${since},return_end_date.gte.${since},start_date.gte.${since}`).then(orThrow),
+                .or(`end_date.gte.${since},start_date.gte.${since}`, { referencedTable: 'ends' }).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),
               supabase.from('driver_time_off').select('driver_id, start_date, end_date, reason').then(orThrow),
               supabase.from('settings').select('value').eq('key', 'late-return-v1').maybeSingle().then(orThrow),
             ])
 
             // Each leg with the days it takes: `end` its last day counted, `back` when it is back after that.
-            const lateBefore = lateReturnMinutes(late?.value)
-            const takenOf = new Map(trips.map((t) => [t.id, legsOf(t).map((l) => ({ ...l, ...takes(t, l, t.trip_stops ?? [], lateBefore) }))]))
-            const legsTaken = (t: { id: string }) => takenOf.get(t.id) ?? []
+            Week.setLateReturn(late?.value)
+            const takenOf = new Map(trips.map((t) => [t.id, legsTaken(t)]))
+            const takenBy = (t: { id: string }) => takenOf.get(t.id) ?? []
 
             // A trip runs on the days its legs take: the days between a drop-off and its pickup are nobody's.
             const legRuns = (l: { start: string; end: string }) => l.start <= until && l.end >= from
             // A leg that took the day before and is back on the first day asked, past midnight.
             const backThatMorning = (l: { start: string; end: string; back: string | null }) =>
               !legRuns(l) && !!l.back && l.back.slice(0, 10) === from
-            const runningTrips = trips.filter((t) => legsTaken(t).some(legRuns))
+            const runningTrips = trips.filter((t) => takenBy(t).some(legRuns))
             const running = runningTrips.map((t) => t.id)
-            const lateTrips = trips.filter((t) => legsTaken(t).some(backThatMorning))
+            const lateTrips = trips.filter((t) => takenBy(t).some(backThatMorning))
             const wanted = [...new Set([...running, ...lateTrips.map((t) => t.id)])]
             const assignments = wanted.length
               ? orThrow(await supabase.from('trip_assignments')
-                  .select('id, bus_id, trip_id, leg, trip_drivers(driver_id)').in('trip_id', wanted))
+                  .select('id, bus_id, trip_id, leg, route_id, trip_drivers(driver_id)').in('trip_id', wanted))
               : []
 
             // A bus and its crew are busy only on their own leg's days. A row whose leg the trip does not have is counted busy.
-            const legOf = new Map(runningTrips.map((t) => [t.id, new Map(legsTaken(t).map((l) => [l.leg, l]))]))
+            const tripOf = new Map(trips.map((t) => [t.id, t]))
+            // The key of the leg a vehicle is on, by its route, as week.js reads it.
+            const keyOf = (a: Row) => Week.legKeyOfVehicle(tripOf.get(a.trip_id), a)
+            const legOf = new Map(runningTrips.map((t) => [t.id, new Map(takenBy(t).map((l) => [l.key, l]))]))
             const busyBuses = new Set<string>()
             const busyDrivers = new Set<string>()
             for (const a of assignments) {
               if (!legOf.has(a.trip_id)) continue
-              const leg = legOf.get(a.trip_id)?.get(a.leg ?? 'outbound')
+              const leg = legOf.get(a.trip_id)?.get(keyOf(a))
               if (leg && !legRuns(leg)) continue
               if (a.bus_id) busyBuses.add(a.bus_id)
               for (const d of a.trip_drivers ?? []) if (d.driver_id) busyDrivers.add(d.driver_id)
@@ -526,13 +459,13 @@ Deno.serve(
             const numberOf = new Map(buses.map((b) => [b.id, b.number]))
             const tripLines = runningTrips.map((t) => {
               const mine = assignments.filter((a) => a.trip_id === t.id)
-              const legs = legsTaken(t).filter(legRuns).map((l) => {
-                const onLeg = mine.filter((a) => a.leg === l.leg && a.bus_id)
+              const legs = takenBy(t).filter(legRuns).map((l) => {
+                const onLeg = mine.filter((a) => keyOf(a) === l.key && a.bus_id)
                 return {
-                  leg: l.leg, takes_to: l.end, ...(l.back ? { back: l.back } : {}), needed: l.needed,
+                  leg: l.leg ?? `leg ${l.number}`, takes_to: l.end, ...(l.back ? { back: l.back } : {}), needed: l.needed,
                   buses: onLeg.map((a) => numberOf.get(a.bus_id) ?? 'another type'),
                   missing: isPlaceholder(t) ? 0 : Math.max(0, l.needed - onLeg.length),
-                  drivers: mine.filter((a) => a.leg === l.leg).reduce((n, a) => n + (a.trip_drivers ?? []).length, 0),
+                  drivers: mine.filter((a) => keyOf(a) === l.key).reduce((n, a) => n + (a.trip_drivers ?? []).length, 0),
                 }
               })
               return {
@@ -544,10 +477,10 @@ Deno.serve(
 
             // Back at the yard on the first day asked, past midnight, from a leg that took the day before.
             const shortOf = new Map(drivers.map((d) => [d.id, d.short_name ?? d.name]))
-            const backAfterMidnight = lateTrips.flatMap((t) => legsTaken(t).filter(backThatMorning).map((l) => {
-              const onLeg = assignments.filter((a) => a.trip_id === t.id && (a.leg ?? 'outbound') === l.leg)
+            const backAfterMidnight = lateTrips.flatMap((t) => takenBy(t).filter(backThatMorning).map((l) => {
+              const onLeg = assignments.filter((a) => a.trip_id === t.id && keyOf(a) === l.key)
               return {
-                trip_ref: t.trip_ref, customer: t.customer, destination: t.destination, leg: l.leg, back: l.back,
+                trip_ref: t.trip_ref, customer: t.customer, destination: t.destination, leg: l.leg ?? `leg ${l.number}`, back: l.back,
                 buses: onLeg.filter((a) => a.bus_id && numberOf.has(a.bus_id)).map((a) => numberOf.get(a.bus_id)),
                 drivers: onLeg.flatMap((a) => (a.trip_drivers ?? []).map((d) => shortOf.get(d.driver_id)).filter(Boolean)),
               }

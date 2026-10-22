@@ -157,12 +157,9 @@ None open.
 
 ## Tasks
 
-- [ ] Hand rux the deploy of `scheduler/trip-document-link/index.ts`,
-      which reads a trip's last day from its legs.
-- [ ] Return a trip's legs, routes and contacts from `get_trip` in
-      `scheduler/connector/index.ts`, let a draft carry them through
-      `scheduler/draft-fields.js`, which the editor types too, rebuild the
-      connector's rules, and hand rux the deploy.
+- [ ] Hand rux the deploy of `scheduler/connector/index.ts`, which
+      returns a trip's legs, routes and contacts from `get_trip` and reads
+      every leg through the pages' rule files.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way. The editor's
       own state, the bar's ref and the quote lines, which still name a leg by
@@ -173,7 +170,8 @@ None open.
       which turns a driver's steps off when the trip's dates move, and
       `get_maintenance_schedule_changes`, which reads a move from the trip
       history's column names, move with them, with the trigger that keeps
-      `trips.start_date` and `end_date`.
+      `trips.start_date` and `end_date`. A draft carries legs and contacts
+      through `scheduler/draft-fields.js` once the editor can type them.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

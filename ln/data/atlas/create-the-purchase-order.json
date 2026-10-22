@@ -444,10 +444,10 @@
               },
               {
                 "t": "text",
-                "v": " is what this environment defaulted on one dated run, not a required value"
+                "v": " is what the walked run defaulted, not a required value"
               }
             ],
-            "text": "Nothing. IPO is what this environment defaulted on one dated run, not a required value"
+            "text": "Nothing. IPO is what the walked run defaulted, not a required value"
           }
         ]
       }

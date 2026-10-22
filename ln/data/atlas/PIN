@@ -1,9 +1,9 @@
-commit   2688e5cf829078db8663f0eee92e02e94b9df0ab
-date     2026-10-22T05:49:13Z
-subject  feat(tools): Give a field name its own token
+commit   1864a2646a5de87c1301d969b5fba54544fbd970
+date     2026-10-22T14:09:01Z
+subject  fix(tasks): Keep phases and run dates off the page
 contract 21 
 tier     export
-sha256   91679f8e109a32ec068e931a8562c8affd37ddbaf970b04effb72bf7bd822b4c
+sha256   435152006278087db0f0c5b4983f0dfacada3f8ca2458182bad64a6e2b24342b
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

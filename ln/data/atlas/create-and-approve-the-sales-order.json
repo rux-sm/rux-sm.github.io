@@ -66,10 +66,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+        "v": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the release to warehousing with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
       }
     ],
-    "text": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the next phase with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+    "text": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the release to warehousing with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
   },
   "blocks": [
     {

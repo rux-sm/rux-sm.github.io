@@ -39,7 +39,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. "
+        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later task uses is chosen from its figures. "
       },
       {
         "t": "field",
@@ -50,7 +50,7 @@
         "v": " on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
       }
     ],
-    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later task uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
   },
   "blocks": [
     {

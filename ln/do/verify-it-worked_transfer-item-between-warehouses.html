@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="2688e5cf829078db8663f0eee92e02e94b9df0ab">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="1864a2646a5de87c1301d969b5fba54544fbd970">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -125,12 +125,12 @@
 <ol class="ln-doc">
   <li id="step-1"><div class="ln-doc__do">Read on-hand for the item at both warehouses</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">source on-hand after</span>, <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">destination on-hand after</span></div></li>
 </ol>
-<div class="ln-why"><p><strong>Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure.</strong> The walkthrough is complete only when both hold.</p><div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+<div class="ln-why"><p><strong>Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure.</strong> Warehouse transfer is complete only when both hold.</p><div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle">The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat <a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a> immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat this task in the same view. <span class="ln-gap">Not documented for this release.</span></div>
+      <div class="rux--inline-notification__subtitle">No recorded run has passed this proof yet. Read both warehouses' rows in one view at <a class="rux--link" href="../do/confirm-stock-destination-and-expected-order-type.html">Confirm stock, destination, and expected order type</a>, immediately before the transfer, and read them again here in the same view.</div>
     </div>
   </div>
 </div></div>
@@ -140,7 +140,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. A run can satisfy one half and not the other, which is why this task reads both.</p></div></div>
   </li>
   <li class="rux--accordion__item" id="wrong">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -222,7 +222,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. A run can satisfy one half and not the other, which is why this task reads both.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="2688e5cf829078db8663f0eee92e02e94b9df0ab">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="1864a2646a5de87c1301d969b5fba54544fbd970">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -160,7 +160,7 @@
 </ul>
 <p><strong>To learn which table a screen is on, link a prompt to it and run it.</strong> A run on the wrong table is refused, and the message names the screen's table.</p><h3 class="ln-ref__title">The two texts</h3>
 <p><strong>The instruction text is for the user and the prompt text is for the model.</strong> The answer window prints the instruction text in a box headed Prompt, and the prompt text is what is sent with the data.</p>
-<p><strong>Infor's help defines the two texts and says nothing about how to write them.</strong> What follows is what the prompt texts in this environment hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed.</p><ul class="ln-list">
+<p><strong>Infor's help defines the two texts and says nothing about how to write them.</strong> What follows is what the walked prompt texts hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed.</p><ul class="ln-list">
   <li><b>What the data is</b><p><span class="ln-quiet">What it is for</span><br>Tells the model what the XML holds and how many records to expect</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. The prompt texts read here open with it</p></li>
   <li><b>The task</b><p><span class="ln-quiet">What it is for</span><br>What to write, and for whom</p><p><span class="ln-quiet">Seen without it</span><br>Not tried</p></li>
   <li><b>Use only the dataset</b><p><span class="ln-quiet">What it is for</span><br>Keeps the model to the values it was sent</p><p><span class="ln-quiet">Seen without it</span><br>With this rule alone the figures LN sent were right, and the model still added sums of its own and said what could be promised</p></li>
@@ -179,7 +179,7 @@
 </ul>
 <p><strong>Each line after the third was added because of an answer.</strong> The form line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out.</p>
 <p><strong>A line that makes the model list what it received is a check on the dataset.</strong> One prompt here ends its answer with the code of every record in the dataset, and that line is how a ticked record that never reached the model was noticed.</p>
-<p><strong>The marker is </strong><span class="ln-t-exact">#data,XML#</span><strong> here.</strong> XML is the only output format registered in this environment.</p><h3 class="ln-ref__title">A template for the two texts</h3>
+<p><strong>The marker is </strong><span class="ln-t-exact">#data,XML#</span><strong>.</strong> XML was the only output format registered where these steps were written.</p><h3 class="ln-ref__title">A template for the two texts</h3>
 <p><strong>Square brackets mark what to replace.</strong> A line with none is typed as it stands, and the line for a kind of row is typed once for each kind.</p><div class="ln-type">
   <p class="ln-type__name"><b>Instruction</b><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-copy="[What the command does, in one sentence.]">Copy</button></p>
   <div class="ln-type__text"><p>[What the command does, in one sentence.]</p></div>
@@ -200,7 +200,7 @@ Write every date as YYYY-MM-DD.
 #data,XML#">Copy</button></p>
   <div class="ln-type__text"><p>You are given an XML dataset for [what one record is, and what comes with it].</p><p>[What to write, and for whom].</p><p>Use only the information present in the dataset.</p><p>Output plain text only. No heading, no table, no list marks, no bold and no emoji.</p><p>Do not calculate, total or subtract anything. Report the figures as they are.</p><p>Write these parts in this order, and write every part, even when it is empty.</p><p>First line: [what opens the answer].</p><p>Then one line for each [kind of row], written as: [the values, in order].</p><p>If there are no [rows of that kind], write &quot;[the exact words]&quot;.</p><p>For these codes, write the name instead of the code: [code] is [name]. Write any other code as it is.</p><p>End with one sentence [on the one thing the reader must not miss].</p><p>If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</p><p>Write every date as YYYY-MM-DD.</p><p>#data,XML#</p></div>
 </div>
-<p><strong>Start with the first three lines of the prompt text and the marker, and add the rest after an answer calls for them.</strong> That is the order of phases 2 and 5, and it shows what each line changes.</p>
+<p><strong>Start with the first three lines of the prompt text and the marker, and add the rest after an answer calls for them.</strong> That is the order of <a class="rux--link" href="../do/write-the-prompt.html">Write the prompt</a> and <a class="rux--link" href="../do/improve-it.html">Improve it</a>, and it shows what each line changes.</p>
 <p><strong>Name a field by the words of its description.</strong> The dataset sends <span class="ln-t-exact">qhnd</span> under Inventory on Hand, and the example's text says on hand.</p>
 <p><strong>The line for codes holds when a code outside its list arrives.</strong> Status Overview's text names four activity codes and says to write any other as it is. Later, two order lines carried a fifth activity, and the answer wrote it as its code. </p><h3 class="ln-ref__title">Kinds of prompt</h3>
 <p><strong>The steps build one kind, a record with the rows that belong to it.</strong> The others differ in a choice of <a class="rux--link" href="../do/plan-the-prompt.html">Plan the prompt</a>, and each row says which.</p><ul class="ln-list">
@@ -211,7 +211,7 @@ Write every date as YYYY-MM-DD.
   <li><b>A condition the data must meet</b><p><span class="ln-quiet">What differs</span><br>The condition is a row of the table's filter in the Modeler, by the <span class="ln-t-named">Filter Present</span> link on the Properties panel, and the prompt text only sets the answer out</p><p><span class="ln-quiet">Seen here</span><br>A prompt that lists sales orders by three conditions its dataset's filter applies. On another filtered dataset a ticked record did not reach the model, and no message said so</p></li>
   <li><b>One dataset for several prompts</b><p><span class="ln-quiet">What differs</span><br>A filter row with <span class="ln-t-named">Input</span> ticked becomes a parameter of each prompt that uses the dataset, and its value is set on the prompt</p><p><span class="ln-quiet">Seen here</span><br>One prompt here has such a parameter, with a constant for its value. <span class="ln-gap">Not documented for this release.</span></p></li>
 </ul>
-<p><strong>A filter was not built for this walkthrough.</strong> The filters described here were found in datasets already in the environment.</p></div></div>
+<p><strong>These steps build no filter.</strong> The filters described here were found in datasets that already existed.</p></div></div>
   </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">

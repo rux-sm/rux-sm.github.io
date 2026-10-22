@@ -24,7 +24,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -326,10 +326,10 @@
               },
               {
                 "t": "text",
-                "v": " and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25 "
+                "v": " and its on-hand before assuming the fix failed. "
               }
             ],
-            "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own Item Order Plan and its on-hand before assuming the fix failed. Observed unexplained on 2026-08-25"
+            "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own Item Order Plan and its on-hand before assuming the fix failed."
           }
         ]
       }

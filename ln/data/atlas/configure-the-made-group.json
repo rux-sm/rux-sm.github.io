@@ -141,7 +141,7 @@
         },
         {
           "t": "text",
-          "v": " > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing "
+          "v": " > The values in the family sheet combine an approved Product/Job Shop reference, the existing "
         },
         {
           "t": "literal",
@@ -152,7 +152,7 @@
           "v": " finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. "
         }
       ],
-      "text": "> Warning > The Production and Sales portions of this phase were walked on 2026-08-16. The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks."
+      "text": "> Warning > The values in the family sheet combine an approved Product/Job Shop reference, the existing M010 finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks."
     },
     {
       "kind": "steps",

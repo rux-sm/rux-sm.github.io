@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="2688e5cf829078db8663f0eee92e02e94b9df0ab">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="1864a2646a5de87c1301d969b5fba54544fbd970">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -127,12 +127,12 @@
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle"><strong>The purchase half of this phase is walked; the production half has never been run here.</strong> On 2026-08-25 two planned purchase orders for <span class="ln-t-exact">BAM-ROD</span> became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step 8 is therefore the one step in this walkthrough nobody has performed — <strong>you are testing it, not using it.</strong> </div>
+      <div class="rux--inline-notification__subtitle"><strong>Only the purchase half of this task has been walked.</strong> Step 8, the production half, is the one step nobody has performed — <strong>you are testing it, not using it.</strong> </div>
     </div>
   </div>
 </div></div>
 <ol class="ln-doc">
-  <li id="step-1"><div class="ln-doc__do">Confirm <span class="ln-t-exact">BAM-ROD</span> has a row on the <span class="ln-t-named">Item - Business Partner</span> tab of its purchase data</div><div class="ln-doc__see"><b>You should see</b> A buy-from business partner, added 2026-08-25 </div></li>
+  <li id="step-1"><div class="ln-doc__do">Confirm <span class="ln-t-exact">BAM-ROD</span> has a row on the <span class="ln-t-named">Item - Business Partner</span> tab of its purchase data</div><div class="ln-doc__see"><b>You should see</b> A buy-from business partner </div></li>
   <li id="step-2"><div class="ln-doc__do">If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</div><div class="ln-doc__see"><b>You should see</b> A partner row, or the transfer will refuse it at step 7</div></li>
   <li id="step-3"><div class="ln-doc__do">In <a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a>, confirm the planned orders you intend to transfer</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Order Status</span> moves from <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> to <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></div></li>
   <li id="step-4"><div class="ln-doc__do">Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a></div></li>
@@ -156,8 +156,8 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The transfer runs and nothing happens</b><p>The orders were still <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step 3. There is no message for &quot;nothing matched&quot;</p></li>
-  <li><b>&quot;Buy-from BP cannot be determined for item …&quot;</b><p>No partner row on the item's <span class="ln-t-named">Item - Business Partner</span> tab. Steps steps 1–2. The failed proposal survives, so fix it and rerun </p></li>
-  <li><b>Purchase Order Type is blank</b><p>LN gives an error. This environment defaults <span class="ln-t-exact">IPO</span></p></li>
+  <li><b>&quot;Buy-from BP cannot be determined for item …&quot;</b><p>No partner row on the item's <span class="ln-t-named">Item - Business Partner</span> tab. Steps 1–2. The failed proposal survives, so fix it and rerun </p></li>
+  <li><b>Purchase Order Type is blank</b><p>LN gives an error. The walked run defaulted <span class="ln-t-exact">IPO</span></p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="cases">
@@ -167,7 +167,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">Components already in stock</span></b><p>this task transfers only the production side and <a class="rux--link" href="../do/receive-the-components.html">Receive the components</a> does not happen. This is the likely shape of a sleeve-only shortfall </p></li>
-  <li><b><span class="ln-t-named">Build by hand instead of from planning</span></b><p>Skip step 8 and create the production order directly per <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a>. <span class="ln-t-named">This is the only production path anyone here has walked</span> — it is the fallback if step 8 fails</p></li>
+  <li><b><span class="ln-t-named">Build by hand instead of from planning</span></b><p>Skip step 8 and create the production order directly per <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a>. <span class="ln-t-named">This is the only production path that has been walked</span> — it is the fallback if step 8 fails</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="related">
@@ -204,7 +204,7 @@
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm <span class="ln-t-exact">BAM-ROD</span> has a row on the <span class="ln-t-named">Item - Business Partner</span> tab of its purchase data</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A buy-from business partner, added 2026-08-25 </p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>A buy-from business partner </p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</h1></div>
@@ -259,8 +259,8 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The transfer runs and nothing happens</b><p>The orders were still <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. Step 3. There is no message for &quot;nothing matched&quot;</p></li>
-  <li><b>&quot;Buy-from BP cannot be determined for item …&quot;</b><p>No partner row on the item's <span class="ln-t-named">Item - Business Partner</span> tab. Steps steps 1–2. The failed proposal survives, so fix it and rerun </p></li>
-  <li><b>Purchase Order Type is blank</b><p>LN gives an error. This environment defaults <span class="ln-t-exact">IPO</span></p></li>
+  <li><b>&quot;Buy-from BP cannot be determined for item …&quot;</b><p>No partner row on the item's <span class="ln-t-named">Item - Business Partner</span> tab. Steps 1–2. The failed proposal survives, so fix it and rerun </p></li>
+  <li><b>Purchase Order Type is blank</b><p>LN gives an error. The walked run defaulted <span class="ln-t-exact">IPO</span></p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

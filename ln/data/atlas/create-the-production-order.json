@@ -552,10 +552,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this walkthrough"
+                "v": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this task"
               }
             ],
-            "text": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this walkthrough"
+            "text": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this task"
           }
         ]
       },

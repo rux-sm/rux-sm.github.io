@@ -32,10 +32,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The family satisfies phase 0 of the production-order walkthrough."
+        "v": "The family is qualified to start Production order."
       }
     ],
-    "text": "The family satisfies phase 0 of the production-order walkthrough."
+    "text": "The family is qualified to start Production order."
   },
   "before": [
     {
@@ -115,19 +115,19 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. This phase checks the family against what the production-order walkthrough's "
+        "v": "Nothing new. This task checks the family against what Production order's "
       },
       {
         "t": "link",
-        "v": "Confirm the test design",
-        "href": "confirm-the-test-design.md"
+        "v": "Confirm the existing foundation",
+        "href": "confirm-the-existing-foundation.md"
       },
       {
         "t": "text",
-        "v": " asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+        "v": " asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order."
       }
     ],
-    "text": "Nothing new. This phase checks the family against what the production-order walkthrough's Confirm the test design asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to that walkthrough."
+    "text": "Nothing new. This task checks the family against what Production order's Confirm the existing foundation asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order."
   },
   "blocks": [
     {
@@ -135,7 +135,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "This phase creates nothing. It checks the family against what "
+          "v": "This task creates nothing. It checks the family against what "
         },
         {
           "t": "link",
@@ -156,7 +156,7 @@
           "v": ", and hands over."
         }
       ],
-      "text": "This phase creates nothing. It checks the family against what Production order asks for in its Confirm the existing foundation, and hands over."
+      "text": "This task creates nothing. It checks the family against what Production order asks for in its Confirm the existing foundation, and hands over."
     },
     {
       "kind": "steps",
@@ -571,10 +571,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Take the values in the handoff table below to the production-order walkthrough"
+                  "v": "Take the values from steps 1–10 to "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
                 }
               ],
-              "text": "Take the values in the handoff table below to the production-order walkthrough"
+              "text": "Take the values from steps 1–10 to Production order"
             },
             {
               "tokens": [
@@ -605,10 +610,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Run the production-order walkthrough with them"
+                  "v": "Run "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": " with them"
                 }
               ],
-              "text": "Run the production-order walkthrough with them"
+              "text": "Run Production order with them"
             },
             {
               "tokens": [
@@ -709,15 +723,15 @@
               },
               {
                 "t": "link",
-                "v": "Create the three items",
-                "href": "create-the-three-items.md"
+                "v": "Report the operation complete and confirm warehouse receipt",
+                "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
               },
               {
                 "t": "text",
-                "v": " of the production-order walkthrough reports against"
+                "v": " reports against"
               }
             ],
-            "text": "Recheck Build the job shop routing — an approved routing with at least one operation is what Create the three items of the production-order walkthrough reports against"
+            "text": "Recheck Build the job shop routing — an approved routing with at least one operation is what Report the operation complete and confirm warehouse receipt reports against"
           }
         ]
       }

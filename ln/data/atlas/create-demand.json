@@ -359,10 +359,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+                "v": "The session was already open when the data changed. Close it and reopen"
               }
             ],
-            "text": "The session was already open when the data changed. Close it and reopen — observed twice on 2026-08-20"
+            "text": "The session was already open when the data changed. Close it and reopen"
           }
         ]
       }

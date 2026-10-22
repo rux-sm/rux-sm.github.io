@@ -9,7 +9,7 @@
     "Warehousing",
     "Sales"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
   "order": 0,
@@ -387,13 +387,13 @@
           ]
         }
       ],
-      "under": "The commands in this environment"
+      "under": "The commands"
     },
     {
       "kind": "prose",
       "tokens": [],
       "text": "",
-      "under": "The commands in this environment"
+      "under": "The commands"
     },
     {
       "kind": "prose",

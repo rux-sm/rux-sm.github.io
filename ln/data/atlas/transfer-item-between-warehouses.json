@@ -604,10 +604,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own walkthrough rather than a bullet here"
+                  "v": " becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here"
                 }
               ],
-              "text": "LN generates two warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. Ship-to Code becomes meaningful. This changes the phase structure (an order-handoff phase is needed) and earns its own walkthrough rather than a bullet here"
+              "text": "LN generates two warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. Ship-to Code becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here"
             }
           ]
         },
@@ -639,10 +639,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this walkthrough. "
+                  "v": ", generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process. "
                 }
               ],
-              "text": "Transfer Order Planning (cppat1210m000), reached via Planning ➔ Plan Transfer ➔ Transfer Order Planning, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this walkthrough."
+              "text": "Transfer Order Planning (cppat1210m000), reached via Planning ➔ Plan Transfer ➔ Transfer Order Planning, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process."
             }
           ]
         },
@@ -669,10 +669,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough"
+                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process"
                 }
               ],
-              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of the base walkthrough"
+              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process"
             }
           ]
         }

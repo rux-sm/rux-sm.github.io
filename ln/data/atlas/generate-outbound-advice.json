@@ -43,7 +43,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the "
+        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as on the walked run, one action fills both the "
       },
       {
         "t": "field",
@@ -62,7 +62,7 @@
         "v": " columns and prints the picking list. That is a property of the order type's procedure, not of LN."
       }
     ],
-    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the Advised and Released columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as on the walked run, one action fills both the Advised and Released columns and prints the picking list. That is a property of the order type's procedure, not of LN."
   },
   "blocks": [
     {

@@ -21,7 +21,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": null,
   "session": null,
   "sessionCode": null,
@@ -59,10 +59,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+        "v": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated; where the option is locked on, every run generates them."
       }
     ],
-    "text": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated, which in this environment happens on every run because the option is locked on."
+    "text": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated; where the option is locked on, every run generates them."
   },
   "blocks": [
     {
@@ -276,10 +276,10 @@
               },
               {
                 "t": "text",
-                "v": ". See the this task Prerequisite"
+                "v": ". See what this task needs before you start"
               }
             ],
-            "text": "Pegging relations were not generated, or the demand lies beyond the Pegging Horizon (cprpd0100m000). See the this task Prerequisite"
+            "text": "Pegging relations were not generated, or the demand lies beyond the Pegging Horizon (cprpd0100m000). See what this task needs before you start"
           }
         ]
       }

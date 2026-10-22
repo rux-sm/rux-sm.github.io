@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -58,10 +58,10 @@
         },
         {
           "t": "text",
-          "v": " build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+          "v": " build both. A buy-from business partner must also exist — Purchase to receipt selects one and does not create one."
         }
       ],
-      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Configure the purchased group and Create the three items build both. A buy-from business partner must also exist — this walkthrough selects one, it does not create one."
+      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Configure the purchased group and Create the three items build both. A buy-from business partner must also exist — Purchase to receipt selects one and does not create one."
     }
   ],
   "why": {

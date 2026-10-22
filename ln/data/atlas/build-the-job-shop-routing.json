@@ -67,7 +67,7 @@
         },
         {
           "t": "strong",
-          "v": "This walkthrough does not create work centers, machines, or reference operations."
+          "v": "This task does not create work centers, machines, or reference operations."
         },
         {
           "t": "text",
@@ -92,7 +92,7 @@
           "v": " — and if neither has a usable entry for the site, stop and obtain one."
         }
       ],
-      "text": "An existing work center and an existing reference operation for the site. This walkthrough does not create work centers, machines, or reference operations. Look them up first — Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers (tirou0101m000) and Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations (tirou4150m000) — and if neither has a usable entry for the site, stop and obtain one."
+      "text": "An existing work center and an existing reference operation for the site. This task does not create work centers, machines, or reference operations. Look them up first — Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Work Centers (tirou0101m000) and Manufacturing ➔ Job Shop ➔ Shop Layout ➔ Reference Operations (tirou4150m000) — and if neither has a usable entry for the site, stop and obtain one."
     }
   ],
   "why": {
@@ -1130,10 +1130,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Use an existing approved value. Do not create a work center, task, or machine from this walkthrough"
+                "v": "Use an existing approved value. Do not create a work center, task, or machine here"
               }
             ],
-            "text": "Use an existing approved value. Do not create a work center, task, or machine from this walkthrough"
+            "text": "Use an existing approved value. Do not create a work center, task, or machine here"
           }
         ]
       },

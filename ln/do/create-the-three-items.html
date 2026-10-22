@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="2688e5cf829078db8663f0eee92e02e94b9df0ab">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="1864a2646a5de87c1301d969b5fba54544fbd970">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -127,7 +127,7 @@
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-information--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Note</div>
-      <div class="rux--inline-notification__subtitle">All three items were created this way on 2026-08-16 and their site rows verified. Create the two purchased items first and the pair last, and do not create the pair until <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> has approved Production and Sales defaults. <span class="ln-gap">Not documented for this release.</span></div>
+      <div class="rux--inline-notification__subtitle">Create the two purchased items first and the pair last, and do not create the pair until <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> has approved Production and Sales defaults.</div>
     </div>
   </div>
 </div><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
@@ -144,7 +144,7 @@
   <li id="step-2"><div class="ln-doc__do">Select <span class="ln-t-press">New</span></div><div class="ln-doc__see"><b>You should see</b> A blank Item record opens</div></li>
   <li id="step-3"><div class="ln-doc__do">With <span class="ln-t-named">Project</span> blank, enter the item's code in the <span class="ln-t-named">Item</span> portion and its <span class="ln-t-named">Description</span></div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item code</span></div></li>
   <li id="step-4"><div class="ln-doc__do">Set <span class="ln-t-named">Item Type</span> to <span class="ln-t-exact">Product</span> and <span class="ln-t-named">Item Group</span> to the item's group from <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></div><div class="ln-doc__see"><b>You should see</b> Supply source, Unit Set, and Inventory Unit default from <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> or 3</div></li>
-  <li id="step-5"><div class="ln-doc__do">Complete any remaining field the screen marks required, using the family values</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item Grade, if the screen requires one</span> — the 2026-08-16 walk recorded <span class="ln-t-named">Grade</span> = <span class="ln-t-exact">FAS</span> for all three items</div></li>
+  <li id="step-5"><div class="ln-doc__do">Complete any remaining field the screen marks required, using the family values</div><div class="ln-doc__see"><b>You should see</b> <svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item Grade, if the screen requires one</span></div></li>
   <li id="step-6"><div class="ln-doc__do">Save the item header before working in the <span class="ln-t-named">Sites</span> grid</div><div class="ln-doc__see"><b>You should see</b> The item header is saved</div></li>
   <li id="step-7"><div class="ln-doc__do">In the <span class="ln-t-named">Sites</span> grid, ignore the editable filter row marked with <span class="ln-t-exact">=</span></div><p class="ln-doc__note">If no saved row begins with the site from step 2 of <a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>, run <span class="ln-t-named">Create Items by Site</span> from the tab's appropriate menu; if that produces nothing, select <span class="ln-t-press">New</span> on the <span class="ln-t-named">Sites</span> toolbar, select that site, and save the record</p><div class="ln-doc__see"><b>You should see</b> A saved site line beginning with the actual site code exists</div></li>
   <li id="step-8"><div class="ln-doc__do">Select the saved site line and open it with the row-arrow button</div><div class="ln-doc__see"><b>You should see</b> <span class="ln-t-named">Items by Site</span> opens for this item and site</div></li>
@@ -158,7 +158,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> to <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a>, which is why nothing inheritable is typed here.</p></div></div>
   </li>
   <li class="rux--accordion__item" id="wrong">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -167,7 +167,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The item code is rejected</b><p>Follow the current item-code segmentation; do not modify segmentation for the experiment</p></li>
-  <li><b>The save is refused for a field this walkthrough does not name</b><p>Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found <span class="ln-t-named">Grade</span> this way </p></li>
+  <li><b>The save is refused for a field this task does not name</b><p>Record the field label and the message. Do not clear another value to force the save. <span class="ln-t-named">Grade</span> was found this way </p></li>
   <li><b>A subentity is missing after save</b><p>Recheck <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> for a purchased item, <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> for the pair, and <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> for both</p></li>
   <li><b>Actual supply differs from the default</b><p>Check for item-level overrides and date-effective supply source before changing the default</p></li>
 </ul></div></div>
@@ -178,7 +178,7 @@
       <div class="rux--accordion__title">Variations · 1</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Items only</span></b><p>Stop after this task. The family exists as master data but cannot be produced; phases 6–10 are what make it runnable</p></li>
+  <li><b><span class="ln-t-named">Items only</span></b><p>Stop after this task. The family exists as master data but cannot be produced; <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> to <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a> are what make it runnable</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="related">
@@ -231,7 +231,7 @@
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Complete any remaining field the screen marks required, using the family values</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item Grade, if the screen requires one</span> — the 2026-08-16 walk recorded <span class="ln-t-named">Grade</span> = <span class="ln-t-exact">FAS</span> for all three items</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg> <span class="ln-t-exact">item Grade, if the screen requires one</span></p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Save the item header before working in the <span class="ln-t-named">Sites</span> grid</h1></div>
@@ -284,7 +284,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The item code is rejected</b><p>Follow the current item-code segmentation; do not modify segmentation for the experiment</p></li>
-  <li><b>The save is refused for a field this walkthrough does not name</b><p>Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found <span class="ln-t-named">Grade</span> this way </p></li>
+  <li><b>The save is refused for a field this task does not name</b><p>Record the field label and the message. Do not clear another value to force the save. <span class="ln-t-named">Grade</span> was found this way </p></li>
   <li><b>A subentity is missing after save</b><p>Recheck <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> for a purchased item, <a class="rux--link" href="../do/configure-the-made-group.html">Configure the made group</a> for the pair, and <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> for both</p></li>
   <li><b>Actual supply differs from the default</b><p>Check for item-level overrides and date-effective supply source before changing the default</p></li>
 </ul></div></div>
@@ -294,7 +294,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> to <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a>, which is why nothing inheritable is typed here.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

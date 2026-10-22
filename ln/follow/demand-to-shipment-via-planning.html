@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="2688e5cf829078db8663f0eee92e02e94b9df0ab">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="1864a2646a5de87c1301d969b5fba54544fbd970">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-10">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -132,13 +132,13 @@
       <div class="rux--accordion__title">Reference</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><h3 class="ln-ref__title">The bamboo family, for reference</h3>
-<p>Values verified 2026-08-25. </p><ul class="ln-list">
+<p>These are the values Create test items builds. </p><ul class="ln-list">
   <li><b><span class="ln-t-exact">BAM-CHOP-PAIR</span></b><p><span class="ln-quiet">Role</span><br>Finished product</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Job Shop</span></p><p><span class="ln-quiet">Per pair</span><br>1</p><p><span class="ln-quiet">Cluster row</span><br>Yes </p></li>
   <li><b><span class="ln-t-exact">BAM-ROD</span></b><p><span class="ln-quiet">Role</span><br>Purchased material</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Purchase</span></p><p><span class="ln-quiet">Per pair</span><br>2</p><p><span class="ln-quiet">Cluster row</span><br>Yes </p></li>
   <li><b><span class="ln-t-exact">BAM-SLEEVE</span></b><p><span class="ln-quiet">Role</span><br>Purchased packaging</p><p><span class="ln-quiet">Supply source</span><br><span class="ln-t-named">Purchase</span></p><p><span class="ln-quiet">Per pair</span><br>1</p><p><span class="ln-quiet">Cluster row</span><br>Yes </p></li>
 </ul>
-<p>The BOM is at <strong>revision </strong><span class="ln-t-exact">000002</span>; revision <span class="ln-t-exact">000001</span> was expired 2026-08-18. Routing <span class="ln-t-exact">0</span> revision <span class="ln-t-exact">000001</span>, operation <span class="ln-t-exact">10</span>, work center <span class="ln-t-exact">A1000</span>. One site, with raw materials and finished goods in two warehouses. </p>
-<p><b>Warning.</b> <span class="ln-t-exact">BAM-ROD</span><strong> has a buy-from business partner and </strong><span class="ln-t-exact">BAM-SLEEVE</span><strong> has not been checked.</strong> A buy-from business partner was added to <span class="ln-t-exact">BAM-ROD</span> on 2026-08-25 <strong>because the transfer refused it without one</strong>. If MRP proposes a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, <a class="rux--link" href="../do/cross-the-boundary.html">Cross the boundary</a> will very likely fail on it the same way. <span class="ln-gap">Not documented for this release.</span></p></div></div>
+<p>The BOM is at <strong>revision </strong><span class="ln-t-exact">000002</span>; revision <span class="ln-t-exact">000001</span> is expired. Routing <span class="ln-t-exact">0</span> revision <span class="ln-t-exact">000001</span>, operation <span class="ln-t-exact">10</span>, work center <span class="ln-t-exact">A1000</span>. One site, with raw materials and finished goods in two warehouses. </p>
+<p><b>Warning.</b> <span class="ln-t-exact">BAM-ROD</span><strong> has a buy-from business partner and </strong><span class="ln-t-exact">BAM-SLEEVE</span><strong> has not been checked.</strong> A buy-from business partner was added to <span class="ln-t-exact">BAM-ROD</span> <strong>because the transfer refused it without one</strong>. If MRP proposes a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, <a class="rux--link" href="../do/cross-the-boundary.html">Cross the boundary</a> will very likely fail on it the same way. <span class="ln-gap">Not documented for this release.</span></p></div></div>
   </li>
   <li class="rux--accordion__item" id="cases">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -146,8 +146,8 @@
       <div class="rux--accordion__title">Different cases · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Stock already covers the order</span></b><p>The <span class="ln-t-named">YES</span> branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to <a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a>. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order</p></li>
-  <li><b><span class="ln-t-named">The finished item is in the wrong warehouse to ship from</span></b><p>Insert <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> between phases 5 and 6. On current evidence <span class="ln-t-exact">BAM-CHOP-PAIR</span> is received and shipped at the same finished-goods warehouse, so this does not arise </p></li>
+  <li><b><span class="ln-t-named">Stock already covers the order</span></b><p>The <span class="ln-t-named">YES</span> branch of the flowchart. Planning generates no planned orders, so nothing from <a class="rux--link" href="../do/cross-the-boundary.html">Cross the boundary</a> to <a class="rux--link" href="../do/build-the-pairs.html">Build the pairs</a> happens — go straight to <a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a>. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order</p></li>
+  <li><b><span class="ln-t-named">The finished item is in the wrong warehouse to ship from</span></b><p>Insert <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> between <a class="rux--link" href="../do/build-the-pairs.html">Build the pairs</a> and <a class="rux--link" href="../do/ship_demand-to-shipment-via-planning.html">Ship</a>. On current evidence <span class="ln-t-exact">BAM-CHOP-PAIR</span> is received and shipped at the same finished-goods warehouse, so this does not arise </p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="next">

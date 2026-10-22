@@ -97,10 +97,19 @@
       },
       {
         "t": "text",
-        "v": " is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock walkthrough. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+        "v": " is released to warehousing, advised, picked, frozen and confirmed, exactly as in "
+      },
+      {
+        "t": "link",
+        "v": "Ship from stock",
+        "href": "ship-from-stock.md"
+      },
+      {
+        "t": "text",
+        "v": ". On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
       }
     ],
-    "text": "The sales order from Create the demand is released to warehousing, advised, picked, frozen and confirmed, exactly as in the ship-from-stock walkthrough. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
+    "text": "The sales order from Create the demand is released to warehousing, advised, picked, frozen and confirmed, exactly as in Ship from stock. On-hand at the shipping warehouse down by the shipped quantity is the completion test for the whole chain."
   },
   "blocks": [
     {
@@ -712,10 +721,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The line was never picked, or the shipment was never frozen. Steps step 6 and step 7"
+                "v": "The line was never picked, or the shipment was never frozen. Steps 6 and 7"
               }
             ],
-            "text": "The line was never picked, or the shipment was never frozen. Steps step 6 and step 7"
+            "text": "The line was never picked, or the shipment was never frozen. Steps 6 and 7"
           }
         ]
       }

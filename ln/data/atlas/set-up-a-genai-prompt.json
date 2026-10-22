@@ -9,7 +9,7 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
   "order": 1,
@@ -1323,10 +1323,10 @@
         },
         {
           "t": "text",
-          "v": " What follows is what the prompt texts in this environment hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed."
+          "v": " What follows is what the walked prompt texts hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed."
         }
       ],
-      "text": "Infor's help defines the two texts and says nothing about how to write them. What follows is what the prompt texts in this environment hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed.",
+      "text": "Infor's help defines the two texts and says nothing about how to write them. What follows is what the walked prompt texts hold and what their runs showed, a line of the prompt text at a time in the order the lines are typed.",
       "under": "The two texts"
     },
     {
@@ -1852,14 +1852,14 @@
         },
         {
           "t": "strong",
-          "v": " here."
+          "v": "."
         },
         {
           "t": "text",
-          "v": " XML is the only output format registered in this environment."
+          "v": " XML was the only output format registered where these steps were written."
         }
       ],
-      "text": "The marker is #data,XML# here. XML is the only output format registered in this environment.",
+      "text": "The marker is #data,XML#. XML was the only output format registered where these steps were written.",
       "under": "The two texts"
     },
     {
@@ -2232,10 +2232,28 @@
         },
         {
           "t": "text",
-          "v": " That is the order of phases 2 and 5, and it shows what each line changes."
+          "v": " That is the order of "
+        },
+        {
+          "t": "link",
+          "v": "Write the prompt",
+          "href": "write-the-prompt.md"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "link",
+          "v": "Improve it",
+          "href": "improve-it.md"
+        },
+        {
+          "t": "text",
+          "v": ", and it shows what each line changes."
         }
       ],
-      "text": "Start with the first three lines of the prompt text and the marker, and add the rest after an answer calls for them. That is the order of phases 2 and 5, and it shows what each line changes.",
+      "text": "Start with the first three lines of the prompt text and the marker, and add the rest after an answer calls for them. That is the order of Write the prompt and Improve it, and it shows what each line changes.",
       "under": "A template for the two texts"
     },
     {
@@ -2572,14 +2590,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "A filter was not built for this walkthrough."
+          "v": "These steps build no filter."
         },
         {
           "t": "text",
-          "v": " The filters described here were found in datasets already in the environment."
+          "v": " The filters described here were found in datasets that already existed."
         }
       ],
-      "text": "A filter was not built for this walkthrough. The filters described here were found in datasets already in the environment.",
+      "text": "These steps build no filter. The filters described here were found in datasets that already existed.",
       "under": "Kinds of prompt"
     },
     {

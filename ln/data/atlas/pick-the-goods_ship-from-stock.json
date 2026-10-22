@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
@@ -70,7 +70,7 @@
       },
       {
         "t": "text",
-        "v": ". The phase exists because this environment sets the "
+        "v": ". The task exists because the "
       },
       {
         "t": "field",
@@ -78,7 +78,7 @@
       },
       {
         "t": "text",
-        "v": " activity to manual and the warehouse is location-controlled; change either and LN ticks "
+        "v": " activity is manual on the walked run and the warehouse is location-controlled; change either and LN ticks "
       },
       {
         "t": "field",
@@ -86,10 +86,10 @@
       },
       {
         "t": "text",
-        "v": " on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+        "v": " on release and the task disappears. Once a line is staged, LN creates the shipment line."
       }
     ],
-    "text": "The picking list is the record of stock physically moving to staging, and confirming it is what fills Picked. The phase exists because this environment sets the Picking List activity to manual and the warehouse is location-controlled; change either and LN ticks Picked on release and the phase disappears. Once a line is staged, LN creates the shipment line."
+    "text": "The picking list is the record of stock physically moving to staging, and confirming it is what fills Picked. The task exists because the Picking List activity is manual on the walked run and the warehouse is location-controlled; change either and LN ticks Picked on release and the task disappears. Once a line is staged, LN creates the shipment line."
   },
   "blocks": [
     {

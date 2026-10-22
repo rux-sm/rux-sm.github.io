@@ -131,7 +131,7 @@
       "code": "tcemm4600m000",
       "name": "Concept Activation",
       "purpose": "Shows and maintains the activation status of one LN concept, chosen upstream.",
-      "route": "Options ➔ Run Program, session code typed directly — absent from the 2026-08-20 navigation extract"
+      "route": "Options ➔ Run Program, session code typed directly"
     },
     {
       "code": "tcibd0102m000",
@@ -347,7 +347,7 @@
       "code": "tcmcs0152s000",
       "name": "General Projects",
       "purpose": "Records a general project as a code; the plan itself lives in whichever package claims it.",
-      "route": "the Project lookup on the Item identifier, per the item walkthrough's 2026-08-16 walk"
+      "route": "the Project lookup on the Item identifier"
     },
     {
       "code": "tcmcs0160m000",
@@ -497,7 +497,7 @@
       "code": "tdsls4100m000",
       "name": "Sales Orders",
       "purpose": "The sales order header, as a list of orders and as the details of one, with the defaults a header hands to its lines.",
-      "route": "by its help, Sales Order Details on the File menu of Sales Order (tdsls4100m900), or Details on its own overview — not opened in this environment"
+      "route": "by its help, Sales Order Details on the File menu of Sales Order (tdsls4100m900), or Details on its own overview — not yet opened"
     },
     {
       "code": "tdsls4100m100",
@@ -801,7 +801,7 @@
       "code": "ttadv9140m000",
       "name": "Dataset Filter",
       "purpose": "Holds the conditions one table of a dataset is filtered by, and marks which of them become prompt parameters.",
-      "route": "from the Dataset Modeler, the Filter Present link on its Properties panel — absent from the 2026-08-20 navigation extract"
+      "route": "from the Dataset Modeler, the Filter Present link on its Properties panel"
     },
     {
       "code": "ttadv9160m000",
@@ -831,13 +831,13 @@
       "code": "ttrpi5151m000",
       "name": "GenAI Prompt Parameters",
       "purpose": "Lists the inputs one GenAI prompt takes, copied from the dataset linked to it.",
-      "route": "from GenAI Prompts (ttrpi5150m000), menu option GenAI Prompt Parameters — absent from the 2026-08-20 navigation extract"
+      "route": "from GenAI Prompts (ttrpi5150m000), menu option GenAI Prompt Parameters"
     },
     {
       "code": "ttrpi5501m000",
       "name": "Dataset Parameters",
       "purpose": "Lists the parameters LN generated for one dataset, each a selection range or a query filter.",
-      "route": "from Datasets (ttrpi5100m000), the Parameters command — absent from the 2026-08-20 navigation extract"
+      "route": "from Datasets (ttrpi5100m000), the Parameters command"
     },
     {
       "code": "ttrpi5560m000",
@@ -849,7 +849,7 @@
       "code": "ttrpi5561m000",
       "name": "GenAI LLM Versions",
       "purpose": "Lists the versions of one language model, and which version the Infor GenAI service treats as default.",
-      "route": "from GenAI LLMs (ttrpi5560m000), Actions menu — absent from the 2026-08-20 navigation extract"
+      "route": "from GenAI LLMs (ttrpi5560m000), Actions menu"
     },
     {
       "code": "whinh0100m000",

@@ -616,7 +616,7 @@
               },
               {
                 "t": "chip",
-                "v": "This is the only production path anyone here has walked"
+                "v": "This is the only production path that has been walked"
               },
               {
                 "t": "text",
@@ -632,7 +632,7 @@
                 "v": " fails"
               }
             ],
-            "text": "Skip step 8 of Cross the boundary and create the production order directly per Create the production order. This is the only production path anyone here has walked — it is the fallback if step 8 of Cross the boundary fails"
+            "text": "Skip step 8 of Cross the boundary and create the production order directly per Create the production order. This is the only production path that has been walked — it is the fallback if step 8 of Cross the boundary fails"
           }
         ]
       }

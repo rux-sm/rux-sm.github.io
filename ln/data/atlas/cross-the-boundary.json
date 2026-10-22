@@ -69,27 +69,11 @@
         },
         {
           "t": "strong",
-          "v": "The purchase half of this phase is walked; the production half has never been run here."
+          "v": "Only the purchase half of this task has been walked."
         },
         {
           "t": "text",
-          "v": " On 2026-08-25 two planned purchase orders for "
-        },
-        {
-          "t": "literal",
-          "v": "BAM-ROD"
-        },
-        {
-          "t": "text",
-          "v": " became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at "
-        },
-        {
-          "t": "status",
-          "v": "Planned"
-        },
-        {
-          "t": "text",
-          "v": ". Step 8 is therefore the one step in this walkthrough nobody has performed — "
+          "v": " Step 8, the production half, is the one step nobody has performed — "
         },
         {
           "t": "strong",
@@ -100,7 +84,7 @@
           "v": " "
         }
       ],
-      "text": "> Warning > The purchase half of this phase is walked; the production half has never been run here. On 2026-08-25 two planned purchase orders for BAM-ROD became one purchase order. The two planned production orders beside them were deliberately left untransferred and remain at Planned. Step 8 is therefore the one step in this walkthrough nobody has performed — you are testing it, not using it."
+      "text": "> Warning > Only the purchase half of this task has been walked. Step 8, the production half, is the one step nobody has performed — you are testing it, not using it."
     },
     {
       "kind": "steps",
@@ -150,10 +134,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A buy-from business partner, added 2026-08-25 "
+                  "v": "A buy-from business partner "
                 }
               ],
-              "text": "A buy-from business partner, added 2026-08-25"
+              "text": "A buy-from business partner"
             }
           ],
           "id": "1",
@@ -562,10 +546,10 @@
               },
               {
                 "t": "text",
-                "v": " tab. Steps steps 1–2. The failed proposal survives, so fix it and rerun "
+                "v": " tab. Steps 1–2. The failed proposal survives, so fix it and rerun "
               }
             ],
-            "text": "No partner row on the item's Item - Business Partner tab. Steps steps 1–2. The failed proposal survives, so fix it and rerun"
+            "text": "No partner row on the item's Item - Business Partner tab. Steps 1–2. The failed proposal survives, so fix it and rerun"
           }
         ]
       },
@@ -584,14 +568,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "LN gives an error. This environment defaults "
+                "v": "LN gives an error. The walked run defaulted "
               },
               {
                 "t": "literal",
                 "v": "IPO"
               }
             ],
-            "text": "LN gives an error. This environment defaults IPO"
+            "text": "LN gives an error. The walked run defaulted IPO"
           }
         ]
       }
@@ -663,14 +647,14 @@
               },
               {
                 "t": "chip",
-                "v": "This is the only production path anyone here has walked"
+                "v": "This is the only production path that has been walked"
               },
               {
                 "t": "text",
                 "v": " — it is the fallback if step 8 fails"
               }
             ],
-            "text": "Skip step 8 and create the production order directly per Create the production order. This is the only production path anyone here has walked — it is the fallback if step 8 fails"
+            "text": "Skip step 8 and create the production order directly per Create the production order. This is the only production path that has been walked — it is the fallback if step 8 fails"
           }
         ]
       }

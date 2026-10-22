@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
@@ -480,10 +480,10 @@
               },
               {
                 "t": "text",
-                "v": "; the phase structure does not change"
+                "v": "; the steps do not change"
               }
             ],
-            "text": "Record and compare every expected component and estimated quantity in this task; issue every material line in Issue material to the job shop; the phase structure does not change"
+            "text": "Record and compare every expected component and estimated quantity in this task; issue every material line in Issue material to the job shop; the steps do not change"
           }
         ]
       },
@@ -520,10 +520,10 @@
               },
               {
                 "t": "text",
-                "v": "); the phase structure does not change"
+                "v": "); the steps do not change"
               }
             ],
-            "text": "Confirm every expected operation in routing sequence in this task; report each one complete in Report the operation complete and confirm warehouse receipt (step 4 of Report the operation complete and confirm warehouse receipt); the phase structure does not change"
+            "text": "Confirm every expected operation in routing sequence in this task; report each one complete in Report the operation complete and confirm warehouse receipt (step 4 of Report the operation complete and confirm warehouse receipt); the steps do not change"
           }
         ]
       }

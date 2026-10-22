@@ -107,7 +107,9 @@ const screenLink = (code, text) => cards.has(code) ? `<a class="rux--link" href=
 // at steps by id, "see 2.6", and at tasks as "phase 2". While a task or a
 // process is being drawn, each of those is rewritten to what the reader sees:
 // a step by its place on the page, a step in another task with that task's
-// title, and a phase by its task's title.
+// title, and a phase by its task's title. Phase numbers written straight after
+// a link to a process are that process's, on any page, and their tasks follow
+// the process's name after a dot.
 let ctx = null;        // { s: the process, now: the task being drawn, or null }
 let linking = true;    // false while the text sits inside a link
 const drawing = (s, now, fn) => { ctx = { s, now, ids: idsOf(s) }; try { return fn(); } finally { ctx = null; } };
@@ -116,12 +118,17 @@ const rowsOf = (t) => t.blocks.filter((b) => b.kind === 'steps').flatMap((b) => 
 const idsOf = (s) => new Map(tasksOf(s).flatMap((t) => rowsOf(t).map((r, k) => [r.id, [t, k + 1]])));
 const taskOf = (s, n) => tasksOf(s).find((t) => t.process.n === n);
 const refs = (html, to) => {
-  if (!ctx) return html;
+  if (!ctx && !to) return html;
   const s = to ?? ctx.s, ids = to ? idsOf(to) : ctx.ids;
   const link = (href, text) => (linking ? `<a class="rux--link" href="${href}">${text}</a>` : text);
   const where = (t) => (!to && t === ctx.now ? '' : `${esc(t.title)}, `);
   const stepAt = ([t, k]) => (!to && t === ctx.now ? `#step-${k}` : hrefTask(t.id, k));
+  const after = to ? '· ' : '';
   return html
+    .replace(/\b[Pp]hases (\d+(?:, \d+)+)\b/g, (m, list) => {
+      const ts = list.split(', ').map((n) => taskOf(s, Number(n)));
+      return to && ts.every(Boolean) ? after + ts.map((t) => link(hrefTask(t.id), esc(t.title))).join(', ') : m;
+    })
     .replace(/(?:\bsteps? )?\b(\d+)\.(\d+)[–-](\d+)\.(\d+)\b/g, (m, a, b, c, d) => {
       const from = ids.get(`${a}.${b}`), upto = ids.get(`${c}.${d}`);
       return from && upto && from[0] === upto[0] ? link(stepAt(from), `${where(from[0])}steps ${from[1]}–${upto[1]}`) : m;
@@ -133,7 +140,7 @@ const refs = (html, to) => {
       }
       const t = taskOf(s, Number(n));
       if (!t) return m;
-      return !to && t === ctx.now ? 'this task' : link(hrefTask(t.id), esc(t.title));
+      return !to && t === ctx.now ? 'this task' : after + link(hrefTask(t.id), esc(t.title));
     });
 };
 

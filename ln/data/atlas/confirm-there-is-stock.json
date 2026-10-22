@@ -48,10 +48,10 @@
       },
       {
         "t": "text",
-        "v": " shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists."
+        "v": " shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This task records that choice before the order exists."
       }
     ],
-    "text": "Inventory 360 shows what is physically on hand, and Allocated shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This phase records that choice before the order exists."
+    "text": "Inventory 360 shows what is physically on hand, and Allocated shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This task records that choice before the order exists."
   },
   "blocks": [
     {

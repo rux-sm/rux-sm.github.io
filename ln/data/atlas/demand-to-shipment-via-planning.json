@@ -12,7 +12,7 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "take a sales order stock cannot cover through planning, buying and building to a confirmed shipment.",
   "order": 9,
@@ -629,10 +629,10 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Values verified 2026-08-25. "
+          "v": "These are the values Create test items builds. "
         }
       ],
-      "text": "Values verified 2026-08-25.",
+      "text": "These are the values Create test items builds.",
       "under": "The bamboo family, for reference"
     },
     {
@@ -820,7 +820,7 @@
         },
         {
           "t": "text",
-          "v": " was expired 2026-08-18. Routing "
+          "v": " is expired. Routing "
         },
         {
           "t": "literal",
@@ -855,7 +855,7 @@
           "v": ". One site, with raw materials and finished goods in two warehouses. "
         }
       ],
-      "text": "The BOM is at revision 000002; revision 000001 was expired 2026-08-18. Routing 0 revision 000001, operation 10, work center A1000. One site, with raw materials and finished goods in two warehouses.",
+      "text": "The BOM is at revision 000002; revision 000001 is expired. Routing 0 revision 000001, operation 10, work center A1000. One site, with raw materials and finished goods in two warehouses.",
       "under": "The bamboo family, for reference"
     },
     {
@@ -899,7 +899,7 @@
         },
         {
           "t": "text",
-          "v": " on 2026-08-25 "
+          "v": " "
         },
         {
           "t": "strong",
@@ -931,7 +931,7 @@
           "v": "Not documented for this release."
         }
       ],
-      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. A buy-from business partner was added to BAM-ROD on 2026-08-25 because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, Cross the boundary will very likely fail on it the same way. Not documented for this release.",
+      "text": "> Warning > BAM-ROD has a buy-from business partner and BAM-SLEEVE has not been checked. A buy-from business partner was added to BAM-ROD because the transfer refused it without one. If MRP proposes a planned purchase order for BAM-SLEEVE, Cross the boundary will very likely fail on it the same way. Not documented for this release.",
       "under": "The bamboo family, for reference"
     },
     {
@@ -964,7 +964,25 @@
                 },
                 {
                   "t": "text",
-                  "v": " branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to "
+                  "v": " branch of the flowchart. Planning generates no planned orders, so nothing from "
+                },
+                {
+                  "t": "link",
+                  "v": "Cross the boundary",
+                  "href": "cross-the-boundary.md"
+                },
+                {
+                  "t": "text",
+                  "v": " to "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the pairs",
+                  "href": "build-the-pairs.md"
+                },
+                {
+                  "t": "text",
+                  "v": " happens — go straight to "
                 },
                 {
                   "t": "link",
@@ -976,7 +994,7 @@
                   "v": ". MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
                 }
               ],
-              "text": "The YES branch of the flowchart. Planning generates no planned orders, and phases 2–5 do not happen at all — go straight to Ship from stock. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
+              "text": "The YES branch of the flowchart. Planning generates no planned orders, so nothing from Cross the boundary to Build the pairs happens — go straight to Ship from stock. MRP still runs; whether it generates anything depends on demand against on-hand plus on-order"
             }
           ]
         },
@@ -1004,7 +1022,25 @@
                 },
                 {
                   "t": "text",
-                  "v": " between phases 5 and 6. On current evidence "
+                  "v": " between "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the pairs",
+                  "href": "build-the-pairs.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "link",
+                  "v": "Ship",
+                  "href": "ship_demand-to-shipment-via-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". On current evidence "
                 },
                 {
                   "t": "literal",
@@ -1015,7 +1051,7 @@
                   "v": " is received and shipped at the same finished-goods warehouse, so this does not arise "
                 }
               ],
-              "text": "Insert Warehouse transfer between phases 5 and 6. On current evidence BAM-CHOP-PAIR is received and shipped at the same finished-goods warehouse, so this does not arise"
+              "text": "Insert Warehouse transfer between Build the pairs and Ship. On current evidence BAM-CHOP-PAIR is received and shipped at the same finished-goods warehouse, so this does not arise"
             }
           ]
         }

@@ -798,10 +798,10 @@
               },
               {
                 "t": "text",
-                "v": "; issue every material line in this task; the phase structure does not change"
+                "v": "; issue every material line in this task; the steps do not change"
               }
             ],
-            "text": "Record and compare every expected component and estimated quantity in Verify the generated foundation; issue every material line in this task; the phase structure does not change"
+            "text": "Record and compare every expected component and estimated quantity in Verify the generated foundation; issue every material line in this task; the steps do not change"
           }
         ]
       },
@@ -836,10 +836,10 @@
               },
               {
                 "t": "text",
-                "v": " are both selected for the material, steps 4–9 complete themselves once the order is released; the phase structure does not change"
+                "v": " are both selected for the material, steps 4–9 complete themselves once the order is released; the steps do not change"
               }
             ],
-            "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 4–9 complete themselves once the order is released; the phase structure does not change"
+            "text": "If Direct Initiate Inventory Issue and Direct Process Warehouse Order Line are both selected for the material, steps 4–9 complete themselves once the order is released; the steps do not change"
           }
         ]
       }

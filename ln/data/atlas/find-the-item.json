@@ -20,7 +20,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -294,10 +294,23 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Expected. Open it through Planning, as the this task notes say"
+                "v": "Expected. Open it through Planning instead: "
+              },
+              {
+                "t": "session",
+                "code": "cprrp0520m000",
+                "name": "Item Order Plan"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Planning ➔ Order Planning ➔ Item Order Plan"
               }
             ],
-            "text": "Expected. Open it through Planning, as the this task notes say"
+            "text": "Expected. Open it through Planning instead: Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
           }
         ]
       }

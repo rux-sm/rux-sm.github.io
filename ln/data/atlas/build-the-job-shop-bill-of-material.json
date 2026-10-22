@@ -127,18 +127,10 @@
         },
         {
           "t": "text",
-          "v": "'s Production defaults depend on. It is confirmed "
-        },
-        {
-          "t": "strong",
-          "v": "Active"
-        },
-        {
-          "t": "text",
-          "v": " here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active."
+          "v": "'s Production defaults depend on."
         }
       ],
-      "text": "Create the three items complete: all three items exist and each site row shows its intended Default Supply Source. Job Shop by Site must be Active or In Preparation in Concept Activation (tcemm4600m000) — the same setting Configure the made group's Production defaults depend on. It is confirmed Active here: the 2026-09-02 Job Shop Master Data Parameters form displays a field its help shows only under Active."
+      "text": "Create the three items complete: all three items exist and each site row shows its intended Default Supply Source. Job Shop by Site must be Active or In Preparation in Concept Activation (tcemm4600m000) — the same setting Configure the made group's Production defaults depend on."
     }
   ],
   "why": {

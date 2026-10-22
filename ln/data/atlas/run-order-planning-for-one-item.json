@@ -9,7 +9,7 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "give one item a demand stock cannot cover, run MRP, and read the plan it makes.",
   "order": 2,
@@ -566,10 +566,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " in the generate session — simulates only from the first net-change date. A value change inside one step, not a phase change"
+                  "v": " in the generate session — simulates only from the first net-change date. A value change inside one step, not a different task"
                 }
               ],
-              "text": "Run a Net Change Planning in the generate session — simulates only from the first net-change date. A value change inside one step, not a phase change"
+              "text": "Run a Net Change Planning in the generate session — simulates only from the first net-change date. A value change inside one step, not a different task"
             }
           ]
         },
@@ -608,7 +608,7 @@
                 },
                 {
                   "t": "chip",
-                  "v": "Own walkthrough when written"
+                  "v": "Its own process when written"
                 },
                 {
                   "t": "text",
@@ -631,7 +631,7 @@
                   "v": " session help first "
                 }
               ],
-              "text": "A different mechanism, not a value change: enabling Master Plan on cprpd1100m000 splits the horizons, and the item master plan must be initialized before it exists. Own walkthrough when written — it needs cprpd/cprmp session help first"
+              "text": "A different mechanism, not a value change: enabling Master Plan on cprpd1100m000 splits the horizons, and the item master plan must be initialized before it exists. Its own process when written — it needs cprpd/cprmp session help first"
             }
           ]
         }

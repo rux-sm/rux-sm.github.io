@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Master Data ➔ Warehouses ➔ Warehouses",
   "session": "Warehouses",
   "sessionCode": "whwmd2500m000",
@@ -42,10 +42,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product."
+        "v": "Nothing yet. Every later task reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. Where every physical item is of type Product, as on the walked run, buying or making is a supply-source decision rather than an item-type one."
       }
     ],
-    "text": "Nothing yet. Every later phase reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. In this environment purchase against manufacture is a supply-source decision rather than an item-type one, because physical items are all type Product."
+    "text": "Nothing yet. Every later task reads a value recorded here, and the one that bites is the warehouse type: a Shop Floor warehouse cannot be received into as a Normal one can, and a description does not say which it is. Where every physical item is of type Product, as on the walked run, buying or making is a supply-source decision rather than an item-type one."
   },
   "blocks": [
     {

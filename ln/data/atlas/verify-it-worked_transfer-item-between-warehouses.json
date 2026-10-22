@@ -20,7 +20,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -39,10 +39,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+        "v": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. A run can satisfy one half and not the other, which is why this task reads both."
       }
     ],
-    "text": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. The one run on file satisfied only the second half, which is why this phase reads both."
+    "text": "Nothing new. A transfer is proved twice: the source down and the destination up by the same quantity. A run can satisfy one half and not the other, which is why this task reads both."
   },
   "blocks": [
     {
@@ -120,10 +120,10 @@
         },
         {
           "t": "text",
-          "v": " The walkthrough is complete only when both hold."
+          "v": " Warehouse transfer is complete only when both hold."
         }
       ],
-      "text": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure. The walkthrough is complete only when both hold."
+      "text": "Source on-hand before minus source on-hand after must equal the transferred quantity, and destination on-hand after minus destination on-hand before must equal the same figure. Warehouse transfer is complete only when both hold."
     },
     {
       "kind": "prose",
@@ -138,7 +138,7 @@
         },
         {
           "t": "text",
-          "v": " > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat "
+          "v": " > No recorded run has passed this proof yet. Read both warehouses' rows in one view at "
         },
         {
           "t": "link",
@@ -147,14 +147,10 @@
         },
         {
           "t": "text",
-          "v": " immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat this task in the same view. "
-        },
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
+          "v": ", immediately before the transfer, and read them again here in the same view."
         }
       ],
-      "text": "> Warning > The 2026-08-15 run did not pass this proof: source decreased by 412 while destination increased by 500. That can result from an inaccurate starting value or other inventory activity during the walk, but the evidence does not establish which. Repeat Confirm stock, destination, and expected order type immediately before the next transfer and capture both warehouse rows in one screenshot; then repeat this task in the same view. Not documented for this release."
+      "text": "> Warning > No recorded run has passed this proof yet. Read both warehouses' rows in one view at Confirm stock, destination, and expected order type, immediately before the transfer, and read them again here in the same view."
     }
   ],
   "problems": {

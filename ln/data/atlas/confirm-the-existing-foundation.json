@@ -40,10 +40,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+        "v": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
       }
     ],
-    "text": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This phase reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+    "text": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
   },
   "blocks": [
     {
@@ -401,10 +401,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop. This walkthrough does not create or repair master data; request a qualified training case"
+                "v": "Stop. Production order does not create or repair master data; request a qualified training case"
               }
             ],
-            "text": "Stop. This walkthrough does not create or repair master data; request a qualified training case"
+            "text": "Stop. Production order does not create or repair master data; request a qualified training case"
           }
         ]
       },

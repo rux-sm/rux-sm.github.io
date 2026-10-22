@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
@@ -359,7 +359,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against "
+                "v": "Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against "
               },
               {
                 "t": "session",
@@ -371,7 +371,7 @@
                 "v": " before assuming a fault "
               }
             ],
-            "text": "Record the message; the release options this walkthrough does not exercise (shortages, quality, printing) may be blocking it — check them against Production Order Parameters (tisfc0100s000) before assuming a fault"
+            "text": "Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against Production Order Parameters (tisfc0100s000) before assuming a fault"
           }
         ]
       }

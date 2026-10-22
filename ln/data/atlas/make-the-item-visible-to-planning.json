@@ -21,7 +21,7 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Planning ➔ Order Planning ➔ Item Order Plan",
   "session": "Item Order Plan",
   "sessionCode": "cprrp0520m000",
@@ -57,7 +57,7 @@
         },
         {
           "t": "text",
-          "v": ". The 2026-08-20 session used "
+          "v": ", such as "
         },
         {
           "t": "literal",
@@ -84,17 +84,17 @@
           "v": "."
         }
       ],
-      "text": "A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items. The 2026-08-20 session used BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
+      "text": "A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items, such as BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+        "v": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this task checks every item in the structure, not just the parent."
       }
     ],
-    "text": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this phase checks every item in the structure, not just the parent."
+    "text": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this task checks every item in the structure, not just the parent."
   },
   "blocks": [
     {
@@ -429,10 +429,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "It has no planning data — no cluster row, no plan. Steps steps 3–5. Not an error state; nothing will tell you"
+                "v": "It has no planning data — no cluster row, no plan. Steps 3–5. Not an error state; nothing will tell you"
               }
             ],
-            "text": "It has no planning data — no cluster row, no plan. Steps steps 3–5. Not an error state; nothing will tell you"
+            "text": "It has no planning data — no cluster row, no plan. Steps 3–5. Not an error state; nothing will tell you"
           }
         ]
       }

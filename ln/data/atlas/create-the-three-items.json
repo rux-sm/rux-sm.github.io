@@ -26,7 +26,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Master Data ➔ Items ➔ Items",
   "session": "Items",
   "sessionCode": "tcibd0501m000",
@@ -64,10 +64,28 @@
     "tokens": [
       {
         "t": "text",
-        "v": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here."
+        "v": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove "
+      },
+      {
+        "t": "link",
+        "v": "Configure the purchased group",
+        "href": "configure-the-purchased-group.md"
+      },
+      {
+        "t": "text",
+        "v": " to "
+      },
+      {
+        "t": "link",
+        "v": "Verify site creation control",
+        "href": "verify-site-creation-control.md"
+      },
+      {
+        "t": "text",
+        "v": ", which is why nothing inheritable is typed here."
       }
     ],
-    "text": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove phases 2 to 4, which is why nothing inheritable is typed here."
+    "text": "On save, LN gives the new item the supply source, units and subentities its group's defaults promised and, if the Sites box was set, a site row. The saved site row is where the promise is checked: the supply source and the indicators on it prove Configure the purchased group to Verify site creation control, which is why nothing inheritable is typed here."
   },
   "blocks": [
     {
@@ -83,7 +101,7 @@
         },
         {
           "t": "text",
-          "v": " > All three items were created this way on 2026-08-16 and their site rows verified. Create the two purchased items first and the pair last, and do not create the pair until "
+          "v": " > Create the two purchased items first and the pair last, and do not create the pair until "
         },
         {
           "t": "link",
@@ -92,14 +110,10 @@
         },
         {
           "t": "text",
-          "v": " has approved Production and Sales defaults. "
-        },
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
+          "v": " has approved Production and Sales defaults."
         }
       ],
-      "text": "> Note > All three items were created this way on 2026-08-16 and their site rows verified. Create the two purchased items first and the pair last, and do not create the pair until Configure the made group has approved Production and Sales defaults. Not documented for this release."
+      "text": "> Note > Create the two purchased items first and the pair last, and do not create the pair until Configure the made group has approved Production and Sales defaults."
     },
     {
       "kind": "prose",
@@ -418,29 +432,9 @@
                 {
                   "t": "value",
                   "v": "item Grade, if the screen requires one"
-                },
-                {
-                  "t": "text",
-                  "v": " — the 2026-08-16 walk recorded "
-                },
-                {
-                  "t": "field",
-                  "v": "Grade"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
-                },
-                {
-                  "t": "literal",
-                  "v": "FAS"
-                },
-                {
-                  "t": "text",
-                  "v": " for all three items"
                 }
               ],
-              "text": "item Grade, if the screen requires one — the 2026-08-16 walk recorded Grade = FAS for all three items"
+              "text": "item Grade, if the screen requires one"
             }
           ],
           "id": "5",
@@ -788,16 +782,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The save is refused for a field this walkthrough does not name"
+                "v": "The save is refused for a field this task does not name"
               }
             ],
-            "text": "The save is refused for a field this walkthrough does not name"
+            "text": "The save is refused for a field this task does not name"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found "
+                "v": "Record the field label and the message. Do not clear another value to force the save. "
               },
               {
                 "t": "field",
@@ -805,10 +799,10 @@
               },
               {
                 "t": "text",
-                "v": " this way "
+                "v": " was found this way "
               }
             ],
-            "text": "Record the field label and the message. Do not clear another value to force the save — the 2026-08-16 run found Grade this way"
+            "text": "Record the field label and the message. Do not clear another value to force the save. Grade was found this way"
           }
         ]
       },
@@ -907,10 +901,28 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop after this task. The family exists as master data but cannot be produced; phases 6–10 are what make it runnable"
+                "v": "Stop after this task. The family exists as master data but cannot be produced; "
+              },
+              {
+                "t": "link",
+                "v": "Build the job shop bill of material",
+                "href": "build-the-job-shop-bill-of-material.md"
+              },
+              {
+                "t": "text",
+                "v": " to "
+              },
+              {
+                "t": "link",
+                "v": "Qualify the training case",
+                "href": "qualify-the-training-case.md"
+              },
+              {
+                "t": "text",
+                "v": " are what make it runnable"
               }
             ],
-            "text": "Stop after this task. The family exists as master data but cannot be produced; phases 6–10 are what make it runnable"
+            "text": "Stop after this task. The family exists as master data but cannot be produced; Build the job shop bill of material to Qualify the training case are what make it runnable"
           }
         ]
       }

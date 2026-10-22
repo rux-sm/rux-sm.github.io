@@ -4,7 +4,7 @@
   "kind": "reference",
   "id": "order-to-shipment-overview",
   "title": "Demand to shipment",
-  "updated": "2026-10-04",
+  "updated": "2026-10-22",
   "status": "draft",
   "sources": [
     "cppat1210m000",
@@ -36,10 +36,10 @@
         },
         {
           "t": "text",
-          "v": " Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every walkthrough in this library is one route across it."
+          "v": " Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every process is one route across it."
         }
       ],
-      "text": "The shape of the whole chain, in one screen. Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every walkthrough in this library is one route across it."
+      "text": "The shape of the whole chain, in one screen. Six module lanes, six stages, master data to a confirmed shipment. Ten minutes, and it is the first thing to read: every process is one route across it."
     },
     {
       "kind": "prose",
@@ -4249,10 +4249,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — the walkthrough this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+                  "v": " — the process this shape belongs to; it walks the long route, task by task, and every claim about what a stage does is carried there."
                 }
               ],
-              "text": "Plan to shipment — the walkthrough this shape belongs to; it walks the long route, phase by phase, and every claim about what a stage does is carried there."
+              "text": "Plan to shipment — the process this shape belongs to; it walks the long route, task by task, and every claim about what a stage does is carried there."
             },
             {
               "tokens": [
@@ -4263,43 +4263,23 @@
                 },
                 {
                   "t": "text",
-                  "v": ", phases 2 to 5 — the walked source of the four Deliver tiles."
+                  "v": ", from Release to warehousing to Ship — the walked source of the four Deliver tiles."
                 }
               ],
-              "text": "Ship from stock, phases 2 to 5 — the walked source of the four Deliver tiles."
+              "text": "Ship from stock, from Release to warehousing to Ship — the walked source of the four Deliver tiles."
             },
             {
               "tokens": [
                 {
                   "t": "strong",
-                  "v": "The "
-                },
-                {
-                  "t": "literal",
-                  "v": "the source on file"
-                },
-                {
-                  "t": "strong",
-                  "v": " file for each code in "
-                },
-                {
-                  "t": "literal",
-                  "v": "sources:"
+                  "v": "Each screen's own reference"
                 },
                 {
                   "t": "text",
-                  "v": " — names, routes and the "
-                },
-                {
-                  "t": "literal",
-                  "v": "reached:"
-                },
-                {
-                  "t": "text",
-                  "v": " lines for the drill-ins."
+                  "v": " — its name, its route, and how a screen with no menu entry is reached."
                 }
               ],
-              "text": "The the source on file file for each code in sources: — names, routes and the reached: lines for the drill-ins."
+              "text": "Each screen's own reference — its name, its route, and how a screen with no menu entry is reached."
             },
             {
               "tokens": [

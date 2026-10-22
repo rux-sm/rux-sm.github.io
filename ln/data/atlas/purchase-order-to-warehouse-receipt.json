@@ -9,7 +9,7 @@
     "Procurement",
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "buy raw materials on a purchase order and receive them into a warehouse.",
   "order": 5,
@@ -540,10 +540,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " runs against a receipt in this environment. This adds a phase and would earn its own walkthrough. "
+                  "v": " runs against the receipt. This adds a task and would earn its own process. "
                 }
               ],
-              "text": "An inspection activity sits between receipt and put-away. Warehouse Inspections (whinh3122m000) runs against a receipt in this environment. This adds a phase and would earn its own walkthrough."
+              "text": "An inspection activity sits between receipt and put-away. Warehouse Inspections (whinh3122m000) runs against the receipt. This adds a task and would earn its own process."
             }
           ]
         },
@@ -562,10 +562,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Goods ship from the supplier to a customer without entering your warehouse. That removes phases 3–5 entirely, so it is a different process, not a variant of this one"
+                  "v": "Goods ship from the supplier to a customer without entering your warehouse. That removes receiving, confirming and the inventory check entirely, so it is a different process, not a variant of this one"
                 }
               ],
-              "text": "Goods ship from the supplier to a customer without entering your warehouse. That removes phases 3–5 entirely, so it is a different process, not a variant of this one"
+              "text": "Goods ship from the supplier to a customer without entering your warehouse. That removes receiving, confirming and the inventory check entirely, so it is a different process, not a variant of this one"
             }
           ]
         },

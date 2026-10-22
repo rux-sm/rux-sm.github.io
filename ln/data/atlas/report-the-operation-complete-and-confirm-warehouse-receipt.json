@@ -102,10 +102,10 @@
       },
       {
         "t": "text",
-        "v": " only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The phase ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+        "v": " only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The task ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
       }
     ],
-    "text": "Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes Production Completed when reported and Completed only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The phase ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+    "text": "Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes Production Completed when reported and Completed only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The task ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
   },
   "blocks": [
     {
@@ -780,10 +780,10 @@
               },
               {
                 "t": "text",
-                "v": "; report each one complete in this task (step 4); the phase structure does not change"
+                "v": "; report each one complete in this task (step 4); the steps do not change"
               }
             ],
-            "text": "Confirm every expected operation in routing sequence in Verify the generated foundation; report each one complete in this task (step 4); the phase structure does not change"
+            "text": "Confirm every expected operation in routing sequence in Verify the generated foundation; report each one complete in this task (step 4); the steps do not change"
           }
         ]
       }

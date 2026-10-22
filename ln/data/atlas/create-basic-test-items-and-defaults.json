@@ -11,7 +11,7 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "create a small item family, purchased components and one manufactured item, ready for a production order.",
   "order": 3,
@@ -251,10 +251,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The family satisfies phase 0 of the production-order walkthrough."
+            "v": "The family is qualified to start Production order."
           }
         ],
-        "text": "The family satisfies phase 0 of the production-order walkthrough."
+        "text": "The family is qualified to start Production order."
       },
       "steps": 12,
       "walked": null
@@ -982,10 +982,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Use this full walkthrough: two purchased inputs and one Job Shop finished product"
+                  "v": "Use this whole process: two purchased inputs and one Job Shop finished product"
                 }
               ],
-              "text": "Use this full walkthrough: two purchased inputs and one Job Shop finished product"
+              "text": "Use this whole process: two purchased inputs and one Job Shop finished product"
             }
           ]
         },
@@ -1034,10 +1034,28 @@
                 },
                 {
                   "t": "text",
-                  "v": "; no Job Shop Production defaults are required, and phases 6–7 do not apply"
+                  "v": "; no Job Shop Production defaults are required, and "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the job shop bill of material",
+                  "href": "build-the-job-shop-bill-of-material.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "link",
+                  "v": "Build the job shop routing",
+                  "href": "build-the-job-shop-routing.md"
+                },
+                {
+                  "t": "text",
+                  "v": " do not apply"
                 }
               ],
-              "text": "Use another dedicated Product group with Default Supply Source = Purchase; no Job Shop Production defaults are required, and phases 6–7 do not apply"
+              "text": "Use another dedicated Product group with Default Supply Source = Purchase; no Job Shop Production defaults are required, and Build the job shop bill of material and Build the job shop routing do not apply"
             }
           ]
         }

@@ -109,7 +109,7 @@
         },
         {
           "t": "text",
-          "v": " > This phase has not been walked for the new groups. Capture the "
+          "v": " > This task has not been walked for the new groups. Note the "
         },
         {
           "t": "field",
@@ -117,10 +117,10 @@
         },
         {
           "t": "text",
-          "v": " state and the saved Create controls. "
+          "v": " state and the saved Create controls as you go. "
         }
       ],
-      "text": "> Warning > This phase has not been walked for the new groups. Capture the Centrally Managed state and the saved Create controls."
+      "text": "> Warning > This task has not been walked for the new groups. Note the Centrally Managed state and the saved Create controls as you go."
     },
     {
       "kind": "steps",

@@ -558,16 +558,12 @@
            list pages' toolbars. The action bar below is outside this, and
            keeps its own size. -->
       <div class="rux--side-panel__inner-content rux--side-panel--scrolls rux--layout--size-md" id="scheduler-panel-body">
-        <!-- A SPLIT TRIP'S TWO LEGS, over the tabs and shown only on a split.
-             Choosing the other opens the editor on that leg, as pressing its
-             bar does, so the Route and Buses tabs and the trip contacts are
-             the leg's; data.js names each by its day and keeps the choice. -->
-        <div class="scheduler-panel-legs" id="scheduler-panel-legs" hidden>
-          <div class="rux--content-switcher rux--content-switcher--sm rux--layout--size-sm" role="tablist" id="scheduler-leg-switch" aria-label="Leg">
-            <button type="button" class="rux--content-switcher-btn rux--content-switcher--selected" role="tab" aria-selected="true" tabindex="0" data-leg="outbound"><span class="rux--content-switcher__label">Drop-off</span></button>
-            <button type="button" class="rux--content-switcher-btn" role="tab" aria-selected="false" tabindex="-1" data-leg="return"><span class="rux--content-switcher__label">Pickup</span></button>
-          </div>
-        </div>
+        <!-- A TRIP'S LEGS, over the tabs and shown only on a trip of more
+             than one. Choosing another opens the editor on that leg, as
+             pressing its bar does, so the Details tab's dates and type, the
+             Route and Buses tabs and the trip contacts are the leg's;
+             data.js fills it with each leg's name and day. -->
+        <div class="scheduler-panel-legs rux--layout--size-sm" id="scheduler-panel-legs" hidden></div>
         <!-- Line tabs, 40px like the fields under them, so the selected tab's
              line sits at its foot, clear of the grey shortcut row above. -->
         <div class="rux--tabs rux--layout--size-md">

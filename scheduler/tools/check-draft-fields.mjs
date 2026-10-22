@@ -65,7 +65,7 @@ expect('a null value is refused, since a draft only fills', problems({ destinati
 // Every field names a kind the list knows, and a place the editor puts it.
 expect('every field\'s kind of value is one the list checks', FIELDS.filter(f => !KINDS[f.value]).map(f => f.key), []);
 expect('a field with no control is one the editor lays out itself',
-  FIELDS.filter(f => !f.id).map(f => f.kind).filter(k => !['fleet', 'trip', 'buses', 'billing', 'contacts', 'stops', 'stopChanges'].includes(k)), []);
+  FIELDS.filter(f => !f.id).map(f => f.kind).filter(k => !['legs', 'fleet', 'trip', 'buses', 'billing', 'contacts', 'stops', 'stopChanges'].includes(k)), []);
 
 // Changes to a saved trip's stops: by id, times and days and the wait, and nothing that moves a stop.
 const STOP = '3f2b6c1e-8a4d-4e2f-9b1a-7c5d3e2f1a0b';

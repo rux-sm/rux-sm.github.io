@@ -139,9 +139,10 @@ server**.
   refused, with the list, rather than written. A new trip's draft can carry
   its stops, which the editor lays out on the Route tab marked to check: a
   place that is a saved location is set to it, and any other waits to be
-  chosen from its list. Its trip contacts, up to five, each go into their
-  day's contacts on a split trip; the other day's are saved with the trip
-  and named in the notice at the top.
+  chosen from its list. A split's pickup days go on the pickup leg, which
+  the trip's first save makes, and are named in the notice at the top. Its
+  trip contacts, up to five, each go into their day's contacts on a split
+  trip; the other day's are saved with the trip and named in the notice.
 - It cannot mark a trip paid, assign a bus or a driver, or upload, replace
   or delete a document. A drafted PO or signed contract confirms a trip only
   once Save writes it.

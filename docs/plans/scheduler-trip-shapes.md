@@ -167,16 +167,13 @@ None open.
 
 ## Tasks
 
-- [ ] Hold each leg's days, Way, buses and hotel in the editor by its key,
-      with the form showing the leg on screen's, Save writing every leg by
-      its id, and Type's Split replaced by a Way for each leg. The editor
-      already holds its vehicles and route by key and saves its rows by the
-      leg's route or id.
-- [ ] Draw the list of legs over the tabs, and add Add leg and Remove leg.
-- [ ] Move the editor's quote lines' Leg and its contacts, the bar menu's
-      hotel mark, itinerary upload and Mark as told, and
-      `scheduler/print.js`'s marks and quote lines to the legs; and let a
-      draft carry legs and contacts through `scheduler/draft-fields.js`.
+- [ ] Move the editor's quote lines' Leg, its hotel and its contacts, the
+      bar menu's hotel mark, itinerary upload and Mark as told, and
+      `scheduler/print.js`'s marks and quote lines to the legs; let Add leg
+      copy the leg's contacts, and Remove leg take a leg's own files,
+      contacts and quote lines with it, where now it waits for them to be
+      taken off; and let a draft carry legs and contacts through
+      `scheduler/draft-fields.js`, which carries a split's pickup days now.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.
@@ -185,7 +182,8 @@ None open.
       act on the route's vehicles.
 - [ ] Give the editor and the driver card the contact list.
 - [ ] Find how a driver taken off a trip is told now, and tell the drivers
-      of a removed leg the same way.
+      of a removed leg the same way, where now Remove leg waits for them to
+      be taken off on the Buses tab.
 - [ ] Draw each bar with its route's times, its route's name and 2 of 3,
       and give the yard gap and the rest between trips the same times.
 - [ ] Make the trip's Bus rental line, buses times legs priced on its

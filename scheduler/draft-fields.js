@@ -7,6 +7,9 @@
    checked before a draft is parked, and the place the editor puts it:
 
      id, kind    the control it is typed into, and how: text, date, time
+     legs        a leg's days or Way, by the old word of the leg it names:
+                 the drop-off's, or a split's pickup, which a new trip's
+                 first save makes; the form shows only the leg on screen's
      fleet       the trip's first vehicle, its type or the `need` it carries
      trip        a switch the editor keeps on the trip, under `tripKey`
      buses       empty vehicles added on a leg's Buses tab, up to the count
@@ -99,11 +102,11 @@
   const FIELDS = [
     { key: 'destination', value: 'text', id: 'scheduler-f-destination', kind: 'text' },
     { key: 'customer', value: 'text', id: 'scheduler-f-customer', kind: 'text' },
-    { key: 'trip_type', value: 'tripType', id: 'scheduler-f-type', kind: 'select' },
-    { key: 'start_date', value: 'date', id: 'scheduler-f-start', kind: 'date' },
-    { key: 'end_date', value: 'date', id: 'scheduler-f-end', kind: 'date' },
-    { key: 'return_start_date', value: 'date', id: 'scheduler-f-rstart', kind: 'date' },
-    { key: 'return_end_date', value: 'date', id: 'scheduler-f-rend', kind: 'date' },
+    { key: 'trip_type', value: 'tripType', kind: 'legs' },
+    { key: 'start_date', value: 'date', kind: 'legs', leg: 'outbound', end: false },
+    { key: 'end_date', value: 'date', kind: 'legs', leg: 'outbound', end: true },
+    { key: 'return_start_date', value: 'date', kind: 'legs', leg: 'return', end: false },
+    { key: 'return_end_date', value: 'date', kind: 'legs', leg: 'return', end: true },
     { key: 'passengers', value: 'people', id: 'scheduler-f-passengers', kind: 'text' },
     // The email thread's address, behind the Email label's Email thread link.
     { key: 'booking_contact_missive_url', value: 'thread', id: 'scheduler-f-cthread', kind: 'text' },

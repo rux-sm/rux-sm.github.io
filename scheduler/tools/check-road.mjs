@@ -180,6 +180,10 @@ expect('after five minutes it is asked again from where the bus is', [asked, eta
 eta.get('b1', stops[3], at(20));
 await settle();
 expect('another stop is asked at once', asked, 3);
+eta.get('b1', stops[1], at(20));
+eta.get('b1', stops[3], at(20));
+await settle();
+expect('a bus out on two legs asks for each leg\'s stop once, not in turn on every draw', asked, 3);
 expect('a stop or a bus with no point asks nothing', [eta.get('b2', stops[2], at(1)), eta.get('b2', stops[1], null), asked], [null, null, 3]);
 
 // Paths kept between answers.

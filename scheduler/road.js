@@ -27,7 +27,8 @@
 
    `arrivals(drive)` works out when a bus gets to a stop from where it is,
    Geoapify's drive slowed by the office's percent, asked at most once every
-   five minutes for each bus, and again sooner only for another stop.
+   five minutes for each bus and stop, so two legs out on one bus never ask
+   in turn for each other's stop.
    A bus is late only to a pickup, when it gets there more than 10 minutes
    after its spot; every other stop moves with the day, so nobody is told
    how late the bus is to it.
@@ -197,19 +198,21 @@
 
   /* Each bus's arrival at its next stop, as an instant: `get(busId, stop,
      here)` hands back the last one worked out for that bus and stop, and asks
-     again when it is five minutes old, or at once for another stop. `drive`
-     is (from, to) => Promise<minutes | null>, from places.js and the route
-     times; `onChange` is called when an answer comes. */
+     again when it is five minutes old, or at once for a stop not asked yet.
+     Kept by bus and stop, since a bus out on two legs at once asks for two
+     stops on every draw, and an answer that redraws must not set off another
+     ask. `drive` is (from, to) => Promise<minutes | null>, from places.js and
+     the route times; `onChange` is called when an answer comes. */
   function arrivals(drive, onChange, now = () => Date.now()) {
     const known = new Map();
     return {
       get(busId, stop, here) {
         if (!stop?.point || !here) return null;
-        const had = known.get(busId);
-        const same = had?.key === stop.key;
-        if (!same || (!had.asking && now() - had.asked >= ARRIVAL_EVERY)) {
-          const entry = { key: stop.key, asked: now(), asking: true, at: same ? had.at : null };
-          known.set(busId, entry);
+        const id = `${busId}\u0000${stop.key}`;
+        const had = known.get(id);
+        if (!had || (!had.asking && now() - had.asked >= ARRIVAL_EVERY)) {
+          const entry = { asked: now(), asking: true, at: had?.at ?? null };
+          known.set(id, entry);
           Promise.resolve(drive({ lat: here[0], lng: here[1] }, { lat: stop.point[0], lng: stop.point[1] }))
             .then(min => { if (min != null) entry.at = entry.asked + min * 60e3; })
             .catch(() => {})

@@ -158,12 +158,13 @@ None open.
 
 ## Tasks
 
-- [ ] Key the editor's own state by leg id: its vehicles, route, days,
-      hotel, contacts and quote lines, the leg switch and the bar's ref,
-      and save stops and vehicles by route and quote lines and files by
-      leg, where they still go by the old word and the row triggers.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
-      out of Type, and give each leg its round trip or one way; move the bar
+      out of Type, and give each leg its round trip or one way. The editor
+      holds its vehicles, route and days by each leg's key already; its
+      hotel and quote lines, and the stops, vehicles, lines and files it
+      saves, still go by the old word, so they move to the leg's id and
+      route here, with the row triggers filling a route or leg id only where
+      a page sends none; move the bar
       menu's hotel mark, itinerary upload and Mark as told and
       `scheduler/print.js`'s marks and quote lines to the legs; and let a
       draft carry legs and contacts through `scheduler/draft-fields.js`.

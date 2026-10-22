@@ -2186,17 +2186,17 @@
   function fleetOf(trip, creating) {
     const seed = { needs: needsObject(requirementsOf(trip).filter(isVehicleNeed)), vehicleType: trip.vehicle_type ?? null };
     const legs = {};
-    for (const leg of ['outbound', 'return']) {
+    for (const leg of [outKey(), backKey()]) {
       const buses = (trip.trip_assignments || [])
-        .filter(a => wordOfRow(trip, a) === leg)
+        .filter(a => wordOfRow(trip, a) === wordOfLeg(leg))
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map(a => fleetBusOf(trip, a, panelIndex.statuses));
       const outBuses = legFactsOf(trip, 'outbound').buses;
-      const count = leg === 'outbound' ? (outBuses || 1) : (legFactsOf(trip, 'return').buses || outBuses || 1);
+      const count = !isBackKey(leg) ? (outBuses || 1) : (legFactsOf(trip, 'return').buses || outBuses || 1);
       while (buses.length < Math.min(MAX_BUSES, Math.max(1, count))) buses.push(blankBus(seed));
       legs[leg] = buses;
     }
-    if (creating && createBusId) legs.outbound[0].busId = createBusId;
+    if (creating && createBusId) legs[outKey()][0].busId = createBusId;
     return legs;
   }
 
@@ -2216,6 +2216,16 @@
     .map(r => (bus.seats[r.role].status !== 'off' ? `${r.role}:${bus.seats[r.role].status}` : r.role));
 
   const fleetSplit = () => document.getElementById('scheduler-f-type')?.value === SPLIT;
+  /* THE EDITOR'S LEGS, each held by its key: its id once saved, and a
+     stand-in, `new:outbound` or `new:return`, until then. The drop-off is
+     the first, and a split's pickup the one after it. Its vehicles, route,
+     days and hotel are kept by that key; what Save writes still names a leg
+     by its old word, `wordOfLeg`. */
+  const legKeyOf = word => editing?.legs?.find(l => l.word === word)?.key ?? `new:${word}`;
+  const outKey = () => legKeyOf('outbound');
+  const backKey = () => legKeyOf('return');
+  const isBackKey = key => key != null && key === backKey();
+  const wordOfLeg = key => (key == null ? null : isBackKey(key) ? 'return' : 'outbound');
   /* THE LEG ON SCREEN. A trip saved as a split opens on the leg of the bar
      pressed, and the switch over the tabs moves between its two; the Route
      tab, the Buses tab, the trip contacts and a new itinerary are that leg's.
@@ -2223,7 +2233,9 @@
      saved as a split yet, whose pickup leg its first save makes. */
   const legOnScreen = () => (editing && !editing.creating && editing.before.trip_type === SPLIT && fleetSplit()
     ? editing.route.leg : null);
-  const fleetLegs = () => (fleetSplit() ? ['outbound', 'return'] : ['outbound']);
+  // The leg on screen's old word, for what still goes by it: its files, its contacts and a draft's.
+  const viewWord = () => (legOnScreen() == null ? null : wordOfLeg(legOnScreen()));
+  const fleetLegs = () => (fleetSplit() ? [outKey(), backKey()] : [outKey()]);
 
   /* THE TRIP-WIDE NEEDS SUM UP ITS VEHICLES, the ones on the legs it has, so
      the print pages and the connector, which read the trip's columns,
@@ -2238,7 +2250,7 @@
   // stopped being a split in this editor, whose return buses are dropped.
   const fleetLegsToSave = () => {
     const legs = fleetLegs();
-    if (!fleetSplit() && editing?.before.trip_type === SPLIT) legs.push('return');
+    if (!fleetSplit() && editing?.before.trip_type === SPLIT) legs.push(backKey());
     return legs;
   };
 
@@ -2273,7 +2285,7 @@
       want.return = {
         kind: 'one_way', start_date: backStart, end_date: pick('return_end_date', back.to) ?? backStart,
         // A pickup new to the trip takes the buses its Buses tab lists.
-        bus_count: pick('return_bus_count', back.buses ?? editing.fleet?.return?.length ?? want.outbound.bus_count),
+        bus_count: pick('return_bus_count', back.buses ?? editing.fleet?.[backKey()]?.length ?? want.outbound.bus_count),
         hotel_booked: !!pick('hotel_booked_return', back.hotelBooked),
         hotel_itinerary_number: pick('hotel_itinerary_number_return', back.hotelNumber) ?? null,
       };
@@ -2300,25 +2312,25 @@
     const before = editing?.fleetBefore;
     if (!now || !before) return null;
     const work = { trip: {}, legs: [], statuses: false, work: false };
-    const outCount = now.outbound.length;
-    if (outCount !== editing.fleetCounts.outbound || editing.creating) work.trip.bus_count = outCount;
-    if (fleetSplit() && (now.return.length !== editing.fleetCounts.return || editing.creating)) {
-      work.trip.return_bus_count = now.return.length;
+    const outCount = now[outKey()].length;
+    if (outCount !== editing.fleetCounts[outKey()] || editing.creating) work.trip.bus_count = outCount;
+    if (fleetSplit() && (now[backKey()].length !== editing.fleetCounts[backKey()] || editing.creating)) {
+      work.trip.return_bus_count = now[backKey()].length;
     }
     for (const leg of fleetLegsToSave()) {
-      const dropped = leg === 'return' && !fleetSplit();
+      const dropped = isBackKey(leg) && !fleetSplit();
       const buses = dropped ? [] : now[leg];
       const old = before[leg];
       const oldById = new Map(old.filter(b => b.id).map(b => [b.id, b]));
       const keptIds = new Set(buses.filter(b => b.id).map(b => b.id));
       const renumber = buses.length !== old.length || buses.some((b, i) => b.key !== old[i]?.key);
-      const ops = { leg, inserts: [], updates: [], deletes: old.filter(b => b.id && !keptIds.has(b.id)).map(b => b.id) };
+      const ops = { leg: wordOfLeg(leg), inserts: [], updates: [], deletes: old.filter(b => b.id && !keptIds.has(b.id)).map(b => b.id) };
       buses.forEach((b, i) => {
         const prev = b.id ? oldById.get(b.id) : null;
         const roles = activeRolesValue(b);
         if (!prev) {
           if (!busEmpty(b)) {
-            ops.inserts.push({ bus: b, row: { leg, position: i, bus_id: b.busId, active_roles: roles,
+            ops.inserts.push({ bus: b, row: { leg: wordOfLeg(leg), position: i, bus_id: b.busId, active_roles: roles,
               needs: needsObject(needIds(b.needs)), vehicle_type: b.vehicleType ?? null } });
           }
           return;
@@ -2433,7 +2445,7 @@
     if (!work.statuses) return;
     const list = fleetLegs().flatMap(leg => editing.fleet[leg].flatMap(b => ROLES
       .filter(r => seatFilled(b.seats[r.role]))
-      .map(r => ({ driverId: b.seats[r.role].driverId, leg, role: r.role,
+      .map(r => ({ driverId: b.seats[r.role].driverId, leg: wordOfLeg(leg), role: r.role,
                    status: b.seats[r.role].status, dirty: b.seats[r.role].statusDirty }))));
     await write('its driver statuses', client.rpc('sync_trip_driver_statuses', { p_trip_id: tripId, p_statuses: list }));
   }
@@ -2447,7 +2459,7 @@
 
   const fleetLegDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value);
-    if (leg === 'return') {
+    if (isBackKey(leg)) {
       const from = v('scheduler-f-rstart');
       return from ? { from, to: v('scheduler-f-rend') || from } : null;
     }
@@ -2463,9 +2475,9 @@
     // The dates as the form holds them, with the times the trip was saved
     // with, which say the days each leg takes.
     const saved = editing.id != null ? legsOf(panelIndex.trips.get(editing.id) ?? {}) : [];
-    const ranges = Object.fromEntries(['outbound', 'return'].map(l => {
+    const ranges = Object.fromEntries([outKey(), backKey()].map(l => {
       const r = fleetLegDates(l);
-      const times = saved.find(x => x.leg === l);
+      const times = saved.find(x => x.key === l);
       return [l, r && { from: r.from, ends: r.to, depart: times?.depart ?? null, back: times?.back ?? null,
         ...takes(r.from, r.to, times) }];
     }));
@@ -2483,7 +2495,7 @@
       return;
     }
     if (editing !== forTrip) return;
-    fleetClashes = Object.fromEntries(['outbound', 'return']
+    fleetClashes = Object.fromEntries([outKey(), backKey()]
       .map(leg => [leg, fitFor(nearby, ranges[leg], { tripId: editing.id })]));
     drawFleet();
   }
@@ -2976,7 +2988,7 @@
       const over = overSeats(people, seatsTotal(buses.map(b => panelIndex.buses.get(b.busId)?.capacity ?? null)));
       return over ? notice('warning', 'More passengers than seats', `${over.charAt(0).toUpperCase()}${over.slice(1)}.`) : null;
     };
-    for (const leg of ['outbound', 'return']) {
+    for (const leg of [outKey(), backKey()]) {
       const buses = editing.fleet[leg];
       const { list, body } = rowList();
       list.classList.add('scheduler-fleet-list');
@@ -2985,12 +2997,12 @@
       if (buses.length >= MAX_BUSES) add.btn.disabled = true;
       body.appendChild(add.li);
       // One leg's list needs no heading, since the tab names it; a split names each leg.
-      const title = !split ? null : leg === 'outbound' ? 'Drop-off vehicles' : 'Pickup vehicles';
+      const title = !split ? null : !isBackKey(leg) ? 'Drop-off vehicles' : 'Pickup vehicles';
       const sec = section(title, list, assignBestButton(leg));
       const short = seatsShort(buses);
       if (short) { short.dataset.fleetSeats = leg; short.classList.add('scheduler-fleet-seats'); list.before(short); }
       sec.dataset.fleetSection = leg;
-      sec.hidden = (leg === 'return' && !split) || (!!legOnScreen() && leg !== legOnScreen());
+      sec.hidden = (isBackKey(leg) && !split) || (!!legOnScreen() && leg !== legOnScreen());
       panelFleet.appendChild(sec);
     }
     // Done stays the tab's last section.
@@ -3295,7 +3307,7 @@
   // An itinerary added on a split trip is the leg on screen's, and the dialog says which.
   const drawFileTypeLeg = () => {
     if (!fileTypeLeg) return;
-    const leg = pickedFileType() === 'Itinerary' ? legOnScreen() : null;
+    const leg = pickedFileType() === 'Itinerary' ? viewWord() : null;
     fileTypeLeg.hidden = !leg;
     fileTypeLeg.textContent = leg === 'return' ? 'This itinerary goes to the pickup, the leg on screen.'
       : 'This itinerary goes to the drop-off, the leg on screen. The pickup is handed it too until it has its own.';
@@ -3371,7 +3383,7 @@
       }
       askFileType(file.name, async label => {
         add.btn.disabled = true;
-        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name), legOnScreen()); }
+        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name), viewWord()); }
         finally { add.btn.disabled = false; }
       });
     };
@@ -4956,7 +4968,7 @@
     /* EACH LEG READS ITS OWN STOPS, as the printed quote does. The Route tab
        holds one leg at a time, so its fields are that leg's and no other's:
        the open leg is read from them, and the other from its saved rows. */
-    const openLeg = editing?.route?.leg === 'return' ? 'return' : 'outbound';
+    const openLeg = isBackKey(editing?.route?.leg) ? 'return' : 'outbound';
     const savedStops = l => (editing?.stops || []).filter(st => wordOfRow(editing.trip, st) === l)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     // When the group leaves on a leg and when it is let off: the first stop's departure, and the yard row's or the last stop's arrival.
@@ -4976,7 +4988,7 @@
     // first leg and is back on its last.
     const words = leg => {
       const mine = leg === 'return' ? 'return' : 'outbound';
-      const fleet = editing?.fleet?.[mine] ?? [];
+      const fleet = editing?.fleet?.[legKeyOf(mine)] ?? [];
       const start = day(leg === 'return' ? 'scheduler-f-rstart' : 'scheduler-f-start');
       const end = leg === 'return' ? day('scheduler-f-rend') ?? start
         : (split && !leg ? day('scheduler-f-rend') ?? day('scheduler-f-rstart') : day('scheduler-f-end')) ?? start;
@@ -5394,15 +5406,15 @@
   }
   // A leg's buses on the Buses tab. A trip that is not split has one rental,
   // on the outbound leg's count.
-  const legBuses = leg => Math.max(editing?.fleet?.[leg === 'return' ? 'return' : 'outbound']?.length || 0, 1);
+  const legBuses = leg => Math.max(editing?.fleet?.[legKeyOf(leg === 'return' ? 'return' : 'outbound')]?.length || 0, 1);
   // A leg's co-driver seats that are on, which a second driver line counts.
-  const coDrivers = leg => (editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [])
+  const coDrivers = leg => (editing?.fleet?.[legKeyOf(leg === 'return' ? 'return' : 'outbound')] ?? [])
     .filter(b => b.seats?.['co-driver']?.on).length;
   /* Turns the co-driver seat on or off on every bus of a leg, as the Buses
      tab's seat toggle does, for Save to keep. A seat with a driver in it is
      not turned off; the count of those comes back. */
   function setCoDrivers(leg, on) {
-    const buses = editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+    const buses = editing?.fleet?.[legKeyOf(leg === 'return' ? 'return' : 'outbound')] ?? [];
     if (on && !buses.length) {
       toast('info', 'No bus on this leg yet', 'Add one on the Buses tab, then its co-driver.');
       return 0;
@@ -5420,7 +5432,7 @@
   }
   // A leg's relief seats that are on, at the start or the end, on any bus:
   // each is a relief driver, charged on its own.
-  const reliefSeats = leg => (editing?.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [])
+  const reliefSeats = leg => (editing?.fleet?.[legKeyOf(leg === 'return' ? 'return' : 'outbound')] ?? [])
     .reduce((n, b) => n + (b.seats?.['relief-start']?.on ? 1 : 0) + (b.seats?.['relief-end']?.on ? 1 : 0), 0);
   const lineQty = l => (l.kind === 'rental' ? legBuses(l.leg)
     : l.kind === 'second_driver' && linesLive && coDrivers(l.leg) > 0 ? coDrivers(l.leg)
@@ -5503,7 +5515,7 @@
   function legFigures(leg) {
     const l = leg === 'return' ? 'return' : 'outbound';
     const r = editing?.route;
-    const mine = r?.leg === l;
+    const mine = !!r && wordOfLeg(r.leg) === l;
     const stops = (editing?.stops || []).filter(st => wordOfRow(editing.trip, st) === l);
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
@@ -6127,8 +6139,8 @@
   // The leg's dates as the Details tab has them now.
   const routeDates = leg => {
     const v = id => isoOrNull(document.getElementById(id)?.value ?? '');
-    const from = leg === 'return' ? v('scheduler-f-rstart') : v('scheduler-f-start');
-    const to = leg === 'return' ? (v('scheduler-f-rend') ?? from) : (v('scheduler-f-end') ?? from);
+    const from = isBackKey(leg) ? v('scheduler-f-rstart') : v('scheduler-f-start');
+    const to = isBackKey(leg) ? (v('scheduler-f-rend') ?? from) : (v('scheduler-f-end') ?? from);
     return { from, to };
   };
   const placeOf = row => (row ? { name: row.name ?? null, address: row.address ?? null,
@@ -6218,7 +6230,7 @@
     const r = editing?.route;
     const wanted = routeWanted();
     if (!r || !wanted) return { updates: [], inserts: [], work: false };
-    const legEmpty = !r.all.some(x => x.leg === r.leg);
+    const legEmpty = !r.all.some(x => x.leg === wordOfLeg(r.leg));
     if (r.listTouched && ((r.pickup && r.back) || (legEmpty && r.list.length))) return listRoutePlan(wanted);
     const { from, to } = routeDates(r.leg);
     const datesMoved = !same(from, r.from) || !same(to, r.to);
@@ -6304,20 +6316,20 @@
         ? drives(r.dropDrive, r.dropMiles) : {}),
     });
 
-    const legRows = r.all.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const legRows = r.all.filter(x => x.leg === wordOfLeg(r.leg)).sort((a, b) => a.position - b.position);
     /* A leg with no rows yet, a trip not saved or a return leg not started,
        has every row new: the pickup, the stops, the drop-off and the yard, in
        that order. An outbound leg goes before the return leg's rows, which
        move down to make room; a return leg goes after the outbound's. */
     if (!legRows.length) {
-      const others = r.all.filter(x => x.leg !== r.leg);
+      const others = r.all.filter(x => x.leg !== wordOfLeg(r.leg));
       const yard = { name: yardPlace?.name ?? 'Yard', address: yardPlace?.address ?? null,
                      lat: yardPlace?.lat ?? null, lng: yardPlace?.lng ?? null };
       const rows = [{ type: 'pickup', ...wanted.pickup },
         ...list.map((st, i) => ({ type: 'stop', ...stopWant(st, i) })),
         ...(needDrop ? [{ type: 'stop', ...dropWant() }] : []),
         { type: 'return', ...yard, ...wanted.ret }];
-      const before = r.leg === 'outbound' && others.length;
+      const before = !isBackKey(r.leg) && others.length;
       const start = before ? Math.min(...others.map(x => x.position))
         : others.reduce((n, x) => Math.max(n, x.position), -1) + 1;
       return {
@@ -6356,7 +6368,7 @@
     const inserts = [];
     if (delta) {
       const last = legRows.at(-1).position;
-      for (const x of r.all.filter(x => x.leg !== r.leg && x.position > last)) {
+      for (const x of r.all.filter(x => x.leg !== wordOfLeg(r.leg) && x.position > last)) {
         updates.push({ id: x.id, patch: { position: x.position + delta } });
       }
     }
@@ -6420,7 +6432,7 @@
       }
       for (const ins of planned.inserts) {
         await write('its route', client.from('trip_stops')
-          .insert({ trip_id: tripId, leg: r.leg, position: ins.position, ...ins.row }));
+          .insert({ trip_id: tripId, leg: wordOfLeg(r.leg), position: ins.position, ...ins.row }));
       }
       return;
     }
@@ -6429,7 +6441,7 @@
       await write('its route', client.from('trip_stops').update(u.patch).eq('id', u.id));
     }
     const rows = (r?.all ?? []).map(x => ({ ...x }));
-    const legRows = () => rows.filter(x => x.leg === r.leg).sort((a, b) => a.position - b.position);
+    const legRows = () => rows.filter(x => x.leg === wordOfLeg(r.leg)).sort((a, b) => a.position - b.position);
     const top = () => rows.reduce((n, x) => Math.max(n, x.position), -1);
     for (const ins of inserts) {
       const mine = legRows();
@@ -6446,8 +6458,8 @@
         await write('its route', client.from('trip_stops').update({ position: x.position }).eq('id', x.id));
       }
       const saved = await write('its route', client.from('trip_stops')
-        .insert({ trip_id: tripId, leg: r.leg, position: pos, ...ins.row }).select('id').single());
-      rows.push({ id: saved.id, leg: r.leg, type: ins.row.type, position: pos });
+        .insert({ trip_id: tripId, leg: wordOfLeg(r.leg), position: pos, ...ins.row }).select('id').single());
+      rows.push({ id: saved.id, leg: wordOfLeg(r.leg), type: ins.row.type, position: pos });
     }
   }
 
@@ -6460,7 +6472,7 @@
      its pickup, drop-off and yard rows after the drop-off leg's. */
   async function mirrorPickupLeg(tripId, write) {
     const r = editing?.route;
-    if (!r || r.leg !== 'outbound' || !splitNow()) return;
+    if (!r || isBackKey(r.leg) || !splitNow()) return;
     const has = p => !!(p && (p.name || p.address));
     const from = r.dropPlace;
     const to = r.pickupPlace;
@@ -6617,7 +6629,7 @@
       const c = editing.route?.check;
       if (!c) return ['a route'];
       // A split trip names the leg on screen, as it names the other.
-      const on = fleetSplit() ? ` on ${editing.route.leg === 'return' ? 'the pickup leg' : 'the drop-off leg'}` : '';
+      const on = fleetSplit() ? ` on ${isBackKey(editing.route.leg) ? 'the pickup leg' : 'the drop-off leg'}` : '';
       if (!c.pickup) out.push(`a pickup place${on}`);
       if (!c.drop) out.push(`a drop-off place${on}`);
       if (c.unlocated) out.push(`a place for ${plural(c.unlocated, 'stop', 'stops')}${on}`);
@@ -6630,7 +6642,7 @@
     if (tab === 'buses') {
       for (const leg of fleetLegs()) {
         const list = editing.fleet?.[leg] ?? [];
-        const where = fleetSplit() ? (leg === 'return' ? ' on the pickup leg' : ' on the drop-off leg') : '';
+        const where = fleetSplit() ? (isBackKey(leg) ? ' on the pickup leg' : ' on the drop-off leg') : '';
         if (!list.length) { out.push(`a bus${where}`); continue; }
         const open = list.filter(b => b.busId == null).length;
         if (open) out.push(`${plural(open, 'bus', 'buses')} to assign${where}`);
@@ -6644,11 +6656,12 @@
     if (editing.linesLoaded === false || !linesLive) return ['the quote lines'];
     const lines = linesToSave();
     for (const leg of fleetLegs()) {
-      const where = fleetSplit() ? (leg === 'return' ? ' for the pickup leg' : ' for the drop-off leg') : '';
-      const onLeg = kind => lines.some(l => l.kind === kind && (l.leg ?? 'outbound') === leg);
+      const where = fleetSplit() ? (isBackKey(leg) ? ' for the pickup leg' : ' for the drop-off leg') : '';
+      const word = wordOfLeg(leg);
+      const onLeg = kind => lines.some(l => l.kind === kind && (l.leg ?? 'outbound') === word);
       if (!onLeg('rental')) out.push(`a Bus rental line${where}`);
-      if (coDrivers(leg) > 0 && !onLeg('second_driver')) out.push(`a Second driver line${where}`);
-      if (reliefSeats(leg) > 0 && !onLeg('relief')) out.push(`a Relief driver line${where}`);
+      if (coDrivers(word) > 0 && !onLeg('second_driver')) out.push(`a Second driver line${where}`);
+      if (reliefSeats(word) > 0 && !onLeg('relief')) out.push(`a Relief driver line${where}`);
     }
     if (editing.hotelWanted && !lines.some(l => l.kind === 'hotel')) out.push('a Hotel line');
     const quoted = money(document.getElementById('scheduler-f-quoted')?.value);
@@ -6661,7 +6674,7 @@
      saved rows by the same rules: every place found, the times in, and the
      drives measured. */
   function otherLegMissing(r) {
-    const name = r.leg === 'return' ? 'the drop-off leg' : 'the pickup leg';
+    const name = isBackKey(r.leg) ? 'the drop-off leg' : 'the pickup leg';
     const rows = r.otherStops || [];
     if (!rows.length) return [`${name}'s route`];
     const pickup = rows.find(x => x.type === 'pickup') ?? null;
@@ -6891,7 +6904,7 @@
       btn.disabled = pickup && !ready;
       btn.title = btn.disabled ? 'The pickup opens once the trip is saved as a split' : '';
     }
-    const on = legSwitch.querySelector(`[data-leg="${legOnScreen() || 'outbound'}"]`);
+    const on = legSwitch.querySelector(`[data-leg="${viewWord() || 'outbound'}"]`);
     window.Rux?.contentSwitcher?.select?.(legSwitch, on, { focus: false, silent: true });
   }
   // The editor on another leg, by its key, from its bar where the week shows one.
@@ -6954,6 +6967,8 @@
     const outLeg = legFactsOf(trip, 'outbound');
     const backLeg = legFactsOf(trip, 'return');
     editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, legKey: named?.key ?? legName,
+      // The trip's saved legs that have an old word, each held by its id; see `legKeyOf`.
+      legs: creating ? [] : SHAPE.legsOf(trip).filter(l => l.word).map(l => ({ key: l.id, word: l.word })),
       /* What the trip already answered, whether or not the editor draws a tag
          for it: a save merges its own tags over this, so a requirement the
          office has since deactivated keeps its answer. */
@@ -7079,7 +7094,7 @@
       const { from, to } = leg === 'return' ? backLeg : outLeg;
       const dates = { from, to: to ?? from };
       return {
-        leg, pickup, first, drop, back, inner, ...dates,
+        leg: legKeyOf(leg), pickup, first, drop, back, inner, ...dates,
         between: inner.length,
         // The other leg's rows whole, which a split trip's pickup leg is filled from.
         otherStops: creating ? [] : stopsOfLeg(trip, leg === 'return' ? 'outbound' : 'return').stops,
@@ -7213,7 +7228,7 @@
     busWrap.append(busInput, busControls);
     busNumber.append(busLabel, busWrap);
     busCount.appendChild(busNumber);
-    const busLeg = () => legOnScreen() ?? 'outbound';
+    const busLeg = () => legOnScreen() ?? outKey();
     busCountDrawn = () => {
       const list = editing?.fleet?.[busLeg()];
       if (!list) return;
@@ -7365,7 +7380,7 @@
          drop-off's, to read, under Same as drop-off, and Add pickup contact
          starts its own. Both legs share the five slots, and a slot the other
          leg holds is never drawn here, so it saves as it opened. */
-      const view = legOnScreen();
+      const view = viewWord();
       const savedIn = n => !creating && !!slotOf(trip, n);
       const lastHeld = [1, 2, 3, 4, 5].filter(savedIn).at(-1) ?? 0;
       // A slot is the pickup's or else the drop-off's, as trip-shape.js reads it.
@@ -7709,7 +7724,7 @@
          fields are empty, the way a pick from the search would. */
       r.fillPickup = place => {
         // A return leg's pickup is the destination, never the customer's own.
-        if (r.leg === 'return') return;
+        if (isBackKey(r.leg)) return;
         if (val('scheduler-f-pickup') || val('scheduler-f-pickupname')) return;
         setVal('scheduler-f-pickup', place.address ?? '');
         pickPickup({ name: place.name, address: place.address, lat: place.lat, lng: place.lng,
@@ -7900,7 +7915,7 @@
       /* Stops can be added to a leg with its rows, or to one with none yet,
          whose Save writes them all. An older leg with some rows but no
          pickup or yard row has nowhere to put one. */
-      const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === r.leg);
+      const canList = !!(r.pickup && r.back) || !r.all.some(x => x.leg === wordOfLeg(r.leg));
       const listNote = routeNote(canList ? '' : "This leg has no pickup or yard row, so stops can't be added here.");
       // A change to the route times redraws the figures; a new spot applies when Departs is next typed.
       routeTimesDrawn = () => drawTotals();
@@ -8431,7 +8446,7 @@
          needs a sleeper. */
       function takeSleeperRest(stop) {
         stop.dwell = 'sleeper';
-        for (const b of editing?.fleet?.[r.leg === 'return' ? 'return' : 'outbound'] ?? []) {
+        for (const b of editing?.fleet?.[r.leg] ?? []) {
           b.needs = needsObject(new Set([...needIds(b.needs), 'sleeper']));
         }
         drawFleet();
@@ -8462,7 +8477,7 @@
            as Get from Samsara or the nightly run found them, a bus's number
            first where the leg has more than one; a leg with neither shows
            nothing here. */
-        const legBuses = editing?.fleet?.[r.leg === 'return' ? 'return' : 'outbound'] ?? [];
+        const legBuses = editing?.fleet?.[r.leg] ?? [];
         const actual = legBuses.filter(b => b.yardDepartAt || b.yardReturnAt).map(b => {
           const row = el('dl', 'scheduler-figures');
           const at = iso => {
@@ -8566,11 +8581,11 @@
            many do not; the Buses tab holds the seat, and the quote follows
            it. */
         const { over } = fig;
-        const legFleet = editing?.fleet?.[r.leg === 'return' ? 'return' : 'outbound'] ?? [];
+        const legFleet = editing?.fleet?.[r.leg] ?? [];
         const without = legFleet.filter(b => b.seats?.['co-driver'] && !b.seats['co-driver'].on).length;
-        const some = coDrivers(r.leg) > 0
+        const some = coDrivers(wordOfLeg(r.leg)) > 0
           ? ` ${without} of the leg's ${legFleet.length} buses ${without === 1 ? 'has' : 'have'} no co-driver seat.` : '';
-        if (over && (coDrivers(r.leg) === 0 || without > 0)) {
+        if (over && (coDrivers(wordOfLeg(r.leg)) === 0 || without > 0)) {
           const why = over.drive > 600 ? `${hm(over.drive)} driving` : `${hm(over.span - over.rest)} on duty less rest`;
           /* A NIGHT OFF DUTY COMES FIRST, then the sleeper rest, where either
              is enough. Nights at a stop left on duty, counted as off duty as a
@@ -8581,7 +8596,7 @@
              is the one offer. */
           const nights = nightRests();
           const rest = nights.length ? null : sleeperRest();
-          const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(r.leg, true) };
+          const coDriver = { label: 'Add co-driver', onClick: () => setCoDrivers(wordOfLeg(r.leg), true) };
           const where = n => n.stop.place?.name || 'the stop';
           const nightWords = nights.length === 1 ? `the night at ${where(nights[0])}`
             : `the ${nights.length} nights at ${[...new Set(nights.map(where))].join(' and ')}`;
@@ -8663,7 +8678,7 @@
          A pickup leg with neither place yet takes both from the drop-off leg
          as saved, and Save keeps them; either can be changed first. */
       const hasPlace = p => !!(p && (p.name || p.address));
-      if (!creating && r.leg === 'return' && splitNow() && !hasPlace(r.pickupPlace) && !hasPlace(r.dropPlace)) {
+      if (!creating && isBackKey(r.leg) && splitNow() && !hasPlace(r.pickupPlace) && !hasPlace(r.dropPlace)) {
         const out = stopsOfLeg(trip, 'outbound').stops;
         const outPickup = placeOf(out.find(x => x.type === 'pickup'));
         const outDrop = placeOf(out.filter(x => x.type === 'stop').at(-1));
@@ -9088,7 +9103,8 @@
       };
       const droveName = d => (d.driver_id ? seatName(d.driver_id) : roadShort(d.name));
       const busFound = busId => samsaraFound?.buses.find(b => b.bus_id === busId) ?? null;
-      const legFound = (busId, leg) => busFound(busId)?.legs.find(l => l.leg === leg) ?? null;
+      // A bus's answer on a leg, named by the leg's id, or its old word while it has no id.
+      const legFound = (busId, leg) => busFound(busId)?.legs.find(l => (l.leg_id ? l.leg_id === leg : l.leg === wordOfLeg(leg))) ?? null;
       /* Who Samsara saw drive a bus on a leg, or null when it could not say:
          the leg's own answer, or the bus's where it is on that leg alone. */
       const droveOn = (busId, leg) => legFound(busId, leg)?.drivers
@@ -9129,7 +9145,7 @@
             const pickup = pickupOf(b, leg);
             if (!seats.length && !found && !pickup.line) return;
             const bus = b.busId ? panelIndex?.buses?.get(b.busId) : null;
-            const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (leg === 'return' ? ', pickup' : ', drop-off') : ''}`;
+            const name = `${bus ? vehicleName(bus) : 'No bus yet'}${split ? (isBackKey(leg) ? ', pickup' : ', drop-off') : ''}`;
             const odometer = found?.miles ?? null;
             // The tile's title line, as a Buses tile's: the bus, and its miles or why none.
             const head = el('div', 'scheduler-item__line');
@@ -9355,7 +9371,7 @@
        cell starts on that cell's bus. */
     editing.fleet = fleetOf(trip, creating);
     editing.fleetBefore = cloneFleet(editing.fleet);
-    editing.fleetCounts = { outbound: editing.fleet.outbound.length, return: editing.fleet.return.length };
+    editing.fleetCounts = Object.fromEntries([outKey(), backKey()].map(k => [k, editing.fleet[k].length]));
     fleetClashes = null;
     fleetClashKey = '';
     drawFleet();
@@ -11631,7 +11647,7 @@
     const usual = needIds(customer.usual_reqs).filter(isVehicleNeed);
     const type = customer.usual_vehicle_type || null;
     if (!usual.length && !type) return;
-    for (const leg of ['outbound', 'return']) {
+    for (const leg of [outKey(), backKey()]) {
       for (const b of editing.fleet?.[leg] ?? []) {
         b.needs = needsObject(new Set([...needIds(b.needs), ...usual]));
         if (type && !b.vehicleType) b.vehicleType = type;
@@ -11875,7 +11891,7 @@
       /* The fleet is written last, because its rows need the trip to exist. If
          that write fails the trip stands, in the Unassigned row, and the
          message says so. */
-      const onBus = !!editing.fleet?.outbound.some(b => b.busId);
+      const onBus = !!editing.fleet?.[outKey()].some(b => b.busId);
       // An edit to a time alone leaves the trip patch empty, and an empty
       // update is skipped rather than sent.
       const tripWork = creating || Object.keys(row || {}).length > 0;
@@ -14022,7 +14038,7 @@
     const trip = editing?.id;
     await Promise.race([editing?.route?.drivesFound, new Promise(done => setTimeout(done, 3000))]);
     if (editing?.id !== trip) return;
-    const leg = bar ? bar.dataset.leg : editing?.route?.leg ?? panelArgs?.ref?.leg;
+    const leg = bar ? bar.dataset.leg : (editing?.route ? wordOfLeg(editing.route.leg) : panelArgs?.ref?.leg);
     const facts = calcFacts(leg);
     const params = new URLSearchParams();
     if (facts.miles) params.set('miles', facts.miles.join(','));
@@ -14125,8 +14141,8 @@
        kept: the Route tab may have moved to the other leg since, and its leg
        is used only where the calculator was filled from no leg of this trip. */
     const filled = calcFor && String(calcFor.trip) === String(editing.id) ? calcFor.leg : null;
-    const leg = splitNow() ? ((filled ?? editing.route?.leg) === 'return' ? 'return' : 'outbound') : null;
-    const buses = editing.fleet?.[leg === 'return' ? 'return' : 'outbound'] ?? [];
+    const leg = splitNow() ? ((filled ?? wordOfLeg(editing.route?.leg)) === 'return' ? 'return' : 'outbound') : null;
+    const buses = editing.fleet?.[legKeyOf(leg === 'return' ? 'return' : 'outbound')] ?? [];
     // The Buses tab's co-driver seats follow the calculator's drivers, but a
     // seat with a driver in it is not turned off.
     const seatsBefore = coDrivers(leg);
@@ -16998,12 +17014,12 @@
         const split = document.getElementById('scheduler-f-type')?.value === SPLIT;
         const { elsewhere, full } = detailsTakeContacts(value, split);
         const named = cs => cs.map(c => [c.name, c.phone].filter(Boolean).join(', ')).join('; ');
-        const other = legOnScreen() === 'return' ? 'Drop-off' : 'Pickup';
+        const other = viewWord() === 'return' ? 'Drop-off' : 'Pickup';
         if (elsewhere.length) {
           said.push(`${other} ${elsewhere.length === 1 ? 'contact' : 'contacts'} filled in too, and saved with the trip: `
             + `${named(elsewhere)}. Check ${elsewhere.length === 1 ? 'it' : 'them'} on ${other} after Save.`);
         }
-        const pickup = !legOnScreen() && split ? value.filter(c => c.leg === 'return' && !full.includes(c)) : [];
+        const pickup = !viewWord() && split ? value.filter(c => c.leg === 'return' && !full.includes(c)) : [];
         if (pickup.length) said.push(`For the pickup: ${named(pickup)}. The rest are the drop-off's.`);
         if (full.length) missed.push([key, `${named(full)}, with no contact slot left of the trip's five`]);
         continue;
@@ -17023,7 +17039,7 @@
         continue;
       }
       if (control?.kind === 'buses') {
-        const list = control.leg === 'return' && !fleetSplit() ? null : editing?.fleet?.[control.leg];
+        const list = control.leg === 'return' && !fleetSplit() ? null : editing?.fleet?.[legKeyOf(control.leg)];
         const want = Math.floor(Number(value));
         if (!list || !(want >= 1)) { missed.push([key, value]); continue; }
         let added = 0;
@@ -17035,7 +17051,7 @@
         continue;
       }
       if (control?.kind === 'fleet') {
-        const first = editing?.fleet?.outbound?.[0];
+        const first = editing?.fleet?.[outKey()]?.[0];
         if (!first) { missed.push([key, value]); continue; }
         if (control.need) {
           const next = new Set(needIds(first.needs));

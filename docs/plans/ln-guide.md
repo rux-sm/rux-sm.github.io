@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, turn each side task of `maps/tasks.md` that has steps into a
-      task file.
 - [ ] In atlas, set the one shape for a question in `standards/`, with its
       check, and rewrite each task's questions into it.
 - [ ] In atlas, move source citations out of reader sentences into the

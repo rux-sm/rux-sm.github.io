@@ -1,0 +1,199 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "cancel-shipment",
+  "title": "Cancel Shipments",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Shipments ➔ Cancel Shipments",
+  "session": "Cancel Shipments",
+  "sessionCode": "whinh4230m500",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order."
+      }
+    ],
+    "text": "Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first"
+                }
+              ],
+              "text": "check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "select the shipment, one of its lines or its load, and choose Cancel on the Actions menu"
+                }
+              ],
+              "text": "select the shipment, one of its lines or its load, and choose Cancel on the Actions menu"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+                }
+              ],
+              "text": "in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment"
+                }
+              ],
+              "text": "a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

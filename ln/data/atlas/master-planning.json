@@ -1,0 +1,131 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "master-planning",
+  "title": "Generate Master Planning",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Planning ➔ Master Planning ➔ Generate Master Planning",
+  "session": "Generate Master Planning",
+  "sessionCode": "cprmp1202m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Work out a supply plan per period for the items planned by a master plan."
+      }
+    ],
+    "text": "Work out a supply plan per period for the items planned by a master plan."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+                }
+              ],
+              "text": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+                }
+              ],
+              "text": "production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

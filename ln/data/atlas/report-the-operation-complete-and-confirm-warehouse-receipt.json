@@ -1,5 +1,5 @@
 {
-  "contract": 18,
+  "contract": 19,
   "tier": "export",
   "kind": "task",
   "id": "report-the-operation-complete-and-confirm-warehouse-receipt",

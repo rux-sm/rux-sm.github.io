@@ -101,7 +101,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="495bf36f3bc3cda6dcfbca68234a8001c424a871">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-12">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -159,88 +159,7 @@
 <h2 class="rux--type-productive-heading-03" id="other">Other tasks</h2>
 <p class="ln-quiet">Done beside the processes. One with no steps written yet says so.</p>
 </div>
-<ul class="ln-list"><li id="std-cost"><b>Calculate Standard Cost</b><p class="ln-quiet">Not documented yet.</p></li><li id="revisions"><b>Item Engineering Revisions</b><p class="ln-quiet">Not documented yet.</p></li><li id="alt-items"><b>Alternative Items</b><p class="ln-quiet">Not documented yet.</p></li><li id="mass-change"><b>Mass Change Item Assignments</b><p class="ln-quiet">Not documented yet.</p></li><li id="business-partner"><b>Business Partners</b><p class="ln-quiet">Not documented yet.</p></li><li id="planning-clusters"><b>Planning Clusters</b><p class="ln-quiet">Not documented yet.</p></li><li id="calendars"><b>Non-working Days</b><p class="ln-quiet">Not documented yet.</p></li><li id="price-books"><b>Price Books</b><p class="ln-quiet">Not documented yet.</p></li><li id="change-order-line"><b>Change or cancel an order line</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-change-order-line">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Change or cancel a sales order line after it is entered.</p>
-        <ol class="ln-side"><li>change or cancel the line on the sales order; once it is released, the warehouse decides whether that is still allowed</li><li>if the change is allowed, the outbound line follows it, and its advice and picking list are deleted</li><li>if cancelling is no longer allowed, finish the shipment with a shipped quantity of 0 and return the goods to stock with a transfer order</li><li>a line that already has a shipment cancels only after Allow Changes to Shipment is cleared on that shipment</li><li>cancelling a line that is already advised asks whether its advice is deleted; on yes the line ends as Shipped with a shipped quantity of 0</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="change-line-date"><b>Change a line's date or quantity</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-change-line-date">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p>
-        <ol class="ln-side"><li>with no delivery lines linked, change the planned delivery date or the ordered quantity on the order line</li><li>with delivery lines linked, the date on the order line is disabled; change it on the delivery lines, or on the order header, which removes the delivery lines after a warning</li><li>changing the ordered quantity on the order line removes every linked delivery line; once one of them is delivered, change the quantity on the delivery line instead</li><li>where the CTP check for sales is on, LN refuses a new date the item is not available on</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="rush-order"><b>Rush an order</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-rush-order">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Give a sales order, or one line of it, the highest priority through the warehouse.</p>
-        <ol class="ln-side"><li>choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1</li><li>release it to warehousing, where its outbound lines are advised and processed before any others</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="direct-delivery"><b>Direct delivery</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-direct-delivery">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Have the supplier deliver straight to the customer, so that Warehousing is not involved.</p>
-        <ol class="ln-side"><li>set the line's delivery type to Direct Delivery, by hand or from the shortage menu that appears when stock is short</li><li>generate the purchase order for the line, from a purchase order advice or directly</li><li>record the supplier's receipt in Procurement and send the delivery back to the sales order</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="cross-docking"><b>Cross-docking</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-cross-docking">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location.</p>
-        <ol class="ln-side"><li>set the line's delivery type to Cross-docking, by hand or from the shortage menu that appears when stock is short</li><li>generate the purchase order for the line, from a purchase order advice or directly</li><li>release the purchase order and the sales order to warehousing</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="release-block"><b>Blocked release</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-release-block">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Stop a sales order line from releasing.</p>
-        <ol class="ln-side"><li>read why it is blocked: an order over the credit limit, overdue invoices, a margin exceeded, a failed export or letter-of-credit check, or a reason someone set by hand</li><li>release it in <span class="ln-t-named">Blocked Sales Order (Lines)</span> <span class="ln-t-exact">tdsls4520m000</span>, a session in neither menu extract</li><li>a user can release only the kinds of hold their profile allows, set in <span class="ln-t-named">User Profiles</span> <span class="ln-t-exact">tdsls0139m000</span>, <span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>General</span><span class="sep">➔</span><span class="dest">User Profiles</span></span></li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="returns"><b>Sales returns</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-returns">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Take goods back from a customer.</p>
-        <ol class="ln-side"><li>set up a return order type in <span class="ln-t-named">Order Types</span> <span class="ln-t-exact">tdsls0594m000</span>, <span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Types</span></span>, as Return Inventory or Return Rejects, with a warehousing order type that receives</li><li>create a sales order of that type, and give it the original document and a return reason</li><li>copy the lines from the original document; they arrive with a negative quantity and amount</li><li>approve the order and release it to warehousing, which receives the goods</li><li>release it to invoicing, then process it</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="quotations"><b>Quotes</b><p class="ln-quiet">Not documented yet.</p></li><li id="sales-contracts"><b>Sales contracts</b><p class="ln-quiet">Not documented yet.</p></li><li id="project-pegging"><b>Contract deliverables</b><p class="ln-quiet">Not documented yet.</p></li><li id="requisition"><b>Requisitions</b><p class="ln-quiet">Not documented yet.</p></li><li id="rfq"><b>Request for Quotations</b><p class="ln-quiet">Not documented yet.</p></li><li id="purchase-contracts"><b>Purchase contracts</b><p class="ln-quiet">Not documented yet.</p></li><li id="approved-suppliers"><b>Approved Supplier List</b><p class="ln-quiet">Not documented yet.</p></li><li id="supplier-returns"><b>Return to supplier</b><p class="ln-quiet">Not documented yet.</p></li><li id="plan-all"><b>Generate Order Planning</b><p class="ln-quiet">Not documented yet.</p></li><li id="master-planning"><b>Generate Master Planning</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-master-planning">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Work out a supply plan per period for the items planned by a master plan.</p>
-        <ol class="ln-side"><li>run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</li><li>production and purchase count as sources only where the item's Production Plan or Purchase Plan is set to Generate or Always Update</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="exception-messages"><b>Exception Messages by Planner</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-exception-messages">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>List what planning says about the orders that already exist.</p>
-        <ol class="ln-side"><li>planning compares the receipts that exist with what is needed, and raises a message where they differ</li><li>a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs</li><li>a tolerance in days, set per message type, keeps small shifts quiet</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="confirm-planned"><b>Confirm Order Planning</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
+<ul class="ln-list"><li id="std-cost"><b>Calculate Standard Cost</b><p class="ln-quiet">Not documented yet.</p></li><li id="revisions"><b>Item Engineering Revisions</b><p class="ln-quiet">Not documented yet.</p></li><li id="alt-items"><b>Alternative Items</b><p class="ln-quiet">Not documented yet.</p></li><li id="mass-change"><b>Mass Change Item Assignments</b><p class="ln-quiet">Not documented yet.</p></li><li id="business-partner"><b>Business Partners</b><p class="ln-quiet">Not documented yet.</p></li><li id="planning-clusters"><b>Planning Clusters</b><p class="ln-quiet">Not documented yet.</p></li><li id="calendars"><b>Non-working Days</b><p class="ln-quiet">Not documented yet.</p></li><li id="price-books"><b>Price Books</b><p class="ln-quiet">Not documented yet.</p></li><li id="change-order-line"><b><a class="rux--link" href="../do/change-order-line.html"><span>Change or cancel an order line</span></a></b><p class="ln-quiet">Change or cancel a sales order line after it is entered.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="change-line-date"><b><a class="rux--link" href="../do/change-line-date.html"><span>Change a line's date or quantity</span></a></b><p class="ln-quiet">Move a sales order line's delivery date, or change its quantity, once the line is split into delivery lines.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="rush-order"><b><a class="rux--link" href="../do/rush-order.html"><span>Rush an order</span></a></b><p class="ln-quiet">Give a sales order, or one line of it, the highest priority through the warehouse.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="direct-delivery"><b><a class="rux--link" href="../do/direct-delivery.html"><span>Direct delivery</span></a></b><p class="ln-quiet">Have the supplier deliver straight to the customer, so that Warehousing is not involved.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="cross-docking"><b><a class="rux--link" href="../do/cross-docking.html"><span>Cross-docking</span></a></b><p class="ln-quiet">Fill a sales order that has no stock by taking inbound goods straight from receipt to the staging location.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="release-block"><b><a class="rux--link" href="../do/release-block.html"><span>Blocked release</span></a></b><p class="ln-quiet">Stop a sales order line from releasing.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="returns"><b><a class="rux--link" href="../do/returns.html"><span>Sales returns</span></a></b><p class="ln-quiet">Take goods back from a customer.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="quotations"><b>Quotes</b><p class="ln-quiet">Not documented yet.</p></li><li id="sales-contracts"><b>Sales contracts</b><p class="ln-quiet">Not documented yet.</p></li><li id="project-pegging"><b>Contract deliverables</b><p class="ln-quiet">Not documented yet.</p></li><li id="requisition"><b>Requisitions</b><p class="ln-quiet">Not documented yet.</p></li><li id="rfq"><b>Request for Quotations</b><p class="ln-quiet">Not documented yet.</p></li><li id="purchase-contracts"><b>Purchase contracts</b><p class="ln-quiet">Not documented yet.</p></li><li id="approved-suppliers"><b>Approved Supplier List</b><p class="ln-quiet">Not documented yet.</p></li><li id="supplier-returns"><b>Return to supplier</b><p class="ln-quiet">Not documented yet.</p></li><li id="plan-all"><b>Generate Order Planning</b><p class="ln-quiet">Not documented yet.</p></li><li id="master-planning"><b><a class="rux--link" href="../do/master-planning.html"><span>Generate Master Planning</span></a></b><p class="ln-quiet">Work out a supply plan per period for the items planned by a master plan.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="exception-messages"><b><a class="rux--link" href="../do/exception-messages.html"><span>Exception Messages by Planner</span></a></b><p class="ln-quiet">List what planning says about the orders that already exist.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="confirm-planned"><b>Confirm Order Planning</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="side-confirm-planned">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -267,34 +186,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Issue the material and report the work done.</p>
         <ol class="ln-side"><li>issue the material</li><li>report the operations and the order completed</li></ol></div></div>
   </li>
-</ul></li><li id="report-serialized"><b>Report a serialized item completed</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-report-serialized">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Report a serialized end item completed, so that the right serial number is the one booked.</p>
-        <ol class="ln-side"><li>find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual</li><li>Automatic, one item: on the last operation enter the quantity completed and its serial number, then save</li><li>Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed</li><li>Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned</li><li>Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="cancel-production"><b>Cancel Production Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="close-production"><b>Close Production Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="backflush"><b>Backflush Materials and Hours</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-backflush">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Let LN issue the material by itself, as the work is reported.</p>
-        <ol class="ln-side"><li>a backflushed material is issued when a quantity of the end product is reported completed or rejected</li><li>only the materials linked to the operations reported are issued; on an order with no operations, all of them are</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="subcontract"><b>Subcontract Operations</b><p class="ln-quiet">Not documented yet.</p></li><li id="repetitive"><b>Production Schedules</b><p class="ln-quiet">Not documented yet.</p></li><li id="inspection"><b>Inspections Overview</b><p class="ln-quiet">Not documented yet.</p></li><li id="putaway"><b>Generate Inbound Advice</b><p class="ln-quiet">Not documented yet.</p></li><li id="advice-variants"><b>Undo or standalone advice</b><p class="ln-quiet">Not documented yet.</p></li><li id="cancel-shipment"><b>Cancel Shipments</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-cancel-shipment">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order.</p>
-        <ol class="ln-side"><li>check it can be cancelled: not confirmed, and no not-shipped quantity on it; a frozen shipment is reopened first</li><li>select the shipment, one of its lines or its load, and choose Cancel on the Actions menu</li><li>in the dialog, choose whether the goods go back to stock and whether the order line is finalized, then continue</li><li>a finalized order line reads Shipped, so shipping it later needs a new order line; left open, the same line gets a new shipment</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="warehouse-transfer"><b>Warehouse transfer</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
+</ul></li><li id="report-serialized"><b><a class="rux--link" href="../do/report-serialized.html"><span>Report a serialized item completed</span></a></b><p class="ln-quiet">Report a serialized end item completed, so that the right serial number is the one booked.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="cancel-production"><b>Cancel Production Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="close-production"><b>Close Production Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="backflush"><b><a class="rux--link" href="../do/backflush.html"><span>Backflush Materials and Hours</span></a></b><p class="ln-quiet">Let LN issue the material by itself, as the work is reported.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="subcontract"><b>Subcontract Operations</b><p class="ln-quiet">Not documented yet.</p></li><li id="repetitive"><b>Production Schedules</b><p class="ln-quiet">Not documented yet.</p></li><li id="inspection"><b>Inspections Overview</b><p class="ln-quiet">Not documented yet.</p></li><li id="putaway"><b>Generate Inbound Advice</b><p class="ln-quiet">Not documented yet.</p></li><li id="advice-variants"><b>Undo or standalone advice</b><p class="ln-quiet">Not documented yet.</p></li><li id="cancel-shipment"><b><a class="rux--link" href="../do/cancel-shipment.html"><span>Cancel Shipments</span></a></b><p class="ln-quiet">Cancel a shipment before it leaves, as when the truck did not come or the customer changed the order.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="warehouse-transfer"><b>Warehouse transfer</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="side-warehouse-transfer">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -303,61 +195,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Move stock from one warehouse to another.</p>
         <ol class="ln-side"><li>create the transfer order</li><li>advise, pick and ship it</li><li>receive it at the destination</li></ol></div></div>
   </li>
-</ul></li><li id="cycle-count"><b>Cycle Counting Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="adjustment"><b>Adjustment Orders</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-adjustment">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Adjust stock with an adjustment order.</p>
-        <ol class="ln-side"><li>for a serialized item, open the line's stock point details, where its serial numbers are kept</li><li>counted more than LN holds: add the serial numbers</li><li>counted fewer: leave the adjusted quantity at 0 and enter a negative variance for each missing serial</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="inventory-blocking"><b>Inventory Blocking by Zone/Location</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-inventory-blocking">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Put stock on hold, for a whole zone or location, or for one lot or stock point.</p>
-        <ol class="ln-side"><li>block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu</li><li>choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone</li><li>a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="quarantine"><b>Quarantine Inventory</b><p class="ln-quiet">Not documented yet.</p></li><li id="handling-units"><b>Handling Units</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-handling-units">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Keep stock in handling units, the labelled packages LN tracks as one thing.</p>
-        <ol class="ln-side"><li>LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so</li><li>a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved</li><li>its lot and serial numbers must match its order line, or confirming fails</li><li>most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="lot-tracing"><b>Item - Lot</b><p class="ln-quiet">Not documented yet.</p></li><li id="kanban"><b>Generate Orders (Kanban)</b><p class="ln-quiet">Not documented yet.</p></li><li id="assembly-orders"><b>Assembly Orders</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-assembly-orders">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Pick a kit's components and put them together into one item that stays in the warehouse.</p>
-        <ol class="ln-side"><li>create the assembly order by hand for the item to be assembled; its components come from the item's list of components</li><li>LN makes an outbound line for each component and one inbound line for the assembled item</li><li>receive the inbound line to say the assembly is done, and put the item away like any receipt</li><li>the order cannot be changed once a component line is past Open, or deleted while it has component lines</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="replenish-pick"><b>Print Replenishment List</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-replenish-pick">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Refill pick locations from bulk locations.</p>
-        <ol class="ln-side"><li>give the item a fixed pick location, with a minimum inventory and a minimum replenishment quantity; only fixed pick locations are refilled</li><li>link bulk locations to pick locations in the replenishment matrix</li><li>run this session to start the refill; it can create the transfer orders and process them</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="warehouse-setup"><b>Warehouses</b><ul class="rux--accordion rux--accordion--end rux--layout--size-md">
-  <li class="rux--accordion__item" id="side-warehouse-setup">
-    <button type="button" class="rux--accordion__heading" aria-expanded="false">
-      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Steps</div>
-    </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Define a warehouse, and turn locations on in one that already holds stock.</p>
-        <ol class="ln-side"><li>before turning locations on, clear what is in flight: unconfirmed receipts and shipment lines, inspections, outbound advice and counting orders</li><li>block the warehouse for inbound and for outbound</li><li>run Change Location System for the warehouse, then give each stock its location in Assign Locations</li><li>set up at least one receiving location and one staging location, which a warehouse with locations must have</li><li class="ln-side__note">Not documented for this release.</li></ol></div></div>
-  </li>
-</ul></li><li id="order-inspection"><b>Order Inspections</b><p class="ln-quiet">Not documented yet.</p></li><li id="non-conformance"><b>Non-Conformance Reports</b><p class="ln-quiet">Not documented yet.</p></li>
+</ul></li><li id="cycle-count"><b>Cycle Counting Orders</b><p class="ln-quiet">Not documented yet.</p></li><li id="adjustment"><b><a class="rux--link" href="../do/adjustment.html"><span>Adjustment Orders</span></a></b><p class="ln-quiet">Adjust stock with an adjustment order.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="inventory-blocking"><b><a class="rux--link" href="../do/inventory-blocking.html"><span>Inventory Blocking by Zone/Location</span></a></b><p class="ln-quiet">Put stock on hold, for a whole zone or location, or for one lot or stock point.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="quarantine"><b>Quarantine Inventory</b><p class="ln-quiet">Not documented yet.</p></li><li id="handling-units"><b><a class="rux--link" href="../do/handling-units.html"><span>Handling Units</span></a></b><p class="ln-quiet">Keep stock in handling units, the labelled packages LN tracks as one thing.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="lot-tracing"><b>Item - Lot</b><p class="ln-quiet">Not documented yet.</p></li><li id="kanban"><b>Generate Orders (Kanban)</b><p class="ln-quiet">Not documented yet.</p></li><li id="assembly-orders"><b><a class="rux--link" href="../do/assembly-orders.html"><span>Assembly Orders</span></a></b><p class="ln-quiet">Pick a kit's components and put them together into one item that stays in the warehouse.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="replenish-pick"><b><a class="rux--link" href="../do/replenish-pick.html"><span>Print Replenishment List</span></a></b><p class="ln-quiet">Refill pick locations from bulk locations.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="warehouse-setup"><b><a class="rux--link" href="../do/warehouse-setup.html"><span>Warehouses</span></a></b><p class="ln-quiet">Define a warehouse, and turn locations on in one that already holds stock.</p><div class="rux--tag rux--layout--size-sm rux--tag--outline rux--tag--sm"><span class="rux--tag__label">Not walked yet</span></div></li><li id="order-inspection"><b>Order Inspections</b><p class="ln-quiet">Not documented yet.</p></li><li id="non-conformance"><b>Non-Conformance Reports</b><p class="ln-quiet">Not documented yet.</p></li>
 </ul>
 </div>
 </div>

@@ -1,0 +1,199 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "handling-units",
+  "title": "Handling Units",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Handling Units ➔ Handling Units",
+  "session": "Handling Units",
+  "sessionCode": "whwmd5130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Keep stock in handling units, the labelled packages LN tracks as one thing."
+      }
+    ],
+    "text": "Keep stock in handling units, the labelled packages LN tracks as one thing."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+                }
+              ],
+              "text": "LN can make them by itself: at the pick, where the stock had none, and from a shipment notice where the warehouse or item says so"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+                }
+              ],
+              "text": "a handling unit is received only while it is Open, or In Transit on a transfer, and advised only once it is Received or Approved"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "its lot and serial numbers must match its order line, or confirming fails"
+                }
+              ],
+              "text": "its lot and serial numbers must match its order line, or confirming fails"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot"
+                }
+              ],
+              "text": "most statuses can be worked on; a unit that is Quarantine, Frozen, Shipped or In Transit cannot"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

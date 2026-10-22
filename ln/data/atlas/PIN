@@ -1,9 +1,9 @@
-commit   0ba39a1f3653ddfa8e547d5b3c304d9bb6338c22
-date     2026-10-22T03:07:07Z
-subject  fix(tools): Emit a task's lead lines once
-contract 18 
+commit   495bf36f3bc3cda6dcfbca68234a8001c424a871
+date     2026-10-22T04:30:45Z
+subject  feat(tasks): Give each written side task a file
+contract 19 
 tier     export
-sha256   07724d5e72e61ba31638909f050aedd52e61fab6b0c8e24010c22f0358e62692
+sha256   a229fef39cde38fd35ddaffb187816262f6e938ee2b4a6bd126684caa870ef0f
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

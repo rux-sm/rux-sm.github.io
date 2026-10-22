@@ -1,0 +1,165 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "exception-messages",
+  "title": "Exception Messages by Planner",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Planning ➔ Plan Analysis ➔ Exception Messages by Planner",
+  "session": "Exception Messages by Planner",
+  "sessionCode": "cprao1120m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "List what planning says about the orders that already exist."
+      }
+    ],
+    "text": "List what planning says about the orders that already exist."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+                }
+              ],
+              "text": "planning compares the receipts that exist with what is needed, and raises a message where they differ"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+                }
+              ],
+              "text": "a reschedule message asks for a receipt earlier or later, and a cancel message marks a receipt nothing needs"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a tolerance in days, set per message type, keeps small shifts quiet"
+                }
+              ],
+              "text": "a tolerance in days, set per message type, keeps small shifts quiet"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

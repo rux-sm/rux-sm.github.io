@@ -1,0 +1,131 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "rush-order",
+  "title": "Rush an order",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Sales",
+  "modules": [
+    "Sales"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Give a sales order, or one line of it, the highest priority through the warehouse."
+      }
+    ],
+    "text": "Give a sales order, or one line of it, the highest priority through the warehouse."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1"
+                }
+              ],
+              "text": "choose Rush Order on the sales order, or Rush Order Line on one line; the order's priority becomes 1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "release it to warehousing, where its outbound lines are advised and processed before any others"
+                }
+              ],
+              "text": "release it to warehousing, where its outbound lines are advised and processed before any others"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

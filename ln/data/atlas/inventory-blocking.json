@@ -1,0 +1,165 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "inventory-blocking",
+  "title": "Inventory Blocking by Zone/Location",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Warehousing ➔ Blocking ➔ Inventory Blocking ➔ by Zone/Location",
+  "session": "Inventory Blocking by Zone/Location",
+  "sessionCode": "whwmd6110m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Put stock on hold, for a whole zone or location, or for one lot or stock point."
+      }
+    ],
+    "text": "Put stock on hold, for a whole zone or location, or for one lot or stock point."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu"
+                }
+              ],
+              "text": "block a zone or a location here; a lot and a single stock point each have their own session beside it on the menu"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone"
+                }
+              ],
+              "text": "choose the reason: one kind tells planning to go on counting the stock, for a short check, and the other tells planning the stock is gone"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not"
+                }
+              ],
+              "text": "a block on stock raises the item's inventory on hold; blocking only a kind of transaction does not"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

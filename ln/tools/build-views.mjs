@@ -44,6 +44,11 @@ const rank = (s) => (START.indexOf(s.id) + 1) || 100 + s.order;
 const processes = docs.filter((j) => j.kind === 'process').sort((a, b) => rank(a) - rank(b));
 const processById = new Map(processes.map((s) => [s.id, s]));
 const tasksOf = (s) => s.tasks.map((x) => taskById.get(x.id));
+// A task no process names -- a side task of atlas's tasks map -- is drawn as
+// if the task index were its process, with no strip and no next.
+const loose = tasks.filter((t) => !t.process).sort((a, b) => a.title.localeCompare(b.title));
+const looseOf = new Map(loose.map((t) => [t.id, { id: null, title: 'Tasks', tasks: [{ id: t.id, n: 0 }], before: [] }]));
+const hrefUp = (s) => (s.id ? hrefProcess(s.id) : at('do/index.html'));
 const { diagram } = read(MAP + '.json');
 const screens = read('screens.json').entries;
 const cards = new Map(screens.filter((e) => e.purpose).map((e) => [e.code, e]));
@@ -408,7 +413,7 @@ const confirmBox = (scenario) => `<div class="ln-confirm" data-confirm="${esc(sc
   </form>
 </div>`;
 const waitingTasks = processes.flatMap((s) => tasksOf(s).filter((t) => !t.walked).map((t) => ({ s, t, scenario: t.id, steps: rowsOf(t).map((r) => r.id) })));
-const waitingSide = side.map((n) => ({ n, scenario: 'tasks', steps: [n.id] }));
+const waitingSide = loose.filter((t) => !t.walked).map((t) => ({ n: { id: t.id, session: t.title }, scenario: t.id, steps: rowsOf(t).map((r) => r.id) }));
 const waiting = waitingTasks.length + waitingSide.length;
 const waitingJson = () => `<script type="application/json" id="waiting">${JSON.stringify([...waitingTasks, ...waitingSide].map((w) => ({ scenario: w.scenario, steps: w.steps }))).replace(/</g, '\\u003c')}</script>`;
 function confirmPage() {
@@ -427,7 +432,7 @@ function confirmPage() {
 <h2 class="rux--type-productive-heading-03" id="other">Other tasks</h2>
 </div>
 <ul class="ln-list">${waitingSide.map((w) => `
-  <li data-wait="tasks" data-steps="${esc(w.n.id)}"><b><a class="rux--link" href="${at('do/index.html')}#${esc(w.n.id)}"><span>${esc(w.n.session)}</span></a></b><p class="ln-quiet"><span data-answered></span></p></li>`).join('')}
+  <li data-wait="${esc(w.scenario)}" data-steps="${esc(w.steps.join(' '))}"><b><a class="rux--link" href="${hrefTask(w.n.id)}?walk=1"><span>${esc(w.n.session)}</span></a></b><p class="ln-quiet">${count(w.steps.length, 'step')} <span data-answered></span></p></li>`).join('')}
 </ul>` : ''}`;
   return page('Still to confirm \u2014 LN Guide', 'confirm', column(body, 12));
 }
@@ -547,16 +552,22 @@ const needs = (s, t) => {
 };
 
 function task(s, t) {
+  t = t.process ? t : { ...t, process: { n: 0, of: 1 } };
   for (const b of t.blocks) if (b.kind !== 'prose' && b.kind !== 'steps') throw new Error(`no rendering for a "${b.kind}" block in ${t.id}`);
   if (t.sessionCode && !cards.has(t.sessionCode)) report.push(`no page     ${s.title} · ${t.process.n}: ${t.session} (${t.sessionCode}) has no purpose line`);
   const rows = rowsOf(t);
-  const { cases } = extrasOf(s, t);
+  const { cases } = s.id ? extrasOf(s, t) : { cases: t.variants.rows.map((row) => ({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` })) };
   const need = t.before?.length ? t.before.map((b) => tokens(b.tokens)) : needs(s, t);
   const first = t.process.n === s.tasks[0].n;
-  const prose = t.blocks.filter((b) => b.kind === 'prose').map((b) => `<p>${tokens(b.tokens)}</p>`).join('');
+  // Prose keeps its place: what comes before the steps is drawn above them,
+  // and what follows them, such as a gap, below.
+  const firstSteps = t.blocks.findIndex((b) => b.kind === 'steps');
+  const proseOf = (list) => list.filter((b) => b.kind === 'prose').map((b) => `<p>${tokens(b.tokens)}</p>`).join('');
+  const prose = proseOf(firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));
+  const after = firstSteps < 0 ? '' : proseOf(t.blocks.slice(firstSteps));
   const screen = t.sessionCode ? cards.get(t.sessionCode) : null;
   const ideas = ideasOf(t);
-  const strip = `Task ${t.process.n + 1} of ${t.process.of} in <a class="rux--link" href="${hrefProcess(s.id)}">${esc(s.title)}</a>${t.next ? ` · next: <a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a>` : ''}`;
+  const strip = !s.id ? 'A task on its own, done beside the processes.' : `Task ${t.process.n + 1} of ${t.process.of} in <a class="rux--link" href="${hrefUp(s)}">${esc(s.title)}</a>${t.next ? ` · next: <a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a>` : ''}`;
   const wrong = problems(t.problems.rows);
   const why = t.why ? `<p>${tokens(t.why.tokens)}</p>` : '';
   const whyFold = why && ['why', 'Why LN works this way', why];
@@ -567,7 +578,7 @@ function task(s, t) {
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
   const lines = rows.map((r) => headline(r.cells[1].tokens, t.route));
-  const full = `${breadcrumb([[hrefHome(), 'Home'], [hrefProcess(s.id), s.title], ['', t.title]])}
+  const full = `${breadcrumb([[hrefHome(), 'Home'], [hrefUp(s), s.title], ['', t.title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">What you get: ${tokens(t.achieves.tokens)}.</p>` : ''}
@@ -584,12 +595,13 @@ ${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p
 <div class="ln-why">${prose}</div>` : ''}
 <ol class="ln-doc">${rows.map((r, k) => `
   <li id="step-${k + 1}"><div class="ln-doc__do">${lines[k].head}</div>${lines[k].note ? `<p class="ln-doc__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-doc__route">${x}</p>`).join('')}${see(r) ? `<div class="ln-doc__see"><b>You should see</b> ${see(r)}</div>` : ''}</li>`).join('')}
-</ol>
+</ol>${after ? `
+<div class="ln-why">${after}</div>` : ''}
 ${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length && ['cases', `Variations · ${cases.length}`, list(cases)], related])}`;
   const aside = onThisPage([['#steps', 'Steps'], why && ['#why', 'Why LN works this way'], wrong.length && ['#wrong', 'If something goes wrong'],
     cases.length && ['#cases', 'Variations'], ['#related', 'Related']].filter(Boolean));
-  const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefProcess(s.id)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
-<a class="rux--link ln-back" href="${hrefProcess(s.id)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
+  const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
+<a class="rux--link ln-back" href="${hrefUp(s)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
 <div class="rux--progress-bar rux--progress-bar--small">
   <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">${esc(t.title)}</span></div>
   <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
@@ -607,7 +619,7 @@ ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this 
 <div class="ln-step__more"><a class="rux--link" href="?full">Full page</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
 <div class="ln-nav">
-  <a class="rux--btn rux--btn--secondary" href="${hrefProcess(s.id)}" data-prev>Back</a>
+  <a class="rux--btn rux--btn--secondary" href="${hrefUp(s)}" data-prev>Back</a>
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;
   return page(`${t.title} — LN Guide`, s.id, column(full, 10, '', 'data-view="full"') + '\n' + column(aside, 4, 'ln-aside', 'data-view="full"')
@@ -622,9 +634,13 @@ function taskIndex() {
     const key = s.module ?? '';
     (groups.find((g) => g.title === key) ?? groups[groups.push({ title: key, rows: [] }) - 1]).rows.push(...tasksOf(s).map((t) => drawing(s, t, () => taskRow(s, t))));
   }
-  const other = allSide.map((n) => side.includes(n)
-    ? `<li id="${esc(n.id)}"><b>${esc(n.session)}</b>${accordion([[`side-${esc(n.id)}`, 'Steps', sideBody(n)]])}</li>`
-    : `<li id="${esc(n.id)}"><b>${esc(n.session)}</b><p class="ln-quiet">Not documented yet.</p></li>`);
+  // A side task with a file is a link to its page; one that only opens a
+  // process's tasks shows them; one with no steps says so.
+  const other = allSide.map((n) => taskById.has(n.id)
+    ? `<li id="${esc(n.id)}"><b><a class="rux--link" href="${hrefTask(n.id)}"><span>${esc(n.session)}</span></a></b><p class="ln-quiet">${sentence(tokens(n.does.tokens))}</p>${tag(taskStatus(taskById.get(n.id)))}</li>`
+    : side.includes(n)
+      ? `<li id="${esc(n.id)}"><b>${esc(n.session)}</b>${accordion([[`side-${esc(n.id)}`, 'Steps', sideBody(n)]])}</li>`
+      : `<li id="${esc(n.id)}"><b>${esc(n.session)}</b><p class="ln-quiet">Not documented yet.</p></li>`);
   const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Tasks']])}
 <div>
 <h1 class="rux--type-productive-heading-05">Tasks</h1>
@@ -755,7 +771,8 @@ const searchIndex = () => [
     ...t.problems.rows.map((row) => hit('Problem', '', `${row.cells[0].text} ${row.cells[1].text}`, hrefTask(t.id), plainly(() => tokens(row.cells[0].tokens)), `<p>${tokens(row.cells[1].tokens)}</p>`)),
   ]))),
   ...processes.map((s) => hit('Process', s.title, `${s.title} ${s.summary ?? ''} ${s.modules.join(' ')}`, hrefProcess(s.id), esc(s.title), sentence(esc(s.summary ?? '')))),
-  ...side.map((n) => hit('Task', n.session, `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
+  ...loose.map((t) => hit('Task', t.title, `${t.title} ${t.sessionCode ?? ''} ${t.achieves?.text ?? ''} ${rowsOf(t).map((r) => r.cells.map((c) => c.text).join(' ')).join(' ')}`, hrefTask(t.id), esc(t.title), 'A task on its own')),
+  ...side.filter((n) => !taskById.has(n.id)).map((n) => hit('Task', n.session, `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
   ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code}`, `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
   ...concepts.map((c) => hit('Idea', `${c.name} ${c.terms.join(' ')}`, `${c.name} ${c.terms.join(' ')} ${c.purpose}`, hrefIdea(c.id), esc(c.name), esc(c.purpose))),
   hit('Idea', overviewTitle, `${overviewTitle} ${overview.intro.map((b) => b.text).join(' ')} ${diagram.nodes.map((n) => n.session).join(' ')}`, hrefIdea(MAP), esc(overviewTitle), esc(overviewPurpose) + '.'),
@@ -780,6 +797,7 @@ drawn('../', () => {
     write(`follow/${s.id}.html`, drawing(s, null, () => processPage(s)));
     for (const t of tasksOf(s)) write(`do/${t.id}.html`, drawing(s, t, () => task(s, t)));
   }
+  for (const t of loose) write(`do/${t.id}.html`, drawing(looseOf.get(t.id), t, () => task(looseOf.get(t.id), t)));
   write('screens/index.html', screenIndex());
   for (const c of cards.values()) write(`screens/${c.code}.html`, screenPage(c));
   write('ideas/index.html', ideaIndex());

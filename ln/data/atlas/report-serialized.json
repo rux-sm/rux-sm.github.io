@@ -1,0 +1,233 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "report-serialized",
+  "title": "Report a serialized item completed",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing",
+  "modules": [
+    "Manufacturing"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
+  "session": "Report a serialized item completed",
+  "sessionCode": "tisfc0130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Report a serialized end item completed, so that the right serial number is the one booked."
+      }
+    ],
+    "text": "Report a serialized end item completed, so that the right serial number is the one booked."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual"
+                }
+              ],
+              "text": "find out who sets the serial status: As-Built Status Handling in Production Order Parameters is Automatic or Manual"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Automatic, one item: on the last operation enter the quantity completed and its serial number, then save"
+                }
+              ],
+              "text": "Automatic, one item: on the last operation enter the quantity completed and its serial number, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed"
+                }
+              ],
+              "text": "Automatic, several items: enter the quantity alone; LN takes that many serials still at Created, in the order they are listed"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned"
+                }
+              ],
+              "text": "Manual: from the operation open Serial Numbers, and set each finished serial from Created to Assigned"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save"
+                }
+              ],
+              "text": "Manual: back on the operation click Default Qty Completed, which fills in the number set to Assigned, then save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

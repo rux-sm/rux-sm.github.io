@@ -1,0 +1,131 @@
+{
+  "contract": 19,
+  "tier": "export",
+  "kind": "task",
+  "id": "backflush",
+  "title": "Backflush Materials and Hours",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Manufacturing",
+  "modules": [
+    "Manufacturing"
+  ],
+  "status": null,
+  "updated": "2026-10-21",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Materials ➔ Backflush Materials and Hours",
+  "session": "Backflush Materials and Hours",
+  "sessionCode": "tisfc0220m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Let LN issue the material by itself, as the work is reported."
+      }
+    ],
+    "text": "Let LN issue the material by itself, as the work is reported."
+  },
+  "before": [],
+  "why": null,
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+                }
+              ],
+              "text": "a backflushed material is issued when a quantity of the end product is reported completed or rejected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "only the materials linked to the operations reported are issued; on an order with no operations, all of them are"
+                }
+              ],
+              "text": "only the materials linked to the operations reported are issued; on an order with no operations, all of them are"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "Not documented for this release."
+        }
+      ],
+      "text": "Not documented for this release."
+    }
+  ],
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

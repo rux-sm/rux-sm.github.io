@@ -7,9 +7,9 @@
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a tile that opens: Design's tile around an item of its
-   accordion. Closed, as every leg is until it is pressed, it is two lines,
-   as a task is on Tasks: its place; then how many lines it has left or
-   Ready in a tag, its customer, and its spot time.
+   accordion. Closed, as every leg is until it is pressed, it is two lines:
+   its place; then how many lines it has left or Ready in a tag, its
+   customer, and its spot time.
    Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
@@ -414,9 +414,9 @@
   }
 
   /* A leg, as one of Design's tiles around an item of its accordion, whose
-     script opens and shuts it. The heading is the closed leg, two lines as a
-     task's are on Tasks, with no arrow, since the tile says it opens: its
-     place in bold; then what is left in its tag, its customer, and on a split
+     script opens and shuts it. The heading is the closed leg, two lines
+     with no arrow, since the tile says it opens: its place in bold; then
+     what is left in its tag, its customer, and on a split
      trip which leg, and at the line's end its spot time, with the day where
      it falls on another, with Spot said for a reader. */
   function legItem(page) {

@@ -1287,7 +1287,7 @@ body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="heade
    the lists' pane, and the tile is the item's box.
    Carbon rules each item off from the next, insets the title 1rem and the
    open content up to a quarter of its width, for reading down a page; here
-   the item draws no line, and the heading fills the tile, its two lines
+   the item draws no line, and the heading fills the tile, its lines
    12px from the tile's top and bottom and 16px from its sides, with no
    arrow, since the tile says it opens, so a closed row in either list is
    no taller than its lines need. The open content keeps the same 16px. A

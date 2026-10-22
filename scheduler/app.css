@@ -5418,26 +5418,23 @@ html:has(.scheduler-page[data-takeover]) {
   outline-offset: -1px;
 }
 .scheduler-to-do__meta { margin: 0; color: var(--rux-text-secondary); font-size: 0.75rem; line-height: 1.33333; overflow-wrap: anywhere; }
-/* A task's heading and a leg's are each the closed row: two lines, each
-   ended in an ellipsis where it runs long, so every closed row in either
-   list stands the same height. The first is what the row is in bold, a
-   task's words or a leg's place, a task's with its number at the line's end
-   in the quiet colour, so a person can name the task aloud; the number keeps
-   the width of a three-figure one, so every title's ellipsis falls in the
-   same place. The second, quiet and smaller, starts with a tag, a task's
-   kind or what a leg has left, then who the row is about, a task's person or
-   a leg's customer, and ends with when, a task's due day, in the error colour
-   once the day is past, or a leg's spot time. */
+/* A task's heading and a leg's are each the closed row, its lines each
+   ended in an ellipsis where they run long, so every closed row in a list
+   stands the same height. A leg is two lines: its place in bold, then,
+   quiet and smaller, a tag of what it has left, its customer, and at the
+   line's end its spot time. A task is three: who it is about, with its due
+   day at the line's end, quiet and smaller and in the error colour once the
+   day is past; then its words in bold; then its kind's tag, in the kind's
+   colour, and its number in the quiet colour, so a person can name the task
+   aloud. */
 .scheduler-to-do__top { display: flex; align-items: baseline; gap: var(--rux-spacing-04); }
 .scheduler-to-do__what { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__number {
   flex: none;
-  min-inline-size: 2.625em;
   color: var(--rux-text-secondary);
   font-size: 0.75rem;
   line-height: 1.33333;
   font-variant-numeric: tabular-nums;
-  text-align: end;
 }
 .scheduler-to-do__context {
   display: flex;
@@ -5451,8 +5448,21 @@ html:has(.scheduler-page[data-takeover]) {
 }
 .scheduler-to-do__tag { flex: none; margin: 0; }
 .scheduler-to-do__who { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scheduler-to-do__when { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-03); }
+.scheduler-to-do__when { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-03); color: var(--rux-text-secondary); }
 .scheduler-to-do__when--late { color: var(--rux-text-error); }
+/* A task's first line is the title's own size, so its person reads as the
+   row's head and its due day takes the quiet line's size, its colour the
+   shared rule's so a late day stays red; the line stands one line tall when
+   the row is about nobody. Its words follow a step under, and its tag's line
+   two, the tag standing on the number's middle. */
+.scheduler-to-do__item .scheduler-to-do__top { min-block-size: 1.125rem; }
+.scheduler-to-do__item .scheduler-to-do__when {
+  font-size: 0.75rem;
+  line-height: 1.33333;
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-to-do__item .scheduler-to-do__what { margin-block-start: var(--rux-spacing-01); }
+.scheduler-to-do__item .scheduler-to-do__context { align-items: center; margin-block-start: var(--rux-spacing-03); }
 /* Open, both lines say all they hold, wrapping at the tile's width. Only the
    open row's own lines do: Done today is an open item around its rows, and
    they keep their closed lines until one of them is opened. */

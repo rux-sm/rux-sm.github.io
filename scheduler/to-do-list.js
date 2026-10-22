@@ -14,12 +14,11 @@
    A row is a tile that opens, Design's tile around an item of its accordion,
    as a leg is on Departures. Every row has a number the database gives it when it
    is added and it keeps, so a person can say "task 112". Closed, a row is
-   two lines, each ended in an ellipsis where it runs long, so every closed
-   row stands the same height: its words in bold, with its number at the
-   line's end; then its kind in Design's grey tag, who it is about, and its
-   due day at the line's end, in the error colour once the day is past, as a
-   leg on Departures is its place, then what it has left, its customer and its
-   spot time. A press opens it to those in full, then its trip as a link,
+   three lines, each ended in an ellipsis where it runs long, so every closed
+   row stands the same height: who it is about, with its due day at the
+   line's end in the error colour once the day is past; then its words in
+   bold; then its kind in Design's tag, in the kind's colour, and its number.
+   A press opens it to those in full, then its trip as a link,
    its detail as a list, a fact to an item, and one row of buttons: Done,
    Email, Start trip on a website request with no trip yet, and a menu of
    Edit and Delete. Who added a row is said in its form, under the fields,
@@ -57,20 +56,22 @@
 
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
   const MENU_ID = 'scheduler-to-do-menu';
-  /* The kinds of work a row can be, each one's words on its tag. A row with
-     no kind reads To do, and a kind not listed here reads as its own word.
+  /* The kinds of work a row can be, each one's words and colour on its tag,
+     so the list is scanned by colour. A row with no kind reads To do, and a
+     kind not listed here reads as its own word, both in the outline tag.
      The connector's `TO_DO_KINDS` repeats the names. */
   const KINDS = new Map([
-    ['quote', 'New quote'],
-    ['itinerary', 'Itinerary'],
-    ['po', 'PO'],
-    ['change', 'Change'],
-    ['respond', 'Respond'],
-    ['form', 'Form'],
-    ['invoice', 'Invoice'],
+    ['quote', ['New quote', 'rux--tag--blue']],
+    ['itinerary', ['Itinerary', 'rux--tag--purple']],
+    ['po', ['PO', 'rux--tag--green']],
+    ['change', ['Change', 'rux--tag--magenta']],
+    ['respond', ['Respond', 'rux--tag--teal']],
+    ['form', ['Form', 'rux--tag--cyan']],
+    ['invoice', ['Invoice', 'rux--tag--gray']],
   ]);
-  const kindOf = row => KINDS.get(row.kind)
+  const kindOf = row => KINDS.get(row.kind)?.[0]
     ?? (row.kind ? row.kind.charAt(0).toUpperCase() + row.kind.slice(1).replaceAll('-', ' ') : 'To do');
+  const toneOf = row => KINDS.get(row.kind)?.[1] ?? 'rux--tag--outline';
 
   // -- small things ---------------------------------------------------------
   const el = (tag, cls, text) => {
@@ -249,10 +250,10 @@
   }
 
   // -- drawing --------------------------------------------------------------
-  /* A stored row's kind, in Design's grey tag, as what a leg has left is on
-     Departures: in both lists a tag's colour is kept for how a thing stands. */
+  /* A stored row's kind: its words in its kind's colour. It is a div, since
+     Carbon draws the outline tag only on one. */
   const kindTag = row => {
-    const t = el('span', 'rux--tag rux--tag--gray rux--tag--sm rux--layout--size-sm scheduler-to-do__tag');
+    const t = el('div', `rux--tag ${toneOf(row)} rux--tag--sm rux--layout--size-sm scheduler-to-do__tag`);
     t.appendChild(el('span', 'rux--tag__label', kindOf(row)));
     return t;
   };
@@ -296,26 +297,28 @@
     heading.type = 'button';
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    // The first line is the row's words, then its number, with Task said for a reader.
-    const top = el('span', 'scheduler-to-do__top');
-    top.appendChild(el('span', 'scheduler-to-do__what', sentence(row.body)));
-    if (row.number != null) {
-      const number = el('span', 'scheduler-to-do__number');
-      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
-      top.appendChild(number);
-    }
-    // The second is its kind, who it is about, and its due day at the end, with
-    // Due said for a reader; a done row is past its day.
-    const context = el('span', 'scheduler-to-do__context');
-    context.appendChild(kindTag(row));
-    if (row.who) context.appendChild(el('span', 'scheduler-to-do__who', row.who));
+    // The first line is who the row is about, and its due day at the end,
+    // with Due said for a reader; a done row is past its day. A row about
+    // nobody keeps the line, so every closed row stands the same height.
+    const top = el('div', 'scheduler-to-do__top');
+    top.appendChild(el('span', 'scheduler-to-do__who', row.who || ''));
     const dueWord = !done && row.due_on ? dueWords(row.due_on) : '';
     if (dueWord) {
       const due = el('span', `scheduler-to-do__when${row.due_on < iso(new Date()) ? ' scheduler-to-do__when--late' : ''}`);
       due.append(el('span', 'rux--visually-hidden', 'Due '), dueWord);
-      context.appendChild(due);
+      top.appendChild(due);
     }
-    title.append(top, context);
+    // The second is the row's words, and the third its kind and its number,
+    // with Task said for a reader.
+    const what = el('div', 'scheduler-to-do__what', sentence(row.body));
+    const context = el('div', 'scheduler-to-do__context');
+    context.appendChild(kindTag(row));
+    if (row.number != null) {
+      const number = el('span', 'scheduler-to-do__number');
+      number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
+      context.appendChild(number);
+    }
+    title.append(top, what, context);
     heading.appendChild(title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');
@@ -463,7 +466,7 @@
     const form = el('form', 'scheduler-to-do__form rux--layer-three rux--stack-vertical rux--stack-scale-4');
     const kind = el('select', 'rux--select-input');
     kind.append(option('', 'To do', !row.kind),
-      ...[...KINDS].map(([name, text]) => option(name, text, name === row.kind)),
+      ...[...KINDS].map(([name, [text]]) => option(name, text, name === row.kind)),
       ...(row.kind && !KINDS.has(row.kind) ? [option(row.kind, kindOf(row), true)] : []));
     const who = el('input', 'rux--text-input rux--layout--size-sm');
     who.type = 'text';

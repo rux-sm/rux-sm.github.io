@@ -805,7 +805,7 @@ Deno.serve(
           kind: z.enum(TO_DO_KINDS).optional().describe(
             'What kind of work it is, shown as a coloured tag: quote, a quote to send; itinerary, trips to enter or check from one; po, a PO or a signed contract to record; change, a booked trip or its quote to change; respond, a question to answer; form, a customer\'s form to fill in; invoice, an invoice to send.'),
           who: z.string().min(1).max(120).optional().describe(
-            'Who it is about: the person, or the company when no person is named. The list shows it in bold ahead of the words.'),
+            'Who it is about: the person, or the company when no person is named. The list shows it as the row\'s first line.'),
           body: z.string().min(1).max(500).describe(
             'What to do, in a few words that fit one line: the group and the place, such as "cheer trip to Austin". The kind already says the work and who says the person, so leave both out.'),
           detail: z.string().min(1).max(1000).optional().describe(
@@ -822,7 +822,7 @@ Deno.serve(
           {
             title: 'Add a to-do row',
             description:
-              'Add a row to the office\'s Tasks list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row is two lines, each cut short where it runs long: what to do, then its kind, who it is about and its due day; the detail shows only once the row is opened, so what to do and who it is about stay short. Before adding a row about a trip, read get_trip: if its warnings or to_do already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
+              'Add a row to the office\'s Tasks list after a review, in four parts: its kind, who it is about, what to do in a few words, and its detail. A closed row is three lines, each cut short where it runs long: who it is about and its due day, then what to do, then its kind and its number; the detail shows only once the row is opened, so what to do and who it is about stay short. Before adding a row about a trip, read get_trip: if its warnings or to_do already say it, do not add it, because the scheduler shows that itself. With a thread_key, a second call for the same thread changes the open row it made rather than adding a copy, and changes only the parts it gives: a part left out stays as the row has it.',
             inputSchema: z.object(toDoShape),
           },
           async ({ kind, who, body, detail, due_on, owner, trip_id, thread_url, thread_key }) => {

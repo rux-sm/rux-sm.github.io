@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // build-app-icons.mjs -- writes the PNG icons a phone's home screen shows for
-// an installed app, because a home screen takes no SVG. Each is drawn from
-// the app's own brand/favicon.svg: its squares are the mark, the fill it has
-// on a light page is the icon's ground and the fill it has on a dark page is
-// the mark's colour, so the icon is the favicon as a dark tab shows it.
+// an installed app and for Home, because a home screen takes no SVG. Each is
+// drawn from its folder's brand/favicon.svg: its squares are the mark, the
+// fill it has on a light page is the icon's ground and the fill it has on a
+// dark page is the mark's colour, so the icon is the favicon as a dark tab
+// shows it.
 //
 // A MARK IS WHOLE SQUARES, so no rasteriser is needed: every square becomes a
 // whole number of pixels, the same number at every size, and the mark is
@@ -24,20 +25,25 @@ import { fileURLToPath } from 'node:url';
 import { crc32, deflateSync, inflateSync } from 'node:zlib';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-// The apps a phone installs. Each has a manifest.json that names these files.
-const APPS = ['pixels'];
 const ICONS = [
   { name: 'icon-180.png', size: 180, share: 0.66 },           // an iPhone's
   { name: 'icon-192.png', size: 192, share: 0.66 },           // Android's
   { name: 'icon-512.png', size: 512, share: 0.66 },
   { name: 'icon-maskable-512.png', size: 512, share: 0.52 },  // Android's, to crop
 ];
+// The apps a phone installs, each with a manifest.json that names its four
+// files, and the site's own mark, which an iPhone's apple-touch-icon link
+// takes alone. `dir` is the folder whose brand/ holds them, '' for the root.
+const APPS = [
+  { dir: 'pixels', icons: ICONS },
+  { dir: '', icons: ICONS.slice(0, 1) },
+];
 const check = process.argv.includes('--check');
 const die = message => { console.log(`  FAIL  ${message}`); process.exit(1); };
 
 // The favicon's squares, as rows of booleans, and its two fills.
-const read = app => {
-  const at = `${app}/brand/favicon.svg`;
+const read = dir => {
+  const at = `${dir}brand/favicon.svg`;
   const svg = readFileSync(join(ROOT, at), 'utf8');
   const side = Number(svg.match(/viewBox="0 0 (\d+) \1"/)?.[1]);
   const d = svg.match(/<path d="([^"]*)"/)?.[1];
@@ -110,20 +116,21 @@ const decode = file => {
 
 let stale = 0, written = 0;
 for (const app of APPS) {
-  const favicon = read(app);
-  for (const icon of ICONS) {
-    const name = `${app}/brand/${icon.name}`, path = join(ROOT, name);
+  const dir = app.dir ? `${app.dir}/` : '';
+  const favicon = read(dir);
+  for (const icon of app.icons) {
+    const name = `${dir}brand/${icon.name}`, path = join(ROOT, name);
     const want = draw(favicon, icon);
     const have = existsSync(path) ? decode(readFileSync(path)) : null;
     const same = !!have && ['head', 'palette', 'raw'].every(part => have[part].equals(want[part]));
     if (same) continue;
-    if (check) { stale++; console.log(`  FAIL  ${name}: it is not what ${app}/brand/favicon.svg draws; run node tools/build-app-icons.mjs`); continue; }
+    if (check) { stale++; console.log(`  FAIL  ${name}: it is not what ${dir}brand/favicon.svg draws; run node tools/build-app-icons.mjs`); continue; }
     writeFileSync(path, encode(want));
     written++;
     console.log(`  wrote ${name}`);
   }
 }
-const count = APPS.length * ICONS.length;
+const count = APPS.reduce((n, app) => n + app.icons.length, 0);
 if (check) {
   console.log(`  ${stale ? 'FAIL' : ' ok '}  icons   ${count} home screen icons${stale ? '' : ', each what its favicon draws'}`);
   if (stale) process.exit(1);

@@ -1023,12 +1023,6 @@
        stops are set on each track, which app.css draws as its background, so
        `var(--scheduler-day-rule)` resolves on the track that defines it. */
     const ruleCols = Array.from({ length: days - 1 }, (_, i) => i + 1);
-    /* Every other day's stripe, the second day first, drawn under the rules in
-       `--scheduler-day-stripe`, which only a theme that stripes its days
-       names. */
-    const dayStripeStops = Array.from({ length: days }, (_, i) => (i % 2
-      ? `var(--scheduler-day-stripe, transparent) calc(${i} * var(--scheduler-day-w)) calc(${i + 1} * var(--scheduler-day-w))`
-      : `transparent calc(${i} * var(--scheduler-day-w)) calc(${i + 1} * var(--scheduler-day-w))`)).join(', ');
     const dayRuleStops = (() => {
       const parts = [];
       let prev = '0';
@@ -1141,7 +1135,6 @@
       track.style.setProperty('--scheduler-lanes', lanes);
       // The day rules. Per track, for the reason the note above gives.
       track.style.setProperty('--scheduler-day-rules', dayRuleStops);
-      track.style.setProperty('--scheduler-day-stripes', dayStripeStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       for (const w of windows) {
         /* The read covers the four weeks either side, so a window can miss
@@ -10373,7 +10366,6 @@
           : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
-        if (i % 2) cell.classList.add('scheduler-avail__cell--alt');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
         // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.

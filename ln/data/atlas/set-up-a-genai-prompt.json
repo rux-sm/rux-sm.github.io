@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "set-up-a-genai-prompt",
@@ -149,6 +149,11 @@
       "walked": null
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "sections": [
     {
       "kind": "prose",

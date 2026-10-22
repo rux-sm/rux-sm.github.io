@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "use-the-ai-commands",
@@ -57,6 +57,11 @@
       "walked": null
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "sections": [
     {
       "kind": "prose",

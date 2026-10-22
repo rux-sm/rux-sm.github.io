@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "improve-it",
@@ -618,6 +618,11 @@
       ]
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

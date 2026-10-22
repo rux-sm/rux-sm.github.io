@@ -1,9 +1,9 @@
-commit   1864a2646a5de87c1301d969b5fba54544fbd970
-date     2026-10-22T14:09:01Z
-subject  fix(tasks): Keep phases and run dates off the page
-contract 21 
+commit   171d3699b62046b8f2e580b148f8de3e985edacb
+date     2026-10-22T14:21:46Z
+subject  fix(tasks): Set an example's notes off with a dash
+contract 22 
 tier     export
-sha256   435152006278087db0f0c5b4983f0dfacada3f8ca2458182bad64a6e2b24342b
+sha256   d74a4bb6bcb9281e0f7a8e5cc8782e2676ac7971d7aeb128a62aea2da3cd1387
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

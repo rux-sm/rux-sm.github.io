@@ -323,7 +323,17 @@ const onThisPage = (entries) => `<div class="rux--contained-list rux--layout--si
 </div>`;
 const breadcrumb = (trail) => `<nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">${trail.slice(0, -1).map(([h, t]) =>
   `<li class="rux--breadcrumb-item"><a class="rux--link" href="${h}">${esc(t)}</a></li>`).join('')}<li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">${esc(trail.at(-1)[1])}</a></li></ol></nav>`;
-const codeChip = (code) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(code)}" aria-label="Copy the code ${esc(code)}">${esc(code)}</button>`;
+const copyChip = (v, label = v) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(v)}" aria-label="Copy ${esc(label)}">${esc(v)}</button>`;
+const codeChip = (code) => copyChip(code, `the code ${code}`);
+// The values a task was walked with, or a process's run uses: what, and a
+// value whose exact text is a chip that copies it.
+const valueOf = (cell) => cell.tokens.map((t) => t.t === 'literal' ? copyChip(t.v) : token(t)).join('');
+const example = (rows, lead) => rows.length ? `<p><strong>Example.</strong> ${lead}</p>
+<div class="rux--structured-list rux--structured-list--condensed ln-example" role="table">
+  <div class="rux--structured-list-tbody" role="rowgroup">${rows.map((r) => `
+    <div class="rux--structured-list-row" role="row"><div class="rux--structured-list-td" role="cell">${tokens(r.cells[0].tokens)}</div><div class="rux--structured-list-td" role="cell">${valueOf(r.cells[1])}</div></div>`).join('')}
+  </div>
+</div>` : '';
 const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" method="get" role="search">
   <div class="rux--search rux--layout--size-lg">
     <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
@@ -540,7 +550,7 @@ function processPage(s) {
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
 </div>
 <div>${tag(statusOf(s))} ${s.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
-${before(s.before)}
+${before(s.before)}${example(s.values.rows, 'The values its tasks were walked with.')}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <div>
 <h2 class="rux--type-productive-heading-03" id="tasks">The tasks, in order</h2>
@@ -608,7 +618,7 @@ function task(s, t) {
 </div>
 <div>${tag(taskStatus(t))} ${t.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
 <p class="ln-strip">${strip}</p>
-${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p>` : first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
+${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p>` : first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${example(t.example.rows, 'The values this task was walked with.')}${t.route ? `
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${t.walked ? '' : `
 <p class="ln-quiet">Nobody has confirmed this task in LN yet.<span data-owner hidden> Walk it to say, at each step, whether it matched.</span></p>`}
@@ -632,7 +642,7 @@ ${accordion([whyFold, stuck('wrong', 'If something goes wrong'), cases.length &&
 </div>
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}</div>${see(r) ? `
+    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${(r.example ?? []).map((i) => `<p class="ln-step__example"><span class="ln-quiet">Example</span> ${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}</p>`).join('')}</div>${see(r) ? `
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>${see(r)}</p></div>` : ''}
   </li>`).join('')}
 </ol>${t.route ? `

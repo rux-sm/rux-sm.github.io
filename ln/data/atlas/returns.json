@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "returns",
@@ -267,6 +267,11 @@
       "text": "Not documented for this release."
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

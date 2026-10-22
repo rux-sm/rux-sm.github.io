@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-routing",
@@ -1096,6 +1096,11 @@
       ]
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

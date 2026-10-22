@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "link-the-prompt-to-a-session",
@@ -272,6 +272,11 @@
       ]
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

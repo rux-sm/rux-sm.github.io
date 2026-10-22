@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "check-item-inventory",
@@ -51,6 +51,11 @@
       "walked": null
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "sections": [
     {
       "kind": "prose",

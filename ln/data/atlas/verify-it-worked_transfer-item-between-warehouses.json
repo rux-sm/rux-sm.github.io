@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "verify-it-worked_transfer-item-between-warehouses",
@@ -153,6 +153,11 @@
       "text": "> Warning > No recorded run has passed this proof yet. Read both warehouses' rows in one view at Confirm stock, destination, and expected order type, immediately before the transfer, and read them again here in the same view."
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

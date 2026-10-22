@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "task",
   "id": "verify-it-worked_ship-from-stock",
@@ -144,6 +144,11 @@
       "text": "On-hand before − on-hand after must equal the shipped quantity. If it does not, the shipment was not confirmed. Ship from stock is complete when the shipment is Confirmed and this inventory check passes."
     }
   ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

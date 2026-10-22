@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "ship-from-stock",
@@ -170,6 +170,119 @@
       "walked": "2026-08-09"
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Type"
+              }
+            ],
+            "text": "Order Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "N10"
+              },
+              {
+                "t": "text",
+                "v": " — Standard orders (no ATP)"
+              }
+            ],
+            "text": "N10 — Standard orders (no ATP)"
+          }
+        ],
+        "task": "create-and-approve-the-sales-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Date"
+              }
+            ],
+            "text": "Order Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2026-08-09"
+              },
+              {
+                "t": "text",
+                "v": " — LN fills it in"
+              }
+            ],
+            "text": "2026-08-09 — LN fills it in"
+          }
+        ],
+        "task": "create-and-approve-the-sales-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Planned Receipt Date"
+              }
+            ],
+            "text": "Planned Receipt Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2026-09-03"
+              },
+              {
+                "t": "text",
+                "v": " — 25 days after the order date"
+              }
+            ],
+            "text": "2026-09-03 — 25 days after the order date"
+          }
+        ],
+        "task": "create-and-approve-the-sales-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "24"
+              }
+            ],
+            "text": "24"
+          }
+        ],
+        "task": "create-and-approve-the-sales-order"
+      }
+    ]
+  },
   "sections": [
     {
       "kind": "prose",

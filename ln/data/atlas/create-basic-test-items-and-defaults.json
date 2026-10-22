@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "create-basic-test-items-and-defaults",
@@ -260,6 +260,11 @@
       "walked": null
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "sections": [
     {
       "kind": "prose",

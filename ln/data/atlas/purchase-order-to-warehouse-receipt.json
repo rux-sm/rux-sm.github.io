@@ -1,5 +1,5 @@
 {
-  "contract": 21,
+  "contract": 22,
   "tier": "export",
   "kind": "process",
   "id": "purchase-order-to-warehouse-receipt",
@@ -160,6 +160,11 @@
       "walked": null
     }
   ],
+  "values": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
   "sections": [
     {
       "kind": "prose",

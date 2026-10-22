@@ -75,6 +75,7 @@ a.ln-path__stop:hover b { text-decoration: underline; }
 .ln-doc__see b { font-weight: 600; color: var(--rux-text-primary); padding-inline-end: .25rem; }
 .ln-doc__see .rux--tag { vertical-align: middle; }
 .ln-why p { margin: 0 0 .75rem; line-height: 1.5; }
+.ln-example { max-inline-size: 36rem; margin: 0; }
 
 /* ---- Guided: one step, what to do, what you should see, then on -----------------
    One readable column on every screen, and Back and Next fixed at the foot
@@ -88,6 +89,7 @@ a.ln-path__stop:hover b { text-decoration: underline; }
 .ln-step__main { display: grid; gap: .625rem; }
 .ln-step__note { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
+.ln-step__example { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }

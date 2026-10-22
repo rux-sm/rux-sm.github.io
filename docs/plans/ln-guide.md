@@ -79,6 +79,12 @@ tutorial, reference and explanation.
   its code as a chip that copies; one Walk it button; then the numbered steps,
   each one short action with what you should see under it.
 
+- **The example sits under Before you start**, a line reading Example and
+  Carbon's structured list of what and its value, the value's exact text a
+  chip that copies it. In Guided, a step that names a field the example gives
+  shows that value under its headline, so the reader never leaves the step to
+  find it.
+
 - **Folded underneath, open when wanted:** Why LN works this way, If something
   goes wrong, Variations, and Related, which names the screens, the ideas and
   the next task. A fold's label carries its count, such as If something goes
@@ -107,9 +113,10 @@ tutorial, reference and explanation.
 
 - **A process page** lists its tasks in order, each with what it achieves and
   its step count, and draws its decisions as dashed forks. Above the path: its
-  purpose, its tags, a Before you start line and one Start button, which opens
-  the first task in Guided. Below it: a Done when line, then the folds If
-  something goes wrong, Reference, Different cases and What comes next.
+  purpose, its tags, a Before you start line, the values its run uses as the
+  list a task's example is, and one Start button, which opens the first task
+  in Guided. Below it: a Done when line, then the folds If something goes
+  wrong, Reference, Different cases and What comes next.
 
 - **A screen page** gives the screen's purpose, code, menu route or how it is
   reached, and the tasks that use it. The owner sees its fields after log-in.
@@ -217,6 +224,19 @@ tutorial, reference and explanation.
   number, with each phase written as a task and each walkthrough as a process
   until task files exist, so the site builds from it at once.
 
+- **A task's example is its `## N. Example` section**, the `What · Value`
+  table atlas's task template already names, and only a value a reader could
+  type crosses: an order type, a date, a quantity, a `BAM-*` test item. The
+  environment's own item, partner, office, site and warehouse stay in the
+  notes, and a date is also given as its distance from another, so a reader
+  can pick their own. The export sends it as the task's `example`, contract
+  22, and marks each step row with the example rows whose field it names, so
+  the page never matches names itself.
+
+- **A process's values are its tasks' examples, gathered in order** by the
+  emitter, one row per what; a process writes none of its own, because one
+  fact has one home.
+
 - **A new area of LN is its tasks and the processes that use them.**
 
 - **A walk is recorded in atlas, with atlas's own command.** Atlas's sync
@@ -255,5 +275,7 @@ None open.
 
 ## Tasks
 
+- [ ] In atlas, write the Example of every other walked task, one process at
+      a time, from the run that walked it.
 - [ ] In atlas, write a screen file for the four screens still without one, once
       a source says how each is opened.

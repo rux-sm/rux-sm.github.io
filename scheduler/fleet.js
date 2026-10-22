@@ -752,23 +752,27 @@
   });
 
   // ── trips, read only ──
-  const LEG = { outbound: 'Outbound', return: 'Return' };
+  /* The bus's upcoming legs, each the leg its route is on, read through
+     trip-shape.js. On a trip of more than one leg the first is Outbound and
+     every one after it Return. */
+  const SHAPE = window.SchedulerTripShape;
   let trips = [];        // the bus's upcoming legs, as read
   let tripsFailed = false;
   async function loadTrips() {
     const { data, error } = await client.from('trip_assignments')
-      .select('leg,trips(id,trip_ref,destination,customer,start_date,end_date,return_start_date,return_end_date,cancelled_at)')
+      .select('route_id,trips(id,trip_ref,destination,customer,cancelled_at,'
+        + 'trip_legs(id,leg,start_date,end_date,created_at,trip_routes(id,position)))')
       .eq('bus_id', loaded.id);
     const now = iso(today());
     tripsFailed = !!error;
     trips = error ? [] : (data || []).map(a => {
       const t = a.trips;
       if (!t || t.cancelled_at) return null;
-      const back = a.leg === 'return';
-      const from = day(back ? t.return_start_date : t.start_date);
-      const to = day(back ? (t.return_end_date || t.return_start_date) : (t.end_date || t.start_date));
-      if (!from || (to || from) < now) return null;
-      return { t, from, to: to || from, leg: a.leg };
+      const leg = SHAPE.legOfRoute(t, a.route_id);
+      const from = day(leg?.start), to = day(leg?.end) || from;
+      if (!from || to < now) return null;
+      const way = SHAPE.legsOf(t).length > 1 ? (leg.number === 1 ? 'Outbound' : 'Return') : null;
+      return { t, from, to, way };
     }).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
     drawTrips();
   }
@@ -801,7 +805,7 @@
       lines.appendChild(el('span', 'scheduler-pair-item__main', `${rangeText(l.from, l.to)} · ${l.t.destination || 'No destination'}`));
       const detail = [
         l.t.customer,
-        l.t.return_start_date ? LEG[l.leg] || null : null,
+        l.way,
         // What the page would leave the trip without, before Save: the bus
         // booked out while it runs, or set Inactive.
         overlaps(out, l.from, l.to) ? 'Unit is out of service then' : null,

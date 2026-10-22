@@ -7,7 +7,9 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-runInNewContext(readFileSync(new URL('../route-figures.js', import.meta.url), 'utf8'), { window });
+for (const file of ['../trip-shape.js', '../route-figures.js']) {
+  runInNewContext(readFileSync(new URL(file, import.meta.url), 'utf8'), { window });
+}
 const { fromStops, legFigures, roomInto, dropRoom, midnights, countsTo, stretches, nightDwell } = window.SchedulerRouteFigures;
 
 let failed = 0;
@@ -181,6 +183,23 @@ expect('two sleeper waits of 3 and 5 hours are a split rest, each tested with th
   split('23:00').map(c => [c.drive, c.span, c.rest]), [[570, 570, 0], [540, 540, 0], [570, 570, 0]]);
 expect('3 and 4 hours are not, and the run is one test, its sleeper time taken off',
   split('22:00').map(c => [c.drive, c.rest]), [[870, 420], [570, 0]]);
+// The same leg read with its legs: its route's stops on the leg's days,
+// named by the leg's id, beside a second leg's stop it must leave out.
+const shapedTrip = {
+  trip_type: 'round_trip', start_date: '2026-09-01', end_date: '2026-09-01',
+  trip_legs: [
+    { id: 'L1', leg: 'outbound', start_date: '2026-10-02', end_date: '2026-10-03', trip_routes: [{ id: 'R1', position: 1 }] },
+    { id: 'L2', leg: 'return', start_date: '2026-10-09', end_date: '2026-10-09', trip_routes: [{ id: 'R2', position: 1 }] },
+  ],
+};
+const shapedRows = [overnight.rows.pickup, ...overnight.list.map(e => e.row), overnight.rows.drop, overnight.rows.back]
+  .map(r => ({ ...r, leg: undefined, route_id: 'R1' }))
+  .concat([{ type: 'pickup', position: 0, route_id: 'R2', name: 'Z', depart_prev: '04:00' }]);
+const shaped = fromStops(shapedTrip, 'L1', shapedRows, times);
+expect('a leg read with its legs has the figures its old word gave, on its own days',
+  [table(legFigures(shaped)), shaped.from, shaped.to], [table(overnightFig), '2026-10-02', '2026-10-03']);
+expect('its old word still finds it', table(legFigures(fromStops(shapedTrip, 'outbound', shapedRows, times))), table(overnightFig));
+
 expect('a night without its times still parts where the bus leaves on a later day',
   stretches({ ...overnight, list: overnight.list.map((st, i) => (i === 2 ? { ...st, leave: null } : st)) }).map(c => c.drive), [303, 347]);
 

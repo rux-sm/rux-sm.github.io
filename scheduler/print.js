@@ -1180,7 +1180,7 @@
        drawn only for a trip, since every figure comes from its route. */
     const detailed = layout === 'detailed' && !!trip?.id;
     const model = detailed
-      ? window.SchedulerRouteFigures.fromStops(trip, wordOf(trip, leg), trip.trip_stops, routeTimes) : null;
+      ? window.SchedulerRouteFigures.fromStops(trip, legKey(trip, leg), trip.trip_stops, routeTimes) : null;
     const fig = model ? window.SchedulerRouteFigures.legFigures(model) : null;
     const waitFor = stop => {
       const entry = model?.list.find(e => e.row === stop);

@@ -422,9 +422,20 @@
      stops between are the list, less the row the group is let off at: a
      one-way or split leg's last stop, or a round trip's row back at the
      pickup. `rows` are the trip's `trip_stops`; `routeTimes` the office's
-     `{ pre, post, late }`. Each stop keeps its row as `row`. */
+     `{ pre, post, late }`. Each stop keeps its row as `row`.
+
+     A TRIP READ WITH ITS LEGS is read through trip-shape.js: `leg` is the
+     leg's id, or the old word a page still names it by, and the model is its
+     first route's stops on the leg's days. A trip read without them, such as
+     a draft's, is read by the old word on each stop and the trip's date
+     columns. */
+  const SHAPE = window.SchedulerTripShape;
+  const shapeLeg = (trip, leg) => (SHAPE && Array.isArray(trip?.trip_legs)
+    ? SHAPE.legOf(trip, leg) ?? SHAPE.legOfWord(trip, leg) : null);
   function fromStops(trip, leg, rows, routeTimes = {}) {
-    const stops = (rows || []).filter(s => (s.leg || 'outbound') === leg)
+    const shaped = shapeLeg(trip, leg);
+    const route = shaped?.routes[0]?.id;
+    const stops = (rows || []).filter(s => (shaped ? s.route_id === route : (s.leg || 'outbound') === leg))
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     const pickup = stops.find(s => s.type === 'pickup') ?? null;
     const backIndex = stops.map(s => s.type).lastIndexOf('return');
@@ -447,8 +458,8 @@
         located: numOrNull(st.lat) != null,
       };
     });
-    const from = leg === 'return' ? trip.return_start_date ?? null : trip.start_date ?? null;
-    const to = leg === 'return' ? trip.return_end_date ?? from : trip.end_date ?? from;
+    const from = shaped ? shaped.start : leg === 'return' ? trip.return_start_date ?? null : trip.start_date ?? null;
+    const to = shaped ? shaped.end ?? from : leg === 'return' ? trip.return_end_date ?? from : trip.end_date ?? from;
     return {
       from, to, pre: routeTimes.pre ?? 0, post: routeTimes.post ?? 0, late: routeTimes.late,
       times: { depart: hhmm(pickup?.depart_prev), spot: hhmm(pickup?.spot), leave: hhmm(inner[0]?.depart_prev),

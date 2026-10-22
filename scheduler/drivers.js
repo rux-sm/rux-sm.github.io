@@ -627,20 +627,23 @@
     }
   });
 
-  const LEG = { outbound: 'Outbound', return: 'Return' };
   // A stored role, such as `relief-driver`, as words in sentence case.
   const sentence = s => { const t = s.replace(/[-_]/g, ' '); return t[0].toUpperCase() + t.slice(1); };
   // A day range and a list of windows, as the time off on the page keeps them.
   const overlaps = (windows, from, to) => (windows || []).some(w => w.start_date <= (to || from) && w.end_date >= from);
 
-  /* The driver's upcoming legs, read once a load and drawn again as the time
-     off or the status on the page change, so a leg they would cover is
-     marked before Save. */
+  /* The driver's upcoming legs, each the leg its vehicle's route is on, read
+     through trip-shape.js once a load and drawn again as the time off or the
+     status on the page change, so a leg they would cover is marked before
+     Save. On a trip of more than one leg the first is Outbound and every one
+     after it Return. */
+  const SHAPE = window.SchedulerTripShape;
   let legs = null;
   let tripsFailed = false;
   async function readTrips() {
     const { data, error } = await client.from('trip_drivers')
-      .select('role,trip_assignments(leg,buses(number,type),trips(id,trip_ref,destination,customer,start_date,end_date,return_start_date,return_end_date,cancelled_at))')
+      .select('role,trip_assignments(route_id,buses(number,type),trips(id,trip_ref,destination,customer,cancelled_at,'
+        + 'trip_legs(id,leg,start_date,end_date,created_at,trip_routes(id,position))))')
       .eq('driver_id', loaded.id);
     tripsFailed = !!error;
     const now = iso(today());
@@ -648,11 +651,11 @@
       const a = r.trip_assignments;
       const t = a?.trips;
       if (!t || t.cancelled_at) return null;
-      const back = a.leg === 'return';
-      const from = String((back ? t.return_start_date : t.start_date) || '').slice(0, 10);
-      const to = String((back ? (t.return_end_date || t.return_start_date) : (t.end_date || t.start_date)) || '').slice(0, 10);
-      if (!ISO.test(from) || (to || from) < now) return null;
-      return { t, from, to: to || from, leg: a.leg, bus: a.buses, role: r.role };
+      const leg = SHAPE.legOfRoute(t, a.route_id);
+      const from = leg?.start || '', to = leg?.end || from;
+      if (!ISO.test(from) || to < now) return null;
+      const way = SHAPE.legsOf(t).length > 1 ? (leg.number === 1 ? 'Outbound' : 'Return') : null;
+      return { t, from, to, way, bus: a.buses, role: r.role };
     }).filter(Boolean).sort((a, b) => a.from.localeCompare(b.from));
   }
 
@@ -684,7 +687,7 @@
       lines.appendChild(el('span', 'scheduler-pair-item__main', `${rangeText(l.from, l.to)} · ${l.t.destination || 'No destination'}`));
       const detail = [
         l.t.customer,
-        l.t.return_start_date ? LEG[l.leg] || null : null,
+        l.way,
         l.bus?.number != null ? window.SchedulerVehicles.label(l.bus) : 'No bus',
         l.role && l.role !== 'driver' ? sentence(l.role) : null,
         // What the page would leave the trip without, as clashes.js says it on the board.

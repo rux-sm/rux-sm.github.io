@@ -153,11 +153,10 @@ None open.
 - [ ] Move the editor's readers of `outbound`, `return`, the `_outbound` and
       `_return` columns, `return_start_date`, `dropoff_pickup` and the five
       contact slots to the shape rule, once no other session has `data.js`
-      open: the editor and `fromStops` in `scheduler/route-figures.js`, with
-      the quote calculator it fills, the bar's ref, whose `leg` is the old
-      word, and the Billing tab's Samsara answer; `scheduler/trip-history.js`,
-      `scheduler/draft-fields.js`, `scheduler/fleet.js` and
-      `scheduler/drivers.js`. Each reads a trip through
+      open: the editor, with the quote calculator it fills, the bar's ref,
+      whose `leg` is the old word, and the Billing tab's Samsara answer; and
+      `scheduler/trip-history.js`, whose two reads the editor makes. Each
+      reads a trip through
       `scheduler/trip-shape.js`, with `trip_legs(*, trip_routes(*))` and
       `trip_contacts` in its query. The past-midnight rule's copies become
       one rule file with its sample cases on the way, and
@@ -188,7 +187,8 @@ None open.
 - [ ] Hold each route to the Route tab's Done, name the leg and route in a
       trip's history, and count a route with no times in the to-do list.
 - [ ] Return a trip's legs, routes and contacts from `get_trip` in
-      `scheduler/connector/index.ts`, let a draft carry them, rebuild the
+      `scheduler/connector/index.ts`, let a draft carry them through
+      `scheduler/draft-fields.js`, which the editor types too, rebuild the
       connector's rules, and hand rux the deploy.
 - [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
       its unique key, and let the status functions, which take a leg by id

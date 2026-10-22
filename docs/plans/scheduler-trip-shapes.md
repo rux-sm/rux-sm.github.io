@@ -144,24 +144,21 @@ them and nothing is entered twice.
 - **A trip's days are its legs',** the first leg's start to the latest day
   any leg ends, as `scheduler/trip-shape.js` gives them, so no page reads a
   pickup's days from the trip's own columns.
+- **`trips.start_date` and `end_date` stay as a copy of those days,** kept
+  by a trigger from the legs and overriding whatever a page sends, so trips
+  can still be found, sorted and paged by date; the trip history makes no
+  line of them, and a check compares them with the legs. They keep their
+  names, and `end_date` becomes the trip's last day once the editor writes
+  legs.
 
 ## Questions
 
-- Once the editor writes legs, should `trips.start_date` and `end_date`
-  stay as the trip's first and last day, kept by a trigger from its legs,
-  so every query that finds or sorts trips by date keeps one filter on the
-  trip? Or go with the other leg columns, every such query reading the legs?
-  The first is recommended; `end_date` would then mean the trip's last day,
-  where it means the first leg's now.
+None open.
 
 ## Tasks
 
-- [ ] Move what still reads a leg from the old columns or words before any
-      writer moves: `get_maintenance_schedule` and its changes function,
-      `get_driver_share_trips` and the share functions, `trips_steps_off`,
-      each as SQL shown to rux and applied on a yes; the
-      `trip-document-link` and `samsara-miles` functions, their deploys
-      handed to rux.
+- [ ] Hand rux the deploy of `scheduler/trip-document-link/index.ts`,
+      which reads a trip's last day from its legs.
 - [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
       its unique key, and let the status functions, which take a leg by id
       already, answer for a leg with no old word, so a third leg's driver
@@ -175,8 +172,12 @@ them and nothing is entered twice.
       own state, the bar's ref and the quote lines, which still name a leg by
       its old word because the editor writes by it, name it by its id; and
       the bar menu's hotel mark, itinerary upload and Mark as told,
-      `scheduler/print.js`'s marks and quote lines, and `trips_clear_done`,
-      which clears a tab's Done from the trip's own columns, move with them.
+      `scheduler/print.js`'s marks and quote lines, `trips_clear_done`,
+      which clears a tab's Done from the trip's own columns, `trips_steps_off`,
+      which turns a driver's steps off when the trip's dates move, and
+      `get_maintenance_schedule_changes`, which reads a move from the trip
+      history's column names, move with them, with the trigger that keeps
+      `trips.start_date` and `end_date`.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

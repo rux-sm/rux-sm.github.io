@@ -113,7 +113,7 @@
     const stops = Shape.stopsOfRoute(shaped, leg.routes.some(r => r.id === a.routeId) ? a.routeId : leg.routes[0]?.id);
     const pickup = stops.find(s => s.type === 'pickup');
     const back = [...stops].reverse().find(s => s.type === 'return');
-    return { key: leg.id, word: leg.word, inbound: trip.tripType === 'dropoff_pickup' && leg.number > 1,
+    return { key: leg.id, word: leg.word, inbound: Shape.isPickup(shaped, leg.id),
       from: leg.start, to: leg.end || leg.start, depart: pickup?.departPrev || trip.departureTime, back: back?.arrive || trip.returnTime };
   };
 

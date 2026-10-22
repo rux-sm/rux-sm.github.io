@@ -18,15 +18,15 @@ const admin = createClient(
   { auth: { persistSession: false, autoRefreshToken: false } },
 )
 
-// The trip's last day, of its legs' dates.
-type TripDays = { cancelled_at: string | null; start_date: string | null; end_date: string | null; return_start_date: string | null; return_end_date: string | null }
-const lastDay = (t: TripDays | null) => (t ? [t.start_date, t.end_date, t.return_start_date, t.return_end_date]
+// The trip's last day, the latest any of its legs starts or ends.
+type TripDays = { cancelled_at: string | null; trip_legs: { start_date: string | null; end_date: string | null }[] | null }
+const lastDay = (t: TripDays | null) => (t ? (t.trip_legs ?? []).flatMap(l => [l.start_date, l.end_date])
   .filter((d): d is string => !!d).sort().at(-1) ?? null : null)
 
 Deno.serve(req => handle(req, {
   async find(id) {
     const { data, error } = await admin.from('trip_documents')
-      .select('file_path, file_name, trips(cancelled_at, start_date, end_date, return_start_date, return_end_date)').eq('id', id).maybeSingle()
+      .select('file_path, file_name, trips(cancelled_at, trip_legs(start_date, end_date))').eq('id', id).maybeSingle()
     if (error) throw error
     if (!data) return null
     const trip = (Array.isArray(data.trips) ? data.trips[0] : data.trips) as TripDays | null

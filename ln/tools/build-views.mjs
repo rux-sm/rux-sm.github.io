@@ -635,22 +635,25 @@ const ideaIndex = () => indexPage('Ideas', 'What a word means in LN, and why LN 
 // ---- search: one file, read by search.html ------------------------------------------
 // A problem is found by its symptom, a task by its title and the words of its
 // steps, a screen by its name, code, route and purpose, an idea by its terms.
-const hit = (kind, text, href, title, rest) => ({ k: kind, x: text.toLowerCase().replace(/\s+/g, ' ').trim(), h: href, t: title, r: rest });
+// `n` is what names the page: a query every word of which is in it puts the
+// page first. A problem is a row, not a page, so nothing names it.
+const fold = (text) => text.toLowerCase().replace(/\s+/g, ' ').trim();
+const hit = (kind, name, text, href, title, rest) => ({ k: kind, n: fold(name), x: fold(text), h: href, t: title, r: rest });
 const searchIndex = () => [
   ...processes.flatMap((s) => tasksOf(s).flatMap((t) => drawing(s, t, () => [
-    hit('Task', `${s.title} ${t.title} ${t.session ?? ''} ${t.sessionCode ?? ''} ${rowsOf(t).map((r) => r.cells.map((c) => c.text).join(' ')).join(' ')}`,
+    hit('Task', t.title, `${s.title} ${t.title} ${t.session ?? ''} ${t.sessionCode ?? ''} ${rowsOf(t).map((r) => r.cells.map((c) => c.text).join(' ')).join(' ')}`,
       hrefTask(t.id), esc(t.title), esc(s.title)),
-    ...t.problems.rows.map((row) => hit('Problem', `${row.cells[0].text} ${row.cells[1].text}`, hrefTask(t.id), plainly(() => tokens(row.cells[0].tokens)), `<p>${tokens(row.cells[1].tokens)}</p>`)),
+    ...t.problems.rows.map((row) => hit('Problem', '', `${row.cells[0].text} ${row.cells[1].text}`, hrefTask(t.id), plainly(() => tokens(row.cells[0].tokens)), `<p>${tokens(row.cells[1].tokens)}</p>`)),
   ]))),
-  ...processes.map((s) => hit('Process', `${s.title} ${s.summary ?? ''} ${s.modules.join(' ')}`, hrefProcess(s.id), esc(s.title), sentence(esc(s.summary ?? '')))),
-  ...side.map((n) => hit('Task', `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
-  ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
-  ...concepts.map((c) => hit('Idea', `${c.name} ${c.terms.join(' ')} ${c.purpose}`, hrefIdea(c.id), esc(c.name), esc(c.purpose))),
+  ...processes.map((s) => hit('Process', s.title, `${s.title} ${s.summary ?? ''} ${s.modules.join(' ')}`, hrefProcess(s.id), esc(s.title), sentence(esc(s.summary ?? '')))),
+  ...side.map((n) => hit('Task', n.session, `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
+  ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code}`, `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
+  ...concepts.map((c) => hit('Idea', `${c.name} ${c.terms.join(' ')}`, `${c.name} ${c.terms.join(' ')} ${c.purpose}`, hrefIdea(c.id), esc(c.name), esc(c.purpose))),
 ];
 const searchPage = () => page('Search — LN Guide', 'search', column(`<h1 class="rux--type-productive-heading-05">Search</h1>
 ${searchBox('find')}
 <h2 class="rux--type-productive-heading-03" data-count hidden></h2>
-<ul class="ln-list" id="results"></ul>`, 12));
+<div class="ln-results" id="results"></div>`, 12));
 
 // ---- write every page ----------------------------------------------------------
 const written = [];

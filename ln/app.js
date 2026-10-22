@@ -71,14 +71,21 @@
   }
 
   // ---- Search: one file, every result, the matches shown as you type -----------
+  // A page the query names comes first, on its own; the rest are grouped by
+  // kind, each group holding its first ten.
   const results = document.getElementById('results');
   if (results) {
     const input = document.querySelector('[data-search]'), heading = document.querySelector('[data-count]');
+    const KINDS = [['Task', 'Tasks'], ['Process', 'Processes'], ['Problem', 'Problems'], ['Screen', 'Screens'], ['Idea', 'Ideas']];
     let index = [];
+    const row = (e) => `<li><span class="ln-quiet">${esc(e.k)}</span><b><a class="rux--link" href="${esc(e.h)}"><span>${e.t}</span></a></b>${e.r ? `<p>${e.r}</p>` : ''}</li>`;
+    const group = (title, list) => list.length ? `${title ? `<h3 class="ln-ref__title">${title} · ${list.length}</h3>` : ''}<ul class="ln-list">${list.slice(0, 10).map(row).join('')}</ul>` : '';
     const draw = () => {
       const words = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      const hits = words.length ? index.filter((e) => words.every((w) => e.x.includes(w))).slice(0, 30) : [];
-      results.innerHTML = hits.map((e) => `<li><span class="ln-quiet">${esc(e.k)}</span><b><a class="rux--link" href="${esc(e.h)}"><span>${e.t}</span></a></b>${e.r ? `<p>${e.r}</p>` : ''}</li>`).join('');
+      const hits = words.length ? index.filter((e) => words.every((w) => e.x.includes(w))) : [];
+      const named = hits.filter((e) => e.n && words.every((w) => e.n.includes(w)));
+      const rest = hits.filter((e) => !named.includes(e));
+      results.innerHTML = group('', named) + KINDS.map(([k, title]) => group(title, rest.filter((e) => e.k === k))).join('');
       heading.textContent = words.length ? (hits.length === 1 ? '1 result' : `${hits.length} results`) : '';
       heading.hidden = !words.length;
       document.querySelector('[data-clear]').classList.toggle('rux--search-close--hidden', !input.value);

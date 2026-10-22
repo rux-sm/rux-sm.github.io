@@ -255,7 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Group search results by kind, with a page the query names put first.
 - [ ] Draw the whole grid on the idea page about how an order moves through LN.
 - [ ] Carry the confirm buttons, Still to confirm and the private detail onto
       the new pages.

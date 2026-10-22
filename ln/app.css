@@ -204,3 +204,6 @@ ol.ln-full__list { list-style: decimal; }
    the browser's rule for the hidden attribute. This puts it back, and is last
    so that it wins. */
 .ln-pages [hidden], .ln-pages .ln-steps li[hidden] { display: none; }
+
+/* Search: a page the query names first, then each kind under its heading. */
+.ln-results { display: grid; gap: 1.5rem; }

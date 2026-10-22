@@ -816,7 +816,7 @@
     const picked = c => due.some(x => x.driverId === c.driverId && x.legKey === c.legKey && x.role === c.role);
     const list = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => (
-        { driverId: c.driverId, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c), ...(picked(c) && { source: 'samsara' }) })));
+        { driverId: c.driverId, legId: c.legKey, leg: c.leg, role: c.role, status: picked(c) ? 'confirmed' : c.status.value, dirty: picked(c), ...(picked(c) && { source: 'samsara' }) })));
     const number = panelIndex.buses.get(bar.dataset.busId)?.number ?? 'the bus';
     try {
       const { error } = await withTimeout(client.rpc('sync_trip_driver_statuses', { p_trip_id: trip.id, p_statuses: list }).then(r => r));
@@ -12386,7 +12386,7 @@
     const list = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses).filter(c => !c.needed).map(c => {
         const picked = c.driverId === target.driverId && c.legKey === target.legKey && c.role === target.role;
-        return { driverId: c.driverId, leg: c.leg, role: c.role,
+        return { driverId: c.driverId, legId: c.legKey, leg: c.leg, role: c.role,
           status: picked ? value : c.status.value, dirty: picked };
       }));
     const label = DRIVER_STATUSES.find(x => x.value === value).label;
@@ -12596,7 +12596,7 @@
     const statuses = (trip.trip_assignments || []).flatMap(a =>
       crewOf(trip, a, panelIndex.driversById, panelIndex.statuses)
         .filter(c => !c.needed && !mine(a).some(p => roleOf(p) === c.role && same(rowOf(a, c.role)?.driver_id, c.driverId)))
-        .map(c => ({ driverId: c.driverId, leg: c.leg, role: c.role, status: c.status.value, dirty: false })));
+        .map(c => ({ driverId: c.driverId, legId: c.legKey, leg: c.leg, role: c.role, status: c.status.value, dirty: false })));
     const changes = [];
     const held = [];
     for (const p of picks) {

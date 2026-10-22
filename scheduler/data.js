@@ -9442,7 +9442,7 @@
     if (by) schEl.scrollLeft += by;
   }
 
-  /* ── Driver availability ───────────────────────────────────────────────────
+  /* ── Drivers ───────────────────────────────────────────────────────────────
      Busy is derived, not stored: a driver is busy on a day an assignment of
      theirs covers, walked from the same legs the bars are placed from, so the
      roster always agrees with the board.
@@ -11228,7 +11228,7 @@
      the width it takes, how the board closes it for room, and whether
      something typed in it would be lost. The trip editor is the exception:
      it stands right of the week and the board never closes it. */
-  const PANEL_NAMES = { roster: 'Driver availability', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
+  const PANEL_NAMES = { roster: 'Drivers', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
     { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-panel-w'),
       close: () => { availOn = false; placeAvailability(); } },

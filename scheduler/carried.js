@@ -1,7 +1,7 @@
 /* ==========================================================================
    Rux Scheduler — HOW A CARRIED FIGURE MOVES
    --------------------------------------------------------------------------
-   The figure a dispatcher carries from Driver availability to a trip hangs
+   The figure a dispatcher carries from Drivers to a trip hangs
    from the pointer by the back of its shirt. This works out its pose for one
    frame from where its pinch is and when: at the pointer while it is carried,
    and wherever its fall has taken it once it is let go. data.js feeds it

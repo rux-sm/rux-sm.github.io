@@ -3086,7 +3086,7 @@ button.scheduler-row-head__num::after {
 
 .scheduler-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
 
-/* ── Driver availability ─────────────────────────────────────────────────────
+/* ── Drivers ─────────────────────────────────────────────────────────────────
    Who is free on each day, which the board cannot show. Rows are drivers,
    columns the same seven days. `.scheduler-avail__grid` also carries
    `.scheduler-grid` and its column template; these rules add denser rows and

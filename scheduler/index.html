@@ -378,12 +378,12 @@
                  them. -->
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-tasks-toggle" aria-pressed="false" aria-controls="scheduler-to-do-panel" aria-label="Tasks" title="Tasks"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-check_circle"/></svg></button>
             <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-prep-toggle" aria-pressed="false" aria-controls="scheduler-prep-panel" aria-label="Departures" title="Departures"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-directions_bus"/></svg></button>
-          <!-- Named "Driver availability", like the pane's own head, so one
+          <!-- Named "Drivers", like the pane's own head, so one
                control has one name. It stays in the toolbar at every width,
                a swipe along the row away where a phone is too narrow. It sits beside
                Tasks and Departures, the bar's other panes, and its person is outlined
                while the pane is shut and filled while it shows, set by data.js. -->
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Driver availability"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-toggle" aria-pressed="false" aria-label="Drivers"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-person"/></svg></button>
           <!-- Forms and the quote calculator each open their own panel left
                of the week, on the selected trip, the editor's, or none; each
                is pressed while its panel is open, and a press then shuts it.
@@ -487,7 +487,7 @@
                the close control; the toolbar's toggle opens it. -->
           <div class="scheduler-aside" id="scheduler-aside" hidden>
             <div class="scheduler-aside__head">
-              <span class="scheduler-aside__title">Driver availability</span>
+              <span class="scheduler-aside__title">Drivers</span>
               <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-avail-close" aria-label="Hide driver availability">
                 <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
               </button>
@@ -700,7 +700,7 @@
           </div>
         </div>
 
-        <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Driver availability" hidden>
+        <div class="scheduler-week scheduler-week--avail" id="scheduler-avail" role="region" aria-label="Drivers" hidden>
           <div class="scheduler-grid scheduler-avail__grid" id="scheduler-avail-grid"></div>
         </div>
       </div>
@@ -898,7 +898,7 @@
     </li>
   </ul>
 
-  <!-- A driver carried to a trip, from Driver availability or off another
+  <!-- A driver carried to a trip, from Drivers or off another
        bar: a figure held at the pointer by the back of its shirt, both arms
        free, with the name beside it. Its head is a dot the size of a seat's
        own, which it is when the figure is pulled out of a bar. data.js copies

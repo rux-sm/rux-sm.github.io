@@ -11,7 +11,7 @@
   "updated": "2026-10-21",
   "status": "draft",
   "summary": "move a quantity of one item between two warehouses, and check both on-hand figures.",
-  "order": 7,
+  "order": 8,
   "sources": [
     "cppat1210m000",
     "whinh0100m000",

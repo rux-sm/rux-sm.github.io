@@ -255,8 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, set the one shape for a question in `standards/`, with its
-      check, and rewrite each task's questions into it.
 - [ ] In atlas, move source citations out of reader sentences into the
       task's sources, and give a gap a line of its own.
 - [ ] In atlas, split each step that still runs past three lines on a phone,

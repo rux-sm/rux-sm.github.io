@@ -1,9 +1,9 @@
-commit   495bf36f3bc3cda6dcfbca68234a8001c424a871
-date     2026-10-22T04:30:45Z
-subject  feat(tasks): Give each written side task a file
+commit   15323e878c885c96611eee27c7dfa737e473fa40
+date     2026-10-22T05:07:08Z
+subject  feat(tasks): Ask a task's questions in two tables
 contract 19 
 tier     export
-sha256   a229fef39cde38fd35ddaffb187816262f6e938ee2b4a6bd126684caa870ef0f
+sha256   f5915a36ee233779b7ef9b53c9080e541e42f84490ff5ba80f93476aa909f714
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

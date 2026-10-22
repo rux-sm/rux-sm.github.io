@@ -9,10 +9,10 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "approved",
   "summary": "ship a sales order for an item already in stock, and check inventory went down.",
-  "order": 8,
+  "order": 7,
   "sources": [
     "tdsls4246m000",
     "tdsls4501m140",
@@ -66,7 +66,7 @@
         ],
         "text": "Know what you can actually ship."
       },
-      "steps": 5,
+      "steps": 4,
       "walked": "2026-08-09"
     },
     {
@@ -944,16 +944,58 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Replenish first — see the branch at step 5 of "
+                  "v": "Replenish first: "
                 },
                 {
-                  "t": "link",
-                  "v": "Confirm there is stock",
-                  "href": "confirm-there-is-stock.md"
+                  "t": "chip",
+                  "v": "make it"
                 },
                 {
                   "t": "text",
-                  "v": ", then start again at "
+                  "v": " with "
+                },
+                {
+                  "t": "link",
+                  "v": "Production order",
+                  "href": "manual-production-order-existing-master-data.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "move it"
+                },
+                {
+                  "t": "text",
+                  "v": " with "
+                },
+                {
+                  "t": "link",
+                  "v": "Warehouse transfer",
+                  "href": "transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", or "
+                },
+                {
+                  "t": "chip",
+                  "v": "buy it in"
+                },
+                {
+                  "t": "text",
+                  "v": " with "
+                },
+                {
+                  "t": "link",
+                  "v": "Purchase to receipt",
+                  "href": "purchase-order-to-warehouse-receipt.md"
+                },
+                {
+                  "t": "text",
+                  "v": "; then start again at "
                 },
                 {
                   "t": "link",
@@ -961,7 +1003,7 @@
                   "href": "create-and-approve-the-sales-order.md"
                 }
               ],
-              "text": "Replenish first — see the branch at step 5 of Confirm there is stock, then start again at Create and approve the sales order"
+              "text": "Replenish first: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt; then start again at Create and approve the sales order"
             },
             {
               "tokens": [

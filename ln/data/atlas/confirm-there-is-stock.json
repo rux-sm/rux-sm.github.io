@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -322,96 +322,6 @@
           "id": "4",
           "optional": false,
           "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": " if no warehouse holds enough to cover the order, replenish before continuing: "
-                },
-                {
-                  "t": "chip",
-                  "v": "make it"
-                },
-                {
-                  "t": "text",
-                  "v": " with "
-                },
-                {
-                  "t": "link",
-                  "v": "Production order",
-                  "href": "manual-production-order-existing-master-data.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "chip",
-                  "v": "move it"
-                },
-                {
-                  "t": "text",
-                  "v": " with "
-                },
-                {
-                  "t": "link",
-                  "v": "Warehouse transfer",
-                  "href": "transfer-item-between-warehouses.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", or "
-                },
-                {
-                  "t": "chip",
-                  "v": "buy it in"
-                },
-                {
-                  "t": "text",
-                  "v": " with "
-                },
-                {
-                  "t": "link",
-                  "v": "Purchase to receipt",
-                  "href": "purchase-order-to-warehouse-receipt.md"
-                },
-                {
-                  "t": "text",
-                  "v": ". Return here at "
-                },
-                {
-                  "t": "link",
-                  "v": "Create and approve the sales order",
-                  "href": "create-and-approve-the-sales-order.md"
-                }
-              ],
-              "text": "if no warehouse holds enough to cover the order, replenish before continuing: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt. Return here at Create and approve the sales order"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "This walkthrough continues only once one warehouse can cover the quantity"
-                }
-              ],
-              "text": "This walkthrough continues only once one warehouse can cover the quantity"
-            }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": false
         }
       ]
     }

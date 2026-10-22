@@ -237,8 +237,8 @@
 
   // -- reading ------------------------------------------------------------
   const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
-  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
+  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date',
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'po_ref',
     // A quote marked sent, which ends a placeholder and is the day the customer was last told.
     'quote_sent_price', 'quote_sent_on',
     // The money, as follow-up.js reads it, for what the customer still owes.
@@ -246,7 +246,6 @@
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
     'itinerary_not_needed', 'contact_not_needed',
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
@@ -279,10 +278,11 @@
     return { pages: legs.map(l => page(l.trip, l.leg, read)), read };
   }
 
-  // The legs leaving on a day, as pages.
+  /* The legs leaving on a day, as pages: the trips with a leg that starts
+     that day, by `leaving`, an embed that returns nothing. */
   async function readDay(client, day, basics) {
-    const trips = await client.from('trips').select(COLUMNS).is('cancelled_at', null)
-      .or(`start_date.eq.${day},return_start_date.eq.${day},end_date.eq.${day}`).order('start_date').then(unwrap);
+    const trips = await client.from('trips').select(`${COLUMNS},leaving:trip_legs!inner()`).is('cancelled_at', null)
+      .eq('leaving.start_date', day).order('start_date').then(unwrap);
     return (await pagesOf(client, legsOn(trips, day), day, basics)).pages;
   }
 

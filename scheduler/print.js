@@ -1448,9 +1448,11 @@
     };
   }
 
-  // The last day of the trip, which the description's range and the
-  // agreement's trip date both end on.
-  const lastDay = trip => trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date;
+  /* The last day of the trip, the latest any leg ends, which the
+     description's range and the agreement's trip date both end on. A blank
+     form's trip has no legs and is read by its own columns. */
+  const lastDay = trip => SHAPE.daysOf(trip)?.last
+    ?? (trip.return_end_date || trip.return_start_date || trip.end_date || trip.start_date);
 
   /* Whether a leg's line names 56 seats: a vehicle on it carries the 56
      passengers need. A slot with no row yet asks for what the trip does, as
@@ -3759,9 +3761,10 @@
     const to = plusDays(first, 7 * (WEEKS_AFTER + 1) - 1);
     const [buses, trips] = await Promise.all([
       client.from('buses').select('id,number,status,sort_order').order('sort_order', { ascending: true, nullsFirst: false }),
-      client.from('trips').select(WEEK_TRIP_COLUMNS).is('cancelled_at', null)
+      // A trip with a leg that ends, or with no end starts, by the first day, by `ends`, an embed that returns nothing.
+      client.from('trips').select(`${WEEK_TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
         .lte('start_date', isoDay(to))
-        .or(`end_date.gte.${isoDay(from)},return_end_date.gte.${isoDay(from)},start_date.gte.${isoDay(from)}`),
+        .or(`end_date.gte.${isoDay(from)},start_date.gte.${isoDay(from)}`, { referencedTable: 'ends' }),
       readRequirementNames(client).catch(() => {}),
       // The late-return hour, which says the days each leg takes.
       readRouteTimes(client).catch(() => {}),

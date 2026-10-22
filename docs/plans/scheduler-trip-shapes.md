@@ -141,13 +141,36 @@ them and nothing is entered twice.
 - **A database function moves with the pages that read it,** because the
   twelve that name a leg by its word hand that word to a page, so changing
   one alone would change it twice.
+- **A trip's days are its legs',** the first leg's start to the latest day
+  any leg ends, as `scheduler/trip-shape.js` gives them, so no page reads a
+  pickup's days from the trip's own columns.
 
 ## Questions
 
-None open.
+- Once the editor writes legs, should `trips.start_date` and `end_date`
+  stay as the trip's first and last day, kept by a trigger from its legs,
+  so every query that finds or sorts trips by date keeps one filter on the
+  trip? Or go with the other leg columns, every such query reading the legs?
+  The first is recommended; `end_date` would then mean the trip's last day,
+  where it means the first leg's now.
 
 ## Tasks
 
+- [ ] Move what still reads a leg from the old columns or words before any
+      writer moves: `get_maintenance_schedule` and its changes function,
+      `get_driver_share_trips` and the share functions, `trips_steps_off`,
+      each as SQL shown to rux and applied on a yes; the
+      `trip-document-link` and `samsara-miles` functions, their deploys
+      handed to rux; and every page's `dropoff_pickup` check, which reads a
+      split from the trip's legs.
+- [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
+      its unique key, and let the status functions, which take a leg by id
+      already, answer for a leg with no old word, so a third leg's driver
+      can accept.
+- [ ] Return a trip's legs, routes and contacts from `get_trip` in
+      `scheduler/connector/index.ts`, let a draft carry them through
+      `scheduler/draft-fields.js`, which the editor types too, rebuild the
+      connector's rules, and hand rux the deploy.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way. The editor's
       own state, the bar's ref and the quote lines, which still name a leg by
@@ -175,14 +198,6 @@ None open.
       leg and route of their bus.
 - [ ] Hold each route to the Route tab's Done, name the leg and route in a
       trip's history, and count a route with no times in the to-do list.
-- [ ] Return a trip's legs, routes and contacts from `get_trip` in
-      `scheduler/connector/index.ts`, let a draft carry them through
-      `scheduler/draft-fields.js`, which the editor types too, rebuild the
-      connector's rules, and hand rux the deploy.
-- [ ] Key a driver's status by its leg's id in `trip_driver_statuses` and
-      its unique key, and let the status functions, which take a leg by id
-      already, answer for a leg with no old word, so a third leg's driver
-      can accept.
 - [ ] Write the SQL that drops the old leg columns and contact slots once
       nothing reads them, with the old date fields and words
       `get_maintenance_schedule` still hands the maintenance link, show it

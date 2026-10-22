@@ -881,6 +881,13 @@ const window = {};
     const leg = legs.find(l => l.id === legId);
     return leg && legs.length > 1 ? `${leg.number} of ${legs.length}` : '';
   }
+  /* A trip's days: `first`, the day its first leg starts, and `last`, the
+     latest day any leg ends; null for a trip read without its legs. */
+  function daysOf(trip) {
+    const legs = legsOf(trip).filter(l => l.start);
+    if (!legs.length) return null;
+    return { first: legs[0].start, last: legs.reduce((d, l) => (l.end > d ? l.end : d), legs[0].end) };
+  }
   // The leg a route is on.
   const legOfRoute = (trip, routeId) => legsOf(trip).find(l => l.routes.some(r => r.id === routeId)) ?? null;
 
@@ -928,7 +935,7 @@ const window = {};
   const vehiclesOfRoute = (trip, routeId) => (trip?.trip_assignments || []).filter(a => a.route_id === routeId).sort(byPosition);
 
   window.SchedulerTripShape = {
-    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg,
+    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg, daysOf,
     isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
     allContacts, contactsFor, stopsOfRoute, vehiclesOfRoute,
   };
@@ -2205,16 +2212,16 @@ const window = {};
   }
 
   // -- reading ------------------------------------------------------------
-  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
+  // A trip's legs and routes, as trip-shape.js reads them, which say its days and buses.
+  const TRIP_LEGS = 'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))';
+  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', TRIP_LEGS,
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at',
     // A quote marked sent, which ends a placeholder and is the day the customer was last told.
     'quote_sent_price', 'quote_sent_on',
     // What the follow-up rules read: the money, the itinerary and the updates.
     'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)'].join(',');
-  // A trip's legs and routes, as trip-shape.js reads them.
-  const TRIP_LEGS = 'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))';
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
@@ -2239,8 +2246,9 @@ const window = {};
     const [light, heavy, basics, nearby] = await Promise.all([
       // A trip that left a season ago can still owe a balance; older than that is History's.
       client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
-      client.from('trips').select(HEAVY).is('cancelled_at', null)
-        .or([soonOn('start_date'), soonOn('return_start_date'), soonOn('end_date')].join(',')).then(unwrap),
+      // A trip with a leg that starts or ends in the window, by `soon`, an embed that returns nothing.
+      client.from('trips').select(`${HEAVY},soon:trip_legs!inner()`).is('cancelled_at', null)
+        .or([soonOn('start_date'), soonOn('end_date')].join(','), { referencedTable: 'soon' }).then(unwrap),
       Facts.readBasics(client),
       // What is around the trips leaving within 30 days, for the Clash rows.
       window.SchedulerClashes?.readNearby(client, today, dayFrom(SHORT_DAYS + 30)) ?? null,
@@ -2497,8 +2505,8 @@ const window = {};
 
   // -- reading ------------------------------------------------------------
   const STEPS = ['envelope_printed', 'trip_reminder_sent', 'itinerary_printed', 'hos_form_printed', 'driver_forms_printed'];
-  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count', 'po_ref',
+  const COLUMNS = ['id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date',
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'po_ref',
     // A quote marked sent, which ends a placeholder and is the day the customer was last told.
     'quote_sent_price', 'quote_sent_on',
     // The money, as follow-up.js reads it, for what the customer still owes.
@@ -2506,7 +2514,6 @@ const window = {};
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
     'itinerary_not_needed', 'contact_not_needed',
     'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
-    'hotel_booked_outbound', 'hotel_booked_return', 'hotel_itinerary_number_outbound', 'hotel_itinerary_number_return',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
@@ -2539,10 +2546,11 @@ const window = {};
     return { pages: legs.map(l => page(l.trip, l.leg, read)), read };
   }
 
-  // The legs leaving on a day, as pages.
+  /* The legs leaving on a day, as pages: the trips with a leg that starts
+     that day, by `leaving`, an embed that returns nothing. */
   async function readDay(client, day, basics) {
-    const trips = await client.from('trips').select(COLUMNS).is('cancelled_at', null)
-      .or(`start_date.eq.${day},return_start_date.eq.${day},end_date.eq.${day}`).order('start_date').then(unwrap);
+    const trips = await client.from('trips').select(`${COLUMNS},leaving:trip_legs!inner()`).is('cancelled_at', null)
+      .eq('leaving.start_date', day).order('start_date').then(unwrap);
     return (await pagesOf(client, legsOn(trips, day), day, basics)).pages;
   }
 

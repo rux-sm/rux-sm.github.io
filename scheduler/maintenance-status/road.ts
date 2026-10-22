@@ -63,6 +63,13 @@ const window = {};
     const leg = legs.find(l => l.id === legId);
     return leg && legs.length > 1 ? `${leg.number} of ${legs.length}` : '';
   }
+  /* A trip's days: `first`, the day its first leg starts, and `last`, the
+     latest day any leg ends; null for a trip read without its legs. */
+  function daysOf(trip) {
+    const legs = legsOf(trip).filter(l => l.start);
+    if (!legs.length) return null;
+    return { first: legs[0].start, last: legs.reduce((d, l) => (l.end > d ? l.end : d), legs[0].end) };
+  }
   // The leg a route is on.
   const legOfRoute = (trip, routeId) => legsOf(trip).find(l => l.routes.some(r => r.id === routeId)) ?? null;
 
@@ -110,7 +117,7 @@ const window = {};
   const vehiclesOfRoute = (trip, routeId) => (trip?.trip_assignments || []).filter(a => a.route_id === routeId).sort(byPosition);
 
   window.SchedulerTripShape = {
-    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg,
+    legsOf, legOf, firstLeg, legOfWord, legLabel, legOfRoute, forLeg, daysOf,
     isItinerary, allItineraries, itinerariesFor, itineraryFor, earlierItineraries,
     allContacts, contactsFor, stopsOfRoute, vehiclesOfRoute,
   };

@@ -169,16 +169,16 @@
   }
 
   // -- reading ------------------------------------------------------------
-  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at', 'bus_count', 'return_bus_count',
+  // A trip's legs and routes, as trip-shape.js reads them, which say its days and buses.
+  const TRIP_LEGS = 'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))';
+  const LIGHT = ['id', 'trip_ref', 'destination', 'customer', 'start_date', TRIP_LEGS,
+    'trip_type', 'confirmed', 'trip_bar_color', 'cancelled_at', 'created_at',
     // A quote marked sent, which ends a placeholder and is the day the customer was last told.
     'quote_sent_price', 'quote_sent_on',
     // What the follow-up rules read: the money, the itinerary and the updates.
     'quoted_price', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_ref', 'po_amount', 'deposit_amount',
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)'].join(',');
-  // A trip's legs and routes, as trip-shape.js reads them.
-  const TRIP_LEGS = 'trip_legs(id,leg,kind,start_date,end_date,bus_count,hotel_booked,hotel_itinerary_number,created_at,trip_routes(id,position,name))';
   // What the other three rules read, of the trips leaving soon enough to be asked.
   const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
@@ -203,8 +203,9 @@
     const [light, heavy, basics, nearby] = await Promise.all([
       // A trip that left a season ago can still owe a balance; older than that is History's.
       client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
-      client.from('trips').select(HEAVY).is('cancelled_at', null)
-        .or([soonOn('start_date'), soonOn('return_start_date'), soonOn('end_date')].join(',')).then(unwrap),
+      // A trip with a leg that starts or ends in the window, by `soon`, an embed that returns nothing.
+      client.from('trips').select(`${HEAVY},soon:trip_legs!inner()`).is('cancelled_at', null)
+        .or([soonOn('start_date'), soonOn('end_date')].join(','), { referencedTable: 'soon' }).then(unwrap),
       Facts.readBasics(client),
       // What is around the trips leaving within 30 days, for the Clash rows.
       window.SchedulerClashes?.readNearby(client, today, dayFrom(SHORT_DAYS + 30)) ?? null,

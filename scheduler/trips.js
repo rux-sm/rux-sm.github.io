@@ -19,13 +19,14 @@
   const PAGE_SIZE = 50;
   const COLUMNS = [
     'id', 'trip_ref', 'customer', 'destination', 'trip_type', 'booking_contact_name',
-    'start_date', 'end_date', 'return_start_date', 'return_end_date',
-    'bus_count', 'return_bus_count', 'quoted_price', 'po_ref', 'invoice_number',
+    'start_date', 'quoted_price', 'po_ref', 'invoice_number',
+    // The legs, which say the trip's days and the buses each takes, as trip-shape.js reads them.
+    'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name))',
     'confirmed', 'invoiced', 'balance_paid', 'cancelled_at', 'cancellation_reason',
-    'trip_assignments(leg,bus_id,active_roles,buses:bus_id(number),trip_drivers(driver_id,role,pay))',
+    'trip_assignments(leg,route_id,bus_id,active_roles,buses:bus_id(number),trip_drivers(driver_id,role,pay))',
     // What close-out.js reads: when the trip is back, and what its record lacks.
     'departure_time', 'return_time', 'actual_miles', 'invoice_status',
-    'trip_stops(leg,type,position,depart_prev,arrive,spot)',
+    'trip_stops(leg,route_id,type,position,depart_prev,arrive,spot)',
     // What the follow-up rules read: the money, the itinerary and the updates.
     'created_at', 'trip_bar_color', 'quote_sent_price', 'quote_sent_on', 'itinerary_not_needed', 'contract_status', 'po_received', 'po_amount',
     'deposit_amount', 'date_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
@@ -39,14 +40,15 @@
   const full = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   const usd = n => Number(n).toLocaleString(undefined, { style: 'currency', currency: 'USD' });
 
-  // The trip's last day, the return leg's where it has one.
-  const lastDay = t => t.return_end_date || t.return_start_date || t.end_date || t.start_date;
-  // "Sep 24 – 26, 2026", the month and year said once where they are shared.
+  // The latest day any leg ends, or null for a trip with no dates.
+  const lastDay = t => window.SchedulerTripShape.daysOf(t)?.last ?? null;
+  /* "Sep 24 – 26, 2026", from the trip's first day to the last any leg
+     ends, the month and year said once where they are shared. */
   const dates = t => {
-    if (!t.start_date) return 'No date';
-    const to = lastDay(t);
-    if (!to || to === t.start_date) return full.format(parseISO(t.start_date));
-    return full.formatRange(parseISO(t.start_date), parseISO(to));
+    const days = window.SchedulerTripShape.daysOf(t);
+    if (!days) return 'No date';
+    if (days.last === days.first) return full.format(parseISO(days.first));
+    return full.formatRange(parseISO(days.first), parseISO(days.last));
   };
 
   /* One status per trip, the furthest it has gone: cancelled, then paid,
@@ -65,7 +67,7 @@
     const numbers = [...new Set((t.trip_assignments || [])
       .map(a => a.buses?.number).filter(n => n != null).map(String))];
     if (numbers.length) return numbers.join(', ');
-    const n = Math.max(t.bus_count || 0, t.return_bus_count || 0) || 1;
+    const n = Math.max(0, ...window.SchedulerTripShape.legsOf(t).map(l => l.busCount || 0)) || 1;
     return `${n} ${n === 1 ? 'bus' : 'buses'}`;
   }
 

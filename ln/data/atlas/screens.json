@@ -787,7 +787,9 @@
     },
     {
       "code": "tisfc0516m000",
-      "name": "tisfc0516m000"
+      "name": "Inventory by Production Order",
+      "purpose": "The inventory part of one production order, shown inside the order itself.",
+      "route": "the Inventory part of Production Order (tisfc0101m100), which is composed of it"
     },
     {
       "code": "ttadv3475m000",

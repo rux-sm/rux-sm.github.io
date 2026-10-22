@@ -255,7 +255,7 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, write a screen file for the five screens still without one, once
+- [ ] In atlas, write a screen file for the four screens still without one, once
       a source says how each is opened.
 - [ ] In atlas, write the short explanation for each of the sixteen ideas.
 - [ ] In atlas, give a field's name its own token where it sits inside bold or

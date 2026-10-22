@@ -1,9 +1,9 @@
-commit   20e8e7dadfa8c2c27f821752b9ca4ab8f3f9366e
-date     2026-10-22T05:38:04Z
-subject  fix(tasks): Shorten six more long steps
+commit   3505a5ebed18e974694a82480e906c17e9973f8f
+date     2026-10-22T05:41:13Z
+subject  feat(sessions): File Inventory by Production Order
 contract 19 
 tier     export
-sha256   427bde69796544d70b4f8bf7563898a4c547a65c6ba49fd662a060b46116157e
+sha256   adcf12ceda846cb9b7cf76a0071b1061202649166c0a2d7053d29ecaa71cda6a
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

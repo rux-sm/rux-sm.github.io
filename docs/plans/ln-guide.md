@@ -255,9 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Check every kind of page in Chrome on :8641, at a phone width and a wide
-      one, in a light theme and a dark one, and the Full page of one task in
-      print preview.
 - [ ] In atlas, write the task class into `standards/`, its template, its
       frontmatter and its checks, with the process shape a walkthrough takes
       and a check that names two tasks whose steps are the same.

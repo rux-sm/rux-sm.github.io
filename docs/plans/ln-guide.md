@@ -255,9 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, emit the task and process kinds from `tools/emit.py` under the
-      new contract number, each phase a task and each walkthrough a process
-      until task files exist, and document them in `standards/export-json.md`.
 - [ ] Build Home, the task index, and the task, process, screen and idea
       pages in `ln/tools/build-views.mjs` from the new contract, grown from
       the mockup's generator in `design/m/ln-guide/`, one file per page, with

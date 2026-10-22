@@ -7,32 +7,39 @@ covers setup, the commands and how a push deploys.
 
 ## What it is
 
-One page, `index.html`, whose address says which screen shows:
+A documentation site, one file per page, with a walked mode inside it:
 
-- **Home** asks what you are doing: a search box, the place you stopped, and a
-  card for each scenario.
-- **A scenario** is a path of tasks, with each decision drawn as a fork.
-- **A task** shows one step at a time, with what you should see.
-- **Reference** is what a scenario has to look up and not walk: its tables as
-  lists, and text to type with a Copy button.
-- **A decision** is a screen of its own, each answer a button.
-- **Map** shows a scenario's route, and the whole chain behind a button.
-- **Search** finds problems, tasks, screens and ideas, and opens a card for
-  each.
-- **Still to confirm** lists the tasks nobody has checked in LN.
+- **Home**, `home.html`, asks what you are doing: a search box, the place you
+  stopped, the processes in the order to learn them, and what is still to
+  confirm.
+- **A process**, `follow/<id>.html`, is the path of its tasks, with each
+  decision drawn as a fork, and what to look up folded beneath.
+- **A task**, `do/<id>.html`, is a document first: its steps on one page,
+  with Why LN works this way, If something goes wrong, Variations and Related
+  folded beneath. **Walk it** turns it into Guided, one step at a time; a
+  phone opens Guided and a wide screen the Full page.
+- **A screen**, `screens/<code>.html`, and **an idea**, `ideas/<id>.html`,
+  each have a page, and `do/`, `screens/` and `ideas/` each have an index.
+- **Search**, `search.html`, reads `search.json`, the one file that indexes
+  every task, problem, process, screen and idea.
 
 Where the reader stopped is kept in their browser and nowhere else.
 `docs/plans/ln-guide.md` in the repository root is what it is for and what is
 still to build.
+
+**The one-page guide is still here.** `index.html`, written by
+`tools/build-page.mjs` with `page.js`, keeps the confirm buttons, the private
+detail and the map until the pages carry them; the plan says when it goes.
 
 ## How the page is made
 
 1. `sh tools/sync-export.sh` copies atlas's **export tier** into `data/atlas/`
    and writes `data/atlas/PIN`: the atlas commit, the contract and a sha256 of
    the bytes. `tools/check-data.mjs` refuses data that does not match it.
-2. `tools/build-views.mjs` writes `index.html` from that data, and lists what
-   the export does not yet say. `app.css` and `app.js` are its styles and
-   behaviour, `data.js` its reads and writes for the owner, and `tools/shell.mjs` is the site header.
+2. `tools/build-views.mjs` writes the pages from that data, one file each,
+   and lists what the export does not yet say. `app.css` and `app.js` are
+   their styles and behaviour, `data.js` the one-page guide's reads and writes
+   for the owner, and `tools/shell.mjs` is the site header.
 
 The data contract is atlas's `standards/export-json.md`. Every control on the
 page is Design's, linked at `/design/`.
@@ -77,7 +84,8 @@ machine has to be able to reproduce.
 
 ## Never edited by hand
 
-`data/atlas/` and `index.html` are generated, and the next sync or build
-overwrites them. Fix content in atlas, a component in Design, markup in
-`tools/build-views.mjs`. `theme.css` and `overrides.css` are this app's
+`data/atlas/`, `index.html`, `home.html`, `search.html`, `search.json` and
+every page under `do/`, `follow/`, `screens/` and `ideas/` are generated, and
+the next sync or build overwrites them. Fix content in atlas, a component in
+Design, markup in `tools/build-views.mjs`. `theme.css` and `overrides.css` are this app's
 override hooks, linked after Design's own.

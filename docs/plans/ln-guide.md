@@ -255,13 +255,7 @@ None open.
 
 ## Tasks
 
-- [ ] Build Home, the task index, and the task, process, screen and idea
-      pages in `ln/tools/build-views.mjs` from the new contract, grown from
-      the mockup's generator in `design/m/ln-guide/`, one file per page, with
-      both views on the task page and the search index as one file.
 - [ ] Group search results by kind, with a page the query names put first.
-- [ ] Lay out the wide screen from `document-page`, with the process menu and
-      On this page, and the phone as one column with no bar.
 - [ ] Draw the whole grid on the idea page about how an order moves through LN.
 - [ ] Carry the confirm buttons, Still to confirm and the private detail onto
       the new pages.

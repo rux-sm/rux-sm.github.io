@@ -147,3 +147,60 @@ ol.ln-full__list { list-style: decimal; }
    own, which beats the browser's rule for the hidden attribute. This puts it
    back, and is last so that it wins. */
 .ln-app [hidden] { display: none; }
+
+/* ==== The pages tools/build-views.mjs writes ==================================
+   Design's document-page shell: the side nav beside the content on a wide
+   screen, one reading column, and On this page beside it. Guided is one column
+   on every screen with Back and Next fixed at the foot. The one-page guide
+   above keeps its own rules until it goes. */
+
+/* The side nav is beside the content from 66rem, where Carbon pairs them, and
+   nothing in Carbon offsets the content for a nav inside the header. */
+@media (min-width: 66rem) { .ln-pages.rux--content { padding-inline-start: 18rem; } }
+.ln-pages .rux--css-grid-column { max-inline-size: 64rem; }
+.ln-pages p, .ln-pages h1 { max-inline-size: 36rem; }
+.ln-pages .ln-ask { font-size: 2rem; }
+
+/* On this page shows only beside the content, and stays while it scrolls. */
+.ln-pages .ln-aside { display: none; }
+@media (min-width: 66rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
+
+/* Full page: every step on one page, numbered the way the path numbers its
+   stops, with what you should see under the action. */
+.ln-doc { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 1.25rem; max-inline-size: 36rem; }
+.ln-doc > li { display: grid; grid-template-columns: 2rem 1fr; gap: .25rem .75rem; counter-increment: step; }
+.ln-doc > li::before { content: counter(step); grid-row: 1 / span 4; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; border-radius: 50%; border: 1px solid var(--rux-border-strong-01); font-size: .8125rem; font-variant-numeric: tabular-nums; color: var(--rux-text-primary); }
+.ln-doc > li:target::before { background: var(--rux-interactive); border-color: transparent; color: var(--rux-text-on-color); }
+.ln-doc__do { margin: 0; font-size: 1.125rem; line-height: 1.4; padding-block-start: .3rem; }
+.ln-doc__note { margin: 0; font-size: 1rem; line-height: 1.45; }
+.ln-doc__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
+.ln-doc__see { margin: 0; font-size: .9375rem; line-height: 1.45; color: var(--rux-text-secondary); }
+.ln-doc__see b { font-weight: 600; color: var(--rux-text-primary); padding-inline-end: .25rem; }
+.ln-doc__see .rux--tag { vertical-align: middle; }
+
+/* The process path: what a task achieves sits under its title, in the title's
+   column, with the step count after it. */
+.ln-pages .ln-path small { grid-column: 2; padding-block-start: .125rem; }
+
+/* Home: the processes two abreast once there is room, a single card alone. */
+@media (min-width: 42rem) { .ln-pages .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-pages .ln-cards--one { grid-template-columns: 1fr; } }
+.ln-screen-line { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.ln-strip { color: var(--rux-text-secondary); }
+.ln-fold { display: grid; gap: .75rem; padding-inline-end: 1rem; }
+.ln-fold p { margin: 0; line-height: 1.5; }
+.ln-pages .ln-list small { display: block; margin-block-end: .125rem; }
+.ln-pages .ln-list .rux--tag { margin-block-start: .25rem; }
+
+/* Guided: one readable column, and Back and Next fixed at the foot with no
+   bar beneath them. Beside the side nav, the bar lines up with the column
+   rather than the window. */
+.ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: 7rem; }
+.ln-guided .ln-steps li { display: grid; gap: 1.5rem; }
+.ln-guided .ln-step__more { gap: .5rem 1.5rem; }
+.ln-pages .ln-nav { inset-block-end: 0; padding-block: .75rem 1rem; }
+@media (min-width: 66rem) { .ln-pages .ln-nav { inset-inline: 20rem auto; margin-inline: 0; inline-size: 36rem; } }
+
+/* Carbon's reset gives several elements a display of their own, which beats
+   the browser's rule for the hidden attribute. This puts it back, and is last
+   so that it wins. */
+.ln-pages [hidden], .ln-pages .ln-steps li[hidden] { display: none; }

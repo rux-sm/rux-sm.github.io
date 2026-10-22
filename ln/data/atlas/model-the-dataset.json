@@ -731,10 +731,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Drag the bar under the two panels upward"
+                  "v": "Read "
+                },
+                {
+                  "t": "chip",
+                  "v": "Selected Fields"
+                },
+                {
+                  "t": "text",
+                  "v": ", under the two panels. If it is too short, drag the bar above it upward, but not to the top: the Modeler opens next time where you leave it"
                 }
               ],
-              "text": "Drag the bar under the two panels upward"
+              "text": "Read Selected Fields, under the two panels. If it is too short, drag the bar above it upward, but not to the top: the Modeler opens next time where you leave it"
             },
             {
               "tokens": [
@@ -971,7 +979,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The Dataset Modeler has no toolbar, or no "
+                "v": "The Dataset Modeler shows no "
               },
               {
                 "t": "chip",
@@ -979,27 +987,45 @@
               },
               {
                 "t": "text",
-                "v": " and "
+                "v": " or "
               },
               {
                 "t": "chip",
                 "v": "Fields"
-              },
-              {
-                "t": "text",
-                "v": " panels"
               }
             ],
-            "text": "The Dataset Modeler has no toolbar, or no Tables and Fields panels"
+            "text": "The Dataset Modeler shows no Tables or Fields"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The window is too short, and a wider one does not help. Use a screen tall enough for a page of about 1,040 px, close the Modeler's tab and open the dataset again"
+                "v": "The bar between the panels was left at the top, and the Modeler remembers it. Drag the thin bar under the toolbar down"
               }
             ],
-            "text": "The window is too short, and a wider one does not help. Use a screen tall enough for a page of about 1,040 px, close the Modeler's tab and open the dataset again"
+            "text": "The bar between the panels was left at the top, and the Modeler remembers it. Drag the thin bar under the toolbar down"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The Dataset Modeler has no toolbar either"
+              }
+            ],
+            "text": "The Dataset Modeler has no toolbar either"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The bar is above the window. Make the window taller until the toolbar shows, then drag the bar down"
+              }
+            ],
+            "text": "The bar is above the window. Make the window taller until the toolbar shows, then drag the bar down"
           }
         ]
       },

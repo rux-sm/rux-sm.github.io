@@ -21,18 +21,22 @@
   --scheduler-safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* The lists' pane, the roster and the document viewer open at 24rem, the
-   narrowest that keeps 16px round the roster's tile and still holds an
-   eleven-letter name beside a week of squares, so the board's regions line up
-   whichever are open. The trip editor opens at Carbon's `md`, for the room its tabs'
+/* The roster and the document viewer open at 24rem, the narrowest that keeps
+   16px round the roster's tile and still holds an eleven-letter name beside a
+   week of squares. The lists' pane, Tasks and Departures, and the Forms and
+   Quote calculator panels open at Carbon's `sm`, 20rem, since what they hold
+   reads the same narrower, and the week keeps the difference. The trip editor opens at Carbon's `md`, for the room its tabs'
    figures and fields need side by side. The viewer's size button takes it to `md`, `lg` and `xl`, since its width is
    the document's zoom: a letter page in 20rem renders 11pt text at under 6px.
    `placeRoom` in data.js prices the panels by reading these back off them, so
    the arithmetic and the layout cannot drift. */
 :root {
-  /* The lists' pane and the roster. */
+  /* The roster. */
   --scheduler-panel-w: 24rem;
-  /* The document viewer, the lists' width, and made larger Carbon's `md`,
+  /* The lists' pane, Tasks and Departures, and the Forms and Quote
+     calculator panels: Carbon's `rux--side-panel--sm`. */
+  --scheduler-list-w: 20rem;
+  /* The document viewer, the roster's width, and made larger Carbon's `md`,
      `lg` and then its `xl`. `--scheduler-viewer-w` is the one showing. */
   --scheduler-viewer-sm-w: 24rem;
   --scheduler-viewer-md-w: 30rem;
@@ -127,7 +131,8 @@
    whole, and on a 1920px screen leaves the week and one 24rem panel beside
    it with room to spare, so opening the roster or a list does not squeeze the
    week. app.js holds the days to it and the board's frame to their sum, so the
-   toolbar ends where the week does and the spare width is left beside it.
+   toolbar ends where the week does, and the board's row is centred in the
+   spare width (see `.scheduler-board`).
    Fill the window, in the view menu, takes the cap off and the days share
    the whole pane as before; Maintenance's static grid has no cap. */
 .scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-max: 12.5rem; }
@@ -2307,14 +2312,15 @@ button.scheduler-row-head__num::after {
    matches the panel's `rux--side-panel--sm`, `--md`, `--lg` or `--xl` class,
    which data.js swaps together with the stored file's column's `data-size`;
    the column hands its width to the panel through Carbon's own custom-size
-   property, since the small size is the lists' 24rem rather than Carbon's
-   20rem. The forms list and the calculator have columns of their own, always
-   small. Like the editor's column each never shrinks and app.js gives it a
+   property, since the small size is the roster's 24rem rather than Carbon's
+   20rem. The forms list and the calculator have columns of their own at the
+   lists' 20rem, Carbon's `sm`, with no size button. Like the editor's column each never shrinks and app.js gives it a
    definite height, and data.js orders it left of the week among the open
    panels. */
 .scheduler-viewer[data-size="md"] { --scheduler-viewer-w: var(--scheduler-viewer-md-w); }
 .scheduler-viewer[data-size="lg"] { --scheduler-viewer-w: var(--scheduler-viewer-lg-w); }
 .scheduler-viewer[data-size="xl"] { --scheduler-viewer-w: var(--scheduler-viewer-xl-w); }
+.scheduler-viewer--list { --scheduler-viewer-w: var(--scheduler-list-w); }
 .scheduler-viewer {
   --rux-side-panel-modified-size: var(--scheduler-viewer-w);
   flex: 0 0 var(--scheduler-viewer-w);
@@ -3090,7 +3096,11 @@ button.scheduler-row-head__num::after {
    absolutely positioned and offset by this element's own rect. */
 .scheduler-page { position: relative; }
 
-.scheduler-board { display: flex; align-items: flex-start; gap: var(--rux-spacing-05); min-inline-size: 0; }
+/* Where the days stop at their width and leave the window spare, the row
+   stands centred in it, the open panels with the week, as a framed page's
+   content is; with no spare width there is nothing to centre and the row
+   fills the window as it did. */
+.scheduler-board { display: flex; align-items: flex-start; justify-content: center; gap: var(--rux-spacing-05); min-inline-size: 0; }
 
 /* ── Drivers ─────────────────────────────────────────────────────────────────
    Who is free on each day, which the board cannot show. Rows are drivers,
@@ -3098,10 +3108,12 @@ button.scheduler-row-head__num::after {
    `.scheduler-grid` and its column template; these rules add denser rows and
    the cell states.
 
-   The roster is `--scheduler-panel-w` wide, as the lists' panes are. It is
-   fixed so it does not move when the driver list changes; the schedule gives
-   way instead. data.js orders it left of the week among the open panels. */
+   The roster is `--scheduler-panel-w` wide. It is fixed so it does not move
+   when the driver list changes; the schedule gives way instead. data.js
+   orders it left of the week among the open panels. `--scheduler-pane-w` is
+   its width to the rules that bring it in front of the week. */
 .scheduler-aside {
+  --scheduler-pane-w: var(--scheduler-panel-w);
   flex: 0 0 var(--scheduler-panel-w);
   inline-size: var(--scheduler-panel-w);
 }
@@ -4028,7 +4040,7 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
   inset-block: calc(3rem + var(--rux-spacing-05))
                calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
   inset-inline: var(--rux-spacing-05) auto;
-  inline-size: min(var(--scheduler-panel-w), calc(100% - 2 * var(--rux-spacing-05)));
+  inline-size: min(var(--scheduler-pane-w), calc(100% - 2 * var(--rux-spacing-05)));
   block-size: auto;
   flex: 0 0 0;
   z-index: 1001;
@@ -4041,7 +4053,7 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
 /* Over the week beside the editor, each keeps to the week's side of it. */
 .scheduler-page[data-cover][data-takeover="roster"] .scheduler-aside,
 .scheduler-page[data-cover][data-takeover="to-do"] .scheduler-to-do--pane {
-  inline-size: min(var(--scheduler-panel-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
+  inline-size: min(var(--scheduler-pane-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
 }
 /* The lists' pane keeps its column there, its list scrolling under its head. */
 .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane { display: flex; overflow: hidden; }
@@ -5347,8 +5359,8 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-suggest__error { color: var(--rux-text-error); }
 
 /* ══ Tasks and Departures ══════════════════════════════════════════════
-   The pane of the board's two lists, beside the week, `--scheduler-panel-w`
-   wide as the roster is. to-do-list.js shows it and fills Tasks, and
+   The pane of the board's two lists, beside the week, `--scheduler-list-w`
+   wide. to-do-list.js shows it and fills Tasks, and
    departures-panel.js fills Departures. Every row of either list is a tile. What
    opens in place, a task as a leg on Departures is, is Design's tile around an
    item of its accordion, holding Design's tag, buttons and menu, and a
@@ -5375,8 +5387,9 @@ html:has(.scheduler-page[data-takeover]) {
    the close control. It never shrinks, the schedule giving way instead, and
    it takes the height app.js gives it. */
 .scheduler-to-do--pane {
-  flex: 0 0 var(--scheduler-panel-w);
-  inline-size: var(--scheduler-panel-w);
+  --scheduler-pane-w: var(--scheduler-list-w);
+  flex: 0 0 var(--scheduler-list-w);
+  inline-size: var(--scheduler-list-w);
   background: var(--rux-layer);
 }
 /* Each list keeps 16px of the pane around it. */

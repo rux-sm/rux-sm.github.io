@@ -11405,9 +11405,9 @@
   const panels = () => [
     { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-panel-w'),
       close: () => { availOn = false; placeAvailability(); } },
-    { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-panel-w'),
+    { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('tasks') },
-    { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-panel-w'),
+    { name: 'prep', el: prepPane, open: !!prepPane && !prepPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('prep') },
     ...Object.values(viewers).map(v => ({ name: v.key, el: v.el, open: !!v.el && !v.el.hidden,
       width: () => ownWidth(v.el, '--scheduler-viewer-w'), close: () => v.close(false), dirty: () => v.dirty })),
@@ -13464,6 +13464,8 @@
       column.querySelector(`#${prefix}-close`)?.setAttribute('aria-label', `Close ${VIEWER_NAMES[key].toLowerCase()}`);
       // Only a stored file takes a larger size, so the copies have no size button.
       column.querySelector(`#${prefix}-size`)?.remove();
+      // The forms list and the calculator open at the lists' width; see app.css.
+      column.classList.add('scheduler-viewer--list');
     }
     const byId = part => document.getElementById(part ? `${prefix}-${part}` : prefix);
   const viewerEl = byId();

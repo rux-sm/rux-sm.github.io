@@ -7,7 +7,9 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-runInNewContext(readFileSync(new URL('../trip-history.js', import.meta.url), 'utf8'), { window });
+for (const file of ['../trip-shape.js', '../trip-history.js']) {
+  runInNewContext(readFileSync(new URL(file, import.meta.url), 'utf8'), { window });
+}
 const { changes, line } = window.SchedulerTripHistory;
 
 let failed = 0;
@@ -67,6 +69,22 @@ expect('stops put in another order say the order once',
 expect('on a split trip a stop names its day',
   said(changes(trip({ trip_type: 'dropoff_pickup' }), trip({ trip_type: 'dropoff_pickup', trip_stops: [stop('s1', 0), stop('s2', 1), stop('s3', 2, { leg: 'return', arrive: '11:00' })] }), names)),
   ['Stop: Place s3 (drop-off): Day Drop-off, Arrives 10:00 → Day Pickup, Arrives 11:00']);
+
+// The same trip read with its legs: a stop names the day its route's leg is,
+// a pickup being every leg after the first, whatever word it carries.
+const legs = { trip_legs: [
+  { id: 'L1', leg: 'outbound', start_date: '2027-01-08', trip_routes: [{ id: 'R1', position: 1 }] },
+  { id: 'L2', leg: 'return', start_date: '2027-01-10', trip_routes: [{ id: 'R2', position: 1 }] },
+] };
+const onRoute = (route, more) => stop('s3', 2, { route_id: route, leg: undefined, ...more });
+expect('on a split trip read with its legs a stop names the day of its route\'s leg',
+  said(changes(trip({ trip_type: 'dropoff_pickup', ...legs, trip_stops: [stop('s1', 0), stop('s2', 1), onRoute('R2')] }),
+    trip({ trip_type: 'dropoff_pickup', ...legs, trip_stops: [stop('s1', 0), stop('s2', 1), onRoute('R2', { arrive: '11:00' })] }), names)),
+  ['Stop: Place s3 (pickup): Arrives 10:00 → Arrives 11:00']);
+expect('and the rows of its legs make no line of their own',
+  said(changes(trip({ trip_type: 'dropoff_pickup', ...legs }),
+    trip({ trip_type: 'dropoff_pickup', trip_legs: [legs.trip_legs[0], { ...legs.trip_legs[1], start_date: '2027-01-11' }] }), names)),
+  []);
 
 const seatChanged = trip({ trip_assignments: [{ ...base.trip_assignments[0], bus_id: 'b2', needs: { adaLift: true },
   trip_drivers: [{ ...base.trip_assignments[0].trip_drivers[0], driver_id: 'd2', envelope_printed: true, envelope_printed_at: 'x', envelope_printed_by: 'Sam' }] }] });

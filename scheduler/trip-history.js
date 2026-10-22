@@ -214,21 +214,36 @@
   }
 
   /* THE ROWS UNDER A TRIP, each list with what its rows are called and what
-     says one that is added or taken away. `split` says whether a row names
-     its day. */
-  const dayOf = (row, split) => (split && row.leg ? ` (${(LEGS[row.leg] || row.leg).toLowerCase()})` : '');
+     says one that is added or taken away. On a split trip a row names its
+     day: the drop-off for the trip's first leg and the pickup for every leg
+     after it, the leg its route or its leg's id is on, read through
+     trip-shape.js in either read that holds the trip's legs. A row neither
+     read can place, as one in a read without its legs, names its own word. */
+  function legWordOf(row, ctx) {
+    const SHAPE = window.SchedulerTripShape;
+    for (const trip of ctx.reads) {
+      if (!SHAPE || !Array.isArray(trip?.trip_legs)) continue;
+      const leg = row.route_id ? SHAPE.legOfRoute(trip, row.route_id) : row.leg_id ? SHAPE.legOf(trip, row.leg_id) : null;
+      if (leg) return leg.number > 1 ? 'return' : 'outbound';
+    }
+    return row.leg ?? null;
+  }
+  const dayOf = (row, ctx) => {
+    const word = ctx.split ? legWordOf(row, ctx) : null;
+    return word ? ` (${(LEGS[word] || word).toLowerCase()})` : '';
+  };
   const LISTS = [
     { field: 'itinerary', label: 'Stop', rows: t => t.trip_stops,
-      name: (s, ctx) => `${s.name || s.address || s.label || s.type || 'Stop'}${dayOf(s, ctx.split)}`,
+      name: (s, ctx) => `${s.name || s.address || s.label || s.type || 'Stop'}${dayOf(s, ctx)}`,
       holds: ['type', 'address', 'arrive', 'spot', 'depart_prev'] },
     { field: 'assignments', label: 'Vehicle', rows: t => t.trip_assignments,
-      name: (a, ctx) => `${a.bus_id ? say(a.bus_id, 'bus', ctx.names) : 'no bus'}${dayOf(a, ctx.split)}`,
+      name: (a, ctx) => `${a.bus_id ? say(a.bus_id, 'bus', ctx.names) : 'no bus'}${dayOf(a, ctx)}`,
       holds: ['vehicle_type', 'needs', 'active_roles'] },
     { field: 'seats', label: 'Seat', rows: t => (t.trip_assignments || []).flatMap(a => (a.trip_drivers || []).map(d => ({ ...d, $vehicle: a }))),
-      name: (d, ctx) => `${say(d.role || 'driver', 'role')} on ${d.$vehicle.bus_id ? say(d.$vehicle.bus_id, 'bus', ctx.names) : 'no bus'}${dayOf(d.$vehicle, ctx.split)}`,
+      name: (d, ctx) => `${say(d.role || 'driver', 'role')} on ${d.$vehicle.bus_id ? say(d.$vehicle.bus_id, 'bus', ctx.names) : 'no bus'}${dayOf(d.$vehicle, ctx)}`,
       holds: ['driver_id', 'pay', 'report_time'] },
     { field: 'quote_lines', label: 'Quote line', rows: t => t.trip_quote_lines,
-      name: (q, ctx) => `${q.item || q.kind || 'Line'}${dayOf(q, ctx.split)}`, holds: ['quantity', 'cost', 'amount'] },
+      name: (q, ctx) => `${q.item || q.kind || 'Line'}${dayOf(q, ctx)}`, holds: ['quantity', 'cost', 'amount'] },
     { field: 'payments', label: 'Payment', rows: t => t.trip_payments, name: p => p.ref || p.method || 'payment', holds: ['amount', 'date', 'method'] },
     { field: 'purchase_orders', label: 'PO', rows: t => t.trip_pos, name: p => p.ref || 'with no number', holds: ['amount', 'date'] },
     { field: 'invoices', label: 'Invoice', rows: t => t.trip_invoices, name: i => i.number || 'with no number', holds: ['amount', 'date'] },
@@ -276,7 +291,7 @@
      lists of rows; null before is a new trip. */
   function changes(before, after, names = {}) {
     if (!before) return [{ field: 'trip', label: 'Trip', before: null, after: 'Created' }];
-    const ctx = { names, split: [before.trip_type, after.trip_type].includes('dropoff_pickup') };
+    const ctx = { names, split: [before.trip_type, after.trip_type].includes('dropoff_pickup'), reads: [after, before] };
     return [...columnLines(before, after, names), ...LISTS.flatMap(list => rowLines(list, before, after, ctx))];
   }
 

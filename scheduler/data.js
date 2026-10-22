@@ -35,9 +35,58 @@
     ROLES, DRIVER_STATUSES, statusKey, statusMap, activeRolesOf, crewOf, tripContact, dayContactsOf, dayOfContact,
   } = window.SchedulerLegFacts;
 
-  /* Which itinerary and which day-of contacts each leg of a split trip is
-     handed: leg-papers.js, which every page handing a leg's papers loads. */
-  const PAPERS = window.SchedulerLegPapers;
+  /* A SAVED TRIP IS READ THROUGH trip-shape.js: its legs, each leg's routes,
+     its day-of contacts and which papers each leg is handed. The editor still
+     writes a leg by its old word, `outbound` for the first and `return` for a
+     split trip's pickup, into the trip's columns and its rows, so it reads
+     each leg by the word it writes. A row names its leg by its route or its
+     leg's id; one a page has made and not read back names it by its word. A
+     trip read without its legs, as a new trip's draft is, is read by its own
+     columns. */
+  const SHAPE = window.SchedulerTripShape;
+  const shaped = trip => Array.isArray(trip?.trip_legs);
+  // The leg a word names on a saved trip, or null.
+  const savedLeg = (trip, word) => (shaped(trip) ? SHAPE.legOfWord(trip, word) : null);
+  // The word of the leg a stop, a vehicle or a file is on.
+  function wordOfRow(trip, row) {
+    const leg = !shaped(trip) ? null : row?.route_id ? SHAPE.legOfRoute(trip, row.route_id)
+      : row?.leg_id ? SHAPE.legOf(trip, row.leg_id) : null;
+    return leg?.word ?? (row?.leg || 'outbound');
+  }
+  /* A leg's days, its buses and its hotel, by its word: the leg's own on a
+     trip read with its legs, where a leg it does not have has none, and the
+     trip's columns on one read without them. */
+  function legFactsOf(trip, word) {
+    if (shaped(trip)) {
+      const l = savedLeg(trip, word);
+      return { from: l?.start ?? null, to: l?.end ?? null, buses: l?.busCount ?? null,
+        hotelBooked: !!l?.hotelBooked, hotelNumber: l?.hotelNumber ?? null };
+    }
+    const back = word === 'return';
+    const from = trip?.[back ? 'return_start_date' : 'start_date'] ?? null;
+    return { from, to: trip?.[back ? 'return_end_date' : 'end_date'] ?? from,
+      buses: trip?.[back ? 'return_bus_count' : 'bus_count'] ?? null,
+      hotelBooked: !!trip?.[`hotel_booked_${word}`], hotelNumber: trip?.[`hotel_itinerary_number_${word}`] ?? null };
+  }
+  /* A day-of contact's slot, 1 to 5, as the editor writes it: the list's row
+     for the slot on a trip read with it, with the word of its leg, or null
+     when the leg is the trip's; the slot's columns on one read without it. */
+  function slotOf(trip, n) {
+    if (!Array.isArray(trip?.trip_contacts)) {
+      const c = tripContact(trip, n);
+      return c ? { ...c, leg: trip[`trip_contact_${n}_leg`] ?? null } : null;
+    }
+    const row = trip.trip_contacts.find(c => c.slot === n);
+    if (!row) return null;
+    const leg = row.leg_id ? SHAPE.legOf(trip, row.leg_id)?.word ?? null : null;
+    return { id: row.contact_id ?? null, name: row.name ?? '', phone: row.phone ?? null, email: null, leg };
+  }
+  // A leg's day-of contacts, by its word, as its drivers are handed them.
+  const contactsOfWord = (trip, word) => {
+    const leg = savedLeg(trip, word) ?? SHAPE.firstLeg(trip);
+    return leg ? SHAPE.contactsFor(trip, leg.id).map(c => ({ ...c, slot: trip.trip_contacts.find(r => r.id === c.row)?.slot ?? null }))
+      : [1, 2, 3, 4, 5].map(n => (slotOf(trip, n) ? { ...slotOf(trip, n), slot: n } : null)).filter(Boolean);
+  };
 
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
@@ -313,9 +362,10 @@
     'trip_contact_3_name', 'trip_contact_3_phone', 'trip_contact_4_name', 'trip_contact_4_phone',
     'trip_contact_5_name', 'trip_contact_5_phone',
     'trip_contact_1_leg', 'trip_contact_2_leg', 'trip_contact_3_leg', 'trip_contact_4_leg', 'trip_contact_5_leg',
-    // The day-of contacts as a list, which the bars read through trip-shape.js;
-    // the editor still writes the five slots, and a trigger keeps the list.
-    'trip_contacts(id,position,leg_id,contact_id,name,phone)',
+    // The day-of contacts as a list, which the bars and the editor read
+    // through trip-shape.js; the editor still writes the five slots, and a
+    // trigger keeps the list, each row with the slot it mirrors.
+    'trip_contacts(id,position,slot,leg_id,contact_id,name,phone)',
     'quoted_price,deposit_amount,invoice_number,po_ref,po_amount',
     // The price the customer was sent, and when, which the quote lines may move past.
     'quote_sent_price,quote_sent_on',
@@ -579,10 +629,10 @@
     const out = { booking_contact_name: b?.name || null, booking_contact_phone: b?.phone || null,
                   booking_contact_email: b?.email || null };
     for (let n = 1; n <= 5; n++) {
-      const c = tripContact(trip, n);
+      const c = slotOf(trip, n);
       out[`trip_contact_${n}_name`] = c?.name || null;
       out[`trip_contact_${n}_phone`] = c?.phone || null;
-      out[`trip_contact_${n}_leg`] = trip[`trip_contact_${n}_leg`] ?? null;
+      out[`trip_contact_${n}_leg`] = c?.leg ?? null;
     }
     return out;
   }
@@ -605,11 +655,8 @@
      card: bar.js's `facts`, set as the bar is drawn. */
   const barFacts = new WeakMap();
 
-  // The trip's documents labelled Itinerary, newest first, and the one a leg's
-  // drivers are handed: its own newest, or a split trip's pickup with none
-  // the drop-off's, by leg-papers.js.
-  const itinerariesOf = trip => PAPERS.allItineraries(trip);
-  const latestItinerary = (trip, leg = 'outbound') => PAPERS.itineraryFor(trip, leg);
+  // The trip's documents labelled Itinerary, newest first, by trip-shape.js.
+  const itinerariesOf = trip => SHAPE.allItineraries(trip);
   // Every document the trip holds, newest first, as the Files tab lists them.
   const documentsOf = trip => [...(trip.trip_documents || [])]
     .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
@@ -864,10 +911,8 @@
      and statuses, the standing rule's answer for the leg, a move still being
      saved, the leg's itinerary and the end of the stretch the office
      staffs, which moves with the week's first day. A leg is named by its
-     key; a trip read with its legs hands its itinerary through
-     trip-shape.js, and one read without them by the old word. */
-  const legItinerary = (trip, key) => (Array.isArray(trip.trip_legs)
-    ? window.SchedulerTripShape.itineraryFor(trip, key) : latestItinerary(trip, key));
+     key, and its itinerary is the one trip-shape.js hands it. */
+  const legItinerary = (trip, key) => SHAPE.itineraryFor(trip, key);
   function barEl(b, driversById, busesById, statuses) {
     const { bar, facts } = Bar.draw(b, {
       driversById, busesById, statuses,
@@ -2143,17 +2188,18 @@
     return bus;
   }
 
-  // Each leg's buses in position order, padded with empty buses up to its
-  // count, which ask for what the trip does.
+  // Each leg's buses in position order, each on the leg its route is on,
+  // padded with empty buses up to its count, which ask for what the trip does.
   function fleetOf(trip, creating) {
     const seed = { needs: needsObject(requirementsOf(trip).filter(isVehicleNeed)), vehicleType: trip.vehicle_type ?? null };
     const legs = {};
     for (const leg of ['outbound', 'return']) {
       const buses = (trip.trip_assignments || [])
-        .filter(a => (a.leg || 'outbound') === leg)
+        .filter(a => wordOfRow(trip, a) === leg)
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map(a => fleetBusOf(trip, a, panelIndex.statuses));
-      const count = leg === 'outbound' ? (trip.bus_count || 1) : (trip.return_bus_count || trip.bus_count || 1);
+      const outBuses = legFactsOf(trip, 'outbound').buses;
+      const count = leg === 'outbound' ? (outBuses || 1) : (legFactsOf(trip, 'return').buses || outBuses || 1);
       while (buses.length < Math.min(MAX_BUSES, Math.max(1, count))) buses.push(blankBus(seed));
       legs[leg] = buses;
     }
@@ -3058,6 +3104,7 @@
     outbound: { code: 'Drop-off', tone: 'rux--tag--blue', title: 'The drop-off day\'s itinerary, which the pickup is handed too until it has its own' },
     return: { code: 'Pickup', tone: 'rux--tag--purple', title: 'The pickup day\'s itinerary' },
   };
+  // The word a file's own row names, which a move writes over.
   const docLeg = doc => (doc.leg === 'return' ? 'return' : 'outbound');
 
   const fileSize = n => {
@@ -3066,16 +3113,17 @@
     return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
   };
 
-  /* A split trip's itinerary also names its leg, and its menu moves it to
-     the other one. */
+  /* A split trip's itinerary also names its leg, the one trip-shape.js
+     hands it to, and its menu moves it to the other one. */
   const fileRow = (trip, doc, previous) => {
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
-    const legged = PAPERS.isSplit(trip) && PAPERS.isItinerary(doc);
-    const other = docLeg(doc) === 'return' ? 'outbound' : 'return';
+    const legged = trip.trip_type === SPLIT && SHAPE.isItinerary(doc);
+    const on = wordOfRow(trip, doc) === 'return' ? 'return' : 'outbound';
+    const other = on === 'return' ? 'outbound' : 'return';
     const li = listRow({
       name: docTypeName(doc),
-      tag: previous ? PREVIOUS_TAG : legged ? LEG_TAGS[docLeg(doc)] : null,
+      tag: previous ? PREVIOUS_TAG : legged ? LEG_TAGS[on] : null,
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
@@ -3103,7 +3151,7 @@
      Add file last, which is also the empty state. */
   function drawFiles(trip) {
     if (!filesBody || !trip) return;
-    const earlier = PAPERS.earlierItineraries(trip);
+    const earlier = SHAPE.earlierItineraries(trip);
     const newest = itinerariesOf(trip).find(d => !earlier.includes(d)) ?? null;
     const open = earlierOpenFor === trip.id;
     const rows = [];
@@ -4344,7 +4392,7 @@
     ...[1, 2, 3, 4, 5].flatMap(n => [
       { key: `trip_contact_${n}_name`, get: () => dayField(n, `trip_contact_${n}_name`, () => fieldVal(`scheduler-f-d${n}`) ?? null) },
       { key: `trip_contact_${n}_phone`, get: () => dayField(n, `trip_contact_${n}_phone`, () => fieldVal(`scheduler-f-dphone${n}`) ?? null) },
-      // The leg a split trip's contact is for, as leg-papers.js reads it.
+      // The leg a split trip's contact is for, as trip-shape.js reads it.
       { key: `trip_contact_${n}_leg`, get: () => dayField(n, `trip_contact_${n}_leg`, () => editing.days[n - 1].leg ?? null) },
     ]),
   ];
@@ -4868,7 +4916,7 @@
        holds one leg at a time, so its fields are that leg's and no other's:
        the open leg is read from them, and the other from its saved rows. */
     const openLeg = editing?.route?.leg === 'return' ? 'return' : 'outbound';
-    const savedStops = l => (editing?.stops || []).filter(st => (st.leg || 'outbound') === l)
+    const savedStops = l => (editing?.stops || []).filter(st => wordOfRow(editing.trip, st) === l)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
     // When the group leaves on a leg and when it is let off: the first stop's departure, and the yard row's or the last stop's arrival.
     const timesOf = l => {
@@ -5415,7 +5463,7 @@
     const l = leg === 'return' ? 'return' : 'outbound';
     const r = editing?.route;
     const mine = r?.leg === l;
-    const stops = (editing?.stops || []).filter(st => (st.leg || 'outbound') === l);
+    const stops = (editing?.stops || []).filter(st => wordOfRow(editing.trip, st) === l);
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
     const out = mine ? r.driveMiles : numOrNull(pickup?.miles);
@@ -6797,7 +6845,7 @@
       const pickup = btn.dataset.leg === 'return';
       // Each option opens its leg by the leg's key; Pickup has none until its first save.
       btn.dataset.legKey = (trip && legsOf(trip).find(l => l.leg === btn.dataset.leg)?.key) || btn.dataset.leg;
-      const day = legDay(pickup ? trip?.return_start_date : trip?.start_date);
+      const day = legDay(trip ? legFactsOf(trip, pickup ? 'return' : 'outbound').from : null);
       btn.querySelector('.rux--content-switcher__label').textContent = [pickup ? 'Pickup' : 'Drop-off', day].filter(Boolean).join(' · ');
       btn.disabled = pickup && !ready;
       btn.title = btn.disabled ? 'The pickup opens once the trip is saved as a split' : '';
@@ -6861,6 +6909,9 @@
 
     // The lines are the last trip's until the Billing tab loads this one's.
     linesLive = false;
+    // The two legs the editor writes, by their old words.
+    const outLeg = legFactsOf(trip, 'outbound');
+    const backLeg = legFactsOf(trip, 'return');
     editing = { id: trip.id, creating, updatedAt: trip.updated_at ?? null, legKey: named?.key ?? legName,
       /* What the trip already answered, whether or not the editor draws a tag
          for it: a save merges its own tags over this, so a requirement the
@@ -6871,7 +6922,7 @@
          window; the reminder a trip carried before it had lines; and the fuel
          card, turned on from the Route tab. */
       hotel: Object.fromEntries(['outbound', 'return'].map(l => [l,
-        { ref: trip[`hotel_itinerary_number_${l}`] ?? null, booked: !!trip[`hotel_booked_${l}`] }])),
+        { ref: legFactsOf(trip, l).hotelNumber, booked: legFactsOf(trip, l).hotelBooked }])),
       hotelWanted: !!trip.need_hotel,
       fuelCard: !!trip.need_fuel_card,
       // Itinerary not needed, set from the Checklist's itinerary row or the Files tab.
@@ -6911,14 +6962,15 @@
         ...Object.fromEntries(editableNeeds()
           .map(r => [r.id, requirementsOf(trip).includes(r.id)])),
       },
-      hotel_booked_outbound: !!trip.hotel_booked_outbound,
-      hotel_booked_return: !!trip.hotel_booked_return,
-      hotel_itinerary_number_outbound: trip.hotel_itinerary_number_outbound ?? null,
-      hotel_itinerary_number_return: trip.hotel_itinerary_number_return ?? null,
-      start_date: trip.start_date ?? null,
-      end_date: trip.end_date ?? trip.start_date ?? null,
-      return_start_date: trip.return_start_date ?? null,
-      return_end_date: trip.return_end_date ?? trip.return_start_date ?? null,
+      // Each leg's hotel and days, as the leg the old word names holds them.
+      hotel_booked_outbound: outLeg.hotelBooked,
+      hotel_booked_return: backLeg.hotelBooked,
+      hotel_itinerary_number_outbound: outLeg.hotelNumber,
+      hotel_itinerary_number_return: backLeg.hotelNumber,
+      start_date: outLeg.from,
+      end_date: outLeg.to ?? outLeg.from,
+      return_start_date: backLeg.from,
+      return_end_date: backLeg.to ?? backLeg.from,
       quoted_price: trip.quoted_price ?? null,
       quote_sent_price: trip.quote_sent_price == null ? null : Number(trip.quote_sent_price),
       quote_sent_on: trip.quote_sent_on ?? null,
@@ -6939,11 +6991,8 @@
       passengers: trip.passengers ?? null,
       itinerary_not_needed: !!trip.itinerary_not_needed,
       booking_contact_id: trip.booking_contact_id ?? null,
-      trip_contact_1_id: trip.trip_contact_1_id ?? null,
-      trip_contact_2_id: trip.trip_contact_2_id ?? null,
-      trip_contact_3_id: trip.trip_contact_3_id ?? null,
-      trip_contact_4_id: trip.trip_contact_4_id ?? null,
-      trip_contact_5_id: trip.trip_contact_5_id ?? null,
+      // Each day-of slot's linked contact, as the list's row for the slot links it.
+      ...Object.fromEntries([1, 2, 3, 4, 5].map(n => [`trip_contact_${n}_id`, slotOf(trip, n)?.id ?? null])),
       ...contactColumnsOf(trip),
       booking_contact_missive_url: trip.booking_contact_missive_url ?? null,
     } };
@@ -6986,15 +7035,14 @@
         .filter(x => x.type === 'stop');
       const first = inner[0] ?? null;
       const drop = inner.at(-1) ?? null;
-      const dates = leg === 'return'
-        ? { from: trip.return_start_date ?? null, to: trip.return_end_date ?? trip.return_start_date ?? null }
-        : { from: trip.start_date ?? null, to: trip.end_date ?? trip.start_date ?? null };
+      const { from, to } = leg === 'return' ? backLeg : outLeg;
+      const dates = { from, to: to ?? from };
       return {
         leg, pickup, first, drop, back, inner, ...dates,
         between: inner.length,
         // The other leg's rows whole, which a split trip's pickup leg is filled from.
         otherStops: creating ? [] : stopsOfLeg(trip, leg === 'return' ? 'outbound' : 'return').stops,
-        all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: x.leg || 'outbound', type: x.type, position: x.position ?? 0 })),
+        all: (trip.trip_stops || []).map(x => ({ id: x.id, leg: wordOfRow(trip, x), type: x.type, position: x.position ?? 0 })),
         driveOut: driveMin(pickup?.drive),
         driveMiles: numOrNull(pickup?.miles), driveSource: pickup?.drive_source ?? 'estimated',
         backDrive: driveMin(back?.drive), backMiles: numOrNull(back?.miles), backSource: back?.drive_source ?? 'estimated',
@@ -7005,7 +7053,7 @@
     /* The five day-of slots: the leg each is for and, once the Details tab
        draws them, whether it holds a row here; `removed` is a slot taken off
        in this edit, which saves empty. */
-    editing.days = [1, 2, 3, 4, 5].map(n => ({ n, leg: creating ? null : trip[`trip_contact_${n}_leg`] ?? null,
+    editing.days = [1, 2, 3, 4, 5].map(n => ({ n, leg: creating ? null : slotOf(trip, n)?.leg ?? null,
       open: false, fresh: false, removed: false }));
 
     // The places as they opened, so `routeWanted` can tell a new pick.
@@ -7021,7 +7069,7 @@
     const returnDates = el('div', 'scheduler-panel-return-dates');
     returnDates.appendChild(dateRange(
       'scheduler-f-rstart', 'scheduler-f-rend', 'Pickup start', 'Pickup end',
-      trip.return_start_date, trip.return_end_date || trip.return_start_date));
+      backLeg.from, backLeg.to || backLeg.from));
     returnDates.hidden = trip.trip_type !== SPLIT;
 
     /* The ranges name their own legs. The outbound range shows for every type,
@@ -7072,8 +7120,8 @@
     });
     /* A one-day trip leaves the end box empty, which Save reads as the start
        day, and the box says Same day. */
-    const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, trip.start_date,
-      trip.end_date && trip.end_date !== trip.start_date ? trip.end_date : '');
+    const outRange = dateRange('scheduler-f-start', 'scheduler-f-end', outFrom, outTo, outLeg.from,
+      outLeg.to && outLeg.to !== outLeg.from ? outLeg.to : '');
     outRange.querySelector('#scheduler-f-end').placeholder = 'Same day';
     outRange.querySelector('#scheduler-f-start').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off start' : 'Start date');
     outRange.querySelector('#scheduler-f-end').setAttribute('aria-label', trip.trip_type === SPLIT ? 'Drop-off end' : 'End date');
@@ -7270,16 +7318,16 @@
          the last one filled, with an empty slot before it drawn as an empty
          row, so a trip saved elsewhere with a gap opens unchanged.
 
-         A SPLIT TRIP SHOWS THE LEG ON SCREEN'S, as leg-papers.js hands them to
+         A SPLIT TRIP SHOWS THE LEG ON SCREEN'S, as trip-shape.js hands them to
          its drivers: the drop-off's, or the pickup's own, a slot added on the
          pickup being the pickup's. A pickup with none of its own shows the
          drop-off's, to read, under Same as drop-off, and Add pickup contact
          starts its own. Both legs share the five slots, and a slot the other
          leg holds is never drawn here, so it saves as it opened. */
       const view = legOnScreen();
-      const savedIn = n => !creating && !!tripContact(trip, n);
+      const savedIn = n => !creating && !!slotOf(trip, n);
       const lastHeld = [1, 2, 3, 4, 5].filter(savedIn).at(-1) ?? 0;
-      // A slot is the pickup's or else the drop-off's, as leg-papers.js reads it.
+      // A slot is the pickup's or else the drop-off's, as trip-shape.js reads it.
       const onView = d => !view || (view === 'return') === (d.leg === 'return');
       for (const d of editing.days) d.open = view ? savedIn(d.n) && onView(d) : d.n <= lastHeld;
       // The slots this view draws, in slot order.
@@ -7306,7 +7354,7 @@
                    phone: document.getElementById(`scheduler-f-dphone${d.n}`)?.value.trim() || null };
         }
         if (d.pending) return d.pending;
-        return d.fresh || d.removed ? null : tripContact(trip, d.n);
+        return d.fresh || d.removed ? null : slotOf(trip, d.n);
       };
 
       /* Each contact is a tile, Name beside Phone, as a group named
@@ -7335,7 +7383,7 @@
           rowsHost.appendChild(fieldTile(row));
         });
         if (borrowed()) {
-          const theirs = PAPERS.contactsFor(trip, 'outbound', tripContact);
+          const theirs = contactsOfWord(trip, 'outbound');
           const note = el('p', 'rux--form__helper-text', theirs.length
             ? `Same as drop-off: ${theirs.map(c => [c.name, c.phone && showPhone(c.phone)].filter(Boolean).join(', ')).join('; ')}.`
             : 'Same as drop-off, which has no trip contact yet.');
@@ -8281,7 +8329,7 @@
              sorts after the evening's and the leg stays one day. */
           const at = st => st.arrive || st.leave;
           const leaves = from === to ? toMin(val('scheduler-f-leave')) : null;
-          const clockOf = st => { const m = toMin(at(st)); return leaves != null && m < leaves ? m + 1440 : m; };
+          const clockOf = st => window.SchedulerPastMidnight.forward([leaves, toMin(at(st))])[1];
           r.list.sort((x, y) => {
             const dx = x.date || from, dy = y.date || from;
             if (dx !== dy) return dx < dy ? -1 : 1;
@@ -13961,7 +14009,7 @@
   function savedCalcFacts(trip, legKey) {
     const leg = (legKey ? legByKey(trip, legKey) : null) ?? legsOf(trip)[0];
     if (!leg) return null;
-    const { stops } = stopsOfLeg(trip, leg.leg);
+    const { stops } = stopsOfLeg(trip, leg.key);
     const pickup = stops.find(st => st.type === 'pickup');
     const back = stops.filter(st => st.type === 'return').at(-1);
     const stopMiles = stops.reduce((n, st) => n + (Number(st.miles) || 0), 0);
@@ -14201,9 +14249,10 @@
   // The names a history line gives a bus, a driver and a need.
   const HISTORY_NAMES = { bus: histBusName, driver: histDriverName, requirement: requirementLabel };
 
-  // A trip and every row a save can change, as the database holds them, each whole.
+  /* A trip and every row a save can change, as the database holds them, each
+     whole, with its legs and their routes, which name each row's day. */
   const HISTORY_READ = '*,trip_assignments(*,trip_drivers(*)),trip_stops(*),'
-    + 'trip_payments(*),trip_pos(*),trip_invoices(*),trip_quote_lines(*)';
+    + 'trip_payments(*),trip_pos(*),trip_invoices(*),trip_quote_lines(*),trip_legs(*,trip_routes(*))';
   async function readTripState(tripId) {
     const { data, error } = await withTimeout(client.from('trips').select(HISTORY_READ).eq('id', tripId).single().then(r => r));
     if (error) throw new Error(error.message);
@@ -14360,7 +14409,7 @@
   }
 
   // The leg a bar's upload goes to: its own on a split trip.
-  const barLeg = bar => (PAPERS.isSplit(panelIndex.trips.get(bar.dataset.tripId)) ? bar.dataset.leg || 'outbound' : null);
+  const barLeg = bar => (panelIndex.trips.get(bar.dataset.tripId)?.trip_type === SPLIT ? bar.dataset.leg || 'outbound' : null);
 
   // A split trip's itinerary moved to the other leg, at once, as a replace is.
   const LEG_WORDS = { outbound: 'Drop-off', return: 'Pickup' };
@@ -14813,7 +14862,7 @@
     const same = legs.every(l => l.lines.join() === legs[0].lines.join());
     const split = trip.trip_type === SPLIT;
     const lists = same ? [legs[0].lines.join('\r\n')]
-      : legs.map(l => `${split ? (l.leg === 'return' ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
+      : legs.map(l => `${split ? (l.number > 1 ? 'Pickup, ' : 'Drop-off, ') : ''}${monthDay(l.from)}:\r\n${l.lines.join('\r\n')}`);
     const body = [
       to?.name ? `Hi ${to.name.trim().split(/\s+/)[0]},` : 'Hello,',
       `Here are the drivers for your trip ${when}:`,

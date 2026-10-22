@@ -25,8 +25,6 @@ them and nothing is entered twice.
 - **Legs and routes are one change,** because both change how every stop
   and vehicle is tied to its trip, and the same thirty or so readers would
   otherwise be rewritten twice.
-- **The past-midnight rule's six copies become one,** because this plan
-  rewrites every reader that holds a copy.
 
 ### The shape
 
@@ -150,22 +148,18 @@ None open.
 
 ## Tasks
 
-- [ ] Move the editor's readers of `outbound`, `return`, the `_outbound` and
-      `_return` columns, `return_start_date`, `dropoff_pickup` and the five
-      contact slots to the shape rule, once no other session has `data.js`
-      open: the editor, with the quote calculator it fills, the bar's ref,
-      whose `leg` is the old word, and the Billing tab's Samsara answer; and
-      `scheduler/trip-history.js`, whose two reads the editor makes. Each
-      reads a trip through
-      `scheduler/trip-shape.js`, with `trip_legs(*, trip_routes(*))` and
-      `trip_contacts` in its query. The past-midnight rule's copies become
-      one rule file with its sample cases on the way, and
-      `scheduler/leg-papers.js` goes with its last reader. The bar menu's
-      hotel mark, itinerary upload and Mark as told, `scheduler/print.js`'s
-      marks and quote lines, and `trips_clear_done`, which clears a tab's
-      Done from the trip's own columns, move with the writers.
+- [ ] Retire `scheduler/leg-papers.js`: move `scheduler/follow-up.js`'s
+      itinerary, and the reads of a trip without its legs in
+      `scheduler/leg-facts.js`, `scheduler/driver-job.js` and
+      `scheduler/print.js`, to `scheduler/trip-shape.js`, then take it out
+      of every page, the connector's rules and the checks.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
-      out of Type, and give each leg its round trip or one way.
+      out of Type, and give each leg its round trip or one way. The editor's
+      own state, the bar's ref and the quote lines, which still name a leg by
+      its old word because the editor writes by it, name it by its id; and
+      the bar menu's hotel mark, itinerary upload and Mark as told,
+      `scheduler/print.js`'s marks and quote lines, and `trips_clear_done`,
+      which clears a tab's Done from the trip's own columns, move with them.
 - [ ] Make the Route tab hold a route: the switcher, Add route as a copy,
       rename and remove, and the tab opening on the pressed bar's leg and
       route.

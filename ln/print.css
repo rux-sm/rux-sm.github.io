@@ -26,6 +26,10 @@ html { font-size: 10pt; }
 .rux--header, .ln-aside, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
 .ln-confirm, .rux--breadcrumb, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related { display: none; }
 
+/* A printed copy is handed on as the procedure, so a guide nobody has walked
+   says so on screen and not on paper. */
+.ln-unwalked { display: none; }
+
 /* The Document prints whichever view was open. */
 .ln-pages [data-view="full"][hidden] { display: block; }
 

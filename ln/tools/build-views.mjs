@@ -595,8 +595,8 @@ ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x)
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
 </div>
-${docFacts([['Status', tag(status)], ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
-${notice({ kind: 'Note' }, esc(NOT_WALKED))}` : ''}
+${docFacts([statusFact(status), ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
+${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">one step at a time · ${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
 <section>
 ${docH2('summary', 'Summary')}
@@ -721,8 +721,12 @@ const docTable = (cols, rows, cls = '') => `<div class="rux--data-table-containe
 </tbody>
 </table></div>`;
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
-const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
 const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
+// Not walked is said on screen and left off paper, where a printed copy is
+// handed on as the procedure; ln-unwalked is what print.css hides.
+const statusFact = (status) => ['Status', tag(status), status[0] === 'Not walked yet' ? 'ln-unwalked' : ''];
+const unwalked = (html) => `<div class="ln-unwalked">${html}</div>`;
 // The footer each printed page carries: what it is, and when its content last changed.
 const paper = (title, updated) => `\n<style>@page { @bottom-left { content: "${`${title} · LN Guide · Updated ${day(updated)}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
 const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().at(-1);
@@ -824,9 +828,9 @@ function task(s, t) {
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">${sentence(docText(t.achieves.tokens, t))}</p>` : ''}
 </div>
-${docFacts([['Status', tag(taskStatus(t))], ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
+${docFacts([statusFact(taskStatus(t)), ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
 <p class="ln-strip">${strip}</p>${t.walked ? '' : `
-${notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`)}`}
+${unwalked(notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`))}`}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${need.length ? `
 <section>
 ${docH2('before', 'Before you start')}

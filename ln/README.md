@@ -26,7 +26,7 @@ A documentation site, one file per page, with a walked mode inside it:
 - **Print**, on a task and a process, prints the Document from the browser's
   dialog, where Save as PDF is a destination: Letter, ruled with no fills, a
   footer of its title, its Updated date and Page N of M, and the reference by
-  title only. `print.css` holds it, and the PDF takes the page's title as its
+  title only. A guide nobody has walked says so on screen and not on paper. `print.css` holds it, and the PDF takes the page's title as its
   name.
 
 Where the reader stopped is kept in their browser and nowhere else.

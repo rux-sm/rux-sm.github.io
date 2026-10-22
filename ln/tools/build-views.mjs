@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // build-views.mjs -- writes LN Guide's pages from data/atlas/, one file each:
-// home.html, which asks what the reader is doing; do/<task>.html, a task as a
+// index.html, Home, which asks what the reader is doing; do/<task>.html, a task as a
 // document with Guided, one step at a time, inside it; follow/<process>.html,
 // a process as the path of its tasks; screens/<code>.html and ideas/<id>.html;
 // an index for each of those three folders; and search.json, the one file
@@ -68,6 +68,7 @@ const report = [];
 // the other folders a level up. `base` is set while each page is drawn.
 let base = '';
 const at = (path) => base + path;
+const hrefHome = () => base || './';
 const hrefTask = (id, k) => at(`do/${id}.html`) + (k ? `#step-${k}` : '');
 const hrefProcess = (id) => at(`follow/${id}.html`);
 const hrefScreen = (code) => at(`screens/${code}.html`);
@@ -327,7 +328,7 @@ ${inner}
 </div>`;
 const navItem = (href, label, current) => `<li class="rux--side-nav__item${current ? ' rux--side-nav__item--active' : ''}"><a class="rux--side-nav__link" href="${href}"${current ? ' aria-current="page"' : ''}><span class="rux--side-nav__link-text">${esc(label)}</span></a></li>`;
 const nav = (active) => `<ul class="rux--side-nav__items">
-      ${navItem(at('home.html'), 'Home', active === 'home')}${processes.map((s) => `
+      ${navItem(hrefHome(), 'Home', active === 'home')}${processes.map((s) => `
       ${navItem(hrefProcess(s.id), s.title, active === s.id)}`).join('')}
       ${navItem(at('screens/index.html'), 'Screens', active === 'screens')}
       ${navItem(at('ideas/index.html'), 'Ideas', active === 'ideas')}
@@ -410,7 +411,7 @@ const waitingSide = side.map((n) => ({ n, scenario: 'tasks', steps: [n.id] }));
 const waiting = waitingTasks.length + waitingSide.length;
 const waitingJson = () => `<script type="application/json" id="waiting">${JSON.stringify([...waitingTasks, ...waitingSide].map((w) => ({ scenario: w.scenario, steps: w.steps }))).replace(/</g, '\\u003c')}</script>`;
 function confirmPage() {
-  const body = `${breadcrumb([[at('home.html'), 'Home'], ['', 'Still to confirm']])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Still to confirm']])}
 <div>
 <h1 class="rux--type-productive-heading-05">Still to confirm</h1>
 <p class="rux--type-body-long-01">Nobody has checked these in LN yet. Open one, walk it in LN, and say at each step whether it matched.</p>
@@ -433,7 +434,7 @@ function confirmPage() {
 // ---- Home --------------------------------------------------------------------
 const home = () => page('LN Guide', 'home', column(`<h1 class="ln-ask">What are you doing?</h1>
 ${searchBox('ask')}
-<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable ln-resume" href="${at('home.html')}" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a></div>
+<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable ln-resume" href="${hrefHome()}" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a></div>
 <div>
 <h2 class="rux--type-productive-heading-03">Start here</h2>
 <p class="ln-quiet">The processes in the order they build on each other. Each one is a path of tasks.</p>
@@ -504,7 +505,7 @@ function processPage(s) {
     variants.length && ['cases', `Different cases · ${variants.length}`, list(problems(variants))],
     next.length && ['next', 'What comes next', list(next.map((row) => ({ title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` })))],
   ]);
-  const body = `${breadcrumb([[at('home.html'), 'Home'], ['', s.title]])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', s.title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
@@ -565,7 +566,7 @@ function task(s, t) {
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
   const lines = rows.map((r) => headline(r.cells[1].tokens, t.route));
-  const full = `${breadcrumb([[at('home.html'), 'Home'], [hrefProcess(s.id), s.title], ['', t.title]])}
+  const full = `${breadcrumb([[hrefHome(), 'Home'], [hrefProcess(s.id), s.title], ['', t.title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">What you get: ${tokens(t.achieves.tokens)}.</p>` : ''}
@@ -623,7 +624,7 @@ function taskIndex() {
   const other = allSide.map((n) => side.includes(n)
     ? `<li id="${esc(n.id)}"><b>${esc(n.session)}</b>${accordion([[`side-${esc(n.id)}`, 'Steps', sideBody(n)]])}</li>`
     : `<li id="${esc(n.id)}"><b>${esc(n.session)}</b><p class="ln-quiet">Not documented yet.</p></li>`);
-  const body = `${breadcrumb([[at('home.html'), 'Home'], ['', 'Tasks']])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Tasks']])}
 <div>
 <h1 class="rux--type-productive-heading-05">Tasks</h1>
 <p class="rux--type-body-long-01">Every task the library knows, by module. One nobody has walked in LN yet says so.</p>
@@ -650,7 +651,7 @@ const fact = (k, v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
 const isRoute = (r) => r.includes(ARROW.trim());
 function screenPage(c) {
   const ideas = concepts.filter((x) => x.sources.includes(c.code));
-  const body = `${breadcrumb([[at('home.html'), 'Home'], [at('screens/index.html'), 'Screens'], ['', c.name]])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('screens/index.html'), 'Screens'], ['', c.name]])}
 <div>
 <p class="ln-quiet">Screen</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
@@ -662,7 +663,7 @@ function screenPage(c) {
 }
 function ideaPage(c) {
   const uses = [...new Set(c.sources.flatMap((code) => usedIn.get(code) ?? []))];
-  const body = `${breadcrumb([[at('home.html'), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', c.name]])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', c.name]])}
 <div>
 <p class="ln-quiet">Idea</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
@@ -709,7 +710,7 @@ const overviewTitle = overview.title;
 const overviewPurpose = overview.intro[0]?.text.split('. ')[0] ?? '';
 function overviewPage() {
   const [first, ...rest] = overview.topics;
-  const body = `${breadcrumb([[at('home.html'), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', overviewTitle]])}
+  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', overviewTitle]])}
 <div>
 <p class="ln-quiet">Idea</p>
 <h1 class="rux--type-productive-heading-05">${esc(overviewTitle)}</h1>
@@ -724,7 +725,7 @@ ${accordion(rest.map((t) => [`topic-${t.n}`, esc(t.title), `<div class="ln-full"
   return page(`${overviewTitle} \u2014 LN Guide`, 'ideas', column(body, 12));
 }
 
-const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`${breadcrumb([[at('home.html'), 'Home'], ['', title]])}
+const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`${breadcrumb([[hrefHome(), 'Home'], ['', title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${title}</h1>
 <p class="rux--type-body-long-01">${intro}</p>
@@ -768,7 +769,7 @@ const written = [];
 const write = (path, text) => { const file = join(ROOT, path); mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text); written.push(file); };
 for (const dir of ['do', 'follow', 'screens', 'ideas']) rmSync(join(ROOT, dir), { recursive: true, force: true });
 
-write('home.html', home());
+write('index.html', home());
 write('search.html', searchPage());
 write('confirm.html', confirmPage());
 writeFileSync(join(ROOT, 'search.json'), JSON.stringify(searchIndex()) + '\n');

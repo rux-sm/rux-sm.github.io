@@ -255,10 +255,6 @@ None open.
 
 ## Tasks
 
-- [ ] Retire `ln/index.html` with its three tabs, and what in `ln/app.js` and
-      the old build draws them, once the new pages replace them.
-- [ ] Say in `ln/README.md` what each kind of page is, where it comes from, and
-      how a page is printed.
 - [ ] Check every kind of page in Chrome on :8641, at a phone width and a wide
       one, in a light theme and a dark one, and the Full page of one task in
       print preview.

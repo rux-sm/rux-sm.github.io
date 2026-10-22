@@ -9,17 +9,15 @@
 // page nobody rebuilt differs from what is staged.
 import { execFileSync } from 'node:child_process';
 
-// Two builds while the old page lasts: build-page.mjs writes index.html, and
-// build-views.mjs the pages under do/, follow/, screens/ and ideas/, home.html
-// and search.json. Every one of them is generated, so every one is compared.
-const GENERATED = ['index.html', 'home.html', 'search.html', 'search.json', 'confirm.html', 'do', 'follow', 'screens', 'ideas'];
-for (const build of ['tools/build-page.mjs', 'tools/build-views.mjs']) {
-  try {
-    execFileSync(process.execPath, [build], { stdio: 'inherit' });
-  } catch {
-    console.log(`\n  FAIL  ${build} did not run to completion`);
-    process.exit(1);
-  }
+// build-views.mjs writes index.html, the pages under do/, follow/, screens/
+// and ideas/, search.html, confirm.html and search.json. Every one of them is
+// generated, so every one is compared.
+const GENERATED = ['index.html', 'search.html', 'search.json', 'confirm.html', 'do', 'follow', 'screens', 'ideas'];
+try {
+  execFileSync(process.execPath, ['tools/build-views.mjs'], { stdio: 'inherit' });
+} catch {
+  console.log('\n  FAIL  the build did not run to completion');
+  process.exit(1);
 }
 
 // Untracked too: a page the build writes for the first time is as unstaged as

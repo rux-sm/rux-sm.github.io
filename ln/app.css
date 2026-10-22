@@ -1,16 +1,26 @@
-/* LN Guide's own rules for the flow tools/build-views.mjs writes. Every control
-   on it is Design's; what is here is what Carbon has no component for: the
-   path, the step, the tab bar, the map and a card's facts. Every colour is a
-   Design token, so each theme carries the page with it. */
+/* LN Guide's own rules for the pages tools/build-views.mjs writes. Every
+   control on them is Design's; what is here is what Carbon has no component
+   for: the path, the step, Guided's bar, the grid and a page's facts. Every
+   colour is a Design token, so each theme carries the pages with it. */
 
-/* One readable column, clear of the tab bar at the foot of the window. */
-.ln-app { max-inline-size: 36rem; margin-inline: auto; padding-block: .5rem 9rem; }
-.ln-screen { display: flex; flex-direction: column; gap: 1.5rem; }
-.ln-screen > p { margin: 0; line-height: 1.5; max-inline-size: 34rem; }
-.ln-screen > .ln-back { align-self: start; display: inline-flex; align-items: center; gap: .25rem; margin-block-end: -.5rem; }
-.ln-ask { font-size: 1.75rem; line-height: 1.2; font-weight: 400; margin: 0; }
+/* ---- the shell: Design's document-page --------------------------------------
+   The side nav is beside the content from 66rem, where Carbon pairs them, and
+   nothing in Carbon offsets the content for a nav inside the header. One
+   reading column, no wider than a comfortable line, and On this page beside
+   it, which shows only there and stays while the page scrolls. */
+@media (min-width: 66rem) { .ln-pages.rux--content { padding-inline-start: 18rem; } }
+.ln-pages .rux--css-grid-column { max-inline-size: 64rem; }
+.ln-pages p, .ln-pages h1 { max-inline-size: 36rem; }
+.ln-pages .ln-aside { display: none; }
+@media (min-width: 66rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
+.ln-ask { font-size: 2rem; line-height: 1.2; font-weight: 400; margin: 0; }
 .ln-quiet { font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); margin: 0; }
-.ln-picker { max-inline-size: 20rem; }
+.ln-strip { color: var(--rux-text-secondary); }
+.ln-back { display: inline-flex; align-items: center; gap: .25rem; }
+/* The one action, with how long the task or the process is beside it. */
+.ln-go { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.ln-screen-line { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+.ln-task__code { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
 
 /* ---- text registers ------------------------------------------------------
    Shape and family carry the meaning: a control you press is boxed, a name on
@@ -23,150 +33,35 @@
 .ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary); }
 .rux--link .ln-t-route .dest, .rux--link .ln-t-exact, .rux--link .ln-t-named { color: inherit; }
 .ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }
+.ln-t-said { color: var(--rux-text-secondary); }
+.ln-t-gap { font-weight: 600; color: var(--rux-text-primary); }
 
-/* ---- Home: what to carry on with, then what there is --------------------- */
+/* ---- Home: what to carry on with, then the processes ------------------------
+   The processes two abreast once there is room, a single card alone. */
 .ln-cards { display: grid; gap: .75rem; }
+@media (min-width: 42rem) { .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-cards--one { grid-template-columns: 1fr; } }
 .ln-cards .rux--tile { display: grid; gap: .25rem; }
 .ln-cards b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
 .ln-resume { border-inline-start: 3px solid var(--rux-interactive); }
 
-/* ---- The path: a task is a stop, a decision a fork between two stops ------ */
+/* ---- The path: a task is a stop, a decision a dashed fork between two -------
+   What a task achieves sits under its title, in the title's column, with the
+   step count after it. */
 .ln-path { margin: 0; padding: 0; list-style: none; }
 .ln-path li { position: relative; padding-block-end: 1.25rem; }
 .ln-path li:not(:last-child)::before { content: ""; position: absolute; inset-block: 2rem 0; inset-inline-start: 1rem; border-inline-start: 1px solid var(--rux-border-strong-01); }
 .ln-path__stop { display: grid; grid-template-columns: 2rem 1fr; gap: .75rem; color: var(--rux-text-primary); text-decoration: none; font-size: 1.0625rem; line-height: 1.35; }
-.ln-path__stop:hover b { text-decoration: underline; }
+a.ln-path__stop:hover b { text-decoration: underline; }
 .ln-path__stop:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .ln-path__dot { position: relative; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; border-radius: 50%; border: 1px solid var(--rux-border-strong-01); font-size: .8125rem; background: var(--rux-background); }
-.ln-path li[data-state="done"] .ln-path__dot { background: var(--rux-support-success); border-color: transparent; color: var(--rux-text-on-color); }
-.ln-path li[data-state="now"] .ln-path__dot { background: var(--rux-interactive); border-color: transparent; color: var(--rux-text-on-color); }
-.ln-path li[data-state="now"] b { font-weight: 600; }
 .ln-path li[data-kind="fork"] .ln-path__stop { color: var(--rux-text-secondary); font-size: .9375rem; }
 .ln-path li[data-kind="fork"] .ln-path__dot { border-style: dashed; }
 .ln-path b { font-weight: 400; padding-block-start: .3rem; display: block; }
-.ln-path small { display: block; font-size: .8125rem; color: var(--rux-text-secondary); }
-/* A scenario's own path: a line a task, the step count at the end of it, close
-   enough that the whole scenario shows above the tab bar. */
-.ln-path--tight li { padding-block-end: .75rem; }
-.ln-path--tight .ln-path__stop { grid-template-columns: 2rem 1fr auto; align-items: start; }
-.ln-path--tight small { padding-block-start: .4rem; font-variant-numeric: tabular-nums; }
-/* A scenario's reference: a heading a section, and text to type in a box that
-   keeps a line a line however it wraps. */
-.ln-ref__title { font-size: 1.125rem; line-height: 1.3; font-weight: 600; margin: 1rem 0 -.5rem; }
-.ln-list .ln-quiet { font-size: .8125rem; }
-.ln-type { display: grid; gap: .5rem; }
-.ln-type__name { display: flex; align-items: center; justify-content: space-between; margin: 0; }
-.ln-type__text { display: grid; gap: .625rem; padding: 1rem; background: var(--rux-layer-01); border: 1px solid var(--rux-border-subtle-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; line-height: 1.5; overflow-wrap: anywhere; }
-.ln-type__text p { margin: 0; }
-/* The one action, with how long the scenario is beside it. */
-.ln-go { display: flex; align-items: center; gap: 1rem; }
+.ln-path small { display: block; grid-column: 2; padding-block-start: .125rem; font-size: .8125rem; color: var(--rux-text-secondary); }
 
-/* ---- One step: where you are, what to do, what you should see, then on ---- */
-.ln-steps { margin: 0; padding: 0; list-style: none; }
-.ln-steps li { display: grid; gap: 1.5rem; }
-.ln-step__do { font-size: 1.5rem; line-height: 1.35; font-weight: 400; margin: 0; }
-/* On a phone the column is narrow, so the headline steps down one size and
-   stays the largest thing on the screen. */
-@media (max-width: 30rem) { .ln-step__do { font-size: 1.25rem; } }
-.ln-step__main { display: grid; gap: .625rem; }
-.ln-step__note { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
-.ln-step__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
-.ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
-.ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
-.ln-task__route { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; font-size: .875rem; color: var(--rux-text-secondary); }
-.ln-task__code { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-.ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
-.ln-why p { margin: 0 0 .75rem; line-height: 1.5; }
-/* Back and Next are fixed at the foot of the window, above the tabs, so the
-   thumb finds Next in one place on every step, however long the step is. */
-.ln-nav { position: fixed; inset-inline: 0; inset-block-end: 3rem; z-index: 2; display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; padding-block: .75rem; background: var(--rux-background); }
-.ln-choices { display: grid; gap: .5rem; }
-.ln-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .75rem; }
-.ln-list > li { padding-block-end: .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); line-height: 1.5; }
-.ln-list > li > b { display: block; font-weight: 600; }
-.ln-list p { margin: .25rem 0 0; }
-.ln-side { margin: .5rem 0 0; padding-inline-start: 1.5rem; display: grid; gap: .375rem; line-height: 1.45; list-style: decimal; }
-.ln-side__note { list-style: none; margin-inline-start: -1.5rem; color: var(--rux-text-secondary); }
-.ln-answers { display: grid; gap: .5rem; margin: .75rem 0 0; padding: 0; list-style: none; font-size: .9375rem; }
-
-/* ---- The tabs stay in reach at the foot of the window --------------------- */
-.ln-tabs { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 3; display: flex; justify-content: center; background: var(--rux-layer-01); border-block-start: 1px solid var(--rux-border-subtle-01); }
-.ln-tabs a { flex: 0 1 8rem; padding: .875rem .5rem; text-align: center; color: var(--rux-text-secondary); font-size: .875rem; text-decoration: none; border-block-start: 2px solid transparent; margin-block-start: -1px; }
-.ln-tabs a[aria-current] { color: var(--rux-text-primary); border-block-start-color: var(--rux-interactive); font-weight: 600; }
-.ln-tabs a:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
-
-/* ---- Map: the whole grid, behind its button ------------------------------- */
-.ln-map__scroll { overflow-x: auto; border: 1px solid var(--rux-border-subtle-01); }
-.ln-map { position: relative; display: grid; grid-template-columns: 6.5rem repeat(6, minmax(9rem, 1fr)); min-inline-size: 62rem; }
-.ln-map__head, .ln-map__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); }
-.ln-map__lane, .ln-map__cell { border-block-start: 1px solid var(--rux-border-subtle-01); }
-.ln-map__cell { display: flex; flex-direction: column; gap: .75rem; padding: .75rem; min-block-size: 3.5rem; }
-.ln-map__tile { position: relative; z-index: 1; display: flex; align-items: center; gap: .375rem; padding: .375rem .5rem; border: 1px solid var(--rux-border-strong-01); background: var(--rux-background); color: var(--rux-text-primary); font: inherit; font-size: .75rem; line-height: 1.3; text-align: start; cursor: pointer; }
-.ln-map__tile[data-screen="no"] { border-style: dashed; }
-.ln-map__tile:hover { background: var(--rux-layer-hover-01); }
-.ln-map__tile:focus-visible, .ln-map__tile[aria-expanded="true"] { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
-.ln-map[data-lit] .ln-map__tile:not([data-lit]) { color: var(--rux-text-disabled); border-color: var(--rux-border-subtle-01); }
-.ln-map__tile[data-lit] { border: 2px solid var(--rux-border-interactive); }
-.ln-map__n { flex: none; font-size: .6875rem; color: var(--rux-text-secondary); }
-.ln-map__lines { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; }
-.ln-map__lines path { fill: none; stroke: var(--rux-border-interactive); stroke-width: 2; }
-.ln-map__lines path[data-jump] { stroke-dasharray: 5 5; }
-.ln-map__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
-.ln-detail { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
-.ln-detail p { margin-block: .5rem; line-height: 1.5; }
-
-/* ---- A card's facts ------------------------------------------------------- */
-.ln-card__facts { display: grid; grid-template-columns: auto 1fr; gap: .75rem 1rem; margin: 0; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); line-height: 1.45; }
-.ln-card__facts dt { color: var(--rux-text-secondary); font-size: .875rem; padding-block-start: .1rem; }
-.ln-card__facts dd { margin: 0; min-inline-size: 0; overflow-wrap: anywhere; }
-
-/* ---- What nobody has confirmed: a quiet line, and two answers -------------- */
-.ln-confirm { display: grid; gap: .5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
-.ln-confirm__ask { display: flex; flex-wrap: wrap; gap: .5rem; }
-.ln-confirm__form { display: grid; gap: .75rem; justify-items: start; }
-.ln-confirm__form .rux--form-item { inline-size: 100%; }
-.ln-waiting b { font-weight: 400; }
-.ln-list [data-answered] { display: block; }
-
-/* ---- A card's whole text, for the owner ----------------------------------- */
-.ln-t-said { color: var(--rux-text-secondary); }
-.ln-t-gap { font-weight: 600; color: var(--rux-text-primary); }
-.ln-full { display: grid; gap: 1rem; line-height: 1.5; }
-.ln-full p { margin: 0; }
-.ln-full .rux--accordion__content { display: grid; gap: .875rem; padding-inline-end: 1rem; }
-.ln-full__list { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: .5rem; }
-ul.ln-full__list { list-style: disc; }
-ol.ln-full__list { list-style: decimal; }
-.ln-full__note { display: grid; gap: .5rem; padding: .75rem 1rem; background: var(--rux-layer-01); border-inline-start: 3px solid var(--rux-border-strong-01); }
-.ln-full__code { margin: 0; padding: .75rem 1rem; background: var(--rux-layer-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; overflow-x: auto; }
-.ln-full__rows { display: grid; }
-.ln-full__rows > div { display: grid; gap: .25rem; padding-block: .625rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
-.ln-full__rows b { font-weight: 600; }
-
-/* Carbon's reset, and the rules above, give several elements a display of their
-   own, which beats the browser's rule for the hidden attribute. This puts it
-   back, and is last so that it wins. */
-.ln-app [hidden] { display: none; }
-
-/* ==== The pages tools/build-views.mjs writes ==================================
-   Design's document-page shell: the side nav beside the content on a wide
-   screen, one reading column, and On this page beside it. Guided is one column
-   on every screen with Back and Next fixed at the foot. The one-page guide
-   above keeps its own rules until it goes. */
-
-/* The side nav is beside the content from 66rem, where Carbon pairs them, and
-   nothing in Carbon offsets the content for a nav inside the header. */
-@media (min-width: 66rem) { .ln-pages.rux--content { padding-inline-start: 18rem; } }
-.ln-pages .rux--css-grid-column { max-inline-size: 64rem; }
-.ln-pages p, .ln-pages h1 { max-inline-size: 36rem; }
-.ln-pages .ln-ask { font-size: 2rem; }
-
-/* On this page shows only beside the content, and stays while it scrolls. */
-.ln-pages .ln-aside { display: none; }
-@media (min-width: 66rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
-
-/* Full page: every step on one page, numbered the way the path numbers its
-   stops, with what you should see under the action. */
+/* ---- Full page: every step on one page -----------------------------------------
+   Numbered the way the path numbers its stops, with what you should see under
+   the action. */
 .ln-doc { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 1.25rem; max-inline-size: 36rem; }
 .ln-doc > li { display: grid; grid-template-columns: 2rem 1fr; gap: .25rem .75rem; counter-increment: step; }
 .ln-doc > li::before { content: counter(step); grid-row: 1 / span 4; display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; border-radius: 50%; border: 1px solid var(--rux-border-strong-01); font-size: .8125rem; font-variant-numeric: tabular-nums; color: var(--rux-text-primary); }
@@ -177,44 +72,92 @@ ol.ln-full__list { list-style: decimal; }
 .ln-doc__see { margin: 0; font-size: .9375rem; line-height: 1.45; color: var(--rux-text-secondary); }
 .ln-doc__see b { font-weight: 600; color: var(--rux-text-primary); padding-inline-end: .25rem; }
 .ln-doc__see .rux--tag { vertical-align: middle; }
+.ln-why p { margin: 0 0 .75rem; line-height: 1.5; }
 
-/* The process path: what a task achieves sits under its title, in the title's
-   column, with the step count after it. */
-.ln-pages .ln-path small { grid-column: 2; padding-block-start: .125rem; }
+/* ---- Guided: one step, what to do, what you should see, then on -----------------
+   One readable column on every screen, and Back and Next fixed at the foot
+   with nothing beneath them, so the thumb finds Next in one place on every
+   step. Beside the side nav, the bar lines up with the column. */
+.ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: 7rem; }
+.ln-steps { margin: 0; padding: 0; list-style: none; }
+.ln-steps li { display: grid; gap: 1.5rem; }
+.ln-step__do { font-size: 1.5rem; line-height: 1.35; font-weight: 400; margin: 0; }
+@media (max-width: 30rem) { .ln-step__do { font-size: 1.25rem; } }
+.ln-step__main { display: grid; gap: .625rem; }
+.ln-step__note { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
+.ln-step__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
+.ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
+.ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
+.ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+.ln-nav { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 2; display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; padding-block: .75rem 1rem; background: var(--rux-background); }
+@media (min-width: 66rem) { .ln-nav { inset-inline: 20rem auto; margin-inline: 0; inline-size: 36rem; } }
 
-/* Home: the processes two abreast once there is room, a single card alone. */
-@media (min-width: 42rem) { .ln-pages .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-pages .ln-cards--one { grid-template-columns: 1fr; } }
-.ln-screen-line { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
-.ln-strip { color: var(--rux-text-secondary); }
+/* ---- Lists, folds and what is looked up ---------------------------------------
+   A reference table is drawn as a list, and one whose rows are text to type
+   as that text in a box that keeps a line a line however it wraps. */
+.ln-list { margin: 0; padding: 0; list-style: none; display: grid; gap: .75rem; }
+.ln-list > li { padding-block-end: .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); line-height: 1.5; }
+.ln-list > li > b { display: block; font-weight: 600; }
+.ln-list p { margin: .25rem 0 0; }
+.ln-list small { display: block; margin-block-end: .125rem; font-size: .8125rem; }
+.ln-list .rux--tag { margin-block-start: .25rem; }
+.ln-results { display: grid; gap: 1.5rem; }
 .ln-fold { display: grid; gap: .75rem; padding-inline-end: 1rem; }
 .ln-fold p { margin: 0; line-height: 1.5; }
-.ln-pages .ln-list small { display: block; margin-block-end: .125rem; }
-.ln-pages .ln-list .rux--tag { margin-block-start: .25rem; }
+.ln-ref__title { font-size: 1.125rem; line-height: 1.3; font-weight: 600; margin: 1rem 0 -.5rem; }
+.ln-type { display: grid; gap: .5rem; }
+.ln-type__name { display: flex; align-items: center; justify-content: space-between; margin: 0; }
+.ln-type__text { display: grid; gap: .625rem; padding: 1rem; background: var(--rux-layer-01); border: 1px solid var(--rux-border-subtle-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; line-height: 1.5; overflow-wrap: anywhere; }
+.ln-type__text p { margin: 0; }
+.ln-side { margin: .5rem 0 0; padding-inline-start: 1.5rem; display: grid; gap: .375rem; line-height: 1.45; list-style: decimal; }
+.ln-side__note { list-style: none; margin-inline-start: -1.5rem; color: var(--rux-text-secondary); }
 
-/* Guided: one readable column, and Back and Next fixed at the foot with no
-   bar beneath them. Beside the side nav, the bar lines up with the column
-   rather than the window. */
-.ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: 7rem; }
-.ln-guided .ln-steps li { display: grid; gap: 1.5rem; }
-.ln-guided .ln-step__more { gap: .5rem 1.5rem; }
-.ln-pages .ln-nav { inset-block-end: 0; padding-block: .75rem 1rem; }
-@media (min-width: 66rem) { .ln-pages .ln-nav { inset-inline: 20rem auto; margin-inline: 0; inline-size: 36rem; } }
+/* ---- A screen's or an idea's facts -------------------------------------------- */
+.ln-card__facts { display: grid; grid-template-columns: auto 1fr; gap: .75rem 1rem; margin: 0; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); line-height: 1.45; }
+.ln-card__facts dt { color: var(--rux-text-secondary); font-size: .875rem; padding-block-start: .1rem; }
+.ln-card__facts dd { margin: 0; min-inline-size: 0; overflow-wrap: anywhere; }
 
-/* Carbon's reset gives several elements a display of their own, which beats
-   the browser's rule for the hidden attribute. This puts it back, and is last
-   so that it wins. */
+/* ---- What nobody has confirmed: a quiet line, and the owner's two answers ---- */
+.ln-confirm { display: grid; gap: .5rem; padding-block-start: 1rem; border-block-start: 1px solid var(--rux-border-subtle-01); }
+.ln-confirm__ask { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ln-confirm__form { display: grid; gap: .75rem; justify-items: start; }
+.ln-confirm__form .rux--form-item { inline-size: 100%; }
+
+/* ---- A screen's or an idea's whole text, for the owner, and a reference's blocks */
+.ln-full { display: grid; gap: 1rem; line-height: 1.5; max-inline-size: 36rem; }
+.ln-full p { margin: 0; }
+.ln-full h4 { margin: .5rem 0 0; }
+.ln-full .rux--accordion__content { display: grid; gap: .875rem; padding-inline-end: 1rem; }
+.ln-full__list { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: .5rem; }
+ul.ln-full__list { list-style: disc; }
+ol.ln-full__list { list-style: decimal; }
+.ln-full__note { display: grid; gap: .5rem; padding: .75rem 1rem; background: var(--rux-layer-01); border-inline-start: 3px solid var(--rux-border-strong-01); }
+.ln-full__code { margin: 0; padding: .75rem 1rem; background: var(--rux-layer-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; overflow-x: auto; }
+.ln-full__rows { display: grid; }
+.ln-full__rows > div { display: grid; gap: .25rem; padding-block: .625rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
+.ln-full__rows b { font-weight: 600; }
+
+/* ---- The grid on the idea page about the chain ---------------------------------
+   Six lanes by six stages; a tile is a link or a plain box, a decision is
+   dashed like a fork on a path, the transfer boundary is a rule, and app.js
+   draws the map's lines between the tiles, a branch dashed. */
+.ln-map__scroll { overflow-x: auto; border: 1px solid var(--rux-border-subtle-01); }
+.ln-map { position: relative; display: grid; grid-template-columns: 6.5rem repeat(6, minmax(9rem, 1fr)); min-inline-size: 62rem; }
+.ln-map__head, .ln-map__lane { padding: .5rem .75rem; font-size: .75rem; color: var(--rux-text-secondary); }
+.ln-map__lane, .ln-map__cell { border-block-start: 1px solid var(--rux-border-subtle-01); }
+.ln-map__cell { display: flex; flex-direction: column; gap: .75rem; padding: .75rem; min-block-size: 3.5rem; }
+.ln-map__cell[data-boundary] { border-inline-start: 1px solid var(--rux-border-strong-01); }
+.ln-map__tile { position: relative; z-index: 1; display: flex; align-items: center; gap: .375rem; padding: .375rem .5rem; border: 1px solid var(--rux-border-strong-01); background: var(--rux-background); color: var(--rux-text-primary); font: inherit; font-size: .75rem; line-height: 1.3; text-align: start; text-decoration: none; }
+.ln-map__tile[data-kind="decision"] { border-style: dashed; }
+a.ln-map__tile:hover { background: var(--rux-layer-hover-01); }
+.ln-map__tile:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
+.ln-map__n { flex: none; font-size: .6875rem; color: var(--rux-text-secondary); }
+.ln-map__lines { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; }
+.ln-map__lines path { fill: none; stroke: var(--rux-border-interactive); stroke-width: 2; }
+.ln-map__lines path[data-branch] { stroke-dasharray: 5 5; }
+.ln-map__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
+
+/* Carbon's reset, and the rules above, give several elements a display of their
+   own, which beats the browser's rule for the hidden attribute. This puts it
+   back, and is last so that it wins. */
 .ln-pages [hidden], .ln-pages .ln-steps li[hidden] { display: none; }
-
-/* Search: a page the query names first, then each kind under its heading. */
-.ln-results { display: grid; gap: 1.5rem; }
-
-
-/* The grid on the idea page: a tile is a link or a plain box, a decision is
-   dashed like a fork on a path, the transfer boundary is a rule, and a branch
-   line is dashed. */
-.ln-pages .ln-map__tile { text-decoration: none; }
-.ln-pages .ln-map__tile[data-kind="decision"] { border-style: dashed; }
-.ln-pages .ln-map__cell[data-boundary] { border-inline-start: 1px solid var(--rux-border-strong-01); }
-.ln-pages .ln-map__lines path[data-branch] { stroke-dasharray: 5 5; }
-.ln-pages .ln-full { display: grid; gap: 1rem; line-height: 1.5; max-inline-size: 36rem; }
-.ln-pages .ln-full h4 { margin: .5rem 0 0; }

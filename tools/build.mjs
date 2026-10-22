@@ -21,7 +21,6 @@ const run = (cmd, args, cwd) => {
 };
 run('npm', ['run', 'build', '--silent'], join(ROOT, 'design'));
 run('npm', ['run', 'generate', '--silent'], join(ROOT, 'design'));
-run(process.execPath, ['tools/build-page.mjs'], join(ROOT, 'ln'));
 run(process.execPath, ['tools/build-views.mjs'], join(ROOT, 'ln'));
 // The account panel Design writes, into every page outside Design that carries
 // its markers, before the sprite, which follows the icons a page names.

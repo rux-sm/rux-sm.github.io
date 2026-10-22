@@ -7,7 +7,8 @@ type: plan
 ## Goal
 
 One place to open while working in Infor LN, and to learn it from. Find a task
-and be walking it within seconds, or read it through as documentation.
+and be walking it within seconds, or print it and hand it on as a document a
+consultant would be proud to share.
 
 **It is simple, quick to pick up and pleasant to use.** The reader has ADHD and
 dyslexia, so a walked step shows one thing, in short lines and large type, with
@@ -35,9 +36,10 @@ exports, so a correction is made once and every page redraws.
   to learn than a site and a phone app with tabs.
 
 - **The mockup in `design/m/ln-guide/` is the picture of these decisions**:
-  Home, the Ship from stock process page, and one task in both views, built
-  from Design's `document-page` template with the export's own text. A decision
-  changes there first, because a mockup is cheap to redraw.
+  Home, the Ship from stock process page, one task in both views, and the
+  Document of three processes, `doc-*.html`, drawn by its `build-doc.mjs`
+  from the export's own text. A decision changes there first, because a
+  mockup is cheap to redraw.
 
 ### Four kinds of page
 
@@ -90,16 +92,16 @@ tutorial, reference and explanation.
   the next task. A fold's label carries its count, such as If something goes
   wrong · 9.
 
-- **Two views of the same task, Full page and Guided.** Full page is the task
-  as one readable document and is what prints. Guided is one step at a time:
+- **Two views of the same task, Document and Guided.** The Document is the
+  task as one readable document and is what prints. Guided is one step at a time:
   a progress bar under the task's name, the step in large type, what you should
   see, the route, two closed folds reading Stuck? with its count and Why LN
-  works this way, two quiet links reading Full page and Read it to me, and
+  works this way, two quiet links reading Document and Read it to me, and
   Back and Next fixed at the foot, with the arrow keys. It is one column on
   every screen, because one layout stays right where a second one drifts.
 
 - **The screen's shape decides which view opens, not a memory.** A phone opens
-  Guided, a wide screen opens Full page, and the other view is one tap away. A
+  Guided, a wide screen opens the Document, and the other view is one tap away. A
   rule the reader can predict beats a setting they cannot see.
 
 - **A step's headline is the action alone.** A menu route, a screen's code and
@@ -199,11 +201,8 @@ tutorial, reference and explanation.
 
 ### Print
 
-- **Printing a task or a process prints its Full page**, from one Print button
-  and the browser's dialog, where Save as PDF is a destination, so no PDF
-  library is added. `ln/print.css` keeps the paper light on any theme with no
-  fills and no chrome, as `scheduler/print.css` does, and the PDF takes the
-  page's title as its name.
+- **What prints, and the Guide beside it, are decided in
+  [`ln-guide-document.md`](ln-guide-document.md).**
 
 ### Private detail
 

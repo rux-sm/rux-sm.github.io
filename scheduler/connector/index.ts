@@ -34,6 +34,14 @@ const Past = rules.SchedulerPastMidnight
 // Where a draft link points. The scheduler's trip editor reads `?draft=<id>`.
 const SCHEDULER_URL = Deno.env.get('SCHEDULER_URL') ?? 'https://rux-sm.github.io/scheduler/'
 
+/*
+ * A TRIP'S LEGS ARE READ AS THE BOARD READS THEM, by the pages' own rule
+ * files: trip-shape.js for the legs, their routes and contacts, week.js for
+ * the days each leg takes, and past-midnight.js for the day an undated time
+ * falls on. A trip is read with `TRIP_LEGS`, and its stops and vehicles with
+ * the route each is on.
+ */
+const TRIP_LEGS = 'trip_legs(id, leg, kind, start_date, end_date, bus_count, hotel_booked, hotel_itinerary_number, created_at, trip_routes(id, position, name))'
 // A trip in a list: enough to recognise it, not enough to bury the answer.
 const TRIP_SUMMARY = [
   'id', 'trip_ref', 'destination', 'customer', 'start_date', 'end_date',
@@ -119,14 +127,6 @@ function dayFrom(day: string, n: number) {
 /** A placeholder is not a trip yet, as billing.js reads one. The board asks no bus of it. */
 const isPlaceholder = (trip: Record<string, unknown>): boolean => Billing.placeholder(trip)
 
-/*
- * A TRIP'S LEGS ARE READ AS THE BOARD READS THEM, by the pages' own rule
- * files: trip-shape.js for the legs, their routes and contacts, week.js for
- * the days each leg takes, and past-midnight.js for the day an undated time
- * falls on. A trip is read with `TRIP_LEGS`, and its stops and vehicles with
- * the route each is on.
- */
-const TRIP_LEGS = 'trip_legs(id, leg, kind, start_date, end_date, bus_count, hotel_booked, hotel_itinerary_number, created_at, trip_routes(id, position, name))'
 type Leg = { key: string; leg: string | null; number: number; from: string; to: string; ends: string; count: number; backDays: number; back: string | null }
 
 /**

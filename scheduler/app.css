@@ -122,6 +122,15 @@
 @supports (block-size: round(1px, 1px)) {
   .scheduler-week { --scheduler-row-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px); }
 }
+/* The widest a day column gets on the board, so a wide window does not
+   stretch every bar past what it says. 12.5rem keeps a one-day bar's rows
+   whole, and on a 1920px screen leaves the week and one 24rem panel beside
+   it with room to spare, so opening the roster or a list does not squeeze the
+   week. app.js holds the days to it and the board's frame to their sum, so the
+   toolbar ends where the week does and the spare width is left beside it.
+   Fill the window, in the view menu, takes the cap off and the days share
+   the whole pane as before; Maintenance's static grid has no cap. */
+.scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-max: 12.5rem; }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and

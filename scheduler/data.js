@@ -11615,13 +11615,13 @@
      calm, every light held still, or off, the edge alone. It starts calm
      for a computer set to reduce motion. */
   const MOTIONS = ['full', 'calm', 'off'];
-  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false,
+  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false, fill: false,
     motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks', 'yard']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason Sunday is: it sizes the range.
@@ -11643,6 +11643,9 @@
     schEl.classList.toggle('scheduler-week--equipment', showEquipment);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
+    // Fill the window: the days share the whole pane rather than stopping at
+    // their cap, which app.css and app.js read from this class.
+    schEl.classList.toggle('scheduler-week--fill', view.fill);
     for (const btn of schEl.querySelectorAll('.scheduler-bus-tip__switch .rux--toggle__button')) {
       btn.setAttribute('aria-checked', String(showEquipment));
       btn.parentElement.querySelector('.rux--toggle__switch')?.classList.toggle('rux--toggle__switch--checked', showEquipment);

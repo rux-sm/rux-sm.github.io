@@ -140,6 +140,8 @@
     // Cleared first so the pane and the corner are measured at their
     // stylesheet sizes, not at the sizes the last pass pinned.
     sch.style.removeProperty('inline-size');
+    const frame = sch.closest('.scheduler-frame');
+    frame?.style.removeProperty('max-inline-size');
     sch.style.removeProperty('--scheduler-day-track');
     sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
@@ -148,6 +150,8 @@
     const corner = sch.querySelector('.scheduler-corner');
     const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
     const dayMin = px(sch, '--scheduler-day-min');
+    // Unset where the days may fill the pane, which reads as NaN.
+    const dayMax = px(sch, '--scheduler-day-max');
     const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
@@ -160,6 +164,13 @@
       // The floor binds and the grid is wider than the pane: it scrolls, there
       // is no remainder to place, and the head stays at its content width.
       day = Math.floor(dayMin);
+    } else if (Number.isFinite(dayMax) && day > dayMax) {
+      // The cap binds: the days keep its width, the head its content width,
+      // and the frame is held to their sum plus its own edges and scroll bar,
+      // so the toolbar ends where the week does. Measured again from the
+      // frame's free width on every pass, since the max was cleared above.
+      day = Math.floor(dayMax);
+      if (frame) frame.style.maxInlineSize = `${frame.offsetWidth - pane + head + day * days}px`;
     } else {
       // Everything the day columns did not take; never less than headBase,
       // since `day` was floored from the same figure.

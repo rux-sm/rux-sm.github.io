@@ -67,12 +67,11 @@
   // Atlas sends it as typed blocks. The opening lines show, and each section
   // waits behind its heading. Nothing in it links out: the page above already
   // names the screens, ideas and tasks that belong with it.
-  const bare = (v) => esc(v).replace(/(^|[\s(])_([^_]+)_(?=$|[\s).,;:])/g, '$1$2');
   const token = (t) => {
     switch (t.t) {
       case 'text': return esc(t.v);
-      case 'strong': case 'field': case 'chip': return `<span class="ln-t-named">${bare(t.v)}</span>`;
-      case 'em': case 'quote': return `<span class="ln-t-said">${bare(t.v)}</span>`;
+      case 'strong': case 'field': case 'chip': return `<span class="ln-t-named">${esc(t.v)}</span>`;
+      case 'em': case 'quote': return `<span class="ln-t-said">${esc(t.v)}</span>`;
       case 'literal': case 'status': return `<span class="ln-t-exact">${esc(t.v)}</span>`;
       case 'button': return `<span class="ln-t-press">${esc(t.label)}</span>`;
       case 'path': case 'command': return `<span class="ln-t-route">${t.route.split(' \u2794 ').map((x, i, all) => (i ? '<span class="sep">\u2794</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;

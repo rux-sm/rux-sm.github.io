@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "confirm-there-is-stock",
@@ -43,7 +43,7 @@
         "v": "Inventory 360 shows what is physically on hand, and "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Allocated"
       },
       {

@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-bill-of-material",
@@ -80,7 +80,7 @@
           "v": " complete: all three items exist and each site row shows its intended "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Default Supply Source"
         },
         {

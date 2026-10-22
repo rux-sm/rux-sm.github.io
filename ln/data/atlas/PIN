@@ -1,9 +1,9 @@
-commit   31a1a307de6281860105cdd71837967b6034dea6
-date     2026-10-22T05:44:37Z
-subject  feat(concepts): Explain each idea for a reader
-contract 20 
+commit   2688e5cf829078db8663f0eee92e02e94b9df0ab
+date     2026-10-22T05:49:13Z
+subject  feat(tools): Give a field name its own token
+contract 21 
 tier     export
-sha256   eec680b58a430784e0f0bd0527a00ef081e9eb38cc0f0bbfb72b5b6bc4a6f819
+sha256   91679f8e109a32ec068e931a8562c8affd37ddbaf970b04effb72bf7bd822b4c
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_transfer-item-between-warehouses",
@@ -45,7 +45,7 @@
         "v": "Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Picked"
       },
       {

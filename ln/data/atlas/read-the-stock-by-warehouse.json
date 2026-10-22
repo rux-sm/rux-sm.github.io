@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "read-the-stock-by-warehouse",
@@ -42,7 +42,7 @@
         "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later walkthrough uses is chosen from its figures. "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Economic Stock"
       },
       {

@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "confirm-the-receipt",
@@ -54,7 +54,7 @@
         "v": "The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Confirmed"
       },
       {

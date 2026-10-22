@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "create-the-three-items",
@@ -117,7 +117,7 @@
           "v": " > The Item identifier has separate "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Project"
         },
         {
@@ -125,7 +125,7 @@
           "v": " and "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Item"
         },
         {
@@ -133,7 +133,7 @@
           "v": " portions. These are standard test items: leave "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Project"
         },
         {
@@ -149,7 +149,7 @@
           "v": " code in the "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Item"
         },
         {

@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_ship-from-stock",
@@ -65,7 +65,7 @@
         "v": "The picking list is the record of stock physically moving to staging, and confirming it is what fills "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Picked"
       },
       {
@@ -73,7 +73,7 @@
         "v": ". The phase exists because this environment sets the "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Picking List"
       },
       {
@@ -81,7 +81,7 @@
         "v": " activity to manual and the warehouse is location-controlled; change either and LN ticks "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Picked"
       },
       {

@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "process",
   "id": "create-basic-test-items-and-defaults",
@@ -844,7 +844,7 @@
           "v": " phases 0–5 — on the saved item, confirm the intended "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Default Supply Source"
         },
         {

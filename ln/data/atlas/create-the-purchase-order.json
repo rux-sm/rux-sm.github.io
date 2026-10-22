@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "create-the-purchase-order",
@@ -46,7 +46,7 @@
         "v": "The buy-from business partner decides most of the header: LN defaults the "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Purchase Order Type"
       },
       {
@@ -54,7 +54,7 @@
         "v": ", "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Purchase Office"
       },
       {
@@ -62,7 +62,7 @@
         "v": " and "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Buyer"
       },
       {

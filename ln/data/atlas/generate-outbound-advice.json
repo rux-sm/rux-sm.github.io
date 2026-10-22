@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "generate-outbound-advice",
@@ -46,7 +46,7 @@
         "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. In this environment the next activity, releasing the advice, is automatic, so one action fills both the "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Advised"
       },
       {
@@ -54,7 +54,7 @@
         "v": " and "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Released"
       },
       {

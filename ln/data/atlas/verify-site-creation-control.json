@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "verify-site-creation-control",
@@ -85,7 +85,7 @@
         "v": "The Create controls can be governed at the site instead of the company. When "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Centrally Managed"
       },
       {
@@ -112,7 +112,7 @@
           "v": " > This phase has not been walked for the new groups. Capture the "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Centrally Managed"
         },
         {

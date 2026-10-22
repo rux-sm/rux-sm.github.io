@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "process",
   "id": "manual-production-order-existing-master-data",
@@ -498,7 +498,7 @@
           "v": " with "
         },
         {
-          "t": "em",
+          "t": "field",
           "v": "Quantity Delivered"
         },
         {

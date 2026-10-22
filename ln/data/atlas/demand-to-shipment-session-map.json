@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "reference",
   "id": "demand-to-shipment-session-map",
@@ -1745,7 +1745,7 @@
                   "v": " and not finished: "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Horizon"
                 },
                 {
@@ -1753,7 +1753,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Plan Level"
                 },
                 {
@@ -2110,7 +2110,7 @@
               "v": ", because Item Order Plan is where any of them becomes visible or fails to. A contract deliverable shows there with a "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Specification"
             },
             {
@@ -2196,7 +2196,7 @@
                   "v": ", then "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Sold-to Business Partner"
                 },
                 {
@@ -2204,7 +2204,7 @@
                   "v": ", "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Type"
                 },
                 {
@@ -2212,7 +2212,7 @@
                   "v": ", "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Planned Delivery Date"
                 },
                 {
@@ -2220,7 +2220,7 @@
                   "v": ", "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Sales Office"
                 },
                 {
@@ -2228,7 +2228,7 @@
                   "v": ", "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Currency"
                 },
                 {
@@ -2236,7 +2236,7 @@
                   "v": ", "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Site"
                 },
                 {
@@ -2244,7 +2244,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Warehouse"
                 },
                 {
@@ -2277,7 +2277,7 @@
                   "v": ", then "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Item"
                 },
                 {
@@ -2285,7 +2285,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Ordered Quantity"
                 },
                 {
@@ -2424,7 +2424,7 @@
                   "v": " - Set "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Upto Release Date"
                 },
                 {
@@ -2550,7 +2550,7 @@
                   "v": " tab, read the "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Horizon"
                 },
                 {
@@ -2558,7 +2558,7 @@
                   "v": " date - If your delivery date is beyond it, raise the "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Horizon"
                 },
                 {
@@ -2673,7 +2673,7 @@
                   "v": " row carrying your order number and quantity under "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Demand"
                 }
               ],
@@ -2784,7 +2784,7 @@
                   "v": " - open it for the item, confirm "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Scenario"
                 },
                 {
@@ -2800,7 +2800,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Plan Item"
                 },
                 {
@@ -2808,7 +2808,7 @@
                   "v": ", select "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Include Child Items"
                 },
                 {
@@ -2906,7 +2906,7 @@
                   "v": " - filter on the cluster and site; every row should read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
@@ -2939,7 +2939,7 @@
                   "v": " — proposals you have actually looked at. Each level's children must sum to its requirement; one planned order is "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Supply"
                 },
                 {
@@ -2947,7 +2947,7 @@
                   "v": " on one item's plan and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Demand"
                 },
                 {
@@ -3032,7 +3032,7 @@
                   "v": " - select the planned orders and confirm them. "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
@@ -3142,7 +3142,7 @@
                   "v": " - select "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Purchase"
                 },
                 {
@@ -3166,7 +3166,7 @@
                   "v": ", run it, read the report - repeat with "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Job Shop"
                 }
               ],
@@ -3491,7 +3491,7 @@
                   "v": " - read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Post to Inventory when Reporting on Last Operation"
                 },
                 {
@@ -3523,7 +3523,7 @@
                   "v": " asks, and Interactive is the default - Read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Printing Production Order Documents Mandatory"
                 },
                 {
@@ -3625,7 +3625,7 @@
                   "v": " - run the release for this order only. "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
@@ -3650,7 +3650,7 @@
                   "v": " — warehousing issue and receipt orders now exist. If the release refuses, check whether "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Printing Production Order Documents Mandatory"
                 },
                 {
@@ -3743,7 +3743,7 @@
                   "v": " - issue the materials for the order until "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Actual Quantity"
                 },
                 {
@@ -3751,7 +3751,7 @@
                   "v": " equals the estimated quantity. "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
@@ -3776,7 +3776,7 @@
                   "v": " — materials issued. How much of this you do by hand is configuration — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Direct Initiate Inventory Issue"
                 },
                 {
@@ -3784,7 +3784,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Direct Process Warehouse Order Line"
                 },
                 {
@@ -3878,7 +3878,7 @@
                   "v": " - enter the built quantity in "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Completed"
                 },
                 {
@@ -3886,7 +3886,7 @@
                   "v": " and save - LN may ask whether to confirm the receipt automatically; record which way you answer, then re-read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
@@ -4037,7 +4037,7 @@
                   "v": " — the only baseline the last tile can be measured against. On-hand is not availability — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Allocated"
                 },
                 {
@@ -4343,7 +4343,7 @@
                   "v": " - enter the packing-slip reference on each line, then confirm. "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Status"
                 },
                 {
@@ -4359,7 +4359,7 @@
                   "v": ", with "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "All Lines Final"
                 },
                 {
@@ -4367,7 +4367,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "All Lines Complete"
                 },
                 {
@@ -4375,7 +4375,7 @@
                   "v": " both set - Read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Errors Logged"
                 }
               ],
@@ -4400,7 +4400,7 @@
                   "v": " — see 5.7. "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Confirmed"
                 },
                 {
@@ -4485,7 +4485,7 @@
                   "v": " - read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Freeze Mandatory"
                 },
                 {
@@ -4848,7 +4848,7 @@
                   "v": ", then read "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Shipment"
                 },
                 {
@@ -5061,7 +5061,7 @@
                   "v": " → "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Status"
                 },
                 {
@@ -7009,7 +7009,7 @@
               "v": " and not finished: "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Horizon"
             },
             {
@@ -7017,7 +7017,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Plan Level"
             },
             {
@@ -7227,7 +7227,7 @@
                 "v": ", then "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Sold-to Business Partner"
               },
               {
@@ -7235,7 +7235,7 @@
                 "v": ", "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Type"
               },
               {
@@ -7243,7 +7243,7 @@
                 "v": ", "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Planned Delivery Date"
               },
               {
@@ -7251,7 +7251,7 @@
                 "v": ", "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Sales Office"
               },
               {
@@ -7259,7 +7259,7 @@
                 "v": ", "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Currency"
               },
               {
@@ -7267,7 +7267,7 @@
                 "v": ", "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Site"
               },
               {
@@ -7275,7 +7275,7 @@
                 "v": " and "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Warehouse"
               },
               {
@@ -7309,7 +7309,7 @@
                 "v": ", then "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Item"
               },
               {
@@ -7317,7 +7317,7 @@
                 "v": " and "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Ordered Quantity"
               },
               {
@@ -7388,7 +7388,7 @@
               "v": ", then "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Sold-to Business Partner"
             },
             {
@@ -7396,7 +7396,7 @@
               "v": ", "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Type"
             },
             {
@@ -7404,7 +7404,7 @@
               "v": ", "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Planned Delivery Date"
             },
             {
@@ -7412,7 +7412,7 @@
               "v": ", "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Sales Office"
             },
             {
@@ -7420,7 +7420,7 @@
               "v": ", "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Currency"
             },
             {
@@ -7428,7 +7428,7 @@
               "v": ", "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Site"
             },
             {
@@ -7436,7 +7436,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Warehouse"
             },
             {
@@ -7469,7 +7469,7 @@
               "v": ", then "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Item"
             },
             {
@@ -7477,7 +7477,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Ordered Quantity"
             },
             {
@@ -7563,7 +7563,7 @@
                 "v": "Set "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Upto Release Date"
               },
               {
@@ -7620,7 +7620,7 @@
               "v": ". Set "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Upto Release Date"
             },
             {
@@ -7677,7 +7677,7 @@
                 "v": " tab, read the "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Horizon"
               },
               {
@@ -7694,7 +7694,7 @@
                 "v": "If your delivery date is beyond it, raise the "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Horizon"
               },
               {
@@ -7747,7 +7747,7 @@
               "v": " tab, read the "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Horizon"
             },
             {
@@ -7755,7 +7755,7 @@
               "v": " date. If your delivery date is beyond it, raise the "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Horizon"
             },
             {
@@ -7808,7 +7808,7 @@
                 "v": " row carrying your order number and quantity under "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Demand"
               }
             ],
@@ -7848,7 +7848,7 @@
               "v": " row carrying your order number and quantity under "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Demand"
             }
           ],
@@ -7910,7 +7910,7 @@
                 "v": "open it for the item, confirm "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Scenario"
               },
               {
@@ -7926,7 +7926,7 @@
                 "v": " and "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Plan Item"
               },
               {
@@ -7934,7 +7934,7 @@
                 "v": ", select "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Include Child Items"
               },
               {
@@ -7970,7 +7970,7 @@
               "v": "open it for the item, confirm "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Scenario"
             },
             {
@@ -7986,7 +7986,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Plan Item"
             },
             {
@@ -7994,7 +7994,7 @@
               "v": ", select "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Include Child Items"
             },
             {
@@ -8039,7 +8039,7 @@
                 "v": "filter on the cluster and site; every row should read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Status"
               },
               {
@@ -8074,7 +8074,7 @@
               "v": "proposals you have actually looked at. Each level's children must sum to its requirement; one planned order is "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Supply"
             },
             {
@@ -8082,7 +8082,7 @@
               "v": " on one item's plan and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Demand"
             },
             {
@@ -8108,7 +8108,7 @@
               "v": "filter on the cluster and site; every row should read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Status"
             },
             {
@@ -8165,7 +8165,7 @@
                 "v": "select the planned orders and confirm them. "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Status"
               },
               {
@@ -8213,7 +8213,7 @@
               "v": "select the planned orders and confirm them. "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Status"
             },
             {
@@ -8270,7 +8270,7 @@
                 "v": "select "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Purchase"
               },
               {
@@ -8303,7 +8303,7 @@
                 "v": "repeat with "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Job Shop"
               }
             ],
@@ -8339,7 +8339,7 @@
               "v": "select "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Purchase"
             },
             {
@@ -8363,7 +8363,7 @@
               "v": ", run it, read the report. repeat with "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Job Shop"
             }
           ],
@@ -8582,7 +8582,7 @@
                 "v": "read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Post to Inventory when Reporting on Last Operation"
               },
               {
@@ -8623,7 +8623,7 @@
                 "v": "Read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Printing Production Order Documents Mandatory"
               },
               {
@@ -8663,7 +8663,7 @@
               "v": "read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Post to Inventory when Reporting on Last Operation"
             },
             {
@@ -8695,7 +8695,7 @@
               "v": " asks, and Interactive is the default. Read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Printing Production Order Documents Mandatory"
             },
             {
@@ -8740,7 +8740,7 @@
                 "v": "run the release for this order only. "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Status"
               },
               {
@@ -8762,7 +8762,7 @@
               "v": "warehousing issue and receipt orders now exist. If the release refuses, check whether "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Printing Production Order Documents Mandatory"
             },
             {
@@ -8796,7 +8796,7 @@
               "v": "run the release for this order only. "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Status"
             },
             {
@@ -8845,7 +8845,7 @@
                 "v": "issue the materials for the order until "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Actual Quantity"
               },
               {
@@ -8853,7 +8853,7 @@
                 "v": " equals the estimated quantity. "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Status"
               },
               {
@@ -8875,7 +8875,7 @@
               "v": "materials issued. How much of this you do by hand is configuration — "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Direct Initiate Inventory Issue"
             },
             {
@@ -8883,7 +8883,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Direct Process Warehouse Order Line"
             },
             {
@@ -8918,7 +8918,7 @@
               "v": "issue the materials for the order until "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Actual Quantity"
             },
             {
@@ -8926,7 +8926,7 @@
               "v": " equals the estimated quantity. "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Status"
             },
             {
@@ -8975,7 +8975,7 @@
                 "v": "enter the built quantity in "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Completed"
               },
               {
@@ -8992,7 +8992,7 @@
                 "v": "LN may ask whether to confirm the receipt automatically; record which way you answer, then re-read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Order Status"
               },
               {
@@ -9057,7 +9057,7 @@
               "v": "enter the built quantity in "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Completed"
             },
             {
@@ -9065,7 +9065,7 @@
               "v": " and save. LN may ask whether to confirm the receipt automatically; record which way you answer, then re-read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Status"
             },
             {
@@ -9161,7 +9161,7 @@
               "v": "the only baseline the last tile can be measured against. On-hand is not availability — "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Allocated"
             },
             {
@@ -9421,7 +9421,7 @@
                 "v": "enter the packing-slip reference on each line, then confirm. "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Status"
               },
               {
@@ -9437,7 +9437,7 @@
                 "v": ", with "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "All Lines Final"
               },
               {
@@ -9445,7 +9445,7 @@
                 "v": " and "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "All Lines Complete"
               },
               {
@@ -9462,7 +9462,7 @@
                 "v": "Read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Errors Logged"
               }
             ],
@@ -9484,7 +9484,7 @@
               "v": " — see 5.7. "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Confirmed"
             },
             {
@@ -9510,7 +9510,7 @@
               "v": "enter the packing-slip reference on each line, then confirm. "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Status"
             },
             {
@@ -9526,7 +9526,7 @@
               "v": ", with "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "All Lines Final"
             },
             {
@@ -9534,7 +9534,7 @@
               "v": " and "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "All Lines Complete"
             },
             {
@@ -9542,7 +9542,7 @@
               "v": " both set. Read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Errors Logged"
             }
           ],
@@ -9615,7 +9615,7 @@
                 "v": "read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Freeze Mandatory"
               },
               {
@@ -9655,7 +9655,7 @@
               "v": "read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Freeze Mandatory"
             },
             {
@@ -9960,7 +9960,7 @@
                 "v": ", then read "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Shipment"
               },
               {
@@ -10020,7 +10020,7 @@
               "v": ", then read "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Shipment"
             },
             {
@@ -10152,7 +10152,7 @@
                 "v": " → "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Status"
               },
               {
@@ -10233,7 +10233,7 @@
               "v": " → "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Status"
             },
             {

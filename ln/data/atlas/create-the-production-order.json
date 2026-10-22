@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "create-the-production-order",
@@ -73,7 +73,7 @@
         "v": "On save LN reads the item's BOM and routing valid on the "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Reference Date"
       },
       {
@@ -81,7 +81,7 @@
         "v": " and generates the order's operations and estimated materials from them. "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Quantity Ordered"
       },
       {
@@ -89,7 +89,7 @@
         "v": " is what is to be produced and "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Warehouse"
       },
       {

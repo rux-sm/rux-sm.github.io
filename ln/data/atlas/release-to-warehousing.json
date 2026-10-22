@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "task",
   "id": "release-to-warehousing",
@@ -46,7 +46,7 @@
         "v": "Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the "
       },
       {
-        "t": "em",
+        "t": "field",
         "v": "Lines ready for"
       },
       {

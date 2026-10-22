@@ -1,5 +1,5 @@
 {
-  "contract": 20,
+  "contract": 21,
   "tier": "export",
   "kind": "reference",
   "id": "order-to-shipment-overview",
@@ -1187,7 +1187,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "CTP Horizon"
                 },
                 {
@@ -1306,7 +1306,7 @@
                   "v": ", set "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Upto Release Date"
                 },
                 {
@@ -1578,7 +1578,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Order Horizon"
                 },
                 {
@@ -1784,7 +1784,7 @@
                   "v": " - run it with "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Include Child Items"
                 }
               ],
@@ -1988,7 +1988,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Default Supply Source"
                 },
                 {
@@ -2303,7 +2303,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Check Shortages"
                 },
                 {
@@ -2811,7 +2811,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Create Outbound Advice Despite Inventory Shortage"
                 },
                 {
@@ -3092,7 +3092,7 @@
                   "v": " — ship less than was picked; the rest becomes "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Not Shipped Quantity"
                 },
                 {
@@ -3117,7 +3117,7 @@
                   "v": " — "
                 },
                 {
-                  "t": "em",
+                  "t": "field",
                   "v": "Confirm Back Orders automatically"
                 },
                 {
@@ -4752,7 +4752,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "CTP Horizon"
             },
             {
@@ -4844,7 +4844,7 @@
                 "v": ", set "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Upto Release Date"
               },
               {
@@ -4884,7 +4884,7 @@
               "v": ", set "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Upto Release Date"
             },
             {
@@ -5030,7 +5030,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "Order Horizon"
             },
             {
@@ -5164,7 +5164,7 @@
                 "v": "run it with "
               },
               {
-                "t": "em",
+                "t": "field",
                 "v": "Include Child Items"
               }
             ],
@@ -5203,7 +5203,7 @@
               "v": "run it with "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Include Child Items"
             }
           ],
@@ -5286,7 +5286,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "Default Supply Source"
             },
             {
@@ -5484,7 +5484,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "Check Shortages"
             },
             {
@@ -5861,7 +5861,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "Create Outbound Advice Despite Inventory Shortage"
             },
             {
@@ -6073,7 +6073,7 @@
               "v": "ship less than was picked; the rest becomes "
             },
             {
-              "t": "em",
+              "t": "field",
               "v": "Not Shipped Quantity"
             },
             {
@@ -6090,7 +6090,7 @@
         "setting": {
           "tokens": [
             {
-              "t": "em",
+              "t": "field",
               "v": "Confirm Back Orders automatically"
             },
             {

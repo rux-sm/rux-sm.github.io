@@ -337,7 +337,9 @@ const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" m
     </button>
   </div>
 </form>`;
-const SPAN = { 4: 'rux--lg:col-span-4', 10: 'rux--lg:col-span-10', 12: 'rux--lg:col-span-12' };
+// A page with On this page beside it reads in 12 of the 16 columns and the
+// aside takes the other 4; a page without one reads in all 16.
+const SPAN = { 4: 'rux--lg:col-span-4', 12: 'rux--lg:col-span-12', 16: 'rux--lg:col-span-16' };
 const column = (inner, span, cls, attrs) => `<div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 ${SPAN[span]}${cls ? ` ${cls}` : ''}"${attrs ? ` ${attrs}` : ''}>
 <div class="rux--stack-vertical rux--stack-scale-6">
 ${inner}
@@ -445,7 +447,7 @@ function confirmPage() {
 <ul class="ln-list">${waitingSide.map((w) => `
   <li data-wait="${esc(w.scenario)}" data-steps="${esc(w.steps.join(' '))}"><b><a class="rux--link" href="${hrefTask(w.n.id)}?walk=1"><span>${esc(w.n.session)}</span></a></b><p class="ln-quiet">${count(w.steps.length, 'step')} <span data-answered></span></p></li>`).join('')}
 </ul>` : ''}`;
-  return page('Still to confirm \u2014 LN Guide', 'confirm', column(body, 12));
+  return page('Still to confirm \u2014 LN Guide', 'confirm', column(body, 16));
 }
 
 // ---- Home --------------------------------------------------------------------
@@ -460,7 +462,7 @@ ${searchBox('ask')}
 <a class="rux--tile rux--tile--clickable" href="${hrefProcess(s.id)}"><b>${esc(s.title)}</b><span class="ln-quiet">${count(s.tasks.length, 'task')}</span><div>${tag(statusOf(s))}</div></a>`).join('')}
 </div>${waiting ? `
 <div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable" href="${at('confirm.html')}"><span class="ln-quiet">Still to confirm</span><b data-waiting="${waiting}">${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>
-${waitingJson()}` : ''}`, 12));
+${waitingJson()}` : ''}`, 16));
 
 // ---- a process -----------------------------------------------------------------
 // A reference section is what a reader looks up and does not walk: each
@@ -613,7 +615,7 @@ ${screensTable(ts)}
       next.length && ['#next', 'What comes next'], groups.length && ['#reference', 'Reference'], doc.gaps.length && ['#gaps', 'Known gaps'], ['#screens', 'Screens used']].filter(Boolean));
     return [html, side];
   });
-  return page(`${s.title} — LN Guide`, s.id, column(body, 10) + '\n' + column(aside, 4, 'ln-aside'), updated ? paper(s.title, updated) : '');
+  return page(`${s.title} — LN Guide`, s.id, column(body, 12) + '\n' + column(aside, 4, 'ln-aside'), updated ? paper(s.title, updated) : '');
 }
 
 // ---- a task, as a document and as Guided ------------------------------------------
@@ -870,8 +872,8 @@ ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this 
   <a class="rux--btn rux--btn--secondary" href="${hrefUp(s)}" data-prev>Back</a>
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;
-  return page(`${t.title} — LN Guide`, s.id, column(full, 10, '', 'data-view="full"') + '\n' + column(aside, 4, 'ln-aside', 'data-view="full"')
-    + '\n' + column(guided, 12, '', 'data-view="guided" hidden'), updated ? paper(t.title, updated) : '');
+  return page(`${t.title} — LN Guide`, s.id, column(full, 12, '', 'data-view="full"') + '\n' + column(aside, 4, 'ln-aside', 'data-view="full"')
+    + '\n' + column(guided, 16, '', 'data-view="guided" hidden'), updated ? paper(t.title, updated) : '');
 }
 
 // ---- the task index ---------------------------------------------------------------
@@ -905,7 +907,7 @@ function taskIndex() {
 </div>
 <ul class="ln-list">${other.join('')}
 </ul>` : ''}`;
-  return page('Tasks — LN Guide', 'tasks', column(body, 12));
+  return page('Tasks — LN Guide', 'tasks', column(body, 16));
 }
 
 // ---- screens and ideas ---------------------------------------------------------------
@@ -924,7 +926,7 @@ function screenPage(c) {
 </div>
 <dl class="ln-card__facts">${fact('Code', codeChip(c.code))}${c.route ? fact(isRoute(c.route) ? 'Route' : 'Reached', isRoute(c.route) ? route(c.route) : esc(c.route)) : ''}${fact('Used in', taskLinks(usedIn.get(c.code) ?? []))}${fact('Ideas', ideas.map((x) => `<a class="rux--link" href="${hrefIdea(x.id)}">${esc(x.name)}</a>`).join('<br>'))}</dl>
 <div class="ln-full" data-full="${esc(c.code)}" hidden></div>`;
-  return page(`${c.name} — LN Guide`, 'screens', column(body, 12));
+  return page(`${c.name} — LN Guide`, 'screens', column(body, 16));
 }
 function ideaPage(c) {
   // A task reached through two of the idea's screens is listed once.
@@ -938,7 +940,7 @@ function ideaPage(c) {
 <p>${esc(c.explanation)}</p>` : ''}
 <dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>
 <div class="ln-full" data-full="${esc(c.id)}" hidden></div>`;
-  return page(`${c.name} — LN Guide`, 'ideas', column(body, 12));
+  return page(`${c.name} — LN Guide`, 'ideas', column(body, 16));
 }
 // ---- the idea about how an order moves through LN -------------------------------
 // Atlas's overview map is the one account of the whole chain, so it is the
@@ -989,7 +991,7 @@ ${grid()}
 </div>
 <div class="ln-full">${first.blocks.map(rblock).join('')}</div>
 ${accordion(rest.map((t) => [`topic-${t.n}`, esc(t.title), `<div class="ln-full">${t.blocks.map(rblock).join('')}</div>`]))}`;
-  return page(`${overviewTitle} \u2014 LN Guide`, 'ideas', column(body, 12));
+  return page(`${overviewTitle} \u2014 LN Guide`, 'ideas', column(body, 16));
 }
 
 const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`${breadcrumb([[hrefHome(), 'Home'], ['', title]])}
@@ -998,7 +1000,7 @@ const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, 
 <p class="rux--type-body-long-01">${intro}</p>
 </div>
 <ul class="ln-list">${rows.join('')}
-</ul>`, 12));
+</ul>`, 16));
 const byName = (a, b) => a.name.localeCompare(b.name);
 const screenIndex = () => indexPage('Screens', 'Every LN screen the tasks open, by name. One the library has not described yet says so.', 'screens', [
   ...[...cards.values()].sort(byName).map((c) => `<li><b><a class="rux--link" href="${hrefScreen(c.code)}"><span>${esc(c.name)}</span></a></b><p>${exact(c.code)} <span class="ln-quiet">${esc(c.purpose)}</span></p></li>`),
@@ -1030,7 +1032,7 @@ const searchIndex = () => [
 const searchPage = () => page('Search — LN Guide', 'search', column(`<h1 class="rux--type-productive-heading-05">Search</h1>
 ${searchBox('find')}
 <h2 class="rux--type-productive-heading-03" data-count hidden></h2>
-<div class="ln-results" id="results"></div>`, 12));
+<div class="ln-results" id="results"></div>`, 16));
 
 // ---- write every page ----------------------------------------------------------
 const written = [];

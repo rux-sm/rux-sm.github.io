@@ -843,6 +843,19 @@
   }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body { background-attachment: fixed; }
 }
+/* BESIDE AN OPEN SIDE NAV THE TEXT STANDS 2rem FROM BOTH ITS EDGES, as
+   Geist's documentation stands it from its nav and its frame. Carbon pads
+   the content 2rem, its grid adds a margin of its own -- 1rem, and 1.5rem
+   once the window passes 99rem though the frame stops at 76.25rem -- and
+   each column half its gutter, so the text stood 4 to 4.5rem in. The
+   content here gives the column's 1rem back and the grid keeps no margin,
+   and the content pads itself past the nav, which Carbon does not do for
+   a nav held inside the header. A content holding no grid keeps Carbon's
+   padding. */
+@media (min-width: 66rem) {
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content:has(> .rux--css-grid) { padding-inline: 17rem 1rem; }
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) :is(.rux--side-nav--ux:not(.rux--side-nav--hidden), .rux--header:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden))) ~ .rux--content > .rux--css-grid { --rux-grid-margin: 0; }
+}
 /* GEIST'S FIELDS ARE OUTLINED, NOT FILLED. Its control takes the container's
    own surface and a 1px ring, measured on Geist's Input page at rgba(255 255
    255 / 0.14) -- which is what border-subtle-01 already resolves to here. The

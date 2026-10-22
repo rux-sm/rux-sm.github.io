@@ -175,14 +175,21 @@
 
   // ---- Search: one file, every result, the matches shown as you type -----------
   // A page the query names comes first, on its own; the rest are grouped by
-  // kind, each group holding its first ten.
+  // kind, each group showing its first ten and a button for the others.
   const results = document.getElementById('results');
   if (results) {
     const input = document.querySelector('[data-search]'), heading = document.querySelector('[data-count]');
     const KINDS = [['Task', 'Tasks'], ['Process', 'Processes'], ['Problem', 'Problems'], ['Screen', 'Screens'], ['Idea', 'Ideas']];
     let index = [];
-    const row = (e) => `<li><span class="ln-quiet">${esc(e.k)}</span><b><a class="rux--link" href="${esc(e.h)}"><span>${e.t}</span></a></b>${e.r ? `<p>${e.r}</p>` : ''}</li>`;
-    const group = (title, list) => list.length ? `${title ? `<h3 class="ln-ref__title">${title} · ${list.length}</h3>` : ''}<ul class="ln-list">${list.slice(0, 10).map(row).join('')}</ul>` : '';
+    const row = (e, k) => `<li${k >= 10 ? ' hidden' : ''}><span class="ln-quiet">${esc(e.k)}</span><b><a class="rux--link" href="${esc(e.h)}"><span>${e.t}</span></a></b>${e.r ? `<p>${e.r}</p>` : ''}</li>`;
+    const more = (n) => n > 10 ? `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-more>Show all ${n}</button>` : '';
+    const group = (title, list) => list.length ? `${title ? `<h3 class="ln-ref__title">${title} · ${list.length}</h3>` : ''}<ul class="ln-list">${list.map(row).join('')}</ul>${more(list.length)}` : '';
+    results.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-more]');
+      if (!button) return;
+      for (const li of button.previousElementSibling.querySelectorAll('li[hidden]')) li.hidden = false;
+      button.remove();
+    });
     const draw = () => {
       const words = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
       const hits = words.length ? index.filter((e) => words.every((w) => e.x.includes(w))) : [];
@@ -285,6 +292,7 @@
     if (!yes) return;
     for (const row of await ln.said()) said.set(`${row.scenario} ${row.step}`, row.outcome);
     owner = true;
+    for (const el of document.querySelectorAll('[data-owner]')) el.hidden = false;
     box();
     waiting();
     full();

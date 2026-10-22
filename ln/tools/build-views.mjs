@@ -421,7 +421,7 @@ function confirmPage() {
   const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Still to confirm']])}
 <div>
 <h1 class="rux--type-productive-heading-05">Still to confirm</h1>
-<p class="rux--type-body-long-01">Nobody has checked these in LN yet. Open one, walk it in LN, and say at each step whether it matched.</p>
+<p class="rux--type-body-long-01">Nobody has checked these in LN yet.<span data-owner hidden> Open one, walk it in LN, and say at each step whether it matched.</span></p>
 </div>${processes.filter((s) => waitingTasks.some((w) => w.s === s)).map((s) => `
 <div>
 <h2 class="rux--type-productive-heading-03" id="${esc(s.id)}">${esc(s.title)}</h2>
@@ -482,10 +482,25 @@ function looking(x) {
 </div>`).join('');
 }
 // A callout arrives as "> ", its kind in bold, " > " and then the sentence.
-// Here the kind opens the paragraph.
-const said = (l) => l[0]?.t === 'text' && l[0].v.trim() === '>' && l[1]?.t === 'strong' && l[2]?.t === 'text'
-  ? `<b>${esc(l[1].v)}.</b> ${tokens([{ t: 'text', v: l[2].v.replace(/^\s*>\s*/, '') }, ...l.slice(3)])}`
-  : tokens(l);
+const calloutOf = (l) => l[0]?.t === 'text' && l[0].v.trim() === '>' && l[1]?.t === 'strong' && l[2]?.t === 'text'
+  ? { kind: l[1].v.trim(), rest: [{ t: 'text', v: l[2].v.replace(/^\s*>\s*/, '') }, ...l.slice(3)] }
+  : null;
+// In a reference the kind opens the paragraph.
+const said = (l) => { const c = calloutOf(l); return c ? `<b>${esc(c.kind)}.</b> ${tokens(c.rest)}` : tokens(l); };
+// Beside a task's steps it is Carbon's inline notification, a warning as a
+// warning and any other kind as information.
+const notice = (c) => {
+  const [variant, icon] = c.kind === 'Warning' ? ['rux--inline-notification--warning', 'warning--filled'] : ['rux--inline-notification--info', 'information--filled'];
+  return `<div class="rux--inline-notification ${variant} rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
+  <div class="rux--inline-notification__details">
+    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-${icon}"/></svg>
+    <div class="rux--inline-notification__text-wrapper">
+      <div class="rux--inline-notification__title">${esc(c.kind)}</div>
+      <div class="rux--inline-notification__subtitle">${tokens(c.rest)}</div>
+    </div>
+  </div>
+</div>`;
+};
 const referenceOf = (s) => looked(s).map((g) => `<h3 class="ln-ref__title">${esc(g.title)}</h3>${g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `
 <p>${said(x.tokens)}</p>` : '').join('')}`).join('');
 const section = (s, kind) => s.sections.find((x) => x.kind === kind)?.rows ?? [];
@@ -563,7 +578,7 @@ function task(s, t) {
   // Prose keeps its place: what comes before the steps is drawn above them,
   // and what follows them, such as a gap, below.
   const firstSteps = t.blocks.findIndex((b) => b.kind === 'steps');
-  const proseOf = (list) => list.filter((b) => b.kind === 'prose').map((b) => `<p>${tokens(b.tokens)}</p>`).join('');
+  const proseOf = (list) => list.filter((b) => b.kind === 'prose').map((b) => { const c = calloutOf(b.tokens); return c ? notice(c) : `<p>${tokens(b.tokens)}</p>`; }).join('');
   const prose = proseOf(firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));
   const after = firstSteps < 0 ? '' : proseOf(t.blocks.slice(firstSteps));
   const screen = t.sessionCode ? cards.get(t.sessionCode) : null;
@@ -582,14 +597,14 @@ function task(s, t) {
   const full = `${breadcrumb([[hrefHome(), 'Home'], [hrefUp(s), s.title], ['', t.title]])}
 <div>
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
-<p class="rux--type-body-long-01">What you get: ${tokens(t.achieves.tokens)}.</p>` : ''}
+<p class="rux--type-body-long-01">What you get: ${sentence(tokens(t.achieves.tokens))}</p>` : ''}
 </div>
 <div>${tag(taskStatus(t))} ${t.modules.map((m) => tag([m, 'cool-gray'])).join(' ')}</div>
 <p class="ln-strip">${strip}</p>
 ${t.before?.length ? `<p><strong>Before you start.</strong> ${need.join(' ')}</p>` : first ? before(s.before) : need.length ? `<p><strong>Before you start.</strong> You need ${need.join(' and ')}.</p>` : ''}${t.route ? `
 <div class="ln-screen-line"><span class="ln-quiet">Screen</span> ${route(t.route)} ${t.sessionCode ? codeChip(t.sessionCode) : ''}</div>` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${t.walked ? '' : `
-<p class="ln-quiet">Nobody has confirmed this task in LN yet. Walk it to say, at each step, whether it matched.</p>`}
+<p class="ln-quiet">Nobody has confirmed this task in LN yet.<span data-owner hidden> Walk it to say, at each step, whether it matched.</span></p>`}
 <div>
 <h2 class="rux--type-productive-heading-03" id="steps">Steps</h2>
 </div>${prose ? `
@@ -680,7 +695,8 @@ function screenPage(c) {
   return page(`${c.name} — LN Guide`, 'screens', column(body, 12));
 }
 function ideaPage(c) {
-  const uses = [...new Set(c.sources.flatMap((code) => usedIn.get(code) ?? []))];
+  // A task reached through two of the idea's screens is listed once.
+  const uses = [...new Map(c.sources.flatMap((code) => usedIn.get(code) ?? []).map((u) => [`${u.s.id} ${u.t.id}`, u])).values()];
   const body = `${breadcrumb([[hrefHome(), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', c.name]])}
 <div>
 <p class="ln-quiet">Idea</p>

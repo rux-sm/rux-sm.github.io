@@ -42,6 +42,9 @@ html { font-size: 12pt; }
 .rux--link, .rux--link:visited { color: inherit; text-decoration: none; }
 .rux--tag { background: none; border: 1px solid var(--rux-border-strong-01); color: var(--rux-text-primary); }
 
+/* A warning or a note above the steps keeps its border and its icon. */
+.rux--inline-notification { background: none; break-inside: avoid; }
+
 /* A step, a row and a fold's heading do not break across pages. */
 .ln-doc > li, .ln-list > li, .ln-path li, .ln-full__rows > div { break-inside: avoid; }
 h1, h2, h3, h4, .rux--accordion__heading { break-after: avoid; }

@@ -146,8 +146,9 @@ them and nothing is entered twice.
   pickup's days from the trip's own columns.
 - **`trips.start_date` and `end_date` stay as a copy of those days,** kept
   by a trigger from the legs and overriding whatever a page sends, so trips
-  can still be found, sorted and paged by date; the trip history makes no
-  line of them, and a check compares them with the legs. They keep their
+  can still be found, sorted and paged by date; the trip history keeps a
+  line for each, which the maintenance schedule's changes read, beside a
+  line for the leg that moved. They keep their
   names, and `end_date` becomes the trip's last day once the editor writes
   legs.
 
@@ -159,19 +160,8 @@ None open.
 
 - [ ] Key the editor's own state by leg id: its vehicles, route, days,
       hotel, contacts and quote lines, the leg switch and the bar's ref,
-      still saving the old columns and words for the two legs that have
-      them. A save's recorded writes are the same before and after on the
-      same edits.
-- [ ] Flip the saves to the legs, the SQL shown to rux and applied on a yes
-      with the editor's save shipped beside it: `trips.start_date` and
-      `end_date` kept from the legs by trigger, the old trips-to-legs and
-      slots-to-contacts triggers dropped, the row triggers filling a route
-      or leg id only where a page sends none, a save that still writes an
-      old leg column refused with "reload the page", `trips_clear_done`,
-      `trips_steps_off` and `get_maintenance_schedule_changes` reading the
-      legs, and the trip history naming a leg's changes. The editor saves
-      legs, routes, stops and vehicles by route, quote lines and files by
-      leg, and the contact list; the connector stops listing the old columns.
+      and save stops and vehicles by route and quote lines and files by
+      leg, where they still go by the old word and the row triggers.
 - [ ] Give the editor its list of legs, Add leg and Remove leg, take Split
       out of Type, and give each leg its round trip or one way; move the bar
       menu's hotel mark, itinerary upload and Mark as told and

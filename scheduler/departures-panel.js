@@ -7,9 +7,9 @@
    A day to prep for holds every leg leaving on it. That is tomorrow, and on a
    Friday the weekend and Monday with it, since nobody is in to prep until
    Monday. Each leg is a tile that opens: Design's tile around an item of its
-   accordion. Closed, as every leg is until it is pressed, it is two lines:
-   its place; then how many lines it has left or Ready in a tag, its
-   customer, and its spot time.
+   accordion. Closed, as every leg is until it is pressed, it is three
+   lines, as a task is on Tasks: its customer and its spot time; its place;
+   then how many lines it has left or Ready in a tag, and the trip's number.
    Open, one at a time, it holds the leg's page as departures.js
    gives it: the trip's lines, then a block for each bus with its crew. A trip
    whose own lines are all done folds them into one line, Trip ready, which a
@@ -414,35 +414,42 @@
   }
 
   /* A leg, as one of Design's tiles around an item of its accordion, whose
-     script opens and shuts it. The heading is the closed leg, two lines
-     with no arrow, since the tile says it opens: its place in bold; then
-     what is left in its tag, its customer, and on a split
-     trip which leg, and at the line's end its spot time, with the day where
-     it falls on another, with Spot said for a reader. */
+     script opens and shuts it. The heading is the closed leg, three lines
+     with no arrow, since the tile says it opens, laid out as a task's are:
+     its customer, and on a split trip which leg, with at the line's end its
+     spot time, with the day where it falls on another, with Spot said for a
+     reader; then its place in bold; then what is left in its tag, and the
+     trip's number, with Trip said for a reader. A ready leg reads quiet, so
+     the legs still to prep stand out. */
   function legItem(page) {
     const key = keyOf(page);
     const open = key === openKey;
-    const li = el('li', `rux--accordion__item scheduler-departures__leg${open ? ' rux--accordion__item--active' : ''}`);
+    const li = el('li', `rux--accordion__item scheduler-departures__leg${page.left ? '' : ' scheduler-departures__leg--ready'}${open ? ' rux--accordion__item--active' : ''}`);
     li.dataset.key = key;
     const heading = el('button', 'rux--accordion__heading');
     heading.type = 'button';
     heading.dataset.hold = `leg:${key}`;
     heading.setAttribute('aria-expanded', String(open));
     const title = el('div', 'rux--accordion__title');
-    const top = el('span', 'scheduler-to-do__top');
-    top.appendChild(el('span', 'scheduler-to-do__what', placeName(page.trip.destination)));
-    const context = el('span', 'scheduler-to-do__context');
-    context.append(leftTag(page.left),
-      el('span', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT)));
+    const top = el('div', 'scheduler-to-do__top');
+    top.appendChild(el('span', 'scheduler-to-do__who', [page.trip.customer || 'No customer', page.legName].filter(Boolean).join(DOT)));
     const at = leavesAt(page);
     if (at) {
       const [h, m] = at.time.split(':').map(Number);
       const when = el('span', 'scheduler-to-do__when');
       when.append(el('span', 'rux--visually-hidden', 'Spot '),
         `${at.day === page.day ? '' : `${weekday.format(parseISO(at.day))} `}${clock(h, m)}`);
-      context.appendChild(when);
+      top.appendChild(when);
     }
-    title.append(top, context);
+    const what = el('div', 'scheduler-to-do__what', placeName(page.trip.destination));
+    const context = el('div', 'scheduler-to-do__context');
+    context.appendChild(leftTag(page.left));
+    if (page.trip.trip_ref) {
+      const number = el('span', 'scheduler-to-do__number');
+      number.append(el('span', 'rux--visually-hidden', 'Trip '), `#${page.trip.trip_ref}`);
+      context.appendChild(number);
+    }
+    title.append(top, what, context);
     heading.appendChild(title);
 
     const wrapper = el('div', 'rux--accordion__wrapper');

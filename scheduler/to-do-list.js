@@ -57,16 +57,19 @@
   const GROUPS = ['Overdue', 'Today', 'This week', 'Later', 'No date'];
   const MENU_ID = 'scheduler-to-do-menu';
   /* The kinds of work a row can be, each one's words and colour on its tag,
-     so the list is scanned by colour. A row with no kind reads To do, and a
-     kind not listed here reads as its own word, both in the outline tag.
-     The connector's `TO_DO_KINDS` repeats the names. */
+     so the list is scanned by colour. Green is no kind's, since it means
+     paid, ready or done on every other page; a PO is blue, as it is on a
+     trip's billing; and the two paper kinds, Form and Invoice, take the two
+     greys. A row with no kind reads To do, and a kind not listed here reads
+     as its own word, both in the outline tag. The connector's `TO_DO_KINDS`
+     repeats the names. */
   const KINDS = new Map([
-    ['quote', ['New quote', 'rux--tag--blue']],
+    ['quote', ['New quote', 'rux--tag--cyan']],
     ['itinerary', ['Itinerary', 'rux--tag--purple']],
-    ['po', ['PO', 'rux--tag--green']],
+    ['po', ['PO', 'rux--tag--blue']],
     ['change', ['Change', 'rux--tag--magenta']],
     ['respond', ['Respond', 'rux--tag--teal']],
-    ['form', ['Form', 'rux--tag--cyan']],
+    ['form', ['Form', 'rux--tag--warm-gray']],
     ['invoice', ['Invoice', 'rux--tag--gray']],
   ]);
   const kindOf = row => KINDS.get(row.kind)?.[0]

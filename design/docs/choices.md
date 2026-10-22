@@ -85,8 +85,8 @@ Carbon's grid caps content at 99rem (1584px) and centres it: a reading
 width, right for prose and forms, and the default on every template. Its
 own `--full-width` modifier lifts the cap, and is the choice for a page that
 is scanned rather than read, such as a board or a wide table. Attested by
-`elements-grid--full-width` and `sink/grid.html`. Below 99rem the two are
-identical. Suggestion: `capped` unless the page's main thing is wider than a
+`elements-grid--full-width` and `sink/grid.html`. Below 99rem, and inside
+the shell's 76.25rem frame, the two are identical. Suggestion: `capped` unless the page's main thing is wider than a
 paragraph. It is one class on the page's outer grid.
 
 ## Fields — regular or fluid

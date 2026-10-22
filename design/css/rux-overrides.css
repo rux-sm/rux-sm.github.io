@@ -780,26 +780,26 @@
 [data-theme="rux-dark"] .rux--header ~ .rux--side-nav {
   inset-block-start: 4.25rem;
 }
-/* THE SHELL KEEPS ONE FRAME ON A WIDE WINDOW. Past Carbon's max breakpoint,
-   99rem, where its grid already stops growing, the rest of the shell stops
-   too: the header's contents, the side nav, the header's panels and the
-   content keep one 99rem frame centred in the window, and the extra width is
-   an equal margin either side, as Geist's pages keep theirs. Carbon pins each
-   of them to the window's edges, so a wide window left a page leaning on its
-   left with the open space all on its right. The header's bar and its line
+/* THE SHELL KEEPS ONE FRAME ON A WIDE WINDOW. Past 76.25rem, the 1220px
+   Geist's own pages stop at, the header's contents, the side nav, the
+   header's panels and the content keep one 76.25rem frame centred in the
+   window, and the extra width is an equal margin either side, as Geist's
+   pages keep theirs. Carbon pins each of them to the window's edges, so a
+   wide window left a page leaning on its left with the open space all on its
+   right. The header's bar and its line
    still run the window's width. A fixed box's percentage is of the window
    without its scroll bar, so the two margins match. A theme that insets its
    header's contents keeps its inset inside the frame, which is why this
    follows the themes' header rules. An app's own bar fixed to the window
    moves with the frame in that app's own file. */
-@media (min-width: 99rem) {
-  .rux--header { padding-inline: calc((100% - 99rem) / 2); }
+@media (min-width: 76.25rem) {
+  .rux--header { padding-inline: calc((100% - 76.25rem) / 2); }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { padding-inline: calc((100% - 99rem) / 2 + var(--rux-spacing-05)); }
-  .rux--side-nav { inset-inline-start: calc((100% - 99rem) / 2); }
-  .rux--header-panel { inset-inline-end: calc((100% - 99rem) / 2); }
+  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { padding-inline: calc((100% - 76.25rem) / 2 + var(--rux-spacing-05)); }
+  .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
+  .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
   .rux--content,
-  .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 99rem; margin-inline: auto; }
+  .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
 }
 /* GEIST'S PAGE IS RULED, AND SO ARE BOTH DARK THEMES'. The header's hairline
    also parts a side nav standing open beside the content from the content
@@ -814,16 +814,16 @@
     border-inline-end: 1px solid var(--rux-border-subtle-01);
   }
 }
-@media (min-width: 99rem) {
+@media (min-width: 76.25rem) {
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body,
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
   .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
     background-image: linear-gradient(to right,
-      transparent calc(50% - 49.5rem - 1px),
-      var(--rux-border-subtle-01) calc(50% - 49.5rem - 1px) calc(50% - 49.5rem),
-      transparent calc(50% - 49.5rem) calc(50% + 49.5rem),
-      var(--rux-border-subtle-01) calc(50% + 49.5rem) calc(50% + 49.5rem + 1px),
-      transparent calc(50% + 49.5rem + 1px));
+      transparent calc(50% - 38.125rem - 1px),
+      var(--rux-border-subtle-01) calc(50% - 38.125rem - 1px) calc(50% - 38.125rem),
+      transparent calc(50% - 38.125rem) calc(50% + 38.125rem),
+      var(--rux-border-subtle-01) calc(50% + 38.125rem) calc(50% + 38.125rem + 1px),
+      transparent calc(50% + 38.125rem + 1px));
   }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body { background-attachment: fixed; }
 }

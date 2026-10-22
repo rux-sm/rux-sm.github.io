@@ -786,38 +786,45 @@
    window, and the extra width is an equal margin either side, as Geist's
    pages keep theirs. Carbon pins each of them to the window's edges, so a
    wide window left a page leaning on its left with the open space all on its
-   right. The header's bar and its line
-   still run the window's width. A fixed box's percentage is of the window
-   without its scroll bar, so the two margins match. A theme that insets its
-   header's contents keeps its inset inside the frame, which is why this
-   follows the themes' header rules. An app's own bar fixed to the window
-   moves with the frame in that app's own file. */
+   right. The header's bar and its line still run the window's width. A fixed
+   box's percentage is of the window without its scroll bar, so the two
+   margins match. A theme that insets its header's contents keeps its inset
+   inside the frame, which is why this follows the themes' header rules. An
+   app's own bar fixed to the window moves with the frame in that app's own
+   file.
+   A PAGE WHOSE OWN GRID IS FULL WIDTH HAS NO FRAME. Carbon's full-width grid
+   marks a page that is worked in rather than read, such as the scheduler's
+   board, which needs the window's whole width beside an open panel; it
+   keeps that width always, so nothing moves when a panel opens. The test is
+   the content's own grid, so a full-width grid shown inside a page, as
+   Design's sink shows one, leaves the frame on. :where() keeps each rule at
+   the specificity it would have without the test. */
 @media (min-width: 76.25rem) {
-  .rux--header { padding-inline: calc((100% - 76.25rem) / 2); }
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { padding-inline: calc((100% - 76.25rem) / 2 + var(--rux-spacing-05)); }
-  .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
-  .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
-  .rux--content,
-  .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header { padding-inline: calc((100% - 76.25rem) / 2); }
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header,
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { padding-inline: calc((100% - 76.25rem) / 2 + var(--rux-spacing-05)); }
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--content,
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--side-nav ~ .rux--content { box-sizing: border-box; max-inline-size: 76.25rem; margin-inline: auto; }
 }
 /* GEIST'S PAGE IS RULED, AND SO ARE BOTH DARK THEMES'. The header's hairline
    also parts a side nav standing open beside the content from the content
-   (one that opens over the page has its own edges), and on a window wide
-   enough to have a frame, two more run the window's height down the frame's
-   edges, through the header, as Geist's site draws them. They are drawn as
-   the page's and the header's backgrounds, so they take no room and sit
-   under everything on them; the page's is fixed to the window, so a short
-   page still shows them to its foot. */
+   (one that opens over the page has its own edges), and on a page with a
+   frame, two more run the window's height down the frame's edges, through
+   the header, as Geist's site draws them. They are drawn as the page's and
+   the header's backgrounds, so they take no room and sit under everything
+   on them; the page's is fixed to the window, so a short page still shows
+   them to its foot. */
 @media (min-width: 66rem) {
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav--ux:not(.rux--side-nav--hidden) {
     border-inline-end: 1px solid var(--rux-border-subtle-01);
   }
 }
 @media (min-width: 76.25rem) {
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body,
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header,
-  .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) body:where(:not(:has(.rux--content > .rux--css-grid--full-width))),
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header,
+  :where(body:not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header:is([data-theme="geist-dark"], [data-theme="rux-dark"]) {
     background-image: linear-gradient(to right,
       transparent calc(50% - 38.125rem - 1px),
       var(--rux-border-subtle-01) calc(50% - 38.125rem - 1px) calc(50% - 38.125rem),

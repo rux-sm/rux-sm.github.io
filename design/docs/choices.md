@@ -81,13 +81,15 @@ dark tool.
 
 ## Grid width — capped or full
 
-Carbon's grid caps content at 99rem (1584px) and centres it: a reading
-width, right for prose and forms, and the default on every template. Its
-own `--full-width` modifier lifts the cap, and is the choice for a page that
-is scanned rather than read, such as a board or a wide table. Attested by
-`elements-grid--full-width` and `sink/grid.html`. Below 99rem, and inside
-the shell's 76.25rem frame, the two are identical. Suggestion: `capped` unless the page's main thing is wider than a
-paragraph. It is one class on the page's outer grid.
+A capped page sits in the shell's frame, 76.25rem (1220px) centred in the
+window as Geist's pages are: a reading width, right for prose and forms,
+and the default on every template. Carbon's own `--full-width` modifier on
+the page's outer grid takes the frame off, so the page keeps the window's
+whole width; it is the choice for a page that is worked in rather than
+read, such as a board or a wide table, and the scheduler's board takes it.
+Attested by `elements-grid--full-width` and `sink/grid.html`. Suggestion:
+`capped` unless the page's main thing is wider than a paragraph. It is one
+class on the page's outer grid.
 
 ## Fields — regular or fluid
 

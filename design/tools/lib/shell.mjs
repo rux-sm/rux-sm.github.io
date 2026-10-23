@@ -13,12 +13,14 @@
 //
 // THE SHAPE, and why each part is the way it is:
 //
-//   COLLAPSIBLE, NOT PERSISTENT. The toggle carries no
-//   `__menu-toggle__hidden`, so the hamburger is on screen at every width, and
-//   the nav carries `--side-nav--hidden` and opens over the page.
-//   js/ui-shell.js names both configurations and calls this one legitimate;
-//   templates/ ship the other. Chosen for these pages because none of them
-//   wants a 256px column standing open beside its content.
+//   HOME IS PERSISTENT, THE TOOLS ARE COLLAPSIBLE. A page marked `open` in
+//   PAGES gets the persistent shell: the toggle carries
+//   `__menu-toggle__hidden` and the nav stands open beside the content, so
+//   css/rux-overrides.css frames the header, nav and content in one centred
+//   column, as LN Guide's front page is. The others keep the collapsible
+//   shell -- the hamburger on screen at every width, the nav carrying
+//   `--side-nav--hidden` and opening over the page -- because the sink, the
+//   builder and the theme creator each want their whole width.
 //
 //   THE NAV HOLDS PAGES. IBM's UI shell guidance puts the header at the
 //   highest level of navigation and the left panel one tier below it, and says
@@ -30,16 +32,15 @@
 //   holds them is duplication, and the bar is the part that goes: the panel is
 //   where Carbon puts a product's navigation.
 //
-//   NO 18rem CONTENT OFFSET. `.rux--content` is indented only when a nav sits
-//   BESIDE it. This one overlays, so an offset would be a permanent gap next
-//   to nothing. templates/app-shell.html keeps its offset because it keeps the
-//   persistent shell.
+//   NO 18rem CONTENT OFFSET HERE. css/rux-overrides.css pads the content past
+//   a nav standing open beside it, and a nav that overlays needs none.
 //
-// WHAT THIS SHELL COSTS, quoted from js/ui-shell.js rather than rediscovered
-// once per page: Carbon tightens the app name to 8px of inline start whenever
-// the toggle lacks `__hidden`, at every width and with no media query, so
-// check-spacing reports 8px against a capture taken from the persistent shell.
-// It is correct and there is no capture of this shell to compare against.
+// WHAT THE COLLAPSIBLE SHELL COSTS, quoted from js/ui-shell.js rather than
+// rediscovered once per page: Carbon tightens the app name to 8px of inline
+// start whenever the toggle lacks `__hidden`, at every width and with no media
+// query, so check-spacing reports 8px against a capture taken from the
+// persistent shell. It is correct and there is no capture of this shell to
+// compare against.
 //
 // NOT USED BY templates/. Those are worked examples an app copies, and they
 // ship the persistent shell deliberately. Nothing here should reach them.
@@ -74,7 +75,7 @@ export const PAGES = [
   // layering Carbon's shell exists to express — and until 2026-09-11 this page
   // was reachable only through the switcher's "Design System" entry, which is
   // the app-switcher tier reaching sideways at its own app.
-  { id: 'index', file: 'index.html', label: 'Home' },
+  { id: 'index', file: 'index.html', label: 'Home', open: true },
   { id: 'kitchen-sink', file: 'kitchen-sink.html', label: 'Kitchen sink' },
   { id: 'builder', file: 'builder.html', label: 'Page builder' },
   { id: 'theme-creator', file: 'theme-creator.html', label: 'Theme creator' },
@@ -152,9 +153,10 @@ const navItems = current => PAGES.map(p => {
 export function shell(current) {
   if (!PAGES.some(p => p.id === current))
     throw new Error(`shell(): unknown page "${current}" — expected one of ${PAGES.map(p => p.id).join(', ')}`);
+  const open = PAGES.find(p => p.id === current).open;
   return `<header class="rux--header" data-theme="g100" aria-label="Rux Design">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
-  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
+  <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle${open ? ' rux--header__menu-toggle__hidden' : ''}" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
   <a class="rux--header__name" href="./"><img src="brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;Design</a>
   <div class="rux--header__global">
 ${accountAction()}
@@ -162,7 +164,7 @@ ${accountAction()}
 ${accountPanel()}
 
   <div class="rux--side-nav__overlay"></div>
-  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Pages">
+  <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux${open ? '' : ' rux--side-nav--hidden'}" aria-label="Pages">
     <ul class="rux--side-nav__items">
 ${navItems(current)}
     </ul>

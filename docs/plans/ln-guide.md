@@ -124,7 +124,8 @@ tutorial, reference and explanation.
 
 - **Home asks What are you doing?** and answers with one search box, one Carry
   on card that returns to where the reader stopped, Start here, the processes
-  as cards in order with their verified status, and, for the owner alone, one
+  as cards in order with their verified status in grey beside Carbon's
+  progress icon for it, and, for the owner alone, one
   quiet card, Still to confirm. There are no other doors, because a reader does not know whether
   what they want is a task or a process.
 

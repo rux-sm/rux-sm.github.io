@@ -83,11 +83,14 @@ const drawn = (prefix, fn) => { base = prefix; try { return fn(); } finally { ba
 // ---- verified status, in the reader's words --------------------------------
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const month = (d) => { const [y, m] = d.split('-'); return `${MONTHS[Number(m) - 1]} ${y}`; };
-const verified = (status, walked) => status === 'approved' && walked.every(Boolean) ? ['Verified', 'green']
-  : walked.every(Boolean) ? [`Walked in LN, ${month(walked.sort().at(-1))}`, 'teal']
-  : walked.some(Boolean) ? [`Walked ${walked.filter(Boolean).length} of ${walked.length}`, 'teal'] : ['Not walked yet', 'outline'];
+// Each status carries its tag colour and Carbon's progress icon for it.
+const verified = (status, walked) => status === 'approved' && walked.every(Boolean) ? ['Verified', 'green', 'checkmark--filled']
+  : walked.every(Boolean) ? [`Walked in LN, ${month(walked.sort().at(-1))}`, 'teal', 'checkmark--outline']
+  : walked.some(Boolean) ? [`Walked ${walked.filter(Boolean).length} of ${walked.length}`, 'teal', 'incomplete'] : ['Not walked yet', 'outline', 'circle-dash'];
 const COLOUR = { green: 'rux--tag--green', teal: 'rux--tag--teal', outline: 'rux--tag--outline', 'cool-gray': 'rux--tag--cool-gray' };
 const tag = ([label, colour]) => `<div class="rux--tag rux--layout--size-sm ${COLOUR[colour]} rux--tag--sm"><span class="rux--tag__label">${esc(label)}</span></div>`;
+// Home says a status quietly: the icon and the words in the line's own grey.
+const quiet = ([label, , icon]) => `<span class="ln-status"><svg width="16" height="16" viewBox="${icon === 'checkmark--filled' ? '0 0 16 16' : '0 0 32 32'}" fill="currentColor" aria-hidden="true"><use href="#i-${icon}"/></svg>${esc(label.replace('Walked in LN, ', 'Walked '))}</span>`;
 const statusOf = (s) => verified(s.status, s.tasks.map((t) => t.walked));
 const taskStatus = (t) => verified(t.status, [t.walked]);
 
@@ -463,7 +466,7 @@ ${searchBox('ask')}
 <section class="ln-start">
 <h2 class="rux--type-productive-heading-03">Start here</h2>
 <div class="ln-cards">${processes.map((s) => `
-<a class="rux--tile rux--tile--clickable" href="${hrefProcess(s.id)}"><b>${esc(s.title)}</b><span class="ln-quiet">${count(s.tasks.length, 'task')}</span><div>${tag(statusOf(s))}</div></a>`).join('')}
+<a class="rux--tile rux--tile--clickable" href="${hrefProcess(s.id)}"><b>${esc(s.title)}</b><span class="ln-quiet">${count(s.tasks.length, 'task')} · ${quiet(statusOf(s))}</span></a>`).join('')}
 </div>
 </section>${waiting ? `
 <div class="ln-cards ln-cards--one" data-owner hidden><a class="rux--tile rux--tile--clickable" href="${at('confirm.html')}"><span class="ln-quiet">Still to confirm</span><b data-waiting="${waiting}">${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>

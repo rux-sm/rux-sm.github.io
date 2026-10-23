@@ -41,6 +41,7 @@
 @media (min-width: 42rem) { .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-cards--one { grid-template-columns: 1fr; } }
 .ln-cards[hidden] { display: none; }
 .ln-cards .rux--tile, .ln-resume .rux--tile { display: grid; gap: .25rem; }
+.ln-status { display: inline-flex; align-items: center; gap: .375rem; vertical-align: top; }
 .ln-cards b, .ln-resume b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
 /* Carry on is a tile with an X in its corner that forgets the place. */
 .ln-resume { position: relative; }

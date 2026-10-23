@@ -22,9 +22,12 @@ html { font-size: 10pt; }
 
 /* The chrome goes: the header with its menu and account, the side nav,
    Guided and its bar, the buttons, the search, the owner's box and a task's
-   Related links, which the screens table and the strip already give. */
+   Related links. So do Reference and Screens used, which serve the screen:
+   each task already names its screen and how to open it, and a reference is
+   read on the site. */
 .rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
-.ln-confirm, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related { display: none; }
+.ln-confirm, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related,
+.ln-proc__ref, .ln-proc__screens { display: none; }
 
 /* A printed copy is handed on as the procedure, so a guide nobody has walked
    says so on screen and not on paper. The facts row stays on screen too: the
@@ -50,11 +53,6 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 .rux--accordion .rux--accordion__item .rux--accordion__content { display: block; padding-block: .5rem 1rem; }
 .rux--accordion__arrow { display: none; }
 .rux--accordion__heading { padding-inline-start: 0; }
-
-/* The Document stays a procedure: its reference prints as titles, with where
-   to read it. */
-.ln-proc__ref .rux--accordion .rux--accordion__item .rux--accordion__wrapper { display: none; }
-.ln-proc__print { display: block; font-size: 9pt; color: var(--rux-text-secondary); }
 
 /* Tables are rules, not fills, with each page repeating the header row. */
 .ln-proc__table { overflow: visible; }

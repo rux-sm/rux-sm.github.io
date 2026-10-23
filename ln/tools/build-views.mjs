@@ -572,11 +572,9 @@ ${wrong}` : ''}
       ...ts.flatMap((t) => t.variants.rows.map((r) => ({ cells: [docText(r.cells[0].tokens, t), docText(r.cells[1].tokens, t, `Variation: ${r.cells[0].text.trim()}`), `${K.get(t.id)}`] })))];
     const next = section(s, 'downstream').map((r) => ({ cells: r.cells.map((c) => docText(c.tokens, null, 'What comes next')) }));
     const groups = looked(s);
-    // The reference is read on screen. On paper the Document stays a
-    // procedure, so only its titles print, with where to read it.
+    // The reference is read on screen, and print.css leaves it off paper.
     const reference = groups.length ? `<section class="ln-proc__ref">
 ${docH2('reference', 'Reference')}
-<p class="ln-proc__print">Read the reference beside this procedure at rux-sm.github.io/ln/follow/${esc(s.id)}.html</p>
 ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `<p>${said(x.tokens)}</p>` : '').join('')]))}
 </section>` : '';
     const html = `<div class="ln-proc__head">
@@ -610,7 +608,7 @@ ${docTable(next[0].cells.length === 3 ? [['When', '28%'], ['Then'], ['Start at',
 </section>` : ''}
 ${reference}
 ${gapsSection()}
-<section>
+<section class="ln-proc__screens">
 ${docH2('screens', 'Screens used')}
 ${screensTable(ts)}
 </section>`;
@@ -841,7 +839,7 @@ ${docH2('cases', 'Variations')}
 ${docTable([['Case', '30%'], ['What changes']], caseRows)}
 </section>` : ''}
 ${gapsSection()}
-<section>
+<section class="ln-proc__screens">
 ${docH2('screens', 'Screens used')}
 ${screensTable([t])}
 </section>

@@ -92,8 +92,6 @@
 .ln-proc__list { margin: 0; padding-inline-start: 1.25rem; list-style: disc; }
 /* A list item reads at a paragraph's line height, which Carbon's reset takes away. */
 .ln-proc__list li { margin-block-end: .5rem; line-height: 1.5; }
-/* On paper the reference stays on the site; this line says where. */
-.ln-proc__print { display: none; }
 
 /* ---- Guided: one step, what to do, what you should see, then on -----------------
    One readable column on every screen, and Back and Next fixed at the foot

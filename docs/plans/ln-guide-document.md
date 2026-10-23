@@ -36,7 +36,7 @@ And a team, after log-in, sees what the public page cannot carry.
   procedure; Procedure, each task with its result and screen, Why LN works
   this way, its notices, one table of Step · Action · Value · You should see,
   and its own If something goes wrong; then Variations, What comes next,
-  Reference by title only, Known gaps, and Screens used with how to open each.
+  Reference, Known gaps, and Screens used with how to open each.
 
 - **A step is numbered by its task and its place, 2.3,** in its table and
   wherever the Document points at it, so "see step 1.4" needs no task name and
@@ -66,7 +66,9 @@ And a team, after log-in, sees what the public page cannot carry.
 
 - **On paper the Document is Letter at 10 point**, ruled tables with no fills,
   a running footer of its title, its Updated date and Page N of M, and no
-  heading left at a page's foot. It prints from the browser's dialog, where
+  heading left at a page's foot. Reference and Screens used stay on screen,
+  because each task already names its screen and a reference is read online.
+  It prints from the browser's dialog, where
   Save as PDF is a destination, so no PDF library is added. The mockup's Check
   an item's inventory is 2 pages and Ship from stock 8.
 

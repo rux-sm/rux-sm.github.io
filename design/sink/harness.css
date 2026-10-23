@@ -7,19 +7,20 @@
    rather than from harness chrome that resembled it.
 
    WHAT IS LEFT IS SIZING AND NOTHING ELSE. ks-main rides alongside
-   rux--content, which supplies the padding and the 18rem offset for the nav
-   inside the header; this only caps the measure so 68 sections do not run the
-   full width of a wide screen. ks-count is the line under the h1. */
+   rux--content, which supplies the padding; this adds the 18rem offset that
+   docs/composing-pages.md §3.2 gives a nav standing open inside the header.
+   The shell's frame caps the measure on a wide screen. ks-count is the line
+   under the h1. */
 body { min-height: 100vh; background: var(--rux-background);
        color: var(--rux-text-primary); }
-/* MEASURE ONLY. rux--content's own padding is left alone deliberately: the
+/* THE INLINE OFFSET ONLY. rux--content's own padding is left alone deliberately: the
    sink used to set padding-block here, and check-spacing reported
    rux--content diverging on paddingBlockStart and paddingBlockEnd as well as
    the inline offset. Only the offset is adjudicated (SELF_INDENT, and every
    template carries it), so a block padding of ours turns one known row into
    an unknown one. Fitting the markup to the adjudication is the cheap side of
    that; widening the adjudication is a control change. 2026-09-11. */
-.ks-main { max-width: 66rem; }
+@media (min-width: 66rem) { .ks-main { padding-inline-start: 18rem; } }
 /* The page's title, at the size the templates' page titles take. */
 .ks-main > h1 { font-size: var(--rux-productive-heading-05-font-size, 2rem);
                 line-height: 1.25; font-weight: 400; }

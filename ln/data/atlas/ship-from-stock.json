@@ -10,8 +10,8 @@
     "Warehousing"
   ],
   "updated": "2026-10-23",
-  "status": "approved",
-  "summary": "ship a sales order for an item already in stock, and check inventory went down.",
+  "status": "draft",
+  "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
     "tdsls4246m000",
@@ -58,14 +58,18 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Sales order at "
+            "v": "The order status is "
           },
           {
             "t": "strong",
             "v": "In Process"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "Sales order at In Process"
+        "text": "The order status is In Process."
       },
       "steps": 12,
       "walked": "2026-10-23"
@@ -78,10 +82,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Warehousing order exists."
+            "v": "A warehousing order exists."
           }
         ],
-        "text": "Warehousing order exists."
+        "text": "A warehousing order exists."
       },
       "steps": 8,
       "walked": "2026-10-23"
@@ -126,10 +130,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Inventory is relieved."
+            "v": "The shipment is confirmed, and the stock leaves inventory."
           }
         ],
-        "text": "Inventory is relieved."
+        "text": "The shipment is confirmed, and the stock leaves inventory."
       },
       "steps": 5,
       "walked": "2026-10-23"
@@ -142,10 +146,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand dropped by the shipped quantity."
+            "v": "On-hand went down by the quantity shipped."
           }
         ],
-        "text": "On-hand dropped by the shipped quantity."
+        "text": "On-hand went down by the quantity shipped."
       },
       "steps": 1,
       "walked": "2026-10-23"
@@ -301,7 +305,7 @@
         },
         {
           "t": "text",
-          "v": " ship a sales order for an item already in stock, and check inventory went down. "
+          "v": " ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped. "
         },
         {
           "t": "strong",
@@ -312,7 +316,7 @@
           "v": " — situational variants build on this one. See Variants."
         }
       ],
-      "text": "Objective: ship a sales order for an item already in stock, and check inventory went down. Base walkthrough — situational variants build on this one. See Variants."
+      "text": "Objective: ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped. Base walkthrough — situational variants build on this one. See Variants."
     },
     {
       "kind": "prose",
@@ -331,22 +335,14 @@
         },
         {
           "t": "strong",
-          "v": "This walkthrough ends at shipped."
+          "v": "This guide ends when the shipment is Confirmed"
         },
         {
           "t": "text",
-          "v": " Its completion boundary is a "
-        },
-        {
-          "t": "strong",
-          "v": "Confirmed"
-        },
-        {
-          "t": "text",
-          "v": " shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
+          "v": " and on-hand has gone down by the quantity shipped. Invoicing and Financials aren't covered; other shipping guides end at the same point."
         }
       ],
-      "text": "> Warning > This walkthrough ends at shipped. Its completion boundary is a Confirmed shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
+      "text": "> Warning > This guide ends when the shipment is Confirmed and on-hand has gone down by the quantity shipped. Invoicing and Financials aren't covered; other shipping guides end at the same point."
     },
     {
       "kind": "glance",
@@ -432,14 +428,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Sales order at "
+                  "v": "The order status is "
                 },
                 {
                   "t": "chip",
                   "v": "In Process"
                 }
               ],
-              "text": "Sales order at In Process"
+              "text": "The order status is In Process"
             }
           ]
         },
@@ -477,10 +473,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Warehousing order exists"
+                  "v": "A warehousing order exists"
                 }
               ],
-              "text": "Warehousing order exists"
+              "text": "A warehousing order exists"
             }
           ]
         },
@@ -600,10 +596,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Inventory is relieved"
+                  "v": "The shipment is confirmed, and the stock leaves inventory"
                 }
               ],
-              "text": "Inventory is relieved"
+              "text": "The shipment is confirmed, and the stock leaves inventory"
             }
           ]
         },
@@ -641,10 +637,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand dropped by the shipped quantity"
+                  "v": "On-hand went down by the quantity shipped"
                 }
               ],
-              "text": "On-hand dropped by the shipped quantity"
+              "text": "On-hand went down by the quantity shipped"
             }
           ]
         }
@@ -832,10 +828,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " as their own sessions. Useful for a batch rather than one order"
+                  "v": " as their own sessions. Use them for a batch of orders rather than one"
                 }
               ],
-              "text": "Warehousing ➔ Outbound/Inspections holds Generate Outbound Advice and Release Outbound Advice as their own sessions. Useful for a batch rather than one order"
+              "text": "Warehousing ➔ Outbound/Inspections holds Generate Outbound Advice and Release Outbound Advice as their own sessions. Use them for a batch of orders rather than one"
             }
           ]
         },
@@ -980,10 +976,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The procedure ends here. Invoicing the order is done in Financials, which this guide does not cover"
+                  "v": "This guide ends here. Invoicing is done in Financials, which this guide doesn't cover"
                 }
               ],
-              "text": "The procedure ends here. Invoicing the order is done in Financials, which this guide does not cover"
+              "text": "This guide ends here. Invoicing is done in Financials, which this guide doesn't cover"
             },
             {
               "tokens": [

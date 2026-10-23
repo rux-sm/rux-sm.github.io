@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
@@ -33,20 +33,20 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Inventory is relieved."
+        "v": "The shipment is confirmed, and the stock leaves inventory."
       }
     ],
-    "text": "Inventory is relieved."
+    "text": "The shipment is confirmed, and the stock leaves inventory."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and a confirmed shipment cannot be changed: a correction from there needs a return shipment."
+        "v": "Freezing fixes what's in the shipment, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because the warehousing order type says so. A confirmed shipment can't be changed: to correct it, you need a return shipment."
       }
     ],
-    "text": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and a confirmed shipment cannot be changed: a correction from there needs a return shipment."
+    "text": "Freezing fixes what's in the shipment, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because the warehousing order type says so. A confirmed shipment can't be changed: to correct it, you need a return shipment."
   },
   "blocks": [
     {
@@ -152,7 +152,7 @@
                 },
                 {
                   "t": "text",
-                  "v": "; to ship less than was picked, change it on "
+                  "v": ". To ship less than was picked, change it on "
                 },
                 {
                   "t": "session",
@@ -164,7 +164,7 @@
                   "v": ", not here"
                 }
               ],
-              "text": "Read the Shipped Quantity; to ship less than was picked, change it on Shipment Lines (whinh4131m000), not here"
+              "text": "Read the Shipped Quantity. To ship less than was picked, change it on Shipment Lines (whinh4131m000), not here"
             },
             {
               "tokens": [
@@ -319,10 +319,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". Inventory relieved"
+                  "v": ". The stock leaves inventory"
                 }
               ],
-              "text": "Status = Confirmed. Inventory relieved"
+              "text": "Status = Confirmed. The stock leaves inventory"
             }
           ],
           "id": "5",
@@ -350,10 +350,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Shipment will not confirm"
+                "v": "The shipment won't confirm"
               }
             ],
-            "text": "Shipment will not confirm"
+            "text": "The shipment won't confirm"
           },
           {
             "tokens": [
@@ -367,7 +367,7 @@
               },
               {
                 "t": "text",
-                "v": " column on Outbound Lines, then run "
+                "v": " column on Outbound Lines, then do "
               },
               {
                 "t": "link",
@@ -375,7 +375,7 @@
                 "href": "pick-the-goods_ship-from-stock.md"
               }
             ],
-            "text": "The line may not be picked. Check the Picked column on Outbound Lines, then run Pick the goods"
+            "text": "The line may not be picked. Check the Picked column on Outbound Lines, then do Pick the goods"
           }
         ]
       },
@@ -385,23 +385,23 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Shipment will not confirm, and a validation message shows"
+                "v": "The shipment won't confirm, and a validation message shows"
               }
             ],
-            "text": "Shipment will not confirm, and a validation message shows"
+            "text": "The shipment won't confirm, and a validation message shows"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again. "
+                "v": "If the order type validates shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it's validated again. "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Where the order type validates shipments, a message marked Blocking has to be corrected first, and reopening a frozen shipment means it is validated again. Not documented for this release."
+            "text": "If the order type validates shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it's validated again. Not documented for this release."
           }
         ]
       },
@@ -411,10 +411,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Shipment will not confirm, handling units involved"
+                "v": "The shipment won't confirm, and it has handling units"
               }
             ],
-            "text": "Shipment will not confirm, handling units involved"
+            "text": "The shipment won't confirm, and it has handling units"
           },
           {
             "tokens": [
@@ -428,10 +428,10 @@
               },
               {
                 "t": "text",
-                "v": " is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand"
+                "v": " is set on a linked line, confirm the handling units first. Whether the line then confirms on its own is an order-type setting, Confirm Shipment Lines when confirming Handling Units. If that's cleared, the line stays Frozen until you confirm it"
               }
             ],
-            "text": "If Handling Unit Based Confirmation is set on a linked line, the handling units must be confirmed first. Whether the line then confirms by itself is an order-type setting, Confirm Shipment Lines when confirming Handling Units; with it cleared the line waits, Frozen, to be confirmed by hand"
+            "text": "If Handling Unit Based Confirmation is set on a linked line, confirm the handling units first. Whether the line then confirms on its own is an order-type setting, Confirm Shipment Lines when confirming Handling Units. If that's cleared, the line stays Frozen until you confirm it"
           }
         ]
       }
@@ -476,14 +476,14 @@
               },
               {
                 "t": "text",
-                "v": "; see step 2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales. "
+                "v": "; see step 2. Once the shipment is confirmed, LN creates a backorder. It becomes a new line only once it's confirmed in Sales. "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see step 2. Once the shipment is confirmed a backorder is generated, and it becomes a new line only after it is confirmed in Sales. Not documented for this release."
+            "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see step 2. Once the shipment is confirmed, LN creates a backorder. It becomes a new line only once it's confirmed in Sales. Not documented for this release."
           }
         ]
       }

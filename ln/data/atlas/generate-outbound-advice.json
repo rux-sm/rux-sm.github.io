@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
@@ -43,7 +43,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as in this environment, one action fills both the "
+        "v": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. In this environment the next activity, releasing the advice, runs on its own, so one action fills both "
       },
       {
         "t": "field",
@@ -59,10 +59,10 @@
       },
       {
         "t": "text",
-        "v": " columns and prints the picking list. That is a property of the warehousing order type's outbound procedure, not of LN."
+        "v": " and prints the picking list. That comes from the warehousing order type's outbound procedure, not from LN itself."
       }
     ],
-    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as in this environment, one action fills both the Advised and Released columns and prints the picking list. That is a property of the warehousing order type's outbound procedure, not of LN."
+    "text": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. In this environment the next activity, releasing the advice, runs on its own, so one action fills both Advised and Released and prints the picking list. That comes from the warehousing order type's outbound procedure, not from LN itself."
   },
   "blocks": [
     {
@@ -399,7 +399,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If projected shipments are enabled, a "
+                  "v": "If projected shipments are switched on, a "
                 },
                 {
                   "t": "status",
@@ -423,7 +423,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ". If the tab is empty, continue to "
+                  "v": ". If the tab is empty, go on to "
                 },
                 {
                   "t": "link",
@@ -432,10 +432,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — that is expected in the standard flow"
+                  "v": ". That's normal"
                 }
               ],
-              "text": "If projected shipments are enabled, a Projected or Open line may already show a value in Shipment. If the tab is empty, continue to Pick the goods — that is expected in the standard flow"
+              "text": "If projected shipments are switched on, a Projected or Open line may already show a value in Shipment. If the tab is empty, go on to Pick the goods. That's normal"
             }
           ],
           "id": "6",
@@ -476,7 +476,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No warehousing order — return to "
+                "v": "There's no warehousing order. Go back to "
               },
               {
                 "t": "link",
@@ -484,7 +484,7 @@
                 "href": "release-to-warehousing.md"
               }
             ],
-            "text": "No warehousing order — return to Release to warehousing"
+            "text": "There's no warehousing order. Go back to Release to warehousing"
           }
         ]
       },
@@ -494,16 +494,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Your order is not in the Outbound grid"
+                "v": "Your order isn't in the order grid"
               }
             ],
-            "text": "Your order is not in the Outbound grid"
+            "text": "Your order isn't in the order grid"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Wrong "
+                "v": "The "
               },
               {
                 "t": "field",
@@ -511,7 +511,7 @@
               },
               {
                 "t": "text",
-                "v": " filter, or the release never ran — see step 8 of "
+                "v": " filter may be wrong, or the release may not have run. See step 8 of "
               },
               {
                 "t": "link",
@@ -519,7 +519,7 @@
                 "href": "release-to-warehousing.md"
               }
             ],
-            "text": "Wrong Order filter, or the release never ran — see step 8 of Release to warehousing"
+            "text": "The Order filter may be wrong, or the release may not have run. See step 8 of Release to warehousing"
           }
         ]
       },
@@ -529,23 +529,23 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Cannot find "
+                "v": "You can't find "
               },
               {
                 "t": "chip",
                 "v": "Outbound Order Lines"
               }
             ],
-            "text": "Cannot find Outbound Order Lines"
+            "text": "You can't find Outbound Order Lines"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+                "v": "There's no menu entry by that name. Filter the Manager Dashboard's order grid and drill in"
               }
             ],
-            "text": "There is no such menu entry. Filter the Manager Dashboard's order grid and drill in"
+            "text": "There's no menu entry by that name. Filter the Manager Dashboard's order grid and drill in"
           }
         ]
       },
@@ -568,7 +568,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "You are on the session toolbar. The advice actions live on the "
+                "v": "You're on the session toolbar. The advice actions are on the "
               },
               {
                 "t": "chip",
@@ -576,10 +576,10 @@
               },
               {
                 "t": "text",
-                "v": " toolbar — see step 5"
+                "v": " toolbar. See step 5"
               }
             ],
-            "text": "You are on the session toolbar. The advice actions live on the Outbound Lines toolbar — see step 5"
+            "text": "You're on the session toolbar. The advice actions are on the Outbound Lines toolbar. See step 5"
           }
         ]
       },
@@ -610,18 +610,14 @@
               },
               {
                 "t": "text",
-                "v": ", and use "
+                "v": ". To start over, use "
               },
               {
                 "t": "chip",
                 "v": "Undo Advice"
-              },
-              {
-                "t": "text",
-                "v": " to start over"
               }
             ],
-            "text": "Advice may already exist. Check Advised Quantity, and use Undo Advice to start over"
+            "text": "Advice may already exist. Check Advised Quantity. To start over, use Undo Advice"
           }
         ]
       },
@@ -644,7 +640,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No advice exists yet. Run "
+                "v": "There may be no advice yet. Run "
               },
               {
                 "t": "chip",
@@ -655,7 +651,7 @@
                 "v": " first"
               }
             ],
-            "text": "No advice exists yet. Run Generate Advice first"
+            "text": "There may be no advice yet. Run Generate Advice first"
           }
         ]
       },
@@ -674,7 +670,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Some configurations generate it automatically on release. Check "
+                "v": "Some configurations generate advice on release. Check "
               },
               {
                 "t": "field",
@@ -685,7 +681,7 @@
                 "v": " first"
               }
             ],
-            "text": "Some configurations generate it automatically on release. Check Advised Quantity first"
+            "text": "Some configurations generate advice on release. Check Advised Quantity first"
           }
         ]
       },
@@ -708,7 +704,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A planned line cannot be advised. Activate the warehousing order with "
+                "v": "A planned line can't be advised. Choose "
               },
               {
                 "t": "chip",
@@ -716,7 +712,7 @@
               },
               {
                 "t": "text",
-                "v": ", and the line becomes "
+                "v": " on the warehousing order, and the line becomes "
               },
               {
                 "t": "chip",
@@ -731,7 +727,7 @@
                 "v": "Not documented for this release."
               }
             ],
-            "text": "A planned line cannot be advised. Activate the warehousing order with Activate, and the line becomes Open. Not documented for this release."
+            "text": "A planned line can't be advised. Choose Activate on the warehousing order, and the line becomes Open. Not documented for this release."
           }
         ]
       },
@@ -741,10 +737,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Order will not advise"
+                "v": "The order won't advise"
               }
             ],
-            "text": "Order will not advise"
+            "text": "The order won't advise"
           },
           {
             "tokens": [

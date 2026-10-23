@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
@@ -62,7 +62,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The picking list is the record of stock physically moving to staging, and confirming it is what fills "
+        "v": "The picking list records stock moving to staging, and confirming it fills "
       },
       {
         "t": "field",
@@ -70,7 +70,7 @@
       },
       {
         "t": "text",
-        "v": ". The task exists because the "
+        "v": ". You need this task because, in this environment, the "
       },
       {
         "t": "field",
@@ -78,7 +78,7 @@
       },
       {
         "t": "text",
-        "v": " activity is manual in this environment and the warehouse is location-controlled; change either and LN ticks "
+        "v": " activity is manual and the warehouse is location-controlled. Change either, and LN ticks "
       },
       {
         "t": "field",
@@ -86,10 +86,10 @@
       },
       {
         "t": "text",
-        "v": " on release and the task disappears. Once a line is staged, LN creates the shipment line."
+        "v": " on release and this task goes away. Once a line is staged, LN creates the shipment line."
       }
     ],
-    "text": "The picking list is the record of stock physically moving to staging, and confirming it is what fills Picked. The task exists because the Picking List activity is manual in this environment and the warehouse is location-controlled; change either and LN ticks Picked on release and the task disappears. Once a line is staged, LN creates the shipment line."
+    "text": "The picking list records stock moving to staging, and confirming it fills Picked. You need this task because, in this environment, the Picking List activity is manual and the warehouse is location-controlled. Change either, and LN ticks Picked on release and this task goes away. Once a line is staged, LN creates the shipment line."
   },
   "blocks": [
     {
@@ -132,7 +132,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Already the Run from step 5 of "
+                  "v": "It's the Run from step 5 of "
                 },
                 {
                   "t": "link",
@@ -165,7 +165,7 @@
                 },
                 {
                   "t": "text",
-                  "v": "; "
+                  "v": ". "
                 },
                 {
                   "t": "button",
@@ -184,7 +184,7 @@
                   "v": " step through every run in code order"
                 }
               ],
-              "text": "Already the Run from step 5 of Generate outbound advice. If not, click Find, fill in Run and click OK; next / previous step through every run in code order"
+              "text": "It's the Run from step 5 of Generate outbound advice. If not, click Find, fill in Run and click OK. next / previous step through every run in code order"
             }
           ],
           "id": "1",
@@ -314,10 +314,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " = grey dot"
+                  "v": " shows a grey dot"
                 }
               ],
-              "text": "One line per location the stock comes from: Picked · Sequence · Item · Serial Number · From Location. Picked = grey dot"
+              "text": "One line per location the stock comes from: Picked · Sequence · Item · Serial Number · From Location. Picked shows a grey dot"
             }
           ],
           "id": "3",
@@ -422,14 +422,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " fills on Outbound Lines. Line status = "
+                  "v": " fills on Outbound Lines, and the line status becomes "
                 },
                 {
                   "t": "status",
                   "v": "Staged"
                 }
               ],
-              "text": "LN records the pick: stock moves from From Location to To Location. Picked fills on Outbound Lines. Line status = Staged"
+              "text": "LN records the pick: stock moves from From Location to To Location. Picked fills on Outbound Lines, and the line status becomes Staged"
             }
           ],
           "id": "5",
@@ -473,7 +473,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A shipment line now exists in the standard flow. The shipment number is the first part of "
+                  "v": "A shipment line now exists. The shipment number is the first part of "
                 },
                 {
                   "t": "field",
@@ -495,7 +495,7 @@
                   "v": "shipment number"
                 }
               ],
-              "text": "A shipment line now exists in the standard flow. The shipment number is the first part of Shipment Line, before the line's own number: shipment number"
+              "text": "A shipment line now exists. The shipment number is the first part of Shipment Line, before the line's own number: shipment number"
             }
           ],
           "id": "6",
@@ -540,14 +540,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "There is none. Picking sits inside "
+                "v": "There isn't one. Picking is under "
               },
               {
                 "t": "chip",
                 "v": "Outbound/Inspections"
               }
             ],
-            "text": "There is none. Picking sits inside Outbound/Inspections"
+            "text": "There isn't one. Picking is under Outbound/Inspections"
           }
         ]
       },
@@ -566,7 +566,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Expected. "
+                "v": "That's expected. "
               },
               {
                 "t": "field",
@@ -582,10 +582,10 @@
               },
               {
                 "t": "text",
-                "v": " are separate columns. Run this task"
+                "v": " are separate columns. Do this task"
               }
             ],
-            "text": "Expected. Released and Picked are separate columns. Run this task"
+            "text": "That's expected. Released and Picked are separate columns. Do this task"
           }
         ]
       },
@@ -608,7 +608,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Advice was never generated, so nothing was released. Return to step 5 of "
+                "v": "Advice may not have been generated, so nothing was released. Go back to step 5 of "
               },
               {
                 "t": "link",
@@ -616,7 +616,7 @@
                 "href": "generate-outbound-advice.md"
               }
             ],
-            "text": "Advice was never generated, so nothing was released. Return to step 5 of Generate outbound advice"
+            "text": "Advice may not have been generated, so nothing was released. Go back to step 5 of Generate outbound advice"
           }
         ]
       }

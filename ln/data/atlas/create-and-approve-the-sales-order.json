@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -33,14 +33,18 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Sales order at "
+        "v": "The order status is "
       },
       {
         "t": "strong",
         "v": "In Process"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "Sales order at In Process"
+    "text": "The order status is In Process."
   },
   "before": [
     {
@@ -66,10 +70,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the release to warehousing with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+        "v": "Only approved lines can be released to warehousing. If you skip approval, the release fails later without saying why. The Order Acknowledgement that prints shows the sales order number, and the warehousing order uses the same number."
       }
     ],
-    "text": "Approving the order is what makes its lines eligible for warehousing: LN releases only approved lines, and an unapproved order fails at the release to warehousing with no obvious reason. The Order Acknowledgement that prints carries the sales order number, which the warehousing order will inherit."
+    "text": "Only approved lines can be released to warehousing. If you skip approval, the release fails later without saying why. The Order Acknowledgement that prints shows the sales order number, and the warehousing order uses the same number."
   },
   "blocks": [
     {
@@ -155,10 +159,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " autofills"
+                  "v": " fills in"
                 }
               ],
-              "text": "Address autofills"
+              "text": "Address fills in"
             }
           ],
           "id": "2",
@@ -275,7 +279,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
@@ -310,7 +314,7 @@
                   "v": " tab"
                 }
               ],
-              "text": "Confirm Sales Office and Site on the Order tab, and Currency on the Invoicing tab"
+              "text": "Check Sales Office and Site on the Order tab, and Currency on the Invoicing tab"
             },
             {
               "tokens": [
@@ -646,10 +650,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". The Order Acknowledgement prints, and a Conformance Reporting sheet beside it for an item that needs documents"
+                  "v": ". The Order Acknowledgement prints. For an item that needs documents, a Conformance Reporting sheet prints too"
                 }
               ],
-              "text": "Status = In Process. The Order Acknowledgement prints, and a Conformance Reporting sheet beside it for an item that needs documents"
+              "text": "Status = In Process. The Order Acknowledgement prints. For an item that needs documents, a Conformance Reporting sheet prints too"
             }
           ],
           "id": "12",
@@ -824,14 +828,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Not approved — "
+                "v": "The order isn't approved yet. Choose "
               },
               {
                 "t": "command",
                 "route": "Actions ➔ Approve"
               }
             ],
-            "text": "Not approved — Actions ➔ Approve"
+            "text": "The order isn't approved yet. Choose Actions ➔ Approve"
           }
         ]
       },
@@ -841,16 +845,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The order cannot be approved yet"
+                "v": "The order can't be approved yet"
               }
             ],
-            "text": "The order cannot be approved yet"
+            "text": "The order can't be approved yet"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Where "
+                "v": "If "
               },
               {
                 "t": "chip",
@@ -865,7 +869,7 @@
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Where Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
+            "text": "If Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
           }
         ]
       },
@@ -875,10 +879,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "On-hand looks sufficient but the order will not fill"
+                "v": "On-hand looks high enough, but the order won't fill"
               }
             ],
-            "text": "On-hand looks sufficient but the order will not fill"
+            "text": "On-hand looks high enough, but the order won't fill"
           },
           {
             "tokens": [
@@ -892,7 +896,7 @@
               },
               {
                 "t": "text",
-                "v": " — much of the on-hand may be committed elsewhere. See step 4 of "
+                "v": ": other orders may already have claimed most of the on-hand. See step 4 of "
               },
               {
                 "t": "link",
@@ -900,7 +904,7 @@
                 "href": "confirm-there-is-stock.md"
               }
             ],
-            "text": "Check Allocated — much of the on-hand may be committed elsewhere. See step 4 of Confirm there is stock"
+            "text": "Check Allocated: other orders may already have claimed most of the on-hand. See step 4 of Confirm there is stock"
           }
         ]
       }

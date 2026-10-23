@@ -20,7 +20,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
@@ -40,7 +40,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Inventory 360 shows what is physically on hand, and "
+        "v": "Inventory 360 shows what's on hand, and "
       },
       {
         "t": "field",
@@ -48,10 +48,10 @@
       },
       {
         "t": "text",
-        "v": " shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This task records that choice before the order exists."
+        "v": " shows how much of it other orders have already claimed. Stock is often spread across several warehouses. The sales order has to name one that holds enough, or LN won't find stock to pick. This task is where you choose that warehouse."
       }
     ],
-    "text": "Inventory 360 shows what is physically on hand, and Allocated shows how much of it other orders have already claimed. Stock is usually spread across several warehouses, and the sales order must name one that actually holds enough, or LN will raise nothing to pick. This task records that choice before the order exists."
+    "text": "Inventory 360 shows what's on hand, and Allocated shows how much of it other orders have already claimed. Stock is often spread across several warehouses. The sales order has to name one that holds enough, or LN won't find stock to pick. This task is where you choose that warehouse."
   },
   "blocks": [
     {
@@ -156,10 +156,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The header's links light up"
+                  "v": "The header links become available"
                 }
               ],
-              "text": "The header's links light up"
+              "text": "The header links become available"
             }
           ],
           "id": "2",
@@ -207,10 +207,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens, item carried through"
+                  "v": " opens with the item already filled in"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with the item already filled in"
             }
           ],
           "id": "3",
@@ -257,7 +257,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Totals sit under the grid — "
+                  "v": "The totals are under the grid — "
                 },
                 {
                   "t": "pencil"
@@ -316,7 +316,7 @@
                   "v": "allocated"
                 }
               ],
-              "text": "Totals sit under the grid — item, warehouse, on-hand, allocated"
+              "text": "The totals are under the grid — item, warehouse, on-hand, allocated"
             }
           ],
           "id": "4",

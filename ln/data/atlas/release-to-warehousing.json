@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -33,17 +33,17 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Warehousing order exists."
+        "v": "A warehousing order exists."
       }
     ],
-    "text": "Warehousing order exists."
+    "text": "A warehousing order exists."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the "
+        "v": "Releasing passes the approved lines from Sales to Warehousing. LN creates a warehousing order with the sales order's number, and from then on the warehousing procedure decides what happens next, not the sales order. You release from the Actions menu; the "
       },
       {
         "t": "field",
@@ -51,10 +51,10 @@
       },
       {
         "t": "text",
-        "v": " panel only counts."
+        "v": " panel only counts lines."
       }
     ],
-    "text": "Releasing hands the approved lines from Sales to Warehousing: LN creates a warehousing order that carries the sales order's number, and from here the activities of the warehousing procedure, not the sales order, decide what happens next. The release runs from the Actions menu; the Lines ready for panel only counts."
+    "text": "Releasing passes the approved lines from Sales to Warehousing. LN creates a warehousing order with the sales order's number, and from then on the warehousing procedure decides what happens next, not the sales order. You release from the Actions menu; the Lines ready for panel only counts lines."
   },
   "blocks": [
     {
@@ -269,10 +269,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Log Report prints"
+                  "v": "The Log Report prints"
                 }
               ],
-              "text": "Log Report prints"
+              "text": "The Log Report prints"
             }
           ],
           "id": "5",
@@ -460,14 +460,18 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "That panel counts lines; it does not act. Use "
+                "v": "That panel only counts lines. Use "
               },
               {
                 "t": "command",
                 "route": "Actions ➔ Release"
+              },
+              {
+                "t": "text",
+                "v": " instead"
               }
             ],
-            "text": "That panel counts lines; it does not act. Use Actions ➔ Release"
+            "text": "That panel only counts lines. Use Actions ➔ Release instead"
           }
         ]
       },
@@ -477,10 +481,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Order absent from the release selection"
+                "v": "Your order isn't in the release"
               }
             ],
-            "text": "Order absent from the release selection"
+            "text": "Your order isn't in the release"
           },
           {
             "tokens": [
@@ -498,10 +502,10 @@
               },
               {
                 "t": "text",
-                "v": " (planned delivery date minus outbound lead time)"
+                "v": ", which is the planned delivery date minus the outbound lead time. Set a later date"
               }
             ],
-            "text": "Upto Release Date is earlier than the order line's Release Date (planned delivery date minus outbound lead time)"
+            "text": "Upto Release Date is earlier than the order line's Release Date, which is the planned delivery date minus the outbound lead time. Set a later date"
           }
         ]
       },
@@ -520,7 +524,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Release did not run. Check "
+                "v": "The release didn't run. Check "
               },
               {
                 "t": "chip",
@@ -528,7 +532,7 @@
               },
               {
                 "t": "text",
-                "v": " at step 8 — if it reads "
+                "v": " at step 8. If it reads "
               },
               {
                 "t": "status",
@@ -543,7 +547,7 @@
                 "route": "Actions ➔ Release"
               }
             ],
-            "text": "Release did not run. Check Activities 1 at step 8 — if it reads Free, run it from Actions ➔ Release"
+            "text": "The release didn't run. Check Activities 1 at step 8. If it reads Free, run it from Actions ➔ Release"
           }
         ]
       },
@@ -566,10 +570,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "That activity never fires on approval in this configuration. Run it by hand"
+                "v": "That activity doesn't run on its own in this configuration. Run it from "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Release ➔ Release to Warehousing…"
               }
             ],
-            "text": "That activity never fires on approval in this configuration. Run it by hand"
+            "text": "That activity doesn't run on its own in this configuration. Run it from Actions ➔ Release ➔ Release to Warehousing…"
           }
         ]
       }

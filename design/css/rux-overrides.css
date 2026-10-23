@@ -1841,6 +1841,28 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__item:not(.rux--side-nav__item--active):hover {
   background-color: transparent;
 }
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav :is(a.rux--header__menu-item[aria-current=page], .rux--header__menu-item--current)::after {
+  content: none;
+}
+/* THE ROWS' WORDS ARE REGULAR, AND ONLY THE CHOSEN ROW'S ARE BRIGHT, as on
+   Geist's nav: every row rests in the secondary grey at regular weight, the
+   chosen one takes the first ink at the same weight, and a hovered row takes
+   its fill and keeps its grey. Carbon sets every row semibold, the chosen one
+   too, and brightens a row's words under the pointer. The account panel's
+   theme label is written as its rows are, so it is regular with them. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link),
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav :is(a.rux--side-nav__link, .rux--side-nav__submenu) > span,
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--header-panel > .rux--switcher .rux--select--inline .rux--label {
+  font-weight: 400;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav a.rux--side-nav__link:not([aria-current=page], .rux--side-nav__link--current):hover > span,
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__item:not(.rux--side-nav__item--active) > .rux--side-nav__submenu:hover,
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--switcher__item-link:is(:hover, :active):not(.rux--switcher__item-link--selected) {
+  color: var(--rux-text-secondary);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav :is(a.rux--header__menu-item[aria-current=page], .rux--header__menu-item--current) .rux--text-truncate-end {
+  color: var(--rux-text-primary);
+}
 /* RUX-DARK'S LISTS STAND 4px OFF WHAT OPENS THEM. A menu, an overflow menu
    and a dropdown's or combo box's list open 4px below their button or field,
    or 4px above it, as GitHub's do; Carbon lays them against it, which here

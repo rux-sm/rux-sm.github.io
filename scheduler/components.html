@@ -23,9 +23,9 @@
 <style>
 /* No rule offsets the content for the nav. The nav carries
    rux--side-nav--hidden, so it is 0 wide at every width until the
-   hamburger's --expanded opens it over the page. Below 66rem the scrim dims
-   the page behind it. Escape, the button, the scrim and a press elsewhere
-   close it. */
+   hamburger's --expanded opens it over the page, as a menu the height of
+   its rows, or the whole screen on a phone, and it dims nothing. Escape,
+   the button and a press elsewhere close it. */
 </style>
 </head>
 <body>
@@ -137,8 +137,8 @@
   </div>
   <!-- ACCOUNT:END -->
 
-  <!-- The scrim. Only visible below 66rem, where the nav overlays the page;
-       pressing it closes the nav. -->
+  <!-- The scrim, which this nav never shows: it opens as a menu, and a
+       press outside it closes it. -->
   <div class="rux--side-nav__overlay"></div>
 
   <nav class="rux--side-nav__navigation rux--side-nav rux--side-nav--ux rux--side-nav--hidden" aria-label="Side navigation">

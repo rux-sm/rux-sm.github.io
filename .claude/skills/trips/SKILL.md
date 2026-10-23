@@ -200,6 +200,9 @@ reads only the ones before it. Nothing is written until step 10.
   midnight on a one-day leg has `arrive_on` or `depart_prev_on`, its real day.
 - If Chrome disconnects mid-save, look at the page before doing anything
   again, so nothing is saved twice.
+- A save left on "Saving the trip…" can have written the trip but not its
+  update or the lists prompt: read it with `get_trip`, and add a missing
+  update from the bar's Add update rather than saving again.
 
 ## Missive
 

@@ -68,7 +68,10 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 .ln-proc__task + .ln-proc__task { margin-block-start: 1.25rem; }
 .ln-proc__meta { margin-block-end: .5rem; }
 .ln-pages .ln-proc__lead { margin-block-end: .625rem; line-height: 1.4; }
-.ln-proc__facts > div { padding-block: .5rem; }
+/* The facts sit in a row each as wide as its words, so a tag Safari draws
+   wider than a grid column cannot run into the next fact. */
+.ln-proc__facts { display: flex; flex-wrap: wrap; column-gap: 2rem; }
+.ln-proc__facts > div { padding-block: .5rem; padding-inline-end: 0; }
 .ln-proc__h4 { margin-block: .75rem .25rem; }
 /* A line to write a figure on is a pen's height. */
 .ln-proc__write { margin-block-end: .125rem; }

@@ -248,7 +248,7 @@
     const el = event.target.closest('a, button');
     if (!el) return;
     if (el.matches('[data-copy]')) return void navigator.clipboard?.writeText(el.dataset.copy);
-    if (el.matches('[data-print]')) return void window.print();
+    if (el.matches('[data-print]')) return void printPage();
     if (el.matches('[data-say]')) {
       if (el.dataset.say === 'matched') return void say('matched');
       const form = confirm.querySelector('[data-different]');
@@ -286,6 +286,23 @@
   window.addEventListener('afterprint', () => {
     if (kept == null) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = kept;
   });
+  // A home-screen app on an iPhone has no print sheet: print() there returns
+  // having done nothing. So Print opens this page in Safari with ?print, and
+  // Safari prints it as it arrives. The flag survives a log-in on the way,
+  // which keeps the whole address.
+  function printPage() {
+    if (!navigator.standalone) return void window.print();
+    const url = new URL(location.href);
+    url.searchParams.set('print', '');
+    location.href = `x-safari-${url.href}`;
+  }
+  const asked = new URL(location.href);
+  if (asked.searchParams.has('print') && !navigator.standalone) {
+    asked.searchParams.delete('print');
+    history.replaceState(history.state, '', asked);
+    if (document.readyState === 'complete') window.print();
+    else window.addEventListener('load', () => window.print(), { once: true });
+  }
   waiting();
   // The owner's answers and the private shelf arrive after the page shows.
   ln?.owner().then(async (yes) => {

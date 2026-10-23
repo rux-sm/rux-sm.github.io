@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",

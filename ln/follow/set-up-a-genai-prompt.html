@@ -102,7 +102,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b84a0808dca7e04834122c03ce4df04365f618ed">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="f0c007d556958e06fbf1692b518ecf34c090df48">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16 rux--xlg:col-span-12">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -314,7 +314,7 @@
 <tr id="step-6-5"><td><b>6.5</b></td><td>Add a line for one kind of row, with its values in order. Example: <span class="ln-t-exact">Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order.</span></td><td></td></tr>
 <tr id="step-6-6"><td><b>6.6</b></td><td>Do the same for each other kind of row. Example: <span class="ln-t-exact">Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity.</span></td><td></td></tr>
 <tr id="step-6-7"><td><b>6.7</b></td><td>Add the exact words for when there is nothing to report. Example: <span class="ln-t-exact">If there are no planned inventory transactions, write &quot;Nothing planned in or out.&quot;</span></td><td></td></tr>
-<tr id="step-6-8"><td><b>6.8</b></td><td>Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none.</span></td><td></td></tr>
+<tr id="step-6-8"><td><b>6.8</b></td><td>Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming any warehouse with blocked stock, or saying there is none.</span></td><td></td></tr>
 <tr id="step-6-9"><td><b>6.9</b></td><td>Add a line for a missing value. Example: <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></td><td></td></tr>
 <tr id="step-6-10"><td><b>6.10</b></td><td>Add a line for how a date is written, then save and close. Example: <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span></td><td>A new last-modified stamp</td></tr>
 <tr id="step-6-11"><td><b>6.11</b></td><td>Choose your command again on the same record, without closing the screen</td><td>The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue</td></tr>
@@ -439,7 +439,7 @@
   <li><b>Which rows to print</b><p><span class="ln-quiet">What it is for</span><br>A filter the model applies to the rows it is sent</p><p><span class="ln-quiet">Seen without it</span><br>The same prompt printed every activity of the line, most of them not applicable. Told only to name the first activity not executed, it named one that did not apply</p></li>
   <li><b>A name for a code</b><p><span class="ln-quiet">What it is for</span><br>The name behind a code the dataset cannot reach</p><p><span class="ln-quiet">Seen without it</span><br>The next step came back as a session code</p></li>
   <li><b>Nothing to report</b><p><span class="ln-quiet">What it is for</span><br>The exact words for when no row qualifies</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. Given the words, the model used them for a record with no rows and, on another prompt, for a dataset that arrived empty</p></li>
-  <li><b>The thing not to miss</b><p><span class="ln-quiet">What it is for</span><br>One closing sentence on what the reader must see</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none. Once, with none over, it named a warehouse all the same</p></li>
+  <li><b>The thing not to miss</b><p><span class="ln-quiet">What it is for</span><br>One closing sentence on what the reader must see</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. Asked to compare allocated with on hand, it was wrong on three runs of four on an item with stock. Asked only which warehouses hold blocked stock, it named both, with their figures, and said there was none on two items without</p></li>
   <li><b>A case of its own</b><p><span class="ln-quiet">What it is for</span><br>The words for a kind of record the general rule misreads</p><p><span class="ln-quiet">Seen without it</span><br>A canceled order line was given a next step</p></li>
   <li><b>A missing value</b><p><span class="ln-quiet">What it is for</span><br>What to write for a value the dataset did not send</p><p><span class="ln-quiet">Seen without it</span><br>Not tried. With it, a blank description read <span class="ln-t-exact">[not available]</span></p></li>
   <li><b>How a value is written</b><p><span class="ln-quiet">What it is for</span><br>One way of writing a date</p><p><span class="ln-quiet">Seen without it</span><br>Full timestamps on some runs of another prompt</p></li>

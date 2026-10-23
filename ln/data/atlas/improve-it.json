@@ -28,7 +28,7 @@
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": null,
+  "walked": "2026-10-22",
   "achieves": {
     "tokens": [
       {
@@ -358,10 +358,10 @@
                 },
                 {
                   "t": "literal",
-                  "v": "End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
+                  "v": "End with one sentence naming any warehouse with blocked stock, or saying there is none."
                 }
               ],
-              "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming any warehouse where allocated is greater than on hand, or saying there is none."
+              "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming any warehouse with blocked stock, or saying there is none."
             },
             {
               "tokens": [

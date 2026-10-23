@@ -1,9 +1,9 @@
-commit   b84a0808dca7e04834122c03ce4df04365f618ed
-date     2026-10-22T23:51:36Z
-subject  fix(tasks): Stamp five GenAI tasks and fix the bar
+commit   f0c007d556958e06fbf1692b518ecf34c090df48
+date     2026-10-23T00:06:01Z
+subject  fix(tasks): Stamp the last two GenAI tasks walked
 contract 22 
 tier     export
-sha256   914978086c14cf7e82106de9baee3693871785477c2a922ef14c934281a91b30
+sha256   86f4524f988403ecc2becebd20aa8ff09b63dcb6baae7fa83a1dec23ba64d272
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

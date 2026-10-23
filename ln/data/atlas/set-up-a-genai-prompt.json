@@ -66,7 +66,7 @@
         "text": "The fields the answer needs are ready to send."
       },
       "steps": 15,
-      "walked": null
+      "walked": "2026-10-22"
     },
     {
       "id": "write-the-prompt",
@@ -130,7 +130,7 @@
         "text": "An answer in the form asked for, right for each kind of record."
       },
       "steps": 15,
-      "walked": null
+      "walked": "2026-10-22"
     },
     {
       "id": "remove-it",
@@ -1676,10 +1676,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none. Once, with none over, it named a warehouse all the same"
+                  "v": "Not tried. Asked to compare allocated with on hand, it was wrong on three runs of four on an item with stock. Asked only which warehouses hold blocked stock, it named both, with their figures, and said there was none on two items without"
                 }
               ],
-              "text": "Not tried. With it, the answer named the warehouse where more was allocated than on hand, and said so when there was none. Once, with none over, it named a warehouse all the same"
+              "text": "Not tried. Asked to compare allocated with on hand, it was wrong on three runs of four on an item with stock. Asked only which warehouses hold blocked stock, it named both, with their figures, and said there was none on two items without"
             }
           ]
         },
@@ -2674,6 +2674,6 @@
       "under": "Variants"
     }
   ],
-  "verification": "Warning Partly verified. Phases 0, 2, 3, 4, 6 have been performed against a live system and confirmed. Phases 1, 5 have not. Follow those as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 1
 }

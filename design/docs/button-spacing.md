@@ -6,7 +6,7 @@ type: reference
 
 How big a button is, how far it stands from the button beside it, and how far
 from the edge of what holds it, in Rux Dark. Geist Dark shares every rule here
-but the header, the dialog's margin and the list a button opens, and Ant Dark
+but the dialog's margin and the list a button opens, and Ant Dark
 and the Apple themes share the gaps.
 Carbon's four themes keep Carbon's own: square buttons edge to edge in a bar,
 and a button set joined by a 1px seam.
@@ -18,8 +18,8 @@ them from it rather than restating them.
 
 | Size | Height | Where |
 | :--- | :--- | :--- |
-| `md` | 36px | the default: every bar (the header, a toolbar, a panel's head and foot, a dialog's foot), a dialog's close, and an action standing in a page or a panel, such as Add |
-| `sm` | 32px | inside dense content (a section's menu, a copy button in a field, a row's actions, a small command beside a heading), and inside a notification or a toast |
+| `md` | 36px | the default: every bar but the header (a toolbar, a panel's head and foot, a dialog's foot), a dialog's close, and an action standing in a page or a panel, such as Add |
+| `sm` | 32px | the header, as Geist's own site sizes it; inside dense content (a section's menu, a copy button in a field, a row's actions, a small command beside a heading), and inside a notification or a toast |
 
 A component an app draws itself, such as a tile of an icon over a word, may
 take its own height; it still takes the gaps below.
@@ -40,14 +40,13 @@ take its own height; it still takes the gaps below.
 
 | Inset | Where |
 | :--- | :--- |
-| 16px | from the edge of the header, a panel's head and foot and a dialog's foot, the inset of what they hold; with 36px buttons that makes each of those bars 68px |
+| 16px | from the edge of the header, a panel's head and foot and a dialog's foot, the inset of what they hold; with 36px buttons that makes a head or foot 68px, and with the header's 32px buttons and its 1px line the header 65px |
 | 12px | from the edge of a toolbar, a dialog's close and a card's row of buttons; with 36px buttons that makes a toolbar 60px |
 | 24px | the margin of what a panel or a dialog holds, its words and fields, wider than the 16px its head and foot keep |
 | centred | a notification's buttons sit centred on its line: the close 8px in on every side of Carbon's 48px square, and 4px in a toast's 40px row |
 
 Ant Dark's foot stands 16px in, as its Modal page measures. Geist Dark
-holds a dialog's words 20px in, and its header's 32px buttons 16px in a 64px
-bar, as Geist's own site does.
+holds a dialog's words 20px in, as Geist's own site does.
 
 ## Inside a button
 

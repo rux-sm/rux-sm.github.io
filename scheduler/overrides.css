@@ -1003,9 +1003,8 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 .scheduler-card .rux--user-avatar { color: var(--rux-text-on-color); }
 
 /* THE COMPANY'S LOGO, ESCAMILLA over TOUR BUSES, is 32px tall where the
-   header's buttons stand inset from the bar's edges: geist-dark's 32px and
-   rux-dark's 36px. Its drawing fills its frame, so in rux-dark it stands 2px
-   inside the buttons' ring above and below rather than crowding it. On
+   header's buttons stand inset from the bar's edges, the height of the dark
+   themes' 32px buttons. On
    Carbon's bar of edge-to-edge 48px squares it is their icons' 20px. The
    file's own aspect sets its width. */
 .scheduler-logo {

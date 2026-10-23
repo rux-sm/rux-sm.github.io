@@ -94,10 +94,10 @@
 
   /* ── toggle: a <button role="switch">, so Enter and Space are the browser's ─ */
   function setToggle(root, on) {
-    if (root.classList.contains('rux--toggle--disabled')) return;
+    if (root.classList.contains('rux--toggle--disabled') || root.classList.contains('rux--toggle--readonly')) return;
     const button = root.querySelector('.rux--toggle__button');
     const sw = root.querySelector('.rux--toggle__switch');
-    if (button?.disabled) return;
+    if (button?.disabled || button?.getAttribute('aria-readonly') === 'true') return;
     sw?.classList.toggle('rux--toggle__switch--checked', on);
     button?.setAttribute('aria-checked', String(on));
     const text = root.querySelector('.rux--toggle__text');

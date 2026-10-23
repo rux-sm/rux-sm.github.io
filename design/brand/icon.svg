@@ -1,6 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-<!-- The app tile icon, drawn from brand/logo.svg. It is a CSS mask over the
-     tile's text colour, so this file's own colours are discarded and only its
-     alpha is read; that is why it carries no fill and no title. -->
-<path d="M7 2L12 2L12 5L15 5L15 8L11 8L11 13L10 13L10 14L9 14L9 13L8 13L8 14L7 14L7 13L5 13L5 14L4 14L4 13L3 13L3 14L2 14L2 13L1 13L1 6L2 6L2 9L7 9L7 4L6 4L6 8L4 8L4 3L7 3L7 2ZM9 3L8 3L8 5L9 5L9 3ZM11 3L10 3L10 5L11 5L11 3Z"/>
+<!-- The app tile icon: the Rux mark, the same three rectangles as
+     brand/favicon.svg on the 16 grid, because the tile is 32 pixels, a
+     multiple of 16. It is a CSS mask over the tile's text colour, so this
+     file's own colours are discarded and only its alpha is read; that is why
+     it carries no fill and no title. -->
+<path d="M1 1L9 1L9 15L1 15ZM9 7L15 7L15 15L9 15ZM10 1L15 1L15 6L10 6Z"/>
 </svg>

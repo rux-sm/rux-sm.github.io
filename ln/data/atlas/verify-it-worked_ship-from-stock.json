@@ -25,7 +25,7 @@
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -49,10 +49,10 @@
       },
       {
         "t": "text",
-        "v": " read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
+        "v": " read, because a confirmed shipment is a document reaching a status, and the inventory figure confirms that stock moved."
       }
     ],
-    "text": "This task reads the same figures Confirm there is stock read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
+    "text": "This task reads the same figures Confirm there is stock read, because a confirmed shipment is a document reaching a status, and the inventory figure confirms that stock moved."
   },
   "blocks": [
     {
@@ -78,15 +78,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the on-hand quantity of the same item in the same warehouse as step 4 of "
+                  "v": "Filter the item, tick its row and open "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ", as at steps 1–3 of "
                 },
                 {
                   "t": "link",
                   "v": "Confirm there is stock",
                   "href": "confirm-there-is-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and read "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory on Hand"
+                },
+                {
+                  "t": "text",
+                  "v": " for the warehouse you recorded there"
                 }
               ],
-              "text": "Read the on-hand quantity of the same item in the same warehouse as step 4 of Confirm there is stock"
+              "text": "Filter the item, tick its row and open Warehouse Inventory, as at steps 1–3 of Confirm there is stock, and read Inventory on Hand for the warehouse you recorded there"
             },
             {
               "tokens": [
@@ -131,7 +151,7 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "On-hand before − on-hand after must equal the shipped quantity."
+          "v": "If nothing else moved the item in that warehouse since, on-hand before − on-hand after equals the shipped quantity, in the same unit."
         },
         {
           "t": "text",
@@ -144,7 +164,7 @@
         },
         {
           "t": "text",
-          "v": ". If it does not, check that the shipment reads "
+          "v": ". If they differ, check that the shipment reads "
         },
         {
           "t": "status",
@@ -152,7 +172,15 @@
         },
         {
           "t": "text",
-          "v": ", and whether another order moved this item in this warehouse since then. Ship from stock is complete when the shipment is "
+          "v": ", then open "
+        },
+        {
+          "t": "strong",
+          "v": "Item Transactions"
+        },
+        {
+          "t": "text",
+          "v": " from Inventory 360 to see what else moved the item. Ship from stock is complete when the shipment is "
         },
         {
           "t": "strong",
@@ -160,10 +188,10 @@
         },
         {
           "t": "text",
-          "v": " and this inventory check passes. Invoicing the order comes after this, and this guide does not cover it."
+          "v": " and the figures agree. Invoicing the order comes after this, and this guide does not cover it."
         }
       ],
-      "text": "On-hand before − on-hand after must equal the shipped quantity. On-hand before is the figure from step 4 of Confirm there is stock. If it does not, check that the shipment reads Confirmed, and whether another order moved this item in this warehouse since then. Ship from stock is complete when the shipment is Confirmed and this inventory check passes. Invoicing the order comes after this, and this guide does not cover it."
+      "text": "If nothing else moved the item in that warehouse since, on-hand before − on-hand after equals the shipped quantity, in the same unit. On-hand before is the figure from step 4 of Confirm there is stock. If they differ, check that the shipment reads Confirmed, then open Item Transactions from Inventory 360 to see what else moved the item. Ship from stock is complete when the shipment is Confirmed and the figures agree. Invoicing the order comes after this, and this guide does not cover it."
     }
   ],
   "example": {

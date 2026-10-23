@@ -105,7 +105,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -133,11 +133,11 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>3.1</b></td><td>Open <a class="rux--link" href="../screens/cprrp1220m000.html"><span class="ln-t-named">Generate Order Planning (Item)</span></a> <span class="ln-t-exact">cprrp1220m000</span> for <span class="ln-t-exact">BAM-CHOP-PAIR</span></td><td><span class="ln-t-named">Scenario</span> <span class="ln-t-exact">ACT</span> and <span class="ln-t-named">Plan Item</span> are set</td></tr>
+<tr id="step-1"><td><b>3.1</b></td><td>Open <a class="rux--link" href="../screens/cprrp1220m000.html"><span class="ln-t-named">Generate Order Planning (Item)</span></a> (<span class="ln-t-exact">cprrp1220m000</span>) for <span class="ln-t-exact">BAM-CHOP-PAIR</span></td><td><span class="ln-t-named">Scenario</span> <span class="ln-t-exact">ACT</span> and <span class="ln-t-named">Plan Item</span> are set</td></tr>
 <tr id="step-2"><td><b>3.2</b></td><td>Select <span class="ln-t-named">Include Child Items</span></td><td>The run will plan the rods and sleeves too</td></tr>
 <tr id="step-3"><td><b>3.3</b></td><td>Run the generation</td><td>The run completes</td></tr>
-<tr id="step-4"><td><b>3.4</b></td><td>Open <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> <span class="ln-t-exact">cprrp0520m000</span> for <span class="ln-t-exact">BAM-CHOP-PAIR</span> and read the planned supply row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">planned production order</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note"><span class="ln-t-named">Supply</span> equals ordered quantity minus on-hand</span></span></td></tr>
-<tr id="step-5"><td><b>3.5</b></td><td>Open <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-named">Planned Orders</span></a> <span class="ln-t-exact">cprrp1100m000</span> at <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span>, for the items' planning cluster and site</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">planned purchase orders</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">every row at <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></span></span></td></tr>
+<tr id="step-4"><td><b>3.4</b></td><td>Open <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> (<span class="ln-t-exact">cprrp0520m000</span>) for <span class="ln-t-exact">BAM-CHOP-PAIR</span> and read the planned supply row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">planned production order</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note"><span class="ln-t-named">Supply</span> equals ordered quantity minus on-hand</span></span></td></tr>
+<tr id="step-5"><td><b>3.5</b></td><td>Open <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-named">Planned Orders</span></a> (<span class="ln-t-exact">cprrp1100m000</span>) at <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Planned Orders</span></span>, for the items' planning cluster and site</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">planned purchase orders</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">every row at <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></span></span></td></tr>
 <tr id="step-6"><td><b>3.6</b></td><td>Select the planned production order and run <span class="ln-t-named">Pegging - Upstream</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">pegging arithmetic check</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">each level's children sum to its requirement</span></span></td></tr>
 </tbody>
 </table></div>
@@ -151,7 +151,7 @@
 <tbody>
 <tr><td>The run plans the pair but not a component</td><td>The component has no planning data of its own. <a class="rux--link" href="../do/preflight.html#step-4">Step 1.4</a> (Preflight) — MRP skips it silently</td></tr>
 <tr><td>A component has plan data and still produces nothing</td><td>It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand</td></tr>
-<tr><td>The pegging tree is empty</td><td>Pegging relations were not generated, or the demand is beyond the Pegging Horizon in <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Planning Parameters</span></a> <span class="ln-t-exact">cprpd0100m000</span></td></tr>
+<tr><td>The pegging tree is empty</td><td>Pegging relations were not generated, or the demand is beyond the Pegging Horizon in <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Planning Parameters</span></a> (<span class="ln-t-exact">cprpd0100m000</span>)</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -220,9 +220,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-16">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-21">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-16" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-21" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -238,7 +238,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The run plans the pair but not a component</b><p>The component has no planning data of its own. Step 4 of <a class="rux--link" href="../do/preflight.html">Preflight</a> — MRP skips it silently</p></li>
   <li><b>A component has plan data and still produces nothing</b><p>It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand </p></li>
-  <li><b>The pegging tree is empty</b><p>Pegging relations were not generated, or the demand is beyond the Pegging Horizon in <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Planning Parameters</span></a> <span class="ln-t-exact">cprpd0100m000</span></p></li>
+  <li><b>The pegging tree is empty</b><p>Pegging relations were not generated, or the demand is beyond the Pegging Horizon in <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Planning Parameters</span></a> (<span class="ln-t-exact">cprpd0100m000</span>)</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

@@ -28,7 +28,7 @@
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -234,57 +234,28 @@
                 {
                   "t": "field",
                   "v": "Planned Receipt Date"
-                },
-                {
-                  "t": "text",
-                  "v": " — "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Delivery Date"
-                },
-                {
-                  "t": "text",
-                  "v": " starts as the "
-                },
-                {
-                  "t": "field",
-                  "v": "Order Date"
-                },
-                {
-                  "t": "text",
-                  "v": ", and "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Receipt Date"
-                },
-                {
-                  "t": "text",
-                  "v": " as the "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Delivery Date"
                 }
               ],
-              "text": "Set Planned Delivery Date and Planned Receipt Date — Planned Delivery Date starts as the Order Date, and Planned Receipt Date as the Planned Delivery Date"
+              "text": "Set Planned Delivery Date and Planned Receipt Date"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Both start at the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Date"
                 }
               ],
-              "text": "—"
+              "text": "Both start at the Order Date"
             }
           ],
           "id": "4",
           "optional": false,
           "produces": false,
           "example": [
-            1,
             2,
             3
           ]
@@ -312,7 +283,15 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " on the Order tab, and "
                 },
                 {
                   "t": "field",
@@ -320,14 +299,18 @@
                 },
                 {
                   "t": "text",
-                  "v": ", "
+                  "v": " on the "
                 },
                 {
-                  "t": "field",
-                  "v": "Site"
+                  "t": "chip",
+                  "v": "Invoicing"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Confirm Sales Office, Currency, Site"
+              "text": "Confirm Sales Office and Site on the Order tab, and Currency on the Invoicing tab"
             },
             {
               "tokens": [
@@ -663,10 +646,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". Order Acknowledgement prints"
+                  "v": ". The Order Acknowledgement prints, and a Conformance Reporting sheet beside it for an item that needs documents"
                 }
               ],
-              "text": "Status = In Process. Order Acknowledgement prints"
+              "text": "Status = In Process. The Order Acknowledgement prints, and a Conformance Reporting sheet beside it for an item that needs documents"
             }
           ],
           "id": "12",

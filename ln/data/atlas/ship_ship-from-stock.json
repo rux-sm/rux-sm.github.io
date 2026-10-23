@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -231,10 +231,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " becomes available"
+                  "v": " becomes available. A Bill of Lading and the packing slip print, each to its own tab"
                 }
               ],
-              "text": "Status = Frozen. Confirm becomes available"
+              "text": "Status = Frozen. Confirm becomes available. A Bill of Lading and the packing slip print, each to its own tab"
             }
           ],
           "id": "3",
@@ -256,19 +256,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Review the packing slip"
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Packing Slips"
+                },
+                {
+                  "t": "text",
+                  "v": " tab and check it against the order"
                 }
               ],
-              "text": "Review the packing slip"
+              "text": "Open the Packing Slips tab and check it against the order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped"
                 }
               ],
-              "text": "—"
+              "text": "The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped"
             }
           ],
           "id": "4",

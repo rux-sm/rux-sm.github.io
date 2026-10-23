@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -137,7 +137,7 @@
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
 <section class="ln-proc__task" id="task-1">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/plan-the-prompt.html">Plan the prompt</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The session code, the table, the values and the sentence the user sees.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> <span class="ln-t-exact">whwmd4100m100</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The session code, the table, the values and the sentence the user sees.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -153,7 +153,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Plan the prompt: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -165,7 +165,7 @@
 </section>
 <section class="ln-proc__task" id="task-2">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/model-the-dataset.html">Model the dataset</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The fields the answer needs are ready to send.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">Datasets</span></span> <span class="ln-t-exact">ttrpi5100m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The fields the answer needs are ready to send.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">Datasets</span></span> (<span class="ln-t-exact">ttrpi5100m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -190,7 +190,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Model the dataset: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -208,7 +208,7 @@
 </section>
 <section class="ln-proc__task" id="task-3">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">3</span><a class="rux--link" href="../do/write-the-prompt.html">Write the prompt</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A prompt exists with a label, a dataset and both texts.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> <span class="ln-t-exact">ttrpi5150m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A prompt exists with a label, a dataset and both texts.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A prompt row ties a label, a dataset and two texts together. The label's description becomes the command's name. The instruction text is shown to the user beside the answer. The prompt text is what is sent to the model, with the dataset's output put where its data marker stands. The first prompt text is short on purpose: what the data is, the task, one rule and the marker.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -230,7 +230,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Write the prompt: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -243,7 +243,7 @@
 </section>
 <section class="ln-proc__task" id="task-4">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">4</span><a class="rux--link" href="../do/link-the-prompt-to-a-session.html">Link the prompt to a session</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The command is in the Actions menu of the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span> <span class="ln-t-exact">ttadv9160m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The command is in the Actions menu of the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span> (<span class="ln-t-exact">ttadv9160m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing shows on any screen until a prompt is linked to a session code. The link is to one exact code: the command appears on that session and on no other, however alike two screens look. Three settings on the link decide whether the command is offered, to whom, and with what selected.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -257,7 +257,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Link the prompt to a session: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -269,7 +269,7 @@
 </section>
 <section class="ln-proc__task" id="task-5">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/run-it-and-check-the-answer.html">Run it and check the answer</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A first answer, checked against the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> <span class="ln-t-exact">whwmd4100m100</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A first answer, checked against the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -285,7 +285,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Run it and check the answer: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -299,7 +299,7 @@
 </section>
 <section class="ln-proc__task" id="task-6">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">6</span><a class="rux--link" href="../do/improve-it.html">Improve it</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An answer in the form asked for, right for each kind of record.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> <span class="ln-t-exact">ttrpi5150m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An answer in the form asked for, right for each kind of record.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -324,7 +324,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Improve it: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -340,7 +340,7 @@
 </section>
 <section class="ln-proc__task" id="task-7">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">7</span><a class="rux--link" href="../do/remove-it.html">Remove it</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The command, the prompt and the dataset are gone.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> <span class="ln-t-exact">ttrpi5150m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The command, the prompt and the dataset are gone.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -354,7 +354,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Remove it: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -390,7 +390,7 @@
   <li><b>Does somebody read it before acting on it?</b><p><span class="ln-quiet">A good sign</span><br>Yes. A wrong answer reads like a right one</p><p><span class="ln-quiet">Seen here</span><br>Every answer carries LN's notice to verify it</p></li>
   <li><b>Is the work wording, or a judgement on text?</b><p><span class="ln-quiet">A good sign</span><br>Yes, and not a calculation</p><p><span class="ln-quiet">Seen here</span><br>Left free, the model added sums of its own and one of them was wrong</p></li>
   <li><b>Can the screen's record reach the data?</b><p><span class="ln-quiet">A good sign</span><br>Yes. How far a dataset reaches says how to tell</p><p><span class="ln-quiet">Seen here</span><br>The example was first wanted on the sales order line, which cannot reach an item's stock</p></li>
-</ul><p><strong>An idea that only restates one field saves nothing.</strong> A delivery update built here on one order line gave back three values of that line's own screen.</p><p><strong>The stock check fails the third question, so it is kept only as a demonstration.</strong> Its work is laying out figures LN already holds, and the rule against calculating leaves the model nothing to judge. LN shows the same data on screens of its own, <a class="rux--link" href="../screens/whwmd4300m000.html"><span class="ln-t-named">Inventory 360</span></a> <span class="ln-t-exact">whwmd4300m000</span>, <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span>, and <a class="rux--link" href="../screens/whinp1300m000.html"><span class="ln-t-named">Planned Inventory Transactions - Graphical View</span></a> <span class="ln-t-exact">whinp1300m000</span>, <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Planning &amp; Analysis</span><span class="sep">➔</span><span>Planning</span><span class="sep">➔</span><span class="dest">Planned Inventory Transactions - Graphical View</span></span>. The question a seller has, whether a quantity can be promised by a date, is available to promise, which LN checks itself. On the default model its answers changed from run to run, it could not be made to sort, and a long item comes back as a long block of text a sortable list shows better. Status Overview fits better: it reads a line's statuses and names the step that comes next.</p></div></div>
+</ul><p><strong>An idea that only restates one field saves nothing.</strong> A delivery update built here on one order line gave back three values of that line's own screen.</p><p><strong>The stock check fails the third question, so it is kept only as a demonstration.</strong> Its work is laying out figures LN already holds, and the rule against calculating leaves the model nothing to judge. LN shows the same data on screens of its own, <a class="rux--link" href="../screens/whwmd4300m000.html"><span class="ln-t-named">Inventory 360</span></a> (<span class="ln-t-exact">whwmd4300m000</span>), <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span>, and <a class="rux--link" href="../screens/whinp1300m000.html"><span class="ln-t-named">Planned Inventory Transactions - Graphical View</span></a> (<span class="ln-t-exact">whinp1300m000</span>), <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Planning &amp; Analysis</span><span class="sep">➔</span><span>Planning</span><span class="sep">➔</span><span class="dest">Planned Inventory Transactions - Graphical View</span></span>. The question a seller has, whether a quantity can be promised by a date, is available to promise, which LN checks itself. On the default model its answers changed from run to run, it could not be made to sort, and a long item comes back as a long block of text a sortable list shows better. Status Overview fits better: it reads a line's statuses and names the step that comes next.</p></div></div>
   </li>
   <li class="rux--accordion__item" id="ref-2">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">

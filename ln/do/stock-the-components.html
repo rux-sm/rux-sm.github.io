@@ -105,7 +105,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -131,7 +131,7 @@
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A production order can be created and released with no stock, but it cannot be finished, because the material issue has nothing to issue. Buying the components in exercises the Purchase defaults and creates the purchase price history their standard cost is calculated from; the inventory figure at the raw-material warehouse, not the receipt status, is the proof.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -142,13 +142,13 @@
 <tr id="step-2"><td><b>10.2</b></td><td>Click <span class="ln-t-press">Warehouse Inventory</span></td><td></td></tr>
 <tr id="step-3"><td><b>10.3</b></td><td>Read the raw-material warehouse. It is the one from <a class="rux--link" href="../do/confirm-the-test-design.html#step-5">step 1.5</a> (Confirm the test design)</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">rod on hand before, expected to be 0 for a new item</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-4"><td><b>10.4</b></td><td>Repeat <a class="rux--link" href="#step-1">steps 10.1–10.3</a> for the paper sleeve</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">sleeve on hand before</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">both baselines recorded before anything is booked</span></span></td></tr>
-<tr id="step-5"><td><b>10.5</b></td><td>Create a purchase order in <a class="rux--link" href="../screens/tdpur4601m200.html"><span class="ln-t-named">Purchase Order Intake Workbench</span></a> <span class="ln-t-exact">tdpur4601m200</span></td><td><span class="ln-proc__see"><a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> <span class="ln-t-exact">tdpur4100m900</span> opens</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component stocking route used</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-6"><td><b>10.6</b></td><td>Open the lookup on <span class="ln-t-named">Buy-from Business Partner</span>. It is <a class="rux--link" href="../screens/tccom4520m000.html"><span class="ln-t-named">Buy-from Business Partners</span></a> <span class="ln-t-exact">tccom4520m000</span></td><td>The partner list opens</td></tr>
+<tr id="step-5"><td><b>10.5</b></td><td>Create a purchase order in <a class="rux--link" href="../screens/tdpur4601m200.html"><span class="ln-t-named">Purchase Order Intake Workbench</span></a> (<span class="ln-t-exact">tdpur4601m200</span>)</td><td><span class="ln-proc__see"><a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> (<span class="ln-t-exact">tdpur4100m900</span>) opens</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component stocking route used</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6"><td><b>10.6</b></td><td>Open the lookup on <span class="ln-t-named">Buy-from Business Partner</span>. It is <a class="rux--link" href="../screens/tccom4520m000.html"><span class="ln-t-named">Buy-from Business Partners</span></a> (<span class="ln-t-exact">tccom4520m000</span>)</td><td>The partner list opens</td></tr>
 <tr id="step-7"><td><b>10.7</b></td><td>Select the partner</td><td>One run used one of the standard test partners</td></tr>
 <tr id="step-8"><td><b>10.8</b></td><td>Set <span class="ln-t-named">Order Type</span>, <span class="ln-t-named">Purchase Office</span> and <span class="ln-t-named">Ship-to</span></td><td>The order takes a number. One run showed Order Type <span class="ln-t-exact">IPO</span> (Inventory Purchase Order), the partner's purchase office and the site as ship-to</td></tr>
 <tr id="step-9"><td><b>10.9</b></td><td>Book the order lines from the BOM, not from habit</td><td>One line per component. One run booked line 10 <span class="ln-t-exact">BAM-ROD</span> qty <span class="ln-t-exact">2.0000 ea</span> and line 20 <span class="ln-t-exact">BAM-SLEEVE</span> qty <span class="ln-t-exact">1.0000 ea</span>, both to the raw-materials warehouse</td></tr>
-<tr id="step-10"><td><b>10.10</b></td><td>On the generated <a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a> <span class="ln-t-exact">whinh2100m100</span>, run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receive</span></span> on the inbound lines</td><td>Order Type <span class="ln-t-exact">PUI</span> &quot;Purchase Receipts&quot;, ship-from the business partner, ship-to the raw-materials warehouse</td></tr>
-<tr id="step-11"><td><b>10.11</b></td><td>Confirm the <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> <span class="ln-t-exact">whinh3512m000</span></td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> both set</td></tr>
+<tr id="step-10"><td><b>10.10</b></td><td>On the generated <a class="rux--link" href="../screens/whinh2100m100.html"><span class="ln-t-named">Warehousing Order</span></a> (<span class="ln-t-exact">whinh2100m100</span>), run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Receive</span></span> on the inbound lines</td><td>Order Type <span class="ln-t-exact">PUI</span> &quot;Purchase Receipts&quot;, ship-from the business partner, ship-to the raw-materials warehouse</td></tr>
+<tr id="step-11"><td><b>10.11</b></td><td>Confirm the <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> (<span class="ln-t-exact">whinh3512m000</span>)</td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> both set</td></tr>
 <tr id="step-12"><td><b>10.12</b></td><td>Re-read both items in <span class="ln-t-named">Inventory 360</span> at the raw-material warehouse</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">rod on hand after and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">sleeve on hand after</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">each increased by the booked quantity</span></span></td></tr>
 </tbody>
 </table></div>
@@ -193,7 +193,7 @@
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Screen</b><p><a class="rux--link" href="../screens/whwmd4300m000.html"><span class="ln-t-named">Inventory 360</span></a> <span class="ln-t-exact">whwmd4300m000</span><br><span class="ln-quiet">The starting point for any question about where an item's stock is and what state it is in.</span></p></li>
+  <li><b>Screen</b><p><a class="rux--link" href="../screens/whwmd4300m000.html"><span class="ln-t-named">Inventory 360</span></a> (<span class="ln-t-exact">whwmd4300m000</span>)<br><span class="ln-quiet">The starting point for any question about where an item's stock is and what state it is in.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/available-to-promise.html">Available to promise</a> · <a class="rux--link" href="../ideas/business-partner.html">Business partner</a> · <a class="rux--link" href="../ideas/order-type.html">Order type</a> · <a class="rux--link" href="../ideas/warehousing-order.html">Warehousing order</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a> in Create test items</p></li>
 </ul>
@@ -227,7 +227,7 @@
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Create a purchase order in <a class="rux--link" href="../screens/tdpur4601m200.html"><span class="ln-t-named">Purchase Order Intake Workbench</span></a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> <span class="ln-t-exact">tdpur4100m900</span> opens</p><span class="ln-quiet ln-step__write">Write down</span><p>component stocking route used</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tdpur4100m900.html"><span class="ln-t-named">Purchase Order</span></a> (<span class="ln-t-exact">tdpur4100m900</span>) opens</p><span class="ln-quiet ln-step__write">Write down</span><p>component stocking route used</p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open the lookup on <span class="ln-t-named">Buy-from Business Partner</span></h1><p class="ln-step__note">It is <a class="rux--link" href="../screens/tccom4520m000.html"><span class="ln-t-named">Buy-from Business Partners</span></a></p></div>
@@ -258,7 +258,7 @@
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>rod on hand after and, sleeve on hand after — each increased by the booked quantity</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</p>
 <div class="ln-confirm" data-confirm="stock-the-components">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
   <div class="ln-confirm__ask" data-owner hidden>
@@ -267,9 +267,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-8">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-13">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-8" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-13" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

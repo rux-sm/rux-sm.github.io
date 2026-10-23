@@ -105,6 +105,8 @@ const route = (raw) => `<span class="ln-t-route">${raw.split(ARROW).map((x, i, a
   (i ? '<span class="sep">➔</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;
 const named = (v) => `<span class="ln-t-named">${esc(v)}</span>`;
 const exact = (v) => `<span class="ln-t-exact">${esc(v)}</span>`;
+// A screen's code beside its name sits in brackets, so the two never run together.
+const coded = (v) => `(${exact(v)})`;
 const screenLink = (code, text) => cards.has(code) ? `<a class="rux--link" href="${hrefScreen(code)}">${text}</a>` : text;
 
 // ATLAS NUMBERS FROM 0 AND THE READER COUNTS FROM 1. Atlas's own text points
@@ -162,7 +164,7 @@ function token(t) {
     // The link wraps the name alone: Carbon's link is a flex box, and a space
     // between two things inside one collapses. In a step's headline a screen
     // is its name alone where it has a page, because the page holds the code.
-    case 'session': return t.name ? `${screenLink(t.code, named(t.name))}${t.bare && cards.has(t.code) ? '' : ` ${exact(t.code)}`}` : screenLink(t.code, exact(t.code));
+    case 'session': return t.name ? `${screenLink(t.code, named(t.name))}${t.bare && cards.has(t.code) ? '' : ` ${coded(t.code)}`}` : screenLink(t.code, exact(t.code));
     case 'dest': return named(t.v);
     case 'pencil': return '<svg class="ln-pencil" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" role="img" aria-label="worth noting down"><use href="#i-edit"/></svg>';
     // A link names another atlas document. A process or a task opens its
@@ -584,12 +586,12 @@ function processPage(s) {
       const wrong = wrongTable(s, t, k);
       return `<section class="ln-proc__task" id="task-${k}">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">${k}</span><a class="rux--link" href="${hrefTask(t.id)}">${esc(t.title)}</a></h3>
-<dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${exact(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
+<dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
 ${ups}
 ${stepsHtml}
 ${downs}${wrong ? `
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">${esc(t.title)}: if something goes wrong</p>
 ${wrong}` : ''}
 </section>`;
     }).join('\n');
@@ -614,7 +616,7 @@ ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
 <section>
 ${docH2('summary', 'Summary')}
 ${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
-<p class="ln-proc__h4">Example values</p>
+<p class="ln-proc__h4">Example values from a test run</p>
 ${values}` : ''}
 </section>${need.length ? `
 <section>
@@ -746,14 +748,16 @@ const paper = (title, updated, walked = []) => {
 };
 const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().at(-1);
 
-// One task's steps, every task in the same three columns: an example value the
-// task was walked with sits under its action, as the guided step shows it.
+// One task's steps, every task in the same three columns: the example values the
+// task was walked with sit under its action, one label over all of them, as the
+// guided step shows them.
 function stepTable(t, k) {
   const ex = t.example?.rows ?? [];
   const rows = rowsOf(t).map((r) => {
     const n = k ? `${k}.${r.id}` : r.id;
     const where = `Step ${n}`;
-    const value = (r.example ?? []).map((i) => ex[i]).filter(Boolean).map((e) => `<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span>${docText(e.cells[0].tokens)} ${docText(e.cells[1].tokens)}</span>`).join('');
+    const shown = (r.example ?? []).map((i) => ex[i]).filter(Boolean);
+    const value = shown.length ? `<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span>${shown.map((e) => `<span class="ln-proc__value-row">${docText(e.cells[0].tokens)} ${docText(e.cells[1].tokens)}</span>`).join('')}</span>` : '';
     const cells = [`<b>${n}</b>`, docText(r.cells[1].tokens, t, where) + value, seeing(r.cells[2], t, where)];
     return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells };
   });
@@ -811,7 +815,7 @@ function task(s, t) {
   const why = t.why ? `<p>${tokens(t.why.tokens)}</p>` : '';
   const stuck = (id, label) => wrong.length && [id, `${label} · ${wrong.length}`, list(wrong)];
   const related = ['related', 'Related', list([
-    screen && { title: 'Screen', body: `<p>${screenLink(t.sessionCode, named(t.session))} ${exact(t.sessionCode)}<br><span class="ln-quiet">${esc(screen.purpose)}</span></p>` },
+    screen && { title: 'Screen', body: `<p>${screenLink(t.sessionCode, named(t.session))} ${coded(t.sessionCode)}<br><span class="ln-quiet">${esc(screen.purpose)}</span></p>` },
     ideas.length && { title: 'Ideas', body: `<p>${ideas.map((c) => `<a class="rux--link" href="${hrefIdea(c.id)}">${esc(c.name)}</a>`).join(' · ')}</p>` },
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
@@ -855,7 +859,7 @@ ${values}
 </section>` : ''}
 <section>
 ${docH2('steps', 'Steps')}${t.route ? `
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${exact(t.sessionCode)}` : ''}</dd></div></dl>` : ''}${lead ? `
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div></dl>` : ''}${lead ? `
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
 ${ups}
 ${stepsHtml}
@@ -892,11 +896,11 @@ ${related[2]}
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${(r.example ?? []).map((i) => `<p class="ln-step__example"><span class="ln-quiet">Example</span> ${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}</p>`).join('')}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.route ? `
-<p class="ln-step__route">This task starts at ${route(t.route)} ${t.sessionCode ? exact(t.sessionCode) : ''}</p>` : ''}${t.walked ? '' : `
+<p class="ln-step__route">This task starts at ${route(t.route)} ${t.sessionCode ? coded(t.sessionCode) : ''}</p>` : ''}${t.walked ? '' : `
 ${confirmBox(t.id)}`}
 ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

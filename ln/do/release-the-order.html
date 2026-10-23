@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -121,7 +121,7 @@
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Release changes the order to <strong>Released</strong>, the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a> works the first; <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> depends on the second.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -129,7 +129,7 @@
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-1"><td><b>4.1</b></td><td>Select the production order row from <a class="rux--link" href="../do/create-the-production-order.html#step-9">step 2.9</a> (Create the production order)</td><td>The row is highlighted</td></tr>
-<tr id="step-2"><td><b>4.2</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></td><td><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</td></tr>
+<tr id="step-2"><td><b>4.2</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></td><td><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> (<span class="ln-t-exact">tisfc0204m000</span>) opens</td></tr>
 <tr id="step-3"><td><b>4.3</b></td><td>Confirm the selection range narrows to this one production order</td><td>Only this order is in scope for the release run</td></tr>
 <tr id="step-4"><td><b>4.4</b></td><td>Run the release</td><td><span class="ln-proc__see">The dialog closes; back in <span class="ln-t-named">Production Orders</span>,</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">order status after release = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-5"><td><b>4.5</b></td><td>Confirm no other order changed status</td><td>Only the order from <a class="rux--link" href="../do/create-the-production-order.html#step-9">step 2.9</a> (Create the production order) shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
@@ -143,7 +143,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td><td>Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> <span class="ln-t-exact">tisfc0100s000</span> before assuming a fault</td></tr>
+<tr><td>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td><td>Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> (<span class="ln-t-exact">tisfc0100s000</span>) before assuming a fault</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -162,7 +162,7 @@
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Screen</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span><br><span class="ln-quiet">An overview of production orders — identity, item, dates, status, warehouse and key quantities.</span></p></li>
+  <li><b>Screen</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>)<br><span class="ln-quiet">An overview of production orders — identity, item, dates, status, warehouse and key quantities.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/release.html">Release</a> · <a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a> in Production order</p></li>
 </ul>
@@ -185,7 +185,7 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Release Orders</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> (<span class="ln-t-exact">tisfc0204m000</span>) opens</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm the selection range narrows to this one production order</h1></div>
@@ -200,7 +200,7 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Only the order from step 9 of <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a> shows <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</p>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
@@ -208,7 +208,7 @@
       <div class="rux--accordion__title">Stuck? · 1</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></b><p>Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> <span class="ln-t-exact">tisfc0100s000</span> before assuming a fault </p></li>
+  <li><b>The order does not reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></b><p>Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-named">Production Order Parameters</span></a> (<span class="ln-t-exact">tisfc0100s000</span>) before assuming a fault </p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

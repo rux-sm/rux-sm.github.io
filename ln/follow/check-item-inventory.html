@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -128,7 +128,7 @@
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
 <section class="ln-proc__task" id="task-1">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/find-the-item.html">Find the item</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The item's on hand, blocked, on order and allocated are known.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The item's on hand, blocked, on order and allocated are known.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -141,27 +141,27 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Find the item: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The item returns no row</td><td>The item has no inventory records yet, so there is nothing to report</td></tr>
 <tr><td>The header's links stay pale</td><td>No row is ticked. Tick the item's row</td></tr>
-<tr><td><span class="ln-t-named">Item Order Plan</span> is greyed out in the header</td><td>Expected. Open it through Planning instead: <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> <span class="ln-t-exact">cprrp0520m000</span>, <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></td></tr>
+<tr><td><span class="ln-t-named">Item Order Plan</span> is greyed out in the header</td><td>Expected. Open it through Planning instead: <a class="rux--link" href="../screens/cprrp0520m000.html"><span class="ln-t-named">Item Order Plan</span></a> (<span class="ln-t-exact">cprrp0520m000</span>), <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Item Order Plan</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__task" id="task-2">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/read-the-stock-by-warehouse.html">Read the stock by warehouse</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The warehouse to work from, and its figures, are written down.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> <span class="ln-t-exact">whwmd4300m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The warehouse to work from, and its figures, are written down.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span class="dest">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse the item is known in, with or without stock, so the warehouse a later task uses is chosen from its figures. <span class="ln-t-named">Economic Stock</span> on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-2-1"><td><b>2.1</b></td><td>In the <span class="ln-t-named">Inventory</span> group of the header, click <span class="ln-t-press">Warehouse Inventory</span></td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens, item carried through</td></tr>
+<tr id="step-2-1"><td><b>2.1</b></td><td>In the <span class="ln-t-named">Inventory</span> group of the header, click <span class="ln-t-press">Warehouse Inventory</span></td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens, item carried through</td></tr>
 <tr id="step-2-2"><td><b>2.2</b></td><td>Read each row's <span class="ln-t-named">Inventory on Hand</span> and <span class="ln-t-named">Inventory on Order</span></td><td>One row per warehouse the item is known in, including ones that hold nothing</td></tr>
 <tr id="step-2-3"><td><b>2.3</b></td><td>Read each row's <span class="ln-t-named">Inventory Allocated</span> and <span class="ln-t-named">Inventory Blocked</span></td><td></td></tr>
 <tr id="step-2-4"><td><b>2.4</b></td><td>Choose the warehouse to work from by its figures, not its name</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">on hand</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">allocated</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">blocked</span><span class="ln-proc__write-line"></span></span></span></td></tr>
@@ -169,7 +169,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Read the stock by warehouse: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>

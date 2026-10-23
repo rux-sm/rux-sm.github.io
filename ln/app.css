@@ -80,13 +80,15 @@
 .ln-proc__quiet td { font-size: .8125rem; color: var(--rux-text-secondary); }
 .ln-proc__steps tr:target td { background: var(--rux-highlight); }
 .ln-proc__value { display: block; margin-block-start: .375rem; }
+.ln-proc__value-row { display: block; }
 .ln-proc__value-k { display: block; font-size: .75rem; color: var(--rux-text-secondary); }
 .ln-proc__see { display: block; margin-block-end: .375rem; }
-.ln-proc__writes { display: block; }
+/* The figures to write down share one label column, so every line starts in the same place. */
+.ln-proc__writes { display: grid; grid-template-columns: max-content 1fr; column-gap: .5rem; row-gap: .375rem; align-items: end; }
+.ln-proc__writes-k, .ln-proc__write-note { grid-column: 1 / -1; }
 .ln-proc__writes-k { display: block; margin-block-end: .125rem; font-size: .75rem; color: var(--rux-text-secondary); }
-.ln-proc__write { display: flex; align-items: flex-end; gap: .5rem; margin-block-end: .375rem; }
-.ln-proc__write-label { flex: none; max-inline-size: 60%; }
-.ln-proc__write-line { flex: 1; min-inline-size: 3rem; block-size: 1.1em; border-block-end: 1px solid var(--rux-border-strong-01); }
+.ln-proc__write { display: contents; }
+.ln-proc__write-line { min-inline-size: 3rem; block-size: 1.1em; border-block-end: 1px solid var(--rux-border-strong-01); }
 .ln-proc__write-note { display: block; margin-block-end: .375rem; font-size: .8125rem; color: var(--rux-text-secondary); }
 .ln-proc__list { margin: 0; padding-inline-start: 1.25rem; list-style: disc; }
 /* A list item reads at a paragraph's line height, which Carbon's reset takes away. */

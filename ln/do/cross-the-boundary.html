@@ -106,7 +106,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -128,7 +128,7 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span> <span class="ln-t-exact">cprrp1200m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span> (<span class="ln-t-exact">cprrp1200m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A planned order is a proposal that no other module can see. Confirming marks it approved, and transferring translates it: a planned production order becomes a production order in Job Shop Control and a planned purchase order becomes a purchase order in Procurement, decided by the item's supply source. A transfer run against unconfirmed orders appears to do nothing.</p>
 <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
@@ -145,12 +145,12 @@
 <tbody>
 <tr id="step-1"><td><b>4.1</b></td><td>Confirm <span class="ln-t-exact">BAM-ROD</span> has a row on the <span class="ln-t-named">Item - Business Partner</span> tab of its purchase data</td><td>A buy-from business partner</td></tr>
 <tr id="step-2"><td><b>4.2</b></td><td>If MRP proposed a planned purchase order for <span class="ln-t-exact">BAM-SLEEVE</span>, check the same tab for that item</td><td>A partner row, or the transfer will refuse it at <a class="rux--link" href="#step-7">step 4.7</a></td></tr>
-<tr id="step-3"><td><b>4.3</b></td><td>In <a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a> <span class="ln-t-exact">cprrp1200m000</span>, confirm the planned orders you intend to transfer</td><td><span class="ln-t-named">Order Status</span> moves from <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> to <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></td></tr>
-<tr id="step-4"><td><b>4.4</b></td><td>Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a> <span class="ln-t-exact">cppat1210m000</span></td><td></td></tr>
+<tr id="step-3"><td><b>4.3</b></td><td>In <a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a> (<span class="ln-t-exact">cprrp1200m000</span>), confirm the planned orders you intend to transfer</td><td><span class="ln-t-named">Order Status</span> moves from <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span> to <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></td></tr>
+<tr id="step-4"><td><b>4.4</b></td><td>Open <a class="rux--link" href="../screens/cppat1210m000.html"><span class="ln-t-named">Transfer Order Planning</span></a> (<span class="ln-t-exact">cppat1210m000</span>)</td><td></td></tr>
 <tr id="step-5"><td><b>4.5</b></td><td>Select <span class="ln-t-named">Purchase</span></td><td>The transfer is scoped to the purchase orders</td></tr>
 <tr id="step-6"><td><b>4.6</b></td><td>Select <span class="ln-t-named">Error Report</span> and <span class="ln-t-named">Process Report</span></td><td></td></tr>
 <tr id="step-7"><td><b>4.7</b></td><td>Run the transfer and read the report</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">real purchase order number</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the report names the order each proposal became, or why it did not transfer</span></span></td></tr>
-<tr id="step-8"><td><b>4.8</b></td><td>Repeat <a class="rux--link" href="#step-4">steps 4.4–4.7</a> with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">real production order number</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></span></span></td></tr>
+<tr id="step-8"><td><b>4.8</b></td><td>Repeat <a class="rux--link" href="#step-4">steps 4.4–4.7</a> with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">real production order number</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>) at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -194,7 +194,7 @@
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Screen</b><p><a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a> <span class="ln-t-exact">cprrp1200m000</span><br><span class="ln-quiet">Confirms a range of planned orders in one run, and can take only those inside their order lead time.</span></p></li>
+  <li><b>Screen</b><p><a class="rux--link" href="../screens/cprrp1200m000.html"><span class="ln-t-named">Confirm Order Planning</span></a> (<span class="ln-t-exact">cprrp1200m000</span>)<br><span class="ln-quiet">Confirms a range of planned orders in one run, and can take only those inside their order lead time.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/business-partner.html">Business partner</a> · <a class="rux--link" href="../ideas/planned-order.html">Planned order</a> · <a class="rux--link" href="../ideas/scenario.html">Scenario</a> · <a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/receive-the-components.html">Receive the components</a> in Plan to shipment</p></li>
 </ul>
@@ -248,10 +248,10 @@
   </li>
   <li data-k="8" data-ref="8" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 4–7 with <span class="ln-t-named">Job Shop</span> selected instead of <span class="ln-t-named">Purchase</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>real production order number — expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span> at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>real production order number — expected in <a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>) at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span> <span class="ln-t-exact">cprrp1200m000</span></p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Planning</span><span class="sep">➔</span><span>Order Planning</span><span class="sep">➔</span><span class="dest">Confirm Order Planning</span></span> (<span class="ln-t-exact">cprrp1200m000</span>)</p>
 <div class="ln-confirm" data-confirm="cross-the-boundary">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
   <div class="ln-confirm__ask" data-owner hidden>
@@ -260,9 +260,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-17">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-22">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-17" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-22" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>

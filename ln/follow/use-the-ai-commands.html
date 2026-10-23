@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -128,7 +128,7 @@
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
 <section class="ln-proc__task" id="task-1">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/run-the-stock-check.html">Run the stock check</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> <span class="ln-t-exact">whwmd4100m100</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, Is it worth a prompt.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -145,7 +145,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Run the stock check: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -157,7 +157,7 @@
 </section>
 <section class="ln-proc__task" id="task-2">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">2</span><a class="rux--link" href="../do/run-status-overview.html">Run Status Overview</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span> <span class="ln-t-exact">tdsls4601m200</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Sales</span><span class="sep">➔</span><span>Orders</span><span class="sep">➔</span><span class="dest">Order Intake Workbench</span></span> (<span class="ln-t-exact">tdsls4601m200</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked line to the model with its blocking records, its activities and its actual deliveries. An activity is a step of the line's ordering process, and LN lists each one with its status on the line's status screen, where the first Free activity is the next to be carried out. The answer gives five parts in a fixed order, and its last sentence names that next step or says the line is canceled.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -180,7 +180,7 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">If something goes wrong</p>
+<p class="ln-proc__h4">Run Status Overview: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
@@ -250,9 +250,9 @@
       <div class="rux--accordion__title">Setting one up</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p><strong>The GenAI Embedded Experience feature must be switched on for the tenant first</strong>, in the CloudSuite Self-Service Portal, by someone with its Admin role. Until it is, no command appears anywhere. Then three things are built, in this order, all under <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span class="dest">Embedded GenAI</span></span>, and <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> walks each one.</p><ul class="ln-list">
-  <li><b>Dataset</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5100m000.html"><span class="ln-t-named">Datasets</span></a> <span class="ln-t-exact">ttrpi5100m000</span></p><p><span class="ln-quiet">What it holds</span><br>The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model</p></li>
-  <li><b>Prompt</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5150m000.html"><span class="ln-t-named">GenAI Prompts</span></a> <span class="ln-t-exact">ttrpi5150m000</span></p><p><span class="ln-quiet">What it holds</span><br>The command's name, its dataset, the text sent to the model, and the sentence the user sees</p></li>
-  <li><b>Link</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttadv9160m000.html"><span class="ln-t-named">GenAI Prompts by Session</span></a> <span class="ln-t-exact">ttadv9160m000</span></p><p><span class="ln-quiet">What it holds</span><br>The one session the command appears on, and when it is enabled</p></li>
+  <li><b>Dataset</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5100m000.html"><span class="ln-t-named">Datasets</span></a> (<span class="ln-t-exact">ttrpi5100m000</span>)</p><p><span class="ln-quiet">What it holds</span><br>The data sent: the screen's own table and the fields ticked on it. Nothing else reaches the model</p></li>
+  <li><b>Prompt</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttrpi5150m000.html"><span class="ln-t-named">GenAI Prompts</span></a> (<span class="ln-t-exact">ttrpi5150m000</span>)</p><p><span class="ln-quiet">What it holds</span><br>The command's name, its dataset, the text sent to the model, and the sentence the user sees</p></li>
+  <li><b>Link</b><p><span class="ln-quiet">Session</span><br><a class="rux--link" href="../screens/ttadv9160m000.html"><span class="ln-t-named">GenAI Prompts by Session</span></a> (<span class="ln-t-exact">ttadv9160m000</span>)</p><p><span class="ln-quiet">What it holds</span><br>The one session the command appears on, and when it is enabled</p></li>
 </ul><p><strong>Then run it and check it</strong>, on one record of each kind it can meet, before anyone else relies on it. <strong>To remove it,</strong> delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.</p></div></div>
   </li>
   <li class="rux--accordion__item" id="ref-5">

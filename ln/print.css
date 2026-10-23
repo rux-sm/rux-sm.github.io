@@ -70,7 +70,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 .ln-pages .ln-proc__lead { margin-block-end: .625rem; line-height: 1.4; }
 .ln-proc__h4 { margin-block: .75rem .25rem; }
 /* A line to write a figure on is a pen's height. */
-.ln-proc__write { margin-block-end: .125rem; }
+.ln-proc__writes { row-gap: .125rem; }
 .ln-proc__write-line { block-size: 1.35em; }
 
 /* What you should see keeps its place under the step as a rule, not a fill. */
@@ -78,7 +78,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 
 /* Table text is ink, because the screen's grey is faint on paper, and the
    size of the text around it, so a step is never smaller than its Why. */
-.ln-pages .ln-proc__table .rux--data-table td { color: var(--rux-text-primary); font-size: 1rem; line-height: 1.4; }
+.ln-pages .ln-proc__table .rux--data-table td { color: var(--rux-text-primary); font-size: 1rem; line-height: 1.35; }
 
 /* A link to another guide says so, because paper cannot follow it. */
 .ln-pages a.rux--link[href^="../follow/"]::after { content: " (a separate guide)"; }

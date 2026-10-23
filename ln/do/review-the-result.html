@@ -105,7 +105,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -141,7 +141,7 @@
 <tr id="step-2"><td><b>5.2</b></td><td>Read the planned supply row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">planned production order number and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">planned production quantity</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">a <span class="ln-t-named">Planned Production Order</span> whose <span class="ln-t-named">Supply</span> equals ordered quantity minus on-hand</span></span></td></tr>
 <tr id="step-3"><td><b>5.3</b></td><td>Open the <span class="ln-t-named">component's</span> Item Order Plan</td><td>The same planned production order appears — as <span class="ln-t-named">Demand</span></td></tr>
 <tr id="step-4"><td><b>5.4</b></td><td>Read the component's planned supply row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component planned purchase order and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component planned quantity</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">a <span class="ln-t-named">Planned Purchase Order</span> covering what stock does not</span></span></td></tr>
-<tr id="step-5"><td><b>5.5</b></td><td>Open <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-named">Planned Orders</span></a> <span class="ln-t-exact">cprrp1100m000</span> for the cluster and site. They are the ones from <a class="rux--link" href="../do/make-the-item-visible-to-planning.html#step-4">step 1.4</a> (Make the item visible to planning)</td><td>Both planned orders listed, <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></td></tr>
+<tr id="step-5"><td><b>5.5</b></td><td>Open <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-named">Planned Orders</span></a> (<span class="ln-t-exact">cprrp1100m000</span>) for the cluster and site. They are the ones from <a class="rux--link" href="../do/make-the-item-visible-to-planning.html#step-4">step 1.4</a> (Make the item visible to planning)</td><td>Both planned orders listed, <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -152,7 +152,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>A planned quantity does not equal the raw shortfall</td><td>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> round it</td></tr>
+<tr><td>A planned quantity does not equal the raw shortfall</td><td>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> (<span class="ln-t-exact">tcibd2100m000</span>) round it</td></tr>
 <tr><td>An expected planned purchase order is missing entirely</td><td>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-exact">cprrp1100m000</span></a> help</td></tr>
 </tbody>
 </table></div>
@@ -216,9 +216,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-14">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-19">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-14" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-19" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -232,7 +232,7 @@
       <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>A planned quantity does not equal the raw shortfall</b><p>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> <span class="ln-t-exact">tcibd2100m000</span> round it</p></li>
+  <li><b>A planned quantity does not equal the raw shortfall</b><p>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> (<span class="ln-t-exact">tcibd2100m000</span>) round it</p></li>
   <li><b>An expected planned purchase order is missing entirely</b><p>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-exact">cprrp1100m000</span></a> help</p></li>
 </ul></div></div>
   </li>

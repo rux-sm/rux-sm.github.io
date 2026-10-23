@@ -32,26 +32,7 @@
     "whwmd2515m000",
     "whwmd4300m000"
   ],
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "Know the item's stock before you start: "
-        },
-        {
-          "t": "link",
-          "v": "Check an item's inventory",
-          "href": "check-item-inventory.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "Know the item's stock before you start: Check an item's inventory."
-    }
-  ],
+  "before": [],
   "tasks": [
     {
       "id": "confirm-there-is-stock",
@@ -87,7 +68,7 @@
         "text": "Sales order at In Process"
       },
       "steps": 12,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "release-to-warehousing",
@@ -119,7 +100,7 @@
         "text": "LN knows what to pick, and the picking list prints."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "pick-the-goods_ship-from-stock",
@@ -135,7 +116,7 @@
         "text": "The pick is confirmed in LN, and the stock is in staging."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "ship_ship-from-stock",
@@ -151,7 +132,7 @@
         "text": "Inventory is relieved."
       },
       "steps": 5,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "verify-it-worked_ship-from-stock",
@@ -167,7 +148,7 @@
         "text": "On-hand dropped by the shipped quantity."
       },
       "steps": 1,
-      "walked": "2026-10-23"
+      "walked": null
     }
   ],
   "values": {
@@ -366,33 +347,6 @@
         }
       ],
       "text": "> Warning > This walkthrough ends at shipped. Its completion boundary is a Confirmed shipment plus an inventory decrease equal to the shipped quantity. Invoicing and Financials are outside scope; future shipping variants return to this same endpoint."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Prerequisite"
-        },
-        {
-          "t": "text",
-          "v": " > Know the item's stock before you start: "
-        },
-        {
-          "t": "link",
-          "v": "Check an item's inventory",
-          "href": "check-item-inventory.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
     },
     {
       "kind": "glance",
@@ -929,36 +883,6 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Advice already exists"
-                }
-              ],
-              "text": "Advice already exists"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Depends on the warehousing procedure attached to the order type. Check "
-                },
-                {
-                  "t": "field",
-                  "v": "Advised Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " first"
-                }
-              ],
-              "text": "Depends on the warehousing procedure attached to the order type. Check Advised Quantity first"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "chip",
                   "v": "Undoing"
                 }
               ],
@@ -1164,6 +1088,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "verification": "Warning Partly verified. Phases 0, 2 have been performed against a live system and confirmed. Phases 1, 3, 4, 5, 6 have not. Follow those as a plan, not as a record.",
   "openIssues": 1
 }

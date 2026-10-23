@@ -105,7 +105,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8222a7351601612ff3ba264e0191de1cbdc0c83">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="b8b292612d2a5f6e38f37412a3f72612d33e5e67">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -131,7 +131,7 @@
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> The production order releases, issues the components from the warehouse to the work center, and on the last operation reported complete posts the finished pairs to inventory, silently or after asking depending on a parameter. <strong>Production Completed</strong> is the handoff to Warehousing, not a failed <strong>Completed</strong>.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -140,11 +140,11 @@
 <tbody>
 <tr id="step-1"><td><b>6.1</b></td><td>Open the production order from <a class="rux--link" href="../do/cross-the-boundary.html#step-8">step 4.8</a> (Cross the boundary)</td><td></td></tr>
 <tr id="step-2"><td><b>6.2</b></td><td>Check its BOM, routing and estimated materials</td><td>BOM rev <span class="ln-t-exact">000002</span>, routing <span class="ln-t-exact">0</span> rev <span class="ln-t-exact">000001</span>, operation <span class="ln-t-exact">10</span>, rods and sleeves listed</td></tr>
-<tr id="step-3"><td><b>6.3</b></td><td>Select the order and run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></td><td><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</td></tr>
+<tr id="step-3"><td><b>6.3</b></td><td>Select the order and run <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></td><td><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> (<span class="ln-t-exact">tisfc0204m000</span>) opens</td></tr>
 <tr id="step-4"><td><b>6.4</b></td><td>Run the release for this order only</td><td><span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span>; warehousing issue and receipt orders now exist</td></tr>
-<tr id="step-5"><td><b>6.5</b></td><td>Open <a class="rux--link" href="../screens/ticst0101m100.html"><span class="ln-t-named">Material to Issue for Production Orders</span></a> <span class="ln-t-exact">ticst0101m100</span> at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></td><td></td></tr>
+<tr id="step-5"><td><b>6.5</b></td><td>Open <a class="rux--link" href="../screens/ticst0101m100.html"><span class="ln-t-named">Material to Issue for Production Orders</span></a> (<span class="ln-t-exact">ticst0101m100</span>) at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Materials</span><span class="sep">➔</span><span class="dest">Material to Issue for Production Orders</span></span></td><td></td></tr>
 <tr id="step-6"><td><b>6.6</b></td><td>Issue the materials. Follow <a class="rux--link" href="../do/issue-material-to-the-job-shop.html#step-2">steps 2–9</a> (Issue material to the job shop)</td><td><span class="ln-t-named">Actual Quantity</span> = the estimated quantity; <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Active</span></span></td></tr>
-<tr id="step-7"><td><b>6.7</b></td><td>Open <a class="rux--link" href="../screens/tisfc0130m000.html"><span class="ln-t-named">Report Operations</span></a> <span class="ln-t-exact">tisfc0130m000</span> at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span>, enter the built quantity in <span class="ln-t-named">Completed</span>, and save</td><td>LN may ask whether to confirm the receipt automatically — record which way you answer</td></tr>
+<tr id="step-7"><td><b>6.7</b></td><td>Open <a class="rux--link" href="../screens/tisfc0130m000.html"><span class="ln-t-named">Report Operations</span></a> (<span class="ln-t-exact">tisfc0130m000</span>) at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span>Production Control</span><span class="sep">➔</span><span class="dest">Report Operations</span></span>, enter the built quantity in <span class="ln-t-named">Completed</span>, and save</td><td>LN may ask whether to confirm the receipt automatically — record which way you answer</td></tr>
 <tr id="step-8"><td><b>6.8</b></td><td>Return to <span class="ln-t-named">Production Orders</span> and read <span class="ln-t-named">Order Status</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production order status after reporting</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> or <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Completed</span></span></span></span></td></tr>
 <tr id="step-9"><td><b>6.9</b></td><td>Read <span class="ln-t-exact">BAM-CHOP-PAIR</span> on-hand at the finished-goods warehouse in <span class="ln-t-named">Inventory 360</span>. The warehouse is from <a class="rux--link" href="../do/preflight.html#step-2">step 1.2</a> (Preflight)</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">pair on-hand after build</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">up by the built quantity over <a class="rux--link" href="../do/preflight.html#step-2">step 1.2</a> (Preflight)</span></span></td></tr>
 </tbody>
@@ -158,8 +158,8 @@
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The order will not release</td><td><span class="ln-t-named">Printing Production Order Documents Mandatory</span> in <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-exact">tisfc0100s000</span></a> may require <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Printed</span></span> first</td></tr>
-<tr><td>The material line stays blocked</td><td>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, record what you saw</td></tr>
-<tr><td>Status reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> and on-hand does not move</td><td>That is the <span class="ln-t-named">No</span> path at <a class="rux--link" href="#step-7">step 6.7</a>. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open production receipt order</td></tr>
+<tr><td>The material line stays blocked</td><td>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> (<span class="ln-t-exact">tisfc0207m000</span>) manually; if still blocked, record what you saw</td></tr>
+<tr><td>Status reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> and on-hand does not move</td><td>That is the <span class="ln-t-named">No</span> path at <a class="rux--link" href="#step-7">step 6.7</a>. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> (<span class="ln-t-exact">whinh2100m000</span>) for an open production receipt order</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -180,7 +180,7 @@
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Screen</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> <span class="ln-t-exact">tisfc0501m000</span><br><span class="ln-quiet">An overview of production orders — identity, item, dates, status, warehouse and key quantities.</span></p></li>
+  <li><b>Screen</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>)<br><span class="ln-quiet">An overview of production orders — identity, item, dates, status, warehouse and key quantities.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/release.html">Release</a> · <a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/ship_demand-to-shipment-via-planning.html">Ship</a> in Plan to shipment</p></li>
 </ul>
@@ -206,7 +206,7 @@
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Select the order and run <span class="ln-t-named">Release Orders</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Release Orders</span></span></p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> <span class="ln-t-exact">tisfc0204m000</span> opens</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tisfc0204m000.html"><span class="ln-t-named">Release Production Orders</span></a> (<span class="ln-t-exact">tisfc0204m000</span>) opens</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Run the release for this order only</h1></div>
@@ -232,7 +232,7 @@
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>pair on-hand after build — up by the built quantity over step 2 of <a class="rux--link" href="../do/preflight.html">Preflight</a></p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> <span class="ln-t-exact">tisfc0501m000</span></p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Manufacturing</span><span class="sep">➔</span><span>Job Shop</span><span class="sep">➔</span><span class="dest">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</p>
 <div class="ln-confirm" data-confirm="build-the-pairs">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
   <div class="ln-confirm__ask" data-owner hidden>
@@ -241,9 +241,9 @@
   </div>
   <form class="ln-confirm__form" data-different hidden>
     <div class="rux--form-item rux--text-input-wrapper">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-19">What was different?</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="diff-24">What was different?</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="diff-19" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
+        <input id="diff-24" class="rux--text-input rux--layout--size-md" type="text" name="note" autocomplete="off">
       </div></div>
     </div>
     <label class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm"><span data-file-name>Add a screenshot</span><input class="rux--visually-hidden" type="file" name="shot" accept="image/png,image/jpeg"></label>
@@ -258,8 +258,8 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The order will not release</b><p><span class="ln-t-named">Printing Production Order Documents Mandatory</span> in <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-exact">tisfc0100s000</span></a> may require <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Printed</span></span> first </p></li>
-  <li><b>The material line stays blocked</b><p>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> <span class="ln-t-exact">tisfc0207m000</span> manually; if still blocked, record what you saw </p></li>
-  <li><b>Status reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> and on-hand does not move</b><p>That is the <span class="ln-t-named">No</span> path at step 7. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> <span class="ln-t-exact">whinh2100m000</span> for an open production receipt order</p></li>
+  <li><b>The material line stays blocked</b><p>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> (<span class="ln-t-exact">tisfc0207m000</span>) manually; if still blocked, record what you saw </p></li>
+  <li><b>Status reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Production Completed</span></span> and on-hand does not move</b><p>That is the <span class="ln-t-named">No</span> path at step 7. Check <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> (<span class="ln-t-exact">whinh2100m000</span>) for an open production receipt order</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">

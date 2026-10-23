@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -298,6 +298,26 @@
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "A "
+                },
+                {
+                  "t": "chip",
+                  "v": "Select Device"
+                },
+                {
+                  "t": "text",
+                  "v": " dialog opens for Picking List by Location; click "
+                },
+                {
+                  "t": "button",
+                  "label": "CONTINUE"
+                },
+                {
+                  "t": "text",
+                  "v": " and the list prints to its own tab. "
+                },
+                {
                   "t": "field",
                   "v": "Advised"
                 },
@@ -311,7 +331,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " both fill — release is automatic here. Picking List by Location prints — "
+                  "v": " both fill — release is automatic here — "
                 },
                 {
                   "t": "pencil"
@@ -340,7 +360,7 @@
                   "v": "Mission"
                 }
               ],
-              "text": "Advised and Released both fill — release is automatic here. Picking List by Location prints — Run, Mission"
+              "text": "A Select Device dialog opens for Picking List by Location; click CONTINUE and the list prints to its own tab. Advised and Released both fill — release is automatic here — Run, Mission"
             }
           ],
           "id": "5",
@@ -747,61 +767,6 @@
               }
             ],
             "text": "Check that the header Warehouse holds the stock, against step 4 of Confirm there is stock"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "No shipment number after releasing advice"
-              }
-            ],
-            "text": "No shipment number after releasing advice"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Expected in the standard flow. Continue through "
-              },
-              {
-                "t": "chip",
-                "v": "Pick Run"
-              },
-              {
-                "t": "text",
-                "v": ", then record "
-              },
-              {
-                "t": "field",
-                "v": "Shipment"
-              },
-              {
-                "t": "text",
-                "v": " from "
-              },
-              {
-                "t": "chip",
-                "v": "Shipment Lines"
-              },
-              {
-                "t": "text",
-                "v": " at step 6 of "
-              },
-              {
-                "t": "link",
-                "v": "Pick the goods",
-                "href": "pick-the-goods_ship-from-stock.md"
-              },
-              {
-                "t": "text",
-                "v": ". An early line appears only when projected-shipment behavior applies"
-              }
-            ],
-            "text": "Expected in the standard flow. Continue through Pick Run, then record Shipment from Shipment Lines at step 6 of Pick the goods. An early line appears only when projected-shipment behavior applies"
           }
         ]
       }

@@ -9,8 +9,8 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-10-22",
-  "status": "draft",
+  "updated": "2026-10-23",
+  "status": "approved",
   "summary": "ship a sales order for an item already in stock, and check inventory went down.",
   "order": 7,
   "sources": [

@@ -1,9 +1,9 @@
-commit   3dab996b2cace6e1801357bd42d2016626baa481
-date     2026-10-23T05:00:54Z
-subject  feat(walks): Walk the transfer check a third time
+commit   3a4518c9ae622369b878e915f74e8ed61e332c9b
+date     2026-10-23T05:05:00Z
+subject  fix(walkthroughs): Review Ship from stock again
 contract 22 
 tier     export
-sha256   3d0acb9b38ada87478f690f32db910d82da79d909ae537e0702694697d5989bf
+sha256   068112903cd6a203755567d4594bc6d88e1c89476d56022eb9fe1133a5b3557f
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

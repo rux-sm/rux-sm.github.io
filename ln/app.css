@@ -187,6 +187,9 @@ a.ln-map__tile:hover { background: var(--rux-layer-hover-01); }
 .ln-map__lines path[data-branch] { stroke-dasharray: 5 5; }
 .ln-map__lines marker path { fill: var(--rux-border-interactive); stroke: none; }
 
+/* The copy of the page Print prints, laid out a sheet wide off the screen. */
+.ln-print-copy { position: fixed; inset-block-start: 0; inset-inline-start: -10000px; inline-size: 8.5in; block-size: 11in; border: 0; }
+
 /* Carbon's reset, and the rules above, give several elements a display of their
    own, which beats the browser's rule for the hidden attribute. This puts it
    back, and is last so that it wins. */

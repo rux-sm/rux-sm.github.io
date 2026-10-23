@@ -290,12 +290,36 @@
   window.addEventListener('afterprint', () => {
     if (kept == null) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = kept;
   });
+  // Print prints a copy of this page from a hidden frame, so the swap happens
+  // in the copy and the page behind the dialog keeps its theme. The browser's
+  // own Print command prints this page, and the swap shows behind its dialog.
+  // The copy opens without ?walk, so it opens the Document and moves nobody's
+  // place, and it goes when its dialog closes.
+  let copy = null;
+  function printCopy() {
+    if (copy) return;
+    const url = new URL(location.href);
+    url.searchParams.delete('walk');
+    url.hash = '';
+    copy = document.createElement('iframe');
+    copy.className = 'ln-print-copy';
+    copy.tabIndex = -1;
+    copy.setAttribute('aria-hidden', 'true');
+    copy.addEventListener('load', async () => {
+      const win = copy.contentWindow;
+      await win.document.fonts.ready;
+      win.addEventListener('afterprint', () => setTimeout(() => { copy.remove(); copy = null; }), { once: true });
+      win.print();
+    }, { once: true });
+    copy.src = url.href;
+    document.body.append(copy);
+  }
   // A home-screen app on an iPhone has no print sheet: print() there returns
   // having done nothing. So Print opens this page in Safari with ?print, and
   // Safari prints it as it arrives. The flag survives a log-in on the way,
   // which keeps the whole address.
   function printPage() {
-    if (!navigator.standalone) return void window.print();
+    if (!navigator.standalone) return void printCopy();
     const url = new URL(location.href);
     url.searchParams.set('print', '');
     location.href = `x-safari-${url.href}`;

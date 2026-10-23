@@ -1,18 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#161616">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" fill="#161616">
 <title>Rux</title>
-<!-- The Rux mark: a 14 by 14 square with a 5 by 5 pixel cut free from its
-     top-right corner by a one-square gap. Three rectangles on whole squares
-     of the 16 grid, so it is sharp at 16, 32 and 48 CSS pixels and at any
-     multiple of 16 device pixels. One square of air on every side.
-     Across the top it runs 8, 1, 5 squares, and down the right 5, 1, 8: 8 to 5
-     is the golden ratio in whole squares, and the mark folds onto itself
-     along the diagonal from bottom left to top right. Never smaller than 16
-     CSS pixels, where the gap is one pixel. Beside a name, the space from the
-     mark's edge to the first letter is one small square; at the header's 24
-     pixels that is margin-right .3rem.
-     brand/logo.svg, brand/logo-dark.svg and brand/favicon.svg carry the same
-     path, and Design's and LN Guide's brand folders carry the same three
-     files, kept identical by hand.
+<!-- The Rux mark, header drawing: a 10 by 10 square with a 3 by 3 pixel cut
+     free from its top-right corner by a one-square gap. Three rectangles on
+     whole squares of the 12 grid, drawn for the header's 24 CSS pixels, where
+     a square is 2 pixels and every edge is sharp at 1x, 1.5x and 2x. One
+     square of air on every side. Across the top it runs 6, 1, 3 squares, and
+     down the right 3, 1, 6, so it folds onto itself along the diagonal from
+     bottom left to top right. Beside a name, the space from the mark's edge
+     to the ink of the first letter is one small square, 6 pixels: 2 of the
+     mark's air, margin-right .17rem, and 1.3 of the letter's side bearing.
+     It is drawn on 12 rather than 16 because 24 is not a multiple of 16, and
+     a 16 grid there puts every other edge between pixels on a 1x screen.
+     Smaller marks use favicon.svg, the same shape on the 16 grid.
+     logo.svg and logo-dark.svg carry the same path, and brand/, design/brand/
+     and ln/brand/ carry the same three files, kept identical by hand.
      Gray 100, for a light header; logo.svg is gray 10. -->
-<path d="M1 1L9 1L9 15L1 15ZM9 7L15 7L15 15L9 15ZM10 1L15 1L15 6L10 6Z"/>
+<path d="M1 1L7 1L7 11L1 11ZM7 5L11 5L11 11L7 11ZM8 1L11 1L11 4L8 4Z"/>
 </svg>

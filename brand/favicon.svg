@@ -1,18 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Rux">
 <title>Rux</title>
-<!-- The Rux mark: a 14 by 14 square with a 5 by 5 pixel cut free from its
-     top-right corner by a one-square gap. Three rectangles on whole squares
-     of the 16 grid, so it is sharp at 16, 32 and 48 CSS pixels and at any
-     multiple of 16 device pixels. One square of air on every side.
+<!-- The Rux mark, small drawing: a 14 by 14 square with a 5 by 5 pixel cut
+     free from its top-right corner by a one-square gap. Three rectangles on
+     whole squares of the 16 grid, so it is sharp at 16, 32 and 48 CSS pixels
+     and at any multiple of 16 device pixels. One square of air on every side.
      Across the top it runs 8, 1, 5 squares, and down the right 5, 1, 8: 8 to 5
      is the golden ratio in whole squares, and the mark folds onto itself
      along the diagonal from bottom left to top right. Never smaller than 16
-     CSS pixels, where the gap is one pixel. Beside a name, the space from the
-     mark's edge to the first letter is one small square; at the header's 24
-     pixels that is margin-right .3rem.
-     brand/logo.svg, brand/logo-dark.svg and brand/favicon.svg carry the same
-     path, and Design's and LN Guide's brand folders carry the same three
-     files, kept identical by hand.
+     CSS pixels, where the gap is one pixel.
+     The header's 24 pixels use logo.svg, the same shape on the 12 grid,
+     because 24 is not a multiple of 16; the spacing rule beside a name is in
+     that file. brand/, design/brand/ and ln/brand/ carry the same three files,
+     kept identical by hand.
      Self themed because a favicon gets no CSS from the page: gray 100 on a
      light tab strip, gray 10 on a dark one. -->
 <style>

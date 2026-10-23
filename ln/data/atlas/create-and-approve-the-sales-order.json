@@ -28,7 +28,7 @@
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": null,
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {

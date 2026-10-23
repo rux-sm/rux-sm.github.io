@@ -1,9 +1,9 @@
-commit   b8b292612d2a5f6e38f37412a3f72612d33e5e67
-date     2026-10-23T22:14:51Z
-subject  fix(tasks): Drop two rows Ship from stock repeats
+commit   bcc2fa70dd7e98955533f4ed5b9060fbbdd3b9f6
+date     2026-10-23T22:36:02Z
+subject  feat(tasks): Stamp Ship from stock walked again
 contract 22 
 tier     export
-sha256   0fb0dd45546e9fcd9fac25990858a1e1ded7236f770f7a7d282be07224ec651a
+sha256   3d73993204ef2e77e6799b65a2a095ec2a60c7ed61a1acb8c08c2d01a1fce2ce
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

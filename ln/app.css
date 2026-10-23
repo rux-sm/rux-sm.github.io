@@ -41,7 +41,8 @@
 @media (min-width: 42rem) { .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-cards--one { grid-template-columns: 1fr; } }
 .ln-cards[hidden] { display: none; }
 .ln-cards .rux--tile, .ln-resume .rux--tile { display: grid; gap: .25rem; }
-.ln-status { display: inline-flex; align-items: center; gap: .375rem; vertical-align: top; }
+/* A status in words beside Carbon's progress icon, quiet wherever it stands. */
+.ln-status { display: inline-flex; align-items: center; gap: .375rem; vertical-align: top; color: var(--rux-text-secondary); }
 .ln-cards b, .ln-resume b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
 /* Carry on is a tile with an X in its corner that forgets the place. */
 .ln-resume { position: relative; }
@@ -54,7 +55,6 @@
    before them at full strength, and a figure worth noting gets a line to
    write it on. docs/plans/ln-guide-document.md decides each part. */
 .ln-proc__head > * + * { margin-block-start: .5rem; }
-.ln-proc__eyebrow { margin: 0; font-size: .875rem; color: var(--rux-text-secondary); }
 /* Each fact is as wide as its words, so a status tag wider than an even
    share of the row cannot run into the next fact. */
 .ln-proc__facts { display: flex; flex-wrap: wrap; column-gap: 2.5rem; margin: 0; border-block: 1px solid var(--rux-border-subtle-01); }

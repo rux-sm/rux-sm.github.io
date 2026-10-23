@@ -331,8 +331,6 @@ const accordion = (items) => `<ul class="rux--accordion rux--accordion--end rux-
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold">${body}</div></div>
   </li>`).join('')}
 </ul>`;
-const breadcrumb = (trail) => `<nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">${trail.slice(0, -1).map(([h, t]) =>
-  `<li class="rux--breadcrumb-item"><a class="rux--link" href="${h}">${esc(t)}</a></li>`).join('')}<li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">${esc(trail.at(-1)[1])}</a></li></ol></nav>`;
 const copyChip = (v, label = v) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(v)}" aria-label="Copy ${esc(label)}">${esc(v)}</button>`;
 const codeChip = (code) => copyChip(code, `the code ${code}`);
 // A value whose exact text is a chip that copies it, as Guided shows it.
@@ -439,8 +437,7 @@ const waitingSide = loose.filter((t) => !t.walked).map((t) => ({ n: { id: t.id, 
 const waiting = waitingTasks.length + waitingSide.length;
 const waitingJson = () => `<script type="application/json" id="waiting">${JSON.stringify([...waitingTasks, ...waitingSide].map((w) => ({ scenario: w.scenario, steps: w.steps }))).replace(/</g, '\\u003c')}</script>`;
 function confirmPage() {
-  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Still to confirm']])}
-<div>
+  const body = `<div>
 <h1 class="rux--type-productive-heading-05">Still to confirm</h1>
 <p class="rux--type-body-long-01">Nobody has checked these in LN yet.<span data-owner hidden> Open one, walk it in LN, and say at each step whether it matched.</span></p>
 </div>${processes.filter((s) => waitingTasks.some((w) => w.s === s)).map((s) => `
@@ -582,9 +579,7 @@ ${docH2('reference', 'Reference')}
 <p class="ln-proc__print">Read the reference beside this procedure at rux-sm.github.io/ln/follow/${esc(s.id)}.html</p>
 ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `<p>${said(x.tokens)}</p>` : '').join('')]))}
 </section>` : '';
-    const html = `${breadcrumb([[hrefHome(), 'Home'], ['', s.title]])}
-<div class="ln-proc__head">
-<p class="ln-proc__eyebrow">LN Guide · Procedure</p>
+    const html = `<div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
 </div>
@@ -716,7 +711,7 @@ const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]
 const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
 // Not walked is said on screen and left off paper, where a printed copy is
 // handed on as the procedure; ln-unwalked is what print.css hides.
-const statusFact = (status) => ['Status', tag(status), status[0] === 'Not walked yet' ? 'ln-unwalked' : ''];
+const statusFact = (status) => ['Status', quiet(status), status[0] === 'Not walked yet' ? 'ln-unwalked' : ''];
 const unwalked = (html) => `<div class="ln-unwalked">${html}</div>`;
 // The footer each printed page carries: what it is, and when its content last changed.
 const paper = (title, updated) => `\n<style>@page { @bottom-left { content: "${`${title} · LN Guide · Updated ${day(updated)}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
@@ -813,9 +808,7 @@ function task(s, t) {
     const lead = t.why ? docText(t.why.tokens, t, 'Why LN works this way') : '';
     const stepsHtml = stepTable(t, k);
     const ups = proseHtml(above), downs = proseHtml(below);
-    const body = `${breadcrumb([[hrefHome(), 'Home'], [hrefUp(s), s.title], ['', t.title]])}
-<div class="ln-proc__head">
-<p class="ln-proc__eyebrow">LN Guide · Task</p>
+    const body = `<div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">${sentence(docText(t.achieves.tokens, t))}</p>` : ''}
 </div>
@@ -899,8 +892,7 @@ function taskIndex() {
     : side.includes(n)
       ? `<li id="${esc(n.id)}"><b>${esc(n.session)}</b>${accordion([[`side-${esc(n.id)}`, 'Steps', sideBody(n)]])}</li>`
       : `<li id="${esc(n.id)}"><b>${esc(n.session)}</b><p class="ln-quiet">Not documented yet.</p></li>`);
-  const body = `${breadcrumb([[hrefHome(), 'Home'], ['', 'Tasks']])}
-<div>
+  const body = `<div>
 <h1 class="rux--type-productive-heading-05">Tasks</h1>
 <p class="rux--type-body-long-01">Every task the library knows, by module. One nobody has walked in LN yet says so.</p>
 </div>${groups.map((g) => `
@@ -926,8 +918,7 @@ const fact = (k, v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
 const isRoute = (r) => r.includes(ARROW.trim());
 function screenPage(c) {
   const ideas = concepts.filter((x) => x.sources.includes(c.code));
-  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('screens/index.html'), 'Screens'], ['', c.name]])}
-<div>
+  const body = `<div>
 <p class="ln-quiet">Screen</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
@@ -939,8 +930,7 @@ function screenPage(c) {
 function ideaPage(c) {
   // A task reached through two of the idea's screens is listed once.
   const uses = [...new Map(c.sources.flatMap((code) => usedIn.get(code) ?? []).map((u) => [`${u.s.id} ${u.t.id}`, u])).values()];
-  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', c.name]])}
-<div>
+  const body = `<div>
 <p class="ln-quiet">Idea</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
@@ -987,8 +977,7 @@ const overviewTitle = overview.title;
 const overviewPurpose = overview.intro[0]?.text.split('. ')[0] ?? '';
 function overviewPage() {
   const [first, ...rest] = overview.topics;
-  const body = `${breadcrumb([[hrefHome(), 'Home'], [at('ideas/index.html'), 'Ideas'], ['', overviewTitle]])}
-<div>
+  const body = `<div>
 <p class="ln-quiet">Idea</p>
 <h1 class="rux--type-productive-heading-05">${esc(overviewTitle)}</h1>
 </div>
@@ -1002,8 +991,7 @@ ${accordion(rest.map((t) => [`topic-${t.n}`, esc(t.title), `<div class="ln-full"
   return page(`${overviewTitle} \u2014 LN Guide`, 'ideas', column(body, 'full'));
 }
 
-const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`${breadcrumb([[hrefHome(), 'Home'], ['', title]])}
-<div>
+const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, active, column(`<div>
 <h1 class="rux--type-productive-heading-05">${title}</h1>
 <p class="rux--type-body-long-01">${intro}</p>
 </div>

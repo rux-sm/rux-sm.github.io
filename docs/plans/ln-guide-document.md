@@ -28,9 +28,9 @@ And a team, after log-in, sees what the public page cannot carry.
   procedure manual reads; a task's Document is the same shape for one task.
   The process's path of tasks becomes its Summary, so nothing is lost.
 
-- **The Document's parts, in order:** a title block of LN Guide · Procedure,
-  the title, its purpose, and on screen five facts (status, module, length,
-  updated, applies to), with a Note when nobody has walked it; then Summary, the tasks
+- **The Document's parts, in order:** a title block of the title, its
+  purpose, and on screen five facts (status as a grey progress icon and its
+  words, module, length, updated, applies to), with a Note when nobody has walked it; then Summary, the tasks
   with their result and step count and the values the run uses, each naming
   the step that uses it; Before you start, only what lies outside the
   procedure; Procedure, each task with its result and screen, Why LN works

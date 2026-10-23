@@ -34,11 +34,14 @@
 .ln-gap { display: block; margin-block-start: .25rem; font-size: .875rem; color: var(--rux-text-secondary); }
 
 /* ---- Home: what to carry on with, then the processes ------------------------
-   The processes two abreast once there is room, a single card alone. */
+   The processes two abreast once there is room, a single card alone. Still to
+   confirm is the owner's list, so it shows only once data.js finds the owner. */
 .ln-cards { display: grid; gap: .75rem; }
+.ln-start h2 { margin-block-end: .75rem; }
 @media (min-width: 42rem) { .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-cards--one { grid-template-columns: 1fr; } }
-.ln-cards .rux--tile { display: grid; gap: .25rem; }
-.ln-cards b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
+.ln-cards[hidden] { display: none; }
+.ln-cards .rux--tile, .ln-resume .rux--tile { display: grid; gap: .25rem; }
+.ln-cards b, .ln-resume b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
 /* Carry on is a tile with an X in its corner that forgets the place. */
 .ln-resume { position: relative; }
 .ln-resume .rux--tile { border-inline-start: 3px solid var(--rux-interactive); padding-inline-end: 3.5rem; }

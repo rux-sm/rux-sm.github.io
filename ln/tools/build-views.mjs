@@ -458,15 +458,14 @@ function confirmPage() {
 // ---- Home --------------------------------------------------------------------
 const home = () => page('LN Guide', 'home', column(`<h1 class="ln-ask">What are you doing?</h1>
 ${searchBox('ask')}
-<div class="ln-cards ln-cards--one"><div class="ln-resume" data-resume hidden><a class="rux--tile rux--tile--clickable" href="${hrefHome()}"><span class="ln-quiet">Carry on</span><b></b></a><button type="button" class="rux--btn rux--layout--size-md rux--btn--ghost rux--btn--icon-only ln-resume__forget" aria-label="Forget where I stopped" data-forget><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></div></div>
-<div>
+<div class="ln-resume" data-resume hidden><a class="rux--tile rux--tile--clickable" href="${hrefHome()}"><span class="ln-quiet">Carry on</span><b></b></a><button type="button" class="rux--btn rux--layout--size-md rux--btn--ghost rux--btn--icon-only ln-resume__forget" aria-label="Forget where I stopped" data-forget><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+<section class="ln-start">
 <h2 class="rux--type-productive-heading-03">Start here</h2>
-<p class="ln-quiet">The processes in the order they build on each other. Each one is a path of tasks.</p>
-</div>
 <div class="ln-cards">${processes.map((s) => `
 <a class="rux--tile rux--tile--clickable" href="${hrefProcess(s.id)}"><b>${esc(s.title)}</b><span class="ln-quiet">${count(s.tasks.length, 'task')}</span><div>${tag(statusOf(s))}</div></a>`).join('')}
-</div>${waiting ? `
-<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable" href="${at('confirm.html')}"><span class="ln-quiet">Still to confirm</span><b data-waiting="${waiting}">${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>
+</div>
+</section>${waiting ? `
+<div class="ln-cards ln-cards--one" data-owner hidden><a class="rux--tile rux--tile--clickable" href="${at('confirm.html')}"><span class="ln-quiet">Still to confirm</span><b data-waiting="${waiting}">${count(waiting, 'task')} nobody has walked in LN yet</b></a></div>
 ${waitingJson()}` : ''}`, 'full'));
 
 // ---- a process -----------------------------------------------------------------

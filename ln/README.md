@@ -10,8 +10,8 @@ covers setup, the commands and how a push deploys.
 A documentation site, one file per page, with a walked mode inside it:
 
 - **Home**, `index.html`, asks what you are doing: a search box, the place you
-  stopped, the processes in the order to learn them, and what is still to
-  confirm.
+  stopped, the processes in the order to learn them, and, for the owner,
+  what is still to confirm.
 - **A process**, `follow/<id>.html`, is its Document: a procedure to read,
   print and share, with every task's steps numbered 2.3, Why before them,
   troubleshooting under them, the decisions between tasks in its Summary, and
@@ -36,7 +36,7 @@ still to build, and `docs/plans/ln-guide-document.md` what the Document and
 the Guide are.
 
 - **Still to confirm**, `confirm.html`, lists the tasks nobody has walked in
-  LN; Guided carries the owner's two answers under each of their steps.
+  LN, and Home links it for the owner alone; Guided carries the owner's two answers under each of their steps.
 
 ## How the page is made
 

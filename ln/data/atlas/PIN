@@ -1,9 +1,9 @@
-commit   3a4518c9ae622369b878e915f74e8ed61e332c9b
-date     2026-10-23T05:05:00Z
-subject  fix(walkthroughs): Review Ship from stock again
+commit   9a9c4252835074095ef89fb18943f4aa675f0865
+date     2026-10-23T06:43:27Z
+subject  feat(walks): Walk site control, costing again
 contract 22 
 tier     export
-sha256   068112903cd6a203755567d4594bc6d88e1c89476d56022eb9fe1133a5b3557f
+sha256   39e30ed08b365810add8938d5379038482d5a3576f38f387cd2fdcf808164c50
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

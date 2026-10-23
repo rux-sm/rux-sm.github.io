@@ -84,7 +84,7 @@
         "text": "All three items are plannable, and every on-hand figure is written down."
       },
       "steps": 5,
-      "walked": null
+      "walked": "2026-10-23"
     },
     {
       "id": "create-the-demand",
@@ -1145,6 +1145,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 1, 6 have been performed against a live system and confirmed. Phases 0, 2, 3, 4, 5 have not. Follow those as a plan, not as a record.",
+  "verification": "Warning Partly verified. Phases 0, 1, 6 have been performed against a live system and confirmed. Phases 2, 3, 4, 5 have not. Follow those as a plan, not as a record.",
   "openIssues": 3
 }

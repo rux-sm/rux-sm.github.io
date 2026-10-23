@@ -22,10 +22,10 @@
   ],
   "status": "draft",
   "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": null,
+  "route": "Sales ➔ Orders ➔ Order Intake Workbench",
+  "session": "Sales Order Intake Workbench",
+  "sessionCode": "tdsls4601m200",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -73,23 +73,31 @@
                 },
                 {
                   "t": "chip",
-                  "v": "Sales Order Lines"
+                  "v": "Sales Order Intake Workbench"
                 },
                 {
                   "t": "text",
-                  "v": " by itself, from the client's list of recently used sessions"
+                  "v": " and its "
+                },
+                {
+                  "t": "chip",
+                  "v": "Order Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Open Sales Order Lines by itself, from the client's list of recently used sessions"
+              "text": "Open Sales Order Intake Workbench and its Order Lines tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The lines of one order, with the order in the header and a tick box on each line"
+                  "v": "Order lines from many orders, with a tick box on each"
                 }
               ],
-              "text": "The lines of one order, with the order in the header and a tick box on each line"
+              "text": "Order lines from many orders, with a tick box on each"
             }
           ],
           "id": "1",
@@ -111,27 +119,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Click "
+                  "v": "Type your order in the filter box above the "
                 },
                 {
-                  "t": "button",
-                  "label": "Find"
+                  "t": "field",
+                  "v": "Order"
                 },
                 {
                   "t": "text",
-                  "v": " and search by Order, Position, Sequence for your order"
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Click Find and search by Order, Position, Sequence for your order"
+              "text": "Type your order in the filter box above the Order column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The order in the header and its lines in the grid"
+                  "v": "That order's lines"
                 }
               ],
-              "text": "The order in the header and its lines in the grid"
+              "text": "That order's lines"
             }
           ],
           "id": "2",
@@ -194,7 +202,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "Open the Order Lines tab's "
                 },
                 {
                   "t": "chip",
@@ -213,7 +221,7 @@
                   "v": ", near the foot of the menu"
                 }
               ],
-              "text": "Open Actions and choose Status Overview…, near the foot of the menu"
+              "text": "Open the Order Lines tab's Actions and choose Status Overview…, near the foot of the menu"
             },
             {
               "tokens": [
@@ -450,14 +458,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the line's form by its row icon. It is on the Order Lines tab of "
-                },
-                {
-                  "t": "chip",
-                  "v": "Sales Order Intake Workbench"
+                  "v": "Open the line's form by its row icon"
                 }
               ],
-              "text": "Open the line's form by its row icon. It is on the Order Lines tab of Sales Order Intake Workbench"
+              "text": "Open the line's form by its row icon"
             },
             {
               "tokens": [

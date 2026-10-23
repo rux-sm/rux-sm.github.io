@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": null,
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -139,7 +139,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "Type "
                 },
                 {
                   "t": "literal",
@@ -147,10 +147,26 @@
                 },
                 {
                   "t": "text",
-                  "v": " on-hand at the finished-goods warehouse "
+                  "v": " in the filter box above the grid's "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " column, press Enter, tick its row and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": ". Read its row for the finished-goods warehouse "
                 }
               ],
-              "text": "Read BAM-CHOP-PAIR on-hand at the finished-goods warehouse"
+              "text": "Type BAM-CHOP-PAIR in the filter box above the grid's Item column, press Enter, tick its row and click Warehouse Inventory. Read its row for the finished-goods warehouse"
             },
             {
               "tokens": [
@@ -203,7 +219,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "Close that tab, untick the row, and do the same for "
                 },
                 {
                   "t": "literal",
@@ -211,7 +227,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " and "
+                  "v": " and then "
                 },
                 {
                   "t": "literal",
@@ -219,10 +235,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " on-hand at the raw-materials warehouse "
+                  "v": " at the raw-materials warehouse "
                 }
               ],
-              "text": "Read BAM-ROD and BAM-SLEEVE on-hand at the raw-materials warehouse"
+              "text": "Close that tab, untick the row, and do the same for BAM-ROD and then BAM-SLEEVE at the raw-materials warehouse"
             },
             {
               "tokens": [

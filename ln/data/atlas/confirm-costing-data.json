@@ -30,7 +30,7 @@
   "route": "Common ➔ Standard Costs ➔ Master Data ➔ Item - Costing",
   "session": "Item - Costing",
   "sessionCode": "ticpr0107m000",
-  "walked": "2026-08-18",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -130,11 +130,19 @@
                 },
                 {
                   "t": "field",
+                  "v": "Costing Source"
+                },
+                {
+                  "t": "text",
+                  "v": ", then on the "
+                },
+                {
+                  "t": "chip",
                   "v": "Standard Cost"
                 },
                 {
                   "t": "text",
-                  "v": ", "
+                  "v": " tab "
                 },
                 {
                   "t": "field",
@@ -142,14 +150,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and "
+                  "v": " and "
                 },
                 {
                   "t": "field",
-                  "v": "Costing Source"
+                  "v": "Total Costs"
                 }
               ],
-              "text": "Read Standard Cost, Material Costs, and Costing Source"
+              "text": "Read Costing Source, then on the Standard Cost tab Material Costs and Total Costs"
             },
             {
               "tokens": [

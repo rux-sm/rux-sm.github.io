@@ -105,7 +105,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="3a4518c9ae622369b878e915f74e8ed61e332c9b">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="9a9c4252835074095ef89fb18943f4aa675f0865">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -113,7 +113,7 @@
 <h1 class="rux--type-productive-heading-05">Create test items</h1>
 <p class="rux--type-body-long-01">Create a small item family, purchased components and one manufactured item, ready for a production order.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-incomplete"/></svg>Walked 6 of 11</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>11 tasks, 143 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-incomplete"/></svg>Walked 7 of 11</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>11 tasks, 143 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-the-test-design.html?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
@@ -291,15 +291,7 @@
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a></h3>
 <dl class="ln-proc__meta"><div><dt>Result</dt><dd>Site-level creation agrees with the company defaults.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Master Data</span><span class="sep">➔</span><span>Items</span><span class="sep">➔</span><span>Defaults</span><span class="sep">➔</span><span class="dest">Item Control and Defaults by Site</span></span> <span class="ln-t-exact">tcibd1552m000</span></dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> The Create controls can be governed at the site instead of the company. When <span class="ln-t-named">Centrally Managed</span> is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site's own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause.</p>
-<div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
-  <div class="rux--inline-notification__details">
-    <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
-    <div class="rux--inline-notification__text-wrapper">
-      <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle">This task has not been walked for the new groups. Note the <span class="ln-t-named">Centrally Managed</span> state and the saved Create controls as you go.</div>
-    </div>
-  </div>
-</div>
+
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
@@ -467,7 +459,7 @@
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-9-1"><td><b>9.1</b></td><td>Open <a class="rux--link" href="../screens/ticpr0107m000.html"><span class="ln-t-named">Item - Costing</span></a> <span class="ln-t-exact">ticpr0107m000</span> for the bamboo rod</td><td>The item's costing record opens for an enterprise unit</td></tr>
-<tr id="step-9-2"><td><b>9.2</b></td><td>Read <span class="ln-t-named">Standard Cost</span>, <span class="ln-t-named">Material Costs</span>, and <span class="ln-t-named">Costing Source</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the rod's figures</span></span></td></tr>
+<tr id="step-9-2"><td><b>9.2</b></td><td>Read <span class="ln-t-named">Costing Source</span>, then on the <span class="ln-t-named">Standard Cost</span> tab <span class="ln-t-named">Material Costs</span> and <span class="ln-t-named">Total Costs</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the rod's figures</span></span></td></tr>
 <tr id="step-9-3"><td><b>9.3</b></td><td>Repeat for the paper sleeve</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the sleeve's figures</span></span></td></tr>
 <tr id="step-9-4"><td><b>9.4</b></td><td>Open the record for the finished item</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished-item standard cost</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-9-5"><td><b>9.5</b></td><td>Open <a class="rux--link" href="../screens/ticpr3501m000.html"><span class="ln-t-named">Item Standard Costs</span></a> <span class="ln-t-exact">ticpr3501m000</span> for each item whose cost is missing or unexpected. Use the item's effective date</td><td>The actual and historical standard cost structure is shown, or confirms none exists</td></tr>

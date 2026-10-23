@@ -30,7 +30,7 @@
   "route": "Master Data ➔ Items ➔ Defaults ➔ Item Control and Defaults by Site",
   "session": "Item Control and Defaults by Site",
   "sessionCode": "tcibd1552m000",
-  "walked": null,
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -96,32 +96,6 @@
     "text": "The Create controls can be governed at the site instead of the company. When Centrally Managed is selected the site mirrors the company defaults and the controls are disabled here; when it is cleared the site's own controls decide, and an item created before this is checked can arrive with fewer subentities than its group promised, with no message naming the cause."
   },
   "blocks": [
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Warning"
-        },
-        {
-          "t": "text",
-          "v": " > This task has not been walked for the new groups. Note the "
-        },
-        {
-          "t": "field",
-          "v": "Centrally Managed"
-        },
-        {
-          "t": "text",
-          "v": " state and the saved Create controls as you go. "
-        }
-      ],
-      "text": "> Warning > This task has not been walked for the new groups. Note the Centrally Managed state and the saved Create controls as you go."
-    },
     {
       "kind": "steps",
       "columns": [

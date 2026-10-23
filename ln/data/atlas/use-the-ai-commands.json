@@ -9,7 +9,7 @@
     "Warehousing",
     "Sales"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
   "order": 0,
@@ -38,7 +38,7 @@
         "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
       },
       "steps": 7,
-      "walked": null
+      "walked": "2026-10-23"
     },
     {
       "id": "run-status-overview",
@@ -54,7 +54,7 @@
         "text": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen."
       },
       "steps": 13,
-      "walked": null
+      "walked": "2026-10-23"
     }
   ],
   "values": {
@@ -178,10 +178,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Sales Order Lines, Sales Order Line Status"
+                  "v": "Order Intake Workbench, Sales Order Line Status"
                 }
               ],
-              "text": "Sales Order Lines, Sales Order Line Status"
+              "text": "Order Intake Workbench, Sales Order Line Status"
             },
             {
               "tokens": [
@@ -326,10 +326,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Sales Order Lines, and the Order Lines tab of the Order Intake Workbench"
+                  "v": "Sales Order Lines, the line's form, and the Order Lines tab of the Order Intake Workbench"
                 }
               ],
-              "text": "Sales Order Lines, and the Order Lines tab of the Order Intake Workbench"
+              "text": "Sales Order Lines, the line's form, and the Order Lines tab of the Order Intake Workbench"
             },
             {
               "tokens": [
@@ -1101,6 +1101,6 @@
       "under": "Variants"
     }
   ],
-  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 3
 }

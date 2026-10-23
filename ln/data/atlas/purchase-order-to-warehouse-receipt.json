@@ -69,7 +69,7 @@
         "text": "On-hand at the receiving warehouse is recorded before anything is booked."
       },
       "steps": 4,
-      "walked": null
+      "walked": "2026-10-23"
     },
     {
       "id": "create-the-purchase-order",
@@ -690,6 +690,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 1, 2, 3, 4 have been performed against a live system and confirmed. Phases 0, 5 have not. Follow those as a plan, not as a record.",
+  "verification": "Warning Partly verified. Phases 0, 1, 2, 3, 4 have been performed against a live system and confirmed. Phase 5 has not. Follow that one as a plan, not as a record.",
   "openIssues": 4
 }

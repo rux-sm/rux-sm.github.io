@@ -56,8 +56,9 @@ does not read as pushed off centre.
 
 ## The list a button opens
 
-A menu, an overflow menu and a dropdown's or combo box's list open 4px from
-their button or field: below it, or above it where there is no room below.
+A menu, an overflow menu, a dropdown's or combo box's list and a date
+picker's calendar open 8px from their button or field, as the header's menus
+stand 8px off the bar: below it, or above it where there is no room below.
 Inside the list, items stand 4px in from its edge, and a menu's labels start
 36px in, after one 16px column that holds a row's check or its icon. A menu
 whose choices carry icons, such as a colour with its swatch, keeps a column

@@ -1885,21 +1885,36 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav :is(a.rux--header__menu-item[aria-current=page], .rux--header__menu-item--current) .rux--text-truncate-end {
   color: var(--rux-text-primary);
 }
-/* RUX-DARK'S LISTS STAND 4px OFF WHAT OPENS THEM. A menu, an overflow menu
-   and a dropdown's or combo box's list open 4px below their button or field,
-   or 4px above it, as GitHub's do; Carbon lays them against it, which here
-   ran the list's ring into the button's. The space is a transparent band
-   above and below the surface, so every script that places one under or over
-   its trigger, Design's or an app's, leaves it without knowing: the fill and
-   the ring stop at the band, and the corners are 4px taller to stay 8px
-   inside it. Carbon's tab joining an overflow menu to its trigger would fill
-   the band, so it goes. */
-[data-theme="rux-dark"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu) {
-  border-block: 4px solid transparent;
-  border-radius: 8px / 12px;
+/* A FLOATING THEME'S LISTS STAND 8px OFF WHAT OPENS THEM, the space the
+   header's menus keep from the bar and Geist's calendar from its field. A
+   menu, an overflow menu, a dropdown's or combo box's list and a date
+   picker's calendar open 8px below their button or field, or 8px above it,
+   in ant-dark, geist-dark, rux-dark and the Apple themes; Carbon lays them
+   against it, and Carbon's square themes keep that. The space is a
+   transparent band above and below the surface, so every script that places
+   one under or over its trigger, Design's or an app's, leaves it without
+   knowing: the fill and the ring stop at the band, and the corners are 8px
+   taller to keep their shape inside it. A submenu opens beside its item, so
+   it keeps no band. The Apple themes' shadow is drawn 8px in on every side,
+   so it falls from the fill and not from the band; ant-dark's falls on its
+   black page, where it shows nowhere. Carbon's tab joining an overflow menu
+   to its trigger would fill the band, so it goes. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
+  border-block: 8px solid transparent;
   background-clip: padding-box;
 }
-[data-theme="rux-dark"] .rux--overflow-menu-options:not(.rux--breadcrumb-menu-options)::after {
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu) {
+  border-radius: 12px / 20px;
+}
+:is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--date-picker__calendar,
+[data-theme="ant-dark"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--list-box__menu, .rux--date-picker__calendar),
+[data-theme="rux-dark"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
+  border-radius: 8px / 16px;
+}
+[data-theme^="apple-"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px -8px var(--rux-shadow);
+}
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--overflow-menu-options:not(.rux--breadcrumb-menu-options)::after {
   display: none;
 }
 /* RUX-DARK'S MENU KEEPS ONE COLUMN BEFORE ITS LABELS, for a check or an

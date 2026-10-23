@@ -568,8 +568,9 @@ ${wrong}` : ''}
 </section>`;
     }).join('\n');
     const variants = [
-      ...section(s, 'variants').map((r) => ({ cells: [docText(r.cells[0].tokens), docText(r.cells[1].tokens, null, `Variation: ${r.cells[0].text.trim()}`), ''] })),
-      ...ts.flatMap((t) => t.variants.rows.map((r) => ({ cells: [docText(r.cells[0].tokens, t), docText(r.cells[1].tokens, t, `Variation: ${r.cells[0].text.trim()}`), `${K.get(t.id)}`] })))];
+      ...section(s, 'variants').map((r) => ({ cells: [docText(r.cells[0].tokens), docText(r.cells[1].tokens, null, `Variation: ${r.cells[0].text.trim()}`)] })),
+      // A task's own variation names its task under the case, so no column stands mostly empty.
+      ...ts.flatMap((t) => t.variants.rows.map((r) => ({ cells: [`${docText(r.cells[0].tokens, t)}<br><span class="ln-quiet">Task ${K.get(t.id)}</span>`, docText(r.cells[1].tokens, t, `Variation: ${r.cells[0].text.trim()}`)] })))];
     const next = section(s, 'downstream').map((r) => ({ cells: r.cells.map((c) => docText(c.tokens, null, 'What comes next')) }));
     const groups = looked(s);
     // The reference is read on screen, and print.css leaves it off paper.
@@ -587,7 +588,7 @@ ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
 <section>
 ${docH2('summary', 'Summary')}
 ${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
-<p class="ln-proc__h4">Values this run uses</p>
+<p class="ln-proc__h4">Example values</p>
 ${values}` : ''}
 </section>${need.length ? `
 <section>
@@ -600,7 +601,7 @@ ${procedure}
 </section>${variants.length ? `
 <section>
 ${docH2('cases', 'Variations')}
-${docTable([['Case', '30%'], ['What changes'], ['Task', '4rem']], variants)}
+${docTable([['Case', '30%'], ['What changes']], variants)}
 </section>` : ''}${next.length ? `
 <section class="ln-proc__next">
 ${docH2('next', 'What comes next')}

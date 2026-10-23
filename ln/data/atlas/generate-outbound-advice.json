@@ -23,27 +23,27 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-22",
+  "status": "draft",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-08-09",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "LN knows what to pick, and a shipment appears."
+        "v": "LN knows what to pick, and the picking list prints."
       }
     ],
-    "text": "LN knows what to pick, and a shipment appears."
+    "text": "LN knows what to pick, and the picking list prints."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as on the walked run, one action fills both the "
+        "v": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as in this environment, one action fills both the "
       },
       {
         "t": "field",
@@ -59,10 +59,10 @@
       },
       {
         "t": "text",
-        "v": " columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+        "v": " columns and prints the picking list. That is a property of the warehousing order type's outbound procedure, not of LN."
       }
     ],
-    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as on the walked run, one action fills both the Advised and Released columns and prints the picking list. That is a property of the order type's procedure, not of LN."
+    "text": "Generating advice is LN deciding which stock, in which locations, will satisfy each outbound line. Where the next activity, releasing the advice, is automatic, as in this environment, one action fills both the Advised and Released columns and prints the picking list. That is a property of the warehousing order type's outbound procedure, not of LN."
   },
   "blocks": [
     {

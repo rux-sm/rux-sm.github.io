@@ -1,9 +1,9 @@
-commit   b91a9fcc65f30fdf0b91e2ddb29eb69f9dcac6d1
-date     2026-10-23T14:38:17Z
-subject  fix(walkthroughs): Reword where the chain ends
+commit   cd1da4195092910133454cd1aa2906975615ac04
+date     2026-10-23T20:25:03Z
+subject  fix(tasks): Keep the on-hand rule whole in bold
 contract 22 
 tier     export
-sha256   115a88d0026c4352ff3d47dd758d85c47cdbe8c519b3b594885799116725322f
+sha256   fc05d28160e7c09c493b667ec4a4cabbea68426a91dab867760b92d62b7a2e3d
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

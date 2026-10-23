@@ -156,7 +156,8 @@ tutorial, reference and explanation.
 ### Verified status
 
 - **Each task and process says how far it is verified, in the reader's words:**
-  Verified, Walked in LN with its month, or Not walked yet. It is computed from
+  Verified, Walked in LN with its month, Walked 6 of 11 when only some of a
+  process's tasks are, or Not walked yet. It is computed from
   atlas and shown on the page, the process, the index and Home.
 
 - **A walk stamps a task, not a process.** Atlas's status, phase and walk

@@ -84,7 +84,8 @@ const drawn = (prefix, fn) => { base = prefix; try { return fn(); } finally { ba
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const month = (d) => { const [y, m] = d.split('-'); return `${MONTHS[Number(m) - 1]} ${y}`; };
 const verified = (status, walked) => status === 'approved' && walked.every(Boolean) ? ['Verified', 'green']
-  : walked.some(Boolean) ? [`Walked in LN, ${month(walked.filter(Boolean).sort().at(-1))}`, 'teal'] : ['Not walked yet', 'outline'];
+  : walked.every(Boolean) ? [`Walked in LN, ${month(walked.sort().at(-1))}`, 'teal']
+  : walked.some(Boolean) ? [`Walked ${walked.filter(Boolean).length} of ${walked.length}`, 'teal'] : ['Not walked yet', 'outline'];
 const COLOUR = { green: 'rux--tag--green', teal: 'rux--tag--teal', outline: 'rux--tag--outline', 'cool-gray': 'rux--tag--cool-gray' };
 const tag = ([label, colour]) => `<div class="rux--tag rux--layout--size-sm ${COLOUR[colour]} rux--tag--sm"><span class="rux--tag__label">${esc(label)}</span></div>`;
 const statusOf = (s) => verified(s.status, s.tasks.map((t) => t.walked));

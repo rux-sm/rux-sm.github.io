@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="19f7cbee4ae1f8ad151c58edb1f29a52f5136b2c">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="3dab996b2cace6e1801357bd42d2016626baa481">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -140,12 +140,12 @@
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-1-1"><td><b>1.1</b></td><td>Obtain one prequalified training case from the master-data owner</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component item, with an existing valid BOM and routing</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-1-2"><td><b>1.2</b></td><td>Enter the component item in <span class="ln-t-named">Filter Items</span> and run it</td><td>The component appears with inventory totals</td></tr>
-<tr id="step-1-3"><td><b>1.3</b></td><td>Tick the component row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens for the component</td></tr>
+<tr id="step-1-2"><td><b>1.2</b></td><td>Type the component item in the filter box above the grid's <span class="ln-t-named">Item</span> column and press Enter</td><td>The component's row with its inventory totals, and a row for any item whose code starts with it</td></tr>
+<tr id="step-1-3"><td><b>1.3</b></td><td>Tick the component's own row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</td><td><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> <span class="ln-t-exact">whwmd2515m000</span> opens for the component</td></tr>
 <tr id="step-1-4"><td><b>1.4</b></td><td>Select a warehouse row with enough unblocked stock for the quantity-one order</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component warehouse and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-5"><td><b>1.5</b></td><td>Confirm the training case names the receiving warehouse and the expected operation</td><td></td></tr>
 <tr id="step-1-6"><td><b>1.6</b></td><td>Confirm it names a valid BOM revision and a valid routing revision</td><td>All inputs needed to check the created order are known before entry begins</td></tr>
-<tr id="step-1-7"><td><b>1.7</b></td><td>Repeat <a class="rux--link" href="#step-1-2">steps 1.2–1.3</a> for the finished item. Filter at the receiving warehouse the training case names</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-7"><td><b>1.7</b></td><td>Repeat <a class="rux--link" href="#step-1-2">steps 1.2–1.3</a> for the finished item, and read the row of the receiving warehouse the training case names</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -155,6 +155,7 @@
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>No qualified item/BOM/routing combination is available</td><td>Stop. Production order does not create or repair master data; request a qualified training case</td></tr>
+<tr><td><span class="ln-t-press">Warehouse Inventory</span> opens <span class="ln-t-named">Warehouse - Item Inventory Ownership</span> <span class="ln-t-exact">whwmd2615m000</span>, <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory Ownership</span></span>, instead</td><td>A warehouse is set in <span class="ln-t-named">Filter Items</span>. Clear <span class="ln-t-named">Site</span> and <span class="ln-t-named">Warehouse</span>, click <span class="ln-t-press">Refresh</span>, and tick the row again</td></tr>
 <tr><td>Component has no suitable warehouse stock</td><td>Choose another qualified case or replenish it before creating an order intended for later execution</td></tr>
 </tbody>
 </table></div>

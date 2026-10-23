@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-22",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check inventory went down.",
   "order": 7,
   "sources": [
@@ -67,7 +67,7 @@
         "text": "Know what you can actually ship."
       },
       "steps": 4,
-      "walked": "2026-08-09"
+      "walked": "2026-10-22"
     },
     {
       "id": "create-and-approve-the-sales-order",

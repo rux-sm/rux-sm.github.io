@@ -129,27 +129,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the component item in "
+                  "v": "Type the component item in the filter box above the grid's "
                 },
                 {
-                  "t": "chip",
-                  "v": "Filter Items"
+                  "t": "field",
+                  "v": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " and run it"
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Enter the component item in Filter Items and run it"
+              "text": "Type the component item in the filter box above the grid's Item column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The component appears with inventory totals"
+                  "v": "The component's row with its inventory totals, and a row for any item whose code starts with it"
                 }
               ],
-              "text": "The component appears with inventory totals"
+              "text": "The component's row with its inventory totals, and a row for any item whose code starts with it"
             }
           ],
           "id": "2",
@@ -171,7 +171,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the component row and click "
+                  "v": "Tick the component's own row and click "
                 },
                 {
                   "t": "button",
@@ -190,7 +190,7 @@
                   "v": " group"
                 }
               ],
-              "text": "Tick the component row and click Warehouse Inventory in the Inventory group"
+              "text": "Tick the component's own row and click Warehouse Inventory in the Inventory group"
             },
             {
               "tokens": [
@@ -350,10 +350,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 2–3 for the finished item. Filter at the receiving warehouse the training case names"
+                  "v": "Repeat steps 2–3 for the finished item, and read the row of the receiving warehouse the training case names"
                 }
               ],
-              "text": "Repeat steps 2–3 for the finished item. Filter at the receiving warehouse the training case names"
+              "text": "Repeat steps 2–3 for the finished item, and read the row of the receiving warehouse the training case names"
             },
             {
               "tokens": [
@@ -410,6 +410,81 @@
               }
             ],
             "text": "Stop. Production order does not create or repair master data; request a qualified training case"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "button",
+                "label": "Warehouse Inventory"
+              },
+              {
+                "t": "text",
+                "v": " opens "
+              },
+              {
+                "t": "session",
+                "code": "whwmd2615m000",
+                "name": "Warehouse - Item Inventory Ownership"
+              },
+              {
+                "t": "text",
+                "v": ", "
+              },
+              {
+                "t": "path",
+                "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory Ownership"
+              },
+              {
+                "t": "text",
+                "v": ", instead"
+              }
+            ],
+            "text": "Warehouse Inventory opens Warehouse - Item Inventory Ownership (whwmd2615m000), Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory Ownership, instead"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A warehouse is set in "
+              },
+              {
+                "t": "chip",
+                "v": "Filter Items"
+              },
+              {
+                "t": "text",
+                "v": ". Clear "
+              },
+              {
+                "t": "field",
+                "v": "Site"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "Warehouse"
+              },
+              {
+                "t": "text",
+                "v": ", click "
+              },
+              {
+                "t": "button",
+                "label": "Refresh"
+              },
+              {
+                "t": "text",
+                "v": ", and tick the row again"
+              }
+            ],
+            "text": "A warehouse is set in Filter Items. Clear Site and Warehouse, click Refresh, and tick the row again"
           }
         ]
       },

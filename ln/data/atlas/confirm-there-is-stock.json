@@ -20,12 +20,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-22",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-08-09",
+  "walked": "2026-10-22",
   "achieves": {
     "tokens": [
       {
@@ -77,24 +77,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the item in "
+                  "v": "Type the item in the filter box above the grid's "
                 },
                 {
-                  "t": "chip",
-                  "v": "Filter Items"
+                  "t": "field",
+                  "v": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " and run it"
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Enter the item in Filter Items and run it"
+              "text": "Type the item in the filter box above the grid's Item column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Grid shows "
+                  "v": "The item's row, and a row for any item whose code starts with it, showing "
                 },
                 {
                   "t": "field",
@@ -125,7 +125,7 @@
                   "v": "Allocated"
                 }
               ],
-              "text": "Grid shows On Hand · Blocked · On Order · Allocated"
+              "text": "The item's row, and a row for any item whose code starts with it, showing On Hand · Blocked · On Order · Allocated"
             }
           ],
           "id": "1",
@@ -147,19 +147,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the item row"
+                  "v": "Tick the item's own row"
                 }
               ],
-              "text": "Tick the item row"
+              "text": "Tick the item's own row"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The header's links light up"
                 }
               ],
-              "text": "—"
+              "text": "The header's links light up"
             }
           ],
           "id": "2",

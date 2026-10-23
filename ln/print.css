@@ -92,6 +92,8 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 /* A warning or a note keeps its border and its icon. */
 .ln-pages .rux--inline-notification.rux--inline-notification--low-contrast { background: none; break-inside: avoid; }
 
-/* A row or a task's Why does not break across pages, and a heading stays with what follows. */
-.ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div, .ln-proc__lead { break-inside: avoid; }
+/* A row, a task's heading with its number, or a task's Why does not break
+   across pages, and a heading stays with what follows. */
+.ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div, .ln-proc__lead,
+.ln-proc__task-title, .ln-proc__n { break-inside: avoid; }
 h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc__lead { break-after: avoid; }

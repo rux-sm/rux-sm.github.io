@@ -585,7 +585,7 @@ ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x)
 </div>
 ${docFacts([statusFact(status), ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
 ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><span class="ln-quiet">one step at a time · ${count(ts.length, 'task')} · ${count(steps, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 ${docH2('summary', 'Summary')}
 ${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
@@ -815,7 +815,7 @@ function task(s, t) {
 ${docFacts([statusFact(taskStatus(t)), ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
 <p class="ln-strip">${strip}</p>${t.walked ? '' : `
 ${unwalked(notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`))}`}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><span class="ln-quiet">one step at a time · ${count(rows.length, 'step')}</span><button type="button" class="rux--btn rux--btn--ghost" data-print>Print</button></p>${need.length ? `
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>${need.length ? `
 <section>
 ${docH2('before', 'Before you start')}
 <ul class="ln-proc__list">${need.map((x) => `<li>${x}</li>`).join('')}</ul>

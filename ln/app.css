@@ -13,8 +13,9 @@
 .ln-quiet { font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); margin: 0; }
 .ln-strip { color: var(--rux-text-secondary); }
 .ln-back { display: inline-flex; align-items: center; gap: .25rem; }
-/* The one action, with how long the task or the process is beside it. */
-.ln-go { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+/* The page's two actions side by side, 8px apart as every button bar is:
+   walk it, or print it. The facts row above says how long it is. */
+.ln-go { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .ln-task__code { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
 
 /* ---- text registers ------------------------------------------------------

@@ -29,7 +29,8 @@ A documentation site, one file per page, with a walked mode inside it:
   title only, and none of the facts row under the title. A guide nobody has walked says so on screen and not on paper. In an iPhone home-screen app, which cannot print, Print opens the page in Safari, which prints it. `print.css` holds it, and the PDF takes the page's title as its
   name.
 
-Where the reader stopped is kept in their browser and nowhere else.
+Where the reader stopped is kept in their browser and nowhere else: from a
+task's step 2, forgotten at its last step, and cleared by the X on Carry on.
 `docs/plans/ln-guide.md` in the repository root is what it is for and what is
 still to build, and `docs/plans/ln-guide-document.md` what the Document and
 the Guide are.

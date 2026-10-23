@@ -39,7 +39,10 @@
 @media (min-width: 42rem) { .ln-cards { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); } .ln-cards--one { grid-template-columns: 1fr; } }
 .ln-cards .rux--tile { display: grid; gap: .25rem; }
 .ln-cards b { font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
-.ln-resume { border-inline-start: 3px solid var(--rux-interactive); }
+/* Carry on is a tile with an X in its corner that forgets the place. */
+.ln-resume { position: relative; }
+.ln-resume .rux--tile { border-inline-start: 3px solid var(--rux-interactive); padding-inline-end: 3.5rem; }
+.ln-resume__forget { position: absolute; inset-block-start: .5rem; inset-inline-end: .5rem; }
 
 /* ---- the Document: a process or a task as a procedure -----------------------------
    A title block of five facts, then sections opened by a heavy rule. Each task

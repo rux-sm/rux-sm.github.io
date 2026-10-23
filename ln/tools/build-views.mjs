@@ -458,7 +458,7 @@ function confirmPage() {
 // ---- Home --------------------------------------------------------------------
 const home = () => page('LN Guide', 'home', column(`<h1 class="ln-ask">What are you doing?</h1>
 ${searchBox('ask')}
-<div class="ln-cards ln-cards--one"><a class="rux--tile rux--tile--clickable ln-resume" href="${hrefHome()}" data-resume hidden><span class="ln-quiet">Carry on</span><b></b></a></div>
+<div class="ln-cards ln-cards--one"><div class="ln-resume" data-resume hidden><a class="rux--tile rux--tile--clickable" href="${hrefHome()}"><span class="ln-quiet">Carry on</span><b></b></a><button type="button" class="rux--btn rux--layout--size-md rux--btn--ghost rux--btn--icon-only ln-resume__forget" aria-label="Forget where I stopped" data-forget><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg></button></div></div>
 <div>
 <h2 class="rux--type-productive-heading-03">Start here</h2>
 <p class="ln-quiet">The processes in the order they build on each other. Each one is a path of tasks.</p>

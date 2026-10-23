@@ -133,7 +133,10 @@
       prev.href = k > 1 ? `?walk=${k - 1}` : guided.dataset.processHref;
       next.href = k < steps.length ? `?walk=${k + 1}` : (guided.dataset.nextHref ?? guided.dataset.processHref);
       next.textContent = k < steps.length ? 'Next' : (guided.dataset.nextHref ? 'Next task' : 'Done');
-      remember({ last: { href: `do/${guided.dataset.task}.html?walk=${k}`, label: `${guided.dataset.process} · ${guided.dataset.title} · step ${k} of ${steps.length}` } });
+      // Opening a task is not starting it, so the place is kept from step 2,
+      // and the last step's Done or Next task forgets it.
+      if (k > 1) remember({ last: { href: `do/${guided.dataset.task}.html?walk=${k}`, label: `${guided.dataset.process} · ${guided.dataset.title} · step ${k} of ${steps.length}` } });
+      next.onclick = k < steps.length ? null : () => remember({ last: null });
       box();
       window.scrollTo(0, 0);
     }
@@ -170,7 +173,8 @@
   const resume = document.querySelector('[data-resume]');
   if (resume) {
     const at = recall().last;
-    if (at?.href && at.label) { resume.href = at.href; resume.querySelector('b').textContent = at.label; resume.hidden = false; }
+    if (at?.href && at.label) { const a = resume.querySelector('a'); a.href = at.href; a.querySelector('b').textContent = at.label; resume.hidden = false; }
+    resume.querySelector('[data-forget]').addEventListener('click', () => { remember({ last: null }); resume.hidden = true; });
   }
 
   // ---- Search: one file, every result, the matches shown as you type -----------

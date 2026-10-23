@@ -380,8 +380,12 @@
               <p class="rux--form__helper-text scheduler-pair-note" id="scheduler-doc-one-note">Holder is the name printed on a certificate. Leave it and Customer empty for a document that is for everyone, such as the W-9.</p>
               <!-- Said in their place while several files are chosen. -->
               <p class="rux--form__helper-text scheduler-pair-note" id="scheduler-doc-several-note" hidden>Each file becomes its own document. Its holder is the start of its name, up to the first underscore, and it joins the customer of that name or the one the holder's last document is linked to.</p>
+              <!-- One end date for each part of a kind that has parts, such as
+                   a certificate's policies, drawn by documents.js from the
+                   template below in place of Ends. -->
+              <div class="scheduler-pair-grid" id="scheduler-doc-parts" hidden></div>
               <div class="scheduler-pair-grid">
-                <div class="rux--form-item">
+                <div class="rux--form-item" id="scheduler-doc-ends-item">
                   <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-doc-ends">Ends</label>
@@ -406,6 +410,19 @@
             <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-document-save">Save</button>
           </div>
         </form>
+
+        <!-- A part's end date, as the Ends field is. -->
+        <template id="scheduler-doc-part-template">
+                <div class="rux--form-item">
+                  <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
+                    <div class="rux--date-picker-container rux--date-picker-container--single">
+                      <label class="rux--label">Part</label>
+                      <div class="rux--date-picker-input__wrapper"><span><input class="rux--date-picker__input" type="text" autocomplete="off" placeholder="mm/dd/yyyy"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button></span></div>
+                    </div>
+                    <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
+                  </div>
+                </div>
+        </template>
 
         <!-- Outside the form: deleting is not an edit Save writes. It is for
              a wrong upload; a document ages out by being replaced. -->
@@ -533,6 +550,7 @@
 <script src="phone.js"></script>
 <script src="toast.js"></script>
 <script src="pair.js"></script>
+<script src="document-status.js"></script>
 <script src="documents.js"></script>
 </body>
 </html>

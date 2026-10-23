@@ -19,6 +19,8 @@ done and how.
 - A trip covered by a bus from another company has no way to say so, so it
   reads as short of a bus. A mark on the bus's seat, naming the company,
   needs a plan of its own.
+- An uploaded certificate's four part dates are typed by hand. Every
+  certificate on file is the same insurance form, so the page could read them.
 
 ## Pixels
 

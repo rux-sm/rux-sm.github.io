@@ -9,6 +9,8 @@
 
    A document is a file and six facts: its kind, the holder named on it, the
    customer it belongs to, the driver it is about, the day it ends and a note.
+   A kind with parts, as a certificate has its policies, takes a day for each
+   part in place of one Ends day, and its row says which part is ending.
    The database keeps one current copy for each kind, holder, customer and
    driver: a new upload makes the one before it old, and deleting the current
    one brings the one before back. A new upload takes several files at once,
@@ -31,20 +33,14 @@
   const BUCKET = 'company-documents';
   const LINK_SECONDS = 600;
   const MAX_BYTES = 20 * 1024 * 1024;
-  // An end date this close shows as a warning, as a driver's licence does.
-  const WARN_DAYS = 30;
-  const COLUMNS = 'id,kind_id,customer_id,driver_id,holder,ends_on,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
+  const COLUMNS = 'id,kind_id,customer_id,driver_id,holder,ends_on,parts,note,file_name,file_path,file_size,replaced_at,created_at,updated_at';
+  const KIND_COLUMNS = 'id,name,per_driver,parts,updated_at';
   const TYPES = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png' };
 
   const folded = v => String(v ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
   // A typed name with its spaces tidied, or null when there is none.
   const clean = v => String(v ?? '').trim().replace(/\s+/g, ' ') || null;
-  const DAY = 864e5;
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
-  const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
-  // Rounded, because a span across a daylight-saving change is 23 or 25 hours.
-  const daysUntil = s => Math.round((parseISO(s) - today()) / DAY);
-  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
   // A date field's day as ISO, or null; the picker shows mm/dd/yyyy.
   const fieldDay = v => window.Rux?.datePicker?.toISO?.(v)
     ?? (/^\d{4}-\d{2}-\d{2}$/.test(String(v ?? '').trim()) ? String(v).trim() : null);
@@ -66,7 +62,7 @@
   };
   async function readAll() {
     const [k, d, c, p] = await Promise.all([
-      read('document_kinds', 'id,name,per_driver,updated_at', 'name'),
+      read('document_kinds', KIND_COLUMNS, 'name'),
       read('company_documents', COLUMNS, 'created_at'),
       read('customers', 'id,name,part_of_id', 'name'),
       read('drivers', 'id,name,short_name,status', 'name'),
@@ -88,29 +84,15 @@
   const driverOf = doc => drivers.get(doc.driver_id) || null;
   const isOld = doc => !!doc.replaced_at;
 
-  /* Whether a document has ended or is about to. `rank` sorts the list by it:
-     the longest ended first, then the soonest to end, then those with no end
-     date. */
-  function ending(doc) {
-    if (!doc.ends_on) return { kind: 'ok', text: '—', rank: Infinity };
-    const n = daysUntil(doc.ends_on);
-    const day = longDay(doc.ends_on);
-    if (n < 0) return { kind: 'ended', text: `Ended ${day}`, rank: n };
-    if (n === 0) return { kind: 'soon', text: 'Ends today', rank: n };
-    if (n <= WARN_DAYS) return { kind: 'soon', text: `Ends in ${plural(n, 'day')}`, rank: n };
-    return { kind: 'ok', text: day, rank: n };
-  }
+  /* Whether a document is in force, by document-status.js. `rank` sorts the
+     list by it: the longest ended first, then the soonest to end, then those
+     with no end date. */
+  const statusOf = doc => window.SchedulerDocumentStatus.of(doc);
   // Each status icon written out whole, so the class sweep can read it.
   const INDICATOR = {
     ended: { cls: 'rux--icon-indicator--failed', icon: '#m-error-fill' },
     soon: { cls: 'rux--icon-indicator--caution-minor', icon: '#m-warning-fill' },
   };
-  function indicator(c) {
-    if (c.kind === 'ok') return el('span', null, c.text);
-    const box = el('div', 'rux--icon-indicator');
-    box.append(svgUse(INDICATOR[c.kind].icon, '16', '0 0 32 32', INDICATOR[c.kind].cls), c.text);
-    return box;
-  }
 
   // A file's ten-minute link, or '' when the bucket will not sign one.
   const linkTo = path => client.storage.from(BUCKET).createSignedUrl(path, LINK_SECONDS)
@@ -155,7 +137,7 @@
       const x = whoOf(a).join(' '), y = whoOf(b).join(' ');
       return !x && !y ? 0 : !x ? 1 : !y ? -1 : folded(x).localeCompare(folded(y));
     },
-    ends: (a, b) => ending(a).rank - ending(b).rank,
+    ends: (a, b) => statusOf(a).rank - statusOf(b).rank,
   };
   /* Every word typed has to be somewhere in the row, or in the name of a
      customer that is part of the row's customer: a district's certificate
@@ -201,8 +183,15 @@
       link.href = `documents.html?open=${encodeURIComponent(doc.id)}`;
       link.target = '_blank';
       link.rel = 'noopener';
-      lines.append(link, el('span', 'scheduler-pair-cell__detail',
-        [isOld(doc) ? 'Old copy' : null, doc.note || doc.file_name].filter(Boolean).join(' · ')));
+      /* Under the kind, whether it is in force, with the status icon where a
+         part is ending or has ended, then the note. An old copy says only that
+         it is old. */
+      const status = isOld(doc) ? null : statusOf(doc);
+      const mark = INDICATOR[status?.state];
+      const detail = el('span', mark ? 'scheduler-pair-cell__detail rux--icon-indicator' : 'scheduler-pair-cell__detail');
+      if (mark) detail.appendChild(svgUse(mark.icon, '16', '0 0 32 32', mark.cls));
+      detail.append([isOld(doc) ? 'Old copy' : null, status?.text, doc.note].filter(Boolean).join(' · '));
+      lines.append(link, detail);
       cell.appendChild(lines);
       what.appendChild(cell);
 
@@ -218,7 +207,7 @@
       }
 
       const ends = el('td', 'scheduler-documents-ends');
-      ends.appendChild(isOld(doc) ? el('span', 'scheduler-pair-note', doc.ends_on ? longDay(doc.ends_on) : '—') : indicator(ending(doc)));
+      ends.appendChild(el('span', isOld(doc) ? 'scheduler-pair-note' : null, doc.ends_on ? longDay(doc.ends_on) : '—'));
 
       const act = el('td', 'scheduler-documents-act');
       const edit = el('a', 'rux--link', 'Edit');
@@ -329,7 +318,7 @@
           : await client.from('document_kinds').insert(fields);
         if (error) throw error;
       }
-      kinds = await read('document_kinds', 'id,name,per_driver,updated_at', 'name');
+      kinds = await read('document_kinds', KIND_COLUMNS, 'name');
       window.Rux?.modal?.close?.('scheduler-kinds-modal');
       drawList();
     } catch {
@@ -345,6 +334,7 @@
   const driverField = $('scheduler-doc-driver');
   const holderField = $('scheduler-doc-holder');
   const endsField = $('scheduler-doc-ends');
+  const partsBox = $('scheduler-doc-parts');
   const noteField = $('scheduler-doc-note');
   const fileInput = $('scheduler-doc-file');
 
@@ -358,12 +348,56 @@
   let baseline = '';
 
   const perDriver = () => !!kinds.find(k => k.id === kindField.value)?.per_driver;
+
+  /* The parts the form asks a day for: the kind's, then any other the saved
+     document has, so a part the kind no longer names is not lost by a Save. */
+  let partNames = [];
+  let partDays = new Map();  // each part's day as last typed, kept while the kind changes
+  const namesFor = kindId => {
+    const own = kinds.find(k => k.id === kindId)?.parts || [];
+    const kept = (loaded?.kind_id === kindId ? loaded.parts || [] : []).map(p => p.name);
+    return [...new Set([...own, ...kept])];
+  };
+  // Each part with a day typed, as the database keeps it; an empty one is not covered.
+  const readParts = () => partNames
+    .map((name, i) => ({ name, ends_on: fieldDay($(`scheduler-doc-part-${i}`)?.value) }))
+    .filter(p => p.ends_on);
+  /* A date field for each part, from the template, in place of Ends. A kind
+     with no parts keeps Ends. */
+  function drawParts(days) {
+    partNames = namesFor(kindField.value);
+    const items = partNames.map((name, i) => {
+      const item = $('scheduler-doc-part-template').content.firstElementChild.cloneNode(true);
+      const input = item.querySelector('.rux--date-picker__input');
+      input.id = `scheduler-doc-part-${i}`;
+      const label = item.querySelector('.rux--label');
+      label.textContent = name;
+      label.htmlFor = input.id;
+      input.value = shownDay(days.get(name) ?? '');
+      return item;
+    });
+    partsBox.replaceChildren(...items);
+    window.Rux?.datePicker?.init?.(partsBox);
+    partsBox.hidden = !partNames.length;
+    $('scheduler-doc-ends-item').hidden = partNames.length > 0;
+  }
+  // Days already typed stay with their part's name when the kind changes, and
+  // come back when it changes back.
+  function keepTyped() {
+    partNames.forEach((name, i) => {
+      const day = fieldDay($(`scheduler-doc-part-${i}`)?.value);
+      if (day) partDays.set(name, day); else partDays.delete(name);
+    });
+  }
+
   const readForm = () => ({
     kind_id: kindField.value || null,
     customer_id: customerId,
     driver_id: perDriver() ? driverField.value || null : null,
     holder: clean(holderField.value),
-    ends_on: fieldDay(endsField.value),
+    // The database sets ends_on to the earliest part's day.
+    ends_on: partNames.length ? null : fieldDay(endsField.value),
+    parts: partNames.length ? readParts() : [],
     note: noteField.value.trim() || null,
   });
   const snapshot = () => JSON.stringify([readForm(), customerId ? '' : customerText, chosen?.name ?? '', several.map(f => f.name)]);
@@ -442,7 +476,7 @@
   }
   // The driver is asked for only by a kind kept once for each driver.
   const drawDriver = () => { $('scheduler-doc-driver-item').hidden = !perDriver(); };
-  kindField?.addEventListener('change', () => { drawDriver(); showKindError(''); });
+  kindField?.addEventListener('change', () => { drawDriver(); keepTyped(); drawParts(partDays); showKindError(''); });
   driverField?.addEventListener('change', () => showDriverError(''));
 
   // One of several chosen files: its name, and a button that takes it out.
@@ -593,6 +627,8 @@
     customerText = customers.get(customerId)?.name ?? '';
     driverField.value = doc.driver_id ?? '';
     endsField.value = shownDay(doc.ends_on ? String(doc.ends_on).slice(0, 10) : '');
+    partDays = new Map((doc.parts || []).map(p => [p.name, String(p.ends_on).slice(0, 10)]));
+    drawParts(partDays);
     holderField.value = doc.holder ?? '';
     noteField.value = doc.note ?? '';
     drawCustomer();
@@ -705,11 +741,11 @@
   const SAME = 'Another current document has this kind, holder, customer and driver. Open that one and replace its file.';
 
   /* Several files, one after another: each is uploaded, then written as its
-     own document with the form's kind, end date and note, its holder from its
+     own document with the form's kind, end dates and note, its holder from its
      name and its customer the holder's. A file that lands leaves the list, so
      a Save that stops partway is finished by the next one. */
   async function saveSeveral() {
-    const { kind_id, ends_on, note } = readForm();
+    const { kind_id, ends_on, parts: dates, note } = readForm();
     const saveBtn = $('scheduler-document-save');
     saveBtn.disabled = true;
     const total = several.length;
@@ -726,7 +762,7 @@
         try {
           documents.push(await window.SchedulerPair.saveRecord(client, 'company_documents', {
             id, creating: true, columns: COLUMNS,
-            row: { kind_id, customer_id: customerFor(kind_id, holder), driver_id: null, holder, ends_on, note,
+            row: { kind_id, customer_id: customerFor(kind_id, holder), driver_id: null, holder, ends_on, parts: dates, note,
               file_name: file.name, file_path: path, file_size: file.size },
           }));
         } catch (error) {

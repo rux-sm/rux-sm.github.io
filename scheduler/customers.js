@@ -213,7 +213,7 @@
   let wholePapers = [];       // the current documents of the customer it is part of
   async function readPapers(id, wholeId) {
     const of = whose => client.from('company_documents')
-      .select('id,kind_id,holder,ends_on,note,file_name,replaced_at,created_at')
+      .select('id,kind_id,holder,ends_on,parts,note,file_name,replaced_at,created_at')
       .eq('customer_id', whose).order('created_at', { ascending: false });
     const [kinds, asks, docs, whole] = await Promise.all([
       client.from('document_kinds').select('id,name,per_driver').order('name'),
@@ -554,7 +554,8 @@
 
   // ── documents, read only ──
   const day = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
-  // One customer's current documents as rows of a list, each opening its file.
+  // One customer's current documents as rows of a list, each opening its file,
+  // each saying whether it is in force as the Documents page does.
   function listDocuments(list, rows, owner) {
     list.replaceChildren();
     if (!rows.length) {
@@ -563,20 +564,18 @@
       list.appendChild(li);
       return;
     }
-    const today = new Date(new Date().toDateString());
     for (const d of rows) {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
       const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
       a.href = `documents.html?open=${encodeURIComponent(d.id)}`;
       a.target = '_blank';
       a.rel = 'noopener';
-      const ends = !d.ends_on ? null
-        : `${day(d.ends_on) < today ? 'Ended' : 'Ends'} ${day(d.ends_on).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+      const status = window.SchedulerDocumentStatus.of(d).text;
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
       // The holder named on it, where that is not the customer's own name.
       const holder = folded(d.holder) === folded(owner?.name) ? null : d.holder;
-      lines.appendChild(el('span', 'scheduler-pair-item__detail', [holder, ends, d.note || d.file_name].filter(Boolean).join(' · ')));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', [holder, status, d.note].filter(Boolean).join(' · ')));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);

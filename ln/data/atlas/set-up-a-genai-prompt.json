@@ -28,11 +28,41 @@
     {
       "tokens": [
         {
+          "t": "strong",
+          "v": "An idea worth a prompt."
+        },
+        {
           "t": "text",
-          "v": "An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant. "
+          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
         }
       ],
-      "text": "An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant."
+      "text": "An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+    },
+    {
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "One record of each kind the prompt tells apart"
+        },
+        {
+          "t": "text",
+          "v": ", to test the answer with."
+        }
+      ],
+      "text": "One record of each kind the prompt tells apart, to test the answer with."
+    },
+    {
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "GenAI switched on for your company's LN."
+        },
+        {
+          "t": "text",
+          "v": " Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears. "
+        }
+      ],
+      "text": "GenAI switched on for your company's LN. Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears."
     }
   ],
   "tasks": [
@@ -240,10 +270,70 @@
         },
         {
           "t": "text",
-          "v": " > An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant. "
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "An idea worth a prompt."
+        },
+        {
+          "t": "text",
+          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
         }
       ],
-      "text": "> Prerequisite > An idea that passes the four questions of Is it worth a prompt, a record of each kind to test with, and GenAI switched on for the tenant."
+      "text": "> Prerequisite > An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "One record of each kind the prompt tells apart"
+        },
+        {
+          "t": "text",
+          "v": ", to test the answer with."
+        }
+      ],
+      "text": "> Prerequisite > One record of each kind the prompt tells apart, to test the answer with."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "GenAI switched on for your company's LN."
+        },
+        {
+          "t": "text",
+          "v": " Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears. "
+        }
+      ],
+      "text": "> Prerequisite > GenAI switched on for your company's LN. Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears."
     },
     {
       "kind": "glance",

@@ -912,9 +912,10 @@
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those
-   three, which is why one block serves both. rux-dark takes Design's two
-   steps instead: 4px on a bar and a mark, which are controls, and 8px on the
-   week, a surface. Every other theme leaves them square, as Carbon draws
+   three, which is why one block serves both. rux-dark takes Design's steps
+   instead: 4px on a bar and a mark, which are controls, and a square week,
+   because Design squares its cards and panels, so its last row keeps its
+   rule. Every other theme leaves them square, as Carbon draws
    them. */
 [data-theme="ant-dark"],
 [data-theme="geist-dark"],
@@ -933,8 +934,10 @@
 }
 [data-theme="rux-dark"] {
   --scheduler-bar-radius: 4px;
-  --scheduler-surface-radius: 8px;
+  --scheduler-surface-radius: 0;
   --scheduler-mark-radius: 4px;
+  --scheduler-tile-radius: 0;
+  --scheduler-last-rule: initial;
 }
 
 /* AN UPDATE'S HOVER IS A TILE OF THE THEME'S SMALL CORNER, as a row of

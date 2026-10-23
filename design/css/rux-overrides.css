@@ -320,11 +320,11 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--dropdown {
   border-radius: 6px;
 }
-/* RUX-DARK'S CORNERS ARE THE MARK'S SQUARES IN TWO STEPS: 4px on a control
-   and a tag, and 8px on a surface, where the rounded themes take 4, 6, 8 and
-   12. A control held close to a surface's edge -- a menu's item, a switcher's
-   option, a scheduler shortcut -- stands 4px in, so its 4px corner runs
-   parallel to the surface's 8px. Each corner is written for rux-dark alone
+/* RUX-DARK'S CORNERS ARE THE MARK'S SQUARES: 4px on a control and a tag,
+   8px on a floating surface, and none on a card or a panel, where the rounded
+   themes take 4, 6, 8 and 12. A control held close to a floating surface's
+   edge -- a menu's item, a switcher's option, a scheduler shortcut -- stands
+   4px in, so its 4px corner runs parallel to the surface's 8px. Each corner is written for rux-dark alone
    right after the shared rule it replaces, so it meets Carbon's rules and
    this file's in the order the shared rule did; a shared rule that set
    nothing but a corner no longer names it. Round stays round only where the
@@ -365,7 +365,9 @@
   border-radius: 8px;
 }
 [data-theme="rux-dark"] .rux--tile,
-[data-theme="rux-dark"] .rux--card,
+[data-theme="rux-dark"] .rux--card {
+  border-radius: 0;
+}
 [data-theme="rux-dark"] .rux--file__drop-container,
 [data-theme="rux-dark"] .rux--list-box__menu,
 [data-theme="rux-dark"] .rux--menu,
@@ -408,18 +410,7 @@
 }
 [data-theme="rux-dark"] .rux--side-panel,
 [data-theme="rux-dark"] .rux--modal-container {
-  border-radius: 8px;
-}
-/* A placed side panel stands on the window's edge and its foot, so only its
-   inner top corner is free and rounds; a panel an app sets inside its page,
-   with no placement, keeps all four. */
-[data-theme="rux-dark"] .rux--side-panel--right-placement {
   border-radius: 0;
-  border-start-start-radius: 8px;
-}
-[data-theme="rux-dark"] .rux--side-panel--left-placement {
-  border-radius: 0;
-  border-start-end-radius: 8px;
 }
 
 /* GEIST'S TERTIARY BUTTON IS PLAIN TEXT, NOT A LINK. Carbon paints a ghost

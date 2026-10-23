@@ -5410,6 +5410,10 @@ html:has(.scheduler-page[data-takeover]) {
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-to-do__tag { flex: none; margin: 0; }
+/* The owner's face ends the tag's line, as a step's does on Departures. It is
+   1.5rem in a 1.25rem line and overhangs it evenly, so a row with an owner
+   stands as tall as one without. */
+.scheduler-to-do__face { flex: none; margin-block: -0.125rem; margin-inline-start: auto; }
 .scheduler-to-do__who { flex: 0 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scheduler-to-do__when { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-03); color: var(--rux-text-secondary); }
 .scheduler-to-do__when--late { color: var(--rux-text-error); }

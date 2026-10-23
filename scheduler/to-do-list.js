@@ -17,9 +17,11 @@
    three lines, each ended in an ellipsis where it runs long, so every closed
    row stands the same height: who it is about, with its due day at the
    line's end in the error colour once the day is past; then its words in
-   bold; then its kind in Design's tag, in the kind's colour, and its number.
+   bold; then its kind in Design's tag, in the kind's colour, its number, and
+   at the end the face of its owner, the one working on it.
    A press opens it to those in full, then its trip as a link,
    its detail as a list, a fact to an item, and one row of buttons: Done,
+   I'm on it, which makes the row mine, or Let it go on a row already mine,
    Email, Start trip on a website request with no trip yet, and a menu of
    Edit and Delete. Who added a row is said in its form, under the fields,
    and not on its tile. One row is open at a time. Delete closes the row with
@@ -147,7 +149,7 @@
   }
 
   async function readStaff() {
-    const rows = await client.from('profiles').select('id,user_id,display_name').then(unwrap);
+    const rows = await client.from('profiles').select('id,user_id,display_name,photo_path,avatar_color').then(unwrap);
     staff = new Map(rows.map(p => [p.id, p]));
   }
 
@@ -322,6 +324,16 @@
       number.append(el('span', 'rux--visually-hidden', 'Task '), `#${row.number}`);
       context.appendChild(number);
     }
+    // The one working on it, by face at the line's end, so a row nobody has taken shows none.
+    const owner = !done ? staff.get(row.owner_id) : null;
+    if (owner) {
+      const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-to-do__face');
+      account.drawAvatar?.(face, { id: owner.id, name: owner.display_name, photoPath: owner.photo_path, colour: owner.avatar_color }, 'sm');
+      face.title = `${owner.display_name || 'Someone'} is on it`;
+      face.setAttribute('role', 'img');
+      face.setAttribute('aria-label', face.title);
+      context.appendChild(face);
+    }
     title.append(top, what, context);
     heading.appendChild(title);
 
@@ -350,6 +362,14 @@
     act.addEventListener('click', () => { act.disabled = true; openId = null; tick(row, !done); });
     const bar = el('div', 'scheduler-to-do__buttons');
     bar.appendChild(act);
+    /* I'm on it makes the row mine, taking it from whoever had it, and on a
+       row already mine Let it go gives it back to anyone. */
+    if (!done && me?.id) {
+      const mine = row.owner_id === me.id;
+      const take = button('rux--btn--ghost', mine ? 'Let it go' : 'I’m on it');
+      take.addEventListener('click', () => { take.disabled = true; change(row, { owner_id: mine ? null : me.id }); });
+      bar.appendChild(take);
+    }
     if (row.thread_url) {
       const email = button('rux--btn--ghost', 'Email');
       email.addEventListener('click', () => window.open(row.thread_url, '_blank', 'noopener'));

@@ -28,7 +28,7 @@
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": null,
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -285,7 +285,8 @@
           "produces": false,
           "example": [
             1,
-            2
+            2,
+            3
           ]
         },
         {
@@ -581,7 +582,7 @@
           "optional": false,
           "produces": true,
           "example": [
-            3
+            4
           ]
         },
         {
@@ -723,14 +724,40 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-08-09"
+                "v": "2026-10-23"
               },
               {
                 "t": "text",
                 "v": " — LN fills it in"
               }
             ],
-            "text": "2026-08-09 — LN fills it in"
+            "text": "2026-10-23 — LN fills it in"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Planned Delivery Date"
+              }
+            ],
+            "text": "Planned Delivery Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2026-10-23"
+              },
+              {
+                "t": "text",
+                "v": " — left at the order date"
+              }
+            ],
+            "text": "2026-10-23 — left at the order date"
           }
         ]
       },
@@ -749,14 +776,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-09-03"
+                "v": "2026-10-23"
               },
               {
                 "t": "text",
-                "v": " — 25 days after the order date"
+                "v": " — left at the planned delivery date"
               }
             ],
-            "text": "2026-09-03 — 25 days after the order date"
+            "text": "2026-10-23 — left at the planned delivery date"
           }
         ]
       },
@@ -775,10 +802,10 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "24"
+                "v": "5"
               }
             ],
-            "text": "24"
+            "text": "5"
           }
         ]
       }

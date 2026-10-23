@@ -1,9 +1,9 @@
-commit   a9c13d04d974512fc7d897eaf37a8c44fccdc977
-date     2026-10-23T20:54:07Z
-subject  fix(tasks): Make Ship from stock steps precise
+commit   b8222a7351601612ff3ba264e0191de1cbdc0c83
+date     2026-10-23T21:22:11Z
+subject  feat(tasks): Stamp Ship from stock walked
 contract 22 
 tier     export
-sha256   f2fbe0e2c53f4fe84e4ae05fbcdd85dfc3053166e5558f8c5db1517d989aa443
+sha256   a842ef0c7b9f2a94da950be811d1aed410f343f757af9794ea57f464b2607f0e
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

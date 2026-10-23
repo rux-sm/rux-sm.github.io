@@ -8,7 +8,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "status": "draft",
   "summary": "find out how much of one item is in stock, where, and how much is already committed.",
   "order": 4,
@@ -32,7 +32,7 @@
         "text": "The item's on hand, blocked, on order and allocated are known."
       },
       "steps": 3,
-      "walked": null
+      "walked": "2026-10-22"
     },
     {
       "id": "read-the-stock-by-warehouse",
@@ -48,7 +48,7 @@
         "text": "The warehouse to work from, and its figures, are written down."
       },
       "steps": 5,
-      "walked": null
+      "walked": "2026-10-22"
     }
   ],
   "values": {
@@ -233,6 +233,6 @@
       "under": "Variants"
     }
   ],
-  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 0
 }

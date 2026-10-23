@@ -1,9 +1,9 @@
-commit   9fd2745abd7243d57e03363d0e5048a553e9c503
-date     2026-10-23T03:31:54Z
-subject  fix(walks): Spell out the GenAI prerequisites
+commit   19f7cbee4ae1f8ad151c58edb1f29a52f5136b2c
+date     2026-10-23T04:42:40Z
+subject  feat(walks): Walk Find the item a third time
 contract 22 
 tier     export
-sha256   fad4ddc2ac0c5f57af52f2972e197bfb42a1a760c184fa316a99fdc14086888a
+sha256   22e88781c726cf452c02278cb35bbeba2ea18186eab07f6852fcc9529ced11bb
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

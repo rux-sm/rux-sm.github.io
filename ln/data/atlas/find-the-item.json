@@ -24,7 +24,7 @@
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": null,
+  "walked": "2026-10-22",
   "achieves": {
     "tokens": [
       {
@@ -68,24 +68,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the item in "
+                  "v": "Type the item in the filter box above the grid's "
                 },
                 {
-                  "t": "chip",
-                  "v": "Filter Items"
+                  "t": "field",
+                  "v": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " and run it"
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Enter the item in Filter Items and run it"
+              "text": "Type the item in the filter box above the grid's Item column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Grid shows "
+                  "v": "The item's row, and a row for any item whose code starts with it, showing "
                 },
                 {
                   "t": "field",
@@ -116,7 +116,7 @@
                   "v": "Allocated"
                 }
               ],
-              "text": "Grid shows On Hand · Blocked · On Order · Allocated"
+              "text": "The item's row, and a row for any item whose code starts with it, showing On Hand · Blocked · On Order · Allocated"
             }
           ],
           "id": "1",
@@ -138,10 +138,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the four quantities on the item's row"
+                  "v": "Read the four quantities on the item's own row"
                 }
               ],
-              "text": "Read the four quantities on the item's row"
+              "text": "Read the four quantities on the item's own row"
             },
             {
               "tokens": [
@@ -233,10 +233,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The header's links light up, each with a green or grey dot. "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " stays greyed"
                 }
               ],
-              "text": "—"
+              "text": "The header's links light up, each with a green or grey dot. Item Order Plan stays greyed"
             }
           ],
           "id": "3",
@@ -277,6 +285,28 @@
               }
             ],
             "text": "The item has no inventory records yet, so there is nothing to report"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The header's links stay pale"
+              }
+            ],
+            "text": "The header's links stay pale"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No row is ticked. Tick the item's row"
+              }
+            ],
+            "text": "No row is ticked. Tick the item's row"
           }
         ]
       },

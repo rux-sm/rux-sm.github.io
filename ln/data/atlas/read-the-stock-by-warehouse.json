@@ -24,7 +24,7 @@
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": null,
+  "walked": "2026-10-22",
   "achieves": {
     "tokens": [
       {
@@ -39,7 +39,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later task uses is chosen from its figures. "
+        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse the item is known in, with or without stock, so the warehouse a later task uses is chosen from its figures. "
       },
       {
         "t": "field",
@@ -50,7 +50,7 @@
         "v": " on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
       }
     ],
-    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse holding or expecting the item, so the warehouse a later task uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse the item is known in, with or without stock, so the warehouse a later task uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
   },
   "blocks": [
     {
@@ -148,10 +148,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One row per warehouse holding or expecting the item"
+                  "v": "One row per warehouse the item is known in, including ones that hold nothing"
                 }
               ],
-              "text": "One row per warehouse holding or expecting the item"
+              "text": "One row per warehouse the item is known in, including ones that hold nothing"
             }
           ],
           "id": "2",

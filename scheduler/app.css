@@ -25,8 +25,10 @@
    calculator panels open at Carbon's `sm`, 20rem, since what they hold reads
    the same narrower, and the week keeps the difference: the roster is a table
    edge to edge, a name beside a week of 32px squares. The document viewer
-   opens at 24rem. The trip editor opens at Carbon's `md`, for the room its tabs'
-   figures and fields need side by side. The viewer's size button takes it to `md`, `lg` and `xl`, since its width is
+   opens at 24rem. The trip editor opens at 22rem, between Carbon's `sm` and
+   `md`, with Destination, Type and each contact's name and phone on rows of
+   their own, the narrowest at which the dates and the passenger and bus
+   counts still stand two to a row. The viewer's size button takes it to `md`, `lg` and `xl`, since its width is
    the document's zoom: a letter page in 20rem renders 11pt text at under 6px.
    `placeRoom` in data.js prices the panels by reading these back off them, so
    the arithmetic and the layout cannot drift. */
@@ -41,8 +43,8 @@
   --scheduler-viewer-lg-w: 40rem;
   --scheduler-viewer-xl-w: 65rem;
   --scheduler-viewer-w: var(--scheduler-viewer-sm-w);
-  /* The trip editor, Carbon's `rux--side-panel--md`. */
-  --scheduler-editor-w: 30rem;
+  /* The trip editor. */
+  --scheduler-editor-w: 22rem;
 }
 
 .scheduler-week {
@@ -2292,8 +2294,9 @@ button.scheduler-row-head__num::after {
 }
 
 /* The trip editor's column, sized here as an app decision; overrides.css only
-   undoes Carbon's fixed positioning at md and up. 30rem matches the panel's
-   `rux--side-panel--md` class, and the two move together. */
+   undoes Carbon's fixed positioning at md and up, and the panel's
+   `rux--side-panel--md` class, which keeps its 30rem below md, takes the
+   column's width beside the board. */
 .scheduler-trip {
   /* Never shrinks: Carbon's panel inside has a 16rem minimum, and a wrapper
      allowed below it lets the panel overflow. The schedule gives way instead. */

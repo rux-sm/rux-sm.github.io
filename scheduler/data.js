@@ -7373,13 +7373,12 @@
     busCountDrawn();
     topFields.append(
       outRange,
-      pair(
-        textField('scheduler-f-destination', 'Destination', trip.destination),
-        selectField('scheduler-f-way', 'Type', screen.kind, [
-          ['round_trip', 'Round trip'],
-          ['one_way', 'One way'],
-        ]),
-      ),
+      // Each on its own row: in the 22rem panel half a row cuts a place name.
+      full(textField('scheduler-f-destination', 'Destination', trip.destination)),
+      full(selectField('scheduler-f-way', 'Type', screen.kind, [
+        ['round_trip', 'Round trip'],
+        ['one_way', 'One way'],
+      ])),
       pair(passengers, busCount),
       colorBox,
     );
@@ -7399,8 +7398,8 @@
          the first thing known. A field's label is its own word alone, because
          the group's heading says whose it is; the copy button still names the
          contact in full. */
-      // The name and phone share a row, a contact read at a glance; half the
-      // 30rem panel leaves each about 180px beside its copy button.
+      // The name and the phone each take a row: half the 22rem panel cuts a
+      // name and the last digits of a number beside its copy button.
       /* The booking's conversation is a link, never a field on show. It
          follows the Email label on its line, as a saved record's link follows
          Name: Email thread opens it, and with none, Add email thread opens
@@ -7425,9 +7424,9 @@
       emailRow.append(emailLabel, openThread, addThread);
       const bookingStack = el('div', 'rux--stack-vertical rux--stack-scale-5');
       bookingStack.append(
-        pair(withSaved(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
-          'scheduler-f-cfind', 'Booking contact name'), 'scheduler-f-cfind', 'contact'),
-        withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
+        full(withSaved(withCopy(contactSearch('scheduler-f-cfind', 'Name', allContacts, contact),
+          'scheduler-f-cfind', 'Booking contact name'), 'scheduler-f-cfind', 'contact')),
+        full(withCopy(textField('scheduler-f-cphone', 'Phone', contact?.phone),
           'scheduler-f-cphone', 'Booking contact phone')),
         emailItem,
         customerBox,
@@ -7533,7 +7532,7 @@
         return d.fresh || d.removed ? null : slotOf(trip, d.n);
       };
 
-      /* Each contact is a tile, Name beside Phone, as a group named
+      /* Each contact is a tile, Name over Phone, as a group named
          Contact 1 to 5 in the order drawn, which a screen reader says before
          its labels, so the tab needs no heading between the section title and
          the fields. Adding and removing are on the overflow menu at the end of
@@ -7548,11 +7547,12 @@
         rowsHost.replaceChildren();
         rows.forEach(([d, c], i) => {
           const n = d.n;
-          const row = pair(
-            withSaved(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
-              `scheduler-f-d${n}`, `Contact ${i + 1} name`), `scheduler-f-d${n}`, 'contact'),
-            withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
-              `scheduler-f-dphone${n}`, `Contact ${i + 1} phone`),
+          const row = el('div', 'rux--stack-vertical rux--stack-scale-5');
+          row.append(
+            full(withSaved(withCopy(contactSearch(`scheduler-f-d${n}`, 'Name', allContacts, c?.name ? c : null),
+              `scheduler-f-d${n}`, `Contact ${i + 1} name`), `scheduler-f-d${n}`, 'contact')),
+            full(withCopy(textField(`scheduler-f-dphone${n}`, 'Phone', c?.phone),
+              `scheduler-f-dphone${n}`, `Contact ${i + 1} phone`)),
           );
           row.setAttribute('role', 'group');
           row.setAttribute('aria-label', `Contact ${i + 1}`);

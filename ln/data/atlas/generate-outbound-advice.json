@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -59,10 +59,10 @@
       },
       {
         "t": "text",
-        "v": " and prints the picking list. That comes from the warehousing order type's outbound procedure, not from LN itself."
+        "v": " and prints the picking list. That's set by the warehousing order type's outbound procedure."
       }
     ],
-    "text": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. In this environment the next activity, releasing the advice, runs on its own, so one action fills both Advised and Released and prints the picking list. That comes from the warehousing order type's outbound procedure, not from LN itself."
+    "text": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. In this environment the next activity, releasing the advice, runs on its own, so one action fills both Advised and Released and prints the picking list. That's set by the warehousing order type's outbound procedure."
   },
   "blocks": [
     {
@@ -291,23 +291,10 @@
                 {
                   "t": "command",
                   "route": "Actions ➔ Advice ➔ Generate Advice"
-                }
-              ],
-              "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "A "
-                },
-                {
-                  "t": "chip",
-                  "v": "Select Device"
                 },
                 {
                   "t": "text",
-                  "v": " dialog opens for Picking List by Location; click "
+                  "v": ", then click "
                 },
                 {
                   "t": "button",
@@ -315,7 +302,24 @@
                 },
                 {
                   "t": "text",
-                  "v": " and the list prints to its own tab. "
+                  "v": " in the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Select Device"
+                },
+                {
+                  "t": "text",
+                  "v": " dialog"
+                }
+              ],
+              "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice, then click CONTINUE in the Select Device dialog"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Picking List by Location prints to its own tab. "
                 },
                 {
                   "t": "field",
@@ -360,7 +364,7 @@
                   "v": "Mission"
                 }
               ],
-              "text": "A Select Device dialog opens for Picking List by Location; click CONTINUE and the list prints to its own tab. Advised and Released both fill — release is automatic here — Run, Mission"
+              "text": "The Picking List by Location prints to its own tab. Advised and Released both fill — release is automatic here — Run, Mission"
             }
           ],
           "id": "5",

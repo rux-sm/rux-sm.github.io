@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-23",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -72,7 +72,7 @@
         "text": "The order status is In Process."
       },
       "steps": 12,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "release-to-warehousing",
@@ -104,7 +104,7 @@
         "text": "LN knows what to pick, and the picking list prints."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "pick-the-goods_ship-from-stock",
@@ -120,7 +120,7 @@
         "text": "The pick is confirmed in LN, and the stock is in staging."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "ship_ship-from-stock",
@@ -136,7 +136,7 @@
         "text": "The shipment is confirmed, and the stock leaves inventory."
       },
       "steps": 5,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "verify-it-worked_ship-from-stock",
@@ -152,7 +152,7 @@
         "text": "On-hand went down by the quantity shipped."
       },
       "steps": 1,
-      "walked": "2026-10-23"
+      "walked": null
     }
   ],
   "values": {
@@ -1084,6 +1084,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "verification": "Warning Partly verified. Phases 0, 2 have been performed against a live system and confirmed. Phases 1, 3, 4, 5, 6 have not. Follow those as a plan, not as a record.",
   "openIssues": 1
 }

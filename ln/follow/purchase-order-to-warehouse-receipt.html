@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="f5bd9d3a90dae0b15e264c3df51ed780a6fdc7ba">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="5890fc953cc5013cc7b05d7440b217f76b95ed37">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -170,10 +170,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Create the purchase order: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Create the purchase order: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>Order type is not <span class="ln-t-exact">IPO</span></td><td>Nothing. <span class="ln-t-exact">IPO</span> is what the walked run defaulted, not a required value</td></tr>
 </tbody>
@@ -215,10 +214,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Receive against the order: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Receive against the order: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>No warehousing order appears after saving the purchase order</td><td>The warehouse on the order lines (<a class="rux--link" href="#step-3-4">step 3.4</a>). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's <span class="ln-t-named">Release to Warehousing</span> tab: a line still sitting there has not been released, and <a class="rux--link" href="../screens/tdpur4534m000.html"><span class="ln-t-named">Purchase Order Line Status</span></a> (<span class="ln-t-exact">tdpur4534m000</span>) names the activity it is waiting on</td></tr>
 <tr><td>The Actions menu offers no receive command</td><td>The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from <a class="rux--link" href="#step-4-1">step 4.1</a>, not the purchase order</td></tr>
@@ -244,10 +242,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Confirm the receipt: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Confirm the receipt: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td><span class="ln-t-exact">whinh0032</span> at the receipt</td><td>The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>), which hold the messages once the dialog is gone</td></tr>
 <tr><td>The receipt looks confirmed but nothing was received</td><td>Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</td></tr>
@@ -269,10 +266,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Verify the inventory increase: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Verify the inventory increase: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The receipt confirms but on-hand does not move</td><td>Whether <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> were both set (<a class="rux--link" href="#step-5-4">step 5.4</a>), and whether the receiving warehouse in this task is the one from <a class="rux--link" href="#step-1-1">step 1.1</a></td></tr>
 </tbody>

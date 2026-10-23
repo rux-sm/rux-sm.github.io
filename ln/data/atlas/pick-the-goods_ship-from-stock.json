@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -78,7 +78,7 @@
       },
       {
         "t": "text",
-        "v": " activity is manual and the warehouse is location-controlled. Change either, and LN ticks "
+        "v": " activity is manual and the warehouse is location-controlled. Whether you need this task depends on those two settings; without them, LN ticks "
       },
       {
         "t": "field",
@@ -86,10 +86,10 @@
       },
       {
         "t": "text",
-        "v": " on release and this task goes away. Once a line is staged, LN creates the shipment line."
+        "v": " on release. Once a line is staged, LN creates the shipment line."
       }
     ],
-    "text": "The picking list records stock moving to staging, and confirming it fills Picked. You need this task because, in this environment, the Picking List activity is manual and the warehouse is location-controlled. Change either, and LN ticks Picked on release and this task goes away. Once a line is staged, LN creates the shipment line."
+    "text": "The picking list records stock moving to staging, and confirming it fills Picked. You need this task because, in this environment, the Picking List activity is manual and the warehouse is location-controlled. Whether you need this task depends on those two settings; without them, LN ticks Picked on release. Once a line is staged, LN creates the shipment line."
   },
   "blocks": [
     {
@@ -123,16 +123,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " in the header"
-                }
-              ],
-              "text": "Check Run in the header"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "It's the Run from step 5 of "
+                  "v": " in the header. If it isn't the Run from step 5 of "
                 },
                 {
                   "t": "link",
@@ -141,7 +132,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ". If not, click "
+                  "v": ", click "
                 },
                 {
                   "t": "button",
@@ -162,10 +153,15 @@
                 {
                   "t": "button",
                   "label": "OK"
-                },
+                }
+              ],
+              "text": "Check Run in the header. If it isn't the Run from step 5 of Generate outbound advice, click Find, fill in Run and click OK"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ". "
+                  "v": "The Run you wrote down. "
                 },
                 {
                   "t": "button",
@@ -184,7 +180,7 @@
                   "v": " step through every run in code order"
                 }
               ],
-              "text": "It's the Run from step 5 of Generate outbound advice. If not, click Find, fill in Run and click OK. next / previous step through every run in code order"
+              "text": "The Run you wrote down. next / previous step through every run in code order"
             }
           ],
           "id": "1",
@@ -644,10 +640,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Narrower scopes than Pick Run: one picking mission, or one advice line. See step 5"
+                "v": "Use these to pick one mission or one advice line instead of the whole run. See step 5"
               }
             ],
-            "text": "Narrower scopes than Pick Run: one picking mission, or one advice line. See step 5"
+            "text": "Use these to pick one mission or one advice line instead of the whole run. See step 5"
           }
         ]
       }

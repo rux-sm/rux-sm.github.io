@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="f5bd9d3a90dae0b15e264c3df51ed780a6fdc7ba">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="5890fc953cc5013cc7b05d7440b217f76b95ed37">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -162,10 +162,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Make the item visible to planning: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Make the item visible to planning: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The item is not in the Item Order Plan</td><td>It has no planning data — no cluster row, no plan. <a class="rux--link" href="#step-1-3">Steps 1.3–1.5</a>. Not an error state; nothing will tell you</td></tr>
 </tbody>
@@ -187,10 +186,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Create demand: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Create demand: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>LN refuses the item on the sales order — &quot;item sales by sales office not present&quot;</td><td>The item has no row for the order's sales office. Add it on the <span class="ln-t-named">Sales Offices</span> tab of <a class="rux--link" href="../screens/tcibd0501m100.html"><span class="ln-t-named">Item</span></a> (<span class="ln-t-exact">tcibd0501m100</span>), then close and reopen the order session</td></tr>
 <tr><td>A master-data fix appears to have no effect</td><td>The session was already open when the data changed. Close it and reopen</td></tr>
@@ -214,10 +212,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Put the demand inside the horizon: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Put the demand inside the horizon: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The demand does not appear in the Item Order Plan</td><td>The delivery date is beyond the <span class="ln-t-named">Order Horizon</span> date. <a class="rux--link" href="#step-3-2">Step 3.2</a> — and remember the date is not today plus your days</td></tr>
 </tbody>
@@ -239,10 +236,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Run MRP: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Run MRP: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The run plans the parent but not a component</td><td>The component has no planning data of its own. <a class="rux--link" href="#step-1-6">Step 1.6</a> — MRP skips it silently</td></tr>
 <tr><td>The run produces nothing at all, or nothing propagates to the parent</td><td>Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per <a class="rux--link" href="#step-4-1">step 4.1</a></td></tr>
@@ -267,10 +263,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Review the result: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Review the result: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>A planned quantity does not equal the raw shortfall</td><td>Order-quantity rules in <a class="rux--link" href="../screens/tcibd2100m000.html"><span class="ln-t-named">Items - Ordering</span></a> (<span class="ln-t-exact">tcibd2100m000</span>) round it</td></tr>
 <tr><td>An expected planned purchase order is missing entirely</td><td>If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — <a class="rux--link" href="../screens/cprrp1100m000.html"><span class="ln-t-exact">cprrp1100m000</span></a> help</td></tr>
@@ -293,10 +288,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Read the pegging tree: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Read the pegging tree: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The pegging tree is empty</td><td>Pegging relations were not generated, or the demand lies beyond the <a class="rux--link" href="../screens/cprpd0100m000.html"><span class="ln-t-named">Pegging Horizon</span></a> (<span class="ln-t-exact">cprpd0100m000</span>). See what this task needs before you start</td></tr>
 </tbody>

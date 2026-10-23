@@ -583,7 +583,7 @@ function processPage(s) {
       const ups = proseHtml(first < 0 ? t.blocks : t.blocks.slice(0, first));
       const stepsHtml = stepTable(t, k);
       const downs = first < 0 ? '' : proseHtml(t.blocks.slice(first));
-      const wrong = wrongTable(s, t, k);
+      const wrong = wrongTable(s, t, k, `${esc(t.title)}: if something goes wrong`);
       return `<section class="ln-proc__task" id="task-${k}">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">${k}</span><a class="rux--link" href="${hrefTask(t.id)}">${esc(t.title)}</a></h3>
 <dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
@@ -591,7 +591,6 @@ function processPage(s) {
 ${ups}
 ${stepsHtml}
 ${downs}${wrong ? `
-<p class="ln-proc__h4">${esc(t.title)}: if something goes wrong</p>
 ${wrong}` : ''}
 </section>`;
     }).join('\n');
@@ -726,9 +725,11 @@ function seeing(cell, here, where) {
   }).join('');
   return `${lead ? `<span class="ln-proc__see">${lead}</span>` : ''}<span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span>${lines}</span>`;
 }
-const docTable = (cols, rows, cls = '') => `<div class="rux--data-table-container ln-proc__table${cls ? ` ${cls}` : ''}">
+// A title in the header row is printed again on every page the table runs
+// onto, because Chrome repeats a table's head; a heading above it is not.
+const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-table-container ln-proc__table${cls ? ` ${cls}` : ''}">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
+<thead>${title ? `<tr class="ln-proc__table-title"><th scope="colgroup" colspan="${cols.length}">${title}</th></tr>` : ''}<tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
 <tbody>${rows.map((r) => `
 <tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}
 </tbody>
@@ -764,11 +765,11 @@ function stepTable(t, k) {
   return docTable([['Step', '4rem'], ['Action'], ['You should see', '40%']], rows, 'ln-proc__steps');
 }
 // The problems of one task: its own, and the process's rows that name it.
-function wrongTable(s, t, k) {
+function wrongTable(s, t, k, title = '') {
   const own = t.problems.rows.map((r) => [r.cells[0], r.cells[1]]);
   const theirs = s.id ? section(s, 'troubleshooting').filter((r) => taskOf(s, Number(r.cells[0].text)) === t).map((r) => [r.cells[1], r.cells[2]]) : [];
   const rows = [...own, ...theirs].map(([sym, fix]) => ({ cells: [docText(sym.tokens, t), docText(fix.tokens, t, `${k ? `Task ${k}, if` : 'If'} something goes wrong: ${sym.text.trim()}`)] }));
-  return rows.length ? docTable([['Symptom', '36%'], ['What to do']], rows, 'ln-proc__wrong') : '';
+  return rows.length ? docTable([['Symptom', '36%'], ['What to do']], rows, 'ln-proc__wrong', title) : '';
 }
 // The task's notes atlas wrote above its steps: a callout is a notice.
 const docProse = (t, k) => t.blocks.filter((b) => b.kind === 'prose').map((b) => {

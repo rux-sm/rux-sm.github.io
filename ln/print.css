@@ -61,6 +61,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 .ln-pages .ln-proc__table .rux--data-table th, .ln-pages .ln-proc__table .rux--data-table td { background: none; }
 .ln-proc__table td { padding-block: .25rem; }
 .ln-proc__table th { block-size: auto; padding-block: .25rem; border-block-end: 1px solid var(--rux-text-primary); }
+.ln-proc__table .ln-proc__table-title th { padding-block: .75rem .25rem; border: 0; }
 .ln-proc__table thead { display: table-header-group; }
 .ln-proc__steps tr:target td { background: none; }
 .ln-proc__h2 { font-size: 15pt; padding-block-start: .5rem; margin-block-end: .5rem; }

@@ -20,12 +20,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -188,10 +188,10 @@
         },
         {
           "t": "text",
-          "v": " and the figures agree. Invoicing comes next, and this guide doesn't cover it."
+          "v": " and the drop in on-hand matches the quantity shipped, after allowing for anything else that moved the item. Invoicing comes next, and this guide doesn't cover it."
         }
       ],
-      "text": "On-hand before − on-hand after should equal the shipped quantity, in the same unit, as long as nothing else moved the item in that warehouse. On-hand before is the figure from step 4 of Confirm there is stock. If they differ, check that the shipment reads Confirmed. Then open Item Transactions from Inventory 360 to see what else moved the item. Ship from stock is done when the shipment is Confirmed and the figures agree. Invoicing comes next, and this guide doesn't cover it."
+      "text": "On-hand before − on-hand after should equal the shipped quantity, in the same unit, as long as nothing else moved the item in that warehouse. On-hand before is the figure from step 4 of Confirm there is stock. If they differ, check that the shipment reads Confirmed. Then open Item Transactions from Inventory 360 to see what else moved the item. Ship from stock is done when the shipment is Confirmed and the drop in on-hand matches the quantity shipped, after allowing for anything else that moved the item. Invoicing comes next, and this guide doesn't cover it."
     }
   ],
   "example": {

@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="f5bd9d3a90dae0b15e264c3df51ed780a6fdc7ba">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="5890fc953cc5013cc7b05d7440b217f76b95ed37">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -153,10 +153,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Preflight: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Preflight: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>An item is absent from the Item Order Plan</td><td>It has no cluster row. <a class="rux--link" href="#step-1-5">Step 1.5</a>. Not an error state; nothing will tell you</td></tr>
 </tbody>
@@ -181,10 +180,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Create the demand: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Create the demand: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>LN refuses the item on the sales order</td><td>No row for the order's sales office on the <span class="ln-t-named">Sales Offices</span> tab of <a class="rux--link" href="../screens/tcibd0501m100.html"><span class="ln-t-named">Item</span></a> (<span class="ln-t-exact">tcibd0501m100</span>). Add it, then close and reopen the order session</td></tr>
 <tr><td>The demand does not appear in the Item Order Plan</td><td>The delivery date is beyond the <span class="ln-t-named">Order Horizon</span> date. <a class="rux--link" href="#step-2-6">Step 2.6</a> — and the date is not today plus your days</td></tr>
@@ -209,10 +207,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Run MRP: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Run MRP: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The run plans the pair but not a component</td><td>The component has no planning data of its own. <a class="rux--link" href="#step-1-4">Step 1.4</a> — MRP skips it silently</td></tr>
 <tr><td>A component has plan data and still produces nothing</td><td>It may be correctly absent — planning proposes supply only for what stock does not cover. Read its own Item Order Plan and on-hand</td></tr>
@@ -248,10 +245,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Cross the boundary: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Cross the boundary: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The transfer runs and nothing happens</td><td>The orders were still <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>. <a class="rux--link" href="#step-4-3">Step 4.3</a>. There is no message for &quot;nothing matched&quot;</td></tr>
 <tr><td>&quot;Buy-from BP cannot be determined for item …&quot;</td><td>No partner row on the item's <span class="ln-t-named">Item - Business Partner</span> tab. <a class="rux--link" href="#step-4-1">Steps 4.1–4.2</a>. The failed proposal survives, so fix it and rerun</td></tr>
@@ -279,10 +275,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Receive the components: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Receive the components: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>No inbound order appears after the transfer</td><td>Check the purchase order's <span class="ln-t-named">Release to Warehousing</span> tab; <a class="rux--link" href="../screens/tdpur4534m000.html"><span class="ln-t-named">Purchase Order Line Status</span></a> (<span class="ln-t-exact">tdpur4534m000</span>) names the activity a stuck line is waiting on</td></tr>
 <tr><td><span class="ln-t-exact">whinh0032</span> at the receipt</td><td>Capture the LOG detail before clearing it, and read <span class="ln-t-named">Errors Logged</span> and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>) afterwards</td></tr>
@@ -311,10 +306,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Build the pairs: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Build the pairs: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td>The order will not release</td><td><span class="ln-t-named">Printing Production Order Documents Mandatory</span> in <a class="rux--link" href="../screens/tisfc0100s000.html"><span class="ln-t-exact">tisfc0100s000</span></a> may require <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Printed</span></span> first</td></tr>
 <tr><td>The material line stays blocked</td><td>Run <a class="rux--link" href="../screens/tisfc0207m000.html"><span class="ln-t-named">Initiate Inventory Issue</span></a> (<span class="ln-t-exact">tisfc0207m000</span>) manually; if still blocked, record what you saw</td></tr>
@@ -343,10 +337,9 @@
 </tbody>
 </table></div>
 
-<p class="ln-proc__h4">Ship: if something goes wrong</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__wrong">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
-<thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
+<thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Ship: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td><span class="ln-t-named">Advice</span> greyed out</td><td>You are on the session toolbar. The advice actions live on the <span class="ln-t-named">Outbound Lines</span> toolbar — <a class="rux--link" href="#step-7-3">step 7.3</a></td></tr>
 <tr><td>The order will not advise</td><td>The header <span class="ln-t-named">Warehouse</span> does not hold the stock. Recheck against <a class="rux--link" href="#step-1-2">step 1.2</a></td></tr>

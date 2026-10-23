@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -43,10 +43,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Freezing fixes what's in the shipment, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because the warehousing order type says so. A confirmed shipment can't be changed: to correct it, you need a return shipment."
+        "v": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because this warehousing order type requires it. A confirmed shipment can't be changed: to correct it, you need a return shipment."
       }
     ],
-    "text": "Freezing fixes what's in the shipment, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because the warehousing order type says so. A confirmed shipment can't be changed: to correct it, you need a return shipment."
+    "text": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because this warehousing order type requires it. A confirmed shipment can't be changed: to correct it, you need a return shipment."
   },
   "blocks": [
     {

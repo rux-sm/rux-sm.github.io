@@ -6,14 +6,9 @@
 /* ---- the shell: Design's document-page --------------------------------------
    The side nav is beside the content from 66rem, where Carbon pairs them, and
    Design pads the content past it. One reading column, no wider than a
-   comfortable line, and from 82rem, Carbon's xlg, On this page beside it,
-   which stays while the page scrolls. Below xlg the column would leave the
-   aside under 200px and itself under 600px, so the aside is not shown and
-   the column takes its room. */
+   comfortable line. */
 .ln-pages .rux--css-grid-column { max-inline-size: 64rem; }
 .ln-pages p, .ln-pages h1 { max-inline-size: 36rem; }
-.ln-pages .ln-aside { display: none; }
-@media (min-width: 82rem) { .ln-pages .ln-aside { display: block; position: sticky; inset-block-start: 4rem; align-self: start; } }
 .ln-ask { font-size: 2rem; line-height: 1.2; font-weight: 400; margin: 0; }
 .ln-quiet { font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); margin: 0; }
 .ln-strip { color: var(--rux-text-secondary); }
@@ -53,8 +48,10 @@
    write it on. docs/plans/ln-guide-document.md decides each part. */
 .ln-proc__head > * + * { margin-block-start: .5rem; }
 .ln-proc__eyebrow { margin: 0; font-size: .875rem; color: var(--rux-text-secondary); }
-.ln-proc__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); margin: 0; border-block: 1px solid var(--rux-border-subtle-01); }
-.ln-proc__facts > div { padding: .75rem 1rem .75rem 0; }
+/* Each fact is as wide as its words, so a status tag wider than an even
+   share of the row cannot run into the next fact. */
+.ln-proc__facts { display: flex; flex-wrap: wrap; column-gap: 2.5rem; margin: 0; border-block: 1px solid var(--rux-border-subtle-01); }
+.ln-proc__facts > div { padding-block: .75rem; }
 .ln-proc__facts dt { margin-block-end: .25rem; font-size: .75rem; color: var(--rux-text-secondary); }
 .ln-proc__facts dd { margin: 0; font-size: .875rem; }
 .ln-proc__h2 { margin: 0 0 1rem; padding-block-start: .75rem; border-block-start: 2px solid var(--rux-text-primary); }
@@ -85,7 +82,8 @@
 .ln-proc__write-line { flex: 1; min-inline-size: 3rem; block-size: 1.1em; border-block-end: 1px solid var(--rux-border-strong-01); }
 .ln-proc__write-note { display: block; margin-block-end: .375rem; font-size: .8125rem; color: var(--rux-text-secondary); }
 .ln-proc__list { margin: 0; padding-inline-start: 1.25rem; list-style: disc; }
-.ln-proc__list li { margin-block-end: .5rem; }
+/* A list item reads at a paragraph's line height, which Carbon's reset takes away. */
+.ln-proc__list li { margin-block-end: .5rem; line-height: 1.5; }
 /* On paper the reference stays on the site; this line says where. */
 .ln-proc__print { display: none; }
 

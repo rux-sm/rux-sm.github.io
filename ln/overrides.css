@@ -34,3 +34,7 @@
 .ln-back.rux--link,
 .ln-back.rux--link:visited { color: var(--rux-text-secondary); }
 .ln-back.rux--link:hover { color: var(--rux-text-primary); }
+
+/* A Document's table fills the reading column, so its rules line up with the
+   headings'. Carbon's static table is only as wide as its content. */
+.ln-proc__table .rux--data-table--static { inline-size: 100%; }

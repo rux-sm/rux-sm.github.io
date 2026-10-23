@@ -137,8 +137,9 @@ tutorial, reference and explanation.
 - **On a wide screen, a left menu of the processes** in the Start here order,
   then Screens and Ideas, one flat entry each. A learner thinks in what they
   are doing, not in LN's modules, so the module is a tag on a task and the
-  grouping of the task index. Beside the content column, which is no wider than
-  a comfortable line, an On this page list names the page's parts.
+  grouping of the task index. The content is one column, no wider than a
+  comfortable line, with no On this page list, because the Summary already
+  links each task.
 
 - **On a phone, one column and no bar at the foot.** The header's menu button
   opens the same menu and its search action opens search, so the only fixed
@@ -230,7 +231,7 @@ tutorial, reference and explanation.
 
 - **Every control is Carbon.** The wide layout is Design's `document-page`
   template; Guided's progress is Carbon's progress bar, a fold its accordion,
-  On this page its contained list, and the code chip its inline code snippet.
+  and the code chip its inline code snippet.
   Search results start from `search-results-page` and the task index from
   `list-page`.
 

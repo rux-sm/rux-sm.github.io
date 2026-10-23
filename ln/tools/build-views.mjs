@@ -327,10 +327,6 @@ const accordion = (items) => `<ul class="rux--accordion rux--accordion--end rux-
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold">${body}</div></div>
   </li>`).join('')}
 </ul>`;
-const onThisPage = (entries) => `<div class="rux--contained-list rux--layout--size-lg rux--contained-list--on-page">
-  <div class="rux--contained-list__header"><h2 class="rux--contained-list__label">On this page</h2></div>
-  <ul role="list">${entries.map(([h, l]) => `<li class="rux--contained-list-item"><div class="rux--contained-list-item__content"><a class="rux--link" href="${h}">${esc(l)}</a></div></li>`).join('')}</ul>
-</div>`;
 const breadcrumb = (trail) => `<nav aria-label="Breadcrumb"><ol class="rux--breadcrumb rux--breadcrumb--no-trailing-slash">${trail.slice(0, -1).map(([h, t]) =>
   `<li class="rux--breadcrumb-item"><a class="rux--link" href="${h}">${esc(t)}</a></li>`).join('')}<li class="rux--breadcrumb-item rux--breadcrumb-item--current"><a class="rux--link" href="#main-content" aria-current="page">${esc(trail.at(-1)[1])}</a></li></ol></nav>`;
 const copyChip = (v, label = v) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(v)}" aria-label="Copy ${esc(label)}">${esc(v)}</button>`;
@@ -347,14 +343,8 @@ const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" m
     </button>
   </div>
 </form>`;
-// A page reads in all 16 columns. From xlg, where the frame is near its full
-// width, a page with On this page reads in 12 and the aside takes the other
-// 4; below it the aside is not shown (app.css).
-const SPAN = {
-  aside: 'rux--xlg:col-span-4',
-  beside: 'rux--lg:col-span-16 rux--xlg:col-span-12',
-  full: 'rux--lg:col-span-16',
-};
+// A page reads in all 16 columns.
+const SPAN = { full: 'rux--lg:col-span-16' };
 const column = (inner, span, cls, attrs) => `<div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 ${SPAN[span]}${cls ? ` ${cls}` : ''}"${attrs ? ` ${attrs}` : ''}>
 <div class="rux--stack-vertical rux--stack-scale-6">
 ${inner}
@@ -538,7 +528,7 @@ function processPage(s) {
   const steps = ts.reduce((n, t) => n + rowsOf(t).length, 0);
   const status = statusOf(s);
   const updated = lastChanged([s, ...ts]);
-  const [body, aside] = documenting(numberOf(s), true, () => {
+  const body = documenting(numberOf(s), true, () => {
     const K = doc.K;
     const summary = ts.flatMap((t) => [
       { cells: [`<b>${K.get(t.id)}</b>`, `<a class="rux--link" href="#task-${K.get(t.id)}">${esc(t.title)}</a>`, t.achieves ? docText(t.achieves.tokens, t) : '', `${rowsOf(t).length}`] },
@@ -626,11 +616,9 @@ ${gapsSection()}
 ${docH2('screens', 'Screens used')}
 ${screensTable(ts)}
 </section>`;
-    const side = onThisPage([['#summary', 'Summary'], need.length && ['#before', 'Before you start'], ['#procedure', 'Procedure'], variants.length && ['#cases', 'Variations'],
-      next.length && ['#next', 'What comes next'], groups.length && ['#reference', 'Reference'], doc.gaps.length && ['#gaps', 'Known gaps'], ['#screens', 'Screens used']].filter(Boolean));
-    return [html, side];
+    return html;
   });
-  return page(`${s.title} — LN Guide`, s.id, column(body, 'beside') + '\n' + column(aside, 'aside', 'ln-aside'), updated ? paper(s.title, updated) : '');
+  return page(`${s.title} — LN Guide`, s.id, column(body, 'full'), updated ? paper(s.title, updated) : '');
 }
 
 // ---- a task, as a document and as Guided ------------------------------------------
@@ -805,7 +793,7 @@ function task(s, t) {
   // them, so step 2.3 here is step 2.3 on the process's Document too.
   const k = s.id ? t.process.n + 1 : 0;
   const updated = lastChanged([t]) ?? lastChanged([s]);
-  const [full, aside] = documenting(numberOf(s), false, () => {
+  const full = documenting(numberOf(s), false, () => {
     doc.here = t;
     const need = t.before?.length ? t.before.map((b) => docText(b.tokens, t, 'Before you start'))
       : first ? s.before.map((b) => docText(b.tokens, null, 'Before you start')) : needs(s, t).map((x) => `You need ${x}.`);
@@ -865,9 +853,7 @@ ${screensTable([t])}
 ${docH2('related', 'Related')}
 ${related[2]}
 </section>`;
-    const side = onThisPage([need.length && ['#before', 'Before you start'], values && ['#values', 'Values'], ['#steps', 'Steps'], wrongHtml && ['#wrong', 'If something goes wrong'],
-      caseRows.length && ['#cases', 'Variations'], doc.gaps.length && ['#gaps', 'Known gaps'], ['#screens', 'Screens used'], ['#related', 'Related']].filter(Boolean));
-    return [body, side];
+    return body;
   });
   const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
 <a class="rux--link ln-back" href="${hrefUp(s)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
@@ -891,7 +877,7 @@ ${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this 
   <a class="rux--btn rux--btn--secondary" href="${hrefUp(s)}" data-prev>Back</a>
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;
-  return page(`${t.title} — LN Guide`, s.id, column(full, 'beside', '', 'data-view="full"') + '\n' + column(aside, 'aside', 'ln-aside', 'data-view="full"')
+  return page(`${t.title} — LN Guide`, s.id, column(full, 'full', '', 'data-view="full"')
     + '\n' + column(guided, 'full', '', 'data-view="guided" hidden'), updated ? paper(t.title, updated) : '');
 }
 

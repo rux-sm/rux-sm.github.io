@@ -20,10 +20,10 @@ html { font-size: 10pt; }
   @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt 'IBM Plex Sans', sans-serif; color: var(--rux-text-secondary); }
 }
 
-/* The chrome goes: the header with its menu and account, the side nav, On
-   this page, Guided and its bar, the buttons, the search, the owner's box and
-   a task's Related links, which the screens table and the strip already give. */
-.rux--header, .ln-aside, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
+/* The chrome goes: the header with its menu and account, the side nav,
+   Guided and its bar, the buttons, the search, the owner's box and a task's
+   Related links, which the screens table and the strip already give. */
+.rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
 .ln-confirm, .rux--breadcrumb, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related { display: none; }
 
 /* A printed copy is handed on as the procedure, so a guide nobody has walked

@@ -656,7 +656,7 @@ const needs = (s, t) => {
 
 // ---- the Document --------------------------------------------------------------
 // A process, or one task, as a procedure to read, print and share. A title block
-// of five facts; the steps of each task in one table, numbered by task and
+// of five facts, on screen only; the steps of each task in one table, numbered by task and
 // place, 2.3, wherever the page points at them; Why before the steps and
 // troubleshooting under them; a line to write each noted figure on; a gap
 // listed once in Known gaps rather than inside an answer; and the screens used

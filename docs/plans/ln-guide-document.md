@@ -29,8 +29,8 @@ And a team, after log-in, sees what the public page cannot carry.
   The process's path of tasks becomes its Summary, so nothing is lost.
 
 - **The Document's parts, in order:** a title block of LN Guide · Procedure,
-  the title, its purpose, and five facts (status, module, length, updated,
-  applies to), with a Note when nobody has walked it; then Summary, the tasks
+  the title, its purpose, and on screen five facts (status, module, length,
+  updated, applies to), with a Note when nobody has walked it; then Summary, the tasks
   with their result and step count and the values the run uses, each naming
   the step that uses it; Before you start, only what lies outside the
   procedure; Procedure, each task with its result and screen, Why LN works

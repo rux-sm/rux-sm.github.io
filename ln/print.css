@@ -76,13 +76,16 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 /* What you should see keeps its place under the step as a rule, not a fill. */
 .ln-step__see, .ln-type__text, .ln-full__note, .ln-full__code { background: none; border-inline-start: 2px solid var(--rux-border-strong-01); padding-inline-start: .75rem; }
 
-/* A link is text in ink, and a tag an outlined word. */
+/* A link is text in ink, and a tag an outlined word. The border names
+   Carbon's own selector, which takes every tag's border away and outranks a
+   bare .rux--tag. */
 .rux--link, .rux--link:visited { color: inherit; text-decoration: none; }
-.rux--tag { background: none; border: 1px solid var(--rux-border-strong-01); color: var(--rux-text-primary); }
+.rux--tag { background: none; color: var(--rux-text-primary); }
+.rux--tag:not(.rux--tag--selectable) { border: 1px solid var(--rux-border-strong-01); }
 
 /* A warning or a note keeps its border and its icon. */
 .ln-pages .rux--inline-notification.rux--inline-notification--low-contrast { background: none; break-inside: avoid; }
 
-/* A row does not break across pages, and a heading stays with what follows. */
-.ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div { break-inside: avoid; }
+/* A row or a task's Why does not break across pages, and a heading stays with what follows. */
+.ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div, .ln-proc__lead { break-inside: avoid; }
 h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc__lead { break-after: avoid; }

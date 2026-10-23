@@ -24,11 +24,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-08-09",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -43,10 +43,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment."
+        "v": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and a confirmed shipment cannot be changed: a correction from there needs a return shipment."
       }
     ],
-    "text": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and confirming is a one-way door: a correction from there needs a return shipment."
+    "text": "Freezing fixes the shipment's contents and confirming relieves inventory; the status is always derived from those two actions, never set by hand. Freezing is mandatory here, carried from the warehousing order type, and a confirmed shipment cannot be changed: a correction from there needs a return shipment."
   },
   "blocks": [
     {
@@ -72,7 +72,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find your shipment, then click "
+                  "v": "Find the shipment number from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Pick the goods",
+                  "href": "pick-the-goods_ship-from-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", then click "
                 },
                 {
                   "t": "button",
@@ -80,7 +89,7 @@
                   "location": "line"
                 }
               ],
-              "text": "Find your shipment, then click Drill In"
+              "text": "Find the shipment number from step 6 of Pick the goods, then click Drill In"
             },
             {
               "tokens": [
@@ -135,7 +144,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Shipping less than picked? Change "
+                  "v": "Read the "
                 },
                 {
                   "t": "field",
@@ -143,7 +152,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " on "
+                  "v": "; to ship less than was picked, change it on "
                 },
                 {
                   "t": "session",
@@ -155,7 +164,7 @@
                   "v": ", not here"
                 }
               ],
-              "text": "Shipping less than picked? Change Shipped Quantity on Shipment Lines (whinh4131m000), not here"
+              "text": "Read the Shipped Quantity; to ship less than was picked, change it on Shipment Lines (whinh4131m000), not here"
             },
             {
               "tokens": [
@@ -342,7 +351,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The line was never picked. Check the "
+                "v": "The line may not be picked. Check the "
               },
               {
                 "t": "field",
@@ -358,7 +367,7 @@
                 "href": "pick-the-goods_ship-from-stock.md"
               }
             ],
-            "text": "The line was never picked. Check the Picked column on Outbound Lines, then run Pick the goods"
+            "text": "The line may not be picked. Check the Picked column on Outbound Lines, then run Pick the goods"
           }
         ]
       },

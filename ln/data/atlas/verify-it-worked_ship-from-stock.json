@@ -40,7 +40,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. This task reads the same figures "
+        "v": "This task reads the same figures "
       },
       {
         "t": "link",
@@ -52,7 +52,7 @@
         "v": " read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
       }
     ],
-    "text": "Nothing new. This task reads the same figures Confirm there is stock read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
+    "text": "This task reads the same figures Confirm there is stock read, because a confirmed shipment is a document reaching a status and the inventory figure is the only proof that stock moved."
   },
   "blocks": [
     {
@@ -78,10 +78,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the on-hand quantity"
+                  "v": "Read the on-hand quantity of the same item in the same warehouse as step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Confirm there is stock",
+                  "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "Read the on-hand quantity"
+              "text": "Read the on-hand quantity of the same item in the same warehouse as step 4 of Confirm there is stock"
             },
             {
               "tokens": [
@@ -139,7 +144,15 @@
         },
         {
           "t": "text",
-          "v": ". If it does not, the shipment was not confirmed. Ship from stock is complete when the shipment is "
+          "v": ". If it does not, check that the shipment reads "
+        },
+        {
+          "t": "status",
+          "v": "Confirmed"
+        },
+        {
+          "t": "text",
+          "v": ", and whether another order moved this item in this warehouse since then. Ship from stock is complete when the shipment is "
         },
         {
           "t": "strong",
@@ -150,7 +163,7 @@
           "v": " and this inventory check passes. Invoicing the order comes after this, and this guide does not cover it."
         }
       ],
-      "text": "On-hand before − on-hand after must equal the shipped quantity. On-hand before is the figure from step 4 of Confirm there is stock. If it does not, the shipment was not confirmed. Ship from stock is complete when the shipment is Confirmed and this inventory check passes. Invoicing the order comes after this, and this guide does not cover it."
+      "text": "On-hand before − on-hand after must equal the shipped quantity. On-hand before is the figure from step 4 of Confirm there is stock. If it does not, check that the shipment reads Confirmed, and whether another order moved this item in this warehouse since then. Ship from stock is complete when the shipment is Confirmed and this inventory check passes. Invoicing the order comes after this, and this guide does not cover it."
     }
   ],
   "example": {

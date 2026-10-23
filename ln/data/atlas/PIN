@@ -1,9 +1,9 @@
-commit   cd1da4195092910133454cd1aa2906975615ac04
-date     2026-10-23T20:25:03Z
-subject  fix(tasks): Keep the on-hand rule whole in bold
+commit   a9c13d04d974512fc7d897eaf37a8c44fccdc977
+date     2026-10-23T20:54:07Z
+subject  fix(tasks): Make Ship from stock steps precise
 contract 22 
 tier     export
-sha256   fc05d28160e7c09c493b667ec4a4cabbea68426a91dab867760b92d62b7a2e3d
+sha256   f2fbe0e2c53f4fe84e4ae05fbcdd85dfc3053166e5558f8c5db1517d989aa443
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

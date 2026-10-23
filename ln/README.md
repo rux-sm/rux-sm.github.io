@@ -48,6 +48,8 @@ the Guide are.
    and lists what the export does not yet say. `app.css` and `app.js` are
    their styles and behaviour, `data.js` the reads and writes for the owner,
    and `tools/shell.mjs` is the site header.
+3. `print.css` lays the Document out on paper, and `tools/check-paper.mjs`,
+   part of the full check, prints every page and warns of a near-empty last one.
 
 The data contract is atlas's `standards/export-json.md`. Every control on the
 page is Design's, linked at `/design/`.

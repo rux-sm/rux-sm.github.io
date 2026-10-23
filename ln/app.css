@@ -79,8 +79,7 @@
 .ln-proc__table td { line-height: 1.45; }
 .ln-proc__quiet td { font-size: .8125rem; color: var(--rux-text-secondary); }
 .ln-proc__steps tr:target td { background: var(--rux-highlight); }
-.ln-proc__value { display: block; }
-.ln-proc__value + .ln-proc__value { margin-block-start: .375rem; }
+.ln-proc__value { display: block; margin-block-start: .375rem; }
 .ln-proc__value-k { display: block; font-size: .75rem; color: var(--rux-text-secondary); }
 .ln-proc__see { display: block; margin-block-end: .375rem; }
 .ln-proc__writes { display: block; }
@@ -112,6 +111,11 @@
 .ln-step__example { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
+/* Write down follows what you should see with a space of its own. */
+.ln-step__see p + .ln-step__write { display: block; margin-block-start: .75rem; }
+/* What atlas wrote before a task's steps, or after them, reads as the step's own text. */
+.ln-step__prose { display: grid; gap: .75rem; }
+.ln-step__prose p { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
 .ln-nav { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 2; display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; padding-block: .75rem 1rem; background: var(--rux-background); }
 @media (min-width: 66rem) {

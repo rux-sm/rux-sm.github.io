@@ -298,7 +298,7 @@
             {
               "tokens": [
                 {
-                  "t": "status",
+                  "t": "field",
                   "v": "Advised"
                 },
                 {
@@ -306,7 +306,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "status",
+                  "t": "field",
                   "v": "Released"
                 },
                 {
@@ -582,7 +582,15 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Advice already exists. Use "
+                "v": "Advice may already exist. Check "
+              },
+              {
+                "t": "field",
+                "v": "Advised Quantity"
+              },
+              {
+                "t": "text",
+                "v": ", and use "
               },
               {
                 "t": "chip",
@@ -593,7 +601,7 @@
                 "v": " to start over"
               }
             ],
-            "text": "Advice already exists. Use Undo Advice to start over"
+            "text": "Advice may already exist. Check Advised Quantity, and use Undo Advice to start over"
           }
         ]
       },
@@ -722,7 +730,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Header "
+                "v": "Check that the header "
               },
               {
                 "t": "field",
@@ -730,7 +738,7 @@
               },
               {
                 "t": "text",
-                "v": " does not hold the stock. Recheck against step 4 of "
+                "v": " holds the stock, against step 4 of "
               },
               {
                 "t": "link",
@@ -738,7 +746,7 @@
                 "href": "confirm-there-is-stock.md"
               }
             ],
-            "text": "Header Warehouse does not hold the stock. Recheck against step 4 of Confirm there is stock"
+            "text": "Check that the header Warehouse holds the stock, against step 4 of Confirm there is stock"
           }
         ]
       },

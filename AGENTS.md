@@ -50,7 +50,7 @@ deliberate step, never by a deploy of either site.
     npm run serve -- --cloud    the same at http://localhost:8641/, with log-in and live data
     npm run build               regenerate what is committed but derived
     npm run check               every app through the shared check, LN Guide's gates, the names sweep, the print rule
-    npm run check -- --full     the same plus Design's own verify; what CI runs
+    npm run check -- --full     the same plus Design's own verify and LN Guide's paper check; what CI runs
     npm run export              atlas's export tier into ln/data/atlas/, rebuilt and checked
 
 Publishing is `git push`. The pre-commit hook sweeps the staged bytes of

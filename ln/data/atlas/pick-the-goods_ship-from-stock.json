@@ -33,10 +33,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Stock physically moves to staging."
+        "v": "The pick is confirmed in LN, and the stock is in staging."
       }
     ],
-    "text": "Stock physically moves to staging."
+    "text": "The pick is confirmed in LN, and the stock is in staging."
   },
   "before": [
     {
@@ -369,7 +369,7 @@
                   "v": ". "
                 },
                 {
-                  "t": "status",
+                  "t": "field",
                   "v": "Picked"
                 },
                 {
@@ -403,14 +403,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Return to the Warehousing Order and open "
+                  "v": "Return to the Warehousing Order, drilling in as at step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Generate outbound advice",
+                  "href": "generate-outbound-advice.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and open "
                 },
                 {
                   "t": "chip",
                   "v": "Shipment Lines"
                 }
               ],
-              "text": "Return to the Warehousing Order and open Shipment Lines"
+              "text": "Return to the Warehousing Order, drilling in as at step 2 of Generate outbound advice, and open Shipment Lines"
             },
             {
               "tokens": [
@@ -512,7 +521,7 @@
                 "v": "Expected. "
               },
               {
-                "t": "status",
+                "t": "field",
                 "v": "Released"
               },
               {
@@ -520,15 +529,15 @@
                 "v": " and "
               },
               {
-                "t": "status",
+                "t": "field",
                 "v": "Picked"
               },
               {
                 "t": "text",
-                "v": " are separate. Run this task"
+                "v": " are separate columns. Run this task"
               }
             ],
-            "text": "Expected. Released and Picked are separate. Run this task"
+            "text": "Expected. Released and Picked are separate columns. Run this task"
           }
         ]
       },

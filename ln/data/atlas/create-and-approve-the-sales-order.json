@@ -95,7 +95,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Click "
+                  "v": "In the header, click "
                 },
                 {
                   "t": "button",
@@ -103,7 +103,7 @@
                   "location": "header"
                 }
               ],
-              "text": "Click New"
+              "text": "In the header, click New"
             },
             {
               "tokens": [
@@ -234,12 +234,11 @@
                 {
                   "t": "field",
                   "v": "Planned Receipt Date"
-                }
-              ],
-              "text": "Set Planned Delivery Date and Planned Receipt Date"
-            },
-            {
-              "tokens": [
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
                 {
                   "t": "field",
                   "v": "Planned Delivery Date"
@@ -269,13 +268,23 @@
                   "v": "Planned Delivery Date"
                 }
               ],
-              "text": "Planned Delivery Date starts as the Order Date, and Planned Receipt Date as the Planned Delivery Date"
+              "text": "Set Planned Delivery Date and Planned Receipt Date — Planned Delivery Date starts as the Order Date, and Planned Receipt Date as the Planned Delivery Date"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
             }
           ],
           "id": "4",
           "optional": false,
           "produces": false,
           "example": [
+            1,
             2
           ]
         },
@@ -456,7 +465,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Click "
+                  "v": "In the lines, click "
                 },
                 {
                   "t": "button",
@@ -464,7 +473,7 @@
                   "location": "line"
                 }
               ],
-              "text": "Click New"
+              "text": "In the lines, click New"
             },
             {
               "tokens": [

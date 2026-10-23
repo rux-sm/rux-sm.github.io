@@ -8,7 +8,8 @@
 // sprite by hand, the same rule for the home screen icons drawn from a
 // favicon, the parse rule for every script, the names sweep over every text
 // file in the repository, the switcher rule, the lock rule and the print rule.
-// `--full` adds Design's `npm run verify`. Exits 1 on any failure. The
+// `--full` adds Design's `npm run verify` and LN Guide's paper check, which
+// prints every Document and warns of a near-empty last page. Exits 1 on any failure. The
 // pre-commit hook runs the fast form; CI runs --full.
 //
 //   node tools/check.mjs
@@ -158,6 +159,7 @@ console.log(`  ${painted ? 'FAIL' : ' ok '}  forms   ${FORMS.length} files${pain
 if (painted) failed.push('print');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
+if (FULL) step('paper', process.execPath, ['ln/tools/check-paper.mjs']);
 
 console.log('');
 if (failed.length) { console.log(`  FAILED: ${failed.join(', ')}`); process.exit(1); }

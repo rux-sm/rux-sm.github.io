@@ -1,9 +1,9 @@
-commit   9a9c4252835074095ef89fb18943f4aa675f0865
-date     2026-10-23T06:43:27Z
-subject  feat(walks): Walk site control, costing again
+commit   b91a9fcc65f30fdf0b91e2ddb29eb69f9dcac6d1
+date     2026-10-23T14:38:17Z
+subject  fix(walkthroughs): Reword where the chain ends
 contract 22 
 tier     export
-sha256   39e30ed08b365810add8938d5379038482d5a3576f38f387cd2fdcf808164c50
+sha256   115a88d0026c4352ff3d47dd758d85c47cdbe8c519b3b594885799116725322f
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

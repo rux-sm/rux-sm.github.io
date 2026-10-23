@@ -1094,10 +1094,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "None — the documented chain ends here. Invoicing and Financials are outside the library's scope by decision"
+                  "v": "The procedure ends here. Invoicing the order is done in Financials, which this guide does not cover"
                 }
               ],
-              "text": "None — the documented chain ends here. Invoicing and Financials are outside the library's scope by decision"
+              "text": "The procedure ends here. Invoicing the order is done in Financials, which this guide does not cover"
             },
             {
               "tokens": [

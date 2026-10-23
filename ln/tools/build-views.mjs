@@ -602,7 +602,7 @@ ${procedure}
 ${docH2('cases', 'Variations')}
 ${docTable([['Case', '30%'], ['What changes'], ['Task', '4rem']], variants)}
 </section>` : ''}${next.length ? `
-<section>
+<section class="ln-proc__next">
 ${docH2('next', 'What comes next')}
 ${docTable(next[0].cells.length === 3 ? [['When', '28%'], ['Then'], ['Start at', '24%']] : [['When', '34%'], ['Then']], next)}
 </section>` : ''}

@@ -22,13 +22,13 @@ html { font-size: 10pt; }
 
 /* The chrome goes: the header with its menu and account, the side nav,
    Guided and its bar, the buttons, the search, the owner's box and a task's
-   Related links. So do Reference, Known gaps and Screens used, which serve
-   the screen: a printed copy stands on its own and says only what is known,
-   each task already names its screen and how to open it, and a reference is
-   read on the site. */
+   Related links. So do What comes next, Reference, Known gaps and Screens
+   used, which serve the screen: a printed copy is the tasks and stands on its
+   own, says only what is known, and each task already names its screen and
+   how to open it. */
 .rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
 .ln-confirm, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related,
-.ln-proc__ref, .ln-proc__gaps, .ln-proc__screens { display: none; }
+.ln-proc__next, .ln-proc__ref, .ln-proc__gaps, .ln-proc__screens { display: none; }
 
 /* A printed copy is handed on as the procedure, so a guide nobody has walked
    says so on screen and not on paper. The facts row stays on screen too: the

@@ -757,7 +757,7 @@ function screensTable(ts) {
   const how = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r) : esc(cap(r ?? '—'));
   return docTable([['Screen', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })));
 }
-const gapsSection = () => doc.gaps.length ? `<section>
+const gapsSection = () => doc.gaps.length ? `<section class="ln-proc__gaps">
 ${docH2('gaps', 'Known gaps')}
 <p>The library has no source for these yet, so this Document says nothing about them rather than guess.</p>
 <ul class="ln-proc__list">${[...new Set(doc.gaps)].map((g) => `<li>${esc(g)}</li>`).join('')}</ul>

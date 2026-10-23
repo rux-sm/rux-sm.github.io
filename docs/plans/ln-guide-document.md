@@ -66,8 +66,9 @@ And a team, after log-in, sees what the public page cannot carry.
 
 - **On paper the Document is Letter at 10 point**, ruled tables with no fills,
   a running footer of its title, its Updated date and Page N of M, and no
-  heading left at a page's foot. Reference and Screens used stay on screen,
-  because each task already names its screen and a reference is read online.
+  heading left at a page's foot. Reference, Known gaps and Screens used stay
+  on screen, because a printed copy stands on its own and says only what is
+  known, each task already names its screen, and a reference is read online.
   It prints from the browser's dialog, where
   Save as PDF is a destination, so no PDF library is added. The mockup's Check
   an item's inventory is 2 pages and Ship from stock 8.

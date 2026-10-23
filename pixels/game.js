@@ -8,19 +8,17 @@
    a block does one thing: a picture edits its puzzle, the add tile draws
    another for the rift, the switch publishes the rift, the menu holds Who
    sees, Rename and Delete, and the rift's name opens its panel under it, or
-   closes it; one panel at most is open, and it is `?rift=` in the address,
+   closes it. Outside selection, one panel at most is open, kept in `?rift=`,
    so a reload or the Pixelator's Exit comes back to it.
 
-   THE PANEL is where a rift is managed: the box that ticks all of it, its
-   name, size and count, and the arrows that move it among the others; then
-   a tile a puzzle, with its size and how hard it is, and under it Edit,
-   Play, which tries it, and for one in a rift the switch that sends it to
-   no player when off; then Add puzzle.
+   THE PANEL replaces the previews with tiles and arrows to reorder the
+   rift. Each tile edits its puzzle, with Edit, Play and the puzzle's
+   publishing switch underneath, followed by Add puzzle.
 
-   TICKS. A tile is ticked by pressing it, and the box in a panel ticks its
-   whole rift. A tick stays when another panel opens, so puzzles from two
-   rifts move together. A bar over the list stays in view with how many are
-   ticked in all, and Move, Delete and Clear, which wait for a tick. Move
+   TICKS. Select puzzles opens all rifts with selectable tiles and a box
+   that selects the whole rift. Puzzles from several rifts can move
+   together. Done selecting clears the ticks. A sticky bar counts them
+   and offers Move, Delete and Clear, which wait for a tick. Move
    asks where: a rift, Unsorted, or a new rift, which is named there and
    starts hidden. Puzzles that come into a rift arrive on while it has
    fewer than fifteen on, and off after that. A rift a move or a delete
@@ -47,6 +45,7 @@
   // Every puzzle there is, and the ids of the ticked ones.
   let puzzles = [];
   const ticked = new Set();
+  let selecting = false;
 
   const say = (heading, detail) => {
     const box = $('pixels-error');
@@ -175,8 +174,10 @@
   // The ticked puzzles, and the bar that acts on them.
   const chosen = () => kept().filter(p => ticked.has(String(p.id)));
   const showTicked = () => {
-    $('pixels-ticked').hidden = false;
-    $('pixels-ticked-count').textContent = ticked.size ? `${ticked.size} ticked` : 'Tick puzzles to move or delete them';
+    $('pixels-ticked').hidden = !selecting;
+    $('pixels-select').textContent = selecting ? 'Done selecting' : 'Select puzzles';
+    $('pixels-select').setAttribute('aria-pressed', selecting);
+    $('pixels-ticked-count').textContent = ticked.size ? `${ticked.size} selected` : 'Select puzzles to move or delete them';
     $('pixels-ticked').querySelectorAll('button').forEach(b => { b.disabled = !ticked.size; });
     showBoxes();
   };
@@ -185,25 +186,31 @@
     showTicked();
   });
 
-  /* A PUZZLE'S TILE, which pressing ticks, with its size and how hard it
-     is, and under it Edit, Play and its switch. `flip` is given the
+  /* A PUZZLE'S TILE opens the maker or selects in selection mode. It shows
+     size and difficulty, with Edit, Play and its switch outside selection. `flip` is given the
      switch's new state, and is missing for a puzzle in no category, which
      has no switch. */
   const puzzleTile = (p, flip) => {
     const wrap = document.createElement('div');
     wrap.className = `pixels-tile${p.off && !loose(p) ? ' is-off' : ''}`;
     const on = ticked.has(String(p.id));
-    const t = document.createElement('div');
-    t.className = `rux--tile rux--tile--selectable pixels-puzzle${on ? ' rux--tile--is-selected' : ''}`;
-    t.setAttribute('role', 'checkbox');
-    t.setAttribute('aria-checked', on);
-    t.setAttribute('aria-label', `${p.name}, ${grade(p.rounds)}`);
-    t.tabIndex = 0;
+    const t = document.createElement(selecting ? 'div' : 'a');
+    t.className = `rux--tile ${selecting ? 'rux--tile--selectable' : 'rux--tile--clickable rux--link'} pixels-puzzle${on ? ' rux--tile--is-selected' : ''}`;
     t.dataset.id = p.id;
-    const mark = document.createElement('span');
-    mark.className = 'rux--tile__checkmark rux--tile__checkmark--persistent';
-    mark.innerHTML = '<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>';
-    t.append(mark, art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', `${side(p.width)} · ${grade(p.rounds)}`));
+    if (selecting) {
+      t.setAttribute('role', 'checkbox');
+      t.setAttribute('aria-checked', on);
+      t.setAttribute('aria-label', `${p.name}, ${grade(p.rounds)}`);
+      t.tabIndex = 0;
+      const mark = document.createElement('span');
+      mark.className = 'rux--tile__checkmark rux--tile__checkmark--persistent';
+      mark.innerHTML = '<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>';
+      t.append(mark);
+    } else {
+      t.href = `make.html?id=${encodeURIComponent(p.id)}`;
+      t.setAttribute('aria-label', `Edit ${p.name}`);
+    }
+    t.append(art(p, true), words('pixels-puzzle-name', p.name), words('pixels-meta', `${side(p.width)} · ${grade(p.rounds)}`));
     const foot = document.createElement('div');
     foot.className = 'pixels-tile-foot';
     const link = (text, href, label) => {
@@ -216,7 +223,8 @@
     };
     foot.append(link('Edit', 'make.html', 'Edit'), link('Play', 'play.html', 'Play'));
     if (flip) foot.append(toggle(`pixels-on-${p.id}`, `Show ${p.name} to players`, !p.off, flip, { text: false, failed: ['The puzzle did not change', 'Try again.'] }));
-    wrap.append(t, foot);
+    wrap.append(t);
+    if (!selecting) wrap.append(foot);
     return wrap;
   };
 
@@ -246,7 +254,7 @@
     const head = document.createElement('div');
     head.className = 'pixels-level-head pixels-level-head--desk';
     const h2 = document.createElement('h2');
-    h2.className = 'rux--type-productive-heading-03';
+    h2.className = 'rux--visually-hidden';
     h2.id = id;
     h2.textContent = name;
     head.append(...parts(h2));
@@ -257,15 +265,10 @@
     return el;
   };
 
-  /* THE PAGE, drawn again after every change: a list of places, each rift
-     in the owner's order, then Unsorted and Dailies, and the one place that
-     is open. A row is the place's name, its size and how many are on, a
-     strip of its pictures, and for a rift its Published switch; pressing it
-     opens that place under it, or closes it when it is open, which `?rift=`
-     keeps in the address. The open place is its heading, with its box, its
-     keys and its tiles, and the page scrolls its row to the top. `focus` is the
-     ids of what to put the focus on, the first that is there and can take
-     it. */
+  /* Each rift's expanded grid replaces its previews in the same block.
+     Outside selection, ?rift= keeps the one open place across reloads.
+     Selection opens every selectable place. `focus` names the first
+     available control to restore after drawing. */
   let moving = false;
   let open = new URLSearchParams(location.search).get('rift');
   const choose = (to, focus = []) => {
@@ -338,8 +341,8 @@
         keys.className = 'pixels-moves';
         keys.append(key(`${id}-up`, `Move ${name} up`, '#m-arrow_upward', at > 0 && shift(-1)),
           key(`${id}-down`, `Move ${name} down`, '#m-arrow_downward', at < cats.length - 1 && shift(1)));
-        return section(id, title, h2 => [tickAll(`${id}-all`, `Tick all of ${name}`), h2, words('pixels-meta', meta), keys],
-          [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), addTile(c)]);
+        return section(id, title, h2 => [...(selecting ? [tickAll(`${id}-all`, `Select all of ${name}`)] : []), h2, ...(selecting ? [] : [keys])],
+          [...c.puzzles.map(p => puzzleTile(p, flip(p, name))), ...(selecting ? [] : [addTile(c)])]);
       }, [shown, menu(`More for ${name}`, [
         data.share ? ['Who sees it', from => sharing(c, from)] : null,
         ['Rename', from => naming(c, from)],
@@ -349,13 +352,13 @@
     // Unsorted has no switch, place or name of its own.
     if (strays.length) {
       places.push(['unsorted', 'Unsorted', count(strays.length, 'puzzle'), strays, null,
-        () => section('pixels-unsorted', 'Unsorted', h2 => [tickAll('pixels-unsorted-all', 'Tick all of Unsorted'), h2, words('pixels-meta', count(strays.length, 'puzzle'))],
+        () => section('pixels-unsorted', 'Unsorted', h2 => [...(selecting ? [tickAll('pixels-unsorted-all', 'Select all of Unsorted')] : []), h2],
           strays.map(p => puzzleTile(p)))]);
     }
     // A day's puzzle opens in the maker, and is not ticked.
     if (dated.length) {
       places.push(['days', 'Dailies', `${dated.length} drawn`, dated, null,
-        () => section('pixels-days', 'Dailies', h2 => [h2, words('pixels-meta', `${dated.length} drawn`)], dated.map(p => {
+        () => section('pixels-days', 'Dailies', h2 => [h2], dated.map(p => {
           const when = new Date(`${p.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
           const a = tile(p, when, `make.html?id=${encodeURIComponent(p.id)}`, { seconds: 0 });
           a.lastElementChild.replaceWith(words('pixels-meta', p.name));
@@ -363,33 +366,39 @@
         }))]);
     }
     if (!places.some(([k]) => k === open)) open = null;
-    const at = places.findIndex(([k]) => k === open);
-    places.forEach(([k, title, meta, list, , , controls = [], add], i) => {
-      // The name opens the panel, or closes it.
+    places.forEach(([k, title, meta, list, , build, controls = [], add]) => {
+      const expanded = selecting && k !== 'days' || k === open;
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'pixels-place-open pixels-place-name';
       b.id = `pixels-place-${k}`;
       b.textContent = title;
-      b.setAttribute('aria-expanded', k === open);
-      if (k === open) b.setAttribute('aria-controls', 'pixels-open');
+      b.setAttribute('aria-label', title);
+      b.setAttribute('aria-expanded', expanded);
+      b.disabled = selecting && k !== 'days';
+      if (expanded) b.setAttribute('aria-controls', `pixels-open-${k}`);
       b.addEventListener('click', () => choose(k === open ? null : k, [b.id]));
-      const row = riftBlock({ name: b, meta, controls, puzzles: list.slice(0, PER_LEVEL), href: p => `make.html?id=${encodeURIComponent(p.id)}`, add, addLabel: `Add a puzzle to ${title}` });
-      row.style.order = i * 2;
-      if (k === open) row.setAttribute('aria-current', 'true');
+      const row = riftBlock({ name: b, meta, controls: selecting ? [] : controls, puzzles: list.slice(0, PER_LEVEL), href: p => `make.html?id=${encodeURIComponent(p.id)}`, add: selecting ? null : add, addLabel: `Add a puzzle to ${title}` });
+      if (expanded) {
+        if (k === open) row.setAttribute('aria-current', 'true');
+        row.querySelector('.pixels-block-pics').remove();
+        const panel = document.createElement('div');
+        panel.className = 'pixels-open';
+        panel.id = `pixels-open-${k}`;
+        panel.append(build());
+        row.append(panel);
+      }
       host.append(row);
     });
-    if (at >= 0) {
-      const panel = document.createElement('div');
-      panel.className = 'pixels-open';
-      panel.id = 'pixels-open';
-      panel.style.order = at * 2 + 1;
-      panel.append(places[at][5]());
-      host.append(panel);
-    }
     showTicked();
     focus.map($).find(el => el && !el.disabled)?.focus();
   }
+
+  $('pixels-select').addEventListener('click', () => {
+    selecting = !selecting;
+    ticked.clear();
+    draw(['pixels-select']);
+  });
 
   /* A PUZZLE'S SWITCH. Off, no player is sent it. A category shows fifteen,
      so a sixteenth is refused until one is switched off. The page is drawn again,

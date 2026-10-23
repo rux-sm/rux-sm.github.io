@@ -617,7 +617,7 @@
 /* A BOSS HELD BACK is dim, as a locked rift's portal is. */
 .pixels-puzzle.is-held > .pixels-blank { opacity: .3; }
 .pixels-puzzle.is-held > .pixels-puzzle-name { color: var(--rux-text-secondary); }
-/* ON MANAGE a tile is ticked by pressing it, and carries under it the way
+/* ON MANAGE a tile opens the maker or selects in selection mode, with the way
    to edit its puzzle, the way to play it, and the switch that sends it to
    the players, which takes a second line where the tile is too narrow for
    all three. A tile here is as tall as its words need, not square, since
@@ -631,12 +631,11 @@
 .pixels-tile { display: flex; flex-direction: column; gap: .25rem; min-inline-size: 0; }
 .pixels-tile-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .125rem .375rem; }
 .pixels-tile-edit { font-size: 16px; }
-.pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; flex: 1 0 auto; aspect-ratio: auto; cursor: pointer; }
+.pixels-tile > .pixels-puzzle { --rux-layout-density-padding-inline-local: .375rem; flex: 1 0 auto; block-size: auto; aspect-ratio: auto; cursor: pointer; }
 /* The heading's box takes the room of the box alone. */
 .pixels-level-head > .rux--checkbox-wrapper { margin: 0; }
 /* WHAT IS DONE TO THE TICKED PUZZLES: how many, then Move, Delete and
-   Clear. It is there with none ticked, so a first tick moves no tile from
-   under the pointer, and stays at the top while the page scrolls. */
+   Clear. Selection mode keeps the bar at the top while the page scrolls. */
 .pixels-ticked {
   position: sticky;
   inset-block-start: 0;
@@ -951,7 +950,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - var(--pixels-head, 0px) - 277px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
-.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; gap: .5rem; }
+.pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem; gap: .5rem; }
 /* THE TOOLBAR, after Carbon's text toolbar: a bar of icon buttons the width
    of what they act on and set on it, in groups with a rule between them.
    The rule is drawn inside a group's edge and takes no room, because twelve
@@ -1089,6 +1088,16 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-toolbar-tools { order: 6; --keys: 3; }
 .pixels-toolbar-clear { order: 7; --keys: 1; }
 
+/* Create has room for management controls on desktop. */
+@media (min-width: 66rem) {
+  .pixels-create-main { --game-column: 48rem; }
+  .pixels-create-main .pixels-list--desk { grid-template-columns: repeat(5, minmax(0, 1fr)); max-inline-size: none; }
+  .pixels-create-main .pixels-block-pics { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .pixels-ticked { inset-block-start: 3rem; }
+}
+.pixels-place-open::before { content: '›'; display: inline-block; margin-inline-end: .5rem; }
+.pixels-place-open[aria-expanded="true"]::before { transform: rotate(90deg); }
+.pixels-place-open:disabled { cursor: default; color: inherit; }
 
 /* ME'S NUMBERS, under the head: a grid of plates, each a number over its
    word, two to a row. */

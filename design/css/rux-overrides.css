@@ -1802,6 +1802,45 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--list-box__menu-item__option {
   border-block-start-color: transparent;
 }
+/* A SIDE NAV'S AND A SWITCHER'S ROWS ARE PILLS TOO, as Geist's documentation
+   draws its nav, measured on its own site: each row stands off the column's
+   edges and 2px from the next, rounded as a menu's items are here, and the
+   chosen row is marked by its fill and its brighter words alone. Carbon runs
+   the rows to the edges and marks the chosen one with a 3px bar. The pill
+   stands 8px in and its words 8px inside it, so they keep Carbon's 16px, in
+   line with the account panel's other rows; a nested link keeps its indent
+   the same way. The switcher's item is Carbon's fixed 32px, so it gives way
+   to the row and its gap. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
+  margin: 1px 8px;
+  padding-inline: 8px;
+}
+[data-theme="geist-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
+  border-radius: 6px;
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
+  border-radius: 4px;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__submenu {
+  inline-size: calc(100% - 1rem);
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__menu a.rux--side-nav__link {
+  padding-inline-start: 1.5rem;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__item.rux--side-nav__item--icon a.rux--side-nav__link {
+  padding-inline-start: 4rem;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--switcher__item {
+  block-size: auto;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false])::before {
+  content: none;
+}
+/* Carbon also fills the whole hovered item behind its link, which drew the
+   edge-to-edge band around the pill. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__item:not(.rux--side-nav__item--active):hover {
+  background-color: transparent;
+}
 /* RUX-DARK'S LISTS STAND 4px OFF WHAT OPENS THEM. A menu, an overflow menu
    and a dropdown's or combo box's list open 4px below their button or field,
    or 4px above it, as GitHub's do; Carbon lays them against it, which here

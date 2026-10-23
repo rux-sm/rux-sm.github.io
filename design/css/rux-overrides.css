@@ -1809,11 +1809,28 @@
    the rows to the edges and marks the chosen one with a 3px bar. The pill
    stands 8px in and its words 8px inside it, so they keep Carbon's 16px, in
    line with the account panel's other rows; a nested link keeps its indent
-   the same way. The switcher's item is Carbon's fixed 32px, so it gives way
-   to the row and its gap. */
+   the same way. Every row is 40px, Geist's nav row, in every list: Carbon's
+   are 32px, and 48px where an item is large, so the scheduler's nav and the
+   account panel beside it stood at two sizes. On a touch screen each is
+   44px, as every side-nav row is above. The switcher's item is Carbon's
+   fixed 32px, so it gives way to the row and its gap, and its link centres
+   its words as the nav's links do. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
+  block-size: 2.5rem;
+  min-block-size: 2.5rem;
   margin: 1px 8px;
   padding-inline: 8px;
+}
+@media (pointer: coarse) {
+  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
+    block-size: 2.75rem;
+    min-block-size: 2.75rem;
+  }
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--switcher__item-link {
+  display: flex;
+  align-items: center;
+  padding-block: 0;
 }
 [data-theme="geist-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
   border-radius: 6px;
@@ -1832,6 +1849,11 @@
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--switcher__item {
   block-size: auto;
+}
+/* A submenu's item holds its link's margins, as Carbon's top-level item
+   does by clipping, so nested rows stand 2px apart too rather than 1. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__menu-item {
+  display: flow-root;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false])::before {
   content: none;

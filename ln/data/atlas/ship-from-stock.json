@@ -9,8 +9,8 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-10-23",
-  "status": "approved",
+  "updated": "2026-10-24",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -32,7 +32,26 @@
     "whwmd2515m000",
     "whwmd4300m000"
   ],
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow "
+        },
+        {
+          "t": "link",
+          "v": "Purchase order to warehouse receipt",
+          "href": "purchase-order-to-warehouse-receipt.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
+    }
+  ],
   "tasks": [
     {
       "id": "confirm-there-is-stock",
@@ -42,13 +61,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Know what you can actually ship."
+            "v": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
           }
         ],
-        "text": "Know what you can actually ship."
+        "text": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
       },
       "steps": 4,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "create-and-approve-the-sales-order",
@@ -72,7 +91,7 @@
         "text": "The order status is In Process."
       },
       "steps": 12,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "release-to-warehousing",
@@ -82,13 +101,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A warehousing order exists."
+            "v": "A warehousing order exists with the sales order's number."
           }
         ],
-        "text": "A warehousing order exists."
+        "text": "A warehousing order exists with the sales order's number."
       },
       "steps": 8,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "generate-outbound-advice",
@@ -98,13 +117,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "LN knows what to pick, and the picking list prints."
+            "v": "Advised and Released both show the ordered quantity, and the picking list prints."
           }
         ],
-        "text": "LN knows what to pick, and the picking list prints."
+        "text": "Advised and Released both show the ordered quantity, and the picking list prints."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "pick-the-goods_ship-from-stock",
@@ -114,13 +133,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The pick is confirmed in LN, and the stock is in staging."
+            "v": "The outbound line reads "
+          },
+          {
+            "t": "strong",
+            "v": "Staged"
+          },
+          {
+            "t": "text",
+            "v": ", and a shipment line exists."
           }
         ],
-        "text": "The pick is confirmed in LN, and the stock is in staging."
+        "text": "The outbound line reads Staged, and a shipment line exists."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "ship_ship-from-stock",
@@ -130,13 +157,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The shipment is confirmed, and the stock leaves inventory."
+            "v": "The shipment reads "
+          },
+          {
+            "t": "strong",
+            "v": "Confirmed"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "The shipment is confirmed, and the stock leaves inventory."
+        "text": "The shipment reads Confirmed."
       },
       "steps": 5,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "verify-it-worked_ship-from-stock",
@@ -146,13 +181,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand went down by the quantity shipped."
+            "v": "On-hand in that warehouse is lower by exactly the quantity shipped."
           }
         ],
-        "text": "On-hand went down by the quantity shipped."
+        "text": "On-hand in that warehouse is lower by exactly the quantity shipped."
       },
       "steps": 1,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     }
   ],
   "values": {
@@ -292,6 +327,60 @@
           }
         ],
         "task": "create-and-approve-the-sales-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Upto Release Date"
+              }
+            ],
+            "text": "Upto Release Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2026-10-24"
+              },
+              {
+                "t": "text",
+                "v": " — left at the date LN offers"
+              }
+            ],
+            "text": "2026-10-24 — left at the date LN offers"
+          }
+        ],
+        "task": "release-to-warehousing"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Shipped Quantity"
+              }
+            ],
+            "text": "Shipped Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "5"
+              },
+              {
+                "t": "text",
+                "v": " — the ordered quantity, all picked"
+              }
+            ],
+            "text": "5 — the ordered quantity, all picked"
+          }
+        ],
+        "task": "ship_ship-from-stock"
       }
     ]
   },
@@ -317,6 +406,33 @@
         }
       ],
       "text": "Objective: ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped. Base walkthrough — situational variants build on this one. See Variants."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow "
+        },
+        {
+          "t": "link",
+          "v": "Purchase order to warehouse receipt",
+          "href": "purchase-order-to-warehouse-receipt.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Prerequisite > A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
     },
     {
       "kind": "prose",
@@ -387,10 +503,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Know what you can actually ship"
+                  "v": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship"
                 }
               ],
-              "text": "Know what you can actually ship"
+              "text": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship"
             }
           ]
         },
@@ -473,10 +589,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A warehousing order exists"
+                  "v": "A warehousing order exists with the sales order's number"
                 }
               ],
-              "text": "A warehousing order exists"
+              "text": "A warehousing order exists with the sales order's number"
             }
           ]
         },
@@ -514,10 +630,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN knows what to pick, and the picking list prints"
+                  "v": "Advised and Released both show the ordered quantity, and the picking list prints"
                 }
               ],
-              "text": "LN knows what to pick, and the picking list prints"
+              "text": "Advised and Released both show the ordered quantity, and the picking list prints"
             }
           ]
         },
@@ -555,10 +671,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The pick is confirmed in LN, and the stock is in staging"
+                  "v": "The outbound line reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Staged"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a shipment line exists"
                 }
               ],
-              "text": "The pick is confirmed in LN, and the stock is in staging"
+              "text": "The outbound line reads Staged, and a shipment line exists"
             }
           ]
         },
@@ -596,10 +720,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The shipment is confirmed, and the stock leaves inventory"
+                  "v": "The shipment reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Confirmed"
                 }
               ],
-              "text": "The shipment is confirmed, and the stock leaves inventory"
+              "text": "The shipment reads Confirmed"
             }
           ]
         },
@@ -637,10 +765,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand went down by the quantity shipped"
+                  "v": "On-hand in that warehouse is lower by exactly the quantity shipped"
                 }
               ],
-              "text": "On-hand went down by the quantity shipped"
+              "text": "On-hand in that warehouse is lower by exactly the quantity shipped"
             }
           ]
         }

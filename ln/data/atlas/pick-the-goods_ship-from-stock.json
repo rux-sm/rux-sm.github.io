@@ -23,20 +23,28 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The pick is confirmed in LN, and the stock is in staging."
+        "v": "The outbound line reads "
+      },
+      {
+        "t": "strong",
+        "v": "Staged"
+      },
+      {
+        "t": "text",
+        "v": ", and a shipment line exists."
       }
     ],
-    "text": "The pick is confirmed in LN, and the stock is in staging."
+    "text": "The outbound line reads Staged, and a shipment line exists."
   },
   "before": [
     {

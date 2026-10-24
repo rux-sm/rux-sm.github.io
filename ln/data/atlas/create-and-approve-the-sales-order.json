@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
@@ -184,14 +184,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the "
+                  "v": "Check the "
                 },
                 {
                   "t": "field",
                   "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " LN fills in, and change it if your order needs another"
                 }
               ],
-              "text": "Select the Order Type"
+              "text": "Check the Order Type LN fills in, and change it if your order needs another"
             },
             {
               "tokens": [

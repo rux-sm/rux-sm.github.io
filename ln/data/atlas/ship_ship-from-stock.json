@@ -23,20 +23,28 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The shipment is confirmed, and the stock leaves inventory."
+        "v": "The shipment reads "
+      },
+      {
+        "t": "strong",
+        "v": "Confirmed"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "The shipment is confirmed, and the stock leaves inventory."
+    "text": "The shipment reads Confirmed."
   },
   "before": [],
   "why": {
@@ -185,7 +193,10 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -334,8 +345,38 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Shipped Quantity"
+              }
+            ],
+            "text": "Shipped Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "5"
+              },
+              {
+                "t": "text",
+                "v": " — the ordered quantity, all picked"
+              }
+            ],
+            "text": "5 — the ordered quantity, all picked"
+          }
+        ]
+      }
+    ]
   },
   "problems": {
     "kind": "troubleshooting",

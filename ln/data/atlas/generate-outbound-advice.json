@@ -23,20 +23,20 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "LN knows what to pick, and the picking list prints."
+        "v": "Advised and Released both show the ordered quantity, and the picking list prints."
       }
     ],
-    "text": "LN knows what to pick, and the picking list prints."
+    "text": "Advised and Released both show the ordered quantity, and the picking list prints."
   },
   "before": [],
   "why": {

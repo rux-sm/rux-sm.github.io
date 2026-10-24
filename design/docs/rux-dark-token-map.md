@@ -42,8 +42,8 @@ ordinary screen shows it, and holds on both.
 | magenta | `oklch(0.40 0.168 350)` | `oklch(0.44 0.17 350)` | `oklch(0.92 0.05 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
 
 The hues are red 25, orange 50, amber 75, yellow 95, green 150, teal 185, cyan
-225, blue 262, purple 300 and magenta 350, in OKLCH degrees. The accent is the
-blue. A low-contrast notification's fill is its ink at 15% over the page, so a
+225, blue 262, purple 300 and magenta 350, in OKLCH degrees. Links, the on
+toggle and focus are the ink, so the palette marks only a status. A low-contrast notification's fill is its ink at 15% over the page, so a
 big surface stays calm.
 
 | Token | geist-dark | rux-dark | From |
@@ -117,14 +117,14 @@ big surface stays calm.
 | `text-placeholder` | `rgba(237, 237, 237, 0.4)` | `rgba(244, 244, 244, 0.4)` | the ink at 0.4 |
 | `text-primary` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `text-secondary` | `#a1a1a1` | `#a1a1a1` | neutral grey #a1a1a1 |
-| `link-inverse` | `#005ff2` | `oklch(0.525 0.2 262)` | blue fill, hover |
+| `link-inverse` | `#005ff2` | `#000000` | neutral grey #000000, on the inverse surface |
 | `link-inverse-active` | `#000000` | `#000000` | neutral grey #000000 |
-| `link-inverse-hover` | `#002359` | `oklch(0.475 0.2 262)` | blue fill, pressed |
-| `link-inverse-visited` | `#7c3aed` | `oklch(0.54 0.2 300)` | purple fill, hover |
-| `link-primary` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |
-| `link-primary-hover` | `#8fc7ff` | `oklch(0.82 0.093 262)` | blue ink, hover |
-| `link-secondary` | `#8fc7ff` | `oklch(0.82 0.093 262)` | blue ink, hover |
-| `link-visited` | `#bf7af0` | `oklch(0.75 0.157 300)` | purple ink |
+| `link-inverse-hover` | `#002359` | `#333333` | neutral grey #333333 |
+| `link-inverse-visited` | `#7c3aed` | `#525252` | neutral grey #525252 |
+| `link-primary` | `#52a8ff` | `#f4f4f4` | the ink, underlined |
+| `link-primary-hover` | `#8fc7ff` | `#ffffff` | white |
+| `link-secondary` | `#8fc7ff` | `#d4d4d4` | neutral grey #d4d4d4 |
+| `link-visited` | `#bf7af0` | `#a1a1a1` | neutral grey #a1a1a1 |
 | `icon-disabled` | `rgba(237, 237, 237, 0.25)` | `rgba(244, 244, 244, 0.25)` | the ink at 0.25 |
 | `icon-interactive` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `icon-inverse` | `#000000` | `#000000` | neutral grey #000000 |
@@ -145,7 +145,7 @@ big surface stays calm.
 | `support-warning-inverse` | `#d97706` | `oklch(0.57 0.131 75)` | amber fill |
 | `focus` | `#ffffff` | `#ffffff` | white |
 | `focus-inset` | `#000000` | `#000000` | neutral grey #000000 |
-| `focus-inverse` | `#0070f3` | `oklch(0.575 0.2 262)` | blue fill |
+| `focus-inverse` | `#0070f3` | `#000000` | neutral grey #000000 |
 | `chat-avatar-agent` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `chat-avatar-bot` | `#888888` | `#888888` | neutral grey #888888 |
 | `chat-avatar-user` | `#52a8ff` | `oklch(0.75 0.132 262)` | blue ink |

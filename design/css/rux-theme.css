@@ -563,10 +563,13 @@
    and the container stands clear of the board at about 2 to 1. Every pairing
    is measured both ways and holds.
 
-   THE ACCENT IS THE PALETTE'S BLUE, Carbon blue's hue, 262: it carries every
-   link, the on toggle, the inverse focus, the highlight, the blue tag, the
-   notification actions and the AI tokens, which take Carbon g100's in this
-   blue where g100 has its own.
+   THE INTERACTIVE MARKS ARE THE INK, so the page is black and white and the
+   palette means only a status: a link is the ink, underlined, #ffffff on
+   hover and #a1a1a1 once visited, and #000000 on an inverse surface; the on
+   toggle is the ink with a black thumb; and the inverse focus is black.
+   THE PALETTE'S BLUE, Carbon blue's hue, 262, carries the highlight, the blue
+   tag, info, the notification actions and the AI tokens, which take Carbon
+   g100's in this blue where g100 has its own.
 
    A BIG SURFACE STAYS CALM: a low-contrast notification's fill is its ink at
    15% over the page, under the vivid ink, where a tag or a trip bar takes its
@@ -658,14 +661,14 @@
   --rux-text-secondary: #a1a1a1;
 
   /* link */
-  --rux-link-inverse: oklch(0.525 0.2 262);
+  --rux-link-inverse: #000000;
   --rux-link-inverse-active: #000000;
-  --rux-link-inverse-hover: oklch(0.475 0.2 262);
-  --rux-link-inverse-visited: oklch(0.54 0.2 300);
-  --rux-link-primary: oklch(0.75 0.132 262);
-  --rux-link-primary-hover: oklch(0.82 0.093 262);
-  --rux-link-secondary: oklch(0.82 0.093 262);
-  --rux-link-visited: oklch(0.75 0.157 300);
+  --rux-link-inverse-hover: #333333;
+  --rux-link-inverse-visited: #525252;
+  --rux-link-primary: #f4f4f4;
+  --rux-link-primary-hover: #ffffff;
+  --rux-link-secondary: #d4d4d4;
+  --rux-link-visited: #a1a1a1;
 
   /* icon */
   --rux-icon-disabled: rgba(244, 244, 244, 0.25);
@@ -692,7 +695,7 @@
   /* focus */
   --rux-focus: #ffffff;
   --rux-focus-inset: #000000;
-  --rux-focus-inverse: oklch(0.575 0.2 262);
+  --rux-focus-inverse: #000000;
 
   /* chat */
   --rux-chat-avatar-agent: #f4f4f4;

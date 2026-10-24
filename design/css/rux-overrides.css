@@ -922,6 +922,28 @@
 :where([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--toggle__check {
   fill: var(--rux-support-info-inverse);
 }
+/* rux-dark's on toggle is the ink with a black thumb, as its links and focus
+   are black and white. */
+:where([data-theme="rux-dark"]) .rux--toggle__switch--checked {
+  background-color: var(--rux-background-inverse);
+}
+:where([data-theme="rux-dark"]) .rux--toggle__switch--checked::before {
+  background-color: var(--rux-icon-inverse);
+}
+:where([data-theme="rux-dark"]) .rux--toggle__check {
+  fill: var(--rux-background-inverse);
+}
+/* A rux-dark link is the ink, as the words around it are, so it is told
+   apart by a line under it: the strong border at rest, the link's own colour
+   under the pointer. */
+[data-theme="rux-dark"] .rux--link {
+  text-decoration: underline;
+  text-decoration-color: var(--rux-border-strong-01);
+  text-underline-offset: 3px;
+}
+[data-theme="rux-dark"] .rux--link:hover {
+  text-decoration-color: currentColor;
+}
 /* GEIST'S BREADCRUMB IS GREY, NOT A ROW OF LINKS, measured on its Breadcrumbs
    page: each step and the mark between them #a1a1a1, which is text-secondary
    here. A step lifts to the text colour under the pointer, and the current

@@ -21,11 +21,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-23",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -40,10 +40,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+        "v": "LN won't delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
       }
     ],
-    "text": "LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
+    "text": "LN won't delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
   },
   "blocks": [
     {

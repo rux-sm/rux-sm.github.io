@@ -21,29 +21,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The session code, the table, the values and the sentence the user sees."
+        "v": "You have the session code, the table, the values and the sentence the user sees."
       }
     ],
-    "text": "The session code, the table, the values and the sentence the user sees."
+    "text": "You have the session code, the table, the values and the sentence the user sees."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
+        "v": "A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So start with what the answer must say, then find the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
       }
     ],
-    "text": "A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
+    "text": "A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So start with what the answer must say, then find the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default."
   },
   "blocks": [
     {
@@ -209,14 +209,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: "
+                  "v": "Note the table the screen's records are in, or your best guess. If you guess wrong, the first run names the right table. Example: "
                 },
                 {
                   "t": "literal",
                   "v": "whwmd400"
                 }
               ],
-              "text": "Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: whwmd400"
+              "text": "Note the table the screen's records are in, or your best guess. If you guess wrong, the first run names the right table. Example: whwmd400"
             },
             {
               "tokens": [
@@ -374,10 +374,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The screen's table is not known"
+                "v": "You don't know the screen's table"
               }
             ],
-            "text": "The screen's table is not known"
+            "text": "You don't know the screen's table"
           },
           {
             "tokens": [
@@ -396,10 +396,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The screen you wanted cannot reach the data"
+                "v": "The screen you wanted can't reach the data"
               }
             ],
-            "text": "The screen you wanted cannot reach the data"
+            "text": "The screen you wanted can't reach the data"
           },
           {
             "tokens": [

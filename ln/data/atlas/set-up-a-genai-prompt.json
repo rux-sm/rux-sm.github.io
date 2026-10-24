@@ -9,7 +9,7 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "status": "draft",
   "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
   "order": 1,
@@ -33,10 +33,10 @@
         },
         {
           "t": "text",
-          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
         }
       ],
-      "text": "An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+      "text": "An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
     },
     {
       "tokens": [
@@ -74,13 +74,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The session code, the table, the values and the sentence the user sees."
+            "v": "You have the session code, the table, the values and the sentence the user sees."
           }
         ],
-        "text": "The session code, the table, the values and the sentence the user sees."
+        "text": "You have the session code, the table, the values and the sentence the user sees."
       },
       "steps": 6,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "model-the-dataset",
@@ -96,7 +96,7 @@
         "text": "The fields the answer needs are ready to send."
       },
       "steps": 15,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "write-the-prompt",
@@ -112,7 +112,7 @@
         "text": "A prompt exists with a label, a dataset and both texts."
       },
       "steps": 12,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "link-the-prompt-to-a-session",
@@ -128,7 +128,7 @@
         "text": "The command is in the Actions menu of the screen."
       },
       "steps": 4,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "run-it-and-check-the-answer",
@@ -138,13 +138,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A first answer, checked against the screen."
+            "v": "You have a first answer, checked against the screen."
           }
         ],
-        "text": "A first answer, checked against the screen."
+        "text": "You have a first answer, checked against the screen."
       },
       "steps": 6,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "improve-it",
@@ -154,13 +154,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "An answer in the form asked for, right for each kind of record."
+            "v": "The answer comes in the form you asked for, and is right for each kind of record."
           }
         ],
-        "text": "An answer in the form asked for, right for each kind of record."
+        "text": "The answer comes in the form you asked for, and is right for each kind of record."
       },
-      "steps": 15,
-      "walked": "2026-10-22"
+      "steps": 16,
+      "walked": "2026-10-23"
     },
     {
       "id": "remove-it",
@@ -176,7 +176,7 @@
         "text": "The command, the prompt and the dataset are gone."
       },
       "steps": 4,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     }
   ],
   "values": {
@@ -230,11 +230,11 @@
         },
         {
           "t": "strong",
-          "v": "This walkthrough builds shared configuration and ends by removing it."
+          "v": "This guide builds settings every user of the screen shares, and ends by removing them."
         },
         {
           "t": "text",
-          "v": " Its completion boundary is an answer that agrees with the screen, for one record of each kind the prompt tells apart. From "
+          "v": " It's done when an answer agrees with the screen, for one record of each kind the prompt tells apart. From "
         },
         {
           "t": "link",
@@ -255,7 +255,7 @@
           "v": " every user of the screen sees the command."
         }
       ],
-      "text": "> Warning > This walkthrough builds shared configuration and ends by removing it. Its completion boundary is an answer that agrees with the screen, for one record of each kind the prompt tells apart. From Link the prompt to a session until Remove it every user of the screen sees the command."
+      "text": "> Warning > This guide builds settings every user of the screen shares, and ends by removing them. It's done when an answer agrees with the screen, for one record of each kind the prompt tells apart. From Link the prompt to a session until Remove it every user of the screen sees the command."
     },
     {
       "kind": "prose",
@@ -278,10 +278,10 @@
         },
         {
           "t": "text",
-          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
         }
       ],
-      "text": "> Prerequisite > An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help."
+      "text": "> Prerequisite > An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
     },
     {
       "kind": "prose",
@@ -378,10 +378,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The session code, the table, the values and the sentence the user sees"
+                  "v": "You have the session code, the table, the values and the sentence the user sees"
                 }
               ],
-              "text": "The session code, the table, the values and the sentence the user sees"
+              "text": "You have the session code, the table, the values and the sentence the user sees"
             }
           ]
         },
@@ -542,10 +542,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A first answer, checked against the screen"
+                  "v": "You have a first answer, checked against the screen"
                 }
               ],
-              "text": "A first answer, checked against the screen"
+              "text": "You have a first answer, checked against the screen"
             }
           ]
         },
@@ -583,10 +583,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "An answer in the form asked for, right for each kind of record"
+                  "v": "The answer comes in the form you asked for, and is right for each kind of record"
                 }
               ],
-              "text": "An answer in the form asked for, right for each kind of record"
+              "text": "The answer comes in the form you asked for, and is right for each kind of record"
             }
           ]
         },

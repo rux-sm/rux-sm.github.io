@@ -24,11 +24,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
   "session": "GenAI Prompts by Session",
   "sessionCode": "ttadv9160m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -80,10 +80,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". Do not open it from the menu"
+                  "v": ". Don't open it from the menu"
                 }
               ],
-              "text": "Tick the prompt and choose References ➔ GenAI Prompts by Session. Do not open it from the menu"
+              "text": "Tick the prompt and choose References ➔ GenAI Prompts by Session. Don't open it from the menu"
             },
             {
               "tokens": [

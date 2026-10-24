@@ -24,29 +24,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A first answer, checked against the screen."
+        "v": "You have a first answer, checked against the screen."
       }
     ],
-    "text": "A first answer, checked against the screen."
+    "text": "You have a first answer, checked against the screen."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for."
+        "v": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
       }
     ],
-    "text": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for."
+    "text": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
   },
   "blocks": [
     {
@@ -309,14 +309,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The command is not in "
+                "v": "The command isn't in "
               },
               {
                 "t": "chip",
                 "v": "Actions"
               }
             ],
-            "text": "The command is not in Actions"
+            "text": "The command isn't in Actions"
           },
           {
             "tokens": [
@@ -387,16 +387,16 @@
               },
               {
                 "t": "text",
-                "v": " and greyed"
+                "v": " but greyed out"
               }
             ],
-            "text": "The command is in Actions and greyed"
+            "text": "The command is in Actions but greyed out"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The link waits for a ticked record. Tick one, or set "
+                "v": "The link may be waiting for a ticked record. Tick one, or set "
               },
               {
                 "t": "field",
@@ -420,7 +420,7 @@
                 "href": "link-the-prompt-to-a-session.md"
               }
             ],
-            "text": "The link waits for a ticked record. Tick one, or set When Enabled to Always, as in step 3 of Link the prompt to a session"
+            "text": "The link may be waiting for a ticked record. Tick one, or set When Enabled to Always, as in step 3 of Link the prompt to a session"
           }
         ]
       },
@@ -447,10 +447,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The dataset's main table is not the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
+                "v": "The dataset's main table isn't the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
               }
             ],
-            "text": "The dataset's main table is not the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
+            "text": "The dataset's main table isn't the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table"
           }
         ]
       }

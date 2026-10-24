@@ -24,11 +24,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",
   "session": "Datasets",
   "sessionCode": "ttrpi5100m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
@@ -867,10 +867,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "It is not clear which index is the screen's key"
+                "v": "You're not sure which index is the screen's key"
               }
             ],
-            "text": "It is not clear which index is the screen's key"
+            "text": "You're not sure which index is the screen's key"
           },
           {
             "tokens": [
@@ -889,14 +889,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A table cannot be found under "
+                "v": "You can't find a table under "
               },
               {
                 "t": "chip",
                 "v": "Referred by"
               }
             ],
-            "text": "A table cannot be found under Referred by"
+            "text": "You can't find a table under Referred by"
           },
           {
             "tokens": [
@@ -953,10 +953,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A field's code is not known"
+                "v": "You don't know a field's code"
               }
             ],
-            "text": "A field's code is not known"
+            "text": "You don't know a field's code"
           },
           {
             "tokens": [

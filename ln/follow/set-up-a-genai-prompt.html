@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Set up a GenAI prompt · LN Guide · Updated 22 Oct 2026 · Walked in LN 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Set up a GenAI prompt · LN Guide · Updated 23 Oct 2026 · Walked in LN 23 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="b5202493b86893929820206d816ef99f37d02492">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="eaef8f1b1ec49d457581030dc0254d4463c6db5a">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -111,7 +111,7 @@
 <h1 class="rux--type-productive-heading-05">Set up a GenAI prompt</h1>
 <p class="rux--type-body-long-01">Put a one-click AI command on any LN screen, check its answer, improve it, and take it away.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Tools, Warehousing</dd></div><div><dt>Length</dt><dd>7 tasks, 62 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Tools, Warehousing</dd></div><div><dt>Length</dt><dd>7 tasks, 63 steps</dd></div><div><dt>Updated</dt><dd>23 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/plan-the-prompt.html?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
@@ -119,26 +119,26 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">What you do</span></th><th scope="col"><span class="rux--table-header-label">Result</span></th><th scope="col" style="width:4.5rem"><span class="rux--table-header-label">Steps</span></th></tr></thead>
 <tbody>
-<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Plan the prompt</a></td><td>The session code, the table, the values and the sentence the user sees.</td><td>6</td></tr>
+<tr><td><b>1</b></td><td><a class="rux--link" href="#task-1">Plan the prompt</a></td><td>You have the session code, the table, the values and the sentence the user sees.</td><td>6</td></tr>
 <tr><td><b>2</b></td><td><a class="rux--link" href="#task-2">Model the dataset</a></td><td>The fields the answer needs are ready to send.</td><td>15</td></tr>
 <tr><td><b>3</b></td><td><a class="rux--link" href="#task-3">Write the prompt</a></td><td>A prompt exists with a label, a dataset and both texts.</td><td>12</td></tr>
 <tr><td><b>4</b></td><td><a class="rux--link" href="#task-4">Link the prompt to a session</a></td><td>The command is in the Actions menu of the screen.</td><td>4</td></tr>
-<tr><td><b>5</b></td><td><a class="rux--link" href="#task-5">Run it and check the answer</a></td><td>A first answer, checked against the screen.</td><td>6</td></tr>
-<tr><td><b>6</b></td><td><a class="rux--link" href="#task-6">Improve it</a></td><td>An answer in the form asked for, right for each kind of record.</td><td>15</td></tr>
+<tr><td><b>5</b></td><td><a class="rux--link" href="#task-5">Run it and check the answer</a></td><td>You have a first answer, checked against the screen.</td><td>6</td></tr>
+<tr><td><b>6</b></td><td><a class="rux--link" href="#task-6">Improve it</a></td><td>The answer comes in the form you asked for, and is right for each kind of record.</td><td>16</td></tr>
 <tr><td><b>7</b></td><td><a class="rux--link" href="#task-7">Remove it</a></td><td>The command, the prompt and the dataset are gone.</td><td>4</td></tr>
 </tbody>
 </table></div>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
-<ul class="ln-proc__list"><li><strong>An idea worth a prompt.</strong> Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? A no to any of them means a prompt does not help.</li><li><strong>One record of each kind the prompt tells apart</strong>, to test the answer with.</li><li><strong>GenAI switched on for your company's LN.</strong> Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears.</li></ul>
+<ul class="ln-proc__list"><li><strong>An idea worth a prompt.</strong> Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help.</li><li><strong>One record of each kind the prompt tells apart</strong>, to test the answer with.</li><li><strong>GenAI switched on for your company's LN.</strong> Until someone with the Admin role switches on GenAI Embedded Experience in the CloudSuite Self-Service Portal, no AI command appears.</li></ul>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="procedure">Procedure</h2>
 <section class="ln-proc__task" id="task-1">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/plan-the-prompt.html">Plan the prompt</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The session code, the table, the values and the sentence the user sees.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So the build starts with what the answer must say, and then finds the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>You have the session code, the table, the values and the sentence the user sees.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> A prompt is tied to one exact session code, and its dataset to that session's table. From that table a dataset reaches the tables it points to and the tables that point at it, and nothing beyond. So start with what the answer must say, then find the screen whose record owns that data. The example's stock rows belong to an item's warehousing record, which is what Company - Item Inventory lists. LN has no language model of its own: it keeps a list retrieved from the Infor GenAI application, and a prompt that names no model uses the one that service marks as default.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -147,7 +147,7 @@
 <tr id="step-1-1"><td><b>1.1</b></td><td>List the values the answer must state. Example: an item's stock in each warehouse, and each planned receipt and issue</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">values</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-2"><td><b>1.2</b></td><td>Open a screen that lists the record those values belong to. Example: <span class="ln-t-named">Company - Item Inventory</span></td><td>One row for each record. Example: an item on each row</td></tr>
 <tr id="step-1-3"><td><b>1.3</b></td><td>Read the code in the status bar at the foot of the screen. On a tab of a workbench, read it in the tab's own <span class="ln-t-route"><span>Personalization</span><span class="sep">➔</span><span class="dest">Personalize Form…</span></span> instead</td><td><span class="ln-proc__see">Example: <a class="rux--link" href="../screens/whwmd4100m100.html"><span class="ln-t-exact">whwmd4100m100</span></a></span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">session code</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-1-4"><td><b>1.4</b></td><td>Note the table the screen's records are in, or your best guess. A wrong guess is named by the first run. Example: <span class="ln-t-exact">whwmd400</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">table</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1-4"><td><b>1.4</b></td><td>Note the table the screen's records are in, or your best guess. If you guess wrong, the first run names the right table. Example: <span class="ln-t-exact">whwmd400</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">table</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-5"><td><b>1.5</b></td><td>Write the one sentence the user will see. Example: <span class="ln-t-exact">Check where this item's stock is and what is planned in and out.</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">instruction text</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-1-6"><td><b>1.6</b></td><td>Open <span class="ln-t-named">GenAI LLMs</span>, <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI LLMs</span></span> and find the row with <span class="ln-t-named">Is default</span> ticked. That model answers a prompt that names none</td><td><span class="ln-proc__see">One model is the default</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">model</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
@@ -157,8 +157,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Plan the prompt: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The screen's table is not known</td><td>Build the dataset on your best guess. A wrong table stops the first run with an error that names the right one</td></tr>
-<tr><td>The screen you wanted cannot reach the data</td><td>Put the command on a screen whose record owns the data, as How far a dataset reaches sets out</td></tr>
+<tr><td>You don't know the screen's table</td><td>Build the dataset on your best guess. A wrong table stops the first run with an error that names the right one</td></tr>
+<tr><td>The screen you wanted can't reach the data</td><td>Put the command on a screen whose record owns the data, as How far a dataset reaches sets out</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -193,10 +193,10 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Model the dataset: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>It is not clear which index is the screen's key</td><td>Open Find on the screen. Its first way to search is the key</td></tr>
-<tr><td>A table cannot be found under <span class="ln-t-named">Referred by</span></td><td>Set the list above the tree to <span class="ln-t-exact">By Name</span>, as in <a class="rux--link" href="#step-2-7">step 2.7</a>, and go down to the table's code</td></tr>
+<tr><td>You're not sure which index is the screen's key</td><td>Open Find on the screen. Its first way to search is the key</td></tr>
+<tr><td>You can't find a table under <span class="ln-t-named">Referred by</span></td><td>Set the list above the tree to <span class="ln-t-exact">By Name</span>, as in <a class="rux--link" href="#step-2-7">step 2.7</a>, and go down to the table's code</td></tr>
 <tr><td>The list under <span class="ln-t-named">Referred by</span> is too long to work down</td><td>The screen's table is too far from the data. Use a screen whose own table is one step from it</td></tr>
-<tr><td>A field's code is not known</td><td>Type part of its name in the box above <span class="ln-t-named">Description</span></td></tr>
+<tr><td>You don't know a field's code</td><td>Type part of its name in the box above <span class="ln-t-named">Description</span></td></tr>
 <tr><td>The Dataset Modeler shows no <span class="ln-t-named">Tables</span> or <span class="ln-t-named">Fields</span></td><td>The bar between the panels was left at the top, and the Modeler remembers it. Drag the thin bar under the toolbar down</td></tr>
 <tr><td>The Dataset Modeler has no toolbar either</td><td>The bar is above the window. Make the window taller until the toolbar shows, then drag the bar down</td></tr>
 <tr><td>The <span class="ln-t-named">Tables</span> tree goes blank after a search</td><td>The search is still running. Clear the box above the tree and press Enter</td></tr>
@@ -232,7 +232,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Write the prompt: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>No text present when a text is opened</td><td>Nothing. The text has not been written yet; choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="#step-3-10">step 3.10</a></td></tr>
+<tr><td>No text present when a text is opened</td><td>That's normal: the text hasn't been written yet. Choose <span class="ln-t-press">Create</span>, as in <a class="rux--link" href="#step-3-10">step 3.10</a></td></tr>
 <tr><td>The new row holds another prompt's values</td><td>A new row is a copy of the row the cursor was on. Replace them, as in <a class="rux--link" href="#step-3-5">step 3.5</a> and <a class="rux--link" href="#step-3-6">step 3.6</a></td></tr>
 <tr><td>The name beside the label is not the one ticked</td><td>Two labels share that code. Pick a label whose code has one name, as in <a class="rux--link" href="#step-3-5">step 3.5</a></td></tr>
 </tbody>
@@ -247,7 +247,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-4-1"><td><b>4.1</b></td><td>Tick the prompt and choose <span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span>. Do not open it from the menu</td><td>The prompt as the header, with no rows</td></tr>
+<tr id="step-4-1"><td><b>4.1</b></td><td>Tick the prompt and choose <span class="ln-t-route"><span>References</span><span class="sep">➔</span><span class="dest">GenAI Prompts by Session</span></span>. Don't open it from the menu</td><td>The prompt as the header, with no rows</td></tr>
 <tr id="step-4-2"><td><b>4.2</b></td><td>Click <span class="ln-t-press">New</span> and type your session code across the three <span class="ln-t-named">Session</span> boxes. Example: <span class="ln-t-exact">wh</span>, <span class="ln-t-exact">wmd</span> and <span class="ln-t-exact">4100m100</span></td><td>The screen's name appears, and <span class="ln-t-named">Active</span> is ticked. Example: Company - Item Inventory</td></tr>
 <tr id="step-4-3"><td><b>4.3</b></td><td>Set <span class="ln-t-named">When Enabled</span>. <span class="ln-t-exact">Always</span> acts on the row in view or the ticked rows; <span class="ln-t-exact">Records Selected</span> waits for a tick. Example: <span class="ln-t-exact">Always</span></td><td>Four values: <span class="ln-t-exact">Always</span>, <span class="ln-t-exact">One Record Selected</span>, <span class="ln-t-exact">Records Selected</span> and <span class="ln-t-exact">Never</span></td></tr>
 <tr id="step-4-4"><td><b>4.4</b></td><td>Click <span class="ln-t-press">Save</span></td><td>The row stays</td></tr>
@@ -265,8 +265,8 @@
 </section>
 <section class="ln-proc__task" id="task-5">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">5</span><a class="rux--link" href="../do/run-it-and-check-the-answer.html">Run it and check the answer</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>A first answer, checked against the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so the first run is checked against the screen and then read for what nobody asked for.</p>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>You have a first answer, checked against the screen.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -285,16 +285,16 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Run it and check the answer: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The command is not in <span class="ln-t-named">Actions</span></td><td>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="#step-4-2">step 4.2</a>, character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in <a class="rux--link" href="#step-1-3">step 1.3</a></td></tr>
+<tr><td>The command isn't in <span class="ln-t-named">Actions</span></td><td>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="#step-4-2">step 4.2</a>, character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in <a class="rux--link" href="#step-1-3">step 1.3</a></td></tr>
 <tr><td>The command is still missing and the code is right</td><td>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open it again</td></tr>
-<tr><td>The command is in <span class="ln-t-named">Actions</span> and greyed</td><td>The link waits for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="#step-4-3">step 4.3</a></td></tr>
-<tr><td>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</td><td>The dataset's main table is not the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table</td></tr>
+<tr><td>The command is in <span class="ln-t-named">Actions</span> but greyed out</td><td>The link may be waiting for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="#step-4-3">step 4.3</a></td></tr>
+<tr><td>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</td><td>The dataset's main table isn't the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table</td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__task" id="task-6">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">6</span><a class="rux--link" href="../do/improve-it.html">Improve it</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>An answer in the form asked for, right for each kind of record.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The answer comes in the form you asked for, and is right for each kind of record.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -308,14 +308,15 @@
 <tr id="step-6-5"><td><b>6.5</b></td><td>Add a line for one kind of row, with its values in order. Example: <span class="ln-t-exact">Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order.</span></td><td></td></tr>
 <tr id="step-6-6"><td><b>6.6</b></td><td>Do the same for each other kind of row. Example: <span class="ln-t-exact">Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity.</span></td><td></td></tr>
 <tr id="step-6-7"><td><b>6.7</b></td><td>Add the exact words for when there is nothing to report. Example: <span class="ln-t-exact">If there are no planned inventory transactions, write &quot;Nothing planned in or out.&quot;</span></td><td></td></tr>
-<tr id="step-6-8"><td><b>6.8</b></td><td>Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming any warehouse with blocked stock, or saying there is none.</span></td><td></td></tr>
+<tr id="step-6-8"><td><b>6.8</b></td><td>Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming every warehouse whose blocked figure is above zero, with that figure, or saying that none is blocked.</span></td><td></td></tr>
 <tr id="step-6-9"><td><b>6.9</b></td><td>Add a line for a missing value. Example: <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></td><td></td></tr>
 <tr id="step-6-10"><td><b>6.10</b></td><td>Add a line for how a date is written, then save and close. Example: <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span></td><td>A new last-modified stamp</td></tr>
 <tr id="step-6-11"><td><b>6.11</b></td><td>Choose your command again on the same record, without closing the screen</td><td>The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue</td></tr>
 <tr id="step-6-12"><td><b>6.12</b></td><td>Compare it with your expected values again</td><td>The facts should match</td></tr>
 <tr id="step-6-13"><td><b>6.13</b></td><td>Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing</td><td>Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned</td></tr>
-<tr id="step-6-14"><td><b>6.14</b></td><td>Optional: tick a field the answer still lacks in the Modeler, and save</td><td></td></tr>
-<tr id="step-6-15"><td><b>6.15</b></td><td>Optional: close the screen's tab and open the record again</td><td>The new field is in the answer</td></tr>
+<tr id="step-6-14"><td><b>6.14</b></td><td>Optional: tick a field the answer still lacks in the Modeler, and save. Example: <span class="ln-t-exact">bpid</span> on Planned Inventory Transactions by Item</td><td></td></tr>
+<tr id="step-6-15"><td><b>6.15</b></td><td>Optional: add the field to the line of the prompt text that lists its rows' values, then save and close. Example: <span class="ln-t-exact">, business partner</span> at the end of the planned inventory transactions line</td><td>A new last-modified stamp</td></tr>
+<tr id="step-6-16"><td><b>6.16</b></td><td>Optional: close the screen's tab and open the record again</td><td>The new field is in the answer</td></tr>
 </tbody>
 </table></div>
 
@@ -323,11 +324,12 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Improve it: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The answer holds figures LN does not</td><td>The line against calculating is missing, <a class="rux--link" href="#step-6-3">step 6.3</a></td></tr>
-<tr><td>The answer is a report or a letter again</td><td>The form line is missing, <a class="rux--link" href="#step-6-2">step 6.2</a></td></tr>
-<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-6-15">step 6.15</a></td></tr>
+<tr><td>The answer holds figures LN does not</td><td>The line against calculating may be missing. See <a class="rux--link" href="#step-6-3">step 6.3</a></td></tr>
+<tr><td>The answer is a report or a letter again</td><td>The form line may be missing. See <a class="rux--link" href="#step-6-2">step 6.2</a></td></tr>
+<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-6-16">step 6.16</a></td></tr>
 <tr><td>A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></td><td>Add a line that names each code, as in A template for the two texts</td></tr>
-<tr><td>The closing sentence names something that does not qualify</td><td>Check it against the screen like any other line. The model can get a comparison wrong</td></tr>
+<tr><td>A field you ticked is not in the answer</td><td>The prompt text may list each line's values without it. Add it to that line, as in <a class="rux--link" href="#step-6-15">step 6.15</a></td></tr>
+<tr><td>The closing sentence names something that does not qualify, or leaves one out</td><td>Check it against the screen like any other line. The model can get a comparison wrong, and the next run can differ</td></tr>
 <tr><td>The response contradicts the screen</td><td>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in <a class="rux--link" href="#step-2-13">step 2.13</a>, then open the screen again</td></tr>
 </tbody>
 </table></div>
@@ -335,7 +337,7 @@
 <section class="ln-proc__task" id="task-7">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">7</span><a class="rux--link" href="../do/remove-it.html">Remove it</a></h3>
 <dl class="ln-proc__meta"><div><dt>Result</dt><dd>The command, the prompt and the dataset are gone.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN will not delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN won't delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">

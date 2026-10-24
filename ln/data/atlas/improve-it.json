@@ -24,19 +24,19 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "An answer in the form asked for, right for each kind of record."
+        "v": "The answer comes in the form you asked for, and is right for each kind of record."
       }
     ],
-    "text": "An answer in the form asked for, right for each kind of record."
+    "text": "The answer comes in the form you asked for, and is right for each kind of record."
   },
   "before": [],
   "why": {
@@ -358,10 +358,10 @@
                 },
                 {
                   "t": "literal",
-                  "v": "End with one sentence naming any warehouse with blocked stock, or saying there is none."
+                  "v": "End with one sentence naming every warehouse whose blocked figure is above zero, with that figure, or saying that none is blocked."
                 }
               ],
-              "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming any warehouse with blocked stock, or saying there is none."
+              "text": "Add a line for the one thing the reader must not miss. Example: End with one sentence naming every warehouse whose blocked figure is above zero, with that figure, or saying that none is blocked."
             },
             {
               "tokens": [
@@ -570,10 +570,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Optional: tick a field the answer still lacks in the Modeler, and save"
+                  "v": "Optional: tick a field the answer still lacks in the Modeler, and save. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": "bpid"
+                },
+                {
+                  "t": "text",
+                  "v": " on Planned Inventory Transactions by Item"
                 }
               ],
-              "text": "Optional: tick a field the answer still lacks in the Modeler, and save"
+              "text": "Optional: tick a field the answer still lacks in the Modeler, and save. Example: bpid on Planned Inventory Transactions by Item"
             },
             {
               "tokens": [
@@ -604,6 +612,48 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Optional: add the field to the line of the prompt text that lists its rows' values, then save and close. Example: "
+                },
+                {
+                  "t": "literal",
+                  "v": ", business partner"
+                },
+                {
+                  "t": "text",
+                  "v": " at the end of the planned inventory transactions line"
+                }
+              ],
+              "text": "Optional: add the field to the line of the prompt text that lists its rows' values, then save and close. Example: , business partner at the end of the planned inventory transactions line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new last-modified stamp"
+                }
+              ],
+              "text": "A new last-modified stamp"
+            }
+          ],
+          "id": "15",
+          "optional": true,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "16"
+                }
+              ],
+              "text": "16"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Optional: close the screen's tab and open the record again"
                 }
               ],
@@ -619,7 +669,7 @@
               "text": "The new field is in the answer"
             }
           ],
-          "id": "15",
+          "id": "16",
           "optional": true,
           "produces": false
         }
@@ -653,10 +703,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The line against calculating is missing, step 3"
+                "v": "The line against calculating may be missing. See step 3"
               }
             ],
-            "text": "The line against calculating is missing, step 3"
+            "text": "The line against calculating may be missing. See step 3"
           }
         ]
       },
@@ -675,10 +725,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The form line is missing, step 2"
+                "v": "The form line may be missing. See step 2"
               }
             ],
-            "text": "The form line is missing, step 2"
+            "text": "The form line may be missing. See step 2"
           }
         ]
       },
@@ -701,10 +751,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 15"
+                "v": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 16"
               }
             ],
-            "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 15"
+            "text": "The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in step 16"
           }
         ]
       },
@@ -740,19 +790,41 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The closing sentence names something that does not qualify"
+                "v": "A field you ticked is not in the answer"
               }
             ],
-            "text": "The closing sentence names something that does not qualify"
+            "text": "A field you ticked is not in the answer"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Check it against the screen like any other line. The model can get a comparison wrong"
+                "v": "The prompt text may list each line's values without it. Add it to that line, as in step 15"
               }
             ],
-            "text": "Check it against the screen like any other line. The model can get a comparison wrong"
+            "text": "The prompt text may list each line's values without it. Add it to that line, as in step 15"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The closing sentence names something that does not qualify, or leaves one out"
+              }
+            ],
+            "text": "The closing sentence names something that does not qualify, or leaves one out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check it against the screen like any other line. The model can get a comparison wrong, and the next run can differ"
+              }
+            ],
+            "text": "Check it against the screen like any other line. The model can get a comparison wrong, and the next run can differ"
           }
         ]
       },

@@ -8,7 +8,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "status": "draft",
   "summary": "find out how much of one item is in stock, where, and how much is already committed.",
   "order": 4,
@@ -26,13 +26,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The item's on hand, blocked, on order and allocated are known."
+            "v": "You know the item's on hand, blocked, on order and allocated."
           }
         ],
-        "text": "The item's on hand, blocked, on order and allocated are known."
+        "text": "You know the item's on hand, blocked, on order and allocated."
       },
       "steps": 3,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     },
     {
       "id": "read-the-stock-by-warehouse",
@@ -42,13 +42,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The warehouse to work from, and its figures, are written down."
+            "v": "You've chosen the warehouse to work from and written down its figures."
           }
         ],
-        "text": "The warehouse to work from, and its figures, are written down."
+        "text": "You've chosen the warehouse to work from and written down its figures."
       },
       "steps": 5,
-      "walked": "2026-10-22"
+      "walked": "2026-10-23"
     }
   ],
   "values": {
@@ -92,10 +92,10 @@
         },
         {
           "t": "text",
-          "v": " Both screens only report. The figures written down at the end are the baseline a later walkthrough compares against."
+          "v": " Both screens only report. The figures you write down are the starting point a later guide compares against."
         }
       ],
-      "text": "> Note > This changes nothing in LN. Both screens only report. The figures written down at the end are the baseline a later walkthrough compares against."
+      "text": "> Note > This changes nothing in LN. Both screens only report. The figures you write down are the starting point a later guide compares against."
     },
     {
       "kind": "glance",
@@ -140,10 +140,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item's on hand, blocked, on order and allocated are known"
+                  "v": "You know the item's on hand, blocked, on order and allocated"
                 }
               ],
-              "text": "The item's on hand, blocked, on order and allocated are known"
+              "text": "You know the item's on hand, blocked, on order and allocated"
             }
           ]
         },
@@ -181,10 +181,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The warehouse to work from, and its figures, are written down"
+                  "v": "You've chosen the warehouse to work from and written down its figures"
                 }
               ],
-              "text": "The warehouse to work from, and its figures, are written down"
+              "text": "You've chosen the warehouse to work from and written down its figures"
             }
           ]
         }

@@ -20,29 +20,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The item's on hand, blocked, on order and allocated are known."
+        "v": "You know the item's on hand, blocked, on order and allocated."
       }
     ],
-    "text": "The item's on hand, blocked, on order and allocated are known."
+    "text": "You know the item's on hand, blocked, on order and allocated."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen."
+        "v": "Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already filled in."
       }
     ],
-    "text": "Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already chosen."
+    "text": "Inventory 360 is the starting point for any question about an item's stock. It shows four totals across every warehouse, and its header links open every other view of the same stock with the item already filled in."
   },
   "blocks": [
     {
@@ -233,7 +233,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The header's links light up, each with a green or grey dot. "
+                  "v": "The header links become available, each with a green or grey dot. "
                 },
                 {
                   "t": "chip",
@@ -241,10 +241,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " stays greyed"
+                  "v": " stays greyed out"
                 }
               ],
-              "text": "The header's links light up, each with a green or grey dot. Item Order Plan stays greyed"
+              "text": "The header links become available, each with a green or grey dot. Item Order Plan stays greyed out"
             }
           ],
           "id": "3",
@@ -272,19 +272,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The item returns no row"
+                "v": "No row appears for the item"
               }
             ],
-            "text": "The item returns no row"
+            "text": "No row appears for the item"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The item has no inventory records yet, so there is nothing to report"
+                "v": "The item may have no inventory records yet, so there's nothing to report"
               }
             ],
-            "text": "The item has no inventory records yet, so there is nothing to report"
+            "text": "The item may have no inventory records yet, so there's nothing to report"
           }
         ]
       },
@@ -294,10 +294,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The header's links stay pale"
+                "v": "The header links stay unavailable"
               }
             ],
-            "text": "The header's links stay pale"
+            "text": "The header links stay unavailable"
           },
           {
             "tokens": [
@@ -329,7 +329,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Expected. Open it through Planning instead: "
+                "v": "That's expected. Open it through Planning instead: "
               },
               {
                 "t": "session",
@@ -345,7 +345,7 @@
                 "route": "Planning ➔ Order Planning ➔ Item Order Plan"
               }
             ],
-            "text": "Expected. Open it through Planning instead: Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
+            "text": "That's expected. Open it through Planning instead: Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan"
           }
         ]
       }

@@ -20,26 +20,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-22",
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The warehouse to work from, and its figures, are written down."
+        "v": "You've chosen the warehouse to work from and written down its figures."
       }
     ],
-    "text": "The warehouse to work from, and its figures, are written down."
+    "text": "You've chosen the warehouse to work from and written down its figures."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse the item is known in, with or without stock, so the warehouse a later task uses is chosen from its figures. "
+        "v": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse the item is known in, with or without stock, so you can choose the warehouse by its figures. "
       },
       {
         "t": "field",
@@ -47,10 +47,10 @@
       },
       {
         "t": "text",
-        "v": " on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+        "v": " on each row is on hand plus on order minus allocated. It goes negative when more is committed than the warehouse has or expects."
       }
     ],
-    "text": "Stock is normally spread over several warehouses, and a warehouse's name does not say what it holds. This view gives one row per warehouse the item is known in, with or without stock, so the warehouse a later task uses is chosen from its figures. Economic Stock on each row is on hand plus on order minus allocated, and goes negative when more is committed than the warehouse has or expects."
+    "text": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse the item is known in, with or without stock, so you can choose the warehouse by its figures. Economic Stock on each row is on hand plus on order minus allocated. It goes negative when more is committed than the warehouse has or expects."
   },
   "blocks": [
     {
@@ -102,10 +102,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens, item carried through"
+                  "v": " opens with the item already filled in"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, item carried through"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with the item already filled in"
             }
           ],
           "id": "1",
@@ -367,10 +367,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "On hand looks sufficient but an order will not fill"
+                "v": "On hand looks high enough, but an order won't fill"
               }
             ],
-            "text": "On hand looks sufficient but an order will not fill"
+            "text": "On hand looks high enough, but an order won't fill"
           },
           {
             "tokens": [
@@ -384,10 +384,10 @@
               },
               {
                 "t": "text",
-                "v": ". Much of the on-hand may be committed elsewhere"
+                "v": ": other orders may already have claimed most of the on-hand"
               }
             ],
-            "text": "Check Inventory Allocated. Much of the on-hand may be committed elsewhere"
+            "text": "Check Inventory Allocated: other orders may already have claimed most of the on-hand"
           }
         ]
       },
@@ -410,10 +410,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The warehouse is over-allocated: more is committed than it holds and expects"
+                "v": "More is committed than the warehouse holds and expects"
               }
             ],
-            "text": "The warehouse is over-allocated: more is committed than it holds and expects"
+            "text": "More is committed than the warehouse holds and expects"
           }
         ]
       }

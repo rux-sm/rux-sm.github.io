@@ -944,6 +944,26 @@
 [data-theme="rux-dark"] .rux--link:hover {
   text-decoration-color: currentColor;
 }
+/* RUX-DARK SETS FIGURES AND SMALL LABELS IN PLEX MONO, so a number lines up
+   with the one beside it and a label reads as a label: a metric tile's figure
+   and the label over it, a field's label and a tag's word. A label is in
+   capitals, spaced 0.04em, and a tile's label takes the secondary grey. A
+   group's legend set as a heading stays a heading, in the sans. */
+[data-theme="rux-dark"] :is(.rux--tile > .rux--type-heading-04, .rux--tile > p:has(+ .rux--type-heading-04), .rux--label:not([class*="rux--type-heading"]), .rux--toggle__label-text, .rux--tag__label) {
+  font-family: 'IBM Plex Mono', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', monospace;
+}
+[data-theme="rux-dark"] .rux--tile > .rux--type-heading-04 {
+  letter-spacing: 0;
+}
+[data-theme="rux-dark"] :is(.rux--tile > p:has(+ .rux--type-heading-04), .rux--label:not([class*="rux--type-heading"]), .rux--toggle__label-text) {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+[data-theme="rux-dark"] .rux--tile > p:has(+ .rux--type-heading-04) {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--rux-text-secondary);
+}
 /* GEIST'S BREADCRUMB IS GREY, NOT A ROW OF LINKS, measured on its Breadcrumbs
    page: each step and the mark between them #a1a1a1, which is text-secondary
    here. A step lifts to the text colour under the pointer, and the current

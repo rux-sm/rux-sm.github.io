@@ -24,11 +24,11 @@ A documentation site, one file per page, with a walked mode inside it:
 - **Search**, `search.html`, reads `search.json`, the one file that indexes
   every task, problem, process, screen and idea.
 - **Print**, on a task and a process, prints the Document from the browser's
-  dialog, where Save as PDF is a destination: Letter, ruled with no fills, a
-  footer of its title, its Updated date and Page N of M, and none of the facts
-  row under the title, What comes next, Reference, Known gaps or Screens
-  used. A guide nobody has walked says so on screen and not on paper. In an iPhone home-screen app, which cannot print, Print opens the page in Safari, which prints it. `print.css` holds it, and the PDF takes the page's title as its
-  name.
+  dialog, where Save as PDF is a destination. `docs/document-standard.md` is
+  what paper carries, in order. A guide nobody has walked says so on screen
+  and not on paper. In an iPhone home-screen app, which cannot print, Print
+  opens the page in Safari, which prints it. `print.css` holds it, and the
+  PDF takes the page's title as its name.
 
 Where the reader stopped is kept in their browser and nowhere else: from a
 task's step 2, forgotten at its last step, and cleared by the X on Carry on.

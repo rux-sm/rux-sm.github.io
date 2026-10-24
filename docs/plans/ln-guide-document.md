@@ -90,13 +90,8 @@ And a team, after log-in, sees what the public page cannot carry.
   private bucket, and drawn by the page after log-in. Text stays the step,
   because a screenshot goes stale and the reader reads words first.
 
-- **A task's screenshot shows the one step that is hardest to find in words**,
-  most often a menu path, and sits under that step with a caption naming the
-  step and the screen, because a full screen above every task made Ship from
-  stock 15 pages and showed each task's end before its start. It is taken in
-  the task's recorded walk, so its date is the walked date the page prints,
-  cropped to the part the step acts on, with the field or menu item boxed in
-  red and the pointer, user name and company number gone.
+- **The team's screenshots and real test records follow
+  [the standard](../../ln/docs/document-standard.md).**
 
 ## Questions
 
@@ -117,4 +112,5 @@ And a team, after log-in, sees what the public page cannot carry.
       a new contract, and remove the build's pattern matching for them.
 - [ ] Once the questions are answered, add the LN reader access, its row
       security and a screenshot bucket as a migration, and have atlas's sync
-      send redacted screenshots that Guided and the Document draw after log-in.
+      send redacted screenshots and each walk's real records that Guided and
+      the Document draw after log-in.

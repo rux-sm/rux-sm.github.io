@@ -23,12 +23,12 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
   "session": "GenAI Prompts by Session",
   "sessionCode": "ttadv9160m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -295,10 +295,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The row stays"
+                  "v": "The saved link stays listed"
                 }
               ],
-              "text": "The row stays"
+              "text": "The saved link stays listed"
             }
           ],
           "id": "4",
@@ -424,10 +424,18 @@
               },
               {
                 "t": "text",
-                "v": " ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+                "v": " ticked. "
+              },
+              {
+                "t": "chip",
+                "v": "Unverified:"
+              },
+              {
+                "t": "text",
+                "v": " the import was seen once, in a recording, and that this option is what moves the links to the new screen is a guess from its name. Read the rows afterwards"
               }
             ],
-            "text": "Repeat this task with the other screen's code, or copy the links: open GenAI Prompts by Session from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with Import Only in This View ticked. Read the rows afterwards, since how they move screen is read from that option's name and not from the file"
+            "text": "Repeat this task with the other screen's code, or copy the links: open GenAI Prompts by Session from the menu on the screen that has them, tick their rows and export them to Excel, change the header to the other screen's code, and import the file with Import Only in This View ticked. Unverified: the import was seen once, in a recording, and that this option is what moves the links to the new screen is a guess from its name. Read the rows afterwards"
           }
         ]
       }

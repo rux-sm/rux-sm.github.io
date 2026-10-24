@@ -114,6 +114,14 @@
     }
   }
 
+  // ---- a link to a section of a guide's Reference opens that section ---------
+  const openRef = () => {
+    const item = /^#ref-\d+$/.test(location.hash) && document.querySelector(location.hash);
+    if (item && window.Rux?.accordion) { window.Rux.accordion.open(item); item.scrollIntoView(); }
+  };
+  window.addEventListener('hashchange', openRef);
+  openRef();
+
   // ---- a process: on a phone a task in its summary opens one step at a time,
   // where on a wide screen it scrolls to the task's steps further down.
   if (phone()) for (const a of document.querySelectorAll('.ln-proc__summary a[href^="#task-"]')) {

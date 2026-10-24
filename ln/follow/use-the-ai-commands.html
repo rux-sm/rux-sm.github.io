@@ -103,7 +103,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="cc2242f06a0b624b54c7e5c4e406fc8efd77b55f">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="bb3a516bcb7f32d65ee838645d1a4bb6a9d833a6">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -129,7 +129,7 @@
 <section class="ln-proc__task" id="task-1">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">1</span><a class="rux--link" href="../do/run-the-stock-check.html">Run the stock check</a></h3>
 <dl class="ln-proc__meta"><div><dt>Result</dt><dd>An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</dd></div><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, Is it worth a prompt.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, <a class="rux--link" href="../follow/set-up-a-genai-prompt.html#ref-1">Is it worth a prompt</a>.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -184,7 +184,7 @@
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Run Status Overview: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Symptom"><span class="ln-t-named">Status Overview…</span> is not in <span class="ln-t-named">Actions</span></td><td data-k="What to do">The command is on Sales Order Lines opened by itself, <a class="rux--link" href="#step-2-1">step 2.1</a>, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's <span class="ln-t-named">Personalize Form</span> names in the status bar</td></tr>
-<tr><td data-k="Symptom">A step in the answer is a session code</td><td data-k="What to do">It is a step outside the four the command names, as What the commands cannot do says</td></tr>
+<tr><td data-k="Symptom">A step in the answer is a session code</td><td data-k="What to do">It is a step outside the four the command names, as <a class="rux--link" href="use-the-ai-commands.html#ref-3">What the commands cannot do</a> says</td></tr>
 <tr><td data-k="Symptom">The answer and the status screen disagree</td><td data-k="What to do">Act on the status screen. It is LN's own record of the line, and the answer is the model's reading of it</td></tr>
 </tbody>
 </table></div>

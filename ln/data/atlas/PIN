@@ -1,9 +1,9 @@
-commit   cc2242f06a0b624b54c7e5c4e406fc8efd77b55f
-date     2026-10-24T04:06:00Z
-subject  feat(walkthroughs): Approve Set up a GenAI prompt
+commit   bb3a516bcb7f32d65ee838645d1a4bb6a9d833a6
+date     2026-10-24T16:00:11Z
+subject  fix(tasks): Mark copying links unverified
 contract 22 
 tier     export
-sha256   8382e7496ff4aa6e8e59f6bd4a97b4da041b774d6d9deac6a996d4e17a9b39ac
+sha256   100358d5c2864a86ca023409690aef177c3edb9bba425046947a63efe44928c6
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

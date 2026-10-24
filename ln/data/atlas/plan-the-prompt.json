@@ -20,12 +20,12 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -323,10 +323,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " ticked. That model answers a prompt that names none"
+                  "v": " ticked. That model answers any prompt with no model selected"
                 }
               ],
-              "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs and find the row with Is default ticked. That model answers a prompt that names none"
+              "text": "Open GenAI LLMs, Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI LLMs and find the row with Is default ticked. That model answers any prompt with no model selected"
             },
             {
               "tokens": [

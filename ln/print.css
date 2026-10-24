@@ -25,7 +25,8 @@ html { font-size: 10pt; }
    Related links. So do What comes next, Reference, Known gaps and Screens
    used, which serve the screen: a printed copy is the tasks and stands on its
    own, says only what is known, and each task already names its screen and
-   how to open it. */
+   how to open it. A step that names a section of the Reference says where it
+   is, and its link opens it on the guide's page. */
 .rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
 .ln-confirm, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related,
 .ln-proc__next, .ln-proc__ref, .ln-proc__gaps, .ln-proc__screens { display: none; }
@@ -83,6 +84,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 
 /* A link to another guide says so, because paper cannot follow it. */
 .ln-pages a.rux--link[href^="../follow/"]::after { content: " (a separate guide)"; }
+.ln-pages a.rux--link[href*="#ref-"]::after { content: " (online, in the guide's Reference)"; }
 
 /* A link is text in ink, and a tag an outlined word. The border names
    Carbon's own selector, which takes every tag's border away and outranks a

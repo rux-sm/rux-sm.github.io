@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "remove-it",
-  "title": "Remove it",
+  "title": "Optional: remove the test prompt",
   "process": {
     "id": "set-up-a-genai-prompt",
     "title": "Set up a GenAI prompt",
@@ -20,20 +20,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The command, the prompt and the dataset are gone."
+        "v": "The test command, prompt and dataset are gone."
       }
     ],
-    "text": "The command, the prompt and the dataset are gone."
+    "text": "The test command, prompt and dataset are gone."
   },
   "before": [],
   "why": {
@@ -46,6 +46,33 @@
     "text": "LN won't delete a dataset while a prompt uses it, and deleting a prompt takes its links with it. So the prompt goes first and the dataset second, and the link needs no step of its own."
   },
   "blocks": [
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Note"
+        },
+        {
+          "t": "text",
+          "v": " > Do this task only to take away a prompt you built to try these steps. To keep your prompt, stop after "
+        },
+        {
+          "t": "link",
+          "v": "Improve it",
+          "href": "improve-it.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "> Note > Do this task only to take away a prompt you built to try these steps. To keep your prompt, stop after Improve it."
+    },
     {
       "kind": "steps",
       "columns": [
@@ -77,14 +104,23 @@
                 },
                 {
                   "t": "text",
-                  "v": ", tick the prompt and click "
+                  "v": ", tick the prompt you built in "
+                },
+                {
+                  "t": "link",
+                  "v": "Write the prompt",
+                  "href": "write-the-prompt.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
                 },
                 {
                   "t": "button",
                   "label": "Delete"
                 }
               ],
-              "text": "On GenAI Prompts, tick the prompt and click Delete"
+              "text": "On GenAI Prompts, tick the prompt you built in Write the prompt and click Delete"
             },
             {
               "tokens": [
@@ -161,7 +197,16 @@
                 },
                 {
                   "t": "text",
-                  "v": ", tick the dataset, click "
+                  "v": ", tick the dataset you built in "
+                },
+                {
+                  "t": "link",
+                  "v": "Model the dataset",
+                  "href": "model-the-dataset.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
                 },
                 {
                   "t": "button",
@@ -176,7 +221,7 @@
                   "label": "Yes"
                 }
               ],
-              "text": "On Datasets, tick the dataset, click Delete and choose Yes"
+              "text": "On Datasets, tick the dataset you built in Model the dataset, click Delete and choose Yes"
             },
             {
               "tokens": [

@@ -16,37 +16,37 @@
   },
   "next": {
     "id": "remove-it",
-    "title": "Remove it"
+    "title": "Optional: remove the test prompt"
   },
   "module": "Tools · Warehousing",
   "modules": [
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The answer comes in the form you asked for, and is right for each kind of record."
+        "v": "You've checked the answer's format and facts on each test record."
       }
     ],
-    "text": "The answer comes in the form you asked for, and is right for each kind of record."
+    "text": "You've checked the answer's format and facts on each test record."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
+        "v": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So you can test a text change without reopening the screen, but test a dataset change only after you open the screen again. Each line added here answers something the first answer got wrong or left out."
       }
     ],
-    "text": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out."
+    "text": "A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So you can test a text change without reopening the screen, but test a dataset change only after you open the screen again. Each line added here answers something the first answer got wrong or left out."
   },
   "blocks": [
     {
@@ -126,14 +126,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a line above the marker that fixes the answer's form. Example: "
+                  "v": "Add a line above the marker that sets the answer's format. Example: "
                 },
                 {
                   "t": "literal",
                   "v": "Output plain text only. No heading, no table, no list marks, no bold and no emoji."
                 }
               ],
-              "text": "Add a line above the marker that fixes the answer's form. Example: Output plain text only. No heading, no table, no list marks, no bold and no emoji."
+              "text": "Add a line above the marker that sets the answer's format. Example: Output plain text only. No heading, no table, no list marks, no bold and no emoji."
             },
             {
               "tokens": [
@@ -654,10 +654,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Optional: close the screen's tab and open the record again"
+                  "v": "Optional: close the screen's tab, open the record again and choose your command"
                 }
               ],
-              "text": "Optional: close the screen's tab and open the record again"
+              "text": "Optional: close the screen's tab, open the record again and choose your command"
             },
             {
               "tokens": [
@@ -694,10 +694,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The answer holds figures LN does not"
+                "v": "The answer includes figures that aren't in LN"
               }
             ],
-            "text": "The answer holds figures LN does not"
+            "text": "The answer includes figures that aren't in LN"
           },
           {
             "tokens": [
@@ -725,10 +725,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The form line may be missing. See step 2"
+                "v": "The formatting instruction may be missing. See step 2"
               }
             ],
-            "text": "The form line may be missing. See step 2"
+            "text": "The formatting instruction may be missing. See step 2"
           }
         ]
       },
@@ -891,10 +891,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop after this task"
+                "v": "Stop after this task, and skip the optional last one"
               }
             ],
-            "text": "Stop after this task"
+            "text": "Stop after this task, and skip the optional last one"
           }
         ]
       }

@@ -9,9 +9,9 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-23",
-  "status": "approved",
-  "summary": "put a one-click AI command on any LN screen, check its answer, improve it, and take it away.",
+  "updated": "2026-10-24",
+  "status": "draft",
+  "summary": "put a one-click AI command on an LN screen, check its answer, improve it, and take it away.",
   "order": 1,
   "sources": [
     "ttrpi5560m000",
@@ -33,10 +33,10 @@
         },
         {
           "t": "text",
-          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
+          "v": " Four questions help you decide. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? The more of them you can answer yes, the more a prompt helps."
         }
       ],
-      "text": "An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
+      "text": "An idea worth a prompt. Four questions help you decide. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? The more of them you can answer yes, the more a prompt helps."
     },
     {
       "tokens": [
@@ -80,7 +80,7 @@
         "text": "You have the session code, the table, the values and the sentence the user sees."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "model-the-dataset",
@@ -96,7 +96,7 @@
         "text": "The fields the answer needs are ready to send."
       },
       "steps": 15,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "write-the-prompt",
@@ -112,7 +112,7 @@
         "text": "A prompt exists with a label, a dataset and both texts."
       },
       "steps": 12,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "link-the-prompt-to-a-session",
@@ -128,7 +128,7 @@
         "text": "The command is in the Actions menu of the screen."
       },
       "steps": 4,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "run-it-and-check-the-answer",
@@ -144,7 +144,7 @@
         "text": "You have a first answer, checked against the screen."
       },
       "steps": 6,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "improve-it",
@@ -154,29 +154,29 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The answer comes in the form you asked for, and is right for each kind of record."
+            "v": "You've checked the answer's format and facts on each test record."
           }
         ],
-        "text": "The answer comes in the form you asked for, and is right for each kind of record."
+        "text": "You've checked the answer's format and facts on each test record."
       },
       "steps": 16,
-      "walked": "2026-10-23"
+      "walked": null
     },
     {
       "id": "remove-it",
       "n": 6,
-      "title": "Remove it",
+      "title": "Optional: remove the test prompt",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The command, the prompt and the dataset are gone."
+            "v": "The test command, prompt and dataset are gone."
           }
         ],
-        "text": "The command, the prompt and the dataset are gone."
+        "text": "The test command, prompt and dataset are gone."
       },
       "steps": 4,
-      "walked": "2026-10-23"
+      "walked": null
     }
   ],
   "values": {
@@ -194,10 +194,10 @@
         },
         {
           "t": "text",
-          "v": " put a one-click AI command on any LN screen, check its answer, improve it, and take it away."
+          "v": " put a one-click AI command on an LN screen, check its answer, improve it, and take it away."
         }
       ],
-      "text": "Objective: put a one-click AI command on any LN screen, check its answer, improve it, and take it away."
+      "text": "Objective: put a one-click AI command on an LN screen, check its answer, improve it, and take it away."
     },
     {
       "kind": "prose",
@@ -230,11 +230,11 @@
         },
         {
           "t": "strong",
-          "v": "This guide builds settings every user of the screen shares, and ends by removing them."
+          "v": "This guide builds settings every user of the screen shares."
         },
         {
           "t": "text",
-          "v": " It's done when an answer agrees with the screen, for one record of each kind the prompt tells apart. From "
+          "v": " It's done when you've checked the answer against the screen, for one record of each kind the prompt tells apart. From "
         },
         {
           "t": "link",
@@ -243,19 +243,10 @@
         },
         {
           "t": "text",
-          "v": " until "
-        },
-        {
-          "t": "link",
-          "v": "Remove it",
-          "href": "remove-it.md"
-        },
-        {
-          "t": "text",
-          "v": " every user of the screen sees the command."
+          "v": " on, every user of the screen sees the command. The last task, which is optional, removes a prompt built only to try the steps."
         }
       ],
-      "text": "> Warning > This guide builds settings every user of the screen shares, and ends by removing them. It's done when an answer agrees with the screen, for one record of each kind the prompt tells apart. From Link the prompt to a session until Remove it every user of the screen sees the command."
+      "text": "> Warning > This guide builds settings every user of the screen shares. It's done when you've checked the answer against the screen, for one record of each kind the prompt tells apart. From Link the prompt to a session on, every user of the screen sees the command. The last task, which is optional, removes a prompt built only to try the steps."
     },
     {
       "kind": "prose",
@@ -278,10 +269,10 @@
         },
         {
           "t": "text",
-          "v": " Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
+          "v": " Four questions help you decide. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? The more of them you can answer yes, the more a prompt helps."
         }
       ],
-      "text": "> Prerequisite > An idea worth a prompt. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? If the answer to any of them is no, a prompt won't help."
+      "text": "> Prerequisite > An idea worth a prompt. Four questions help you decide. Does the answer take more than one screen or record? Does somebody read it before acting on it? Is the work wording or a judgement on text, not a calculation? Can the screen's record reach the data? The more of them you can answer yes, the more a prompt helps."
     },
     {
       "kind": "prose",
@@ -583,10 +574,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The answer comes in the form you asked for, and is right for each kind of record"
+                  "v": "You've checked the answer's format and facts on each test record"
                 }
               ],
-              "text": "The answer comes in the form you asked for, and is right for each kind of record"
+              "text": "You've checked the answer's format and facts on each test record"
             }
           ]
         },
@@ -605,11 +596,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Remove it",
+                  "v": "Optional: remove the test prompt",
                   "href": "remove-it.md"
                 }
               ],
-              "text": "Remove it"
+              "text": "Optional: remove the test prompt"
             },
             {
               "tokens": [
@@ -624,10 +615,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The command, the prompt and the dataset are gone"
+                  "v": "The test command, prompt and dataset are gone"
                 }
               ],
-              "text": "The command, the prompt and the dataset are gone"
+              "text": "The test command, prompt and dataset are gone"
             }
           ]
         }
@@ -1913,10 +1904,10 @@
         },
         {
           "t": "text",
-          "v": " The form line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out."
+          "v": " The format line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out."
         }
       ],
-      "text": "Each line after the third was added because of an answer. The form line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out.",
+      "text": "Each line after the third was added because of an answer. The format line followed a report nobody asked for. The line against calculating followed a wrong sum. The lines for each part put back what the model had left out.",
       "under": "The two texts"
     },
     {
@@ -2764,6 +2755,6 @@
       "under": "Variants"
     }
   ],
-  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
   "openIssues": 1
 }

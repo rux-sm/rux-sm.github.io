@@ -23,12 +23,12 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -43,10 +43,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
+        "v": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The dataset gives the model its LN facts, but the answer can still add things that aren't in them, such as totals of its own. A wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
       }
     ],
-    "text": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
+    "text": "When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The dataset gives the model its LN facts, but the answer can still add things that aren't in them, such as totals of its own. A wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for."
   },
   "blocks": [
     {

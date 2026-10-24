@@ -49,6 +49,11 @@
   .ln-proc__table .rux--data-table :is(th, td):is(:first-child, :last-child) { padding: 1rem; }
 }
 
+/* A step's text to type is the step's own row continued, so the rule between
+   them goes and the block starts under the step's action. */
+.ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__typed) td { border-block-end-color: transparent; }
+.ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td { padding-block-start: 0; }
+
 /* On a phone a Document's table is a list. Each row is a block and each cell
    stands under the one before with its column's name over it; a numbered
    row keeps its number beside it. Three columns across a phone left a word
@@ -67,6 +72,8 @@
   /* nth-child(n) matches every cell; it lifts the rule over a theme's own first-cell padding. */
   .ln-proc__table .rux--data-table tbody tr td:nth-child(n) { display: block; padding: 0; border: 0; }
   .ln-proc__table .rux--data-table tbody tr td:first-child { font-weight: 600; color: var(--rux-text-primary); }
+  /* A cell with nothing in it, such as a step with nothing to see, takes no line and no label. */
+  .ln-proc__table .rux--data-table tbody tr td:nth-child(n):empty { display: none; }
   .ln-proc__table .rux--data-table tbody tr td + td::before { content: attr(data-k); display: block; margin-block-end: .125rem; font-size: .875rem; color: var(--rux-text-secondary); }
   .ln-proc__steps .rux--data-table tbody tr,
   .ln-proc__summary .rux--data-table tbody tr { grid-template-columns: 2rem minmax(0, 1fr); column-gap: .75rem; }
@@ -77,6 +84,9 @@
   .ln-proc__steps .rux--data-table tbody tr td:nth-child(2)::before,
   .ln-proc__summary .rux--data-table tbody tr td:nth-child(2)::before,
   .ln-proc__steps .rux--data-table tbody tr td:has(> .ln-proc__writes:first-child)::before { content: none; }
+  .ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__typed) { border-block-end: 0; padding-block-end: 0; }
+  .ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td::before { content: none; }
+  .ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td:nth-child(2) { font-size: inherit; }
   /* A task in the list is a place to tap, so its link is a finger tall. */
   .ln-pages .ln-proc__summary .rux--link { display: inline-block; min-block-size: 2.75rem; padding-block: .625rem; }
   .ln-proc__summary .rux--data-table tbody tr { padding-block: .375rem; }

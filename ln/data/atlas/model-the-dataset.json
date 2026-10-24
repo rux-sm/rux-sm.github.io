@@ -23,12 +23,12 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-23",
+  "status": "draft",
+  "updated": "2026-10-24",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",
   "session": "Datasets",
   "sessionCode": "ttrpi5100m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -43,10 +43,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
+        "v": "A dataset is the LN data sent with the prompt, and the model gets no other data from LN. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
       }
     ],
-    "text": "A dataset is the LN data that travels with the question, and it is the whole of what the model is told. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
+    "text": "A dataset is the LN data sent with the prompt, and the model gets no other data from LN. It starts from one main table and one index of it. The record the user is on reaches the dataset through that index, which is why both have to be the screen's own. Around the main table the Modeler offers two branches: Refers to, for a value behind a code, and Referred by, for rows that belong to the record. Every field ticked is sent, so take only what the prompt text will name."
   },
   "blocks": [
     {

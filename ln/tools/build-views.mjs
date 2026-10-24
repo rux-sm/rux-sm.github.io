@@ -508,6 +508,44 @@ ${waitingJson()}` : ''}`, 'full'));
 // numbered section of the walkthrough that holds a reference table, with its
 // paragraphs. A table is drawn as a list, and one whose rows are text to type
 // as that text with a Copy button.
+// A guide's text names a section of its Reference by its title, so each such
+// name is a link that opens that section: on the guide's own page the section
+// below, on one of its tasks the guide's page. Another guide's section is
+// linked where its name follows the link to that guide. Names already inside
+// a link, a button or a heading are left as they are.
+function refLinks(html, s, own) {
+  // On its own page the link names the page too, so a printed copy's link opens it on the web.
+  const href = (p, i) => `${own && p === s ? `${p.id}.html` : hrefProcess(p.id)}#ref-${i + 1}`;
+  const link = (p, i, title) => `<a class="rux--link" href="${href(p, i)}">${esc(title)}</a>`;
+  const mine = looked(s).map((g, i) => [g.title, i]).sort((a, b) => b[0].length - a[0].length);
+  let out = '', depth = 0, inMain = false;
+  for (const part of html.split(/(<[^>]+>)/)) {
+    if (part.startsWith('<')) {
+      if (/^<main\b/.test(part)) inMain = true;
+      if (/^<\/main>/.test(part)) inMain = false;
+      if (/^<(a|button|h[1-6]|script|style)\b/i.test(part)) depth++;
+      else if (/^<\/(a|button|h[1-6]|script|style)>/i.test(part)) depth--;
+      out += part;
+      continue;
+    }
+    if (!inMain || depth || !mine.length) { out += part; continue; }
+    const re = new RegExp(`\\b(${mine.map(([t]) => esc(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'g');
+    // A title of three words or fewer, such as The commands, is also how a
+    // sentence starts, so it is a name only away from a sentence's start.
+    out += part.replace(re, (m, x, at) => {
+      const opens = !at || /[.!?:]\s*$/.test(part.slice(0, at));
+      return m.split(' ').length < 4 && opens ? m : link(s, mine.find(([t]) => esc(t) === m)[1], m.replace(/&#39;/g, "'").replace(/&amp;/g, '&'));
+    });
+  }
+  for (const p of processes) {
+    if (p === s) continue;
+    looked(p).forEach((g, i) => {
+      const re = new RegExp(`(<a class="rux--link" href="[^"]*follow/${p.id}\\.html">[^<]*</a>, )${esc(g.title)}\\b`, 'g');
+      out = out.replace(re, (m, a) => a + link(p, i, g.title));
+    });
+  }
+  return out;
+}
 const looked = (s) => {
   const groups = [];
   for (const x of s.sections) {
@@ -733,11 +771,29 @@ function seeing(cell, here, where) {
 }
 // A title in the header row is printed again on every page the table runs
 // onto, because Chrome repeats a table's head; a heading above it is not.
+// Text to type that is a sentence or more, or several lines, is set apart
+// from the step as its own block, a line to a line, so the step keeps its
+// columns and the text can be read and copied whole. A short value, a code
+// or a name, stays in the sentence. The step names it as "Example:" followed
+// by the text alone.
+const TYPED_LONG = 40;
+function toType(list) {
+  const at = list.findIndex((t) => t.t === 'text' && /Example:\s*$/.test(t.v));
+  if (at < 0) return null;
+  const rest = list.slice(at + 1);
+  if (!rest.length || !rest.every((t) => t.t === 'literal' || (t.t === 'text' && !t.v.trim()))) return null;
+  const lines = rest.filter((t) => t.t === 'literal').map((t) => t.v);
+  if (lines.length < 2 && !lines.some((l) => l.length >= TYPED_LONG)) return null;
+  const lead = [...list.slice(0, at), { ...list[at], v: list[at].v.replace(/\s*Example:\s*$/, '') }];
+  return { lead, lines };
+}
+const typedBlock = (lines) => `<div class="ln-typed"><span class="ln-typed__k">Example</span><div class="ln-type__text">${lines.map((l) => `<p>${esc(l)}</p>`).join('')}</div></div>`;
 const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-table-container ln-proc__table${cls ? ` ${cls}` : ''}">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead>${title ? `<tr class="ln-proc__table-title"><th scope="colgroup" colspan="${cols.length}">${title}</th></tr>` : ''}<tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
 <tbody>${rows.map((r) => `
-<tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c, i) => `<td data-k="${esc(cols[i][0])}">${c}</td>`).join('')}</tr>`).join('')}
+<tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c, i) => `<td data-k="${esc(cols[i][0])}">${c}</td>`).join('')}</tr>${r.after ? `
+<tr class="ln-proc__typed"><td></td><td colspan="${cols.length - 1}">${r.after}</td></tr>` : ''}`).join('')}
 </tbody>
 </table></div>`;
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
@@ -765,8 +821,9 @@ function stepTable(t, k) {
     const where = `Step ${n}`;
     const shown = (r.example ?? []).map((i) => ex[i]).filter(Boolean);
     const value = shown.length ? `<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span>${shown.map((e) => `<span class="ln-proc__value-row">${docText(e.cells[0].tokens)} ${docText(e.cells[1].tokens)}</span>`).join('')}</span>` : '';
-    const cells = [`<b>${n}</b>`, docText(r.cells[1].tokens, t, where) + value, seeing(r.cells[2], t, where)];
-    return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells };
+    const ty = toType(r.cells[1].tokens);
+    const cells = [`<b>${n}</b>`, docText(ty?.lead ?? r.cells[1].tokens, t, where) + value, seeing(r.cells[2], t, where)];
+    return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells, after: ty && typedBlock(ty.lines) };
   });
   return docTable([['Step', '4rem'], ['Action'], ['You should see', '40%']], rows, 'ln-proc__steps');
 }
@@ -826,7 +883,7 @@ function task(s, t) {
     ideas.length && { title: 'Ideas', body: `<p>${ideas.map((c) => `<a class="rux--link" href="${hrefIdea(c.id)}">${esc(c.name)}</a>`).join(' · ')}</p>` },
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
-  const lines = rows.map((r) => headline(r.cells[1].tokens, t.route));
+  const lines = rows.map((r) => { const ty = toType(r.cells[1].tokens); return { ...headline(ty?.lead ?? r.cells[1].tokens, t.route), typed: ty && typedBlock(ty.lines) }; });
   // The Document: this task alone, its steps numbered as its process numbers
   // them, so step 2.3 here is step 2.3 on the process's Document too.
   const k = s.id ? t.process.n + 1 : 0;
@@ -903,7 +960,7 @@ ${related[2]}
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.route ? `
@@ -1085,8 +1142,8 @@ writeFileSync(join(ROOT, 'search.json'), JSON.stringify(searchIndex()) + '\n');
 drawn('../', () => {
   write('do/index.html', taskIndex());
   for (const s of processes) {
-    write(`follow/${s.id}.html`, drawing(s, null, () => processPage(s)));
-    for (const t of tasksOf(s)) write(`do/${t.id}.html`, drawing(s, t, () => task(s, t)));
+    write(`follow/${s.id}.html`, refLinks(drawing(s, null, () => processPage(s)), s, true));
+    for (const t of tasksOf(s)) write(`do/${t.id}.html`, refLinks(drawing(s, t, () => task(s, t)), s, false));
   }
   for (const t of loose) write(`do/${t.id}.html`, drawing(looseOf.get(t.id), t, () => task(looseOf.get(t.id), t)));
   write('screens/index.html', screenIndex());

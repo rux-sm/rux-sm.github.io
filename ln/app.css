@@ -147,11 +147,20 @@
 .ln-results { display: grid; gap: 1.5rem; }
 .ln-fold { display: grid; gap: .75rem; padding-inline-end: 1rem; }
 .ln-fold p { margin: 0; line-height: 1.5; }
+/* A section a link opens stops below the page's header, not under it. */
+.ln-proc__ref .rux--accordion__item { scroll-margin-block-start: 4rem; }
 .ln-ref__title { font-size: 1.125rem; line-height: 1.3; font-weight: 600; margin: 1rem 0 -.5rem; }
 .ln-type { display: grid; gap: .5rem; }
 .ln-type__name { display: flex; align-items: center; justify-content: space-between; margin: 0; }
 .ln-type__text { display: grid; gap: .625rem; padding: 1rem; background: var(--rux-layer-01); border: 1px solid var(--rux-border-subtle-01); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .8125rem; line-height: 1.5; overflow-wrap: anywhere; }
 .ln-type__text p { margin: 0; }
+/* A step's text to type, under the step, with the label every example carries. */
+.ln-typed { display: grid; gap: .25rem; }
+.ln-typed__k { font-size: .875rem; color: var(--rux-text-secondary); }
+.ln-step__main .ln-typed { margin-block-start: .25rem; }
+/* The text to type matches the step's own size, and its lines run the block's width. */
+.ln-pages .ln-typed .ln-type__text { font-size: .875rem; }
+.ln-pages .ln-typed .ln-type__text p { font-size: inherit; max-inline-size: none; }
 .ln-side { margin: .5rem 0 0; padding-inline-start: 1.5rem; display: grid; gap: .375rem; line-height: 1.45; list-style: decimal; }
 .ln-side__note { list-style: none; margin-inline-start: -1.5rem; color: var(--rux-text-secondary); }
 

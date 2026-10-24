@@ -1,9 +1,9 @@
-commit   86b4bb837d838ccab7e54215a233a7ecdcda37ca
-date     2026-10-24T17:28:55Z
-subject  feat(walkthroughs): Approve Use the AI commands
+commit   3de97b98b1d7ee8e20e4f414073c8c29f8617edd
+date     2026-10-24T17:34:53Z
+subject  fix(tools): Keep on-screen text in step cells
 contract 22 
 tier     export
-sha256   32dc11f88493e37aed64b78dd770e0bc077a3a19c151fe8a3055018211021591
+sha256   e6cf11638c867757003db9f57cc40eefc5426b8a517c13bb1a7c2fba72a4df47
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

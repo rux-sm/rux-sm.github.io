@@ -367,7 +367,7 @@
           {
             "tokens": [
               {
-                "t": "text",
+                "t": "literal",
                 "v": "Enter a value for the Module field."
               }
             ],

@@ -125,7 +125,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Delete the 1 selected record(s) ?"
                 }
               ],
@@ -163,7 +163,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "1 records deleted"
                 }
               ],
@@ -226,7 +226,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "1 records deleted"
                 }
               ],
@@ -295,7 +295,7 @@
           {
             "tokens": [
               {
-                "t": "text",
+                "t": "literal",
                 "v": "Unable to delete; record being used in other table"
               }
             ],

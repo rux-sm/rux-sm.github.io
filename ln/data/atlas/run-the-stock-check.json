@@ -196,7 +196,7 @@
                   "v": "A window titled Item Inventory, with "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Check where this item's stock is and what is planned in and out."
                 },
                 {
@@ -238,7 +238,7 @@
                   "v": "The description, the item code in brackets and the unit; then an "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Attention:"
                 },
                 {
@@ -246,7 +246,7 @@
                   "v": " line for each warehouse with more allocated than on hand or with stock blocked, or "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "No warnings."
                 }
               ],
@@ -284,7 +284,7 @@
                   "v": "Its code and name; "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "ON HAND"
                 },
                 {
@@ -292,7 +292,7 @@
                   "v": " and "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "BLOCKED"
                 },
                 {
@@ -300,7 +300,7 @@
                   "v": " on one line; "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "ALLOCATED"
                 },
                 {
@@ -308,7 +308,7 @@
                   "v": " with the orders going out indented under it; "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "ON ORDER"
                 },
                 {
@@ -346,7 +346,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Empty:"
                 },
                 {
@@ -379,7 +379,7 @@
                   "v": "Add up the warehouses' "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "ON HAND"
                 },
                 {
@@ -387,7 +387,7 @@
                   "v": ", and their "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "ON ORDER"
                 },
                 {

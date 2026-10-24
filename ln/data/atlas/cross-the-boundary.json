@@ -533,11 +533,11 @@
           {
             "tokens": [
               {
-                "t": "text",
-                "v": "\"Buy-from BP cannot be determined for item …\""
+                "t": "literal",
+                "v": "Buy-from BP cannot be determined for item …"
               }
             ],
-            "text": "\"Buy-from BP cannot be determined for item …\""
+            "text": "Buy-from BP cannot be determined for item …"
           },
           {
             "tokens": [

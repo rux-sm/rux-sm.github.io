@@ -470,7 +470,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "No text present; Create, Duplicate, Select or Exit?"
                 }
               ],
@@ -663,7 +663,7 @@
           {
             "tokens": [
               {
-                "t": "text",
+                "t": "literal",
                 "v": "No text present"
               },
               {

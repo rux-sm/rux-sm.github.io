@@ -230,7 +230,7 @@
                   "v": "A window titled Status Overview, with "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Check why this order line has not shipped and what to do next."
                 },
                 {
@@ -302,7 +302,7 @@
             {
               "tokens": [
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Line blocked: yes."
                 },
                 {
@@ -310,7 +310,7 @@
                   "v": " or "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Line blocked: no."
                 },
                 {
@@ -386,7 +386,7 @@
                   "v": "One line for each delivery: date, quantity, shipment, shipment line and status. With none, "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "Nothing delivered yet."
                 }
               ],
@@ -424,7 +424,7 @@
                   "v": "The next step and its status, "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "All steps are done."
                 },
                 {
@@ -432,7 +432,7 @@
                   "v": ", or "
                 },
                 {
-                  "t": "text",
+                  "t": "literal",
                   "v": "This line is canceled, so no step is waiting."
                 }
               ],

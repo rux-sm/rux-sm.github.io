@@ -37,5 +37,5 @@ showing them what to do: calm, clear and specific. The voice is atlas's
 - [ ] Demand to shipment via planning: reword and walk
 - [ ] Run order planning for one item: reword and walk
 - [ ] Create basic test items and defaults: reword and walk
-- [ ] Set up a GenAI prompt and Use the AI commands: reword and walk
+- [ ] Use the AI commands: reword and walk
 - [ ] Side tasks with steps: reword and walk with the guide nearest them

@@ -50,6 +50,8 @@
   .ln-proc__table .rux--data-table tbody,
   .ln-proc__table .rux--data-table .ln-proc__table-title,
   .ln-proc__table .rux--data-table .ln-proc__table-title th { display: block; }
+  /* A title that wraps to two lines keeps its height; Carbon fixes a header row at one. */
+  .ln-proc__table .rux--data-table .ln-proc__table-title { block-size: auto; }
   .ln-proc__table .rux--data-table thead tr:not(.ln-proc__table-title) { display: none; }
   .ln-proc__table .rux--data-table tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: .625rem; block-size: auto; padding: 1rem .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
   /* nth-child(n) matches every cell; it lifts the rule over a theme's own first-cell padding. */

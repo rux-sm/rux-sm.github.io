@@ -29,7 +29,6 @@ showing them what to do: calm, clear and specific. The voice is atlas's
 
 ## Tasks
 
-- [ ] Check an item's inventory: reword and walk
 - [ ] Ideas pages and screen purpose lines, in atlas's concepts and sessions
 - [ ] Transfer item between warehouses: reword and walk
 - [ ] Purchase order to warehouse receipt: reword and walk

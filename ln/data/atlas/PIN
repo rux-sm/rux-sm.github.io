@@ -1,9 +1,9 @@
-commit   b3b1970b1f50ed57ae47e476f47d283d171e6396
-date     2026-10-24T16:27:02Z
-subject  feat(tasks): Stamp Set up a GenAI prompt walked
+commit   32abd96ee1fff43df440a2c6c27087d6fcb1e342
+date     2026-10-24T17:09:49Z
+subject  feat(walkthroughs): Approve GenAI and stock guides
 contract 22 
 tier     export
-sha256   ed07c75df8d780abd527376676c0ca9627c27dbab004f909c327f85260036ea5
+sha256   13ec69b17b6f3c74e00fb7a1bcba9b227c1e6115a7d9b24430e1b51a6419d0d5
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

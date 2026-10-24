@@ -20,7 +20,7 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",

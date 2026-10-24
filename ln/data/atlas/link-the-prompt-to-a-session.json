@@ -23,7 +23,7 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-24",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
   "session": "GenAI Prompts by Session",

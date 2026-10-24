@@ -19,7 +19,7 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-23",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",

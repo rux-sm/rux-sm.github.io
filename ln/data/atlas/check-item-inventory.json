@@ -9,7 +9,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-23",
-  "status": "draft",
+  "status": "approved",
   "summary": "find out how much of one item is in stock, where, and how much is already committed.",
   "order": 4,
   "sources": [

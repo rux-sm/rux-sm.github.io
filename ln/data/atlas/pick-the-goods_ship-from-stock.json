@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": null,
+  "walked": "2026-10-23",
   "achieves": {
     "tokens": [
       {

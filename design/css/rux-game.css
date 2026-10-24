@@ -26,11 +26,11 @@
 :root { --game-column: 26rem; }
 .game-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
 .game-main > .rux--css-grid { max-inline-size: var(--game-column); margin-inline: auto; padding-inline: 0; }
-/* Its column, the one element inside Carbon's grid column. Carbon keeps 3rem
-   clear each side of it; on a phone it takes 2rem of that back, and 1rem
-   from the top, so a tile or a board has the width. */
+/* Its column, the one element inside Carbon's grid column. On a phone it
+   stands 16px from the screen's edge, as every page's text does, and takes
+   1rem back from the top, so a tile or a board has the height. */
 @media (max-width: 28rem) {
-  .game-page { margin: -1rem -2rem 0; }
+  .game-page { margin-block-start: -1rem; }
 }
 
 /* THE HEADER, which a game takes on a wide screen only, on every page, as

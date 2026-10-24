@@ -782,6 +782,17 @@
   :where(body:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden), > .rux--header > .rux--side-nav--ux:not(.rux--side-nav--hidden)):not(:has(.rux--content > .rux--css-grid--full-width))) .rux--side-nav { inset-inline-start: calc((100% - 76.25rem) / 2); }
   :where(body:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden), > .rux--header > .rux--side-nav--ux:not(.rux--side-nav--hidden)):not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header-panel { inset-inline-end: calc((100% - 76.25rem) / 2); }
 }
+/* ON A PHONE A PAGE'S TEXT STARTS 16PX FROM THE SCREEN'S EDGE, where
+   Carbon's small grid places it. Carbon's shell pads its content 2rem and a
+   grid's columns add 1rem more, which left a third of a phone's width empty.
+   Content that is itself a grid gives up the shell's inset, because its
+   columns carry the 16px; any other content keeps 16px of its own. An app
+   with an inset of its own sets it in its own file, which comes after this
+   one. :where() keeps the grid's test at the shell's own specificity. */
+@media (max-width: 41.98rem) {
+  .rux--content { padding-inline: var(--rux-spacing-05); }
+  .rux--content:where(:has(> .rux--css-grid)) { padding-inline: 0; }
+}
 /* GEIST'S PAGE IS RULED, AND SO ARE BOTH DARK THEMES'. The header's hairline
    also parts a side nav standing open beside the content from the content
    (one that opens over the page has its own edges), and on a page with a

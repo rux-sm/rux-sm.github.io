@@ -22,29 +22,29 @@ Fail, the way a consultant's work instruction does.
 - **The checklist is built from what atlas already sends.** A new section,
   Check the result, sits after the Procedure: one row per task, its number,
   its result line and an empty Pass or Fail box, so no guide needs new writing
-  for it.
+  for it. The box is on paper only, where it can be ticked.
 - **Screenshots stay with the team tier** in
   [ln-guide-document.md](ln-guide-document.md), because a public page cannot
   carry captures of a client's LN.
-- **No name goes on a page**, so a sign-off block, if there is one, has
-  empty lines to write on.
+- **Paper ends with an empty sign-off block**: Prepared, Reviewed and
+  Approved, each with a signature and a date line, and no name printed,
+  because no name goes on a page.
+- **The five reworded guides are walked again** once their Example sections
+  are in, so every guide carries its values without waiting for its next
+  change.
 
 ## Questions
 
-- The five guides already approved need a new walk once their Example
-  sections go in. Walk them again now, or add their values when each is next
-  changed?
-- Should Pass or Fail show on screen as well, or only on paper?
-- Should paper end with an empty sign-off block: Prepared, Reviewed and
-  Approved, each with a signature and a date line?
+- None open.
 
 ## Tasks
 
 - [ ] In LN Guide, add Check the result after the Procedure, one row per task
-      with its result and a Pass or Fail box, and check it prints.
+      with its result, a Pass or Fail box on paper, and the sign-off block at
+      the end of paper; check it prints.
 - [ ] In atlas, write the Example section of each task in the six guides
       still to be reworded, before each one's walk in
       [ln-plain-voice.md](ln-plain-voice.md).
-- [ ] In atlas, write the Example sections of the five approved guides, as
-      the first question decides.
-- [ ] Add the sign-off block to paper, if the third question says yes.
+- [ ] In atlas, write the Example sections of the five reworded guides and
+      walk each again: Set up a GenAI prompt, Check an item's inventory, Use
+      the AI commands, Ship from stock and Warehouse transfer.

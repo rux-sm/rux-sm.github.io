@@ -14,13 +14,10 @@ a walked date, and help organised by symptom.
 
 ## Decisions
 
-- **Paper's first page opens with a brand block**: a logo, a company name,
-  the title, the kind of document, its version and an empty Prepared by line
-  to write on. The other pages keep the plain footer.
-- **A box on the page takes a company name and a logo file before printing**,
-  kept only in that browser and never published, because no client's name
-  goes on a public page. Left empty, the Rux Design mark from
-  `design/brand/logo.svg` and the words "Company name" print instead.
+- **Paper's first page opens with a brand block**: the Rux mark, LN Notes,
+  the kind of document, its version and an empty Prepared by line to write
+  on. A client's own name and logo wait until one is needed, because no
+  client's name goes on a public page.
 - **The version is the Updated date** the footer already prints, and there is
   no revision log, because a hand-kept log goes stale and git is the record.
 - **The test values are the table the Document already has.** Its Summary
@@ -30,12 +27,8 @@ a walked date, and help organised by symptom.
 - **A task's Example is written from its walk and goes in before the walk**,
   because any change to what a task shows takes its walked mark away, so the
   walk that follows proves the values and stamps the task once.
-- **The checklist is built from what atlas already sends.** Check the result
-  ends paper beside the sign-off: one row per task, its number, its result
-  line and boxes for Pass and Fail, so no guide needs new writing for it. It
-  is on paper only, because the screen's Summary already shows each result.
-- **Paper ends with an empty sign-off block**: Prepared, Reviewed and
-  Approved, each with a signature and a date line.
+- **Check the result and a sign-off end paper**, one row per task with its
+  result and boxes for Pass and Fail, built from what atlas already sends.
 - **The five reworded guides are walked again** once their Example sections
   are in, so every guide carries its values without waiting for its next
   change.
@@ -51,11 +44,6 @@ a walked date, and help organised by symptom.
 
 ## Tasks
 
-- [ ] In LN Guide, add the brand block to the top of paper's first page, and
-      the box that sets its company name and logo in that browser alone.
-- [ ] In LN Guide, add Check the result after the Procedure, one row per task
-      with its result and a Pass or Fail box on paper, and the sign-off block
-      at the end of paper; check both print.
 - [ ] In atlas, write the Example section of each task in the six guides
       still to be reworded, before each one's walk in
       [ln-plain-voice.md](ln-plain-voice.md).

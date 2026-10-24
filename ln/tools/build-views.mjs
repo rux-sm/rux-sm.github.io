@@ -429,7 +429,6 @@ ${body}
 </div>
 </main>
 <script src="/design/js/overlay.js"></script>
-<script src="/design/js/modal.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>
@@ -657,7 +656,7 @@ ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x)
 </div>
 ${docFacts([statusFact(status), ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
 ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-rux-open="ln-print">Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 ${docH2('summary', 'Summary')}
 ${docTable([['Task', '4rem'], ['What you do'], ['Result'], ['Steps', '4.5rem']], summary, 'ln-proc__summary')}${values ? `
@@ -687,8 +686,7 @@ ${docH2('screens', 'Screens used')}
 ${screensTable(ts)}
 </section>
 ${checkSection(ts.map((t) => [K.get(t.id), t.achieves ? docText(t.achieves.tokens, t) : '']))}
-${signOff()}
-${printDialog()}`;
+${signOff()}`;
     return html;
   });
   return page(`${s.title} — LN Guide`, s.id, column(body, 'full'), updated ? paper(s.title, updated, s.tasks.map((x) => x.walked)) : '');
@@ -803,11 +801,10 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 </table></div>`;
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
 const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
-// Paper opens with a company's name and logo, set in the Print dialog and kept
-// in that browser alone, because no client's name goes on a public page; the
-// Rux mark and "Company name" stand in. Prepared by is a line to write on.
-const brandBlock = (updated) => `<div class="ln-paper-only ln-brand" data-brand>
-<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt="" data-brand-logo><span class="ln-brand__name" data-brand-name>Company name</span><span class="ln-brand__kind">Work instruction</span></div>
+// Paper opens with the Rux mark and LN Notes, the kind of document, its
+// version and a line to write Prepared by on.
+const brandBlock = (updated) => `<div class="ln-paper-only ln-brand">
+<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
 <dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>`;
 // Paper ends with each task's result to tick and a sign-off,
@@ -821,39 +818,6 @@ const signOff = () => `<section class="ln-paper-only">
 ${docH2('sign-off', 'Sign-off')}
 ${docTable([['Role', '20%'], ['Name', '28%'], ['Signature'], ['Date', '16%']], ['Prepared by', 'Reviewed by', 'Approved by'].map((r) => ({ cells: [r, '', '', ''] })), 'ln-proc__signoff')}
 </section>`;
-// Print asks for the company's name and logo first, and remembers them here.
-const printDialog = () => `<div class="rux--layer-one rux--modal" id="ln-print" role="presentation">
-  <div role="dialog" aria-modal="true" aria-labelledby="ln-print-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
-    <div class="rux--modal-header">
-      <h2 class="rux--modal-header__heading" id="ln-print-h">Print</h2>
-      <div class="rux--modal-close-button">
-        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="rux--modal-content">
-      <form class="rux--stack-vertical rux--stack-scale-5" data-brand-form>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="ln-print-name">Company name</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="ln-print-name" class="rux--text-input rux--layout--size-md" type="text" name="company" autocomplete="organization">
-          </div></div>
-        </div>
-        <div class="ln-print__logo">
-          <label class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm"><span data-logo-pick>Add a logo</span><input class="rux--visually-hidden" type="file" name="logo" accept="image/png,image/jpeg,image/svg+xml"></label>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-logo-clear hidden>Remove the logo</button>
-        </div>
-        <p class="rux--type-label-01 ln-quiet">Kept in this browser only. Left empty, the Rux logo and "Company name" print.</p>
-        <p class="rux--type-label-01 ln-print__error" role="alert" data-logo-error hidden></p>
-      </form>
-    </div>
-    <div class="rux--modal-footer">
-      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-      <button type="button" class="rux--btn rux--btn--primary" data-rux-close data-print>Print</button>
-    </div>
-  </div>
-</div>`;
 const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
 // Not walked is said on screen and left off paper, where a printed copy is
 // handed on as the procedure; ln-unwalked is what print.css hides.
@@ -863,7 +827,7 @@ const unwalked = (html) => `<div class="ln-unwalked">${html}</div>`;
 // changed, and, once every task has been walked, when it was last walked in LN.
 const paper = (title, updated, walked = []) => {
   const last = walked.length && walked.every(Boolean) ? ` · Walked in LN ${day([...walked].sort().at(-1))}` : '';
-  return `\n<style>@page { @bottom-left { content: "${`${title} · LN Guide · Updated ${day(updated)}${last}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
+  return `\n<style>@page { @bottom-left { content: "${`${title} · LN Notes · Updated ${day(updated)}${last}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
 };
 const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().at(-1);
 
@@ -969,7 +933,7 @@ function task(s, t) {
 ${docFacts([statusFact(taskStatus(t)), ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
 <p class="ln-strip">${strip}</p>${t.walked ? '' : `
 ${unwalked(notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`))}`}
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-rux-open="ln-print">Print</button></p>${need.length ? `
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>${need.length ? `
 <section>
 ${docH2('before', 'Before you start')}
 <ul class="ln-proc__list">${need.map((x) => `<li>${x}</li>`).join('')}</ul>
@@ -1004,8 +968,7 @@ ${docH2('related', 'Related')}
 ${related[2]}
 </section>
 ${checkSection([[k || '', t.achieves ? docText(t.achieves.tokens, t) : '']])}
-${signOff()}
-${printDialog()}`;
+${signOff()}`;
     return body;
   });
   const guidedUps = guidedProse(firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));

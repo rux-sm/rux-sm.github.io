@@ -110,8 +110,8 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
    printed pages are measured with; the screen sets them at the text's own. */
 .ln-proc__value-k, .ln-proc__writes-k { font-size: .75rem; }
 
-/* The first page opens with the company: its logo, its name and the kind of
-   document over a rule, then the version and a line to write Prepared by on. */
+/* The first page opens with the Rux mark, LN Notes and the kind of document
+   over a rule, then the version and a line to write Prepared by on. */
 .ln-brand { margin-block-end: 1.25rem; }
 .ln-brand__top { display: flex; align-items: center; gap: 4mm; padding-block-end: 3mm; border-block-end: 1.5px solid var(--rux-text-primary); }
 .ln-brand__logo { max-block-size: 12mm; max-inline-size: 45mm; inline-size: auto; block-size: auto; }

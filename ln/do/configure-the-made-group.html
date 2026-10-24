@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Configure the made group · LN Guide · Updated 22 Oct 2026 · Walked in LN 16 Aug 2026"; } }</style>
+<style>@page { @bottom-left { content: "Configure the made group · LN Notes · Updated 22 Oct 2026 · Walked in LN 16 Aug 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -109,8 +109,8 @@
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
-<div class="ln-paper-only ln-brand" data-brand>
-<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt="" data-brand-logo><span class="ln-brand__name" data-brand-name>Company name</span><span class="ln-brand__kind">Work instruction</span></div>
+<div class="ln-paper-only ln-brand">
+<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
 <dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
@@ -119,7 +119,7 @@
 </div>
 <dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>18 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 4 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a></p>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-rux-open="ln-print">Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
 <ul class="ln-proc__list"><li>You need <a class="rux--link" href="../do/configure-the-purchased-group.html#step-1">step 3.1</a> (Configure the purchased group); <a class="rux--link" href="../do/configure-the-purchased-group.html#step-12">step 3.12</a> (Configure the purchased group); <a class="rux--link" href="../do/create-two-item-groups.html#step-6">step 2.6</a> (Create two item groups); <a class="rux--link" href="../do/confirm-the-test-design.html#step-6">step 1.6</a> (Confirm the test design); <a class="rux--link" href="../do/configure-the-purchased-group.html#step-16">step 3.16</a> (Configure the purchased group); <a class="rux--link" href="../do/configure-the-purchased-group.html#step-20">step 3.20</a> (Configure the purchased group).</li></ul>
@@ -207,38 +207,6 @@
 </tbody>
 </table></div>
 </section>
-<div class="rux--layer-one rux--modal" id="ln-print" role="presentation">
-  <div role="dialog" aria-modal="true" aria-labelledby="ln-print-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
-    <div class="rux--modal-header">
-      <h2 class="rux--modal-header__heading" id="ln-print-h">Print</h2>
-      <div class="rux--modal-close-button">
-        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
-          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="rux--modal-content">
-      <form class="rux--stack-vertical rux--stack-scale-5" data-brand-form>
-        <div class="rux--form-item rux--text-input-wrapper">
-          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="ln-print-name">Company name</label></div>
-          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-            <input id="ln-print-name" class="rux--text-input rux--layout--size-md" type="text" name="company" autocomplete="organization">
-          </div></div>
-        </div>
-        <div class="ln-print__logo">
-          <label class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm"><span data-logo-pick>Add a logo</span><input class="rux--visually-hidden" type="file" name="logo" accept="image/png,image/jpeg,image/svg+xml"></label>
-          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-logo-clear hidden>Remove the logo</button>
-        </div>
-        <p class="rux--type-label-01 ln-quiet">Kept in this browser only. Left empty, the Rux logo and "Company name" print.</p>
-        <p class="rux--type-label-01 ln-print__error" role="alert" data-logo-error hidden></p>
-      </form>
-    </div>
-    <div class="rux--modal-footer">
-      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
-      <button type="button" class="rux--btn rux--btn--primary" data-rux-close data-print>Print</button>
-    </div>
-  </div>
-</div>
 </div>
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="guided" hidden>
@@ -346,7 +314,6 @@
 </div>
 </main>
 <script src="/design/js/overlay.js"></script>
-<script src="/design/js/modal.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>

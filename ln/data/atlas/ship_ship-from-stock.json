@@ -264,19 +264,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab and check it against the order"
+                  "v": " tab. Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
                 }
               ],
-              "text": "Open the Packing Slips tab and check it against the order"
+              "text": "Open the Packing Slips tab. Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped"
+                  "v": "The details match the order and the quantity you're shipping"
                 }
               ],
-              "text": "The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped"
+              "text": "The details match the order and the quantity you're shipping"
             }
           ],
           "id": "4",

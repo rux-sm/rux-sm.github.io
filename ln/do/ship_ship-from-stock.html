@@ -104,7 +104,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="ba3f9363553a6d37039bc235feac74124c91e3f4">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d9f90a74da21b2c0b34407efd7882ba5c7dca928">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -127,7 +127,7 @@
 <tr id="step-1"><td><b>6.1</b></td><td>Find the shipment number from <a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html#step-6">step 5.6</a> (Pick the goods), then click <span class="ln-t-press">Drill In</span></td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>. <span class="ln-t-named">Freeze Mandatory</span> ticked; <span class="ln-t-named">Allow Changes to Shipment</span> ticked</td></tr>
 <tr id="step-2"><td><b>6.2</b></td><td>Read the <span class="ln-t-named">Shipped Quantity</span>. To ship less than was picked, change it on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a> (<span class="ln-t-exact">whinh4131m000</span>), not here</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipped quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-3"><td><b>6.3</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span> (Shift+F)</td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>. <span class="ln-t-named">Confirm</span> becomes available. A Bill of Lading and the packing slip print, each to its own tab</td></tr>
-<tr id="step-4"><td><b>6.4</b></td><td>Open the <span class="ln-t-named">Packing Slips</span> tab and check it against the order</td><td>The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped</td></tr>
+<tr id="step-4"><td><b>6.4</b></td><td>Open the <span class="ln-t-named">Packing Slips</span> tab. Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order</td><td>The details match the order and the quantity you're shipping</td></tr>
 <tr id="step-5"><td><b>6.5</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span> (Shift+C)</td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. The stock leaves inventory</td></tr>
 </tbody>
 </table></div>
@@ -204,8 +204,8 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>. <span class="ln-t-named">Confirm</span> becomes available. A Bill of Lading and the packing slip print, each to its own tab</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Packing Slips</span> tab and check it against the order</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The customer it ships to, the packing slip number, which is the shipment number, the order and line, the item and the quantity shipped</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Packing Slips</span> tab</h1><p class="ln-step__note">Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The details match the order and the quantity you're shipping</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Confirm</span> (Shift+C)</h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></p></div>

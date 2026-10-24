@@ -80,7 +80,7 @@
         "text": "You have the session code, the table, the values and the sentence the user sees."
       },
       "steps": 6,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "model-the-dataset",
@@ -96,7 +96,7 @@
         "text": "The fields the answer needs are ready to send."
       },
       "steps": 15,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "write-the-prompt",
@@ -112,7 +112,7 @@
         "text": "A prompt exists with a label, a dataset and both texts."
       },
       "steps": 12,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "link-the-prompt-to-a-session",
@@ -128,7 +128,7 @@
         "text": "The command is in the Actions menu of the screen."
       },
       "steps": 4,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "run-it-and-check-the-answer",
@@ -144,7 +144,7 @@
         "text": "You have a first answer, checked against the screen."
       },
       "steps": 6,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "improve-it",
@@ -160,7 +160,7 @@
         "text": "You've checked the answer's format and facts on each test record."
       },
       "steps": 16,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "remove-it",
@@ -176,7 +176,7 @@
         "text": "The test command, prompt and dataset are gone."
       },
       "steps": 4,
-      "walked": null
+      "walked": "2026-10-24"
     }
   ],
   "values": {
@@ -2755,6 +2755,6 @@
       "under": "Variants"
     }
   ],
-  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 1
 }

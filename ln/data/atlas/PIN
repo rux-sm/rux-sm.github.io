@@ -1,9 +1,9 @@
-commit   bb3a516bcb7f32d65ee838645d1a4bb6a9d833a6
-date     2026-10-24T16:00:11Z
-subject  fix(tasks): Mark copying links unverified
+commit   b3b1970b1f50ed57ae47e476f47d283d171e6396
+date     2026-10-24T16:27:02Z
+subject  feat(tasks): Stamp Set up a GenAI prompt walked
 contract 22 
 tier     export
-sha256   100358d5c2864a86ca023409690aef177c3edb9bba425046947a63efe44928c6
+sha256   ed07c75df8d780abd527376676c0ca9627c27dbab004f909c327f85260036ea5
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

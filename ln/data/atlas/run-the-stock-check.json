@@ -21,26 +21,26 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+        "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
       }
     ],
-    "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+    "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in "
+        "v": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line can't reach its item's stock. It's kept as a demonstration, because LN's own inventory screens already show the same figures. "
       },
       {
         "t": "link",
@@ -49,10 +49,10 @@
       },
       {
         "t": "text",
-        "v": ", Is it worth a prompt."
+        "v": " explains why, under Is it worth a prompt."
       }
     ],
-    "text": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in Set up a GenAI prompt, Is it worth a prompt."
+    "text": "The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line can't reach its item's stock. It's kept as a demonstration, because LN's own inventory screens already show the same figures. Set up a GenAI prompt explains why, under Is it worth a prompt."
   },
   "blocks": [
     {
@@ -401,10 +401,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The sums equal the item's row. Where they do not, act on the row"
+                  "v": "The sums should equal the item's row. If they don't, go by the row"
                 }
               ],
-              "text": "The sums equal the item's row. Where they do not, act on the row"
+              "text": "The sums should equal the item's row. If they don't, go by the row"
             }
           ],
           "id": "7",
@@ -436,23 +436,23 @@
               },
               {
                 "t": "text",
-                "v": " is not in "
+                "v": " isn't in "
               },
               {
                 "t": "chip",
                 "v": "Actions"
               }
             ],
-            "text": "Item Inventory… is not in Actions"
+            "text": "Item Inventory… isn't in Actions"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike"
+                "v": "Read the session code in the status bar. The command is only on Company - Item Inventory, not on Inventory 360, which looks similar"
               }
             ],
-            "text": "Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike"
+            "text": "Read the session code in the status bar. The command is only on Company - Item Inventory, not on Inventory 360, which looks similar"
           }
         ]
       },
@@ -462,19 +462,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The warehouse lines do not add up to the item's row"
+                "v": "The warehouse lines don't add up to the item's row"
               }
             ],
-            "text": "The warehouse lines do not add up to the item's row"
+            "text": "The warehouse lines don't add up to the item's row"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one"
+                "v": "Go by the row, not the answer. The model can leave a figure out or get one wrong, and a wrong answer looks the same as a right one"
               }
             ],
-            "text": "Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one"
+            "text": "Go by the row, not the answer. The model can leave a figure out or get one wrong, and a wrong answer looks the same as a right one"
           }
         ]
       }

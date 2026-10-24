@@ -21,19 +21,19 @@
     "Sales"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-23",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen."
+        "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
       }
     ],
-    "text": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen."
+    "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
   },
   "before": [],
   "why": {
@@ -218,10 +218,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", near the foot of the menu"
+                  "v": ", near the bottom of the menu"
                 }
               ],
-              "text": "Open the Order Lines tab's Actions and choose Status Overview…, near the foot of the menu"
+              "text": "Open the Order Lines tab's Actions and choose Status Overview…, near the bottom of the menu"
             },
             {
               "tokens": [
@@ -624,20 +624,20 @@
               },
               {
                 "t": "text",
-                "v": " is not in "
+                "v": " isn't in "
               },
               {
                 "t": "chip",
                 "v": "Actions"
               }
             ],
-            "text": "Status Overview… is not in Actions"
+            "text": "Status Overview… isn't in Actions"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The command is on Sales Order Lines opened by itself, step 1, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's "
+                "v": "The command is on Sales Order Lines when it's opened on its own, and on the workbench's Order Lines tab. A tab counts as a screen of its own, so a command shows on it only when it's linked to the tab's own code. The tab's "
               },
               {
                 "t": "chip",
@@ -645,10 +645,10 @@
               },
               {
                 "t": "text",
-                "v": " names in the status bar"
+                "v": " shows that code in the status bar"
               }
             ],
-            "text": "The command is on Sales Order Lines opened by itself, step 1, and on the Order Lines tab of the workbench. A tab is a screen of its own: a command shows on it only when it is linked to the tab's own code, which the tab's Personalize Form names in the status bar"
+            "text": "The command is on Sales Order Lines when it's opened on its own, and on the workbench's Order Lines tab. A tab counts as a screen of its own, so a command shows on it only when it's linked to the tab's own code. The tab's Personalize Form shows that code in the status bar"
           }
         ]
       },
@@ -689,10 +689,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Act on the status screen. It is LN's own record of the line, and the answer is the model's reading of it"
+                "v": "Go by the status screen. It's LN's own record of the line, and the answer is only the model's reading of it"
               }
             ],
-            "text": "Act on the status screen. It is LN's own record of the line, and the answer is the model's reading of it"
+            "text": "Go by the status screen. It's LN's own record of the line, and the answer is only the model's reading of it"
           }
         ]
       }

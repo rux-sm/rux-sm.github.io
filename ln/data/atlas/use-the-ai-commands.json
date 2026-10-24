@@ -9,7 +9,7 @@
     "Warehousing",
     "Sales"
   ],
-  "updated": "2026-10-23",
+  "updated": "2026-10-24",
   "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
   "order": 0,
@@ -32,13 +32,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+            "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
           }
         ],
-        "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row."
+        "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
       },
       "steps": 7,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     },
     {
       "id": "run-status-overview",
@@ -48,13 +48,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen."
+            "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
           }
         ],
-        "text": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen."
+        "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
       },
       "steps": 13,
-      "walked": "2026-10-23"
+      "walked": "2026-10-24"
     }
   ],
   "values": {
@@ -98,10 +98,10 @@
         },
         {
           "t": "text",
-          "v": " Nothing in LN is changed, and there is nowhere to type a question. Each answer is written by a language model from data LN sends it, so a wrong answer reads like a right one."
+          "v": " They change nothing in LN, and there's nowhere to type a question. A language model writes each answer from data LN sends it, and a wrong answer looks the same as a right one."
         }
       ],
-      "text": "> Note > The commands only read. Nothing in LN is changed, and there is nowhere to type a question. Each answer is written by a language model from data LN sends it, so a wrong answer reads like a right one."
+      "text": "> Note > The commands only read. They change nothing in LN, and there's nowhere to type a question. A language model writes each answer from data LN sends it, and a wrong answer looks the same as a right one."
     },
     {
       "kind": "glance",
@@ -146,10 +146,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row"
+                  "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row"
                 }
               ],
-              "text": "An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row"
+              "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row"
             }
           ]
         },
@@ -187,10 +187,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen"
+                  "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen"
                 }
               ],
-              "text": "Why a sales order line has not shipped and what step comes next, in one answer that agrees with the line's status screen"
+              "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen"
             }
           ]
         }
@@ -569,10 +569,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One item's warehouses added up to 500 less on hand than its row, so the row is what to act on"
+                  "v": "One item's warehouses added up to 500 less on hand than its row, so go by the row"
                 }
               ],
-              "text": "One item's warehouses added up to 500 less on hand than its row, so the row is what to act on"
+              "text": "One item's warehouses added up to 500 less on hand than its row, so go by the row"
             }
           ]
         },
@@ -785,10 +785,10 @@
         },
         {
           "t": "text",
-          "v": " delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none."
+          "v": " delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default model answers any prompt with no model selected."
         }
       ],
-      "text": "Then run it and check it, on one record of each kind it can meet, before anyone else relies on it. To remove it, delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default answers any prompt that names none.",
+      "text": "Then run it and check it, on one record of each kind it can meet, before anyone else relies on it. To remove it, delete the prompt first, which takes its link with it, and the dataset second. The model needs no setup: the service's default model answers any prompt with no model selected.",
       "under": "Setting one up"
     },
     {

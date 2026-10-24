@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Run the stock check · LN Guide · Updated 21 Oct 2026 · Walked in LN 23 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Run the stock check · LN Guide · Updated 24 Oct 2026 · Walked in LN 24 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -104,21 +104,21 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="32abd96ee1fff43df440a2c6c27087d6fcb1e342">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="20b529eca6cb5a6e6eece150136bd9168a298c78">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Run the stock check</h1>
-<p class="rux--type-body-long-01">An item's stock in each warehouse and its planned receipts and issues, in one answer that agrees with the item's row.</p>
+<p class="rux--type-body-long-01">One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing, Sales</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>21 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing, Sales</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>24 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 1 of 2 in <a class="rux--link" href="../follow/use-the-ai-commands.html">Use the AI commands</a> · next: <a class="rux--link" href="../do/run-status-overview.html">Run Status Overview</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, <a class="rux--link" href="../follow/set-up-a-genai-prompt.html#ref-1">Is it worth a prompt</a>.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line can't reach its item's stock. It's kept as a demonstration, because LN's own inventory screens already show the same figures. <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> explains why, under Is it worth a prompt.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -130,7 +130,7 @@
 <tr id="step-4"><td data-k="Step"><b>1.4</b></td><td data-k="Action">Read the first two lines of the answer</td><td data-k="You should see">The description, the item code in brackets and the unit; then an Attention: line for each warehouse with more allocated than on hand or with stock blocked, or No warnings.</td></tr>
 <tr id="step-5"><td data-k="Step"><b>1.5</b></td><td data-k="Action">Read each warehouse's section</td><td data-k="You should see">Its code and name; ON HAND and BLOCKED on one line; ALLOCATED with the orders going out indented under it; ON ORDER with the orders coming in under it</td></tr>
 <tr id="step-6"><td data-k="Step"><b>1.6</b></td><td data-k="Action">Read the last line</td><td data-k="You should see">Empty: and the warehouses that hold nothing and expect nothing, or no such line</td></tr>
-<tr id="step-7"><td data-k="Step"><b>1.7</b></td><td data-k="Action">Add up the warehouses' ON HAND, and their ON ORDER, and compare each with <a class="rux--link" href="#step-2">step 1.2</a></td><td data-k="You should see">The sums equal the item's row. Where they do not, act on the row</td></tr>
+<tr id="step-7"><td data-k="Step"><b>1.7</b></td><td data-k="Action">Add up the warehouses' ON HAND, and their ON ORDER, and compare each with <a class="rux--link" href="#step-2">step 1.2</a></td><td data-k="You should see">The sums should equal the item's row. If they don't, go by the row</td></tr>
 </tbody>
 </table></div>
 
@@ -141,8 +141,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom"><span class="ln-t-named">Item Inventory…</span> is not in <span class="ln-t-named">Actions</span></td><td data-k="What to do">Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike</td></tr>
-<tr><td data-k="Symptom">The warehouse lines do not add up to the item's row</td><td data-k="What to do">Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-named">Item Inventory…</span> isn't in <span class="ln-t-named">Actions</span></td><td data-k="What to do">Read the session code in the status bar. The command is only on Company - Item Inventory, not on Inventory 360, which looks similar</td></tr>
+<tr><td data-k="Symptom">The warehouse lines don't add up to the item's row</td><td data-k="What to do">Go by the row, not the answer. The model can leave a figure out or get one wrong, and a wrong answer looks the same as a right one</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -202,7 +202,7 @@
   </li>
   <li data-k="7" data-ref="7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Add up the warehouses' ON HAND, and their ON ORDER, and compare each with step 2</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The sums equal the item's row. Where they do not, act on the row</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The sums should equal the item's row. If they don't, go by the row</p></div>
   </li>
 </ol>
 <p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</p>
@@ -213,8 +213,8 @@
       <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-named">Item Inventory…</span> is not in <span class="ln-t-named">Actions</span></b><p>Read the session code in the status bar. The command is on Company - Item Inventory only, not on Inventory 360, which looks alike</p></li>
-  <li><b>The warehouse lines do not add up to the item's row</b><p>Act on the row, not the answer. The model writes only from what LN sent, and a wrong answer reads like a right one</p></li>
+  <li><b><span class="ln-t-named">Item Inventory…</span> isn't in <span class="ln-t-named">Actions</span></b><p>Read the session code in the status bar. The command is only on Company - Item Inventory, not on Inventory 360, which looks similar</p></li>
+  <li><b>The warehouse lines don't add up to the item's row</b><p>Go by the row, not the answer. The model can leave a figure out or get one wrong, and a wrong answer looks the same as a right one</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -222,7 +222,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line cannot reach its item's stock. It is kept as a demonstration: LN's own inventory screens show the same figures, and the reason is in <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a>, <a class="rux--link" href="../follow/set-up-a-genai-prompt.html#ref-1">Is it worth a prompt</a>.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>The command sends the ticked item to the model with its description and unit, its stock in each warehouse and its planned inventory transactions, and nothing else. The answer opens in a window of its own, under the sentence that says what the command does, and can be copied or downloaded from there. The command is on this screen and not on a sales order line, because an order line can't reach its item's stock. It's kept as a demonstration, because LN's own inventory screens already show the same figures. <a class="rux--link" href="../follow/set-up-a-genai-prompt.html">Set up a GenAI prompt</a> explains why, under Is it worth a prompt.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

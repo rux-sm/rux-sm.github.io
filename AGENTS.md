@@ -156,7 +156,7 @@ Every app has one word, and its names derive from it.
 | :--- | :--- | :--- | :--- | :--- |
 | Home | `/` | Rux Home | none | `home` |
 | Design | `design/` | Rux Design | `rux--` | `design` |
-| LN Guide | `ln/` | Rux LN Guide | `ln-` | `ln` |
+| LN Guide | `ln/` | LN Notes | `ln-` | `ln` |
 | Scheduler | `scheduler/` | the company logo, alone | `scheduler-` | `scheduler` |
 | Website | the `escamillatourbuses` repository | the company logo, with its page links | `website-` | `website` |
 | Pixels | `pixels/` | Rux Pixels on a wide screen, a bar of places below it | `pixels-` | `pixels` |

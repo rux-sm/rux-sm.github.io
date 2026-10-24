@@ -10,10 +10,10 @@
 // opens it on a narrow one.
 import { accountAction, accountPanel } from '../../design/tools/lib/shell.mjs';
 
-export const shellAt = (base, nav) => `<header class="rux--header" data-theme="g100" aria-label="Rux LN Guide">
+export const shellAt = (base, nav) => `<header class="rux--header" data-theme="g100" aria-label="LN Notes">
   <a class="rux--skip-to-content" href="#main-content">Skip to main content</a>
   <button type="button" class="rux--header__action rux--header__menu-trigger rux--header__menu-toggle rux--header__menu-toggle__hidden" aria-label="Open menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-menu"/></svg></button>
-  <a class="rux--header__name" href="${base || './'}"><img src="${base}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none"><span class="rux--header__name--prefix">Rux</span>&nbsp;LN Guide</a>
+  <a class="rux--header__name" href="${base || './'}"><img src="${base}brand/logo.svg" alt="" style="height:1.5rem;width:auto;margin-right:.17rem;flex:none">LN Notes</a>
   <div class="rux--header__global">
 ${accountAction()}
   </div>

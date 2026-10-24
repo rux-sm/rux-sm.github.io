@@ -38,3 +38,34 @@
 /* A Document's table fills the reading column, so its rules line up with the
    headings'. Carbon's static table is only as wide as its content. */
 .ln-proc__table .rux--data-table--static { inline-size: 100%; }
+
+/* On a phone a Document's table is a list. Each row is a block and each cell
+   stands under the one before with its column's name over it; a numbered
+   row keeps its number beside it. Three columns across a phone left a word
+   or two to a line. Print lays the page out a sheet wide, so paper keeps the
+   table. */
+@media screen and (max-width: 41.98rem) {
+  .ln-proc__table .rux--data-table,
+  .ln-proc__table .rux--data-table thead,
+  .ln-proc__table .rux--data-table tbody,
+  .ln-proc__table .rux--data-table .ln-proc__table-title,
+  .ln-proc__table .rux--data-table .ln-proc__table-title th { display: block; }
+  .ln-proc__table .rux--data-table thead tr:not(.ln-proc__table-title) { display: none; }
+  .ln-proc__table .rux--data-table tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: .625rem; block-size: auto; padding: 1rem .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
+  /* nth-child(n) matches every cell; it lifts the rule over a theme's own first-cell padding. */
+  .ln-proc__table .rux--data-table tbody tr td:nth-child(n) { display: block; padding: 0; border: 0; }
+  .ln-proc__table .rux--data-table tbody tr td:first-child { font-weight: 600; color: var(--rux-text-primary); }
+  .ln-proc__table .rux--data-table tbody tr td + td::before { content: attr(data-k); display: block; margin-block-end: .125rem; font-size: .875rem; color: var(--rux-text-secondary); }
+  .ln-proc__steps .rux--data-table tbody tr,
+  .ln-proc__summary .rux--data-table tbody tr { grid-template-columns: 2rem minmax(0, 1fr); column-gap: .75rem; }
+  .ln-proc__steps .rux--data-table tbody tr td + td,
+  .ln-proc__summary .rux--data-table tbody tr td + td { grid-column: 2; }
+  .ln-proc__steps .rux--data-table tbody tr td:nth-child(2),
+  .ln-proc__summary .rux--data-table tbody tr td:nth-child(2) { color: var(--rux-text-primary); font-size: 1rem; }
+  .ln-proc__steps .rux--data-table tbody tr td:nth-child(2)::before,
+  .ln-proc__summary .rux--data-table tbody tr td:nth-child(2)::before,
+  .ln-proc__steps .rux--data-table tbody tr td:has(> .ln-proc__writes:first-child)::before { content: none; }
+  /* A task in the list is a place to tap, so its link is a finger tall. */
+  .ln-pages .ln-proc__summary .rux--link { display: inline-block; min-block-size: 2.75rem; padding-block: .625rem; }
+  .ln-proc__summary .rux--data-table tbody tr { padding-block: .375rem; }
+}

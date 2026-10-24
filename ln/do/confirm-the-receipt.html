@@ -123,13 +123,13 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>5.1</b></td><td>Read the receipt number LN assigned</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receipt number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-2"><td><b>5.2</b></td><td>Enter the packing-slip reference for each line as delivered</td><td>The walked run recorded packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</td></tr>
-<tr id="step-3"><td><b>5.3</b></td><td>Confirm the receipt</td><td><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the header's <span class="ln-t-named">Confirmed</span> check box is set once every receipt line is confirmed</td></tr>
-<tr id="step-4"><td><b>5.4</b></td><td>Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></td><td>Both are set — a receipt confirmed with either clear has left something behind</td></tr>
-<tr id="step-5"><td><b>5.5</b></td><td>Read <span class="ln-t-named">Errors Logged</span> before leaving the session</td><td>Clear means the receipt logged nothing. Set means it did, whatever the status says</td></tr>
-<tr id="step-6"><td><b>5.6</b></td><td>If <span class="ln-t-named">Errors Logged</span> is set, read the messages in <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>). They are also on the <span class="ln-t-named">Message Log</span> tab in this session's lines pane</td><td></td></tr>
-<tr id="step-7"><td><b>5.7</b></td><td>Then capture them</td><td>The messages behind the confirmation are on record.</td></tr>
+<tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">Read the receipt number LN assigned</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receipt number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Enter the packing-slip reference for each line as delivered</td><td data-k="You should see">The walked run recorded packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</td></tr>
+<tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">Confirm the receipt</td><td data-k="You should see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the header's <span class="ln-t-named">Confirmed</span> check box is set once every receipt line is confirmed</td></tr>
+<tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></td><td data-k="You should see">Both are set — a receipt confirmed with either clear has left something behind</td></tr>
+<tr id="step-5"><td data-k="Step"><b>5.5</b></td><td data-k="Action">Read <span class="ln-t-named">Errors Logged</span> before leaving the session</td><td data-k="You should see">Clear means the receipt logged nothing. Set means it did, whatever the status says</td></tr>
+<tr id="step-6"><td data-k="Step"><b>5.6</b></td><td data-k="Action">If <span class="ln-t-named">Errors Logged</span> is set, read the messages in <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>). They are also on the <span class="ln-t-named">Message Log</span> tab in this session's lines pane</td><td data-k="You should see"></td></tr>
+<tr id="step-7"><td data-k="Step"><b>5.7</b></td><td data-k="Action">Then capture them</td><td data-k="You should see">The messages behind the confirmation are on record.</td></tr>
 </tbody>
 </table></div>
 
@@ -140,8 +140,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td><span class="ln-t-exact">whinh0032</span> at the receipt</td><td>The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>), which hold the messages once the dialog is gone</td></tr>
-<tr><td>The receipt looks confirmed but nothing was received</td><td>Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-exact">whinh0032</span> at the receipt</td><td data-k="What to do">The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>), which hold the messages once the dialog is gone</td></tr>
+<tr><td data-k="Symptom">The receipt looks confirmed but nothing was received</td><td data-k="What to do">Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -152,7 +152,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/whinh3530m000.html">Receipt Message Log</a></td><td><span class="ln-t-exact">whinh3530m000</span></td><td>The Message Log tab in the lines pane of Warehouse Receipt (whinh3512m000), or opened from it</td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/whinh3530m000.html">Receipt Message Log</a></td><td data-k="Code"><span class="ln-t-exact">whinh3530m000</span></td><td data-k="How to open it">The Message Log tab in the lines pane of Warehouse Receipt (whinh3512m000), or opened from it</td></tr>
 </tbody>
 </table></div>
 </section>

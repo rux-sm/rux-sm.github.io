@@ -117,19 +117,19 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span class="dest">Item - Costing</span></span> (<span class="ln-t-exact">ticpr0107m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Common</span><span class="sep">➔</span><span class="ln-t-whole">Standard Costs</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="dest ln-t-whole">Item - Costing</span></span> (<span class="ln-t-exact">ticpr0107m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A production order's estimate reads each material's standard cost, and a parameter decides whether a missing one stops the calculation or silently lowers it. Purchased items get their standard cost from purchase price data, so the two components will have none until <a class="rux--link" href="../do/stock-the-components.html">Stock the components</a> buys them in.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>9.1</b></td><td>Open <a class="rux--link" href="../screens/ticpr0107m000.html"><span class="ln-t-named">Item - Costing</span></a> (<span class="ln-t-exact">ticpr0107m000</span>) for the bamboo rod</td><td>The item's costing record opens for an enterprise unit</td></tr>
-<tr id="step-2"><td><b>9.2</b></td><td>Read <span class="ln-t-named">Costing Source</span>, then on the <span class="ln-t-named">Standard Cost</span> tab <span class="ln-t-named">Material Costs</span> and <span class="ln-t-named">Total Costs</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the rod's figures</span></span></td></tr>
-<tr id="step-3"><td><b>9.3</b></td><td>Repeat for the paper sleeve</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the sleeve's figures</span></span></td></tr>
-<tr id="step-4"><td><b>9.4</b></td><td>Open the record for the finished item</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished-item standard cost</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td><b>9.5</b></td><td>Open <a class="rux--link" href="../screens/ticpr3501m000.html"><span class="ln-t-named">Item Standard Costs</span></a> (<span class="ln-t-exact">ticpr3501m000</span>) for each item whose cost is missing or unexpected. Use the item's effective date</td><td>The actual and historical standard cost structure is shown, or confirms none exists</td></tr>
-<tr id="step-6"><td><b>9.6</b></td><td>If an item still has no standard cost, stop. Obtain the approved cost route before continuing</td><td>The estimate calculation is not left to run against missing material costs</td></tr>
+<tr id="step-1"><td data-k="Step"><b>9.1</b></td><td data-k="Action">Open <a class="rux--link" href="../screens/ticpr0107m000.html"><span class="ln-t-named">Item - Costing</span></a> (<span class="ln-t-exact">ticpr0107m000</span>) for the bamboo rod</td><td data-k="You should see">The item's costing record opens for an enterprise unit</td></tr>
+<tr id="step-2"><td data-k="Step"><b>9.2</b></td><td data-k="Action">Read <span class="ln-t-named">Costing Source</span>, then on the <span class="ln-t-named">Standard Cost</span> tab <span class="ln-t-named">Material Costs</span> and <span class="ln-t-named">Total Costs</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the rod's figures</span></span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>9.3</b></td><td data-k="Action">Repeat for the paper sleeve</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component standard costs</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the sleeve's figures</span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>9.4</b></td><td data-k="Action">Open the record for the finished item</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished-item standard cost</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-5"><td data-k="Step"><b>9.5</b></td><td data-k="Action">Open <a class="rux--link" href="../screens/ticpr3501m000.html"><span class="ln-t-named">Item Standard Costs</span></a> (<span class="ln-t-exact">ticpr3501m000</span>) for each item whose cost is missing or unexpected. Use the item's effective date</td><td data-k="You should see">The actual and historical standard cost structure is shown, or confirms none exists</td></tr>
+<tr id="step-6"><td data-k="Step"><b>9.6</b></td><td data-k="Action">If an item still has no standard cost, stop. Obtain the approved cost route before continuing</td><td data-k="You should see">The estimate calculation is not left to run against missing material costs</td></tr>
 </tbody>
 </table></div>
 
@@ -140,7 +140,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>A purchased component has no standard cost</td><td>Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one</td></tr>
+<tr><td data-k="Symptom">A purchased component has no standard cost</td><td data-k="What to do">Its standard cost is calculated from purchase price priority levels; the item needs purchase price data before it will have one</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -151,8 +151,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/ticpr0107m000.html">Item - Costing</a></td><td><span class="ln-t-exact">ticpr0107m000</span></td><td><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span class="dest">Item - Costing</span></span></td></tr>
-<tr><td><a class="rux--link" href="../screens/ticpr3501m000.html">Item Standard Costs</a></td><td><span class="ln-t-exact">ticpr3501m000</span></td><td><span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Item Costs</span><span class="sep">➔</span><span class="dest">Item Standard Costs</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/ticpr0107m000.html">Item - Costing</a></td><td data-k="Code"><span class="ln-t-exact">ticpr0107m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Common</span><span class="sep">➔</span><span class="ln-t-whole">Standard Costs</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="dest ln-t-whole">Item - Costing</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/ticpr3501m000.html">Item Standard Costs</a></td><td data-k="Code"><span class="ln-t-exact">ticpr3501m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Common</span><span class="sep">➔</span><span class="ln-t-whole">Standard Costs</span><span class="sep">➔</span><span class="ln-t-whole">Item Costs</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Standard Costs</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -200,7 +200,7 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The estimate calculation is not left to run against missing material costs</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Common</span><span class="sep">➔</span><span>Standard Costs</span><span class="sep">➔</span><span>Master Data</span><span class="sep">➔</span><span class="dest">Item - Costing</span></span> (<span class="ln-t-exact">ticpr0107m000</span>)</p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Common</span><span class="sep">➔</span><span class="ln-t-whole">Standard Costs</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="dest ln-t-whole">Item - Costing</span></span> (<span class="ln-t-exact">ticpr0107m000</span>)</p>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">

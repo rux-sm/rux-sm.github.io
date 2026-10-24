@@ -127,18 +127,18 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span> (<span class="ln-t-exact">whinh4525m100</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Outbound/Inspections</span><span class="sep">➔</span><span class="dest ln-t-whole">Picking List</span></span> (<span class="ln-t-exact">whinh4525m100</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise <span class="ln-t-named">Picked</span> fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>4.1</b></td><td>Check the <span class="ln-t-named">Picking List</span> row recorded in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td>If absent or already finished automatically, record <span class="ln-t-exact">Automatic / not applicable</span> and skip <a class="rux--link" href="#step-2">steps 4.2–4.5</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
-<tr id="step-2"><td><b>4.2</b></td><td>Find the Run for this order</td><td>The line for your item and source warehouse</td></tr>
-<tr id="step-3"><td><b>4.3</b></td><td>Tick the line</td><td></td></tr>
-<tr id="step-4"><td><b>4.4</b></td><td><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></td><td>Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</td></tr>
-<tr id="step-5"><td><b>4.5</b></td><td>Record the Run number from the header</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">picking list Run number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1"><td data-k="Step"><b>4.1</b></td><td data-k="Action">Check the <span class="ln-t-named">Picking List</span> row recorded in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td data-k="You should see">If absent or already finished automatically, record <span class="ln-t-exact">Automatic / not applicable</span> and skip <a class="rux--link" href="#step-2">steps 4.2–4.5</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
+<tr id="step-2"><td data-k="Step"><b>4.2</b></td><td data-k="Action">Find the Run for this order</td><td data-k="You should see">The line for your item and source warehouse</td></tr>
+<tr id="step-3"><td data-k="Step"><b>4.3</b></td><td data-k="Action">Tick the line</td><td data-k="You should see"></td></tr>
+<tr id="step-4"><td data-k="Step"><b>4.4</b></td><td data-k="Action"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Pick Run</span></span></td><td data-k="You should see">Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</td></tr>
+<tr id="step-5"><td data-k="Step"><b>4.5</b></td><td data-k="Action">Record the Run number from the header</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">picking list Run number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -149,7 +149,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>No Run appears on the Picking List</td><td>If the order already advanced, record <span class="ln-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td></tr>
+<tr><td data-k="Symptom">No Run appears on the Picking List</td><td data-k="What to do">If the order already advanced, record <span class="ln-t-exact">Automatic / not observed</span>. Otherwise, picking may not apply or advice was not generated; return to <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -160,7 +160,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/whinh4525m100.html">Picking List</a></td><td><span class="ln-t-exact">whinh4525m100</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/whinh4525m100.html">Picking List</a></td><td data-k="Code"><span class="ln-t-exact">whinh4525m100</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Outbound/Inspections</span><span class="sep">➔</span><span class="dest ln-t-whole">Picking List</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -196,7 +196,7 @@
     <div class="ln-step__main"><h1 class="ln-step__do">Tick the line</h1></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Pick Run</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Pick Run</span></span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Pick Run</span></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Pick Run</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Stock moves from the source location to staging. <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Picked</span></span> fills on Outbound Lines</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
@@ -204,7 +204,7 @@
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>picking list Run number</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Outbound/Inspections</span><span class="sep">➔</span><span class="dest">Picking List</span></span> (<span class="ln-t-exact">whinh4525m100</span>)</p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Outbound/Inspections</span><span class="sep">➔</span><span class="dest ln-t-whole">Picking List</span></span> (<span class="ln-t-exact">whinh4525m100</span>)</p>
 <div class="ln-confirm" data-confirm="pick-the-goods_transfer-item-between-warehouses">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
   <div class="ln-confirm__ask" data-owner hidden>

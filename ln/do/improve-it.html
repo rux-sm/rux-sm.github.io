@@ -117,29 +117,29 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Tools</span><span class="sep">➔</span><span class="ln-t-whole">Application Extensibility</span><span class="sep">➔</span><span class="ln-t-whole">Embedded GenAI</span><span class="sep">➔</span><span class="dest ln-t-whole">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A change to the prompt text is used by the very next run. A change to the dataset is not seen by a session that is already open. So a text change is tested where you stand, and a dataset change after the screen is opened again. Each line added here answers something the first answer got wrong or left out.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>6.1</b></td><td>On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the arrow beside <span class="ln-t-press">Edit Text</span> and choose <span class="ln-t-named">Prompt</span></td><td>The text, in the editor</td></tr>
-<tr id="step-2"><td><b>6.2</b></td><td>Add a line above the marker that fixes the answer's form. Example: <span class="ln-t-exact">Output plain text only. No heading, no table, no list marks, no bold and no emoji.</span></td><td></td></tr>
-<tr id="step-3"><td><b>6.3</b></td><td>Add a line that forbids what the first answer added. Example: <span class="ln-t-exact">Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are.</span></td><td></td></tr>
-<tr id="step-4"><td><b>6.4</b></td><td>Add a line that says how the answer opens. Example: <span class="ln-t-exact">First line: the item, its description and its inventory unit.</span></td><td></td></tr>
-<tr id="step-5"><td><b>6.5</b></td><td>Add a line for one kind of row, with its values in order. Example: <span class="ln-t-exact">Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order.</span></td><td></td></tr>
-<tr id="step-6"><td><b>6.6</b></td><td>Do the same for each other kind of row. Example: <span class="ln-t-exact">Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity.</span></td><td></td></tr>
-<tr id="step-7"><td><b>6.7</b></td><td>Add the exact words for when there is nothing to report. Example: <span class="ln-t-exact">If there are no planned inventory transactions, write &quot;Nothing planned in or out.&quot;</span></td><td></td></tr>
-<tr id="step-8"><td><b>6.8</b></td><td>Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming every warehouse whose blocked figure is above zero, with that figure, or saying that none is blocked.</span></td><td></td></tr>
-<tr id="step-9"><td><b>6.9</b></td><td>Add a line for a missing value. Example: <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></td><td></td></tr>
-<tr id="step-10"><td><b>6.10</b></td><td>Add a line for how a date is written, then save and close. Example: <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span></td><td>A new last-modified stamp</td></tr>
-<tr id="step-11"><td><b>6.11</b></td><td>Choose your command again on the same record, without closing the screen</td><td>The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue</td></tr>
-<tr id="step-12"><td><b>6.12</b></td><td>Compare it with your expected values again</td><td>The facts should match</td></tr>
-<tr id="step-13"><td><b>6.13</b></td><td>Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing</td><td>Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned</td></tr>
-<tr id="step-14"><td><b>6.14</b></td><td>Optional: tick a field the answer still lacks in the Modeler, and save. Example: <span class="ln-t-exact">bpid</span> on Planned Inventory Transactions by Item</td><td></td></tr>
-<tr id="step-15"><td><b>6.15</b></td><td>Optional: add the field to the line of the prompt text that lists its rows' values, then save and close. Example: <span class="ln-t-exact">, business partner</span> at the end of the planned inventory transactions line</td><td>A new last-modified stamp</td></tr>
-<tr id="step-16"><td><b>6.16</b></td><td>Optional: close the screen's tab and open the record again</td><td>The new field is in the answer</td></tr>
+<tr id="step-1"><td data-k="Step"><b>6.1</b></td><td data-k="Action">On <span class="ln-t-named">GenAI Prompts</span>, tick the prompt, open the arrow beside <span class="ln-t-press">Edit Text</span> and choose <span class="ln-t-named">Prompt</span></td><td data-k="You should see">The text, in the editor</td></tr>
+<tr id="step-2"><td data-k="Step"><b>6.2</b></td><td data-k="Action">Add a line above the marker that fixes the answer's form. Example: <span class="ln-t-exact">Output plain text only. No heading, no table, no list marks, no bold and no emoji.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">Add a line that forbids what the first answer added. Example: <span class="ln-t-exact">Do not calculate, total or subtract anything, and do not say what can be promised. Report the figures as they are.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Add a line that says how the answer opens. Example: <span class="ln-t-exact">First line: the item, its description and its inventory unit.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Add a line for one kind of row, with its values in order. Example: <span class="ln-t-exact">Then one line for each warehouse, written as: warehouse code and name: on hand, blocked, allocated, on order.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-6"><td data-k="Step"><b>6.6</b></td><td data-k="Action">Do the same for each other kind of row. Example: <span class="ln-t-exact">Then the planned inventory transactions, earliest transaction date first, one line each: date, warehouse, order type, order and line, transaction type, planned quantity.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-7"><td data-k="Step"><b>6.7</b></td><td data-k="Action">Add the exact words for when there is nothing to report. Example: <span class="ln-t-exact">If there are no planned inventory transactions, write &quot;Nothing planned in or out.&quot;</span></td><td data-k="You should see"></td></tr>
+<tr id="step-8"><td data-k="Step"><b>6.8</b></td><td data-k="Action">Add a line for the one thing the reader must not miss. Example: <span class="ln-t-exact">End with one sentence naming every warehouse whose blocked figure is above zero, with that figure, or saying that none is blocked.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-9"><td data-k="Step"><b>6.9</b></td><td data-k="Action">Add a line for a missing value. Example: <span class="ln-t-exact">If a value you need is not in the dataset, write &quot;[not available]&quot; in its place.</span></td><td data-k="You should see"></td></tr>
+<tr id="step-10"><td data-k="Step"><b>6.10</b></td><td data-k="Action">Add a line for how a date is written, then save and close. Example: <span class="ln-t-exact">Write every date as YYYY-MM-DD.</span></td><td data-k="You should see">A new last-modified stamp</td></tr>
+<tr id="step-11"><td data-k="Step"><b>6.11</b></td><td data-k="Action">Choose your command again on the same record, without closing the screen</td><td data-k="You should see">The answer in that form. Example: a line for each warehouse, then a line for each planned receipt and issue</td></tr>
+<tr id="step-12"><td data-k="Step"><b>6.12</b></td><td data-k="Action">Compare it with your expected values again</td><td data-k="You should see">The facts should match</td></tr>
+<tr id="step-13"><td data-k="Step"><b>6.13</b></td><td data-k="Action">Choose your command on a record of each other kind. Example: an item with no stock that customers have ordered, and an item with nothing</td><td data-k="You should see">Each answer fits its record. Example: the two sales orders waiting; the words for nothing planned</td></tr>
+<tr id="step-14"><td data-k="Step"><b>6.14</b></td><td data-k="Action">Optional: tick a field the answer still lacks in the Modeler, and save. Example: <span class="ln-t-exact">bpid</span> on Planned Inventory Transactions by Item</td><td data-k="You should see"></td></tr>
+<tr id="step-15"><td data-k="Step"><b>6.15</b></td><td data-k="Action">Optional: add the field to the line of the prompt text that lists its rows' values, then save and close. Example: <span class="ln-t-exact">, business partner</span> at the end of the planned inventory transactions line</td><td data-k="You should see">A new last-modified stamp</td></tr>
+<tr id="step-16"><td data-k="Step"><b>6.16</b></td><td data-k="Action">Optional: close the screen's tab and open the record again</td><td data-k="You should see">The new field is in the answer</td></tr>
 </tbody>
 </table></div>
 
@@ -150,13 +150,13 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The answer holds figures LN does not</td><td>The line against calculating may be missing. See <a class="rux--link" href="#step-3">step 6.3</a></td></tr>
-<tr><td>The answer is a report or a letter again</td><td>The form line may be missing. See <a class="rux--link" href="#step-2">step 6.2</a></td></tr>
-<tr><td>A value reads <span class="ln-t-exact">[not available]</span></td><td>The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-16">step 6.16</a></td></tr>
-<tr><td>A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></td><td>Add a line that names each code, as in A template for the two texts</td></tr>
-<tr><td>A field you ticked is not in the answer</td><td>The prompt text may list each line's values without it. Add it to that line, as in <a class="rux--link" href="#step-15">step 6.15</a></td></tr>
-<tr><td>The closing sentence names something that does not qualify, or leaves one out</td><td>Check it against the screen like any other line. The model can get a comparison wrong, and the next run can differ</td></tr>
-<tr><td>The response contradicts the screen</td><td>The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in <a class="rux--link" href="../do/model-the-dataset.html#step-13">step 2.13</a> (Model the dataset), then open the screen again</td></tr>
+<tr><td data-k="Symptom">The answer holds figures LN does not</td><td data-k="What to do">The line against calculating may be missing. See <a class="rux--link" href="#step-3">step 6.3</a></td></tr>
+<tr><td data-k="Symptom">The answer is a report or a letter again</td><td data-k="What to do">The form line may be missing. See <a class="rux--link" href="#step-2">step 6.2</a></td></tr>
+<tr><td data-k="Symptom">A value reads <span class="ln-t-exact">[not available]</span></td><td data-k="What to do">The record holds nothing there, the field is not ticked in the dataset, or the screen was open before the dataset was saved. Close its tab and open the record again, as in <a class="rux--link" href="#step-16">step 6.16</a></td></tr>
+<tr><td data-k="Symptom">A type or a status prints as its code, such as <span class="ln-t-exact">act.sls</span></td><td data-k="What to do">Add a line that names each code, as in A template for the two texts</td></tr>
+<tr><td data-k="Symptom">A field you ticked is not in the answer</td><td data-k="What to do">The prompt text may list each line's values without it. Add it to that line, as in <a class="rux--link" href="#step-15">step 6.15</a></td></tr>
+<tr><td data-k="Symptom">The closing sentence names something that does not qualify, or leaves one out</td><td data-k="What to do">Check it against the screen like any other line. The model can get a comparison wrong, and the next run can differ</td></tr>
+<tr><td data-k="Symptom">The response contradicts the screen</td><td data-k="What to do">The model reads only the dataset. Read <span class="ln-t-named">Selected Fields</span>, as in <a class="rux--link" href="../do/model-the-dataset.html#step-13">step 2.13</a> (Model the dataset), then open the screen again</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -166,7 +166,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th></tr></thead>
 <tbody>
-<tr><td><span class="ln-t-named">Keeping the prompt</span></td><td><p>Stop after this task</p></td></tr>
+<tr><td data-k="Case"><span class="ln-t-named">Keeping the prompt</span></td><td data-k="What changes"><p>Stop after this task</p></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -177,7 +177,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/ttrpi5150m000.html">GenAI Prompts</a></td><td><span class="ln-t-exact">ttrpi5150m000</span></td><td><span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/ttrpi5150m000.html">GenAI Prompts</a></td><td data-k="Code"><span class="ln-t-exact">ttrpi5150m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Tools</span><span class="sep">➔</span><span class="ln-t-whole">Application Extensibility</span><span class="sep">➔</span><span class="ln-t-whole">Embedded GenAI</span><span class="sep">➔</span><span class="dest ln-t-whole">GenAI Prompts</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -257,7 +257,7 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The new field is in the answer</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Tools</span><span class="sep">➔</span><span>Application Extensibility</span><span class="sep">➔</span><span>Embedded GenAI</span><span class="sep">➔</span><span class="dest">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Tools</span><span class="sep">➔</span><span class="ln-t-whole">Application Extensibility</span><span class="sep">➔</span><span class="ln-t-whole">Embedded GenAI</span><span class="sep">➔</span><span class="dest ln-t-whole">GenAI Prompts</span></span> (<span class="ln-t-exact">ttrpi5150m000</span>)</p>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">

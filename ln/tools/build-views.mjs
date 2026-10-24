@@ -101,8 +101,14 @@ const taskStatus = (t) => verified(t.status, [t.walked]);
 // step with a hole in it and nothing on the page would say so.
 
 const ARROW = ' ➔ ';
+// A route breaks after an arrow, never inside a menu's name, unless the name
+// is longer than a phone's line could hold.
+const stop = (x, last) => {
+  const cls = [last && 'dest', x.length <= 32 && 'ln-t-whole'].filter(Boolean).join(' ');
+  return `<span${cls ? ` class="${cls}"` : ''}>${esc(x)}</span>`;
+};
 const route = (raw) => `<span class="ln-t-route">${raw.split(ARROW).map((x, i, all) =>
-  (i ? '<span class="sep">➔</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;
+  (i ? '<span class="sep">➔</span>' : '') + stop(x, i === all.length - 1)).join('')}</span>`;
 const named = (v) => `<span class="ln-t-named">${esc(v)}</span>`;
 const exact = (v) => `<span class="ln-t-exact">${esc(v)}</span>`;
 // A screen's code beside its name sits in brackets, so the two never run together.
@@ -731,7 +737,7 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead>${title ? `<tr class="ln-proc__table-title"><th scope="colgroup" colspan="${cols.length}">${title}</th></tr>` : ''}<tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
 <tbody>${rows.map((r) => `
-<tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}
+<tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c, i) => `<td data-k="${esc(cols[i][0])}">${c}</td>`).join('')}</tr>`).join('')}
 </tbody>
 </table></div>`;
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;

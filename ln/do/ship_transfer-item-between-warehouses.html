@@ -127,17 +127,17 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a>'s activity table answers.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>5.1</b></td><td>Check the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row. You recorded it in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td>If already finished automatically, record <span class="ln-t-exact">Automatic / not observed</span> and skip <a class="rux--link" href="#step-2">steps 5.2–5.4</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
-<tr id="step-2"><td><b>5.2</b></td><td>Find the shipment for this order, then click <span class="ln-t-press">Drill In</span></td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipment number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-3"><td><b>5.3</b></td><td>If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
-<tr id="step-4"><td><b>5.4</b></td><td>Choose <span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></td><td>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</td></tr>
+<tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">Check the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row. You recorded it in <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a></td><td data-k="You should see">If already finished automatically, record <span class="ln-t-exact">Automatic / not observed</span> and skip <a class="rux--link" href="#step-2">steps 5.2–5.4</a>; if <span class="ln-t-named">Automatic</span> = <span class="ln-t-exact">No</span>, continue</td></tr>
+<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Find the shipment for this order, then click <span class="ln-t-press">Drill In</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipment number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Freeze</span></span></td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">Choose <span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Confirm</span></span></td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</td></tr>
 </tbody>
 </table></div>
 
@@ -148,8 +148,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>No shipment is visible for a different-warehouse transfer</td><td>Official help says <span class="ln-t-named">Create Shipment</span> is <span class="ln-t-exact">Always</span>. Check Shipment Lines and the <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a> activity status before continuing</td></tr>
-<tr><td>Confirm greyed out</td><td>Shipment not yet Frozen, or <span class="ln-t-named">Freeze Mandatory</span> requires it — run <a class="rux--link" href="#step-3">step 5.3</a> first</td></tr>
+<tr><td data-k="Symptom">No shipment is visible for a different-warehouse transfer</td><td data-k="What to do">Official help says <span class="ln-t-named">Create Shipment</span> is <span class="ln-t-exact">Always</span>. Check Shipment Lines and the <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Confirm the processing path and create advice</a> activity status before continuing</td></tr>
+<tr><td data-k="Symptom">Confirm greyed out</td><td data-k="What to do">Shipment not yet Frozen, or <span class="ln-t-named">Freeze Mandatory</span> requires it — run <a class="rux--link" href="#step-3">step 5.3</a> first</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -160,7 +160,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td><span class="ln-t-exact">whinh4130m000</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td data-k="Code"><span class="ln-t-exact">whinh4130m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -193,15 +193,15 @@
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>shipment number</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-named">Freeze</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Freeze</span></span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Freeze Mandatory</span> is ticked, choose <span class="ln-t-named">Freeze</span></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Freeze</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Confirm</span></h1><p class="ln-step__route"><span class="ln-t-route"><span>Actions</span><span class="sep">➔</span><span class="dest">Confirm</span></span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Choose <span class="ln-t-named">Confirm</span></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Confirm</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. Inventory leaves the source warehouse</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Shipments</span><span class="sep">➔</span><span class="dest">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</p>
 <div class="ln-confirm" data-confirm="ship_transfer-item-between-warehouses">
   <p class="ln-quiet" data-said>Nobody has confirmed this step in LN yet.</p>
   <div class="ln-confirm__ask" data-owner hidden>

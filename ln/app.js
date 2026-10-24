@@ -74,7 +74,7 @@
       case 'em': case 'quote': return `<span class="ln-t-said">${esc(t.v)}</span>`;
       case 'literal': case 'status': return `<span class="ln-t-exact">${esc(t.v)}</span>`;
       case 'button': return `<span class="ln-t-press">${esc(t.label)}</span>`;
-      case 'path': case 'command': return `<span class="ln-t-route">${t.route.split(' \u2794 ').map((x, i, all) => (i ? '<span class="sep">\u2794</span>' : '') + `<span${i === all.length - 1 ? ' class="dest"' : ''}>${esc(x)}</span>`).join('')}</span>`;
+      case 'path': case 'command': return `<span class="ln-t-route">${t.route.split(' \u2794 ').map((x, i, all) => (i ? '<span class="sep">\u2794</span>' : '') + `<span class="${[i === all.length - 1 && 'dest', x.length <= 32 && 'ln-t-whole'].filter(Boolean).join(' ')}">${esc(x)}</span>`).join('')}</span>`;
       case 'session': return `<span class="ln-t-named">${esc(t.name || t.code)}</span>${t.name ? ` <span class="ln-t-exact">${esc(t.code)}</span>` : ''}`;
       case 'link': return `<span>${esc(t.v)}</span>`;
       case 'gap': return '<span class="ln-t-gap">Not known yet:</span> ';
@@ -112,6 +112,13 @@
     } catch (e) {
       delete el.dataset.drawn;
     }
+  }
+
+  // ---- a process: on a phone a task in its summary opens one step at a time,
+  // where on a wide screen it scrolls to the task's steps further down.
+  if (phone()) for (const a of document.querySelectorAll('.ln-proc__summary a[href^="#task-"]')) {
+    const to = document.querySelector(`${a.getAttribute('href')} .ln-proc__task-title a`);
+    if (to) a.href = to.getAttribute('href');
   }
 
   // ---- a task: the Document, or Guided one step at a time ---------------------

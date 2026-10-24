@@ -117,19 +117,19 @@
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> When the command is chosen, LN runs the dataset for the record on the screen, writes the result into the prompt text and sends it to the model. The answer opens in a window of its own. The model answers only from what the dataset sent, and a wrong answer looks the same as a right one, so check the first answer against the screen, then read it for anything nobody asked for.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td><b>5.1</b></td><td>Close any open tab of your screen</td><td></td></tr>
-<tr id="step-2"><td><b>5.2</b></td><td>Open your screen and tick a record whose answer you can check. Example: an item with stock in two warehouses</td><td></td></tr>
-<tr id="step-3"><td><b>5.3</b></td><td>Note the values the answer should state. Example: the item's on hand and on order figures on its row</td><td><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected values</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-4"><td><b>5.4</b></td><td>Open <span class="ln-t-named">Actions</span> and choose your command</td><td>A window with your sentence under <span class="ln-t-named">Prompt</span> and the answer under <span class="ln-t-named">Response</span></td></tr>
-<tr id="step-5"><td><b>5.5</b></td><td>Compare the answer with your expected values</td><td>The facts should match. Example: the warehouses' figures add up to the row's</td></tr>
-<tr id="step-6"><td><b>5.6</b></td><td>Read the answer for what the prompt text did not ask for</td><td>Example: a report with a column of the model's own sums, one of them wrong, and a promise</td></tr>
+<tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">Close any open tab of your screen</td><td data-k="You should see"></td></tr>
+<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Open your screen and tick a record whose answer you can check. Example: an item with stock in two warehouses</td><td data-k="You should see"></td></tr>
+<tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">Note the values the answer should state. Example: the item's on hand and on order figures on its row</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected values</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">Open <span class="ln-t-named">Actions</span> and choose your command</td><td data-k="You should see">A window with your sentence under <span class="ln-t-named">Prompt</span> and the answer under <span class="ln-t-named">Response</span></td></tr>
+<tr id="step-5"><td data-k="Step"><b>5.5</b></td><td data-k="Action">Compare the answer with your expected values</td><td data-k="You should see">The facts should match. Example: the warehouses' figures add up to the row's</td></tr>
+<tr id="step-6"><td data-k="Step"><b>5.6</b></td><td data-k="Action">Read the answer for what the prompt text did not ask for</td><td data-k="You should see">Example: a report with a column of the model's own sums, one of them wrong, and a promise</td></tr>
 </tbody>
 </table></div>
 
@@ -140,10 +140,10 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td>The command isn't in <span class="ln-t-named">Actions</span></td><td>Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="../do/link-the-prompt-to-a-session.html#step-2">step 4.2</a> (Link the prompt to a session), character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in <a class="rux--link" href="../do/plan-the-prompt.html#step-3">step 1.3</a> (Plan the prompt)</td></tr>
-<tr><td>The command is still missing and the code is right</td><td>Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open it again</td></tr>
-<tr><td>The command is in <span class="ln-t-named">Actions</span> but greyed out</td><td>The link may be waiting for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="../do/link-the-prompt-to-a-session.html#step-3">step 4.3</a> (Link the prompt to a session)</td></tr>
-<tr><td>An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</td><td>The dataset's main table isn't the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table</td></tr>
+<tr><td data-k="Symptom">The command isn't in <span class="ln-t-named">Actions</span></td><td data-k="What to do">Read the session code in the status bar of the screen and compare it with <a class="rux--link" href="../do/link-the-prompt-to-a-session.html#step-2">step 4.2</a> (Link the prompt to a session), character for character. On a tab of a workbench the status bar shows the workbench; read the tab's code in its own Personalize Form, as in <a class="rux--link" href="../do/plan-the-prompt.html#step-3">step 1.3</a> (Plan the prompt)</td></tr>
+<tr><td data-k="Symptom">The command is still missing and the code is right</td><td data-k="What to do">Check that <span class="ln-t-named">Active</span> is ticked on the link, then close the screen's tab and open it again</td></tr>
+<tr><td data-k="Symptom">The command is in <span class="ln-t-named">Actions</span> but greyed out</td><td data-k="What to do">The link may be waiting for a ticked record. Tick one, or set <span class="ln-t-named">When Enabled</span> to <span class="ln-t-exact">Always</span>, as in <a class="rux--link" href="../do/link-the-prompt-to-a-session.html#step-3">step 4.3</a> (Link the prompt to a session)</td></tr>
+<tr><td data-k="Symptom">An error names <span class="ln-t-exact">dataset.get.selection.index</span> and a table</td><td data-k="What to do">The dataset's main table isn't the screen's. The table in the message is the screen's: build the dataset on it, or link the prompt to a screen on your table</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -154,7 +154,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td><a class="rux--link" href="../screens/whwmd4100m100.html">Company - Item Inventory</a></td><td><span class="ln-t-exact">whwmd4100m100</span></td><td><span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span></td></tr>
+<tr><td data-k="Screen"><a class="rux--link" href="../screens/whwmd4100m100.html">Company - Item Inventory</a></td><td data-k="Code"><span class="ln-t-exact">whwmd4100m100</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -200,7 +200,7 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Example: a report with a column of the model's own sums, one of them wrong, and a promise</p></div>
   </li>
 </ol>
-<p class="ln-step__route">This task starts at <span class="ln-t-route"><span>Warehousing</span><span class="sep">➔</span><span>Inventory Reporting</span><span class="sep">➔</span><span>Inventory Position</span><span class="sep">➔</span><span class="dest">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</p>
+<p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Company - Item Inventory</span></span> (<span class="ln-t-exact">whwmd4100m100</span>)</p>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">

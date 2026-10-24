@@ -26,6 +26,9 @@
 .ln-t-named { font-weight: 600; color: var(--rux-text-primary); }
 .ln-t-exact { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .875em; color: var(--rux-text-primary); overflow-wrap: anywhere; }
 .ln-t-route .sep { color: var(--rux-text-placeholder); padding: 0 .3em; }
+/* On screen a route breaks after an arrow rather than inside a menu's name;
+   paper keeps the breaks its pages were measured with. */
+@media screen { .ln-t-whole { white-space: nowrap; } .ln-t-route .sep::after { content: "\200b"; } }
 .ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary); }
 .rux--link .ln-t-route .dest, .rux--link .ln-t-exact, .rux--link .ln-t-named { color: inherit; }
 .ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }
@@ -73,9 +76,11 @@
 .ln-proc__meta > div { display: contents; }
 .ln-proc__meta dt { color: var(--rux-text-secondary); }
 .ln-proc__meta dd { margin: 0; }
-/* A route is one word to the browser, its stops joined by arrows, so on a
-   phone it may break anywhere rather than widen the page. */
-.ln-proc__meta .ln-t-route { overflow-wrap: anywhere; }
+/* On a phone each fact's name stands over it, so the answer has the whole width. */
+@media screen and (max-width: 41.98rem) {
+  .ln-proc__meta { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .ln-proc__meta dd { margin-block-end: .625rem; line-height: 1.45; }
+}
 .ln-pages .ln-proc__lead { max-inline-size: 48rem; margin: 0 0 1rem; line-height: 1.5; }
 .ln-proc__table { margin-block-end: 1rem; overflow-x: auto; }
 .ln-proc__table td { line-height: 1.45; }
@@ -83,12 +88,12 @@
 .ln-proc__steps tr:target td { background: var(--rux-highlight); }
 .ln-proc__value { display: block; margin-block-start: .375rem; }
 .ln-proc__value-row { display: block; }
-.ln-proc__value-k { display: block; font-size: .75rem; color: var(--rux-text-secondary); }
+.ln-proc__value-k { display: block; font-size: .875rem; color: var(--rux-text-secondary); }
 .ln-proc__see { display: block; margin-block-end: .375rem; }
 /* The figures to write down share one label column, so every line starts in the same place. */
 .ln-proc__writes { display: grid; grid-template-columns: max-content 1fr; column-gap: .5rem; row-gap: .375rem; align-items: end; }
 .ln-proc__writes-k, .ln-proc__write-note { grid-column: 1 / -1; }
-.ln-proc__writes-k { display: block; margin-block-end: .125rem; font-size: .75rem; color: var(--rux-text-secondary); }
+.ln-proc__writes-k { display: block; margin-block-end: .125rem; font-size: .875rem; color: var(--rux-text-secondary); }
 .ln-proc__write { display: contents; }
 .ln-proc__write-line { min-inline-size: 3rem; block-size: 1.1em; border-block-end: 1px solid var(--rux-border-strong-01); }
 .ln-proc__write-note { display: block; margin-block-end: .375rem; font-size: .8125rem; color: var(--rux-text-secondary); }

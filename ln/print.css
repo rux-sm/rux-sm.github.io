@@ -103,3 +103,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 .ln-proc__wrong:not(:has(tbody tr:nth-child(4))) { break-inside: avoid; }
 .ln-pages p, .ln-pages li { orphans: 3; widows: 3; }
 h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc__lead { break-after: avoid; }
+
+/* A step's Example and Write down labels keep paper's smaller size, which the
+   printed pages are measured with; the screen sets them at the text's own. */
+.ln-proc__value-k, .ln-proc__writes-k { font-size: .75rem; }

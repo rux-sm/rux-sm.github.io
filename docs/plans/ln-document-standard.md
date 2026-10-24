@@ -15,9 +15,9 @@ a walked date, and help organised by symptom.
 ## Decisions
 
 - **Paper's first page opens with a brand block**: the Rux mark, LN Notes,
-  the kind of document, its version and an empty Prepared by line to write
-  on. A client's own name and logo wait until one is needed, because no
-  client's name goes on a public page.
+  the kind of document, its version, module and product, and empty Client and
+  Prepared by lines to write on. A client's own name and logo wait until one
+  is needed, because no client's name goes on a public page.
 - **The version is the Updated date** the footer already prints, and there is
   no revision log, because a hand-kept log goes stale and git is the record.
 - **The test values are the table the Document already has.** Its Summary
@@ -27,8 +27,10 @@ a walked date, and help organised by symptom.
 - **A task's Example is written from its walk and goes in before the walk**,
   because any change to what a task shows takes its walked mark away, so the
   walk that follows proves the values and stamps the task once.
-- **Check the result and a sign-off end paper**, one row per task with its
-  result and boxes for Pass and Fail, built from what atlas already sends.
+- **Screens used, Check the result and a sign-off end paper**: the screens
+  with how to open each, one row per task with its result and boxes for Pass
+  and Fail, and the sign-off's roles named as consultant, key user and
+  process owner.
 - **The five reworded guides are walked again** once their Example sections
   are in, so every guide carries its values without waiting for its next
   change.

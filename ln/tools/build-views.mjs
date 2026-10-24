@@ -649,7 +649,7 @@ ${wrong}` : ''}
 ${docH2('reference', 'Reference')}
 ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `<p>${said(x.tokens)}</p>` : '').join('')]))}
 </section>` : '';
-    const html = `${brandBlock(updated)}
+    const html = `${brandBlock(updated, s.modules)}
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
@@ -802,10 +802,12 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
 const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
 // Paper opens with the Rux mark and LN Notes, the kind of document, its
-// version and a line to write Prepared by on.
-const brandBlock = (updated) => `<div class="ln-paper-only ln-brand">
+// version, module and product, and lines to write the client and Prepared by
+// on, because no client's name goes on a public page.
+const brandBlock = (updated, modules) => `<div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>`;
 // Paper ends with each task's result to tick and a sign-off,
 // so a printed copy is also the test sheet; the screen has the results in its
@@ -816,7 +818,7 @@ ${docTable([['Task', '4rem'], ['Expected result'], ['Pass or fail', '10rem']], r
 </section>`;
 const signOff = () => `<section class="ln-paper-only">
 ${docH2('sign-off', 'Sign-off')}
-${docTable([['Role', '20%'], ['Name', '28%'], ['Signature'], ['Date', '16%']], ['Prepared by', 'Reviewed by', 'Approved by'].map((r) => ({ cells: [r, '', '', ''] })), 'ln-proc__signoff')}
+${docTable([['Role', '20%'], ['Name', '28%'], ['Signature'], ['Date', '16%']], [['Prepared by', 'Consultant'], ['Reviewed by', 'Key user'], ['Approved by', 'Process owner']].map(([r, who]) => ({ cells: [`${r}<br><span class="ln-quiet">${who}</span>`, '', '', ''] })), 'ln-proc__signoff')}
 </section>`;
 const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
 // Not walked is said on screen and left off paper, where a printed copy is
@@ -925,7 +927,7 @@ function task(s, t) {
     const lead = t.why ? docText(t.why.tokens, t, 'Why LN works this way') : '';
     const stepsHtml = stepTable(t, k);
     const ups = proseHtml(above), downs = proseHtml(below);
-    const body = `${brandBlock(updated)}
+    const body = `${brandBlock(updated, t.modules)}
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">${sentence(docText(t.achieves.tokens, t))}</p>` : ''}

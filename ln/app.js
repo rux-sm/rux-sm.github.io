@@ -305,6 +305,52 @@
   window.addEventListener('afterprint', () => {
     if (kept == null) delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = kept;
   });
+  // Paper's first page carries the company's name and logo from the Print
+  // dialog, kept in this browser and sent nowhere. With none kept, the Rux
+  // mark and "Company name" stand in. The print copy reads them as it opens.
+  const BRAND = 'ln-brand';
+  const brandOf = () => { try { return JSON.parse(localStorage.getItem(BRAND)) ?? {}; } catch (e) { return {}; } };
+  const keepBrand = (change) => { try { localStorage.setItem(BRAND, JSON.stringify({ ...brandOf(), ...change })); return true; } catch (e) { return false; } };
+  const brand = document.querySelector('[data-brand]');
+  const brandForm = document.querySelector('[data-brand-form]');
+  const ruxMark = brand?.querySelector('[data-brand-logo]').getAttribute('src');
+  function showBrand() {
+    const b = brandOf();
+    if (brand) {
+      brand.querySelector('[data-brand-name]').textContent = b.name || 'Company name';
+      brand.querySelector('[data-brand-logo]').src = b.logo || ruxMark;
+    }
+    if (brandForm) {
+      if (document.activeElement !== brandForm.elements.company) brandForm.elements.company.value = b.name ?? '';
+      brandForm.querySelector('[data-logo-pick]').textContent = b.logo ? 'Change the logo' : 'Add a logo';
+      brandForm.querySelector('[data-logo-clear]').hidden = !b.logo;
+    }
+  }
+  function logoError(text) {
+    const line = brandForm.querySelector('[data-logo-error]');
+    line.textContent = text;
+    line.hidden = !text;
+  }
+  brandForm?.addEventListener('input', (event) => {
+    if (event.target.name === 'company') { keepBrand({ name: event.target.value.trim() }); showBrand(); }
+  });
+  brandForm?.addEventListener('submit', (event) => event.preventDefault());
+  brandForm?.addEventListener('change', (event) => {
+    if (event.target.name !== 'logo') return;
+    const file = event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    // A browser keeps about 5 MB for a site, so a logo is held to 1 MB.
+    if (file.size > 1024 * 1024) return void logoError('That logo is over 1 MB. Pick a smaller file.');
+    const read = new FileReader();
+    read.addEventListener('load', () => {
+      logoError(keepBrand({ logo: read.result }) ? '' : 'This browser could not keep the logo.');
+      showBrand();
+    });
+    read.readAsDataURL(file);
+  });
+  brandForm?.querySelector('[data-logo-clear]').addEventListener('click', () => { keepBrand({ logo: '' }); logoError(''); showBrand(); });
+  showBrand();
   // Print prints a copy of this page from a hidden frame, so the swap happens
   // in the copy and the page behind the dialog keeps its theme. The browser's
   // own Print command prints this page, and the swap shows behind its dialog.

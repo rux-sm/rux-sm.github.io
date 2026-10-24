@@ -30,10 +30,10 @@ a walked date, and help organised by symptom.
 - **A task's Example is written from its walk and goes in before the walk**,
   because any change to what a task shows takes its walked mark away, so the
   walk that follows proves the values and stamps the task once.
-- **The checklist is built from what atlas already sends.** A new section,
-  Check the result, sits after the Procedure: one row per task, its number,
-  its result line and an empty Pass or Fail box, so no guide needs new writing
-  for it. The box is on paper only, where it can be ticked.
+- **The checklist is built from what atlas already sends.** Check the result
+  ends paper beside the sign-off: one row per task, its number, its result
+  line and boxes for Pass and Fail, so no guide needs new writing for it. It
+  is on paper only, because the screen's Summary already shows each result.
 - **Paper ends with an empty sign-off block**: Prepared, Reviewed and
   Approved, each with a signature and a date line.
 - **The five reworded guides are walked again** once their Example sections

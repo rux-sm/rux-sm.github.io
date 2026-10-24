@@ -109,3 +109,24 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 /* A step's Example and Write down labels keep paper's smaller size, which the
    printed pages are measured with; the screen sets them at the text's own. */
 .ln-proc__value-k, .ln-proc__writes-k { font-size: .75rem; }
+
+/* The first page opens with the company: its logo, its name and the kind of
+   document over a rule, then the version and a line to write Prepared by on. */
+.ln-brand { margin-block-end: 1.25rem; }
+.ln-brand__top { display: flex; align-items: center; gap: 4mm; padding-block-end: 3mm; border-block-end: 1.5px solid var(--rux-text-primary); }
+.ln-brand__logo { max-block-size: 12mm; max-inline-size: 45mm; inline-size: auto; block-size: auto; }
+.ln-brand__name { flex: 1; font-size: 14pt; font-weight: 600; }
+.ln-brand__kind { font-size: 9pt; letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary); }
+.ln-brand__facts { display: flex; gap: 10mm; margin: 2.5mm 0 0; font-size: 9pt; }
+.ln-brand__facts > div { display: flex; gap: 2mm; align-items: baseline; }
+.ln-brand__facts dt { color: var(--rux-text-secondary); }
+.ln-brand__facts dd { margin: 0; }
+.ln-brand__by dd { inline-size: 55mm; border-block-end: 1px solid var(--rux-text-primary); }
+
+/* A result is ticked in one of two boxes, and a sign-off row is a pen's height. */
+.ln-tick { display: inline-block; inline-size: 3mm; block-size: 3mm; margin-inline-end: 1.5mm; vertical-align: -.3mm; border: 1px solid var(--rux-text-primary); }
+.ln-tick ~ .ln-tick { margin-inline-start: 3mm; }
+.ln-proc__signoff td { block-size: 11mm; }
+.ln-proc__check td:last-child { white-space: nowrap; }
+/* A checklist stays on one page whole, and so does the sign-off. */
+.ln-proc__check, .ln-proc__signoff, .ln-proc__check tr { break-inside: avoid; }

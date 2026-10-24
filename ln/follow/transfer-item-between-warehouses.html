@@ -107,12 +107,16 @@
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
+<div class="ln-paper-only ln-brand" data-brand>
+<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt="" data-brand-logo><span class="ln-brand__name" data-brand-name>Company name</span><span class="ln-brand__kind">Work instruction</span></div>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>24 Oct 2026</dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
+</div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Warehouse transfer</h1>
 <p class="rux--type-body-long-01">Move a quantity of one item from one warehouse to another in the same company, and check the stock at both.</p>
 </div>
 <dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>7 tasks, 39 steps</dd></div><div><dt>Updated</dt><dd>24 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
-<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-stock-destination-and-expected-order-type.html?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
+<p class="ln-go"><a class="rux--btn rux--btn--primary" href="../do/confirm-stock-destination-and-expected-order-type.html?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-rux-open="ln-print">Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="summary">Summary</h2>
 <div class="rux--data-table-container ln-proc__table ln-proc__summary">
@@ -346,11 +350,72 @@
 </tbody>
 </table></div>
 </section>
+<section class="ln-paper-only">
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="check">Check the result</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__check">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Task"><b>1</b></td><td data-k="Expected result">You know the stock at both warehouses and which order type a transfer should get.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>2</b></td><td data-k="Expected result">A warehousing order exists with transaction type <strong>Transfer</strong>.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>3</b></td><td data-k="Expected result">You know which steps LN runs by itself and which are yours, and outbound advice exists.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result">The goods are picked and moved to staging at the source.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>5</b></td><td data-k="Expected result">The goods leave the source warehouse.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">The goods are received into the destination warehouse.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>7</b></td><td data-k="Expected result">The source is down and the destination up, by the same quantity.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="ln-paper-only">
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="sign-off">Sign-off</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__signoff">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:20%"><span class="rux--table-header-label">Role</span></th><th scope="col" style="width:28%"><span class="rux--table-header-label">Name</span></th><th scope="col"><span class="rux--table-header-label">Signature</span></th><th scope="col" style="width:16%"><span class="rux--table-header-label">Date</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Role">Prepared by</td><td data-k="Name"></td><td data-k="Signature"></td><td data-k="Date"></td></tr>
+<tr><td data-k="Role">Reviewed by</td><td data-k="Name"></td><td data-k="Signature"></td><td data-k="Date"></td></tr>
+<tr><td data-k="Role">Approved by</td><td data-k="Name"></td><td data-k="Signature"></td><td data-k="Date"></td></tr>
+</tbody>
+</table></div>
+</section>
+<div class="rux--layer-one rux--modal" id="ln-print" role="presentation">
+  <div role="dialog" aria-modal="true" aria-labelledby="ln-print-h" tabindex="-1" class="rux--modal-container rux--modal-container--sm">
+    <div class="rux--modal-header">
+      <h2 class="rux--modal-header__heading" id="ln-print-h">Print</h2>
+      <div class="rux--modal-close-button">
+        <button type="button" class="rux--modal-close" aria-label="Close" data-rux-close>
+          <svg class="rux--modal-close__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="rux--modal-content">
+      <form class="rux--stack-vertical rux--stack-scale-5" data-brand-form>
+        <div class="rux--form-item rux--text-input-wrapper">
+          <div class="rux--text-input__label-wrapper"><label class="rux--label" for="ln-print-name">Company name</label></div>
+          <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+            <input id="ln-print-name" class="rux--text-input rux--layout--size-md" type="text" name="company" autocomplete="organization">
+          </div></div>
+        </div>
+        <div class="ln-print__logo">
+          <label class="rux--btn rux--btn--tertiary rux--btn--sm rux--layout--size-sm"><span data-logo-pick>Add a logo</span><input class="rux--visually-hidden" type="file" name="logo" accept="image/png,image/jpeg,image/svg+xml"></label>
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-logo-clear hidden>Remove the logo</button>
+        </div>
+        <p class="rux--type-label-01 ln-quiet">Kept in this browser only. Left empty, the Rux logo and "Company name" print.</p>
+        <p class="rux--type-label-01 ln-print__error" role="alert" data-logo-error hidden></p>
+      </form>
+    </div>
+    <div class="rux--modal-footer">
+      <button type="button" class="rux--btn rux--btn--secondary" data-rux-close>Cancel</button>
+      <button type="button" class="rux--btn rux--btn--primary" data-rux-close data-print>Print</button>
+    </div>
+  </div>
+</div>
 </div>
 </div>
 </div>
 </main>
 <script src="/design/js/overlay.js"></script>
+<script src="/design/js/modal.js"></script>
 <script src="/design/js/form-controls.js"></script>
 <script src="/design/js/ui-shell.js"></script>
 <script src="/design/js/dismiss.js"></script>

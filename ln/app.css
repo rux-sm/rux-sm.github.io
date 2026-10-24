@@ -29,6 +29,12 @@
 /* On screen a route breaks after an arrow rather than inside a menu's name;
    paper keeps the breaks its pages were measured with. */
 @media screen { .ln-t-whole { white-space: nowrap; } .ln-t-route .sep::after { content: "\200b"; } }
+/* The brand block, Check the result and the sign-off are for paper, which
+   print.css lays out; the screen has the facts row and the Summary. */
+@media screen { .ln-paper-only { display: none; } }
+/* The Print dialog's logo buttons share a row. */
+.ln-print__logo { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ln-print__error { color: var(--rux-text-error); }
 .ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary); }
 .rux--link .ln-t-route .dest, .rux--link .ln-t-exact, .rux--link .ln-t-named { color: inherit; }
 .ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }

@@ -67,6 +67,9 @@
   .ln-proc__table .rux--data-table .ln-proc__table-title th { display: block; }
   /* A title that wraps to two lines keeps its height; Carbon fixes a header row at one. */
   .ln-proc__table .rux--data-table .ln-proc__table-title { block-size: auto; }
+  /* The title stands 12px in on every side, in line with the rows under it, so
+     a theme that fills the header holds it in the middle of its band. */
+  .ln-proc__table .rux--data-table .ln-proc__table-title th { padding: .75rem; }
   .ln-proc__table .rux--data-table thead tr:not(.ln-proc__table-title) { display: none; }
   .ln-proc__table .rux--data-table tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: .625rem; block-size: auto; padding: 1rem .75rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
   /* nth-child(n) matches every cell; it lifts the rule over a theme's own first-cell padding. */
@@ -92,4 +95,15 @@
   /* A task in the list is a place to tap, so its link is a finger tall. */
   .ln-pages .ln-proc__summary .rux--link { display: inline-block; min-block-size: 2.75rem; padding-block: .625rem; }
   .ln-proc__summary .rux--data-table tbody tr { padding-block: .375rem; }
+  /* The task's number stands as low as its link's words, which the finger-tall link sets 10px down. */
+  .ln-proc__table.ln-proc__summary .rux--data-table tbody tr td:first-child { padding-block-start: .625rem; }
 }
+
+/* A card's facts keep their values in one column. The code is a copy button,
+   so it gives back its own inset and its words start where the others do; a
+   list of links, a task's uses or its ideas, stands one link to a line, 6px
+   apart, so a link that wraps does not read as two. */
+.ln-card__facts .ln-task__code { padding-inline: .5rem; margin-inline-start: -.5rem; }
+.ln-card__facts dd > .rux--link { display: block; inline-size: fit-content; }
+.ln-card__facts dd > .rux--link + br { display: none; }
+.ln-card__facts dd > .rux--link + br + .rux--link { margin-block-start: .375rem; }

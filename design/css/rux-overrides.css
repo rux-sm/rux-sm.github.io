@@ -321,16 +321,16 @@
   border-radius: 6px;
 }
 /* RUX-DARK'S CORNERS ARE THE MARK'S SQUARES: 4px on a control and a tag,
-   8px on a floating surface, and none on a card or a panel, where the rounded
-   themes take 4, 6, 8 and 12. A control held close to a floating surface's
-   edge -- a menu's item, a scheduler shortcut -- stands 4px in, so its 4px
-   corner runs parallel to the surface's 8px; a nav's and a switcher's rows
-   are square, as the nav's own rule below says. Each corner is written for rux-dark alone
-   right after the shared rule it replaces, so it meets Carbon's rules and
-   this file's in the order the shared rule did; a shared rule that set
-   nothing but a corner no longer names it. Round stays round only where the
-   roundness is the meaning: the account picture, a radio, a toggle and a
-   status dot. */
+   8px on a floating surface, and none on a card, a panel or a table's box,
+   where the rounded themes take 4, 6, 8 and 12. A control held close to a
+   floating surface's edge -- a menu's item, a scheduler shortcut -- stands
+   4px in, so its 4px corner runs parallel to the surface's 8px; a nav's and
+   a switcher's rows are square, as the nav's own rule below says. Each
+   corner is written for rux-dark alone right after the shared rule it
+   replaces, so it meets Carbon's rules and this file's in the order the
+   shared rule did; a shared rule that set nothing but a corner no longer
+   names it. Round stays round only where the roundness is the meaning: the
+   account picture, a radio, a toggle and a status dot. */
 [data-theme="rux-dark"] .rux--btn,
 [data-theme="rux-dark"] .rux--text-input,
 [data-theme="rux-dark"] .rux--text-area,
@@ -1429,7 +1429,7 @@
   overflow: hidden;
 }
 [data-theme="rux-dark"] .rux--data-table-container {
-  border-radius: 8px;
+  border-radius: 0;
 }
 /* Inside the box, the header takes no fill and carries one rule under it, as
    Geist's does on the same page; Carbon's filled header inside a bordered box
@@ -1611,8 +1611,8 @@
   border-end-end-radius: 8px;
 }
 [data-theme="rux-dark"] :is(.rux--data-table-container, :has(> .rux--data-table-container:last-child)) + .rux--pagination {
-  border-end-start-radius: 8px;
-  border-end-end-radius: 8px;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
 }
 /* GEIST'S SEGMENTED CONTROL, measured on its Switch page: a box on the
    surface inside a 1px ring, 6px corners and 4px of padding, holding 28px

@@ -20,7 +20,7 @@
     "Warehousing",
     "Sales"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",

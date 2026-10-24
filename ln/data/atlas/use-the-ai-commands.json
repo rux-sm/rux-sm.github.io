@@ -10,7 +10,7 @@
     "Sales"
   ],
   "updated": "2026-10-24",
-  "status": "draft",
+  "status": "approved",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
   "order": 0,
   "sources": [

@@ -1,9 +1,9 @@
-commit   20b529eca6cb5a6e6eece150136bd9168a298c78
-date     2026-10-24T17:26:51Z
-subject  feat(tasks): Stamp Use the AI commands walked
+commit   86b4bb837d838ccab7e54215a233a7ecdcda37ca
+date     2026-10-24T17:28:55Z
+subject  feat(walkthroughs): Approve Use the AI commands
 contract 22 
 tier     export
-sha256   be0e5e0ff928681e416898c973e28f7972827631ea99faf9a4228587bfb6de6a
+sha256   32dc11f88493e37aed64b78dd770e0bc077a3a19c151fe8a3055018211021591
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

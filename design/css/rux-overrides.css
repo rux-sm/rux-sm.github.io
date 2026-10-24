@@ -1459,6 +1459,16 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--data-table tbody th {
   border-block-end-color: var(--rux-border-subtle-00);
 }
+/* Carbon gives every cell a top border in the layer's colour, and where
+   borders collapse a cell's border beats its row's, so that unseen line hid
+   the header's rule; the cells drop it. The last row draws no rule, because
+   the box's own edge closes it and the two stood 1px apart as a double line. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--data-table :is(td, tbody th) {
+  border-block-start: 0;
+}
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--data-table-container .rux--data-table tbody tr:last-child :is(td, th) {
+  border-block-end: 0;
+}
 /* A sortable header is a button, and Carbon fills the button rather than the
    cell, so the transparent header above still drew a grey block behind every
    sortable column and a lighter one behind the sorted column, beside plain

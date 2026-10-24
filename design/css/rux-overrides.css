@@ -944,6 +944,14 @@
 [data-theme="rux-dark"] .rux--link:hover {
   text-decoration-color: currentColor;
 }
+/* A heading that is a link needs no line to be found, and a line under large
+   type is heavy, so it carries one only under the pointer. */
+[data-theme="rux-dark"] :is(h1, h2, h3, h4, h5, h6) .rux--link {
+  text-decoration-line: none;
+}
+[data-theme="rux-dark"] :is(h1, h2, h3, h4, h5, h6) .rux--link:hover {
+  text-decoration-line: underline;
+}
 /* RUX-DARK SETS FIGURES AND SMALL LABELS IN PLEX MONO, so a number lines up
    with the one beside it and a label reads as a label: a metric tile's figure
    and the label over it, a field's label and a tag's word. A label is in

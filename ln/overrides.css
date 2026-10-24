@@ -39,6 +39,16 @@
    headings'. Carbon's static table is only as wide as its content. */
 .ln-proc__table .rux--data-table--static { inline-size: 100%; }
 
+/* On a screen wider than a phone, every cell of a Document's table, its title
+   row too, holds its words 16px in on all four sides, as a tile does, since a
+   step is read a line at a time; Carbon's small size, kept for its print
+   layout, stands them 7px from the rule. The second selector meets Design's
+   first- and last-cell inset and the title row's own rule at their weight. */
+@media screen and (min-width: 42rem) {
+  .ln-proc__table .rux--data-table :is(th, td),
+  .ln-proc__table .rux--data-table :is(th, td):is(:first-child, :last-child) { padding: 1rem; }
+}
+
 /* On a phone a Document's table is a list. Each row is a block and each cell
    stands under the one before with its column's name over it; a numbered
    row keeps its number beside it. Three columns across a phone left a word

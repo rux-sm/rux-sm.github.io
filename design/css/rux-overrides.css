@@ -323,8 +323,9 @@
 /* RUX-DARK'S CORNERS ARE THE MARK'S SQUARES: 4px on a control and a tag,
    8px on a floating surface, and none on a card or a panel, where the rounded
    themes take 4, 6, 8 and 12. A control held close to a floating surface's
-   edge -- a menu's item, a switcher's option, a scheduler shortcut -- stands
-   4px in, so its 4px corner runs parallel to the surface's 8px. Each corner is written for rux-dark alone
+   edge -- a menu's item, a scheduler shortcut -- stands 4px in, so its 4px
+   corner runs parallel to the surface's 8px; a nav's and a switcher's rows
+   are square, as the nav's own rule below says. Each corner is written for rux-dark alone
    right after the shared rule it replaces, so it meets Carbon's rules and
    this file's in the order the shared rule did; a shared rule that set
    nothing but a corner no longer names it. Round stays round only where the
@@ -1826,8 +1827,29 @@
 [data-theme="geist-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
   border-radius: 6px;
 }
+/* rux-dark squares the pill, and its chosen row is the ink with black words,
+   so the one row that says where you are is the brightest thing in the list.
+   Hovering it steps to the inverse hover, and its focus ring is the inset
+   black, since the white ring would vanish on the white row. */
 [data-theme="rux-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
-  border-radius: 4px;
+  border-radius: 0;
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected) {
+  background-color: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected):hover {
+  background-color: var(--rux-background-inverse-hover);
+  color: var(--rux-text-inverse);
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected) :is(span, .rux--side-nav__submenu-title, .rux--text-truncate-end) {
+  color: var(--rux-text-inverse);
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false]) .rux--side-nav__icon > svg {
+  fill: var(--rux-icon-inverse);
+}
+[data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected):focus-visible {
+  outline-color: var(--rux-focus-inset);
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__submenu {
   inline-size: calc(100% - 1rem);

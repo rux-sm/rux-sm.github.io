@@ -85,10 +85,18 @@ And a team, after log-in, sees what the public page cannot carry.
   owner's private detail is now. An LN reader is an account given LN Guide, as
   Sevens and Coins give one app.
 
-- **The team sees a screenshot under each step and a screen's whole field
+- **The team sees one screenshot per task and a screen's whole field
   reference**, redacted in atlas before it leaves, sent by atlas's sync to a
   private bucket, and drawn by the page after log-in. Text stays the step,
   because a screenshot goes stale and the reader reads words first.
+
+- **A task's screenshot shows the one step that is hardest to find in words**,
+  most often a menu path, and sits under that step with a caption naming the
+  step and the screen, because a full screen above every task made Ship from
+  stock 15 pages and showed each task's end before its start. It is taken in
+  the task's recorded walk, so its date is the walked date the page prints,
+  cropped to the part the step acts on, with the field or menu item boxed in
+  red and the pointer, user name and company number gone.
 
 ## Questions
 

@@ -51,4 +51,7 @@ a walked date, and help organised by symptom.
       [ln-plain-voice.md](ln-plain-voice.md).
 - [ ] In atlas, write the Example sections of the five reworded guides and
       walk each again: Set up a GenAI prompt, Check an item's inventory, Use
-      the AI commands, Ship from stock and Warehouse transfer.
+      the AI commands, Ship from stock and Warehouse transfer. Ship from
+      stock's step 2.3 then says to check the Order Type, which LN fills in.
+- [ ] In atlas, write each task's result as a fact a tester can tick, with
+      the walked figure in its Example, so Check the result can pass or fail.

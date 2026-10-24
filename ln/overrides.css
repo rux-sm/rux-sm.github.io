@@ -75,6 +75,8 @@
   /* A cell with nothing in it, such as a step with nothing to see, takes no line and no label. */
   .ln-proc__table .rux--data-table tbody tr td:nth-child(n):empty { display: none; }
   .ln-proc__table .rux--data-table tbody tr td + td::before { content: attr(data-k); display: block; margin-block-end: .125rem; font-size: .875rem; color: var(--rux-text-secondary); }
+  /* A short value, a step's number, a count or a screen's code, stands on its name's line. */
+  .ln-proc__table .rux--data-table tbody tr td:is([data-k="Step"], [data-k="Steps"], [data-k="Code"])::before { display: inline; margin-inline-end: .5rem; }
   .ln-proc__steps .rux--data-table tbody tr,
   .ln-proc__summary .rux--data-table tbody tr { grid-template-columns: 2rem minmax(0, 1fr); column-gap: .75rem; }
   .ln-proc__steps .rux--data-table tbody tr td + td,

@@ -31,12 +31,10 @@ page the real records and one screenshot per task.
 - [ ] In atlas, write the Example section of each task in the six guides
       still to be reworded, before each one's walk in
       [ln-plain-voice.md](ln-plain-voice.md).
-- [ ] In atlas, write the Example sections of the five reworded guides and
-      walk each again: Set up a GenAI prompt, Check an item's inventory, Use
-      the AI commands, Ship from stock and Warehouse transfer. Ship from
-      stock's step 2.3 then says to check the Order Type, which LN fills in.
-- [ ] In atlas, write each task's result as a fact a tester can tick, with
-      the walked figure in its Example, so Check the result can pass or fail.
-- [ ] In atlas, give every guide a Before you start naming what must exist
-      before its first step, starting with Ship from stock: a customer, an
-      item with stock and a warehouse that holds it.
+- [ ] In atlas, write the Example sections of the four other reworded guides
+      and walk each again: Set up a GenAI prompt, Check an item's inventory,
+      Use the AI commands and Warehouse transfer.
+- [ ] In atlas, write each task's result as a fact a tester can tick, as
+      Ship from stock's are, so Check the result can pass or fail.
+- [ ] In atlas, give every other guide a Before you start naming what must
+      exist before its first step, as Ship from stock's does.

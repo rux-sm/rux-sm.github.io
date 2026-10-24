@@ -23,26 +23,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": null,
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Goods leave the source warehouse."
+        "v": "The goods leave the source warehouse."
       }
     ],
-    "text": "Goods leave the source warehouse."
+    "text": "The goods leave the source warehouse."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question "
+        "v": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse doesn't. Whether you freeze and confirm the shipment, or the procedure does, is in the activity table you read in "
       },
       {
         "t": "link",
@@ -51,10 +51,10 @@
       },
       {
         "t": "text",
-        "v": "'s activity table answers."
+        "v": "."
       }
     ],
-    "text": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse does not. Whether that shipment is frozen and confirmed by you or by the procedure is the question Confirm the processing path and create advice's activity table answers."
+    "text": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse doesn't. Whether you freeze and confirm the shipment, or the procedure does, is in the activity table you read in Confirm the processing path and create advice."
   },
   "blocks": [
     {
@@ -80,7 +80,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check the "
+                  "v": "Find the "
                 },
                 {
                   "t": "chip",
@@ -88,7 +88,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " row. You recorded it in "
+                  "v": " row you read at step 3 of "
                 },
                 {
                   "t": "link",
@@ -96,13 +96,13 @@
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Check the Freeze/Confirm Shipments/Loads row. You recorded it in Confirm the processing path and create advice"
+              "text": "Find the Freeze/Confirm Shipments/Loads row you read at step 3 of Confirm the processing path and create advice"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If already finished automatically, record "
+                  "v": "If LN already finished it, write down "
                 },
                 {
                   "t": "literal",
@@ -110,7 +110,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " and skip steps 2–4; if "
+                  "v": " and skip steps 2 to 4. If its "
                 },
                 {
                   "t": "field",
@@ -118,7 +118,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " is "
                 },
                 {
                   "t": "literal",
@@ -126,10 +126,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", continue"
+                  "v": ", carry on"
                 }
               ],
-              "text": "If already finished automatically, record Automatic / not observed and skip steps 2–4; if Automatic = No, continue"
+              "text": "If LN already finished it, write down Automatic / not observed and skip steps 2 to 4. If its Automatic is No, carry on"
             }
           ],
           "id": "1",
@@ -151,7 +151,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the shipment for this order, then click "
+                  "v": "Find the shipment for this order and click "
                 },
                 {
                   "t": "button",
@@ -159,7 +159,7 @@
                   "location": "line"
                 }
               ],
-              "text": "Find the shipment for this order, then click Drill In"
+              "text": "Find the shipment for this order and click Drill In"
             },
             {
               "tokens": [
@@ -268,10 +268,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". Inventory leaves the source warehouse"
+                  "v": ", and the goods leave the source warehouse"
                 }
               ],
-              "text": "Status = Confirmed. Inventory leaves the source warehouse"
+              "text": "Status = Confirmed, and the goods leave the source warehouse"
             }
           ],
           "id": "4",
@@ -299,16 +299,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No shipment is visible for a different-warehouse transfer"
+                "v": "No shipment shows for a transfer between two warehouses"
               }
             ],
-            "text": "No shipment is visible for a different-warehouse transfer"
+            "text": "No shipment shows for a transfer between two warehouses"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Official help says "
+                "v": "Infor's help says "
               },
               {
                 "t": "field",
@@ -324,7 +324,7 @@
               },
               {
                 "t": "text",
-                "v": ". Check Shipment Lines and the "
+                "v": ". Check Shipment Lines and the activity table from "
               },
               {
                 "t": "link",
@@ -333,10 +333,10 @@
               },
               {
                 "t": "text",
-                "v": " activity status before continuing"
+                "v": " before going on"
               }
             ],
-            "text": "Official help says Create Shipment is Always. Check Shipment Lines and the Confirm the processing path and create advice activity status before continuing"
+            "text": "Infor's help says Create Shipment is Always. Check Shipment Lines and the activity table from Confirm the processing path and create advice before going on"
           }
         ]
       },
@@ -345,28 +345,24 @@
           {
             "tokens": [
               {
+                "t": "chip",
+                "v": "Confirm"
+              },
+              {
                 "t": "text",
-                "v": "Confirm greyed out"
+                "v": " is greyed out"
               }
             ],
-            "text": "Confirm greyed out"
+            "text": "Confirm is greyed out"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Shipment not yet Frozen, or "
-              },
-              {
-                "t": "field",
-                "v": "Freeze Mandatory"
-              },
-              {
-                "t": "text",
-                "v": " requires it — run step 3 first"
+                "v": "The shipment may not be frozen yet. Run step 3 first"
               }
             ],
-            "text": "Shipment not yet Frozen, or Freeze Mandatory requires it — run step 3 first"
+            "text": "The shipment may not be frozen yet. Run step 3 first"
           }
         ]
       }

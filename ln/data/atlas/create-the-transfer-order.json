@@ -23,11 +23,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
-  "walked": "2026-08-15",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
@@ -37,25 +37,20 @@
       {
         "t": "strong",
         "v": "Transfer"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "A warehousing order exists with transaction type Transfer"
+    "text": "A warehousing order exists with transaction type Transfer."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Pick the goods",
-          "href": "pick-the-goods_transfer-item-between-warehouses.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 3 of "
+          "v": "You need the item and both warehouses from step 3 and step 4 of "
         },
         {
           "t": "link",
@@ -64,38 +59,20 @@
         },
         {
           "t": "text",
-          "v": "; step 4 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm stock, destination, and expected order type",
-          "href": "confirm-stock-destination-and-expected-order-type.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 6 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm stock, destination, and expected order type",
-          "href": "confirm-stock-destination-and-expected-order-type.md"
-        },
-        {
-          "t": "text",
-          "v": "."
+          "v": ", and the expected order type from step 6."
         }
       ],
-      "text": "You need step 1 of Pick the goods; step 3 of Confirm stock, destination, and expected order type; step 4 of Confirm stock, destination, and expected order type; step 6 of Confirm stock, destination, and expected order type."
+      "text": "You need the item and both warehouses from step 3 and step 4 of Confirm stock, destination, and expected order type, and the expected order type from step 6."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+        "v": "A warehousing order you enter by hand has no sales or purchase order behind it, so its number comes from Warehousing's own number group. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, LN puts both halves of the move on this one order: the outbound and shipment steps, then the inbound and inspection steps."
       }
     ],
-    "text": "A manually created warehousing order has no originating package, so the transaction type is set by hand and the order number comes from the Warehousing number group rather than from a sales or purchase order. For a same-company transfer LN copies the outbound and shipment activities and then the inbound and inspection activities onto this one order, so it carries both sides of the move."
+    "text": "A warehousing order you enter by hand has no sales or purchase order behind it, so its number comes from Warehousing's own number group. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, LN puts both halves of the move on this one order: the outbound and shipment steps, then the inbound and inspection steps."
   },
   "blocks": [
     {
@@ -176,11 +153,16 @@
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
+                },
+                {
                   "t": "text",
-                  "v": "A blank warehousing-order header opens"
+                  "v": " opens with the origin, transaction type and order type already filled in"
                 }
               ],
-              "text": "A blank warehousing-order header opens"
+              "text": "Warehousing Order (whinh2100m100) opens with the origin, transaction type and order type already filled in"
             }
           ],
           "id": "2",
@@ -202,36 +184,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
-                },
-                {
-                  "t": "field",
-                  "v": "Order"
-                },
-                {
-                  "t": "text",
-                  "v": " origin to "
+                  "v": "Check that the order's origin reads "
                 },
                 {
                   "t": "literal",
                   "v": "Transfer (Manual)"
                 }
               ],
-              "text": "Set Order origin to Transfer (Manual)"
+              "text": "Check that the order's origin reads Transfer (Manual)"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "This is one of the ten manual order origins listed in the session help — section step 1 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Pick the goods",
-                  "href": "pick-the-goods_transfer-item-between-warehouses.md"
+                  "v": "—"
                 }
               ],
-              "text": "This is one of the ten manual order origins listed in the session help — section step 1 of Pick the goods"
+              "text": "—"
             }
           ],
           "id": "3",
@@ -253,36 +222,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Check that "
                 },
                 {
                   "t": "field",
-                  "v": "Inventory Transaction Type"
+                  "v": "Transaction Type"
                 },
                 {
                   "t": "text",
-                  "v": " to "
+                  "v": " reads "
                 },
                 {
                   "t": "literal",
                   "v": "Transfer"
                 }
               ],
-              "text": "Set Inventory Transaction Type to Transfer"
+              "text": "Check that Transaction Type reads Transfer"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Only settable by hand because the order has no originating package — section step 1 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Pick the goods",
-                  "href": "pick-the-goods_transfer-item-between-warehouses.md"
+                  "v": "—"
                 }
               ],
-              "text": "Only settable by hand because the order has no originating package — section step 1 of Pick the goods"
+              "text": "—"
             }
           ],
           "id": "4",
@@ -312,7 +276,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the source warehouse. It is the one from step 3 of "
+                  "v": " to the source warehouse from step 3 of "
                 },
                 {
                   "t": "link",
@@ -320,7 +284,7 @@
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Set Ship-From Code to the source warehouse. It is the one from step 3 of Confirm stock, destination, and expected order type"
+              "text": "Set Ship-From Code to the source warehouse from step 3 of Confirm stock, destination, and expected order type"
             },
             {
               "tokens": [
@@ -359,7 +323,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the destination warehouse. It is the one from step 4 of "
+                  "v": " to the destination warehouse from step 4 of "
                 },
                 {
                   "t": "link",
@@ -367,7 +331,7 @@
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Set Ship-To Code to the destination warehouse. It is the one from step 4 of Confirm stock, destination, and expected order type"
+              "text": "Set Ship-To Code to the destination warehouse from step 4 of Confirm stock, destination, and expected order type"
             },
             {
               "tokens": [
@@ -381,10 +345,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " — the condition for the Transfer transaction type"
+                  "v": ", which a Transfer needs"
                 }
               ],
-              "text": "Both types read Warehouse — the condition for the Transfer transaction type"
+              "text": "Both types read Warehouse, which a Transfer needs"
             }
           ],
           "id": "6",
@@ -406,7 +370,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare the defaulted "
+                  "v": "Compare the "
                 },
                 {
                   "t": "field",
@@ -414,7 +378,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " with the one you expected. You recorded it at step 6 of "
+                  "v": " LN filled in with the one from step 6 of "
                 },
                 {
                   "t": "link",
@@ -422,7 +386,7 @@
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Compare the defaulted Warehousing Order Type with the one you expected. You recorded it at step 6 of Confirm stock, destination, and expected order type"
+              "text": "Compare the Warehousing Order Type LN filled in with the one from step 6 of Confirm stock, destination, and expected order type"
             },
             {
               "tokens": [
@@ -453,10 +417,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record the value actually used"
+                  "v": "Write down the order type the order actually has"
                 }
               ],
-              "text": "Record the value actually used"
+              "text": "Write down the order type the order actually has"
             },
             {
               "tokens": [
@@ -535,7 +499,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add an order line with the item. It is the item from step 3 of "
+                  "v": "Add an order line with the item from step 3 of "
                 },
                 {
                   "t": "link",
@@ -543,7 +507,7 @@
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Add an order line with the item. It is the item from step 3 of Confirm stock, destination, and expected order type"
+              "text": "Add an order line with the item from step 3 of Confirm stock, destination, and expected order type"
             },
             {
               "tokens": [
@@ -664,10 +628,32 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Header not saved, or a required field is still blank — recheck steps 3–8"
+                "v": "The header isn't saved, or a required field is still empty. Check steps 3 to 8 again"
               }
             ],
-            "text": "Header not saved, or a required field is still blank — recheck steps 3–8"
+            "text": "The header isn't saved, or a required field is still empty. Check steps 3 to 8 again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "What you type in the ship-to warehouse box is lost"
+              }
+            ],
+            "text": "What you type in the ship-to warehouse box is lost"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "With LN's menu panel open, that box can sit past the window's edge. Hide the panel with the menu button at the top left, then type it again"
+              }
+            ],
+            "text": "With LN's menu panel open, that box can sit past the window's edge. Hide the panel with the menu button at the top left, then type it again"
           }
         ]
       }

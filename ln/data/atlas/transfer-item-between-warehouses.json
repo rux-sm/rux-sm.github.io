@@ -8,9 +8,9 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-10-24",
   "status": "draft",
-  "summary": "move a quantity of one item between two warehouses, and check both on-hand figures.",
+  "summary": "move a quantity of one item from one warehouse to another in the same company, and check the stock at both.",
   "order": 8,
   "sources": [
     "cppat1210m000",
@@ -58,13 +58,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Stock is known and the expected transfer configuration is recorded."
+            "v": "You know the stock at both warehouses and which order type a transfer should get."
           }
         ],
-        "text": "Stock is known and the expected transfer configuration is recorded."
+        "text": "You know the stock at both warehouses and which order type a transfer should get."
       },
       "steps": 6,
-      "walked": "2026-10-22"
+      "walked": "2026-10-24"
     },
     {
       "id": "create-the-transfer-order",
@@ -79,12 +79,16 @@
           {
             "t": "strong",
             "v": "Transfer"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "A warehousing order exists with transaction type Transfer"
+        "text": "A warehousing order exists with transaction type Transfer."
       },
       "steps": 12,
-      "walked": "2026-08-15"
+      "walked": "2026-10-24"
     },
     {
       "id": "confirm-the-processing-path-and-create-advice",
@@ -94,13 +98,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Manual and automatic activities are known before processing continues."
+            "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
           }
         ],
-        "text": "Manual and automatic activities are known before processing continues."
+        "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
       },
       "steps": 8,
-      "walked": "2026-08-15"
+      "walked": "2026-10-24"
     },
     {
       "id": "pick-the-goods_transfer-item-between-warehouses",
@@ -110,13 +114,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Stock physically moves to staging at the source."
+            "v": "The goods are picked and moved to staging at the source."
           }
         ],
-        "text": "Stock physically moves to staging at the source."
+        "text": "The goods are picked and moved to staging at the source."
       },
       "steps": 5,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "ship_transfer-item-between-warehouses",
@@ -126,13 +130,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Goods leave the source warehouse."
+            "v": "The goods leave the source warehouse."
           }
         ],
-        "text": "Goods leave the source warehouse."
+        "text": "The goods leave the source warehouse."
       },
       "steps": 4,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "receive-at-the-destination",
@@ -142,13 +146,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Goods are put away in the destination warehouse."
+            "v": "The goods are received into the destination warehouse."
           }
         ],
-        "text": "Goods are put away in the destination warehouse."
+        "text": "The goods are received into the destination warehouse."
       },
       "steps": 3,
-      "walked": null
+      "walked": "2026-10-24"
     },
     {
       "id": "verify-it-worked_transfer-item-between-warehouses",
@@ -158,13 +162,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Source on-hand down, destination on-hand up, by the same quantity."
+            "v": "The source is down and the destination up, by the same quantity."
           }
         ],
-        "text": "Source on-hand down, destination on-hand up, by the same quantity."
+        "text": "The source is down and the destination up, by the same quantity."
       },
       "steps": 1,
-      "walked": null
+      "walked": "2026-10-24"
     }
   ],
   "values": {
@@ -182,18 +186,46 @@
         },
         {
           "t": "text",
-          "v": " move a quantity of one item between two warehouses, and check both on-hand figures. "
+          "v": " move a quantity of one item from one warehouse to another in the same company, and check the stock at both."
+        }
+      ],
+      "text": "Objective: move a quantity of one item from one warehouse to another in the same company, and check the stock at both."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "strong",
+          "v": "A transfer between two companies is a variant below."
+        }
+      ],
+      "text": "A transfer between two companies is a variant below."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
         },
         {
           "t": "strong",
-          "v": "Base walkthrough"
+          "v": "Warning"
         },
         {
           "t": "text",
-          "v": " — this is the foundation for a future multicompany-transfer variant."
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide is done when both warehouses check out:"
+        },
+        {
+          "t": "text",
+          "v": " the source down and the destination up by the same quantity."
         }
       ],
-      "text": "Objective: move a quantity of one item between two warehouses, and check both on-hand figures. Base walkthrough — this is the foundation for a future multicompany-transfer variant."
+      "text": "> Warning > This guide is done when both warehouses check out: the source down and the destination up by the same quantity."
     },
     {
       "kind": "prose",
@@ -265,10 +297,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Stock is known and the expected transfer configuration is recorded"
+                  "v": "You know the stock at both warehouses and which order type a transfer should get"
                 }
               ],
-              "text": "Stock is known and the expected transfer configuration is recorded"
+              "text": "You know the stock at both warehouses and which order type a transfer should get"
             }
           ]
         },
@@ -351,10 +383,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Manual and automatic activities are known before processing continues"
+                  "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists"
                 }
               ],
-              "text": "Manual and automatic activities are known before processing continues"
+              "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists"
             }
           ]
         },
@@ -392,10 +424,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Stock physically moves to staging at the source"
+                  "v": "The goods are picked and moved to staging at the source"
                 }
               ],
-              "text": "Stock physically moves to staging at the source"
+              "text": "The goods are picked and moved to staging at the source"
             }
           ]
         },
@@ -433,10 +465,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Goods leave the source warehouse"
+                  "v": "The goods leave the source warehouse"
                 }
               ],
-              "text": "Goods leave the source warehouse"
+              "text": "The goods leave the source warehouse"
             }
           ]
         },
@@ -474,10 +506,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Goods are put away in the destination warehouse"
+                  "v": "The goods are received into the destination warehouse"
                 }
               ],
-              "text": "Goods are put away in the destination warehouse"
+              "text": "The goods are received into the destination warehouse"
             }
           ]
         },
@@ -515,10 +547,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Source on-hand down, destination on-hand up, by the same quantity"
+                  "v": "The source is down and the destination up, by the same quantity"
                 }
               ],
-              "text": "Source on-hand down, destination on-hand up, by the same quantity"
+              "text": "The source is down and the destination up, by the same quantity"
             }
           ]
         }
@@ -534,16 +566,7 @@
         },
         {
           "t": "text",
-          "v": " Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Pick the goods",
-          "href": "pick-the-goods_transfer-item-between-warehouses.md"
-        },
-        {
-          "t": "text",
-          "v": " of the notes on "
+          "v": " Unlike a sale, a transfer inside one company doesn't hand over to a second order at the destination. So every task from "
         },
         {
           "t": "link",
@@ -552,19 +575,10 @@
         },
         {
           "t": "text",
-          "v": " explains why, and it is what makes phases 2–5 all sit on the one order number recorded in "
-        },
-        {
-          "t": "link",
-          "v": "Create the transfer order",
-          "href": "create-the-transfer-order.md"
-        },
-        {
-          "t": "text",
-          "v": "."
+          "v": " on works on the one order number you write down there, and its notes say why."
         }
       ],
-      "text": "One warehousing order carries the whole move. Unlike a sale, a same-company transfer order does not hand off to a second order at the destination — section step 1 of Pick the goods of the notes on Create the transfer order explains why, and it is what makes phases 2–5 all sit on the one order number recorded in Create the transfer order.",
+      "text": "One warehousing order carries the whole move. Unlike a sale, a transfer inside one company doesn't hand over to a second order at the destination. So every task from Create the transfer order on works on the one order number you write down there, and its notes say why.",
       "under": "At a glance"
     },
     {
@@ -756,6 +770,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 0, 1, 2 have been performed against a live system and confirmed. Phases 3, 4, 5, 6 have not. Follow those as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 3
 }

@@ -23,29 +23,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-24",
   "route": null,
   "session": null,
   "sessionCode": null,
-  "walked": null,
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Goods are put away in the destination warehouse."
+        "v": "The goods are received into the destination warehouse."
       }
     ],
-    "text": "Goods are put away in the destination warehouse."
+    "text": "The goods are received into the destination warehouse."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order's inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination."
+        "v": "The same order now runs its inbound half. Every inbound line needs a receipt and inbound advice, and a transfer's inbound lines are received and confirmed on the same receipt screen a purchase uses. Confirming the receipt is what puts the goods into the destination warehouse."
       }
     ],
-    "text": "The same order now runs its inbound half: the mandatory activities for any inbound line are the receipt and the inbound advice, and the transfer order's inbound lines are received and confirmed in the same receipt session a purchase uses. Confirming is what puts the goods away at the destination."
+    "text": "The same order now runs its inbound half. Every inbound line needs a receipt and inbound advice, and a transfer's inbound lines are received and confirmed on the same receipt screen a purchase uses. Confirming the receipt is what puts the goods into the destination warehouse."
   },
   "blocks": [
     {
@@ -88,10 +88,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The inbound side of the same order, ship-to = destination warehouse"
+                  "v": "The inbound side of the same order, with the destination warehouse as ship-to"
                 }
               ],
-              "text": "The inbound side of the same order, ship-to = destination warehouse"
+              "text": "The inbound side of the same order, with the destination warehouse as ship-to"
             }
           ],
           "id": "1",
@@ -113,14 +113,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the inbound line and choose "
+                  "v": "Tick the inbound line and choose "
                 },
                 {
                   "t": "command",
-                  "route": "Actions ➔ Receipt"
+                  "route": "Actions ➔ Receive…"
                 }
               ],
-              "text": "Select the inbound line and choose Actions ➔ Receipt"
+              "text": "Tick the inbound line and choose Actions ➔ Receive…"
             },
             {
               "tokens": [
@@ -131,10 +131,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens for the transfer line"
+                  "v": " opens with a receipt for the destination warehouse, and the line's full quantity already received"
                 }
               ],
-              "text": "Warehouse Receipt (whinh3512m000) opens for the transfer line"
+              "text": "Warehouse Receipt (whinh3512m000) opens with a receipt for the destination warehouse, and the line's full quantity already received"
             }
           ],
           "id": "2",
@@ -156,23 +156,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the receipt line and choose "
+                  "v": "Tick the receipt line and choose "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Confirm"
                 }
               ],
-              "text": "Select the receipt line and choose Actions ➔ Confirm"
+              "text": "Tick the receipt line and choose Actions ➔ Confirm"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receipt is confirmed and the destination inventory is updated"
+                  "v": "The receipt reads "
+                },
+                {
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the destination's stock goes up"
                 }
               ],
-              "text": "The receipt is confirmed and the destination inventory is updated"
+              "text": "The receipt reads Confirmed, and the destination's stock goes up"
             }
           ],
           "id": "3",

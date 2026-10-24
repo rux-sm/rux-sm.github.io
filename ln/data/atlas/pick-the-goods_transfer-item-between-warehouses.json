@@ -23,26 +23,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": null,
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Stock physically moves to staging at the source."
+        "v": "The goods are picked and moved to staging at the source."
       }
     ],
-    "text": "Stock physically moves to staging at the source."
+    "text": "The goods are picked and moved to staging at the source."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise "
+        "v": "Picking is an activity only in a location-controlled warehouse, and a step of yours only where the procedure says so. Otherwise "
       },
       {
         "t": "field",
@@ -50,10 +50,10 @@
       },
       {
         "t": "text",
-        "v": " fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line."
+        "v": " fills in without you. It works the same way as picking for a sale, on the transfer's own outbound line."
       }
     ],
-    "text": "Picking is an activity only for a location-controlled warehouse, and a manual step only where the procedure says so; otherwise Picked fills without confirmation. The mechanics are the same session and actions as a sales pick, on the transfer's own outbound line."
+    "text": "Picking is an activity only in a location-controlled warehouse, and a step of yours only where the procedure says so. Otherwise Picked fills in without you. It works the same way as picking for a sale, on the transfer's own outbound line."
   },
   "blocks": [
     {
@@ -79,7 +79,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check the "
+                  "v": "Find the "
                 },
                 {
                   "t": "chip",
@@ -87,7 +87,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " row recorded in "
+                  "v": " row you read at step 3 of "
                 },
                 {
                   "t": "link",
@@ -95,13 +95,13 @@
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Check the Picking List row recorded in Confirm the processing path and create advice"
+              "text": "Find the Picking List row you read at step 3 of Confirm the processing path and create advice"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If absent or already finished automatically, record "
+                  "v": "If it isn't there, or LN already finished it, write down "
                 },
                 {
                   "t": "literal",
@@ -109,7 +109,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " and skip steps 2–5; if "
+                  "v": " and skip steps 2 to 5. If its "
                 },
                 {
                   "t": "field",
@@ -117,7 +117,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " is "
                 },
                 {
                   "t": "literal",
@@ -125,10 +125,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", continue"
+                  "v": ", carry on"
                 }
               ],
-              "text": "If absent or already finished automatically, record Automatic / not applicable and skip steps 2–5; if Automatic = No, continue"
+              "text": "If it isn't there, or LN already finished it, write down Automatic / not applicable and skip steps 2 to 5. If its Automatic is No, carry on"
             }
           ],
           "id": "1",
@@ -150,10 +150,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the Run for this order"
+                  "v": "Find the run for this order"
                 }
               ],
-              "text": "Find the Run for this order"
+              "text": "Find the run for this order"
             },
             {
               "tokens": [
@@ -217,17 +217,21 @@
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
                   "t": "command",
                   "route": "Actions ➔ Pick Run"
                 }
               ],
-              "text": "Actions ➔ Pick Run"
+              "text": "Choose Actions ➔ Pick Run"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Stock moves from the source location to staging. "
+                  "v": "The stock moves from its location to staging, and "
                 },
                 {
                   "t": "status",
@@ -235,10 +239,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " fills on Outbound Lines"
+                  "v": " fills in on Outbound Lines"
                 }
               ],
-              "text": "Stock moves from the source location to staging. Picked fills on Outbound Lines"
+              "text": "The stock moves from its location to staging, and Picked fills in on Outbound Lines"
             }
           ],
           "id": "4",
@@ -260,10 +264,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record the Run number from the header"
+                  "v": "Write down the run number from the header"
                 }
               ],
-              "text": "Record the Run number from the header"
+              "text": "Write down the run number from the header"
             },
             {
               "tokens": [
@@ -276,10 +280,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "picking list Run number"
+                  "v": "picking list run number"
                 }
               ],
-              "text": "picking list Run number"
+              "text": "picking list run number"
             }
           ],
           "id": "5",
@@ -307,16 +311,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No Run appears on the Picking List"
+                "v": "No run appears on the Picking List"
               }
             ],
-            "text": "No Run appears on the Picking List"
+            "text": "No run appears on the Picking List"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "If the order already advanced, record "
+                "v": "If the order has already moved on, write down "
               },
               {
                 "t": "literal",
@@ -324,7 +328,7 @@
               },
               {
                 "t": "text",
-                "v": ". Otherwise, picking may not apply or advice was not generated; return to "
+                "v": ". Otherwise picking may not apply, or advice wasn't generated. Go back to "
               },
               {
                 "t": "link",
@@ -332,7 +336,7 @@
                 "href": "confirm-the-processing-path-and-create-advice.md"
               }
             ],
-            "text": "If the order already advanced, record Automatic / not observed. Otherwise, picking may not apply or advice was not generated; return to Confirm the processing path and create advice"
+            "text": "If the order has already moved on, write down Automatic / not observed. Otherwise picking may not apply, or advice wasn't generated. Go back to Confirm the processing path and create advice"
           }
         ]
       }

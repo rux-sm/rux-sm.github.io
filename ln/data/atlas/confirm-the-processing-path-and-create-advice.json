@@ -23,26 +23,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-24",
   "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
   "session": "Outbound Line Status Overview",
   "sessionCode": "whinh2129m000",
-  "walked": "2026-08-15",
+  "walked": "2026-10-24",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Manual and automatic activities are known before processing continues."
+        "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
       }
     ],
-    "text": "Manual and automatic activities are known before processing continues."
+    "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 7 of "
+          "v": "You need the order type from step 8 of "
         },
         {
           "t": "link",
@@ -54,17 +54,17 @@
           "v": "."
         }
       ],
-      "text": "You need step 7 of Create the transfer order."
+      "text": "You need the order type from step 8 of Create the transfer order."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+        "v": "The order type brought a default procedure, and the order or its line may have changed it. The activity table on the line is the only place that says which steps LN runs by itself and which are yours. Read it before you generate advice: guessing from the item is how a step gets done twice or missed."
       }
     ],
-    "text": "The order type supplied a default procedure, and the header or the line may have overridden it. The activity table on the line is the only thing that says which steps LN will run automatically and which are yours, so it is read before advice is generated; predicting it from the item is how a step gets repeated or missed."
+    "text": "The order type brought a default procedure, and the order or its line may have changed it. The activity table on the line is the only place that says which steps LN runs by itself and which are yours. Read it before you generate advice: guessing from the item is how a step gets done twice or missed."
   },
   "blocks": [
     {
@@ -104,10 +104,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound-line overview opens"
+                  "v": "The overview of outbound lines opens"
                 }
               ],
-              "text": "The outbound-line overview opens"
+              "text": "The overview of outbound lines opens"
             }
           ],
           "id": "1",
@@ -143,7 +143,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item and order line match; "
+                  "v": "The item and order line match, and "
                 },
                 {
                   "t": "field",
@@ -151,7 +151,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " matches the actual value from step 7 of "
+                  "v": " matches the one from step 8 of "
                 },
                 {
                   "t": "link",
@@ -159,7 +159,7 @@
                   "href": "create-the-transfer-order.md"
                 }
               ],
-              "text": "The item and order line match; Order Type matches the actual value from step 7 of Create the transfer order"
+              "text": "The item and order line match, and Order Type matches the one from step 8 of Create the transfer order"
             }
           ],
           "id": "2",
@@ -189,7 +189,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " table, especially "
+                  "v": " table, above all "
                 },
                 {
                   "t": "field",
@@ -204,7 +204,7 @@
                   "v": "Automatic"
                 }
               ],
-              "text": "Read every row in the Activities table, especially Finished and Automatic"
+              "text": "Read every row in the Activities table, above all Finished and Automatic"
             },
             {
               "tokens": [
@@ -214,7 +214,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " "
                 },
                 {
                   "t": "literal",
@@ -225,23 +225,15 @@
                   "v": " means LN runs it; "
                 },
                 {
-                  "t": "field",
-                  "v": "Automatic"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
-                },
-                {
                   "t": "literal",
                   "v": "No"
                 },
                 {
                   "t": "text",
-                  "v": " means it is an operator step"
+                  "v": " means you do"
                 }
               ],
-              "text": "Automatic = Yes means LN runs it; Automatic = No means it is an operator step"
+              "text": "Automatic Yes means LN runs it; No means you do"
             }
           ],
           "id": "3",
@@ -263,7 +255,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record the activities marked "
+                  "v": "Write down the activities whose "
                 },
                 {
                   "t": "field",
@@ -271,14 +263,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " is "
                 },
                 {
                   "t": "literal",
                   "v": "No"
                 }
               ],
-              "text": "Record the activities marked Automatic = No"
+              "text": "Write down the activities whose Automatic is No"
             },
             {
               "tokens": [
@@ -295,10 +287,10 @@
                 },
                 {
                   "t": "text",
-                  "v": "; these determine which later steps you perform"
+                  "v": ". These are the later steps you'll carry out"
                 }
               ],
-              "text": "manual outbound activities; these determine which later steps you perform"
+              "text": "manual outbound activities. These are the later steps you'll carry out"
             }
           ],
           "id": "4",
@@ -337,10 +329,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN executes consecutive automatic activities and stops at the next manual activity"
+                  "v": "LN runs the automatic activities in a row and stops at the next one that's yours"
                 }
               ],
-              "text": "LN executes consecutive automatic activities and stops at the next manual activity"
+              "text": "LN runs the automatic activities in a row and stops at the next one that's yours"
             }
           ],
           "id": "5",
@@ -370,7 +362,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " is manual, open "
+                  "v": " is yours, open "
                 },
                 {
                   "t": "chip",
@@ -381,7 +373,7 @@
                   "v": " and select the line"
                 }
               ],
-              "text": "If Generate Outbound Advice is manual, open Outbound Lines and select the line"
+              "text": "If Generate Outbound Advice is yours, open Outbound Lines and select the line"
             },
             {
               "tokens": [
@@ -412,14 +404,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Then choose "
+                  "v": "Choose "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Advice ➔ Generate Advice"
                 }
               ],
-              "text": "Then choose Actions ➔ Advice ➔ Generate Advice"
+              "text": "Choose Actions ➔ Advice ➔ Generate Advice"
             },
             {
               "tokens": [
@@ -429,10 +421,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " fills; automatic follow-on activities may also finish"
+                  "v": " fills in. Automatic steps after it may finish too"
                 }
               ],
-              "text": "Advised fills; automatic follow-on activities may also finish"
+              "text": "Advised fills in. Automatic steps after it may finish too"
             }
           ],
           "id": "7",
@@ -462,7 +454,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " is manual and "
+                  "v": " is yours and "
                 },
                 {
                   "t": "field",
@@ -470,14 +462,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " is still blank, choose "
+                  "v": " is still empty, choose "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Advice ➔ Release Advice"
                 }
               ],
-              "text": "If Release Outbound Advice is manual and Released is still blank, choose Actions ➔ Advice ➔ Release Advice"
+              "text": "If Release Outbound Advice is yours and Released is still empty, choose Actions ➔ Advice ➔ Release Advice"
             },
             {
               "tokens": [
@@ -487,10 +479,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " fills"
+                  "v": " fills in"
                 }
               ],
-              "text": "Released fills"
+              "text": "Released fills in"
             }
           ],
           "id": "8",
@@ -522,16 +514,16 @@
               },
               {
                 "t": "text",
-                "v": " greyed out"
+                "v": " is greyed out"
               }
             ],
-            "text": "Advice greyed out"
+            "text": "Advice is greyed out"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "You are on the session toolbar, not the "
+                "v": "You may be on the screen's own toolbar, not the "
               },
               {
                 "t": "chip",
@@ -539,10 +531,10 @@
               },
               {
                 "t": "text",
-                "v": " toolbar — see step 6"
+                "v": " toolbar. See step 6"
               }
             ],
-            "text": "You are on the session toolbar, not the Outbound Lines toolbar — see step 6"
+            "text": "You may be on the screen's own toolbar, not the Outbound Lines toolbar. See step 6"
           }
         ]
       }

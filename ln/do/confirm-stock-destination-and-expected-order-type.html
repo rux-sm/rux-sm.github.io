@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Confirm stock, destination, and expected order type · LN Guide · Updated 22 Oct 2026 · Walked in LN 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Confirm stock, destination, and expected order type · LN Guide · Updated 24 Oct 2026 · Walked in LN 24 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -104,15 +104,15 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="25fa0236be493c69d2d4027a8a2332ca2bf6cb16">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="963fd3dd63f42a122501bb12e05d782a01a1fbe3">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Confirm stock, destination, and expected order type</h1>
-<p class="rux--type-body-long-01">Stock is known and the expected transfer configuration is recorded.</p>
+<p class="rux--type-body-long-01">You know the stock at both warehouses and which order type a transfer should get.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>24 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 1 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
@@ -122,18 +122,18 @@
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing changes yet. A transfer is checked at both ends, so you need the stock at both warehouses before you start. The order type a transfer gets comes from <strong>Default Order Types by Origin</strong>, and that type's warehousing procedure decides which later steps LN runs by itself.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-1"><td data-k="Step"><b>1.1</b></td><td data-k="Action">Type the item in the filter box above the grid's <span class="ln-t-named">Item</span> column and press Enter</td><td data-k="You should see">The item's row, and a row for any item whose code starts with it</td></tr>
-<tr id="step-2"><td data-k="Step"><b>1.2</b></td><td data-k="Action">Tick the item's own row</td><td data-k="You should see">The header's links light up</td></tr>
-<tr id="step-3"><td data-k="Step"><b>1.3</b></td><td data-k="Action">In the <span class="ln-t-named">Inventory</span> group, click <span class="ln-t-press">Warehouse Inventory</span></td><td data-k="You should see"><span class="ln-proc__see"><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens, item carried through</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-4"><td data-k="Step"><b>1.4</b></td><td data-k="Action">In the same grid, find the row for the intended destination warehouse</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">destination warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">destination on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>1.5</b></td><td data-k="Action">Open <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Order Procedures</span><span class="sep">➔</span><span class="dest ln-t-whole">Default Order Types by Origin</span></span> (<a class="rux--link" href="../screens/whinh0120m000.html"><span class="ln-t-exact">whinh0120m000</span></a>)</td><td data-k="You should see">The default-order-type table opens</td></tr>
-<tr id="step-6"><td data-k="Step"><b>1.6</b></td><td data-k="Action">With the toolbar's next-record and previous-record arrows, step until <span class="ln-t-named">Order Origin</span> reads <span class="ln-t-exact">Transfer (Manual)</span>, then find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span>, and ship-to <span class="ln-t-exact">Warehouse</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected warehousing order type;</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">Create Shipment. For different source and destination warehouses, official help states <span class="ln-t-named">Create Shipment</span> = Always</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2"><td data-k="Step"><b>1.2</b></td><td data-k="Action">Tick the item's own row</td><td data-k="You should see">The header links become available</td></tr>
+<tr id="step-3"><td data-k="Step"><b>1.3</b></td><td data-k="Action">In the <span class="ln-t-named">Inventory</span> group, click <span class="ln-t-press">Warehouse Inventory</span></td><td data-k="You should see"><span class="ln-proc__see"><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens with the item already filled in</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">item</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">source on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>1.4</b></td><td data-k="Action">In the same grid, find the row for the warehouse you're moving the goods to</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">destination warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">destination on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-5"><td data-k="Step"><b>1.5</b></td><td data-k="Action">Open <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Order Procedures</span><span class="sep">➔</span><span class="dest ln-t-whole">Default Order Types by Origin</span></span> (<a class="rux--link" href="../screens/whinh0120m000.html"><span class="ln-t-exact">whinh0120m000</span></a>)</td><td data-k="You should see">The table of default order types opens</td></tr>
+<tr id="step-6"><td data-k="Step"><b>1.6</b></td><td data-k="Action">Use the toolbar's next and previous arrows until <span class="ln-t-named">Order Origin</span> reads <span class="ln-t-exact">Transfer (Manual)</span>. Then find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span> and ship-to <span class="ln-t-exact">Warehouse</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected warehousing order type</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">Create Shipment. Between two different warehouses, Infor's help says <span class="ln-t-named">Create Shipment</span> is Always</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -177,23 +177,23 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Tick the item's own row</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The header's links light up</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The header links become available</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In the <span class="ln-t-named">Inventory</span> group, click <span class="ln-t-press">Warehouse Inventory</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens, item carried through</p><span class="ln-quiet ln-step__write">Write down</span><p>item, source warehouse, source on-hand before</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens with the item already filled in</p><span class="ln-quiet ln-step__write">Write down</span><p>item, source warehouse, source on-hand before</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">In the same grid, find the row for the intended destination warehouse</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">In the same grid, find the row for the warehouse you're moving the goods to</h1></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>destination warehouse, destination on-hand before</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/whinh0120m000.html"><span class="ln-t-named">Default Order Types by Origin</span></a></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Order Procedures</span><span class="sep">➔</span><span class="dest ln-t-whole">Default Order Types by Origin</span></span></p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The default-order-type table opens</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The table of default order types opens</p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">With the toolbar's next-record and previous-record arrows, step until <span class="ln-t-named">Order Origin</span> reads <span class="ln-t-exact">Transfer (Manual)</span>, then find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span>, and ship-to <span class="ln-t-exact">Warehouse</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>expected warehousing order type;, Create Shipment. For different source and destination warehouses, official help states <span class="ln-t-named">Create Shipment</span> = Always</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Use the toolbar's next and previous arrows until <span class="ln-t-named">Order Origin</span> reads <span class="ln-t-exact">Transfer (Manual)</span></h1><p class="ln-step__note">Then find the row with transaction type <span class="ln-t-exact">Transfer</span>, ship-from <span class="ln-t-exact">Warehouse</span> and ship-to <span class="ln-t-exact">Warehouse</span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>expected warehousing order type, Create Shipment. Between two different warehouses, Infor's help says <span class="ln-t-named">Create Shipment</span> is Always</p></div>
   </li>
 </ol>
 <p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</p>
@@ -203,7 +203,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing yet. Reading inventory does not change with the transaction type, only what happens to the order does, and a transfer is proved at both ends, so both starting figures are needed. The expected order type comes from the origin and transaction-type combination in Default Order Types by Origin, and its warehousing procedure is what will decide which later steps LN runs itself.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing changes yet. A transfer is checked at both ends, so you need the stock at both warehouses before you start. The order type a transfer gets comes from <strong>Default Order Types by Origin</strong>, and that type's warehousing procedure decides which later steps LN runs by itself.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

@@ -12,8 +12,8 @@
         "capable to promise",
         "ctp"
       ],
-      "purpose": "The stock LN will still promise to a new order, worked out over time, and the second check on components and capacity that follows when that stock falls short.",
-      "explanation": "Stock on the shelf is not what LN promises. Planning works out, period by period, how much of an item is still free once later demand has its share, and checks a new order against that. When the free stock falls short, it can go on to ask whether the missing components and capacity can be found in time. So an order can be refused while the stock is visibly there.",
+      "purpose": "The stock LN can still promise to a new order, worked out period by period, and the extra check on components and capacity when that stock falls short.",
+      "explanation": "Stock on the shelf is not what LN promises. Planning works out, period by period, how much of an item is still free once later demand has its share, and checks a new order against that. When the free stock falls short, it can go on to ask whether the missing components and capacity can be found in time. So an order can be refused while the stock is plainly on the shelf.",
       "sources": [
         "cprrp0520m000",
         "cprpd0100m000",
@@ -30,7 +30,7 @@
         "hold back quantity"
       ],
       "purpose": "The part of a sales order line that the final delivery did not ship, which waits to be confirmed and then becomes a new line to deliver.",
-      "explanation": "When the final delivery of a sales order line ships less than was ordered, the rest is not lost and not shipped on its own. It waits as a backorder. Once someone confirms it, or a parameter does so by itself, it becomes a new line to deliver. Left unconfirmed, it is a customer's goods that nobody is planning to ship.",
+      "explanation": "When the final delivery of a sales order line ships less than was ordered, the rest is not lost and not shipped on its own. It waits as a backorder. Once someone confirms it, or a parameter does so by itself, it becomes a new line to deliver. Left unconfirmed, it's goods a customer is waiting for that nobody plans to ship.",
       "sources": [
         "tdsls4101m000",
         "whinh4131m000"
@@ -130,7 +130,7 @@
         "purchase order type"
       ],
       "purpose": "A code on an order that carries the procedure the order will follow, so changing it changes how the same order behaves.",
-      "explanation": "An order type is a code on an order that decides the procedure it follows, not a label for reports. In Warehousing it sets which steps LN runs for you and which are yours. Two orders for the same item can need different steps because their types differ. So when one order has a step another does not, read its order type first.",
+      "explanation": "An order type is a code on an order that decides the procedure it follows, not a label for reports. In Warehousing it sets which steps LN runs for you and which are yours. Two orders for the same item can need different steps because their types differ. So when one order has a step another doesn't, check its order type first.",
       "sources": [
         "whinh0120m000",
         "whinh2100m100",
@@ -150,7 +150,7 @@
         "transfer to execution level"
       ],
       "purpose": "Planning's proposal to buy or make something, which becomes a real order only when it is transferred and can be thrown away until then.",
-      "explanation": "A planned order is planning's proposal to buy or make something, and nothing outside planning knows about it. It becomes a real purchase or production order only when it is transferred. Until then the next planning run may throw it away and propose something else. That is why planning can be rerun freely, and why a planned order number is not an order number.",
+      "explanation": "A planned order is planning's proposal to buy or make something, and nothing outside planning knows about it. It becomes a real purchase or production order only when it is transferred. Until then the next planning run may throw it away and propose something else. That is why planning can be rerun freely, and why a planned order number isn't an order number.",
       "sources": [
         "cprrp1100m000",
         "cprrp1200m000",
@@ -220,7 +220,7 @@
         "projected shipment"
       ],
       "purpose": "What leaves the warehouse together. LN groups picked lines into a shipment and shipments into a load by itself, and reads each one's status from the lines under it.",
-      "explanation": "LN groups what leaves the warehouse by itself. Each picked order line becomes a shipment line, lines going the same way share a shipment, and shipments that travel together make a load. Their status follows the lines under them, so a shipment that will not move on is waiting for one of its lines.",
+      "explanation": "LN groups what leaves the warehouse by itself. Each picked order line becomes a shipment line, lines going the same way share a shipment, and shipments that travel together make a load. Their status follows the lines under them, so a shipment that won't move on is waiting for one of its lines.",
       "sources": [
         "whinh4130m000",
         "whinh4131m000",
@@ -238,8 +238,8 @@
         "enterprise unit",
         "planning cluster"
       ],
-      "purpose": "Four things often heard as one: a warehouse is where goods are, a site where a business is, an enterprise unit who accounts for it, and a planning cluster what plans it.",
-      "explanation": "These are four words a newcomer hears as one. A warehouse is where goods are stored, and a site is a business location with its own logistic data. An enterprise unit is a part of the organization that accounts for itself, and a planning cluster is what planning works on. An item can be missing from any of them, and none of those gaps shows an error.",
+      "purpose": "Four things often taken for one: a warehouse is where goods are stored, a site is a business location, an enterprise unit is the part of the organization that does the accounting, and a planning cluster is what planning works on.",
+      "explanation": "These are four words a newcomer hears as one. A warehouse is where goods are stored, and a site is a business location with its own logistic data. An enterprise unit is a part of the organization that accounts for itself, and a planning cluster is what planning works on. An item can be missing from any of them, and LN shows no error for it.",
       "sources": [
         "tcibd1550m000",
         "tcibd0501m100",
@@ -304,7 +304,7 @@
         "active"
       ],
       "purpose": "The value a production order has taken in and not yet delivered. Issuing material or posting hours books it, and the first booking makes the order Active.",
-      "explanation": "Work in process is the value a production order has taken in and not yet delivered. Issuing material or posting hours books it, and the first booking makes the order Active. So Active means cost is on the order, and it cannot be undone by changing a status.",
+      "explanation": "Work in process is the value a production order has taken in and not yet delivered. Issuing material or posting hours books it, and the first booking makes the order Active. So Active means cost is on the order, and changing a status won't undo it.",
       "sources": [
         "tisfc0501m000",
         "tisfc0101m100",

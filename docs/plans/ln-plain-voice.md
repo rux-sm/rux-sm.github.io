@@ -29,7 +29,7 @@ showing them what to do: calm, clear and specific. The voice is atlas's
 
 ## Tasks
 
-- [ ] Ideas pages and screen purpose lines, in atlas's concepts and sessions
+- [ ] Ideas' full text, which only the owner sees, in atlas's concepts
 - [ ] Transfer item between warehouses: reword and walk
 - [ ] Purchase order to warehouse receipt: reword and walk
 - [ ] Manual production order from existing master data: reword and walk

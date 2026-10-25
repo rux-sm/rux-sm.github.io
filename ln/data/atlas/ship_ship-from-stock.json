@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
@@ -51,10 +51,18 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because this warehousing order type requires it. A confirmed shipment can't be changed: to correct it, you need a return shipment."
+        "v": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Where the warehousing order type sets "
+      },
+      {
+        "t": "field",
+        "v": "Freeze Mandatory"
+      },
+      {
+        "t": "text",
+        "v": ", you freeze before you can confirm. A confirmed shipment can't be changed: to correct it, you need a return shipment."
       }
     ],
-    "text": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Freezing is mandatory here, because this warehousing order type requires it. A confirmed shipment can't be changed: to correct it, you need a return shipment."
+    "text": "Freezing locks the shipment's contents, and confirming takes the stock out of inventory. The status only changes through those two actions; you can't set it by hand. Where the warehousing order type sets Freeze Mandatory, you freeze before you can confirm. A confirmed shipment can't be changed: to correct it, you need a return shipment."
   },
   "blocks": [
     {
@@ -80,16 +88,88 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the shipment number from step 6 of "
+                  "v": "Filter "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " on the shipment number from step 10 of "
                 },
                 {
                   "t": "link",
                   "v": "Pick the goods",
                   "href": "pick-the-goods_ship-from-stock.md"
-                },
+                }
+              ],
+              "text": "Filter Shipment on the shipment number from step 10 of Pick the goods"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", then click "
+                  "v": "Its row"
+                }
+              ],
+              "text": "Its row"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the row"
+                }
+              ],
+              "text": "Tick the row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
                 },
                 {
                   "t": "button",
@@ -97,13 +177,17 @@
                   "location": "line"
                 }
               ],
-              "text": "Find the shipment number from step 6 of Pick the goods, then click Drill In"
+              "text": "Click Drill In"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Shipment"
+                },
+                {
                   "t": "text",
-                  "v": "Status = "
+                  "v": " opens. Status = "
                 },
                 {
                   "t": "status",
@@ -130,10 +214,10 @@
                   "v": " ticked"
                 }
               ],
-              "text": "Status = Open. Freeze Mandatory ticked; Allow Changes to Shipment ticked"
+              "text": "Shipment opens. Status = Open. Freeze Mandatory ticked; Allow Changes to Shipment ticked"
             }
           ],
-          "id": "1",
+          "id": "3",
           "optional": false,
           "produces": false
         },
@@ -143,10 +227,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "2"
+                  "v": "4"
                 }
               ],
-              "text": "2"
+              "text": "4"
             },
             {
               "tokens": [
@@ -191,7 +275,7 @@
               "text": "shipped quantity"
             }
           ],
-          "id": "2",
+          "id": "4",
           "optional": false,
           "produces": true,
           "example": [
@@ -204,23 +288,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "5"
                 }
               ],
-              "text": "3"
+              "text": "5"
             },
             {
               "tokens": [
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Freeze"
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "FREEZE"
                 },
                 {
                   "t": "text",
-                  "v": " (Shift+F)"
+                  "v": " on the toolbar"
                 }
               ],
-              "text": "Actions ➔ Freeze (Shift+F)"
+              "text": "Click FREEZE on the toolbar"
             },
             {
               "tokens": [
@@ -237,18 +325,26 @@
                   "v": ". "
                 },
                 {
-                  "t": "chip",
-                  "v": "Confirm"
+                  "t": "field",
+                  "v": "Allow Changes to Shipment"
                 },
                 {
                   "t": "text",
-                  "v": " becomes available. A Bill of Lading and the packing slip print, each to its own tab"
+                  "v": " clears and "
+                },
+                {
+                  "t": "button",
+                  "label": "CONFIRM"
+                },
+                {
+                  "t": "text",
+                  "v": " becomes available. The Bill of Lading and the Packing Slip print, each to its own tab"
                 }
               ],
-              "text": "Status = Frozen. Confirm becomes available. A Bill of Lading and the packing slip print, each to its own tab"
+              "text": "Status = Frozen. Allow Changes to Shipment clears and CONFIRM becomes available. The Bill of Lading and the Packing Slip print, each to its own tab"
             }
           ],
-          "id": "3",
+          "id": "5",
           "optional": false,
           "produces": false
         },
@@ -258,10 +354,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "6"
                 }
               ],
-              "text": "4"
+              "text": "6"
             },
             {
               "tokens": [
@@ -275,22 +371,22 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab. Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
+                  "v": " tab"
                 }
               ],
-              "text": "Open the Packing Slips tab. Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
+              "text": "Open the Packing Slips tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The details match the order and the quantity you're shipping"
+                  "v": "The Packing Slip"
                 }
               ],
-              "text": "The details match the order and the quantity you're shipping"
+              "text": "The Packing Slip"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": false
         },
@@ -300,23 +396,107 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "7"
                 }
               ],
-              "text": "5"
+              "text": "7"
             },
             {
               "tokens": [
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Confirm"
+                  "t": "text",
+                  "v": "Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
+                }
+              ],
+              "text": "Check the customer it ships to, the shipment number, the order and line, the item and the shipped quantity against the order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "They match the order and the quantity you're shipping"
+                }
+              ],
+              "text": "They match the order and the quantity you're shipping"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Go back to the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment"
                 },
                 {
                   "t": "text",
-                  "v": " (Shift+C)"
+                  "v": " tab"
                 }
               ],
-              "text": "Actions ➔ Confirm (Shift+C)"
+              "text": "Go back to the Shipment tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Frozen"
+                }
+              ],
+              "text": "Status = Frozen"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "CONFIRM"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
+                }
+              ],
+              "text": "Click CONFIRM on the toolbar"
             },
             {
               "tokens": [
@@ -336,7 +516,7 @@
               "text": "Status = Confirmed. The stock leaves inventory"
             }
           ],
-          "id": "5",
+          "id": "9",
           "optional": false,
           "produces": false
         }
@@ -379,8 +559,8 @@
     ]
   },
   "screenshot": {
-    "step": "5",
-    "caption": "Shipment, frozen",
+    "step": "9",
+    "caption": "Shipment toolbar, frozen: Freeze greyed, Confirm available",
     "path": "ship_ship-from-stock.jpg"
   },
   "problems": {
@@ -522,14 +702,14 @@
               },
               {
                 "t": "text",
-                "v": "; see step 2. Once the shipment is confirmed, LN creates a backorder. It becomes a new line only once it's confirmed in Sales. "
+                "v": "; see step 4. Confirming the shipment creates a backorder for the rest, and the backorder becomes a new order line once Sales confirms it. "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see step 2. Once the shipment is confirmed, LN creates a backorder. It becomes a new line only once it's confirmed in Sales. Not documented for this release."
+            "text": "Reduce Shipped Quantity on Shipment Lines (whinh4131m000); see step 4. Confirming the shipment creates a backorder for the rest, and the backorder becomes a new order line once Sales confirms it. Not documented for this release."
           }
         ]
       }

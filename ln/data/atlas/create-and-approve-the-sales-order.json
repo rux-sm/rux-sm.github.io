@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -229,7 +229,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
@@ -242,9 +242,13 @@
                 {
                   "t": "field",
                   "v": "Planned Receipt Date"
+                },
+                {
+                  "t": "text",
+                  "v": ", and change them if the customer needs another day"
                 }
               ],
-              "text": "Set Planned Delivery Date and Planned Receipt Date"
+              "text": "Check Planned Delivery Date and Planned Receipt Date, and change them if the customer needs another day"
             },
             {
               "tokens": [
@@ -264,8 +268,8 @@
           "optional": false,
           "produces": false,
           "example": [
-            2,
-            3
+            1,
+            2
           ]
         },
         {
@@ -299,26 +303,18 @@
                 },
                 {
                   "t": "text",
-                  "v": " on the Order tab, and "
-                },
-                {
-                  "t": "field",
-                  "v": "Currency"
-                },
-                {
-                  "t": "text",
                   "v": " on the "
                 },
                 {
                   "t": "chip",
-                  "v": "Invoicing"
+                  "v": "Order"
                 },
                 {
                   "t": "text",
                   "v": " tab"
                 }
               ],
-              "text": "Check Sales Office and Site on the Order tab, and Currency on the Invoicing tab"
+              "text": "Check Sales Office and Site on the Order tab"
             },
             {
               "tokens": [
@@ -573,7 +569,7 @@
           "optional": false,
           "produces": true,
           "example": [
-            4
+            3
           ]
         },
         {
@@ -697,32 +693,6 @@
               }
             ],
             "text": "N10 — Standard orders (no ATP)"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Order Date"
-              }
-            ],
-            "text": "Order Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — the day you create it, which LN fills in"
-              }
-            ],
-            "text": "2026-10-24 — the day you create it, which LN fills in"
           }
         ]
       },

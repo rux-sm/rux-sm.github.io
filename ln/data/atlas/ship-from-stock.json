@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-24",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -122,7 +122,7 @@
         ],
         "text": "Advised and Released both show the ordered quantity, and the picking list prints."
       },
-      "steps": 6,
+      "steps": 11,
       "walked": "2026-10-24"
     },
     {
@@ -146,7 +146,7 @@
         ],
         "text": "The outbound line reads Staged, and a shipment line exists."
       },
-      "steps": 6,
+      "steps": 10,
       "walked": "2026-10-24"
     },
     {
@@ -170,7 +170,7 @@
         ],
         "text": "The shipment reads Confirmed."
       },
-      "steps": 5,
+      "steps": 9,
       "walked": "2026-10-24"
     },
     {
@@ -181,12 +181,12 @@
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand in that warehouse is lower by exactly the quantity shipped."
+            "v": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
           }
         ],
-        "text": "On-hand in that warehouse is lower by exactly the quantity shipped."
+        "text": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
       },
-      "steps": 1,
+      "steps": 4,
       "walked": "2026-10-24"
     }
   ],
@@ -220,33 +220,6 @@
               }
             ],
             "text": "N10 — Standard orders (no ATP)"
-          }
-        ],
-        "task": "create-and-approve-the-sales-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Order Date"
-              }
-            ],
-            "text": "Order Date"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "2026-10-24"
-              },
-              {
-                "t": "text",
-                "v": " — the day you create it, which LN fills in"
-              }
-            ],
-            "text": "2026-10-24 — the day you create it, which LN fills in"
           }
         ],
         "task": "create-and-approve-the-sales-order"
@@ -765,10 +738,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand in that warehouse is lower by exactly the quantity shipped"
+                  "v": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for"
                 }
               ],
-              "text": "On-hand in that warehouse is lower by exactly the quantity shipped"
+              "text": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for"
             }
           ]
         }
@@ -982,7 +955,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " is on the same menu as "
+                  "v": " sits beside "
                 },
                 {
                   "t": "chip",
@@ -990,14 +963,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ". "
+                  "v": ". This guide doesn't use it: where release is automatic, Generate Advice already releases. "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Actions ➔ Advice ➔ Direct Release is on the same menu as Generate Advice. Not documented for this release."
+              "text": "Actions ➔ Advice ➔ Direct Release sits beside Generate Advice. This guide doesn't use it: where release is automatic, Generate Advice already releases. Not documented for this release."
             }
           ]
         },
@@ -1015,20 +988,16 @@
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "Before picking, to start an outbound line over: "
+                },
+                {
                   "t": "chip",
                   "v": "Undo Advice"
                 },
                 {
                   "t": "text",
-                  "v": " · "
-                },
-                {
-                  "t": "chip",
-                  "v": "Undo Release"
-                },
-                {
-                  "t": "text",
-                  "v": " · "
+                  "v": " removes its advice so it can be generated again, and "
                 },
                 {
                   "t": "chip",
@@ -1036,10 +1005,26 @@
                 },
                 {
                   "t": "text",
-                  "v": " (Shift+Z)"
+                  "v": " (Shift+Z) takes back the release too and removes the picking list. All are on "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar"
                 }
               ],
-              "text": "Undo Advice · Undo Release · Undo Advice/Release (Shift+Z)"
+              "text": "Before picking, to start an outbound line over: Undo Advice removes its advice so it can be generated again, and Undo Advice/Release (Shift+Z) takes back the release too and removes the picking list. All are on Actions ➔ Advice on the Outbound Lines toolbar"
             }
           ]
         }

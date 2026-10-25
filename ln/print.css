@@ -138,3 +138,6 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 .ln-shot img { border-color: var(--rux-text-secondary); }
 .ln-shot figcaption { font-size: 8pt; }
 .ln-proc__shot { break-inside: avoid; }
+/* A step and its screenshot stay on one page, so a picture never opens a page
+   under a header row with no step beside it. */
+.ln-proc__steps tr:has(+ .ln-proc__shot:not([hidden])) { break-after: avoid; }

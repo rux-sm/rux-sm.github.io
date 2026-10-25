@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
@@ -51,7 +51,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 5 of "
+          "v": "You need step 8 of "
         },
         {
           "t": "link",
@@ -63,7 +63,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 5 of Generate outbound advice."
+      "text": "You need step 8 of Generate outbound advice."
     }
   ],
   "why": {
@@ -78,7 +78,7 @@
       },
       {
         "t": "text",
-        "v": ". You need this task because, in this environment, the "
+        "v": ". You need this task where the warehouse is location-controlled and its outbound procedure's "
       },
       {
         "t": "field",
@@ -86,7 +86,7 @@
       },
       {
         "t": "text",
-        "v": " activity is manual and the warehouse is location-controlled. Whether you need this task depends on those two settings; without them, LN ticks "
+        "v": " activity is manual; otherwise LN fills "
       },
       {
         "t": "field",
@@ -97,7 +97,7 @@
         "v": " on release. Once a line is staged, LN creates the shipment line."
       }
     ],
-    "text": "The picking list records stock moving to staging, and confirming it fills Picked. You need this task because, in this environment, the Picking List activity is manual and the warehouse is location-controlled. Whether you need this task depends on those two settings; without them, LN ticks Picked on release. Once a line is staged, LN creates the shipment line."
+    "text": "The picking list records stock moving to staging, and confirming it fills Picked. You need this task where the warehouse is location-controlled and its outbound procedure's Picking List activity is manual; otherwise LN fills Picked on release. Once a line is staged, LN creates the shipment line."
   },
   "blocks": [
     {
@@ -123,7 +123,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check "
+                  "v": "Read "
                 },
                 {
                   "t": "field",
@@ -131,64 +131,24 @@
                 },
                 {
                   "t": "text",
-                  "v": " in the header. If it isn't the Run from step 5 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Generate outbound advice",
-                  "href": "generate-outbound-advice.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", click "
-                },
-                {
-                  "t": "button",
-                  "label": "Find"
-                },
-                {
-                  "t": "text",
-                  "v": ", fill in "
-                },
-                {
-                  "t": "field",
-                  "v": "Run"
-                },
-                {
-                  "t": "text",
-                  "v": " and click "
-                },
-                {
-                  "t": "button",
-                  "label": "OK"
+                  "v": " in the header"
                 }
               ],
-              "text": "Check Run in the header. If it isn't the Run from step 5 of Generate outbound advice, click Find, fill in Run and click OK"
+              "text": "Read Run in the header"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Run you wrote down. "
+                  "v": "The Run from step 8 of "
                 },
                 {
-                  "t": "button",
-                  "label": "next"
-                },
-                {
-                  "t": "text",
-                  "v": " / "
-                },
-                {
-                  "t": "button",
-                  "label": "previous"
-                },
-                {
-                  "t": "text",
-                  "v": " step through every run in code order"
+                  "t": "link",
+                  "v": "Generate outbound advice",
+                  "href": "generate-outbound-advice.md"
                 }
               ],
-              "text": "The Run you wrote down. next / previous step through every run in code order"
+              "text": "The Run from step 8 of Generate outbound advice"
             }
           ],
           "id": "1",
@@ -205,6 +165,94 @@
                 }
               ],
               "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If it is another Run, click "
+                },
+                {
+                  "t": "button",
+                  "label": "Find"
+                }
+              ],
+              "text": "If it is another Run, click Find"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Picking List - Search"
+                },
+                {
+                  "t": "text",
+                  "v": " opens"
+                }
+              ],
+              "text": "Picking List - Search opens"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type your Run in "
+                },
+                {
+                  "t": "field",
+                  "v": "Run"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Type your Run in Run and click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Your Run in the header"
+                }
+              ],
+              "text": "Your Run in the header"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
             },
             {
               "tokens": [
@@ -230,8 +278,12 @@
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Mission"
+                },
+                {
                   "t": "text",
-                  "v": "Mission is the Picking Mission from step 5 of "
+                  "v": " is the Mission from step 8 of "
                 },
                 {
                   "t": "link",
@@ -239,10 +291,10 @@
                   "href": "generate-outbound-advice.md"
                 }
               ],
-              "text": "Mission is the Picking Mission from step 5 of Generate outbound advice"
+              "text": "Mission is the Mission from step 8 of Generate outbound advice"
             }
           ],
-          "id": "2",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -252,10 +304,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "3"
+                  "v": "5"
                 }
               ],
-              "text": "3"
+              "text": "5"
             },
             {
               "tokens": [
@@ -324,118 +376,6 @@
               "text": "One line per location the stock comes from: Picked · Sequence · Item · Serial Number · From Location. Picked shows a grey dot"
             }
           ],
-          "id": "3",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "4"
-                }
-              ],
-              "text": "4"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Pick the goods on each line from its "
-                },
-                {
-                  "t": "field",
-                  "v": "From Location"
-                },
-                {
-                  "t": "text",
-                  "v": " to its "
-                },
-                {
-                  "t": "field",
-                  "v": "To Location"
-                },
-                {
-                  "t": "text",
-                  "v": ", then tick the lines"
-                }
-              ],
-              "text": "Pick the goods on each line from its From Location to its To Location, then tick the lines"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
-            }
-          ],
-          "id": "4",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "command",
-                  "route": "Actions ➔ Pick Run"
-                }
-              ],
-              "text": "Actions ➔ Pick Run"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "LN records the pick: stock moves from "
-                },
-                {
-                  "t": "field",
-                  "v": "From Location"
-                },
-                {
-                  "t": "text",
-                  "v": " to "
-                },
-                {
-                  "t": "field",
-                  "v": "To Location"
-                },
-                {
-                  "t": "text",
-                  "v": ". "
-                },
-                {
-                  "t": "field",
-                  "v": "Picked"
-                },
-                {
-                  "t": "text",
-                  "v": " fills on Outbound Lines, and the line status becomes "
-                },
-                {
-                  "t": "status",
-                  "v": "Staged"
-                }
-              ],
-              "text": "LN records the pick: stock moves from From Location to To Location. Picked fills on Outbound Lines, and the line status becomes Staged"
-            }
-          ],
           "id": "5",
           "optional": false,
           "produces": false
@@ -455,23 +395,187 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Return to the Warehousing Order, drilling in as at step 2 of "
+                  "v": "Pick the goods on each line from its "
+                },
+                {
+                  "t": "field",
+                  "v": "From Location"
+                },
+                {
+                  "t": "text",
+                  "v": " to its "
+                },
+                {
+                  "t": "field",
+                  "v": "To Location"
+                }
+              ],
+              "text": "Pick the goods on each line from its From Location to its To Location"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the lines you picked"
+                }
+              ],
+              "text": "Tick the lines you picked"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Pick Run"
+                }
+              ],
+              "text": "Actions ➔ Pick Run"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " shows a green tick. On the Warehousing Order, the line status becomes "
+                },
+                {
+                  "t": "status",
+                  "v": "Staged"
+                }
+              ],
+              "text": "Picked shows a green tick. On the Warehousing Order, the line status becomes Staged"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Go back to the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "Go back to the Warehousing Order tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The order from "
                 },
                 {
                   "t": "link",
                   "v": "Generate outbound advice",
                   "href": "generate-outbound-advice.md"
-                },
+                }
+              ],
+              "text": "The order from Generate outbound advice"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ", and open "
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open the "
                 },
                 {
                   "t": "chip",
                   "v": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Return to the Warehousing Order, drilling in as at step 2 of Generate outbound advice, and open Shipment Lines"
+              "text": "Open the Shipment Lines tab"
             },
             {
               "tokens": [
@@ -502,7 +606,7 @@
               "text": "A shipment line now exists. The shipment number is the first part of Shipment Line, before the line's own number: shipment number"
             }
           ],
-          "id": "6",
+          "id": "10",
           "optional": false,
           "produces": true
         }
@@ -515,7 +619,7 @@
     "rows": []
   },
   "screenshot": {
-    "step": "5",
+    "step": "8",
     "caption": "Picking List, Actions menu",
     "path": "pick-the-goods_ship-from-stock.jpg"
   },
@@ -565,36 +669,36 @@
           {
             "tokens": [
               {
+                "t": "field",
+                "v": "Released Quantity"
+              },
+              {
                 "t": "text",
-                "v": "Goods still need picking after Release Advice"
+                "v": " is filled but "
+              },
+              {
+                "t": "field",
+                "v": "Picked Quantity"
+              },
+              {
+                "t": "text",
+                "v": " is empty"
               }
             ],
-            "text": "Goods still need picking after Release Advice"
+            "text": "Released Quantity is filled but Picked Quantity is empty"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "That's expected. "
-              },
-              {
-                "t": "field",
-                "v": "Released"
-              },
-              {
-                "t": "text",
-                "v": " and "
+                "v": "That's expected. They are separate columns, and this task fills "
               },
               {
                 "t": "field",
                 "v": "Picked"
-              },
-              {
-                "t": "text",
-                "v": " are separate columns. Do this task"
               }
             ],
-            "text": "That's expected. Released and Picked are separate columns. Do this task"
+            "text": "That's expected. They are separate columns, and this task fills Picked"
           }
         ]
       },
@@ -617,7 +721,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Advice may not have been generated, so nothing was released. Go back to step 5 of "
+                "v": "Advice may not have been generated, so nothing was released. Go back to step 6 of "
               },
               {
                 "t": "link",
@@ -625,7 +729,7 @@
                 "href": "generate-outbound-advice.md"
               }
             ],
-            "text": "Advice may not have been generated, so nothing was released. Go back to step 5 of Generate outbound advice"
+            "text": "Advice may not have been generated, so nothing was released. Go back to step 6 of Generate outbound advice"
           }
         ]
       }
@@ -653,10 +757,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Use these to pick one mission or one advice line instead of the whole run. See step 5"
+                "v": "Use these to pick one mission or one advice line instead of the whole run. See step 8"
               }
             ],
-            "text": "Use these to pick one mission or one advice line instead of the whole run. See step 5"
+            "text": "Use these to pick one mission or one advice line instead of the whole run. See step 8"
           }
         ]
       }

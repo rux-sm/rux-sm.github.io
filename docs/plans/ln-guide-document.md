@@ -70,8 +70,8 @@ And a team, after log-in, sees what the public page cannot carry.
   stay on screen, because a printed copy is the tasks, stands on its own and
   says only what is known.
   It prints from the browser's dialog, where
-  Save as PDF is a destination, so no PDF library is added. The mockup's Check
-  an item's inventory is 2 pages and Ship from stock 8.
+  Save as PDF is a destination, so no PDF library is added. With a reader's screenshots,
+  Ship from stock prints about 11 pages.
 
 - **Atlas sends structure, so the build stops guessing.** A callout travels as
   a callout block, and a step's place, action, value and result as fields of

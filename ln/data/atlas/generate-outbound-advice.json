@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
@@ -333,10 +333,18 @@
                 },
                 {
                   "t": "text",
-                  "v": " dialog opens"
+                  "v": " dialog opens. If neither happens, release is manual: do "
+                },
+                {
+                  "t": "chip",
+                  "v": "Release is manual"
+                },
+                {
+                  "t": "text",
+                  "v": " under Variations, then go on"
                 }
               ],
-              "text": "The Picking List by Location prints to its own tab, or the Select Device dialog opens"
+              "text": "The Picking List by Location prints to its own tab, or the Select Device dialog opens. If neither happens, release is manual: do Release is manual under Variations, then go on"
             }
           ],
           "id": "6",
@@ -527,18 +535,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both show the ordered quantity. If "
-                },
-                {
-                  "t": "field",
-                  "v": "Released Quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " stays empty, release is manual: see Variants"
+                  "v": "Both show the ordered quantity"
                 }
               ],
-              "text": "Both show the ordered quantity. If Released Quantity stays empty, release is manual: see Variants"
+              "text": "Both show the ordered quantity"
             }
           ],
           "id": "10",
@@ -838,12 +838,16 @@
           {
             "tokens": [
               {
+                "t": "text",
+                "v": "Nothing prints at step 6, and "
+              },
+              {
                 "t": "field",
                 "v": "Released Quantity"
               },
               {
                 "t": "text",
-                "v": " stays empty at step 10. On the "
+                "v": " stays empty. On the "
               },
               {
                 "t": "chip",
@@ -859,10 +863,10 @@
               },
               {
                 "t": "text",
-                "v": "; the picking list prints then"
+                "v": "; the picking list prints then, and you go on at step 7"
               }
             ],
-            "text": "Released Quantity stays empty at step 10. On the Outbound Lines toolbar, choose Actions ➔ Advice ➔ Release Advice; the picking list prints then"
+            "text": "Nothing prints at step 6, and Released Quantity stays empty. On the Outbound Lines toolbar, choose Actions ➔ Advice ➔ Release Advice; the picking list prints then, and you go on at step 7"
           }
         ]
       }

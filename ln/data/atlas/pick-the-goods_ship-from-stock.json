@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
@@ -170,14 +170,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If it is another Run, click "
+                  "v": "If it is your Run, go on to step 4. If it is another Run, click "
                 },
                 {
                   "t": "button",
                   "label": "Find"
                 }
               ],
-              "text": "If it is another Run, click Find"
+              "text": "If it is your Run, go on to step 4. If it is another Run, click Find"
             },
             {
               "tokens": [

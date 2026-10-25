@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-24",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -107,7 +107,7 @@
         "text": "A warehousing order exists with the sales order's number."
       },
       "steps": 8,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "generate-outbound-advice",
@@ -123,7 +123,7 @@
         "text": "Advised and Released both show the ordered quantity, and the picking list prints."
       },
       "steps": 11,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "pick-the-goods_ship-from-stock",
@@ -147,7 +147,7 @@
         "text": "The outbound line reads Staged, and a shipment line exists."
       },
       "steps": 10,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "ship_ship-from-stock",
@@ -320,10 +320,10 @@
               },
               {
                 "t": "text",
-                "v": " — the day you release, which LN offers"
+                "v": " — today, as LN offers it"
               }
             ],
-            "text": "2026-10-24 — the day you release, which LN offers"
+            "text": "2026-10-24 — today, as LN offers it"
           }
         ],
         "task": "release-to-warehousing"

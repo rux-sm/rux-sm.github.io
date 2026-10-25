@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
@@ -172,10 +172,26 @@
                 },
                 {
                   "t": "text",
-                  "v": " — it defaults to the planned delivery date minus the outbound lead time"
+                  "v": ". LN offers today as "
+                },
+                {
+                  "t": "field",
+                  "v": "Upto Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": ", and calculates each line's "
+                },
+                {
+                  "t": "field",
+                  "v": "Release Date"
+                },
+                {
+                  "t": "text",
+                  "v": " as its planned delivery date minus the outbound lead time"
                 }
               ],
-              "text": "Set Upto Release Date on or after the order line's Release Date — it defaults to the planned delivery date minus the outbound lead time"
+              "text": "Set Upto Release Date on or after the order line's Release Date. LN offers today as Upto Release Date, and calculates each line's Release Date as its planned delivery date minus the outbound lead time"
             },
             {
               "tokens": [
@@ -446,10 +462,10 @@
               },
               {
                 "t": "text",
-                "v": " — the day you release, which LN offers"
+                "v": " — today, as LN offers it"
               }
             ],
-            "text": "2026-10-24 — the day you release, which LN offers"
+            "text": "2026-10-24 — today, as LN offers it"
           }
         ]
       }

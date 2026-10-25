@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
@@ -560,7 +560,7 @@
   },
   "screenshot": {
     "step": "9",
-    "caption": "Shipment toolbar, frozen: Freeze greyed, Confirm available",
+    "caption": "Shipment toolbar before you click Confirm: Freeze greyed, Confirm available",
     "path": "ship_ship-from-stock.jpg"
   },
   "problems": {

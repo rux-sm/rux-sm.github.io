@@ -147,6 +147,14 @@
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
+/* rux-dark's standard trip is grey, the grey tag, so colour on its board
+   marks only a trip that is not confirmed or one someone gave a colour. */
+[data-theme="rux-dark"] .scheduler-bar--blue {
+  --scheduler-bg: var(--rux-tag-background-gray);
+  --scheduler-fg: var(--rux-tag-color-gray);
+  --scheduler-hover: var(--rux-tag-hover-gray);
+  --scheduler-border: var(--rux-tag-border-gray);
+}
 
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a

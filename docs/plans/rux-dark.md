@@ -21,7 +21,10 @@ What stands now:
 - **Colour is a status.** The palette is vivid, and it marks success,
   warning, error, info and a tag's kind. Links, the on toggle and focus are
   the ink; a link is underlined, except in a heading.
-- **Cards, panels and tables are square.** A side menu's chosen row is a
+- **Every corner is square.** Buttons, fields, tags, menus, alerts, cards,
+  panels, tables and the scheduler's trip bars all have square corners. Only
+  things round by shape stay round: profile pictures, radio buttons, toggles,
+  a slider's thumb, and status dots and counts. A side menu's chosen row is a
   square block of the ink with black words.
 - **Figures and small labels are Plex Mono.** A field's label is small
   capitals; text LN or an app prints on screen is shown exactly, in mono.
@@ -42,9 +45,6 @@ What it is made of:
   About two thirds of its component rules are shared with Geist Dark, so a
   change made for Geist also changes Rux Dark. Standing alone means copying
   those rules once and owning them.
-- **Which corners stay round?** Menus, popovers and notifications are 8px;
-  buttons, fields, tags and header buttons are 4px. Square everything but
-  tags, square everything, or keep the two steps?
 - **Is there a light Rux?** Printed forms stay light paper. Does anything
   else need a light version, or is Rux Dark the only Rux look?
 - **How do we know it is done?** A page in Design that shows the whole look
@@ -57,7 +57,6 @@ What it is made of:
   from.
 - [ ] Write the look down in one place in Design, so every later change is
   checked against it.
-- [ ] Make the corners follow one rule.
 - [ ] Decide the two small ideas: the logo's square as a list marker, and
   semibold titles.
 - [ ] Make Rux Dark the default, if the first question says so.

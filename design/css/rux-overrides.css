@@ -320,17 +320,14 @@
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--dropdown {
   border-radius: 6px;
 }
-/* RUX-DARK'S CORNERS ARE THE MARK'S SQUARES: 4px on a control and a tag,
-   8px on a floating surface, and none on a card, a panel or a table's box,
-   where the rounded themes take 4, 6, 8 and 12. A control held close to a
-   floating surface's edge -- a menu's item, a scheduler shortcut -- stands
-   4px in, so its 4px corner runs parallel to the surface's 8px; a nav's and
-   a switcher's rows are square, as the nav's own rule below says. Each
-   corner is written for rux-dark alone right after the shared rule it
-   replaces, so it meets Carbon's rules and this file's in the order the
-   shared rule did; a shared rule that set nothing but a corner no longer
-   names it. Round stays round only where the roundness is the meaning: the
-   account picture, a radio, a toggle and a status dot. */
+/* RUX-DARK'S CORNERS ARE SQUARE, as the mark is: a control, a tag, a
+   floating surface, a card, a panel and a table's box, where the rounded
+   themes take 4, 6, 8 and 12. Each corner is written for rux-dark alone right
+   after the shared rule it replaces, so it meets Carbon's rules and this
+   file's in the order the shared rule did; a shared rule that set nothing but
+   a corner no longer names it. Round stays round only where the roundness is
+   the meaning: the account picture, a radio, a toggle, a slider's thumb and a
+   status dot or count. */
 [data-theme="rux-dark"] .rux--btn,
 [data-theme="rux-dark"] .rux--text-input,
 [data-theme="rux-dark"] .rux--text-area,
@@ -341,7 +338,7 @@
 [data-theme="rux-dark"] .rux--search-input,
 [data-theme="rux-dark"] .rux--list-box,
 [data-theme="rux-dark"] .rux--dropdown {
-  border-radius: 4px;
+  border-radius: 0;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--text-input,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--text-area,
@@ -377,7 +374,7 @@
 [data-theme="rux-dark"] .rux--inline-notification,
 [data-theme="rux-dark"] .rux--toast-notification,
 [data-theme="rux-dark"] .rux--actionable-notification {
-  border-radius: 8px;
+  border-radius: 0;
 }
 /* A LOW-CONTRAST NOTIFICATION KEEPS ONE EDGE. Carbon draws its edge as a
    square ::before laid over the box; a theme that rings and rounds the box
@@ -393,11 +390,9 @@
 [data-theme="ant-dark"] .rux--tag {
   border-radius: 4px;
 }
-/* rux-dark's tag takes the control step, 4px, not the surface's 8px: a corner
-   reads rounder the smaller the thing it rounds, and on a 24px tag 8px is
-   most of the way to a pill. */
+/* rux-dark squares Carbon's pill tag, as it squares every corner. */
 [data-theme="rux-dark"] .rux--tag {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* THE TWO BIGGEST SURFACES TAKE A BIGGER CURVE. Both themes scale a radius
    with the size of the thing: Geist's button was measured at 4px, 6px and 8px
@@ -589,7 +584,7 @@
   border-radius: 4px;
 }
 [data-theme="rux-dark"] .rux--date-picker--next .rux--date-picker__day:not(.inRange) {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* The two arrows that change the month take no fill under the pointer,
    measured on the same two pages: each system draws the arrow dimmer at rest
@@ -614,7 +609,7 @@
   border-radius: 50%;
 }
 [data-theme="rux-dark"] .rux--date-picker--next .rux--date-picker__month-nav {
-  border-radius: 4px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--date-picker--next .rux--date-picker__month-nav:active {
   background-color: var(--rux-layer-active);
@@ -646,7 +641,7 @@
    every side of 32px controls, then the 1px line, so the bar is 65px and the
    name stands 24px in. Carbon's is 48px of edge-to-edge 48px squares. The bar
    keeps Carbon's parts: its icons become 32px buttons, 8px apart, on
-   geist-dark's 6px corners and rux-dark's 4px, and the name starts 8px past
+   geist-dark's 6px corners and rux-dark's square ones, and the name starts 8px past
    the bar's 16px.
    Everything Carbon places under the header -- the page's content, the side
    nav and its overlay, the header's panels and a side panel -- moves down
@@ -668,7 +663,7 @@
   border-radius: 6px;
 }
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* RUX-DARK RINGS ITS HEADER BUTTONS, as GitHub rings the buttons in its
    header: the 1px border each one already carries takes the colour a
@@ -910,7 +905,7 @@
   border-radius: 4px;
 }
 :where([data-theme="rux-dark"]) .rux--checkbox-label::before {
-  border-radius: 4px;
+  border-radius: 0;
 }
 :where([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--radio-button__appearance {
   border-color: var(--rux-border-strong-03);
@@ -1015,7 +1010,7 @@
   border-radius: 12px;
 }
 [data-theme="rux-dark"] .rux--popover-container:not(.rux--popover--tab-tip) .rux--popover-content:not(.rux--tooltip-content) {
-  border-radius: 8px;
+  border-radius: 0;
 }
 /* GEIST'S SPINNER IS GREY, measured on its Spinner page at #8f8f8f, where
    Carbon draws its ring in the brand colour, here the page's brightest.
@@ -1521,7 +1516,7 @@
   inset-inline: var(--rux-spacing-04);
 }
 [data-theme="rux-dark"] .rux--data-table-container .rux--table-toolbar .rux--batch-actions {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* ANT'S TOOLBAR STANDS INSIDE THE BOX TOO: 16px from every edge and 8px
    apart, so its 32px controls make a 64px bar, the height of the foot under
@@ -1603,7 +1598,7 @@
   border-radius: 6px;
 }
 [data-theme="rux-dark"] .rux--pagination .rux--pagination__button {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* Ant keeps 16px round its pager, measured on its Table page: a 32px pager
    with a 16px margin above and below, under the rows. Its arrows are bare,
@@ -1659,11 +1654,9 @@
   outline: 0;
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
-/* rux-dark's switcher is a surface holding controls, so the box takes the 8px
-   corner; the 4px it holds its options in already makes their 4px corners
-   run parallel to it. */
+/* rux-dark's switcher and its options are square, as every corner is. */
 [data-theme="rux-dark"] .rux--content-switcher {
-  border-radius: 8px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
@@ -1679,7 +1672,7 @@
 [data-theme="rux-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn,
 [data-theme="rux-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:first-child,
 [data-theme="rux-dark"] .rux--content-switcher:not(.rux--content-switcher--icon-only) .rux--content-switcher-btn:last-child {
-  border-radius: 4px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--content-switcher-btn::before {
   display: none;
@@ -1698,7 +1691,7 @@
   background-color: var(--rux-layer-hover-01);
 }
 [data-theme="rux-dark"] .rux--content-switcher-btn.rux--content-switcher--selected::after {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* An icon-only option keeps Carbon's square size and loses the same lines: the
    group's ring is already drawn by the box. */
@@ -1712,7 +1705,7 @@
 [data-theme="rux-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn,
 [data-theme="rux-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:first-child,
 [data-theme="rux-dark"] .rux--content-switcher--icon-only .rux--content-switcher-btn:last-child {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* An icon-only option is the same two greys as a worded one. Carbon fills the
    chosen icon with the inverse colour, for the inverse slab it draws under it;
@@ -1818,17 +1811,16 @@
   padding: 6px;
   border-radius: 12px;
 }
-/* rux-dark holds its items 4px in, so their 4px corners run parallel to its
-   8px one. */
+/* rux-dark's menu and its items are square, as every corner is. */
 [data-theme="rux-dark"] :is(.rux--menu, .rux--overflow-menu-options) {
   padding: 4px;
-  border-radius: 8px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
   border-radius: 6px;
 }
 [data-theme="rux-dark"] :is(.rux--menu-item, .rux--overflow-menu-options__option, .rux--overflow-menu-options__btn) {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* An overflow menu's divider is a straight line between two options, 4px
    clear of each, as the menu's own divider is. Carbon draws it as the top
@@ -1856,13 +1848,13 @@
 }
 [data-theme="rux-dark"] .rux--list-box__menu {
   padding: 4px;
-  border-radius: 8px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--list-box__menu-item {
   border-radius: 6px;
 }
 [data-theme="rux-dark"] .rux--list-box__menu-item {
-  border-radius: 4px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--list-box__menu-item__option {
   border-block-start-color: transparent;
@@ -1993,8 +1985,7 @@
   border-radius: 12px / 20px;
 }
 :is([data-theme="geist-dark"], [data-theme^="apple-"]) .rux--date-picker__calendar,
-[data-theme="ant-dark"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--list-box__menu, .rux--date-picker__calendar),
-[data-theme="rux-dark"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
+[data-theme="ant-dark"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--list-box__menu, .rux--date-picker__calendar) {
   border-radius: 8px / 16px;
 }
 [data-theme^="apple-"] :is(.rux--menu:not(.rux--menu .rux--menu), .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar) {
@@ -2145,7 +2136,7 @@
   border-radius: 6px;
 }
 [data-theme="rux-dark"] :is(.rux--inline-notification, .rux--toast-notification, .rux--actionable-notification) {
-  border-radius: 8px;
+  border-radius: 0;
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.rux--inline-notification--error, .rux--toast-notification--error, .rux--actionable-notification--error) {
   border-color: color-mix(in srgb, var(--rux-support-error) 30%, var(--rux-notification-background-error));
@@ -2259,15 +2250,15 @@
   border-start-start-radius: 12px;
 }
 [data-theme="rux-dark"] .rux--side-panel__navigation-back-button {
-  border-start-start-radius: 8px;
+  border-start-start-radius: 0;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--inline-notification__close-button,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--toast-notification__close-button {
   border-start-end-radius: 8px;
 }
 /* RUX-DARK'S MODAL AND DIALOG KEEP THEIR CLOSE BUTTON CLEAR OF THE CORNER
-   AND RING IT. It stands 12px in at the theme's 36px control size with the
-   4px corners its other buttons have, in the border a button has, so it
+   AND RING IT. It stands 12px in at the theme's 36px control size, square
+   as its other buttons are, in the border a button has, so it
    fills the 48px Carbon keeps for it at the header's end and the title
    starts where it did. The border is the 1px the other rings are, so the
    focus ring, which is that border, takes an inset line to stay Carbon's
@@ -2275,12 +2266,12 @@
 [data-theme="rux-dark"] :is(.rux--modal-close-button, .rux--dialog__header-controls) {
   inset-block-start: var(--rux-spacing-04);
   inset-inline-end: var(--rux-spacing-04);
-  border-radius: 4px;
+  border-radius: 0;
 }
 [data-theme="rux-dark"] :is(.rux--modal-close, .rux--dialog__close) {
   padding: 7px;
   border: 1px solid var(--rux-border-subtle-02);
-  border-radius: 4px;
+  border-radius: 0;
   block-size: 2.25rem;
   inline-size: 2.25rem;
 }
@@ -2297,7 +2288,7 @@
   inset-inline-end: var(--rux-spacing-04);
 }
 [data-theme="rux-dark"] .rux--side-panel .rux--btn.rux--side-panel__close-button {
-  border-radius: 4px;
+  border-radius: 0;
   block-size: 2rem;
   inline-size: 2rem;
 }
@@ -2314,7 +2305,7 @@
   margin: var(--rux-spacing-03);
   border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
   color: inherit;
-  border-radius: 4px;
+  border-radius: 0;
   block-size: 2rem;
   inline-size: 2rem;
   min-block-size: 2rem;
@@ -2396,15 +2387,20 @@
 [data-theme="rux-dark"] .rux--coachmark-tagline::before {
   background: linear-gradient(90deg, var(--rux-tag-hover-blue) 0%, var(--rux-tag-hover-purple) 100%);
 }
-/* Carbon rounds three small parts of its AI and coachmark kits by 1 and 2px,
-   outside rux-dark's two steps: the inline AI label and the AI skeleton's
-   icon are controls and take 4px, and the tagline is a surface and takes 8px,
-   its hover fill with it. */
-[data-theme="rux-dark"] :is(.rux--ai-label__button--inline, .rux--ai-label__button--inline::before, .rux--skeleton__icon--ai) {
-  border-radius: 4px;
+/* Carbon rounds small parts of its own: the inline AI label, the AI
+   skeleton's icon, text and placeholder, the AI toggletip's action row and
+   its button, the coachmark's tagline with its hover fill, a switcher
+   option's fill, the copy button's note and a tag's close button. rux-dark
+   squares them as it squares every corner. */
+[data-theme="rux-dark"] :is(.rux--ai-label__button--inline, .rux--ai-label__button--inline::before, .rux--skeleton__icon--ai, .rux--skeleton__text--ai, .rux--skeleton__placeholder--ai, .rux--tag__close-icon),
+[data-theme="rux-dark"] .rux--toggletip-content .rux--ai-label-actions,
+[data-theme="rux-dark"] .rux--ai-label .rux--ai-label-actions .rux--btn--primary,
+[data-theme="rux-dark"] .rux--content-switcher-btn::after,
+[data-theme="rux-dark"] .rux--copy-btn .rux--copy-btn__feedback {
+  border-radius: 0;
 }
 [data-theme="rux-dark"] :is(.rux--coachmark-tagline, .rux--coachmark-tagline::before) {
-  border-radius: 8px;
+  border-radius: 0;
 }
 [data-theme="rux-dark"] .rux--guidebanner__navigation {
   border-block-start-color: var(--rux-tag-border-purple);
@@ -2446,7 +2442,7 @@
 }
 [data-theme="rux-dark"] .rux--coachmark-tagline--close-btn {
   margin-inline-start: 0 !important;
-  border-radius: 4px;
+  border-radius: 0;
   block-size: 1.5rem;
   inline-size: 1.5rem;
   min-block-size: 1.5rem;
@@ -2461,16 +2457,16 @@
   border-start-end-radius: 12px;
 }
 [data-theme="rux-dark"] .rux--side-panel__header {
-  border-start-start-radius: 8px;
-  border-start-end-radius: 8px;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--side-panel__actions-container {
   border-end-start-radius: 12px;
   border-end-end-radius: 12px;
 }
 [data-theme="rux-dark"] .rux--side-panel__actions-container {
-  border-end-start-radius: 8px;
-  border-end-end-radius: 8px;
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--action-set__action-button:first-child,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-footer .rux--btn:first-child {
@@ -2478,7 +2474,7 @@
 }
 [data-theme="rux-dark"] .rux--action-set__action-button:first-child,
 [data-theme="rux-dark"] .rux--modal-footer .rux--btn:first-child {
-  border-end-start-radius: 8px;
+  border-end-start-radius: 0;
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--action-set__action-button:last-child,
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme^="apple-"]) .rux--modal-footer .rux--btn:last-child {
@@ -2486,7 +2482,7 @@
 }
 [data-theme="rux-dark"] .rux--action-set__action-button:last-child,
 [data-theme="rux-dark"] .rux--modal-footer .rux--btn:last-child {
-  border-end-end-radius: 8px;
+  border-end-end-radius: 0;
 }
 
 /* GEIST AND ANT END A SURFACE WITH BUTTONS, NOT WITH A BAND. Carbon fills the
@@ -2562,7 +2558,7 @@
 [data-theme="rux-dark"] .rux--modal-footer .rux--btn,
 [data-theme="rux-dark"] .rux--modal-footer .rux--btn:first-child,
 [data-theme="rux-dark"] .rux--modal-footer .rux--btn:last-child {
-  border-radius: 4px;
+  border-radius: 0;
 }
 /* Carbon pads a footer button's trailing edge for an icon and its leading edge
    for a ghost; at its own width either reads as a label pushed off centre. */
@@ -3604,8 +3600,11 @@
     border-radius: 12px;
     inset-block-start: 3.5rem;
   }
-  :is([data-theme="ant-dark"], [data-theme="rux-dark"]) :is(.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel--expanded) {
+  [data-theme="ant-dark"] :is(.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel--expanded) {
     border-radius: 8px;
+  }
+  [data-theme="rux-dark"] :is(.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel--expanded) {
+    border-radius: 0;
   }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"]) :is(.rux--side-nav--hidden.rux--side-nav--expanded, .rux--header-panel--expanded) {
     max-block-size: calc(100dvh - 5rem - 1px);

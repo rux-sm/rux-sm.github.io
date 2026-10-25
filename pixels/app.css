@@ -127,14 +127,14 @@
    each rounding, so a size that is a whole number of steps, worked out in
    fractions, is not taken a step down. */
 .pixels-board {
-  --clue-fit: max(8px, round(down, min(var(--clue, 16px), var(--cell) - 2px, (var(--clue-w) - 8px) / var(--units, 1), (var(--clue-h) - 4px) / var(--count, 1)) + .01px, var(--pixels-clue-step)));
+  --clue-fit: max(8px, round(down, min(var(--clue, 16px), var(--cell) - 2px, (var(--clue-w) - 4px) / var(--units, 1), (var(--clue-h) - 4px) / var(--count, 1)) + .01px, var(--pixels-clue-step)));
 }
 .pixels-clue {
   display: flex;
   gap: .25em;
   justify-content: end;
   align-items: center;
-  padding-inline: 2px 6px;
+  padding-inline: 1px 3px;
   font-size: var(--clue-fit);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -682,37 +682,37 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    ITS MEASURES. Most puzzles are fifteen squares a side, played on a phone,
    whose column is too narrow for both the squares and the numbers to be
    large, so the squares are served first:
-   - `--fewest` is the least the squares together should be across: 300px
-     under a finger and 240px under a mouse, which is 20px and 16px a square
-     on a board of fifteen and 30px and 24px on a board of ten.
+   - `--fewest` is the least the squares together should be across: under
+     a finger 22px a square, or 300px for a board of ten or five, and under
+     a mouse 240px, 16px a square on a board of fifteen.
    - `--clue`, every number's size, is the largest sharp size up to 16px
      that leaves the squares that much, and each square 3px more than the
      size so its height holds a number, and never under `--clue-least`, the
-     first sharp size over 8px. The 8px and 9px are the room's padding, and
+     first sharp size over 8px. The 4px and 5px are the room's padding, and
      a pixel more where its width is rounded up.
    - `--clue-w` and `--clue-h` are the room the puzzle's own numbers take at
      that size, by its widest row and its longest column, which play.js
-     gives the game as `--units` and `--count` with its size, `--cols`. They
-     are 64px and 72px at least, for the corner's picture and clock.
+     gives the game as `--units` and `--count` with its size, `--cols`. The
+     corner holds nothing, so it is only as big as they make it.
    - `--side` is what the frame's width leaves beside the numbers, or what
      the window's height leaves once `--chrome`, the height the rest of the
      page takes, and the header's are taken away, from 150px up to `--most`, and down to a
      multiple of the puzzle's size. The height never takes a square under
      18px: a window too short for that scrolls instead.
    - `--foot` is the game's width, the numbers' room and the squares.
-   - `--pixels-thumb`, the corner's picture, is 45px or the most under it
-     that the puzzle's size divides. */
+   - `--pixels-thumb`, the picture so far in the status row, is 30px or the
+     most under it that the puzzle's size divides. */
 .pixels-game {
   --most: 600px;
-  --chrome: 270px;
-  --fewest: 300px;
+  --chrome: 276px;
+  --fewest: max(300px, var(--cols, 15) * 22px);
   --clue-least: 8px;
-  --clue: clamp(var(--clue-least), round(down, min(16px, (100cqi - 8px - var(--fewest)) / var(--units, 5), (100cqi - 9px - 3px * var(--cols, 15)) / (var(--units, 5) + var(--cols, 15))) + .01px, var(--pixels-clue-step)), 16px);
-  --clue-w: max(64px, round(up, var(--units, 5) * var(--clue) + 8px, 1px));
-  --clue-h: max(72px, round(up, var(--count, 5) * var(--clue) + 4px, 1px));
+  --clue: clamp(var(--clue-least), round(down, min(16px, (100cqi - 4px - var(--fewest)) / var(--units, 5), (100cqi - 5px - 3px * var(--cols, 15)) / (var(--units, 5) + var(--cols, 15))) + .01px, var(--pixels-clue-step)), 16px);
+  --clue-w: round(up, var(--units, 5) * var(--clue) + 4px, 1px);
+  --clue-h: round(up, var(--count, 5) * var(--clue) + 4px, 1px);
   --side: round(down, clamp(150px, min(100cqi - var(--clue-w), max(100dvh - var(--pixels-head, 0px) - var(--chrome) - var(--clue-h), var(--cols, 15) * 18px)), var(--most)), var(--cols, 15) * 1px);
   --foot: calc(var(--side) + var(--clue-w));
-  --pixels-thumb: round(down, 45px, var(--cols, 15) * 1px);
+  --pixels-thumb: round(down, 30px, var(--cols, 15) * 1px);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -759,21 +759,15 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-how .pixels-board { --clue-w: 36px; --clue-h: 36px; --base: 20px; margin: 0; pointer-events: none; }
 .pixels-how-keys { margin: 1.5rem 0 0; color: var(--rux-text-secondary); }
 
-/* THE CORNER'S TILE fills the corner exactly, edge to edge with the numbers'
-   bands: the picture so far, small, in the middle. The picture is
+/* THE PICTURE SO FAR stands in the status row before the clock,
    `--pixels-thumb` across, whole pixels a square. Its empty squares are the
    page's colour, with a faint line round it and after every fifth square
    as the board has, so an empty one reads as a small board. The puzzle's
-   name is there for a screen reader only, since the tile is too narrow for
-   it and the finish shows it. */
+   name is there for a screen reader only, since the row has no room for it
+   and the finish shows it. The board's corner holds nothing. */
 .pixels-corner { min-inline-size: 0; }
-.pixels-info {
-  display: grid;
-  place-items: center;
-  inline-size: var(--clue-w);
-  block-size: var(--clue-h);
-  background: var(--rux-layer-01);
-}
+.pixels-info { flex: none; display: grid; margin-inline-start: auto; }
+.pixels-fight > .pixels-info + .pixels-clock { margin-inline-start: 0; }
 .pixels-thumb {
   --px: calc(var(--pixels-thumb) / var(--size, 10));
   --line: var(--rux-border-subtle-01);
@@ -810,12 +804,12 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 }
 .pixels-count[hidden] { display: none; }
 
-/* THE STATUS ROW over the board: the player's hearts, then the clock at
-   its end. With WORLD on the enemy's health stands between them, a bar as
-   long as the share of its picture still to fill, which takes the room
-   that is left. A heart is drawn in pixels of 2px and the clock's line is
-   24px, so the row is 24px deep, which `--chrome` counts with the gap under
-   it, and a heart lost is grey and dim. At no hearts Design's cover
+/* THE STATUS ROW over the board: the player's hearts, then the picture so
+   far and the clock at its end. With WORLD on the enemy's health stands
+   between them, a bar as long as the share of its picture still to fill,
+   which takes the room that is left. A heart is drawn in pixels of 2px and
+   the picture is 30px, so the row is 30px deep, which `--chrome` counts
+   with the gap under it, and a heart lost is grey and dim. At no hearts Design's cover
    lies over the squares again, with a line of words over its keys.
 
    THE CHARACTER stands before the hearts and the enemy's shadow after the
@@ -823,7 +817,6 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    deep there. The character is its layers one over another in one box, and
    its sword turns about its grip. At no hearts it lies on its back. */
 .pixels-fight { display: flex; align-items: center; gap: .5rem; min-block-size: 18px; }
-.pixels-game:has(.pixels-hero) { --chrome: 276px; }
 .pixels-hero { --px: 2px; position: relative; flex: none; display: block; inline-size: calc(15 * var(--px)); block-size: calc(15 * var(--px)); }
 .pixels-hero-layer { position: absolute; inset: 0; background: none; }
 .pixels-hero-sword { transform-origin: 76.67% 56.67%; }

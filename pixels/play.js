@@ -252,8 +252,8 @@
     // app.css sizes the game by the puzzle: its size, its widest row's
     // numbers and its longest column's.
     for (const v of ['--cols', '--units', '--count']) game.style.setProperty(v, el.style.getPropertyValue(v));
-    // The name, the picture so far and the clock sit in the board's corner.
-    el.querySelector('.pixels-corner').appendChild($('pixels-info'));
+    // The name and the picture so far stand in the status row, before the clock.
+    $('pixels-clock').before($('pixels-info'));
     $('pixels-info').hidden = false;
     const thumb = picture($('pixels-thumb'), '0'.repeat(W * H));
     // The enemy's health is the share of the picture's squares not yet filled.

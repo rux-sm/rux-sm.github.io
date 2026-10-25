@@ -55,7 +55,7 @@ H, lights the line where the numbers decide the most, and a fairy finishes it, a
 says. Undo, or U, takes back a tap or drag, and Redo, or R, puts it back, but neither touches a mistake,
 and a tap that was only a mistake is no move to take back. Pause, P or Escape, or leaving the page stands
 the clock under a cover with Resume, Restart and Exit, which goes where the player came from; Restart
-empties the board, and Undo straight after brings it back. The board's corner shows the picture so far.
+empties the board, and Undo straight after brings it back. The picture so far stands beside the clock.
 When the picture is complete the squares fill in as the picture, in its colours if it has them, and its
 name shows with the time, the mistakes, the hints and Share picture. Under them the rift's tile counts
 the sprite, says +1 mana where the find earned one and +3 fairies where it cleared the rift, and opens

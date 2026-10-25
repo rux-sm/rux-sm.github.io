@@ -1,9 +1,9 @@
-commit   c27c387a044afa21b446185a98212d0fadb49e74
-date     2026-10-25T04:05:10Z
-subject  feat(tasks): Stamp Ship from stock walked again
+commit   3c54e51500ab0b45c06e75312daffe7b3231ba1d
+date     2026-10-25T05:18:03Z
+subject  feat(walkthroughs): Approve Ship from stock again
 contract 23 
 tier     export
-sha256   a582a59aad6219c54fd21a23ea093fd3d26f7323ef74b401de1f8b374bc5be25
+sha256   7c834171226c5d63c77b36b0db601f81924f05e689abd471b9fad4b224177b86
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

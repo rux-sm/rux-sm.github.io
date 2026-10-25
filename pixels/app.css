@@ -716,7 +716,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   --clue: clamp(var(--clue-least), round(down, min(16px, (100cqi - 4px - var(--fewest)) / var(--units, 5), (100cqi - 5px - 3px * var(--cols, 15)) / (var(--units, 5) + var(--cols, 15))) + .01px, var(--pixels-clue-step)), 16px);
   --clue-w: round(up, var(--units, 5) * var(--clue) + 4px, 1px);
   --clue-h: round(up, var(--count, 5) * var(--clue) + 4px, 1px);
-  --side: round(down, clamp(150px, min(100cqi - var(--clue-w), max(100dvh - var(--pixels-head, 0px) - var(--chrome) - var(--clue-h), var(--cols, 15) * 18px)), var(--most)), var(--cols, 15) * 1px);
+  --side: round(down, clamp(150px, min(100cqi - var(--clue-w), max(100dvh - var(--pixels-head, 0px) - var(--game-top, 0px) - var(--chrome) - var(--clue-h), var(--cols, 15) * 18px)), var(--most)), var(--cols, 15) * 1px);
   --foot: calc(var(--side) + var(--clue-w));
   --pixels-thumb: round(down, 30px, var(--cols, 15) * 1px);
   display: flex;
@@ -731,7 +731,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    the window's height less the page's room above and below it,
    `--pixels-around`, and the height to spare falls between the board and
    Fill and X, where a thumb does not need to reach. */
-.pixels-game { --pixels-around: calc(var(--pixels-above, 2rem) + max(2rem, env(safe-area-inset-bottom, 0px))); }
+.pixels-game { --pixels-around: calc(var(--pixels-above, 2rem) + var(--game-top, 0px) + max(2rem, env(safe-area-inset-bottom, 0px))); }
 .pixels-controls { margin-block-start: auto; }
 @media (pointer: fine) { .pixels-game { --fewest: 240px; } }
 @media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) { .pixels-game { --clue-least: 12px; } }
@@ -942,7 +942,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   inline-size: var(--side);
   margin-inline-start: round(down, calc((100cqi - var(--side)) / 2), 1px);
 }
-.pixels-maker { --side: round(down, clamp(150px, min(100cqi, (100dvh - var(--pixels-head, 0px) - env(safe-area-inset-bottom, 0px) - 216px) * 12 / 17), var(--most)), var(--step)); }
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi, (100dvh - var(--pixels-head, 0px) - var(--game-top, 0px) - env(safe-area-inset-bottom, 0px) - 216px) * 12 / 17), var(--most)), var(--step)); }
 .pixels-maker :is(.pixels-corner, .pixels-cols, .pixels-rows) { display: none; }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }

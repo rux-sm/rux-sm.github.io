@@ -1143,6 +1143,9 @@
   const iphone = 'standalone' in navigator;
   if (!iphone) document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="manifest.json">');
   const installed = iphone ? navigator.standalone === true : matchMedia('(display-mode: standalone)').matches;
+  // An iPhone blurs the page's top under its status bar there, so Design's
+  // page starts below it.
+  if (iphone && installed) document.documentElement.classList.add('game-home-screen');
   const tint = () => {
     const colour = getComputedStyle(document.body).backgroundColor;
     const meta = document.querySelector('meta[name="theme-color"]');

@@ -23,8 +23,14 @@
    a phone wide, centred, on every screen, so a game is laid out once, as a
    phone shows it. Its last row keeps clear of a phone's home bar, and of
    the bar of places where the page carries one. */
-:root { --game-column: 26rem; }
+:root { --game-column: 26rem; --game-top: 0px; }
 .game-main { padding-block-end: max(2rem, env(safe-area-inset-bottom, 0px)); }
+/* FROM AN IPHONE'S HOME SCREEN the system blurs the top of the page under
+   its status bar, so a game marks <html> `game-home-screen` there and the
+   page starts 1.5rem lower, below the blur. `--game-top` is that room, for
+   a game that sizes itself by the window's height to count. */
+.game-home-screen { --game-top: 1.5rem; }
+.game-home-screen body { padding-block-start: var(--game-top); }
 .game-main > .rux--css-grid { max-inline-size: var(--game-column); margin-inline: auto; padding-inline: 0; }
 /* Its column, the one element inside Carbon's grid column. On a phone it
    stands 16px from the screen's edge, as every page's text does, and takes
@@ -204,8 +210,10 @@
    a game key is, on the raised grey, where elsewhere it carries a line.
    Every place keeps the raised key's padding, 4px over its icon and 10px
    under its word, which the 6px lip takes, so nothing moves between the
-   current place and the rest. */
-[data-theme="pixel-dark"] .game-places { gap: 6px; padding: 4px 4px calc(4px + env(safe-area-inset-bottom, 0px)); border-block-start: 2px solid #000000; }
+   current place and the rest. The places stand 16px in from the sides,
+   as the page's text does, so a square key keeps clear of a phone's
+   rounded corners. */
+[data-theme="pixel-dark"] .game-places { gap: 6px; padding: 4px 16px calc(4px + env(safe-area-inset-bottom, 0px)); border-block-start: 2px solid #000000; }
 [data-theme="pixel-dark"] .game-place { margin: 0; padding: 4px 0 10px; border: 0; }
 [data-theme="pixel-dark"] .game-place[aria-current] {
   color: var(--rux-text-primary);

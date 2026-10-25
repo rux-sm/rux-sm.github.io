@@ -38,6 +38,9 @@ page was not opened from the icon.
   change of theme.
 - **The last row of a page keeps clear of an iPhone's home bar,** by the
   bottom padding of `.game-main` in `design/css/rux-game.css`.
+- **The first row keeps clear of the blur an iPhone draws under its status
+  bar,** where the page was opened from the icon: `app.js` marks the page
+  `game-home-screen`, and `design/css/rux-game.css` starts it 1.5rem lower.
 
 ## Staying the same player
 

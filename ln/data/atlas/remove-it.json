@@ -20,20 +20,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The test command, prompt and dataset are gone."
+        "v": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists."
       }
     ],
-    "text": "The test command, prompt and dataset are gone."
+    "text": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists."
   },
   "before": [],
   "why": {

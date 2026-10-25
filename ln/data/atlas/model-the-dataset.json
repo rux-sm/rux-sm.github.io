@@ -23,20 +23,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ Datasets",
   "session": "Datasets",
   "sessionCode": "ttrpi5100m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The fields the answer needs are ready to send."
+        "v": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs."
       }
     ],
-    "text": "The fields the answer needs are ready to send."
+    "text": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs."
   },
   "before": [],
   "why": {
@@ -135,17 +135,9 @@
                 {
                   "t": "field",
                   "v": "Description"
-                },
-                {
-                  "t": "text",
-                  "v": ". Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "item_stock"
                 }
               ],
-              "text": "Enter a Dataset Name in lowercase and a Description. Example: item_stock"
+              "text": "Enter a Dataset Name in lowercase and a Description"
             },
             {
               "tokens": [
@@ -166,7 +158,10 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -188,17 +183,9 @@
                 {
                   "t": "field",
                   "v": "Main table"
-                },
-                {
-                  "t": "text",
-                  "v": ". Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "whwmd400"
                 }
               ],
-              "text": "Type your table in Main table. Example: whwmd400"
+              "text": "Type your table in Main table"
             },
             {
               "tokens": [
@@ -213,6 +200,9 @@
           "id": "3",
           "optional": false,
           "produces": false,
+          "example": [
+            1
+          ],
           "uses": [
             {
               "task": "plan-the-prompt",
@@ -245,14 +235,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the screen's key. Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "1 - Item"
+                  "v": " to the screen's key"
                 }
               ],
-              "text": "Set Selection Index to the screen's key. Example: 1 - Item"
+              "text": "Set Selection Index to the screen's key"
             },
             {
               "tokens": [
@@ -266,7 +252,10 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            2
+          ]
         },
         {
           "cells": [
@@ -859,8 +848,86 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Dataset Name"
+              }
+            ],
+            "text": "Dataset Name"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "item_stock"
+              },
+              {
+                "t": "text",
+                "v": " — the stock check's own; a trial run takes another, such as "
+              },
+              {
+                "t": "literal",
+                "v": "walk_stock"
+              }
+            ],
+            "text": "item_stock — the stock check's own; a trial run takes another, such as walk_stock"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Main table"
+              }
+            ],
+            "text": "Main table"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "whwmd400"
+              }
+            ],
+            "text": "whwmd400"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Selection Index"
+              }
+            ],
+            "text": "Selection Index"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "1 - Item"
+              }
+            ],
+            "text": "1 - Item"
+          }
+        ]
+      }
+    ]
   },
   "screenshot": {
     "step": "13",

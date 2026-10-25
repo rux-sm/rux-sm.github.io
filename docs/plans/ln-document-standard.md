@@ -31,8 +31,6 @@ page the real records and one screenshot per task.
 - [ ] In atlas, write the Example section of each task in the six guides
       still to be reworded, before each one's walk in
       [ln-plain-voice.md](ln-plain-voice.md).
-- [ ] In atlas, write the Example sections of Set up a GenAI prompt and walk
-      it again.
 - [ ] In atlas, write each task's result as a fact a tester can tick, as
       Ship from stock's are, so Check the result can pass or fail.
 - [ ] In atlas, give every other guide a Before you start naming what must

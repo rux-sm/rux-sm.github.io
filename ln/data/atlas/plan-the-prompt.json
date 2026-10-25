@@ -20,20 +20,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You have the session code, the table, the values and the sentence the user sees."
+        "v": "The session code, the table, the values, the sentence the user sees and the default model are written down."
       }
     ],
-    "text": "You have the session code, the table, the values and the sentence the user sees."
+    "text": "The session code, the table, the values, the sentence the user sees and the default model are written down."
   },
   "before": [],
   "why": {

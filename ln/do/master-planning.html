@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Generate Master Planning · LN Notes · Updated 22 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Generate Master Planning · LN Notes · Updated 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -107,20 +107,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="dda59ed2a9b08bf14f510717dddc38f096318248">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="3e39f4b918e2199a4daaee1994d9d973dfd6f788">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Generate Master Planning</h1>
 <p class="rux--type-body-long-01">Work out a supply plan per period for the items planned by a master plan.</p>
 </div>
-<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Length</dt><dd>2 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Enterprise Planning</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">A task on its own, done beside the processes.</p>
 <div class="ln-unwalked"><div class="rux--inline-notification rux--inline-notification--info rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
@@ -133,24 +133,29 @@
 </div></div>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>The item has <span class="ln-t-named">Master Plan</span> selected on the Horizons tab of <a class="rux--link" href="../screens/cprpd1100m000.html"><span class="ln-t-named">Items - Planning</span></a> (<span class="ln-t-exact">cprpd1100m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="dest ln-t-whole">Items - Planning</span></span>, with a <span class="ln-t-named">Planning Horizon</span> longer than its <span class="ln-t-named">Order Horizon</span>, and <span class="ln-t-named">Production Plan</span> or <span class="ln-t-named">Purchase Plan</span> set to Generate or Always Update on its Details tab. The scenario has been initialized in <span class="ln-t-named">Initialize, Roll, and Update Scenario</span> (<span class="ln-t-exact">cprpd4200m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Scenarios</span><span class="sep">➔</span><span class="dest">Initialize, Roll, and Update Scenario</span></span>, with <span class="ln-t-named">Generate Item/Channel Master Plan</span> selected.</li></ul>
+</section>
+<section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Generate Master Planning</span></span> (<span class="ln-t-exact">cprmp1202m000</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The run is a master-plan simulation. Period by period it works out the inventory the item is heading for, and where that falls short of the inventory plan it plans supply to cover the gap: a production plan, a purchase plan or planned distribution orders, by the item's sources of supply. It plans only inside the item's master-planning horizon, and it remakes a production or purchase plan only where the item allows it. Initializing the scenario recomputes the master plan but plans no supply, which is why this run exists.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon</td><td data-k="You should see"></td></tr>
-<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">production and purchase count as sources only where the item allows it. Its Production Plan or Purchase Plan is set to Generate or Always Update</td><td data-k="You should see"></td></tr>
+<tr id="step-1"><td data-k="Step"><b>1</b></td><td data-k="Action">Set <span class="ln-t-named">Scenario</span> to the actual scenario</td><td data-k="You should see">Its description shows beside it</td></tr>
+<tr id="step-2"><td data-k="Step"><b>2</b></td><td data-k="Action">On the Selection tab, set <span class="ln-t-named">From Plan Item</span> and <span class="ln-t-named">To Plan Item</span> to the item, its planning cluster first</td><td data-k="You should see"></td></tr>
+<tr id="step-3"><td data-k="Step"><b>3</b></td><td data-k="Action">Set the <span class="ln-t-named">Period</span> range</td><td data-k="You should see">Each period's date shows beside it</td></tr>
+<tr id="step-4"><td data-k="Step"><b>4</b></td><td data-k="Action">On the Options tab, check that <span class="ln-t-named">Update Goods Flow</span> is selected</td><td data-k="You should see"></td></tr>
+<tr id="step-5"><td data-k="Step"><b>5</b></td><td data-k="Action">Press <span class="ln-t-press">GENERATE</span></td><td data-k="You should see"></td></tr>
+<tr id="step-6"><td data-k="Step"><b>6</b></td><td data-k="Action">Open <span class="ln-t-named">Item Master Plan</span> (<span class="ln-t-exact">cprmp2101m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Master Plan</span></span>, for the item</td><td data-k="You should see"><span class="ln-t-named">Production Plan</span> holds a quantity in each period whose demand lies past the order horizon</td></tr>
 </tbody>
 </table></div>
 
 </section>
-<section class="ln-proc__gaps">
-<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="gaps">Known gaps</h2>
-<p>The library has no source for these yet, so this Document says nothing about them rather than guess.</p>
-<ul class="ln-proc__list"><li>Steps</li></ul>
-</section>
+
 <section class="ln-proc__screens">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2 ln-proc__h2--sect" id="screens">Screens used</h2>
 <div class="rux--data-table-container ln-proc__table ln-proc__sect">
@@ -200,11 +205,25 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Generate Master Planning</span></span> (<span class="ln-t-exact">cprmp1202m000</span>)</p><h1 class="ln-step__do">Run it for a range of plan items</h1><p class="ln-step__note">A supply plan is made only inside each item's master-planning horizon</p></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Generate Master Planning</span></span> (<span class="ln-t-exact">cprmp1202m000</span>)</p><h1 class="ln-step__do">Set <span class="ln-t-named">Scenario</span> to the actual scenario</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Its description shows beside it</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Production and purchase count as sources only where the item allows it</h1><p class="ln-step__note">Its Production Plan or Purchase Plan is set to Generate or Always Update</p></div>
-    <div class="ln-step__prose"><p><span class="ln-gap">Not documented for this release.</span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">On the Selection tab, set <span class="ln-t-named">From Plan Item</span> and <span class="ln-t-named">To Plan Item</span> to the item, its planning cluster first</h1></div>
+  </li>
+  <li data-k="3" data-ref="3" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Set the <span class="ln-t-named">Period</span> range</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each period's date shows beside it</p></div>
+  </li>
+  <li data-k="4" data-ref="4" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">On the Options tab, check that <span class="ln-t-named">Update Goods Flow</span> is selected</h1></div>
+  </li>
+  <li data-k="5" data-ref="5" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Press <span class="ln-t-press">GENERATE</span></h1></div>
+  </li>
+  <li data-k="6" data-ref="6" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Item Master Plan</span> (<span class="ln-t-exact">cprmp2101m000</span>), for the item</h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Planning</span><span class="sep">➔</span><span class="ln-t-whole">Master Planning</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Master Plan</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Production Plan</span> holds a quantity in each period whose demand lies past the order horizon</p></div>
   </li>
 </ol>
 <div class="ln-confirm" data-confirm="master-planning">
@@ -231,6 +250,13 @@
       <div class="rux--accordion__title">Your values</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div></div></div>
+  </li>
+  <li class="rux--accordion__item" id="why-guided">
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Why LN works this way</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>The run is a master-plan simulation. Period by period it works out the inventory the item is heading for, and where that falls short of the inventory plan it plans supply to cover the gap: a production plan, a purchase plan or planned distribution orders, by the item's sources of supply. It plans only inside the item's master-planning horizon, and it remakes a production or purchase plan only where the item allows it. Initializing the scenario recomputes the master plan but plans no supply, which is why this run exists.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

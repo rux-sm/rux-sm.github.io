@@ -9,8 +9,8 @@
     "Tools",
     "Warehousing"
   ],
-  "updated": "2026-10-24",
-  "status": "approved",
+  "updated": "2026-10-25",
+  "status": "draft",
   "summary": "put a one-click AI command on an LN screen, check its answer, improve it, and take it away.",
   "order": 0,
   "sources": [
@@ -74,13 +74,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You have the session code, the table, the values and the sentence the user sees."
+            "v": "The session code, the table, the values, the sentence the user sees and the default model are written down."
           }
         ],
-        "text": "You have the session code, the table, the values and the sentence the user sees."
+        "text": "The session code, the table, the values, the sentence the user sees and the default model are written down."
       },
       "steps": 6,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "model-the-dataset",
@@ -90,13 +90,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The fields the answer needs are ready to send."
+            "v": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs."
           }
         ],
-        "text": "The fields the answer needs are ready to send."
+        "text": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs."
       },
       "steps": 15,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "write-the-prompt",
@@ -106,13 +106,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A prompt exists with a label, a dataset and both texts."
+            "v": "The prompt's row shows its label and dataset, and a green tick under both text columns."
           }
         ],
-        "text": "A prompt exists with a label, a dataset and both texts."
+        "text": "The prompt's row shows its label and dataset, and a green tick under both text columns."
       },
       "steps": 12,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "link-the-prompt-to-a-session",
@@ -122,13 +122,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The command is in the Actions menu of the screen."
+            "v": "The link to the screen's session is saved, Active and with the When Enabled you chose."
           }
         ],
-        "text": "The command is in the Actions menu of the screen."
+        "text": "The link to the screen's session is saved, Active and with the When Enabled you chose."
       },
       "steps": 4,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "run-it-and-check-the-answer",
@@ -138,13 +138,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You have a first answer, checked against the screen."
+            "v": "The first answer's facts match the values you noted from the screen."
           }
         ],
-        "text": "You have a first answer, checked against the screen."
+        "text": "The first answer's facts match the values you noted from the screen."
       },
       "steps": 6,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "improve-it",
@@ -154,13 +154,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You've checked the answer's format and facts on each test record."
+            "v": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen."
           }
         ],
-        "text": "You've checked the answer's format and facts on each test record."
+        "text": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen."
       },
       "steps": 16,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "remove-it",
@@ -170,19 +170,274 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The test command, prompt and dataset are gone."
+            "v": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists."
           }
         ],
-        "text": "The test command, prompt and dataset are gone."
+        "text": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists."
       },
       "steps": 4,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Dataset Name"
+              }
+            ],
+            "text": "Dataset Name"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "item_stock"
+              },
+              {
+                "t": "text",
+                "v": " — the stock check's own; a trial run takes another, such as "
+              },
+              {
+                "t": "literal",
+                "v": "walk_stock"
+              }
+            ],
+            "text": "item_stock — the stock check's own; a trial run takes another, such as walk_stock"
+          }
+        ],
+        "task": "model-the-dataset"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Main table"
+              }
+            ],
+            "text": "Main table"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "whwmd400"
+              }
+            ],
+            "text": "whwmd400"
+          }
+        ],
+        "task": "model-the-dataset"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Selection Index"
+              }
+            ],
+            "text": "Selection Index"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "1 - Item"
+              }
+            ],
+            "text": "1 - Item"
+          }
+        ],
+        "task": "model-the-dataset"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "GenAI Prompt"
+              }
+            ],
+            "text": "GenAI Prompt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "stock_check"
+              },
+              {
+                "t": "text",
+                "v": " — a trial run takes another, such as "
+              },
+              {
+                "t": "literal",
+                "v": "walk_check"
+              }
+            ],
+            "text": "stock_check — a trial run takes another, such as walk_check"
+          }
+        ],
+        "task": "write-the-prompt"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Label Description"
+              }
+            ],
+            "text": "Label Description"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Inventory"
+              }
+            ],
+            "text": "Inventory"
+          }
+        ],
+        "task": "write-the-prompt"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Dataset"
+              }
+            ],
+            "text": "Dataset"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "item_stock"
+              }
+            ],
+            "text": "item_stock"
+          }
+        ],
+        "task": "write-the-prompt"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Usage Type"
+              }
+            ],
+            "text": "Usage Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Report"
+              }
+            ],
+            "text": "Report"
+          }
+        ],
+        "task": "write-the-prompt"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Session"
+              }
+            ],
+            "text": "Session"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "wh"
+              },
+              {
+                "t": "text",
+                "v": " · "
+              },
+              {
+                "t": "literal",
+                "v": "wmd"
+              },
+              {
+                "t": "text",
+                "v": " · "
+              },
+              {
+                "t": "literal",
+                "v": "4100m100"
+              },
+              {
+                "t": "text",
+                "v": ", the code "
+              },
+              {
+                "t": "session",
+                "code": "whwmd4100m100"
+              },
+              {
+                "t": "text",
+                "v": " split across the three boxes"
+              }
+            ],
+            "text": "wh · wmd · 4100m100, the code whwmd4100m100 split across the three boxes"
+          }
+        ],
+        "task": "link-the-prompt-to-a-session"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "When Enabled"
+              }
+            ],
+            "text": "When Enabled"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Always"
+              }
+            ],
+            "text": "Always"
+          }
+        ],
+        "task": "link-the-prompt-to-a-session"
+      }
+    ]
   },
   "sections": [
     {
@@ -204,14 +459,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "Each step says what to do for your own prompt, then gives the example."
+          "v": "Each step says what to do for your own prompt, and the example is a stock check:"
         },
         {
           "t": "text",
-          "v": " The example is a stock check: where an item's stock is, and what is planned in and out."
+          "v": " where an item's stock is, and what is planned in and out. A step that types a value shows the stock check's value beside it."
         }
       ],
-      "text": "Each step says what to do for your own prompt, then gives the example. The example is a stock check: where an item's stock is, and what is planned in and out."
+      "text": "Each step says what to do for your own prompt, and the example is a stock check: where an item's stock is, and what is planned in and out. A step that types a value shows the stock check's value beside it."
     },
     {
       "kind": "prose",
@@ -369,10 +624,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You have the session code, the table, the values and the sentence the user sees"
+                  "v": "The session code, the table, the values, the sentence the user sees and the default model are written down"
                 }
               ],
-              "text": "You have the session code, the table, the values and the sentence the user sees"
+              "text": "The session code, the table, the values, the sentence the user sees and the default model are written down"
             }
           ]
         },
@@ -410,10 +665,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The fields the answer needs are ready to send"
+                  "v": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs"
                 }
               ],
-              "text": "The fields the answer needs are ready to send"
+              "text": "Your dataset is listed on Datasets, and Selected Fields shows every field the answer needs"
             }
           ]
         },
@@ -451,10 +706,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A prompt exists with a label, a dataset and both texts"
+                  "v": "The prompt's row shows its label and dataset, and a green tick under both text columns"
                 }
               ],
-              "text": "A prompt exists with a label, a dataset and both texts"
+              "text": "The prompt's row shows its label and dataset, and a green tick under both text columns"
             }
           ]
         },
@@ -492,10 +747,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The command is in the Actions menu of the screen"
+                  "v": "The link to the screen's session is saved, Active and with the When Enabled you chose"
                 }
               ],
-              "text": "The command is in the Actions menu of the screen"
+              "text": "The link to the screen's session is saved, Active and with the When Enabled you chose"
             }
           ]
         },
@@ -533,10 +788,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You have a first answer, checked against the screen"
+                  "v": "The first answer's facts match the values you noted from the screen"
                 }
               ],
-              "text": "You have a first answer, checked against the screen"
+              "text": "The first answer's facts match the values you noted from the screen"
             }
           ]
         },
@@ -574,10 +829,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You've checked the answer's format and facts on each test record"
+                  "v": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen"
                 }
               ],
-              "text": "You've checked the answer's format and facts on each test record"
+              "text": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen"
             }
           ]
         },
@@ -615,10 +870,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The test command, prompt and dataset are gone"
+                  "v": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists"
                 }
               ],
-              "text": "The test command, prompt and dataset are gone"
+              "text": "The test command is gone from the screen's Actions menu, and the prompt and dataset from their lists"
             }
           ]
         }

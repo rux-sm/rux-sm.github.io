@@ -1,9 +1,9 @@
-commit   dda59ed2a9b08bf14f510717dddc38f096318248
-date     2026-10-25T21:55:39Z
-subject  feat(tasks): Give the GenAI guide screenshots
+commit   3e39f4b918e2199a4daaee1994d9d973dfd6f788
+date     2026-10-25T23:43:36Z
+subject  feat(tasks): Mine Humberto's adjustment and MPS
 contract 24 
 tier     export
-sha256   f5e885c2681f01e90d539e9396ec2760bae8eb06040e7804fa7e378a7b2216af
+sha256   7b126428b8675710260326dd21903970057ef6ba8ef9bce8a3744d8c31a56daa
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

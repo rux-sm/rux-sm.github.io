@@ -23,20 +23,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A prompt exists with a label, a dataset and both texts."
+        "v": "The prompt's row shows its label and dataset, and a green tick under both text columns."
       }
     ],
-    "text": "A prompt exists with a label, a dataset and both texts."
+    "text": "The prompt's row shows its label and dataset, and a green tick under both text columns."
   },
   "before": [],
   "why": {
@@ -123,17 +123,9 @@
                 {
                   "t": "field",
                   "v": "GenAI Prompt"
-                },
-                {
-                  "t": "text",
-                  "v": ". Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "stock_check"
                 }
               ],
-              "text": "Type your prompt's name over the one in GenAI Prompt. Example: stock_check"
+              "text": "Type your prompt's name over the one in GenAI Prompt"
             },
             {
               "tokens": [
@@ -154,7 +146,10 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -237,10 +232,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " and press Enter. Example: Inventory"
+                  "v": " and press Enter"
                 }
               ],
-              "text": "Enter a word under Label Description and press Enter. Example: Inventory"
+              "text": "Enter a word under Label Description and press Enter"
             },
             {
               "tokens": [
@@ -254,7 +249,10 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -350,6 +348,9 @@
           "id": "6",
           "optional": false,
           "produces": false,
+          "example": [
+            2
+          ],
           "uses": [
             {
               "task": "model-the-dataset",
@@ -382,14 +383,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", which sets the command's icon. Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "Report"
+                  "v": ", which sets the command's icon"
                 }
               ],
-              "text": "Set Usage Type, which sets the command's icon. Example: Report"
+              "text": "Set Usage Type, which sets the command's icon"
             },
             {
               "tokens": [
@@ -403,7 +400,10 @@
           ],
           "id": "7",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            3
+          ]
         },
         {
           "cells": [
@@ -664,8 +664,108 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "GenAI Prompt"
+              }
+            ],
+            "text": "GenAI Prompt"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "stock_check"
+              },
+              {
+                "t": "text",
+                "v": " — a trial run takes another, such as "
+              },
+              {
+                "t": "literal",
+                "v": "walk_check"
+              }
+            ],
+            "text": "stock_check — a trial run takes another, such as walk_check"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Label Description"
+              }
+            ],
+            "text": "Label Description"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Inventory"
+              }
+            ],
+            "text": "Inventory"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Dataset"
+              }
+            ],
+            "text": "Dataset"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "item_stock"
+              }
+            ],
+            "text": "item_stock"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Usage Type"
+              }
+            ],
+            "text": "Usage Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Report"
+              }
+            ],
+            "text": "Report"
+          }
+        ]
+      }
+    ]
   },
   "screenshot": {
     "step": "12",

@@ -12,7 +12,7 @@
     "Enterprise Planning"
   ],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Planning ➔ Master Planning ➔ Generate Master Planning",
   "session": "Generate Master Planning",
   "sessionCode": "cprmp1202m000",
@@ -26,8 +26,108 @@
     ],
     "text": "Work out a supply plan per period for the items planned by a master plan."
   },
-  "before": [],
-  "why": null,
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The item has "
+        },
+        {
+          "t": "field",
+          "v": "Master Plan"
+        },
+        {
+          "t": "text",
+          "v": " selected on the Horizons tab of "
+        },
+        {
+          "t": "session",
+          "code": "cprpd1100m000",
+          "name": "Items - Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+        },
+        {
+          "t": "text",
+          "v": ", with a "
+        },
+        {
+          "t": "field",
+          "v": "Planning Horizon"
+        },
+        {
+          "t": "text",
+          "v": " longer than its "
+        },
+        {
+          "t": "field",
+          "v": "Order Horizon"
+        },
+        {
+          "t": "text",
+          "v": ", and "
+        },
+        {
+          "t": "field",
+          "v": "Production Plan"
+        },
+        {
+          "t": "text",
+          "v": " or "
+        },
+        {
+          "t": "field",
+          "v": "Purchase Plan"
+        },
+        {
+          "t": "text",
+          "v": " set to Generate or Always Update on its Details tab. The scenario has been initialized in "
+        },
+        {
+          "t": "session",
+          "code": "cprpd4200m000",
+          "name": "Initialize, Roll, and Update Scenario"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Master Data ➔ Scenarios ➔ Initialize, Roll, and Update Scenario"
+        },
+        {
+          "t": "text",
+          "v": ", with "
+        },
+        {
+          "t": "field",
+          "v": "Generate Item/Channel Master Plan"
+        },
+        {
+          "t": "text",
+          "v": " selected."
+        }
+      ],
+      "text": "The item has Master Plan selected on the Horizons tab of Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning, with a Planning Horizon longer than its Order Horizon, and Production Plan or Purchase Plan set to Generate or Always Update on its Details tab. The scenario has been initialized in Initialize, Roll, and Update Scenario (cprpd4200m000), Planning ➔ Master Data ➔ Scenarios ➔ Initialize, Roll, and Update Scenario, with Generate Item/Channel Master Plan selected."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The run is a master-plan simulation. Period by period it works out the inventory the item is heading for, and where that falls short of the inventory plan it plans supply to cover the gap: a production plan, a purchase plan or planned distribution orders, by the item's sources of supply. It plans only inside the item's master-planning horizon, and it remakes a production or purchase plan only where the item allows it. Initializing the scenario recomputes the master plan but plans no supply, which is why this run exists."
+      }
+    ],
+    "text": "The run is a master-plan simulation. Period by period it works out the inventory the item is heading for, and where that falls short of the inventory plan it plans supply to cover the gap: a production plan, a purchase plan or planned distribution orders, by the item's sources of supply. It plans only inside the item's master-planning horizon, and it remakes a production or purchase plan only where the item allows it. Initializing the scenario recomputes the master plan but plans no supply, which is why this run exists."
+  },
   "blocks": [
     {
       "kind": "steps",
@@ -52,19 +152,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+                  "v": "Set "
+                },
+                {
+                  "t": "field",
+                  "v": "Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " to the actual scenario"
                 }
               ],
-              "text": "run it for a range of plan items; a supply plan is made only inside each item's master-planning horizon"
+              "text": "Set Scenario to the actual scenario"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Its description shows beside it"
                 }
               ],
-              "text": "—"
+              "text": "Its description shows beside it"
             }
           ],
           "id": "1",
@@ -86,10 +194,26 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "production and purchase count as sources only where the item allows it. Its Production Plan or Purchase Plan is set to Generate or Always Update"
+                  "v": "On the Selection tab, set "
+                },
+                {
+                  "t": "field",
+                  "v": "From Plan Item"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "To Plan Item"
+                },
+                {
+                  "t": "text",
+                  "v": " to the item, its planning cluster first"
                 }
               ],
-              "text": "production and purchase count as sources only where the item allows it. Its Production Plan or Purchase Plan is set to Generate or Always Update"
+              "text": "On the Selection tab, set From Plan Item and To Plan Item to the item, its planning cluster first"
             },
             {
               "tokens": [
@@ -104,18 +228,185 @@
           "id": "2",
           "optional": false,
           "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the "
+                },
+                {
+                  "t": "field",
+                  "v": "Period"
+                },
+                {
+                  "t": "text",
+                  "v": " range"
+                }
+              ],
+              "text": "Set the Period range"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each period's date shows beside it"
+                }
+              ],
+              "text": "Each period's date shows beside it"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the Options tab, check that "
+                },
+                {
+                  "t": "field",
+                  "v": "Update Goods Flow"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected"
+                }
+              ],
+              "text": "On the Options tab, check that Update Goods Flow is selected"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Press "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Press GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprmp2101m000",
+                  "name": "Item Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Planning ➔ Item Master Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the item"
+                }
+              ],
+              "text": "Open Item Master Plan (cprmp2101m000), Planning ➔ Master Planning ➔ Item Master Plan, for the item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Production Plan"
+                },
+                {
+                  "t": "text",
+                  "v": " holds a quantity in each period whose demand lies past the order horizon"
+                }
+              ],
+              "text": "Production Plan holds a quantity in each period whose demand lies past the order horizon"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "Not documented for this release."
-        }
-      ],
-      "text": "Not documented for this release."
     }
   ],
   "example": {

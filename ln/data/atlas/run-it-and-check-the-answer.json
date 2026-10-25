@@ -23,20 +23,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You have a first answer, checked against the screen."
+        "v": "The first answer's facts match the values you noted from the screen."
       }
     ],
-    "text": "You have a first answer, checked against the screen."
+    "text": "The first answer's facts match the values you noted from the screen."
   },
   "before": [],
   "why": {
@@ -306,7 +306,7 @@
   },
   "screenshot": {
     "step": "6",
-    "caption": "The first answer: a report with the model's own sums",
+    "caption": "The first answer: a report with its own Available column and totals",
     "path": "run-it-and-check-the-answer.jpg"
   },
   "problems": {

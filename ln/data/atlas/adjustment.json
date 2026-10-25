@@ -12,7 +12,7 @@
     "Warehousing"
   ],
   "status": null,
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Cycle Counting/Adjustment Orders ➔ Adjustment Orders",
   "session": "Adjustment Orders",
   "sessionCode": "whinh5120m000",
@@ -194,8 +194,54 @@
   "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Processing the order stops on "
+              },
+              {
+                "t": "literal",
+                "v": "Financial control period not found."
+              }
+            ],
+            "text": "Processing the order stops on Financial control period not found."
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The fiscal period table named in the project accounting parameters has no periods for this year. Open "
+              },
+              {
+                "t": "chip",
+                "v": "Periods"
+              },
+              {
+                "t": "text",
+                "v": " for that table and year, choose "
+              },
+              {
+                "t": "command",
+                "route": "Actions ➔ Generate Periods..."
+              },
+              {
+                "t": "text",
+                "v": ", generate the whole year, then process the order again"
+              }
+            ],
+            "text": "The fiscal period table named in the project accounting parameters has no periods for this year. Open Periods for that table and year, choose Actions ➔ Generate Periods..., generate the whole year, then process the order again"
+          }
+        ]
+      }
+    ]
   },
   "variants": {
     "kind": "variants",

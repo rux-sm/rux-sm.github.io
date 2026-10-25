@@ -23,20 +23,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts by Session",
   "session": "GenAI Prompts by Session",
   "sessionCode": "ttadv9160m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The command is in the Actions menu of the screen."
+        "v": "The link to the screen's session is saved, Active and with the When Enabled you chose."
       }
     ],
-    "text": "The command is in the Actions menu of the screen."
+    "text": "The link to the screen's session is saved, Active and with the When Enabled you chose."
   },
   "before": [],
   "why": {
@@ -130,30 +130,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " boxes. Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "wh"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "wmd"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "literal",
-                  "v": "4100m100"
+                  "v": " boxes"
                 }
               ],
-              "text": "Click New and type your session code across the three Session boxes. Example: wh, wmd and 4100m100"
+              "text": "Click New and type your session code across the three Session boxes"
             },
             {
               "tokens": [
@@ -176,6 +156,9 @@
           "id": "2",
           "optional": false,
           "produces": false,
+          "example": [
+            0
+          ],
           "uses": [
             {
               "task": "plan-the-prompt",
@@ -224,14 +207,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " waits for a tick. Example: "
-                },
-                {
-                  "t": "literal",
-                  "v": "Always"
+                  "v": " waits for a tick"
                 }
               ],
-              "text": "Set When Enabled. Always acts on the row in view or the ticked rows; Records Selected waits for a tick. Example: Always"
+              "text": "Set When Enabled. Always acts on the row in view or the ticked rows; Records Selected waits for a tick"
             },
             {
               "tokens": [
@@ -273,7 +252,10 @@
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -318,8 +300,84 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Session"
+              }
+            ],
+            "text": "Session"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "wh"
+              },
+              {
+                "t": "text",
+                "v": " · "
+              },
+              {
+                "t": "literal",
+                "v": "wmd"
+              },
+              {
+                "t": "text",
+                "v": " · "
+              },
+              {
+                "t": "literal",
+                "v": "4100m100"
+              },
+              {
+                "t": "text",
+                "v": ", the code "
+              },
+              {
+                "t": "session",
+                "code": "whwmd4100m100"
+              },
+              {
+                "t": "text",
+                "v": " split across the three boxes"
+              }
+            ],
+            "text": "wh · wmd · 4100m100, the code whwmd4100m100 split across the three boxes"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "When Enabled"
+              }
+            ],
+            "text": "When Enabled"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "Always"
+              }
+            ],
+            "text": "Always"
+          }
+        ]
+      }
+    ]
   },
   "screenshot": {
     "step": "4",

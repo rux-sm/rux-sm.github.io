@@ -23,20 +23,20 @@
     "Tools",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Tools ➔ Application Extensibility ➔ Embedded GenAI ➔ GenAI Prompts",
   "session": "GenAI Prompts",
   "sessionCode": "ttrpi5150m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You've checked the answer's format and facts on each test record."
+        "v": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen."
       }
     ],
-    "text": "You've checked the answer's format and facts on each test record."
+    "text": "On each test record, the answer is in the form the prompt text sets, and its facts match the screen."
   },
   "before": [],
   "why": {

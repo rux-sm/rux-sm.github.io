@@ -20,20 +20,20 @@
     "Warehousing",
     "Sales"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Company - Item Inventory",
   "session": "Company - Item Inventory",
   "sessionCode": "whwmd4100m100",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
+        "v": "The answer's on hand and on order, added up over its warehouses, equal the item's row."
       }
     ],
-    "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
+    "text": "The answer's on hand and on order, added up over its warehouses, equal the item's row."
   },
   "before": [],
   "why": {
@@ -409,7 +409,21 @@
           ],
           "id": "7",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "run-the-stock-check",
+              "step": "2",
+              "n": 0,
+              "label": "on hand"
+            },
+            {
+              "task": "run-the-stock-check",
+              "step": "2",
+              "n": 1,
+              "label": "on order"
+            }
+          ]
         }
       ]
     }
@@ -419,7 +433,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Item Inventory's answer under the item's row, with a warehouse that holds stock listed as Empty",
+    "path": "run-the-stock-check.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

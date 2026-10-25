@@ -12,7 +12,7 @@
   "updated": "2026-10-24",
   "status": "approved",
   "summary": "put a one-click AI command on an LN screen, check its answer, improve it, and take it away.",
-  "order": 1,
+  "order": 0,
   "sources": [
     "ttrpi5560m000",
     "ttrpi5100m000",

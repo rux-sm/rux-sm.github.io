@@ -9,10 +9,10 @@
     "Warehousing",
     "Sales"
   ],
-  "updated": "2026-10-24",
-  "status": "approved",
+  "updated": "2026-10-25",
+  "status": "draft",
   "summary": "run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it.",
-  "order": 0,
+  "order": 1,
   "sources": [
     "whwmd4100m100",
     "tdsls4101m000",
@@ -22,7 +22,26 @@
     "ttrpi5150m000",
     "ttadv9160m000"
   ],
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The two commands set up in LN, as "
+        },
+        {
+          "t": "link",
+          "v": "Set up a GenAI prompt",
+          "href": "set-up-a-genai-prompt.md"
+        },
+        {
+          "t": "text",
+          "v": " sets them up; an item with stock; and a sales order line to ask about."
+        }
+      ],
+      "text": "The two commands set up in LN, as Set up a GenAI prompt sets them up; an item with stock; and a sales order line to ask about."
+    }
+  ],
   "tasks": [
     {
       "id": "run-the-stock-check",
@@ -32,13 +51,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
+            "v": "The answer's on hand and on order, added up over its warehouses, equal the item's row."
           }
         ],
-        "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row."
+        "text": "The answer's on hand and on order, added up over its warehouses, equal the item's row."
       },
       "steps": 7,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "run-status-overview",
@@ -48,13 +67,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
+            "v": "The step the answer names next is the line's first Free activity on its status screen."
           }
         ],
-        "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
+        "text": "The step the answer names next is the line's first Free activity on its status screen."
       },
       "steps": 13,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     }
   ],
   "values": {
@@ -76,6 +95,33 @@
         }
       ],
       "text": "Objective: run the two AI commands set up in LN, read what each answer says, and check it against the screen before acting on it."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > The two commands set up in LN, as "
+        },
+        {
+          "t": "link",
+          "v": "Set up a GenAI prompt",
+          "href": "set-up-a-genai-prompt.md"
+        },
+        {
+          "t": "text",
+          "v": " sets them up; an item with stock; and a sales order line to ask about."
+        }
+      ],
+      "text": "> Prerequisite > The two commands set up in LN, as Set up a GenAI prompt sets them up; an item with stock; and a sales order line to ask about."
     },
     {
       "kind": "prose",
@@ -146,10 +192,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row"
+                  "v": "The answer's on hand and on order, added up over its warehouses, equal the item's row"
                 }
               ],
-              "text": "One answer with an item's stock in each warehouse and its planned receipts and issues, checked against the item's row"
+              "text": "The answer's on hand and on order, added up over its warehouses, equal the item's row"
             }
           ]
         },
@@ -187,10 +233,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen"
+                  "v": "The step the answer names next is the line's first Free activity on its status screen"
                 }
               ],
-              "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen"
+              "text": "The step the answer names next is the line's first Free activity on its status screen"
             }
           ]
         }

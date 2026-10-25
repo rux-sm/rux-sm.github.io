@@ -20,20 +20,20 @@
     "Warehousing",
     "Sales"
   ],
-  "status": "approved",
-  "updated": "2026-10-24",
+  "status": "draft",
+  "updated": "2026-10-25",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
+        "v": "The step the answer names next is the line's first Free activity on its status screen."
       }
     ],
-    "text": "Why a sales order line hasn't shipped and what step comes next, checked against the line's status screen."
+    "text": "The step the answer names next is the line's first Free activity on its status screen."
   },
   "before": [],
   "why": {
@@ -607,7 +607,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "4",
+    "caption": "Status Overview, the answer for one order line",
+    "path": "run-status-overview.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

@@ -1,9 +1,9 @@
-commit   208e241f6307280ac9df316b139a13a86a2da5c0
-date     2026-10-25T21:23:19Z
-subject  feat(tasks): Stamp the inventory check walked
+commit   4e325005234602b91cec077a3f21e3c5c9c35a34
+date     2026-10-25T21:50:53Z
+subject  fix(tasks): Keep a warehouse code out of a caption
 contract 24 
 tier     export
-sha256   e50292902f9e456a43e0dd713081123ecdf6af7c4acd294fb570a07d2fc9b32c
+sha256   f614ff69122ad4dce621173269db3ea5546fb0d4b40cb2de58e66e9bb0e214e2
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

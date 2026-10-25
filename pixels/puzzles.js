@@ -9,9 +9,11 @@
    for it, and one ranking, all time, with no days in a row. While its BOARD
    is false there is no leaderboard and no tabs, only the puzzles.
 
-   PUZZLES. Under the logo, today's puzzle is one card across the page: its
-   picture once solved, the date, the best time or how hard it is, and the
-   days solved in a row. Then a tile for each category, in playing order,
+   PUZZLES. Under the logo, today's puzzle is a tile drawn as a rift's is:
+   its picture once solved, the date, the best time or how hard it is, and
+   the days solved in a row. Once every open rift is found, two more tiles:
+   the puzzle solved slowest, to beat its time, and Create, to make a
+   puzzle for friends. Then a tile for each category, in playing order,
    one to a row, drawn by app.js's `riftTile`: the way into it, with the
    sprite last found in it, its number and name, and how many sprites are
    found, against a star and in a bar. A player's rift says who made it in
@@ -54,26 +56,54 @@
     box.hidden = false;
   };
 
-  // A card across the page: a picture, three lines of words, and an arrow.
-  const card = (href, picture, over, name, under) => {
+  /* A TILE AT THE HEAD of the page, drawn as a rift's is so every card on
+     the page is one kind: a picture, a tag and a note on its first line
+     with a word at its far end, and a name. The whole tile is the way in. */
+  const lead = (href, picture, tag, note, end, name, label) => {
     const a = document.createElement('a');
-    a.className = 'pixels-today';
+    a.className = 'rux--link rux--tile rux--tile--clickable game-tile pixels-rift';
     a.href = href;
-    const text = document.createElement('div');
-    text.className = 'pixels-today-text';
-    text.append(words('pixels-meta', over), words('pixels-today-name', name), words('pixels-meta', under));
-    const go = document.createElement('span');
-    go.className = 'pixels-today-go';
-    go.setAttribute('aria-hidden', 'true');
-    go.textContent = '›';
-    a.append(picture, text, go);
+    a.setAttribute('aria-label', label);
+    const pic = words('game-tile-art pixels-rift-art', '');
+    pic.setAttribute('aria-hidden', 'true');
+    pic.append(picture);
+    const head = words('game-tile-head', ''), line = words('pixels-rift-line', '');
+    line.append(words('rux--tag rux--layout--size-sm rux--tag--sm rux--tag--blue game-tile-tag', tag), words('', note));
+    head.append(line, words('pixels-rift-count', end));
+    a.append(pic, head, words('game-tile-name', name));
     return a;
   };
+  const leads = (...tiles) => {
+    const list = document.createElement('div');
+    list.className = 'game-tiles';
+    list.append(...tiles);
+    return list;
+  };
 
-  // Today's puzzle. Its name, if it has one, waits until it is solved.
-  const todayCard = (puzzle, best, row) => card('play.html?daily', art(puzzle, !!best),
-    row ? `Today · ${row} day${row === 1 ? '' : 's'} in a row` : 'Today', best ? puzzle.name : puzzle.date,
-    best ? time(best.seconds) : grade(rounds(grid(puzzle.squares, puzzle.width))));
+  // Today's puzzle: how hard it is, or the time it was solved in, and the
+  // days in a row; its name waits until it is solved.
+  const todayCard = (puzzle, best, row) => {
+    const hard = grade(rounds(grid(puzzle.squares, puzzle.width)));
+    const note = (best ? time(best.seconds) : hard[0].toUpperCase() + hard.slice(1)) + (row ? ` · ${row} in a row` : '');
+    const name = best ? puzzle.name : 'Puzzle of the day';
+    const date = new Date(`${puzzle.day}T12:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+    return lead('play.html?daily', best ? art(puzzle, true) : '?', 'Today', note, date, name, `Today's puzzle, ${puzzle.date}, ${note}`);
+  };
+
+  /* WHEN EVERYTHING IS FOUND there is still something to do: the puzzle
+     solved slowest comes back to beat its time, and Create is offered, to
+     make a puzzle for friends. */
+  const endings = (cats, results) => {
+    const all = cats.flatMap(c => c.puzzles);
+    const slow = all.filter(p => results.has(p.id)).sort((a, b) => results.get(b.id).seconds - results.get(a.id).seconds)[0];
+    const tiles = [];
+    if (slow) {
+      const best = time(results.get(slow.id).seconds);
+      tiles.push(lead(`play.html?id=${encodeURIComponent(slow.id)}`, art(slow, true), 'Beat your time', '', best, slow.name, `Beat your time on ${slow.name}, best ${best}`));
+    }
+    tiles.push(lead('create.html', '+', 'All found', '', `${all.length}/${all.length}`, 'Make a puzzle for friends', 'Everything is found. Make a puzzle for friends'));
+    return leads(...tiles);
+  };
 
   /* THE LEADERBOARD. Two rankings behind one switch: today's puzzle, with
      each player's time, and all time, with puzzles solved and days in a row.
@@ -304,7 +334,7 @@
     if (held) host.appendChild(words('pixels-meta', `${held} ${held === 1 ? 'solve' : 'solves'} waiting to save`));
     if (DAILY) {
       const now = daily(today(), puzzles);
-      host.appendChild(todayCard(now, days.get(now.day), streak(new Set(days.keys()))));
+      host.appendChild(leads(todayCard(now, days.get(now.day), streak(new Set(days.keys())))));
     }
     if (ranks) leader.appendChild(leaderboard(ranks));
     const cats = categories(puzzles);
@@ -335,6 +365,8 @@
       list.append(card);
       host.before(list);
     }
+    // Nothing left to find in any open rift: the endings stand over the rifts.
+    if (!onward) host.appendChild(endings(cats, results));
     // A rift not yet opened, with nothing found in it, says New, unless it
     // is locked, which its tile says for itself, or Continue goes into it.
     const tiles = rifts => {

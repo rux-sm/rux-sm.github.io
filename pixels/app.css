@@ -734,6 +734,17 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    does not need to reach. */
 .pixels-game { --pixels-around: calc(var(--pixels-above, 2rem) + var(--game-top, 0px) + 5.5rem + env(safe-area-inset-bottom, 0px)); }
 .pixels-controls { margin-block-start: auto; }
+/* THE SQUARES STAND MIDWAY between the status row and the foot of the
+   game, which on a phone is within a few points of the screen's middle,
+   while the hearts and the clock stay at the top. `--free` is the game's
+   height under its 30px status row; the stage is set down by half of it,
+   less half the squares, the numbers over them and the gap, and never so
+   far that the 6rem of the line and Fill and X would not fit under it. The
+   lesson, whose line stands over the board, and the finish keep the board
+   at the top. */
+.pixels-game { --free: calc(100dvh - var(--pixels-head, 0px) - var(--pixels-around) - 30px); }
+.pixels-stage { margin-block-start: clamp(0px, var(--free) / 2 - var(--side) / 2 - var(--clue-h) - 1rem, var(--free) - var(--clue-h) - var(--side) - 8rem); }
+.pixels-game:is(.is-done, :has(.pixels-lesson:not([hidden]))) .pixels-stage { margin-block-start: 0; }
 @media (pointer: fine) { .pixels-game { --fewest: 240px; } }
 @media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) { .pixels-game { --clue-least: 12px; } }
 @media (min-resolution: 3dppx), (-webkit-min-device-pixel-ratio: 3) { .pixels-game { --clue-least: calc(32px / 3); } }

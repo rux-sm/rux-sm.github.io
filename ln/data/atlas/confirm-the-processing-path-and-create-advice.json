@@ -23,19 +23,27 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
   "session": "Outbound Line Status Overview",
   "sessionCode": "whinh2129m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
+        "v": "The outbound line reads "
+      },
+      {
+        "t": "strong",
+        "v": "Released"
+      },
+      {
+        "t": "text",
+        "v": " or later, and the activities that are yours are written down."
       }
     ],
-    "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
+    "text": "The outbound line reads Released or later, and the activities that are yours are written down."
   },
   "before": [
     {
@@ -129,21 +137,38 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the transfer order line from "
+                  "v": "Filter "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " on the order from "
                 },
                 {
                   "t": "link",
                   "v": "Create the transfer order",
                   "href": "create-the-transfer-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick its line and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
                 }
               ],
-              "text": "Find the transfer order line from Create the transfer order"
+              "text": "Filter Order on the order from Create the transfer order, tick its line and click Drill In"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item and order line match, and "
+                  "v": "The line's detail opens. The item and order line match, and "
                 },
                 {
                   "t": "field",
@@ -159,12 +184,26 @@
                   "href": "create-the-transfer-order.md"
                 }
               ],
-              "text": "The item and order line match, and Order Type matches the one from step 8 of Create the transfer order"
+              "text": "The line's detail opens. The item and order line match, and Order Type matches the one from step 8 of Create the transfer order"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "9",
+              "n": 0,
+              "label": "transfer order number"
+            },
+            {
+              "task": "create-the-transfer-order",
+              "step": "8",
+              "n": 0,
+              "label": "actual warehousing order type"
+            }
+          ]
         },
         {
           "cells": [
@@ -497,7 +536,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Outbound Line Status, the line's activities",
+    "path": "confirm-the-processing-path-and-create-advice.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

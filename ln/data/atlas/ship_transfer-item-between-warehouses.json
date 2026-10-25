@@ -23,19 +23,27 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The goods leave the source warehouse."
+        "v": "The outbound line reads "
+      },
+      {
+        "t": "strong",
+        "v": "Shipped"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "The goods leave the source warehouse."
+    "text": "The outbound line reads Shipped."
   },
   "before": [],
   "why": {
@@ -180,7 +188,15 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "9",
+              "n": 0,
+              "label": "transfer order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -286,7 +302,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Warehousing Order, Shipment Lines after Process: the shipment Confirmed",
+    "path": "ship_transfer-item-between-warehouses.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

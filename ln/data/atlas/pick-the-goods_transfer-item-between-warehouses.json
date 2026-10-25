@@ -23,19 +23,27 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The goods are picked and moved to staging at the source."
+        "v": "The outbound line reads "
+      },
+      {
+        "t": "strong",
+        "v": "Picked"
+      },
+      {
+        "t": "text",
+        "v": " or later."
       }
     ],
-    "text": "The goods are picked and moved to staging at the source."
+    "text": "The outbound line reads Picked or later."
   },
   "before": [],
   "why": {
@@ -167,7 +175,15 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "9",
+              "n": 0,
+              "label": "transfer order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -298,7 +314,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Warehousing Order, Outbound Lines after Process: Picked already filled in",
+    "path": "pick-the-goods_transfer-item-between-warehouses.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

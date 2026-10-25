@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Confirm the processing path and create advice · LN Notes · Updated 24 Oct 2026 · Walked in LN 24 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Confirm the processing path and create advice · LN Notes · Updated 25 Oct 2026 · Walked in LN 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,20 +106,20 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="913c3c40c59c35cc700d0935134ea88f0c883e26">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="2b3600b6fbee7feb692cabace87e8bb05b1bb236">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>24 Oct 2026</dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Confirm the processing path and create advice</h1>
-<p class="rux--type-body-long-01">You know which steps LN runs by itself and which are yours, and outbound advice exists.</p>
+<p class="rux--type-body-long-01">The outbound line reads <strong>Released</strong> or later, and the activities that are yours are written down.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>8 steps</dd></div><div><dt>Updated</dt><dd>24 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>8 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 3 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/pick-the-goods_transfer-item-between-warehouses.html">Pick the goods</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
@@ -136,8 +136,9 @@
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
 <tr id="step-1"><td data-k="Step"><b>3.1</b></td><td data-k="Action">Open <a class="rux--link" href="../screens/whinh2129m000.html"><span class="ln-t-named">Outbound Line Status Overview</span></a> (<span class="ln-t-exact">whinh2129m000</span>)</td><td data-k="You should see">The overview of outbound lines opens</td></tr>
-<tr id="step-2"><td data-k="Step"><b>3.2</b></td><td data-k="Action">Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></td><td data-k="You should see">The item and order line match, and <span class="ln-t-named">Order Type</span> matches the one from <a class="rux--link" href="../do/create-the-transfer-order.html#step-8">step 2.8</a> (Create the transfer order)</td></tr>
+<tr id="step-2"><td data-k="Step"><b>3.2</b></td><td data-k="Action">Filter <span class="ln-t-named">Order</span> on the order from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>, tick its line and click <span class="ln-t-press">Drill In</span></td><td data-k="You should see">The line's detail opens. The item and order line match, and <span class="ln-t-named">Order Type</span> matches the one from <a class="rux--link" href="../do/create-the-transfer-order.html#step-8">step 2.8</a> (Create the transfer order)</td></tr>
 <tr id="step-3"><td data-k="Step"><b>3.3</b></td><td data-k="Action">Read every row in the <span class="ln-t-named">Activities</span> table, above all <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></td><td data-k="You should see"><span class="ln-t-named">Automatic</span> <span class="ln-t-exact">Yes</span> means LN runs it; <span class="ln-t-exact">No</span> means you do</td></tr>
+<tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="confirm-the-processing-path-and-create-advice.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 3.3 · Outbound Line Status, the line's activities</figcaption></figure></td></tr>
 <tr id="step-4"><td data-k="Step"><b>3.4</b></td><td data-k="Action">Write down the activities whose <span class="ln-t-named">Automatic</span> is <span class="ln-t-exact">No</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">manual outbound activities. These are the later steps you'll carry out</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr id="step-5"><td data-k="Step"><b>3.5</b></td><td data-k="Action">If the next activity is automatic, choose <span class="ln-t-press">Process</span> on the warehousing order</td><td data-k="You should see">LN runs the automatic activities in a row and stops at the next one that's yours</td></tr>
 <tr id="step-6"><td data-k="Step"><b>3.6</b></td><td data-k="Action">If <span class="ln-t-named">Generate Outbound Advice</span> is yours, open <span class="ln-t-named">Outbound Lines</span> and select the line</td><td data-k="You should see"></td></tr>
@@ -182,7 +183,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>3</b></td><td data-k="Expected result">You know which steps LN runs by itself and which are yours, and outbound advice exists.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>3</b></td><td data-k="Expected result">The outbound line reads <strong>Released</strong> or later, and the activities that are yours are written down.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -215,11 +216,11 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The overview of outbound lines opens</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Find the transfer order line from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item and order line match, and <span class="ln-t-named">Order Type</span> matches the one from step 8 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Filter <span class="ln-t-named">Order</span> on the order from <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>, tick its line and click <span class="ln-t-press">Drill In</span></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="create-the-transfer-order/9/0"><span class="ln-quiet">Transfer order number · 2.9</span><span data-use-missing><a class="rux--link" href="../do/create-the-transfer-order.html?walk=9">Write it down at step 2.9</a></span></div><div class="ln-values__row" data-use="create-the-transfer-order/8/0"><span class="ln-quiet">Actual warehousing order type · 2.8</span><span data-use-missing><a class="rux--link" href="../do/create-the-transfer-order.html?walk=8">Write it down at step 2.8</a></span></div></div></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The line's detail opens. The item and order line match, and <span class="ln-t-named">Order Type</span> matches the one from step 8 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a></p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Read every row in the <span class="ln-t-named">Activities</span> table, above all <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Read every row in the <span class="ln-t-named">Activities</span> table, above all <span class="ln-t-named">Finished</span> and <span class="ln-t-named">Automatic</span></h1><figure class="ln-shot" data-shot="confirm-the-processing-path-and-create-advice.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 3.3 · Outbound Line Status, the line's activities</figcaption></figure></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Automatic</span> <span class="ln-t-exact">Yes</span> means LN runs it; <span class="ln-t-exact">No</span> means you do</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>

@@ -20,19 +20,19 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The source is down and the destination up, by the same quantity."
+        "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
       }
     ],
-    "text": "The source is down and the destination up, by the same quantity."
+    "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
   },
   "before": [],
   "why": {
@@ -112,7 +112,27 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "3",
+              "n": 2,
+              "label": "source on-hand before"
+            },
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "4",
+              "n": 1,
+              "label": "destination on-hand before"
+            },
+            {
+              "task": "create-the-transfer-order",
+              "step": "11",
+              "n": 0,
+              "label": "transferred quantity"
+            }
+          ]
         }
       ]
     },
@@ -136,7 +156,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Warehouse - Item Inventory after the transfer",
+    "path": "verify-it-worked_transfer-item-between-warehouses.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

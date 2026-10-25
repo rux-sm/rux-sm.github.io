@@ -23,16 +23,16 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A warehousing order exists with transaction type "
+        "v": "The transfer order is saved with transaction type "
       },
       {
         "t": "strong",
@@ -40,10 +40,10 @@
       },
       {
         "t": "text",
-        "v": "."
+        "v": " and one line for the item."
       }
     ],
-    "text": "A warehousing order exists with transaction type Transfer."
+    "text": "The transfer order is saved with transaction type Transfer and one line for the item."
   },
   "before": [
     {
@@ -298,7 +298,15 @@
           ],
           "id": "5",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "3",
+              "n": 1,
+              "label": "source warehouse"
+            }
+          ]
         },
         {
           "cells": [
@@ -353,7 +361,15 @@
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "4",
+              "n": 0,
+              "label": "destination warehouse"
+            }
+          ]
         },
         {
           "cells": [
@@ -400,7 +416,18 @@
           ],
           "id": "7",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "6",
+              "n": 0,
+              "label": "expected warehousing order type"
+            }
+          ]
         },
         {
           "cells": [
@@ -521,7 +548,15 @@
           ],
           "id": "10",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-stock-destination-and-expected-order-type",
+              "step": "3",
+              "n": 0,
+              "label": "item"
+            }
+          ]
         },
         {
           "cells": [
@@ -538,10 +573,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the quantity to move"
+                  "v": "Enter the quantity to move as "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
                 }
               ],
-              "text": "Enter the quantity to move"
+              "text": "Enter the quantity to move as Ordered Quantity"
             },
             {
               "tokens": [
@@ -562,7 +601,10 @@
           ],
           "id": "11",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -603,10 +645,66 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Warehousing Order Type"
+              }
+            ],
+            "text": "Warehousing Order Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "45="
+              },
+              {
+                "t": "text",
+                "v": " — Transfer (Internal), which LN fills in"
+              }
+            ],
+            "text": "45= — Transfer (Internal), which LN fills in"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "10"
+              }
+            ],
+            "text": "10"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "9",
+    "caption": "Warehousing Order, the transfer header saved",
+    "path": "create-the-transfer-order.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

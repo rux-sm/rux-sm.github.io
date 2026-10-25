@@ -8,7 +8,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "status": "draft",
   "summary": "move a quantity of one item from one warehouse to another in the same company, and check the stock at both.",
   "order": 8,
@@ -34,7 +34,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Know the item's stock before you start: "
+          "v": "An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow "
         },
         {
           "t": "link",
@@ -46,7 +46,7 @@
           "v": "."
         }
       ],
-      "text": "Know the item's stock before you start: Check an item's inventory."
+      "text": "An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow Check an item's inventory."
     }
   ],
   "tasks": [
@@ -58,13 +58,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You know the stock at both warehouses and which order type a transfer should get."
+            "v": "The on-hand at both warehouses and the expected order type are written down."
           }
         ],
-        "text": "You know the stock at both warehouses and which order type a transfer should get."
+        "text": "The on-hand at both warehouses and the expected order type are written down."
       },
       "steps": 6,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "create-the-transfer-order",
@@ -74,7 +74,7 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A warehousing order exists with transaction type "
+            "v": "The transfer order is saved with transaction type "
           },
           {
             "t": "strong",
@@ -82,13 +82,13 @@
           },
           {
             "t": "text",
-            "v": "."
+            "v": " and one line for the item."
           }
         ],
-        "text": "A warehousing order exists with transaction type Transfer."
+        "text": "The transfer order is saved with transaction type Transfer and one line for the item."
       },
       "steps": 12,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "confirm-the-processing-path-and-create-advice",
@@ -98,13 +98,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
+            "v": "The outbound line reads "
+          },
+          {
+            "t": "strong",
+            "v": "Released"
+          },
+          {
+            "t": "text",
+            "v": " or later, and the activities that are yours are written down."
           }
         ],
-        "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists."
+        "text": "The outbound line reads Released or later, and the activities that are yours are written down."
       },
       "steps": 8,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "pick-the-goods_transfer-item-between-warehouses",
@@ -114,13 +122,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The goods are picked and moved to staging at the source."
+            "v": "The outbound line reads "
+          },
+          {
+            "t": "strong",
+            "v": "Picked"
+          },
+          {
+            "t": "text",
+            "v": " or later."
           }
         ],
-        "text": "The goods are picked and moved to staging at the source."
+        "text": "The outbound line reads Picked or later."
       },
       "steps": 5,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "ship_transfer-item-between-warehouses",
@@ -130,13 +146,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The goods leave the source warehouse."
+            "v": "The outbound line reads "
+          },
+          {
+            "t": "strong",
+            "v": "Shipped"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "The goods leave the source warehouse."
+        "text": "The outbound line reads Shipped."
       },
       "steps": 4,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "receive-at-the-destination",
@@ -146,13 +170,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The goods are received into the destination warehouse."
+            "v": "The receipt reads "
+          },
+          {
+            "t": "strong",
+            "v": "Confirmed"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "The goods are received into the destination warehouse."
+        "text": "The receipt reads Confirmed."
       },
       "steps": 3,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     },
     {
       "id": "verify-it-worked_transfer-item-between-warehouses",
@@ -162,19 +194,73 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The source is down and the destination up, by the same quantity."
+            "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
           }
         ],
-        "text": "The source is down and the destination up, by the same quantity."
+        "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
       },
       "steps": 1,
-      "walked": "2026-10-24"
+      "walked": "2026-10-25"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Warehousing Order Type"
+              }
+            ],
+            "text": "Warehousing Order Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "45="
+              },
+              {
+                "t": "text",
+                "v": " — Transfer (Internal), which LN fills in"
+              }
+            ],
+            "text": "45= — Transfer (Internal), which LN fills in"
+          }
+        ],
+        "task": "create-the-transfer-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "10"
+              }
+            ],
+            "text": "10"
+          }
+        ],
+        "task": "create-the-transfer-order"
+      }
+    ]
   },
   "sections": [
     {
@@ -240,7 +326,7 @@
         },
         {
           "t": "text",
-          "v": " > Know the item's stock before you start: "
+          "v": " > An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow "
         },
         {
           "t": "link",
@@ -252,7 +338,7 @@
           "v": "."
         }
       ],
-      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
+      "text": "> Prerequisite > An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow Check an item's inventory."
     },
     {
       "kind": "glance",
@@ -297,10 +383,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You know the stock at both warehouses and which order type a transfer should get"
+                  "v": "The on-hand at both warehouses and the expected order type are written down"
                 }
               ],
-              "text": "You know the stock at both warehouses and which order type a transfer should get"
+              "text": "The on-hand at both warehouses and the expected order type are written down"
             }
           ]
         },
@@ -338,14 +424,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A warehousing order exists with transaction type "
+                  "v": "The transfer order is saved with transaction type "
                 },
                 {
                   "t": "chip",
                   "v": "Transfer"
+                },
+                {
+                  "t": "text",
+                  "v": " and one line for the item"
                 }
               ],
-              "text": "A warehousing order exists with transaction type Transfer"
+              "text": "The transfer order is saved with transaction type Transfer and one line for the item"
             }
           ]
         },
@@ -383,10 +473,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You know which steps LN runs by itself and which are yours, and outbound advice exists"
+                  "v": "The outbound line reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Released"
+                },
+                {
+                  "t": "text",
+                  "v": " or later, and the activities that are yours are written down"
                 }
               ],
-              "text": "You know which steps LN runs by itself and which are yours, and outbound advice exists"
+              "text": "The outbound line reads Released or later, and the activities that are yours are written down"
             }
           ]
         },
@@ -424,10 +522,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The goods are picked and moved to staging at the source"
+                  "v": "The outbound line reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Picked"
+                },
+                {
+                  "t": "text",
+                  "v": " or later"
                 }
               ],
-              "text": "The goods are picked and moved to staging at the source"
+              "text": "The outbound line reads Picked or later"
             }
           ]
         },
@@ -465,10 +571,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The goods leave the source warehouse"
+                  "v": "The outbound line reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipped"
                 }
               ],
-              "text": "The goods leave the source warehouse"
+              "text": "The outbound line reads Shipped"
             }
           ]
         },
@@ -506,10 +616,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The goods are received into the destination warehouse"
+                  "v": "The receipt reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "Confirmed"
                 }
               ],
-              "text": "The goods are received into the destination warehouse"
+              "text": "The receipt reads Confirmed"
             }
           ]
         },
@@ -547,10 +661,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The source is down and the destination up, by the same quantity"
+                  "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for"
                 }
               ],
-              "text": "The source is down and the destination up, by the same quantity"
+              "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for"
             }
           ]
         }

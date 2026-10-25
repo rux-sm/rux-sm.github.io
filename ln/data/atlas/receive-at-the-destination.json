@@ -23,19 +23,27 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": null,
   "session": null,
   "sessionCode": null,
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The goods are received into the destination warehouse."
+        "v": "The receipt reads "
+      },
+      {
+        "t": "strong",
+        "v": "Confirmed"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "The goods are received into the destination warehouse."
+    "text": "The receipt reads Confirmed."
   },
   "before": [],
   "why": {
@@ -96,7 +104,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "9",
+              "n": 0,
+              "label": "transfer order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -195,7 +211,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Warehouse Receipt, confirmed",
+    "path": "receive-at-the-destination.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

@@ -20,19 +20,19 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-24",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You know the stock at both warehouses and which order type a transfer should get."
+        "v": "The on-hand at both warehouses and the expected order type are written down."
       }
     ],
-    "text": "You know the stock at both warehouses and which order type a transfer should get."
+    "text": "The on-hand at both warehouses and the expected order type are written down."
   },
   "before": [],
   "why": {
@@ -451,7 +451,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "6",
+    "caption": "Default Order Types by Origin, the Transfer (Manual) row",
+    "path": "confirm-stock-destination-and-expected-order-type.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

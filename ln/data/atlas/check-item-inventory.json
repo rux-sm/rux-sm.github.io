@@ -8,15 +8,25 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-23",
-  "status": "approved",
+  "updated": "2026-10-25",
+  "status": "draft",
   "summary": "find out how much of one item is in stock, where, and how much is already committed.",
   "order": 4,
   "sources": [
     "whwmd2515m000",
     "whwmd4300m000"
   ],
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+        }
+      ],
+      "text": "The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+    }
+  ],
   "tasks": [
     {
       "id": "find-the-item",
@@ -26,13 +36,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You know the item's on hand, blocked, on order and allocated."
+            "v": "The item's on hand, blocked, on order and allocated are written down."
           }
         ],
-        "text": "You know the item's on hand, blocked, on order and allocated."
+        "text": "The item's on hand, blocked, on order and allocated are written down."
       },
       "steps": 3,
-      "walked": "2026-10-23"
+      "walked": "2026-10-25"
     },
     {
       "id": "read-the-stock-by-warehouse",
@@ -42,19 +52,50 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You've chosen the warehouse to work from and written down its figures."
+            "v": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
           }
         ],
-        "text": "You've chosen the warehouse to work from and written down its figures."
+        "text": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
       },
       "steps": 5,
-      "walked": "2026-10-23"
+      "walked": "2026-10-25"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " — a test item that Create test items makes"
+              }
+            ],
+            "text": "BAM-SLEEVE — a test item that Create test items makes"
+          }
+        ],
+        "task": "find-the-item"
+      }
+    ]
   },
   "sections": [
     {
@@ -70,6 +111,24 @@
         }
       ],
       "text": "Objective: find out how much of one item is in stock, where, and how much is already committed."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+        }
+      ],
+      "text": "> Prerequisite > The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
     },
     {
       "kind": "prose",
@@ -140,10 +199,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You know the item's on hand, blocked, on order and allocated"
+                  "v": "The item's on hand, blocked, on order and allocated are written down"
                 }
               ],
-              "text": "You know the item's on hand, blocked, on order and allocated"
+              "text": "The item's on hand, blocked, on order and allocated are written down"
             }
           ]
         },
@@ -181,10 +240,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You've chosen the warehouse to work from and written down its figures"
+                  "v": "A warehouse is chosen, and its on hand, allocated and blocked are written down"
                 }
               ],
-              "text": "You've chosen the warehouse to work from and written down its figures"
+              "text": "A warehouse is chosen, and its on hand, allocated and blocked are written down"
             }
           ]
         }

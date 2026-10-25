@@ -564,9 +564,16 @@
    A TAG IS A CONTAINER, as Material 3 draws one: a deep colour at 0.40, 0.44
    on hover, under words at 0.92 that keep 0.05 of its hue. The container
    holds 0.17 of chroma, or 90% of what Display P3 holds there where that is
-   less, so blue and purple, which P3 holds most of, stand no louder than red,
-   and the container stands clear of the board at about 2 to 1. Every pairing
-   is measured both ways and holds.
+   less, so blue and purple, which P3 holds most of, stand no louder than red.
+   Teal and cyan hold half that at 0.40 and read as murk, so theirs stand at
+   0.46 and 0.50 on hover, the deepest their words still hold 4.5 to 1 on.
+   Every container stands clear of the #202020 board at 1.6 to 2.4 to 1, and
+   every pairing is measured both ways and holds.
+
+   EVERY HUE HAS FOUR NAMED STEPS, which docs/rux-dark-token-map.md tabulates:
+   deep at 0.34, container, fill and ink. Amber and yellow, which turn brown
+   held deep, take a light step instead of a container, 0.72 and 0.80 under
+   black words, and the scheduler's placeholder bar is amber's light step.
 
    THE INTERACTIVE MARKS ARE THE INK, so the page is black and white and the
    palette means only a status: a link is the ink, underlined, its line
@@ -765,12 +772,12 @@
   --rux-tag-background-blue: oklch(0.40 0.17 262);
   --rux-tag-color-blue: oklch(0.92 0.04 262);
   --rux-tag-hover-blue: oklch(0.44 0.17 262);
-  --rux-tag-background-cyan: oklch(0.40 0.09 225);
+  --rux-tag-background-cyan: oklch(0.46 0.104 225);
   --rux-tag-color-cyan: oklch(0.92 0.05 225);
-  --rux-tag-hover-cyan: oklch(0.44 0.099 225);
-  --rux-tag-background-teal: oklch(0.40 0.086 185);
+  --rux-tag-hover-cyan: oklch(0.50 0.113 225);
+  --rux-tag-background-teal: oklch(0.46 0.099 185);
   --rux-tag-color-teal: oklch(0.92 0.05 185);
-  --rux-tag-hover-teal: oklch(0.44 0.094 185);
+  --rux-tag-hover-teal: oklch(0.50 0.107 185);
   --rux-tag-background-green: oklch(0.40 0.138 150);
   --rux-tag-color-green: oklch(0.92 0.05 150);
   --rux-tag-hover-green: oklch(0.44 0.152 150);

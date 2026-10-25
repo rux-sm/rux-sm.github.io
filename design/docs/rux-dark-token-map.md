@@ -23,28 +23,32 @@ and a box's edge are `#424242`, and the faint rule `#393939`. **One control
 grey,** `#7a7a7a`, rings an outlined button and draws the off toggle. **A field
 is filled** two steps above the layer it sits on, inside the quiet line.
 
-**The palette** is vivid, and every hue takes the same steps. A step is an
-OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
-there, to 0.2 at most: an ink at 0.75 and its hover at 0.82 (amber and yellow
-0.82 and 0.88), and a fill at the lightest step that still holds white at 4.5
-to 1, pressing 0.05 and 0.10 darker. **A tag is a container,** as Material 3
-draws one: a deep colour at 0.40 and 0.44 on hover, holding 0.17 of chroma or
-90% of what P3 holds there where that is less, under words at 0.92 that keep
-0.05 of the hue. Every pairing is measured at full P3 strength and as an
-ordinary screen shows it, and holds on both.
+**The palette** is vivid, and every hue takes the same four named steps. A
+step is an OKLCH lightness, and each takes 95% of the most chroma Display P3
+holds there, to 0.2 at most: **deep** at 0.34, for a big surface that stands
+back, as a trip not yet confirmed does; **container** at 0.40 and 0.44 on
+hover, holding 0.17 of chroma or 90% of what P3 holds there, under **words** at
+0.92 that keep 0.05 of the hue; **fill**, the lightest step that still holds
+white at 4.5 to 1, pressing 0.05 and 0.10 darker; and **ink** at 0.75 and 0.82
+on hover (amber and yellow 0.82 and 0.88). Teal's and cyan's containers stand
+at 0.46 and 0.50, where they keep their colour and their words still hold 4.5
+to 1. Amber and yellow turn brown held deep, so in a container's place they
+take a **light** step, 0.72 and 0.80, under black words; the scheduler's
+placeholder bar is amber's light step. Every pairing is measured at full P3
+strength and as an ordinary screen shows it, and holds.
 
-| Hue | container | container, hover | words | ink | ink, hover | fill |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| red | `oklch(0.40 0.165 25)` | `oklch(0.44 0.17 25)` | `oklch(0.92 0.05 25)` | `oklch(0.75 0.183 25)` | `oklch(0.82 0.124 25)` | `oklch(0.59 0.2 25)` |
-| orange | `oklch(0.40 0.108 50)` | `oklch(0.44 0.119 50)` | `oklch(0.92 0.05 50)` | `oklch(0.75 0.2 50)` | `oklch(0.82 0.136 50)` | `oklch(0.58 0.166 50)` |
-| amber | `oklch(0.40 0.087 75)` | `oklch(0.44 0.096 75)` | `oklch(0.92 0.05 75)` | `oklch(0.82 0.188 75)` | `oklch(0.88 0.121 75)` | `oklch(0.57 0.131 75)` |
-| yellow | `oklch(0.40 0.085 95)` | `oklch(0.44 0.094 95)` | `oklch(0.92 0.05 95)` | `oklch(0.82 0.185 95)` | `oklch(0.88 0.198 95)` | `oklch(0.565 0.127 95)` |
-| green | `oklch(0.40 0.138 150)` | `oklch(0.44 0.152 150)` | `oklch(0.92 0.05 150)` | `oklch(0.75 0.2 150)` | `oklch(0.82 0.2 150)` | `oklch(0.535 0.195 150)` |
-| teal | `oklch(0.40 0.086 185)` | `oklch(0.44 0.094 185)` | `oklch(0.92 0.05 185)` | `oklch(0.75 0.17 185)` | `oklch(0.82 0.186 185)` | `oklch(0.54 0.122 185)` |
-| cyan | `oklch(0.40 0.09 225)` | `oklch(0.44 0.099 225)` | `oklch(0.92 0.05 225)` | `oklch(0.75 0.177 225)` | `oklch(0.82 0.125 225)` | `oklch(0.55 0.131 225)` |
-| blue | `oklch(0.40 0.17 262)` | `oklch(0.44 0.17 262)` | `oklch(0.92 0.04 262)` | `oklch(0.75 0.132 262)` | `oklch(0.82 0.093 262)` | `oklch(0.575 0.2 262)` |
-| purple | `oklch(0.40 0.17 300)` | `oklch(0.44 0.17 300)` | `oklch(0.92 0.047 300)` | `oklch(0.75 0.157 300)` | `oklch(0.82 0.111 300)` | `oklch(0.59 0.2 300)` |
-| magenta | `oklch(0.40 0.168 350)` | `oklch(0.44 0.17 350)` | `oklch(0.92 0.05 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
+| Hue | deep | container | container, hover | words | ink | ink, hover | fill |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| red | `oklch(0.34 0.148 25)` | `oklch(0.40 0.165 25)` | `oklch(0.44 0.17 25)` | `oklch(0.92 0.05 25)` | `oklch(0.75 0.183 25)` | `oklch(0.82 0.124 25)` | `oklch(0.59 0.2 25)` |
+| orange | `oklch(0.34 0.097 50)` | `oklch(0.40 0.108 50)` | `oklch(0.44 0.119 50)` | `oklch(0.92 0.05 50)` | `oklch(0.75 0.2 50)` | `oklch(0.82 0.136 50)` | `oklch(0.58 0.166 50)` |
+| amber | `oklch(0.34 0.078 75)` | `oklch(0.72 0.166 75)` (light) | the light step, with an inner ring | `#000000` | `oklch(0.82 0.188 75)` | `oklch(0.88 0.121 75)` | `oklch(0.57 0.131 75)` |
+| yellow | `oklch(0.34 0.077 95)` | `oklch(0.80 0.18 95)` (light) | the light step, with an inner ring | `#000000` | `oklch(0.82 0.185 95)` | `oklch(0.88 0.198 95)` | `oklch(0.565 0.127 95)` |
+| green | `oklch(0.34 0.124 150)` | `oklch(0.40 0.138 150)` | `oklch(0.44 0.152 150)` | `oklch(0.92 0.05 150)` | `oklch(0.75 0.2 150)` | `oklch(0.82 0.2 150)` | `oklch(0.535 0.195 150)` |
+| teal | `oklch(0.34 0.077 185)` | `oklch(0.46 0.099 185)` | `oklch(0.50 0.107 185)` | `oklch(0.92 0.05 185)` | `oklch(0.75 0.17 185)` | `oklch(0.82 0.186 185)` | `oklch(0.54 0.122 185)` |
+| cyan | `oklch(0.34 0.081 225)` | `oklch(0.46 0.104 225)` | `oklch(0.50 0.113 225)` | `oklch(0.92 0.05 225)` | `oklch(0.75 0.177 225)` | `oklch(0.82 0.125 225)` | `oklch(0.55 0.131 225)` |
+| blue | `oklch(0.34 0.186 262)` | `oklch(0.40 0.17 262)` | `oklch(0.44 0.17 262)` | `oklch(0.92 0.04 262)` | `oklch(0.75 0.132 262)` | `oklch(0.82 0.093 262)` | `oklch(0.575 0.2 262)` |
+| purple | `oklch(0.34 0.179 300)` | `oklch(0.40 0.17 300)` | `oklch(0.44 0.17 300)` | `oklch(0.92 0.047 300)` | `oklch(0.75 0.157 300)` | `oklch(0.82 0.111 300)` | `oklch(0.59 0.2 300)` |
+| magenta | `oklch(0.34 0.151 350)` | `oklch(0.40 0.168 350)` | `oklch(0.44 0.17 350)` | `oklch(0.92 0.05 350)` | `oklch(0.75 0.2 350)` | `oklch(0.82 0.15 350)` | `oklch(0.59 0.2 350)` |
 
 The hues are red 25, orange 50, amber 75, yellow 95, green 150, teal 185, cyan
 225, blue 262, purple 300 and magenta 350, in OKLCH degrees. Links, the on
@@ -206,12 +210,12 @@ the page, so a big surface stays calm.
 | `tag-background-blue` | `#002458` | `oklch(0.40 0.17 262)` | blue container |
 | `tag-color-blue` | `#47a8ff` | `oklch(0.92 0.04 262)` | blue words |
 | `tag-hover-blue` | `#00295e` | `oklch(0.44 0.17 262)` | blue container, hover |
-| `tag-background-cyan` | `#002458` | `oklch(0.40 0.09 225)` | cyan container |
+| `tag-background-cyan` | `#002458` | `oklch(0.46 0.104 225)` | cyan container, lifted to 0.46 |
 | `tag-color-cyan` | `#47a8ff` | `oklch(0.92 0.05 225)` | cyan words |
-| `tag-hover-cyan` | `#00295e` | `oklch(0.44 0.099 225)` | cyan container, hover |
-| `tag-background-teal` | `#003429` | `oklch(0.40 0.086 185)` | teal container |
+| `tag-hover-cyan` | `#00295e` | `oklch(0.50 0.113 225)` | cyan container, hover, at 0.50 |
+| `tag-background-teal` | `#003429` | `oklch(0.46 0.099 185)` | teal container, lifted to 0.46 |
 | `tag-color-teal` | `#00cfb7` | `oklch(0.92 0.05 185)` | teal words |
-| `tag-hover-teal` | `#003a2e` | `oklch(0.44 0.094 185)` | teal container, hover |
+| `tag-hover-teal` | `#003a2e` | `oklch(0.50 0.107 185)` | teal container, hover, at 0.50 |
 | `tag-background-green` | `#003400` | `oklch(0.40 0.138 150)` | green container |
 | `tag-color-green` | `#00ca50` | `oklch(0.92 0.05 150)` | green words |
 | `tag-hover-green` | `#003902` | `oklch(0.44 0.152 150)` | green container, hover |

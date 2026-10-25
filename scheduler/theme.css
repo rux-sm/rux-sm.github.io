@@ -155,12 +155,12 @@
   --scheduler-hover: var(--rux-tag-hover-gray);
   --scheduler-border: var(--rux-tag-border-gray);
 }
-/* Its trip not yet confirmed is a deep red at nearly all the chroma Display P3
-   holds there, so it stays rich on a P3 screen while standing back from the
-   board, and its hover is a step lighter at the same strength. */
+/* Its trip not yet confirmed is red's deep step, 0.34, at 95% of the chroma
+   Display P3 holds there, so it stays rich on a P3 screen while standing
+   back from the board, and its hover is a step lighter at the same strength. */
 [data-theme="rux-dark"] .scheduler-bar--red {
-  --scheduler-bg: oklch(0.34 0.15 27);
-  --scheduler-hover: oklch(0.38 0.165 27);
+  --scheduler-bg: oklch(0.34 0.148 25);
+  --scheduler-hover: oklch(0.38 0.165 25);
 }
 
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
@@ -601,8 +601,8 @@
    palette's steps: the container under its pale words, the container's hover
    step on hover, and the ink on a run-on edge. The amber placeholder is the
    exception: amber held as deep as a container turns brown at any strength,
-   so it is a gold at 0.72, at nearly all the chroma Display P3 holds there,
-   under black words, and a hovered bar shows an inner ring, as the other dark
+   so it is amber's light step, a gold at 0.72 at 95% of the chroma Display
+   P3 holds there, under black words, and a hovered bar shows an inner ring, as the other dark
    themes' warning-filled bars do. Its alert count is black with the gold
    number, since the count's own amber disappears into the bar. */
 [data-theme="rux-dark"] {

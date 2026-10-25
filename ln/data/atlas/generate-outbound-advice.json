@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
@@ -333,18 +333,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " dialog opens. If neither happens, release is manual: do "
-                },
-                {
-                  "t": "chip",
-                  "v": "Release is manual"
-                },
-                {
-                  "t": "text",
-                  "v": " under Variations, then go on"
+                  "v": " dialog opens, or nothing opens"
                 }
               ],
-              "text": "The Picking List by Location prints to its own tab, or the Select Device dialog opens. If neither happens, release is manual: do Release is manual under Variations, then go on"
+              "text": "The Picking List by Location prints to its own tab, or the Select Device dialog opens, or nothing opens"
             }
           ],
           "id": "6",
@@ -412,6 +404,126 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "If nothing opened, read "
+                },
+                {
+                  "t": "field",
+                  "v": "Advised Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Released Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " on the outbound line"
+                }
+              ],
+              "text": "If nothing opened, read Advised Quantity and Released Quantity on the outbound line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Advised Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " shows the ordered quantity. An empty "
+                },
+                {
+                  "t": "field",
+                  "v": "Released Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " means the release is still to do"
+                }
+              ],
+              "text": "Advised Quantity shows the ordered quantity. An empty Released Quantity means the release is still to do"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "field",
+                  "v": "Released Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " is empty, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Release Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar"
+                }
+              ],
+              "text": "If Released Quantity is empty, choose Actions ➔ Advice ➔ Release Advice on the Outbound Lines toolbar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The Picking List by Location prints to its own tab"
+                }
+              ],
+              "text": "The Picking List by Location prints to its own tab"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Read the picking list's header"
                 }
               ],
@@ -449,7 +561,7 @@
               "text": "Run, Mission"
             }
           ],
-          "id": "8",
+          "id": "10",
           "optional": false,
           "produces": true
         },
@@ -459,10 +571,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "11"
                 }
               ],
-              "text": "9"
+              "text": "11"
             },
             {
               "tokens": [
@@ -491,7 +603,7 @@
               "text": "The outbound line"
             }
           ],
-          "id": "9",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -501,10 +613,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "12"
                 }
               ],
-              "text": "10"
+              "text": "12"
             },
             {
               "tokens": [
@@ -541,7 +653,7 @@
               "text": "Both show the ordered quantity"
             }
           ],
-          "id": "10",
+          "id": "12",
           "optional": false,
           "produces": false
         },
@@ -551,10 +663,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "11"
+                  "v": "13"
                 }
               ],
-              "text": "11"
+              "text": "13"
             },
             {
               "tokens": [
@@ -603,7 +715,7 @@
               "text": "Usually empty. If projected shipments are switched on, a Projected or Open line may already show a Shipment"
             }
           ],
-          "id": "11",
+          "id": "13",
           "optional": false,
           "produces": false
         }
@@ -839,34 +951,18 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Nothing prints at step 6, and "
+                "v": "The warehousing order type's outbound procedure has "
               },
               {
                 "t": "field",
-                "v": "Released Quantity"
+                "v": "Release Outbound Advice"
               },
               {
                 "t": "text",
-                "v": " stays empty. On the "
-              },
-              {
-                "t": "chip",
-                "v": "Outbound Lines"
-              },
-              {
-                "t": "text",
-                "v": " toolbar, choose "
-              },
-              {
-                "t": "command",
-                "route": "Actions ➔ Advice ➔ Release Advice"
-              },
-              {
-                "t": "text",
-                "v": "; the picking list prints then, and you go on at step 7"
+                "v": " as a manual activity, so step 6 only advises; steps 8 and 9 release it"
               }
             ],
-            "text": "Nothing prints at step 6, and Released Quantity stays empty. On the Outbound Lines toolbar, choose Actions ➔ Advice ➔ Release Advice; the picking list prints then, and you go on at step 7"
+            "text": "The warehousing order type's outbound procedure has Release Outbound Advice as a manual activity, so step 6 only advises; steps 8 and 9 release it"
           }
         ]
       }

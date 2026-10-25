@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-24",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -122,7 +122,7 @@
         ],
         "text": "Advised and Released both show the ordered quantity, and the picking list prints."
       },
-      "steps": 11,
+      "steps": 13,
       "walked": "2026-10-25"
     },
     {
@@ -320,10 +320,10 @@
               },
               {
                 "t": "text",
-                "v": " — today, as LN offers it"
+                "v": " — the date used in this example; LN offers the day you release"
               }
             ],
-            "text": "2026-10-24 — today, as LN offers it"
+            "text": "2026-10-24 — the date used in this example; LN offers the day you release"
           }
         ],
         "task": "release-to-warehousing"

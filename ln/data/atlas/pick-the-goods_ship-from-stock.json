@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
@@ -51,7 +51,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 8 of "
+          "v": "You need step 10 of "
         },
         {
           "t": "link",
@@ -63,7 +63,7 @@
           "v": "."
         }
       ],
-      "text": "You need step 8 of Generate outbound advice."
+      "text": "You need step 10 of Generate outbound advice."
     }
   ],
   "why": {
@@ -140,7 +140,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Run from step 8 of "
+                  "v": "The Run from step 10 of "
                 },
                 {
                   "t": "link",
@@ -148,7 +148,7 @@
                   "href": "generate-outbound-advice.md"
                 }
               ],
-              "text": "The Run from step 8 of Generate outbound advice"
+              "text": "The Run from step 10 of Generate outbound advice"
             }
           ],
           "id": "1",
@@ -283,7 +283,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " is the Mission from step 8 of "
+                  "v": " is the Mission from step 10 of "
                 },
                 {
                   "t": "link",
@@ -291,7 +291,7 @@
                   "href": "generate-outbound-advice.md"
                 }
               ],
-              "text": "Mission is the Mission from step 8 of Generate outbound advice"
+              "text": "Mission is the Mission from step 10 of Generate outbound advice"
             }
           ],
           "id": "4",

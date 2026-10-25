@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-10-24",
-  "status": "approved",
+  "status": "draft",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -239,14 +239,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
-                "v": " — LN fills it in"
+                "v": " — the day you create it, which LN fills in"
               }
             ],
-            "text": "2026-10-23 — LN fills it in"
+            "text": "2026-10-24 — the day you create it, which LN fills in"
           }
         ],
         "task": "create-and-approve-the-sales-order"
@@ -266,14 +266,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
                 "v": " — left at the order date"
               }
             ],
-            "text": "2026-10-23 — left at the order date"
+            "text": "2026-10-24 — left at the order date"
           }
         ],
         "task": "create-and-approve-the-sales-order"
@@ -293,14 +293,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
                 "v": " — left at the planned delivery date"
               }
             ],
-            "text": "2026-10-23 — left at the planned delivery date"
+            "text": "2026-10-24 — left at the planned delivery date"
           }
         ],
         "task": "create-and-approve-the-sales-order"
@@ -347,10 +347,10 @@
               },
               {
                 "t": "text",
-                "v": " — left at the date LN offers"
+                "v": " — the day you release, which LN offers"
               }
             ],
-            "text": "2026-10-24 — left at the date LN offers"
+            "text": "2026-10-24 — the day you release, which LN offers"
           }
         ],
         "task": "release-to-warehousing"

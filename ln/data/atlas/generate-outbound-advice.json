@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
@@ -294,15 +294,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", then click "
-                },
-                {
-                  "t": "button",
-                  "label": "CONTINUE"
-                },
-                {
-                  "t": "text",
-                  "v": " in the "
+                  "v": ". If the "
                 },
                 {
                   "t": "chip",
@@ -310,10 +302,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " dialog"
+                  "v": " dialog opens, click "
+                },
+                {
+                  "t": "button",
+                  "label": "CONTINUE"
                 }
               ],
-              "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice, then click CONTINUE in the Select Device dialog"
+              "text": "On the Outbound Lines toolbar, Actions ➔ Advice ➔ Generate Advice. If the Select Device dialog opens, click CONTINUE"
             },
             {
               "tokens": [

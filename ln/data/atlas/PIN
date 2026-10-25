@@ -1,9 +1,9 @@
-commit   30ef5ba22973defe9d5c5170a97fc1540bc64eb4
-date     2026-10-25T01:35:28Z
-subject  feat(tools): Let sync send only the screenshots
+commit   30377976315fdbf15bed8b118277e0559928355e
+date     2026-10-25T02:00:40Z
+subject  feat(tasks): Stamp advice walked, crop tighter
 contract 23 
 tier     export
-sha256   5145c7b9314d474f8a9994718bf943f9f4b54182a0551de548a5bbec78b11db5
+sha256   2386dd4d0093fc89c49686cb14691619f1613492a54922f5db16a26a66ee6dec
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

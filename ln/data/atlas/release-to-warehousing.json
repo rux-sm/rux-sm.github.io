@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -446,10 +446,10 @@
               },
               {
                 "t": "text",
-                "v": " — left at the date LN offers"
+                "v": " — the day you release, which LN offers"
               }
             ],
-            "text": "2026-10-24 — left at the date LN offers"
+            "text": "2026-10-24 — the day you release, which LN offers"
           }
         ]
       }

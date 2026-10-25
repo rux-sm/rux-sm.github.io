@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "draft",
   "updated": "2026-10-24",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -715,14 +715,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
-                "v": " — LN fills it in"
+                "v": " — the day you create it, which LN fills in"
               }
             ],
-            "text": "2026-10-23 — LN fills it in"
+            "text": "2026-10-24 — the day you create it, which LN fills in"
           }
         ]
       },
@@ -741,14 +741,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
                 "v": " — left at the order date"
               }
             ],
-            "text": "2026-10-23 — left at the order date"
+            "text": "2026-10-24 — left at the order date"
           }
         ]
       },
@@ -767,14 +767,14 @@
             "tokens": [
               {
                 "t": "literal",
-                "v": "2026-10-23"
+                "v": "2026-10-24"
               },
               {
                 "t": "text",
                 "v": " — left at the planned delivery date"
               }
             ],
-            "text": "2026-10-23 — left at the planned delivery date"
+            "text": "2026-10-24 — left at the planned delivery date"
           }
         ]
       },

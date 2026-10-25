@@ -16,8 +16,9 @@ once in Design, so a page never looks half finished.
 
 What stands now:
 
-- **One ink on black.** Words, icons, the main button and links are the
-  logo's `#f4f4f4` on a `#000000` page, with neutral greys between.
+- **One ink on a near-black page.** Words, icons, the main button, links and
+  focus are the logo's `#f4f4f4` on a `#181818` page, and raised surfaces climb
+  one even ladder of neutral greys from there.
 - **Colour is a status.** The palette is vivid, and it marks success,
   warning, error, info and a tag's kind. Links, the on toggle and focus are
   the ink; a link is underlined, except in a heading. Strong colour is for

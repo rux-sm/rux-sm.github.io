@@ -940,8 +940,8 @@
   fill: var(--rux-background-inverse);
 }
 /* A rux-dark link is the ink, as the words around it are, so it is told
-   apart by a line under it: the strong border at rest, the link's own colour
-   under the pointer. */
+   apart by a line under it: the strong border at rest, and under the pointer
+   the ink at 2px, since the theme has one ink and the link cannot brighten. */
 [data-theme="rux-dark"] .rux--link {
   text-decoration: underline;
   text-decoration-color: var(--rux-border-strong-01);
@@ -949,6 +949,7 @@
 }
 [data-theme="rux-dark"] .rux--link:hover {
   text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
 }
 /* A heading that is a link needs no line to be found, and a line under large
    type is heavy, so it carries one only under the pointer. */

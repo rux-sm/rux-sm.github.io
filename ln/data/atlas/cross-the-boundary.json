@@ -27,7 +27,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Planning ➔ Order Planning ➔ Confirm Order Planning",
   "session": "Confirm Order Planning",
   "sessionCode": "cprrp1200m000",
@@ -109,7 +109,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm "
+                  "v": "In "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0601m000",
+                  "name": "Item - Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " for "
                 },
                 {
                   "t": "literal",
@@ -117,7 +126,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " has a row on the "
+                  "v": ", confirm the "
                 },
                 {
                   "t": "chip",
@@ -125,10 +134,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab of its purchase data"
+                  "v": " tab has a row"
                 }
               ],
-              "text": "Confirm BAM-ROD has a row on the Item - Business Partner tab of its purchase data"
+              "text": "In Item - Purchase (tdipu0601m000) for BAM-ROD, confirm the Item - Business Partner tab has a row"
             },
             {
               "tokens": [
@@ -167,10 +176,19 @@
                 },
                 {
                   "t": "text",
-                  "v": ", check the same tab for that item"
+                  "v": ", check the same tab in "
+                },
+                {
+                  "t": "session",
+                  "code": "tdipu0601m000",
+                  "name": "Item - Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": " for that item"
                 }
               ],
-              "text": "If MRP proposed a planned purchase order for BAM-SLEEVE, check the same tab for that item"
+              "text": "If MRP proposed a planned purchase order for BAM-SLEEVE, check the same tab in Item - Purchase (tdipu0601m000) for that item"
             },
             {
               "tokens": [

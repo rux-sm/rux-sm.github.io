@@ -1,9 +1,9 @@
-commit   bfb25fa67463224a6dd2de3e2422ebbcd5d3d191
-date     2026-10-25T19:44:57Z
-subject  feat(walkthroughs): Approve Ship from stock again
+commit   99d9d3414a986e59c433f64f47a90fe118172047
+date     2026-10-25T20:09:35Z
+subject  fix(tasks): Name Cross the boundary's first screen
 contract 23 
 tier     export
-sha256   431cdb33bef8037a21c6c41fe9eb0fcdf62dbef9e788a37f0b9e2771aa3c14e3
+sha256   4b8a0b0219ba22e0e4bfaa57b77dc299758ae8448e8ecafc99122d300b28aa79
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

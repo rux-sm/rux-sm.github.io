@@ -142,7 +142,7 @@ the page, so a big surface stays calm.
 | `icon-primary` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `icon-secondary` | `#a1a1a1` | `#b4b4b4` | secondary text grey, 6.37 to 1 on layer-03 |
 | `support-caution-major` | `#f97316` | `oklch(0.75 0.2 50)` | orange ink |
-| `support-caution-minor` | `#f5a623` | `oklch(0.82 0.185 95)` | yellow ink |
+| `support-caution-minor` | `#f5a623` | `oklch(0.82 0.188 75)` | amber ink: yellow marks no status |
 | `support-caution-undefined` | `#8e4ec6` | `oklch(0.75 0.157 300)` | purple ink |
 | `support-error` | `#f13342` | `oklch(0.75 0.183 25)` | red ink |
 | `support-error-inverse` | `#cd2b31` | `oklch(0.59 0.2 25)` | red fill |
@@ -230,14 +230,14 @@ the page, so a big surface stays calm.
 | `tag-border-magenta` | `#ee5396` | `oklch(0.75 0.2 350)` | magenta ink |
 | `tag-border-purple` | `#a56eff` | `oklch(0.75 0.157 300)` | purple ink |
 | `tag-border-gray` | `#8d8d8d` | `#8d8d8d` | neutral grey #8d8d8d |
-| `tag-border-cool-gray` | `#878d96` | `#878d96` | Carbon cool gray 50 |
-| `tag-border-warm-gray` | `#8f8b8b` | `#8f8b8b` | Carbon warm gray 50 |
-| `tag-background-cool-gray` | `#262626` | `#343a3f` | Carbon cool gray 80 |
-| `tag-color-cool-gray` | `#ededed` | `#dde1e6` | Carbon cool gray 20 |
-| `tag-hover-cool-gray` | `#2b2b2b` | `#4d5358` | Carbon cool gray 70 |
-| `tag-background-warm-gray` | `#262626` | `#3c3838` | Carbon warm gray 80 |
-| `tag-color-warm-gray` | `#ededed` | `#e5e0df` | Carbon warm gray 20 |
-| `tag-hover-warm-gray` | `#2b2b2b` | `#565151` | Carbon warm gray 70 |
+| `tag-border-cool-gray` | `#878d96` | `#8d8d8d` | neutral grey #8d8d8d |
+| `tag-border-warm-gray` | `#8f8b8b` | `#8d8d8d` | neutral grey #8d8d8d |
+| `tag-background-cool-gray` | `#262626` | `#424242` | neutral, the ladder, step 5 |
+| `tag-color-cool-gray` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
+| `tag-hover-cool-gray` | `#2b2b2b` | `#4b4b4b` | neutral, the ladder, step 6 |
+| `tag-background-warm-gray` | `#262626` | `#545454` | neutral, the ladder, step 7 |
+| `tag-color-warm-gray` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
+| `tag-hover-warm-gray` | `#2b2b2b` | `#5e5e5e` | neutral, the ladder, step 8 |
 | `notification-background-error` | `#220b0c` | `color-mix(in oklab, oklch(0.75 0.183 25) 15%, #181818)` | red ink at 15% over the page, #181818 |
 | `notification-background-success` | `#0b190d` | `color-mix(in oklab, oklch(0.75 0.2 150) 15%, #181818)` | green ink at 15% over the page, #181818 |
 | `notification-background-info` | `#0c1926` | `color-mix(in oklab, oklch(0.75 0.132 262) 15%, #181818)` | blue ink at 15% over the page, #181818 |
@@ -251,8 +251,8 @@ the page, so a big surface stays calm.
 | `status-red` | `#fa4d56` | `oklch(0.75 0.183 25)` | red ink |
 | `status-orange` | `#ff832b` | `oklch(0.75 0.2 50)` | orange ink |
 | `status-orange-outline` | `#ff832b` | `oklch(0.75 0.2 50)` | orange ink |
-| `status-yellow` | `#f1c21b` | `oklch(0.82 0.185 95)` | yellow ink |
-| `status-yellow-outline` | `#f1c21b` | `oklch(0.82 0.185 95)` | yellow ink |
+| `status-yellow` | `#f1c21b` | `oklch(0.82 0.188 75)` | amber ink: yellow marks no status |
+| `status-yellow-outline` | `#f1c21b` | `oklch(0.82 0.188 75)` | amber ink: yellow marks no status |
 | `status-green` | `#42be65` | `oklch(0.75 0.2 150)` | green ink |
 | `status-blue` | `#4589ff` | `oklch(0.75 0.132 262)` | blue ink |
 | `status-purple` | `#a56eff` | `oklch(0.75 0.157 300)` | purple ink |

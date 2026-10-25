@@ -549,7 +549,8 @@
    two steps above the surface it sits on, #202020 to #303030, inside the
    quiet line, and its hover a step above that. The
    grey tags stand a step above a selected row, and the cool-gray and
-   warm-gray tags are Carbon's 80 and 20 steps.
+   warm-gray tags are neutral too, a step below and a step above it, so the
+   three grey kinds an app tells apart are three steps of one ladder.
 
    THE COLOURS ARE VIVID, AND EVERY HUE TAKES THE SAME STEPS. Each step is an
    OKLCH lightness, and each hue takes 95% of the most chroma Display P3 holds
@@ -559,7 +560,11 @@
    at the lightest step that still holds white at 4.5 to 1, 0.535 to 0.59 by
    hue, pressing 0.05 and 0.10 darker. The support colours, the status dots,
    the error text and the danger button are those inks and fills, so success
-   is one green on a screen.
+   is one green on a screen. THREE WARM STATUSES AND NO MORE: error is red,
+   warning is amber, and orange marks only what is worse than a warning.
+   Yellow, the palette's nearest neighbour to amber, marks no status: a minor
+   caution and a yellow status dot are amber, so two statuses never differ by
+   a shade the eye can miss.
 
    A TAG IS A CONTAINER, as Material 3 draws one: a deep colour at 0.40, 0.44
    on hover, under words at 0.92 that keep 0.05 of its hue. The container
@@ -694,7 +699,7 @@
 
   /* support */
   --rux-support-caution-major: oklch(0.75 0.2 50);
-  --rux-support-caution-minor: oklch(0.82 0.185 95);
+  --rux-support-caution-minor: oklch(0.82 0.188 75);
   --rux-support-caution-undefined: oklch(0.75 0.157 300);
   --rux-support-error: oklch(0.75 0.183 25);
   --rux-support-error-inverse: oklch(0.59 0.2 25);
@@ -792,14 +797,14 @@
   --rux-tag-border-magenta: oklch(0.75 0.2 350);
   --rux-tag-border-purple: oklch(0.75 0.157 300);
   --rux-tag-border-gray: #8d8d8d;
-  --rux-tag-border-cool-gray: #878d96;
-  --rux-tag-border-warm-gray: #8f8b8b;
-  --rux-tag-background-cool-gray: #343a3f;
-  --rux-tag-color-cool-gray: #dde1e6;
-  --rux-tag-hover-cool-gray: #4d5358;
-  --rux-tag-background-warm-gray: #3c3838;
-  --rux-tag-color-warm-gray: #e5e0df;
-  --rux-tag-hover-warm-gray: #565151;
+  --rux-tag-border-cool-gray: #8d8d8d;
+  --rux-tag-border-warm-gray: #8d8d8d;
+  --rux-tag-background-cool-gray: #424242;
+  --rux-tag-color-cool-gray: #f4f4f4;
+  --rux-tag-hover-cool-gray: #4b4b4b;
+  --rux-tag-background-warm-gray: #545454;
+  --rux-tag-color-warm-gray: #f4f4f4;
+  --rux-tag-hover-warm-gray: #5e5e5e;
 
   /* notification */
   --rux-notification-background-error: color-mix(in oklab, oklch(0.75 0.183 25) 15%, #181818);
@@ -817,8 +822,8 @@
   --rux-status-red: oklch(0.75 0.183 25);
   --rux-status-orange: oklch(0.75 0.2 50);
   --rux-status-orange-outline: oklch(0.75 0.2 50);
-  --rux-status-yellow: oklch(0.82 0.185 95);
-  --rux-status-yellow-outline: oklch(0.82 0.185 95);
+  --rux-status-yellow: oklch(0.82 0.188 75);
+  --rux-status-yellow-outline: oklch(0.82 0.188 75);
   --rux-status-green: oklch(0.75 0.2 150);
   --rux-status-blue: oklch(0.75 0.132 262);
   --rux-status-purple: oklch(0.75 0.157 300);

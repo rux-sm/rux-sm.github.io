@@ -32,6 +32,11 @@
 /* The brand block, Check the result and the sign-off are for paper, which
    print.css lays out; the screen has the facts row and the Summary. */
 @media screen { .ln-paper-only { display: none; } }
+/* A task's screenshot at its own size, never wider than its column, with a
+   rule round it so a white screen stands off the page. */
+.ln-shot { margin: .5rem 0 0; }
+.ln-shot img { display: block; max-inline-size: 100%; block-size: auto; border: 1px solid var(--rux-border-subtle-01); }
+.ln-shot figcaption { margin-block-start: .375rem; }
 .ln-t-route .dest { font-weight: 600; color: var(--rux-text-primary); }
 .rux--link .ln-t-route .dest, .rux--link .ln-t-exact, .rux--link .ln-t-named { color: inherit; }
 .ln-pencil { vertical-align: -.15em; color: var(--rux-text-secondary); }

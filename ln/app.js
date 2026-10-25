@@ -323,6 +323,7 @@
     copy.addEventListener('load', async () => {
       const win = copy.contentWindow;
       await win.document.fonts.ready;
+      await win.lnShotsReady;
       win.addEventListener('afterprint', () => setTimeout(() => { copy.remove(); copy = null; }), { once: true });
       win.print();
     }, { once: true });
@@ -343,10 +344,30 @@
   if (asked.searchParams.has('print') && !navigator.standalone) {
     asked.searchParams.delete('print');
     history.replaceState(history.state, '', asked);
-    if (document.readyState === 'complete') window.print();
-    else window.addEventListener('load', () => window.print(), { once: true });
+    const go = async () => { await window.lnShotsReady; window.print(); };
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
   }
   waiting();
+  // A reader logged in sees each task's screenshot under its step. Print waits
+  // for this, so a printed copy carries every picture that could be drawn.
+  window.lnShotsReady = (async () => {
+    const slots = [...document.querySelectorAll('[data-shot]')];
+    if (!slots.length || !ln || !(await ln.reader())) return;
+    const urls = await ln.shots([...new Set(slots.map((el) => el.dataset.shot))]);
+    await Promise.all(slots.map((el) => new Promise((done) => {
+      const url = urls[el.dataset.shot];
+      if (!url) return done();
+      const img = el.querySelector('img');
+      img.addEventListener('load', () => {
+        el.hidden = false;
+        el.closest('.ln-proc__shot')?.removeAttribute('hidden');
+        done();
+      }, { once: true });
+      img.addEventListener('error', () => done(), { once: true });
+      img.src = url;
+    })));
+  })().catch(() => { /* without the database the page is as it was built */ });
   // The owner's answers and the private shelf arrive after the page shows.
   ln?.owner().then(async (yes) => {
     if (!yes) return;

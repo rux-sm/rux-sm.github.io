@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "confirm-stock-destination-and-expected-order-type",
@@ -451,6 +451,7 @@
     "columns": [],
     "rows": []
   },
+  "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

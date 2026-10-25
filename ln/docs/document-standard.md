@@ -54,8 +54,10 @@ screen, because a printed copy stands on its own and says only what is known.
 
 ## Screenshots
 
-Screenshots are on the team's page only, because a public page cannot carry
-captures of a client's LN.
+Screenshots show only after log-in, to an account that can open LN Notes,
+because a public page cannot carry captures of a client's LN. They are kept
+in a private Supabase bucket, and Print waits for them, so paper carries them
+too.
 
 - **One per task**, under the step that is hardest to follow in words, most
   often a menu path.

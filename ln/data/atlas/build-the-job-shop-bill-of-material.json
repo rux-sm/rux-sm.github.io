@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "build-the-job-shop-bill-of-material",
@@ -1052,6 +1052,7 @@
     "columns": [],
     "rows": []
   },
+  "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
     "columns": [

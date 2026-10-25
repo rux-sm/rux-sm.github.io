@@ -796,7 +796,8 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 <thead>${title ? `<tr class="ln-proc__table-title"><th scope="colgroup" colspan="${cols.length}">${title}</th></tr>` : ''}<tr>${cols.map(([label, w]) => `<th scope="col"${w ? ` style="width:${w}"` : ''}><span class="rux--table-header-label">${esc(label)}</span></th>`).join('')}</tr></thead>
 <tbody>${rows.map((r) => `
 <tr${r.id ? ` id="${r.id}"` : ''}${r.quiet ? ' class="ln-proc__quiet"' : ''}>${r.cells.map((c, i) => `<td data-k="${esc(cols[i][0])}">${c}</td>`).join('')}</tr>${r.after ? `
-<tr class="ln-proc__typed"><td></td><td colspan="${cols.length - 1}">${r.after}</td></tr>` : ''}`).join('')}
+<tr class="ln-proc__typed"><td></td><td colspan="${cols.length - 1}">${r.after}</td></tr>` : ''}${r.shot ? `
+<tr class="ln-proc__shot" hidden><td></td><td colspan="${cols.length - 1}">${r.shot}</td></tr>` : ''}`).join('')}
 </tbody>
 </table></div>`;
 const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
@@ -836,6 +837,12 @@ const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().
 // One task's steps, every task in the same three columns: the example values the
 // task was walked with sit under its action, one label over all of them, as the
 // guided step shows them.
+// A task's screenshot sits under the step it shows, hidden until data.js
+// finds a reader logged in and fills it from the private bucket; the public
+// page carries only its caption and its name there.
+const shotFigure = (t, n) => `<figure class="ln-shot" data-shot="${esc(t.screenshot.path)}" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step ${n} · ${esc(t.screenshot.caption)}</figcaption></figure>`;
+const shotStep = (t, r) => t.screenshot && String(r.id) === String(t.screenshot.step);
+
 function stepTable(t, k) {
   const ex = t.example?.rows ?? [];
   const rows = rowsOf(t).map((r) => {
@@ -845,7 +852,7 @@ function stepTable(t, k) {
     const value = shown.length ? `<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span>${shown.map((e) => `<span class="ln-proc__value-row">${docText(e.cells[0].tokens)} ${docText(e.cells[1].tokens)}</span>`).join('')}</span>` : '';
     const ty = toType(r.cells[1].tokens);
     const cells = [`<b>${n}</b>`, docText(ty?.lead ?? r.cells[1].tokens, t, where) + value, seeing(r.cells[2], t, where)];
-    return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells, after: ty && typedBlock(ty.lines) };
+    return { id: doc.whole && k ? `step-${k}-${r.id}` : `step-${r.id}`, cells, after: ty && typedBlock(ty.lines), shot: shotStep(t, r) && shotFigure(t, n) };
   });
   return docTable([['Step', '4rem'], ['Action'], ['You should see', '40%']], rows, 'ln-proc__steps');
 }
@@ -985,7 +992,7 @@ ${signOff()}`;
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main"><h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.route ? `

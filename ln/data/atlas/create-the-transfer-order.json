@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "create-the-transfer-order",
@@ -606,6 +606,7 @@
     "columns": [],
     "rows": []
   },
+  "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
     "columns": [

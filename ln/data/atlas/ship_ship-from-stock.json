@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "ship_ship-from-stock",
@@ -377,6 +377,11 @@
         ]
       }
     ]
+  },
+  "screenshot": {
+    "step": "5",
+    "caption": "Shipment, frozen",
+    "path": "ship_ship-from-stock.jpg"
   },
   "problems": {
     "kind": "troubleshooting",

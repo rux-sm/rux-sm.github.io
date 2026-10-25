@@ -131,3 +131,10 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 .ln-proc__check td:last-child { white-space: nowrap; }
 /* A checklist stays on one page whole, and so does the sign-off. */
 .ln-proc__check, .ln-proc__signoff, .ln-proc__check tr { break-inside: avoid; }
+
+/* A screenshot prints at its column's width at most, whole on one page, its
+   rule in ink. */
+.ln-shot { break-inside: avoid; }
+.ln-shot img { border-color: var(--rux-text-secondary); }
+.ln-shot figcaption { font-size: 8pt; }
+.ln-proc__shot { break-inside: avoid; }

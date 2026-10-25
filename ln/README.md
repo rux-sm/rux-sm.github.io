@@ -23,6 +23,9 @@ A documentation site, one file per page, with a walked mode inside it:
   each have a page, and `do/`, `screens/` and `ideas/` each have an index.
 - **Search**, `search.html`, reads `search.json`, the one file that indexes
   every task, problem, process, screen and idea.
+- **A task's screenshot** shows under its step, in the Document and Guided,
+  to an account that can open LN Guide; `data.js` reads it from the private
+  `ln-screens` bucket, which atlas's `tools/sync.py` fills.
 - **Print**, on a task and a process, prints the Document from the browser's
   dialog, where Save as PDF is a destination. `docs/document-standard.md` is
   what paper carries, in order. A guide nobody has walked says so on screen

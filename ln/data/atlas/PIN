@@ -1,9 +1,9 @@
-commit   3726ee46956b19fd0ee055105c48fb9c79f7dbdd
-date     2026-10-25T00:32:43Z
-subject  feat(walkthroughs): Approve Ship from stock again
-contract 22 
+commit   30ef5ba22973defe9d5c5170a97fc1540bc64eb4
+date     2026-10-25T01:35:28Z
+subject  feat(tools): Let sync send only the screenshots
+contract 23 
 tier     export
-sha256   3009646a4ba3214f80c982b6eaded1c2649258d5bcc5af6ce3b0a756718b6a94
+sha256   5145c7b9314d474f8a9994718bf943f9f4b54182a0551de548a5bbec78b11db5
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

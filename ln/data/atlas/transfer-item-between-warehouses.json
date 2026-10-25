@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "process",
   "id": "transfer-item-between-warehouses",

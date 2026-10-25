@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "make-the-item-visible-to-planning",
@@ -412,6 +412,7 @@
     "columns": [],
     "rows": []
   },
+  "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
     "columns": [

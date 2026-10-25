@@ -14,6 +14,10 @@
    the private bucket ln-confirmations where it differed. Atlas brings the
    rows home as evidence; nothing here changes a step.
 
+   THE SCREENSHOTS, the private bucket ln-screens: one picture a task, which
+   every account that can open LN Guide reads. Atlas sends them; a page asks
+   for links that last ten minutes and draws them.
+
    The client is the account's, from /account.js. Without a log-in, as in a
    local preview, there is no client and every page works as it is built.
    ========================================================================== */
@@ -31,6 +35,21 @@
       const session = await account.getSession();
       return Boolean(session?.user && !session.user.is_anonymous
         && window.Rux?.access?.accessOf(session.user).owner);
+    },
+
+    // Whether this account can open LN Guide, which is who reads the screenshots.
+    async reader() {
+      const session = await account.getSession();
+      if (!session?.user || session.user.is_anonymous) return false;
+      const granted = window.Rux?.access?.accessOf(session.user);
+      return Boolean(granted && (granted.owner || granted.apps.includes('ln')));
+    },
+
+    // A link to each screenshot named, good for ten minutes, as {path: url}.
+    async shots(paths) {
+      const { data: rows, error } = await client.storage.from('ln-screens').createSignedUrls(paths, 600);
+      fail(error);
+      return Object.fromEntries(rows.filter((r) => r.signedUrl).map((r) => [r.path, r.signedUrl]));
     },
 
     // One screen's or idea's whole text, or null where the shelf has none.

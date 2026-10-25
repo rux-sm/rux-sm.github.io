@@ -53,6 +53,11 @@
    them goes and the block starts under the step's action. */
 .ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__typed) td { border-block-end-color: transparent; }
 .ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td { padding-block-start: 0; }
+/* A step's screenshot is the step's own row continued, and hidden until a
+   reader's picture arrives; a phone's grid row would otherwise show it. */
+.ln-proc__steps .rux--data-table tbody tr.ln-proc__shot[hidden] { display: none; }
+.ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__shot:not([hidden])) td { border-block-end-color: transparent; }
+.ln-proc__steps .rux--data-table tbody tr.ln-proc__shot td { padding-block-start: 0; }
 
 /* On a phone a Document's table is a list. Each row is a block and each cell
    stands under the one before with its column's name over it; a numbered
@@ -91,6 +96,8 @@
   .ln-proc__steps .rux--data-table tbody tr td:has(> .ln-proc__writes:first-child)::before { content: none; }
   .ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__typed) { border-block-end: 0; padding-block-end: 0; }
   .ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td::before { content: none; }
+  .ln-proc__steps .rux--data-table tbody tr.ln-proc__shot td::before { content: none; }
+  .ln-proc__steps .rux--data-table tbody tr:has(+ .ln-proc__shot:not([hidden])) { border-block-end: 0; padding-block-end: 0; }
   .ln-proc__steps .rux--data-table tbody tr.ln-proc__typed td:nth-child(2) { font-size: inherit; }
   /* A task in the list is a place to tap, so its link is a finger tall. */
   .ln-pages .ln-proc__summary .rux--link { display: inline-block; min-block-size: 2.75rem; padding-block: .625rem; }

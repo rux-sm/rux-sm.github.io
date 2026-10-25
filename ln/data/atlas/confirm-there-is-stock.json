@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "confirm-there-is-stock",
@@ -330,6 +330,11 @@
     "kind": "example",
     "columns": [],
     "rows": []
+  },
+  "screenshot": {
+    "step": "4",
+    "caption": "Warehouse - Item Inventory",
+    "path": "confirm-there-is-stock.jpg"
   },
   "problems": {
     "kind": "troubleshooting",

@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "release-to-warehousing",
@@ -454,6 +454,11 @@
         ]
       }
     ]
+  },
+  "screenshot": {
+    "step": "2",
+    "caption": "Order Intake Workbench, Actions menu",
+    "path": "release-to-warehousing.jpg"
   },
   "problems": {
     "kind": "troubleshooting",

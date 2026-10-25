@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_ship-from-stock",
@@ -513,6 +513,11 @@
     "kind": "example",
     "columns": [],
     "rows": []
+  },
+  "screenshot": {
+    "step": "5",
+    "caption": "Picking List, Actions menu",
+    "path": "pick-the-goods_ship-from-stock.jpg"
   },
   "problems": {
     "kind": "troubleshooting",

@@ -116,7 +116,5 @@ And a team, after log-in, sees what the public page cannot carry.
       and reference documents, published as idea pages and a reference sheet.
 - [ ] In atlas, send a callout as a block and a step's parts as fields under
       a new contract, and remove the build's pattern matching for them.
-- [ ] In LN Guide, draw each task's screenshot under its step after log-in, in
-      Guided and the Document, and make Print wait for them.
 - [ ] Send each walk's real records, the customer, item and warehouse, to the
       same readers, and show them beside the example values.

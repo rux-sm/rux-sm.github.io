@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "verify-it-worked_ship-from-stock",
@@ -199,6 +199,7 @@
     "columns": [],
     "rows": []
   },
+  "screenshot": null,
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

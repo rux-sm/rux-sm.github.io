@@ -1,5 +1,5 @@
 {
-  "contract": 22,
+  "contract": 23,
   "tier": "export",
   "kind": "task",
   "id": "generate-outbound-advice",
@@ -453,6 +453,11 @@
     "kind": "example",
     "columns": [],
     "rows": []
+  },
+  "screenshot": {
+    "step": "5",
+    "caption": "Warehousing Order, Outbound Lines Actions menu",
+    "path": "generate-outbound-advice.jpg"
   },
   "problems": {
     "kind": "troubleshooting",

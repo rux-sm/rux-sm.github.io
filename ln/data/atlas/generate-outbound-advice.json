@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "approved",
   "updated": "2026-10-24",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",

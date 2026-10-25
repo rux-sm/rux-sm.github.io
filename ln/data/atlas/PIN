@@ -1,9 +1,9 @@
-commit   331e21d8f8e03087d5840d1a33fc4a943f8a347f
-date     2026-10-25T18:49:07Z
-subject  feat(tasks): Stamp advice and pick walked again
+commit   4466fede036333e0fe3051c35116f4f4ebfce9bb
+date     2026-10-25T18:55:41Z
+subject  fix(tasks): Date the ship tasks' last change
 contract 23 
 tier     export
-sha256   90cd0de2e51af8260ab6e1994d8ac2fb081553e96a43d54065e64d53f000531a
+sha256   72f45251de63d4418a89c89f353affe7a512fa0b00a013093ea45a86742edde7
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

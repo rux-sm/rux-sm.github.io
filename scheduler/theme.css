@@ -599,14 +599,22 @@
 }
 /* RUX-DARK'S BARS ARE ITS TAGS, from app.css, so every hue sits on its
    palette's steps: the container under its pale words, the container's hover
-   step on hover, and the ink on a run-on edge. The amber placeholder, which
-   has no tag, takes the palette's amber the same way. */
+   step on hover, and the ink on a run-on edge. The amber placeholder is the
+   exception: amber held as deep as a container turns brown at any strength,
+   so it is a gold at 0.72, at nearly all the chroma Display P3 holds there,
+   under black words, and a hovered bar shows an inner ring, as the other dark
+   themes' warning-filled bars do. Its alert count is black with the gold
+   number, since the count's own amber disappears into the bar. */
 [data-theme="rux-dark"] {
-  --scheduler-amber-bg: oklch(0.40 0.087 75);
-  --scheduler-amber-fg: oklch(0.92 0.05 75);
-  --scheduler-amber-hover: oklch(0.44 0.096 75);
-  --scheduler-amber-border: var(--rux-support-warning);
-  --scheduler-amber-hover-ring: none;
+  --scheduler-amber-bg: oklch(0.72 0.166 75);
+  --scheduler-amber-fg: #000000;
+  --scheduler-amber-hover: oklch(0.72 0.166 75);
+  --scheduler-amber-border: #000000;
+  --scheduler-amber-hover-ring: inset 0 0 0 1px #000000;
+}
+[data-theme="rux-dark"] .scheduler-bar.scheduler-bar--amber .scheduler-bar__msg.scheduler-bar__msg--warning {
+  background: #000000;
+  color: var(--rux-support-warning);
 }
 /* The selected trip's floating card sits on Geist's menu surface rather
    than the header band: a raised dark surface inside a hairline, so the

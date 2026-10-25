@@ -119,9 +119,9 @@
    in Silkscreen, or .625 for a 1, and .125 less for a number of two digits,
    and `--count`, how many numbers its longest column has.
    TWO NUMBERS NEVER READ AS ONE. The gap between two numbers is four of
-   Silkscreen's pixels, and in a row a number of two digits, which app.js
-   marks `is-wide`, closes its digits up by one, so 14 is a block and 1 4
-   is two. Silkscreen alone draws a pixel of space each side of a digit; a
+   Silkscreen's pixels, and a number of two digits, which app.js marks
+   `is-wide`, closes its digits up by one, in a row and in a column, so 14
+   is a block and 1 4, or 14 beside 13, is two. Silkscreen alone draws a pixel of space each side of a digit; a
    plain font sets its digits close already.
    Every number is drawn at `--clue`, which the game sets, or else 16px, or
    the size a square's height holds, or the size at which that row fits the
@@ -150,7 +150,7 @@
   gap: 0;
   padding: 2px 0;
 }
-[data-theme="pixel-dark"] .pixels-clue:not(.pixels-clue--col) > .is-wide { letter-spacing: -.125em; margin-inline-end: .125em; }
+[data-theme="pixel-dark"] .pixels-clue > .is-wide { letter-spacing: -.125em; margin-inline-end: .125em; }
 .pixels-clue--col > .is-wide { font-size: max(8px, round(down, min(var(--clue-fit), (var(--cell) - 2px) / 1.25) + .01px, var(--pixels-clue-step))); }
 .pixels-clue.is-band { background: linear-gradient(to left, var(--rux-layer-accent-01), transparent); }
 .pixels-clue--col.is-band { background: linear-gradient(to top, var(--rux-layer-accent-01), transparent); }

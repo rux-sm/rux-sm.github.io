@@ -147,14 +147,26 @@
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
-/* rux-dark's standard trip is grey, the grey tag, so colour on its board
-   marks only a trip that is not confirmed or one someone gave a colour. */
+/* rux-dark's standard trip is a raised grey, layer-03, inside the quiet line,
+   a small card on the board's page colour, so colour on its board marks only
+   a trip that is not confirmed or one someone gave a colour. The line is four
+   painted strips, as the light themes' edges are, so the bar's shadow stays
+   free for the selection ring and the lift, and an end that runs into another
+   week has none. */
 [data-theme="rux-dark"] .scheduler-bar--blue {
-  --scheduler-bg: var(--rux-tag-background-gray);
-  --scheduler-fg: var(--rux-tag-color-gray);
-  --scheduler-hover: var(--rux-tag-hover-gray);
-  --scheduler-border: var(--rux-tag-border-gray);
+  --scheduler-bg: var(--rux-layer-03);
+  --scheduler-fg: var(--rux-text-primary);
+  --scheduler-hover: var(--rux-layer-hover-02);
+  --scheduler-border: var(--rux-border-subtle-01);
+  --scheduler-edge: var(--rux-border-subtle-01);
+  background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
+    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
+  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
 }
+[data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
+[data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
 /* Its trip not yet confirmed is red's deep step, 0.34, at 95% of the chroma
    Display P3 holds there, so it stays rich on a P3 screen while standing
    back from the board, and its hover is a step lighter at the same strength. */
@@ -335,6 +347,18 @@
 }
 [data-theme="apple-dark"] .scheduler-frame .scheduler-track { --scheduler-day-rule: var(--rux-border-subtle-01); }
 [data-theme="apple-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
+  --rux-layer: var(--rux-layer-01);
+  --scheduler-band-surface: var(--rux-layer-01);
+}
+/* RUX-DARK'S BOARD IS THE PAGE, as apple-dark's is: the schedule's toolbar,
+   bands and grid take the page's colour inside the line every region already
+   has, and the roster, the panes and the card that opens over a trip keep the
+   raised surface, so the board reads as the page and the tools sit on it. */
+[data-theme="rux-dark"] .scheduler-frame {
+  --rux-layer: var(--rux-background);
+  --scheduler-band-surface: var(--rux-background);
+}
+[data-theme="rux-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   --rux-layer: var(--rux-layer-01);
   --scheduler-band-surface: var(--rux-layer-01);
 }

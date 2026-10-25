@@ -252,7 +252,15 @@
           ],
           "id": "5",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "run-it-and-check-the-answer",
+              "step": "3",
+              "n": 0,
+              "label": "expected values"
+            }
+          ]
         },
         {
           "cells": [
@@ -296,7 +304,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "6",
+    "caption": "The first answer: a report with the model's own sums",
+    "path": "run-it-and-check-the-answer.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

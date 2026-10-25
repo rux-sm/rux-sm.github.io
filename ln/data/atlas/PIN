@@ -1,9 +1,9 @@
-commit   4e325005234602b91cec077a3f21e3c5c9c35a34
-date     2026-10-25T21:50:53Z
-subject  fix(tasks): Keep a warehouse code out of a caption
+commit   dda59ed2a9b08bf14f510717dddc38f096318248
+date     2026-10-25T21:55:39Z
+subject  feat(tasks): Give the GenAI guide screenshots
 contract 24 
 tier     export
-sha256   f614ff69122ad4dce621173269db3ea5546fb0d4b40cb2de58e66e9bb0e214e2
+sha256   f5e885c2681f01e90d539e9396ec2760bae8eb06040e7804fa7e378a7b2216af
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

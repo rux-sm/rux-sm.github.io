@@ -361,7 +361,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Company - Item Inventory, its code in the status bar",
+    "path": "plan-the-prompt.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

@@ -175,7 +175,15 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "plan-the-prompt",
+              "step": "3",
+              "n": 0,
+              "label": "session code"
+            }
+          ]
         },
         {
           "cells": [
@@ -313,7 +321,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "4",
+    "caption": "GenAI Prompts by Session, the saved link",
+    "path": "link-the-prompt-to-a-session.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

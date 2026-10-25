@@ -212,7 +212,15 @@
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "plan-the-prompt",
+              "step": "4",
+              "n": 0,
+              "label": "table"
+            }
+          ]
         },
         {
           "cells": [
@@ -854,7 +862,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "13",
+    "caption": "Dataset Modeler, Selected Fields",
+    "path": "model-the-dataset.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

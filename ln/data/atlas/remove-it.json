@@ -134,7 +134,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "write-the-prompt",
+              "step": "2",
+              "n": 0,
+              "label": "prompt name"
+            }
+          ]
         },
         {
           "cells": [
@@ -235,7 +243,15 @@
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "model-the-dataset",
+              "step": "2",
+              "n": 0,
+              "label": "dataset name"
+            }
+          ]
         },
         {
           "cells": [
@@ -283,7 +299,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "4",
+    "caption": "Company - Item Inventory, Actions after the test command is gone",
+    "path": "remove-it.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [

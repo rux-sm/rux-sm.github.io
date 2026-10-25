@@ -1,0 +1,30 @@
+/*
+  RUX FRAME -- the parts of a page's frame that Carbon lacks, under `frame-`.
+
+  Hand-written, as css/rux-game.css is, and linked after css/rux-overrides.css
+  by a page that uses one of its parts; the check fails on a `frame-*` class
+  that is not here, so an app does not invent one. Its colours are tokens,
+  so every theme draws it.
+
+  A PHONE'S HOME BAR IS MEASURED ONLY WHERE THE PAGE ASKS. Its room is
+  `env(safe-area-inset-bottom)`, which an iPhone reports as 0 unless the
+  page's viewport meta carries `viewport-fit=cover`, so a page that uses a
+  part here carries it. `--frame-safe-bottom` is that room, for a page to add
+  to its own spacing.
+*/
+:root { --frame-safe-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* THE BAR AT THE FOOT, `frame-bar`: fixed along the window's foot on the
+   page's own surface, its controls 12px under its top and 16px over its
+   foot, with a phone's home bar added under them so they never sit in it.
+   What it holds, how wide it is and where it stands across the page are the
+   app's. A page keeps the bar's room clear under its last row, adding
+   `--frame-safe-bottom` to it. */
+.frame-bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 2;
+  padding-block: .75rem calc(1rem + var(--frame-safe-bottom));
+  background: var(--rux-background);
+}

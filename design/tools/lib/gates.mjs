@@ -69,7 +69,7 @@ export const GATES = [
     // read every *.html at the root (sources.mjs pageFiles), and their rows
     // here name what that returns rather than a list typed by hand.
     // pageFiles() is the root pages plus templates/.
-    fileTargets: [...pageFiles(), 'js', 'css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css'],
+    fileTargets: [...pageFiles(), 'js', 'css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css', 'css/rux-frame.css'],
     inputs: ['css/rux.css', ...pageFiles(), 'js'],
     redRun: 'add a `rux--nonesuch` class to any fragment',
     sideEffects: null,
@@ -83,7 +83,7 @@ export const GATES = [
     catches: 'a `var(--rux-*)` that resolves to nothing',
     blindTo: 'a token whose *value* moved. check-token-values covers the values DECLARED in css/rux.css and only those: not a value that moves through the cascade, not one declared in css/rux-theme.css or css/rux-overrides.css, and not what a browser finally computes',
     reads: 'assembled',
-    fileTargets: ['css/rux.css', 'sink/harness.css', 'css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css', ...pageFiles()],
+    fileTargets: ['css/rux.css', 'sink/harness.css', 'css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css', 'css/rux-frame.css', ...pageFiles()],
     inputs: ['css/rux.css', 'sink/harness.css', ...pageFiles()],
     // Proven on 2026-08-29: a placeholder token name written inside a CSS
     // COMMENT in harness.css failed the build as unresolved. The gate parses

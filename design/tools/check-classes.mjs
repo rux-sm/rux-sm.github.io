@@ -47,9 +47,10 @@ let bad = 0, stripped = 0, used = new Set();
 // invented class WITH a stylesheet behind it — the exact thing this gate exists
 // to refuse — so each is read with its comments stripped and every `.rux--*`
 // it selects must resolve. Added 2026-09-02; it makes nothing weaker.
-// css/rux-game.css is hand-written too, under its own `game-` prefix, and a
-// `.rux--*` it selects is held to the same.
-const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css'];
+// css/rux-game.css and css/rux-frame.css are hand-written too, under their
+// own `game-` and `frame-` prefixes, and a `.rux--*` either selects is held to
+// the same.
+const CUSTOM_CSS = ['css/rux-theme.css', 'css/rux-overrides.css', 'css/rux-game.css', 'css/rux-frame.css'];
 for (const f of CUSTOM_CSS) {
   const src = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   for (const m of src.matchAll(/\.(rux--[a-zA-Z0-9_-]+)/g)) {
@@ -58,19 +59,19 @@ for (const f of CUSTOM_CSS) {
     bad++;
   }
 }
-// A GAME'S CLASS, `game-`, is this system's own and not Carbon's: the game
-// templates use them, and each must be a selector in css/rux-game.css, so a
-// mistyped one is caught as a mistyped `rux--` one is.
-const GAME_CSS = 'css/rux-game.css';
-const game = new Set([...readFileSync(GAME_CSS, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/\.(game-[a-zA-Z0-9_-]+)/g)].map(m => m[1]));
+// A GAME'S CLASS, `game-`, and A FRAME'S, `frame-`, are this system's own and
+// not Carbon's: the templates use them, and each must be a selector in its
+// sheet, so a mistyped one is caught as a mistyped `rux--` one is.
+const SHARED = [['game-', 'css/rux-game.css'], ['frame-', 'css/rux-frame.css']]
+  .map(([p, sheet]) => [p, sheet, new Set([...readFileSync(sheet, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').matchAll(new RegExp(`\\.(${p}[a-zA-Z0-9_-]+)`, 'g'))].map(m => m[1]))]);
 let gameUsed = 0;
 for (const f of files) {
   const html = readFileSync(f, 'utf8');
   for (const m of html.matchAll(/class="([^"]*)"/g)) {
-    for (const cls of m[1].split(/\s+/).filter(c => c.startsWith('game-'))) {
+    for (const [p, sheet, has] of SHARED) for (const cls of m[1].split(/\s+/).filter(c => c.startsWith(p))) {
       gameUsed++;
-      if (game.has(cls)) continue;
-      console.log(`  UNDEFINED  ${cls.padEnd(42)} ${f}  (not in ${GAME_CSS})`);
+      if (has.has(cls)) continue;
+      console.log(`  UNDEFINED  ${cls.padEnd(42)} ${f}  (not in ${sheet})`);
       bad++;
     }
   }
@@ -113,5 +114,5 @@ for (const f of jsFiles) {
   }
 }
 
-console.log(`\n  files ${files.length} + ${jsFiles.length} js · classes used ${used.size} · defined in CSS ${defined.size} · game- uses ${gameUsed} of ${game.size} in ${GAME_CSS} · undefined ${bad} · stripped ${stripped}`);
+console.log(`\n  files ${files.length} + ${jsFiles.length} js · classes used ${used.size} · defined in CSS ${defined.size} · game- and frame- uses ${gameUsed} of ${SHARED.reduce((n, [, , has]) => n + has.size, 0)} in their sheets · undefined ${bad} · stripped ${stripped}`);
 process.exit(bad + stripped ? 1 : 0);

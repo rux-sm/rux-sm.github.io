@@ -427,7 +427,7 @@ const page = (title, active, body, head = '') => `<!doctype html>
 <html lang="en" data-theme="white">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <script src="/funnel.js"></script>
 <style>html:not([data-rux-unlocked]){visibility:hidden}</style>
@@ -441,6 +441,7 @@ const page = (title, active, body, head = '') => `<!doctype html>
 <link rel="stylesheet" href="/design/css/rux.css">
 <link rel="stylesheet" href="/design/css/rux-theme.css">
 <link rel="stylesheet" href="/design/css/rux-overrides.css">
+<link rel="stylesheet" href="/design/css/rux-frame.css">
 <link rel="stylesheet" href="${at('theme.css')}">
 <link rel="stylesheet" href="${at('overrides.css')}">
 <link rel="stylesheet" href="${at('app.css')}">
@@ -1041,7 +1042,7 @@ ${confirmBox(t.id)}`}
 ${accordion([['your-values', 'Your values', `<p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div>`, 'hidden'], stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
-<div class="ln-nav">
+<div class="frame-bar ln-nav">
   <a class="rux--btn rux--btn--secondary" href="${hrefUp(s)}" data-prev>Back</a>
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;

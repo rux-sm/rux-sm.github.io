@@ -42,9 +42,10 @@
 //
 // WHAT IT CHECKS, and it is only what is genuinely the same in every app:
 //   classes   every rux--* class a page or local script uses is compiled in
-//             Design's css/rux.css, wherever this found it; and every game-*
+//             Design's css/rux.css, wherever this found it; every game-*
 //             class is in Design's css/rux-game.css, the parts a game has
-//             that Carbon lacks
+//             that Carbon lacks, and every frame-* class in its
+//             css/rux-frame.css, the parts of a page's frame Carbon lacks
 //   tokens    every var(--rux-*) a page, local stylesheet or script reads is
 //             declared in Design's css or the app's own two delta files
 //   files     every relative href/src on a page names a file that exists, and
@@ -130,11 +131,13 @@ const stripJsComments = s => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:\
 const inAttrs = html => new Set([...html.matchAll(/\bclass="([^"]*)"/g)].flatMap(m => m[1].split(/\s+/)).filter(c => c.startsWith('rux--')));
 const inScript = js => new Set([...js.matchAll(/\brux--[A-Za-z0-9_:-]+/g)].map(m => m[0].replace(/:+$/, '')));
 const inSheet = css => new Set([...css.matchAll(/\.(rux--(?:\\.|[A-Za-z0-9_-])+)/g)].map(m => m[1].replace(/\\/g, '')));
-// A GAME'S CLASS is `game-` where a name starts, so an app's own
-// `pixels-game-over` is not one. The same three ways of writing it.
-const gameInAttrs = html => new Set([...html.matchAll(/\bclass="([^"]*)"/g)].flatMap(m => m[1].split(/\s+/)).filter(c => c.startsWith('game-')));
-const gameInScript = js => new Set([...js.matchAll(/(?<![A-Za-z0-9_-])game-[A-Za-z0-9_-]+/g)].map(m => m[0]));
-const gameInSheet = css => new Set([...css.matchAll(/\.(game-[A-Za-z0-9_-]+)/g)].map(m => m[1]));
+// A SHARED SHEET'S CLASS is its prefix where a name starts, so an app's own
+// `pixels-game-over` is not a game's. The same three ways of writing it.
+// Each prefix is Design's, in the sheet beside it.
+const SHARED = [['game-', 'rux-game.css'], ['frame-', 'rux-frame.css']];
+const sharedInAttrs = (html, p) => new Set([...html.matchAll(/\bclass="([^"]*)"/g)].flatMap(m => m[1].split(/\s+/)).filter(c => c.startsWith(p)));
+const sharedInScript = (js, p) => new Set([...js.matchAll(new RegExp(`(?<![A-Za-z0-9_-])${p}[A-Za-z0-9_-]+`, 'g'))].map(m => m[0]));
+const sharedInSheet = (css, p) => new Set([...css.matchAll(new RegExp(`\\.(${p}[A-Za-z0-9_-]+)`, 'g'))].map(m => m[1]));
 const skipRef = v => /^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(v) || v === '';
 
 // ── the rules ───────────────────────────────────────────────────────────────
@@ -191,7 +194,7 @@ export function check(root, opts = {}) {
   const ruxCss = cssText(vendorCss[0]);
   if (!ruxCss) fail('classes', rel(vendorCss[0]), 'missing; nothing to resolve a class against');
   const defined = new Set([...ruxCss.matchAll(/\.(rux--(?:\\.|[A-Za-z0-9_-])+)/g)].map(m => m[1].replace(/\\/g, '')));
-  const game = gameInSheet(stripJsComments(cssText(join(ds, 'css', 'rux-game.css'))));
+  const shared = SHARED.map(([p, sheet]) => [p, sheet, sharedInSheet(stripJsComments(cssText(join(ds, 'css', sheet))), p)]);
 
   const pages = walk(root, ['.html']);
   const scripts = walk(root, ['.js', '.mjs']);
@@ -217,11 +220,13 @@ export function check(root, opts = {}) {
       : kind === 'js' ? inScript(text) : inSheet(text);
     classUses += used.size;
     for (const c of used) if (!defined.has(c)) fail('classes', rel(f), `${c} is not compiled in ${dsFrom}'s rux.css`);
-    const usedGame = kind === 'html'
-      ? new Set([...gameInAttrs(text), ...[...text.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].flatMap(m => [...gameInScript(stripJsComments(m[1]))])])
-      : kind === 'js' ? gameInScript(text) : gameInSheet(text);
-    gameUses += usedGame.size;
-    for (const c of usedGame) if (!game.has(c)) fail('classes', rel(f), `${c} is not in ${dsFrom}'s rux-game.css, which holds every game-* class`);
+    for (const [p, sheet, has] of shared) {
+      const usedShared = kind === 'html'
+        ? new Set([...sharedInAttrs(text, p), ...[...text.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].flatMap(m => [...sharedInScript(stripJsComments(m[1]), p)])])
+        : kind === 'js' ? sharedInScript(text, p) : sharedInSheet(text, p);
+      gameUses += usedShared.size;
+      for (const c of usedShared) if (!has.has(c)) fail('classes', rel(f), `${c} is not in ${dsFrom}'s ${sheet}, which holds every ${p}* class`);
+    }
     const toks = tokensIn(text);
     tokenUses += toks.size;
     for (const t of toks) if (!declared.has(t)) fail('tokens', rel(f), `var(${t}) is declared nowhere -- not in Design's css, not in this app's own two files`);
@@ -322,7 +327,7 @@ function report(root, r) {
     }
     console.log(`  ${fs.length ? 'FAIL' : ' ok '}  ${rule.padEnd(8)}${fs.length ? '' : ({
       ds: `design from ${r.dsFrom}`,
-      classes: `${r.classUses} uses resolve against ${r.defined} compiled${r.gameUses ? `, and ${r.gameUses} of a game- class against rux-game.css` : ''}`,
+      classes: `${r.classUses} uses resolve against ${r.defined} compiled${r.gameUses ? `, and ${r.gameUses} of a game- or frame- class against Design's sheet for it` : ''}`,
       tokens: `${r.tokenUses} var(--rux-*) reads resolve`,
       files: `every relative href and src on ${r.pages.length} page${r.pages.length === 1 ? '' : 's'} exists${r.absolute - r.unresolvable > 0 ? `, and ${r.absolute - r.unresolvable} root-absolute resource${r.absolute - r.unresolvable === 1 ? '' : 's'}` : ''}`,
       sprite: r.symbols ? `${r.symbols} inlined symbol${r.symbols === 1 ? '' : 's'} match the sprite Design ships` : 'no page inlines a symbol',

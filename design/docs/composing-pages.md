@@ -41,6 +41,12 @@ links. `css/rux-game.css` holds the parts Carbon lacks, under
 `game-`; the comment at the head of `templates/game-hub.html` says what each
 page is for.
 
+**A bar of actions fixed to a page's foot is `frame-bar`,** from
+`css/rux-frame.css`, linked after `css/rux-overrides.css`. It keeps its
+controls clear of a phone's home bar, which an iPhone measures only when the
+page's viewport meta carries `viewport-fit=cover`; what the bar holds and how
+wide it stands are the app's.
+
 **Do not start from `sink/ui-shell.html`.** It is the same shell in a 22rem
 sandbox, so its header and nav are positioned for a specimen rather than a page.
 

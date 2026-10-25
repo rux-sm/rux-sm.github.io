@@ -118,7 +118,7 @@
    its bar stands under it: that space's centre is half the frame's width
    past the frame's left, plus half the nav's 16rem and the page's 2rem
    either side, so the 36rem bar starts 10rem short of the frame's middle. */
-.ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: 7rem; }
+.ln-guided { max-inline-size: 36rem; display: grid; gap: 1.5rem; padding-block-end: calc(7rem + var(--frame-safe-bottom, 0px)); }
 .ln-steps { margin: 0; padding: 0; list-style: none; }
 .ln-steps li { display: grid; gap: 1.5rem; }
 .ln-step__do { font-size: 1.5rem; line-height: 1.35; font-weight: 400; margin: 0; }
@@ -142,7 +142,8 @@
 .ln-step__prose { display: grid; gap: .75rem; }
 .ln-step__prose p { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__more { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
-.ln-nav { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 2; display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; padding-block: .75rem 1rem; background: var(--rux-background); }
+/* Back and Next stand in Design's bar at the foot (frame-bar), which keeps them clear of a phone's home bar; this places them under the column. */
+.ln-nav { display: grid; grid-template-columns: 1fr 2fr; gap: .5rem; inline-size: min(36rem, calc(100vw - 4rem)); margin-inline: auto; }
 /* On a phone the bar lines up with the page's text, 16px from each edge. */
 @media (max-width: 41.98rem) { .ln-nav { inline-size: calc(100vw - 2rem); } }
 @media (min-width: 66rem) {

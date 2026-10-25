@@ -188,6 +188,7 @@
   // Each Write down has a box. What is typed is kept in this browser for the
   // run, one pass through a process, and every value of the run is listed
   // under Your values with a button that copies it, until Start a new run.
+  // A step that uses one shows it there too, or a link to where it is written.
   const WROTE = 'ln-values';
   const wrote = () => { try { return JSON.parse(localStorage.getItem(WROTE)) ?? {}; } catch (e) { return {}; } };
   const keep = (all) => { try { localStorage.setItem(WROTE, JSON.stringify(all)); } catch (e) { /* a private window keeps nothing */ } };
@@ -204,6 +205,13 @@
       item.hidden = !list.length;
       item.querySelector('.rux--accordion__title').textContent = `Your values · ${list.length}`;
       values.innerHTML = list.map((v) => `<div class="ln-values__row"><span class="ln-quiet">${esc(v.label)} · ${esc(v.at)}</span><span class="ln-copy"><code class="ln-task__code">${esc(v.v)}</code>${copy(v.v, v.label)}</span></div>`).join('');
+      const mine = wrote()[run] ?? {};
+      for (const row of guided.querySelectorAll('[data-use]')) {
+        const v = mine[row.dataset.use];
+        row.querySelector('.ln-copy')?.remove();
+        row.querySelector('[data-use-missing]').hidden = Boolean(v);
+        if (v) row.insertAdjacentHTML('beforeend', `<span class="ln-copy"><code class="ln-task__code">${esc(v.v)}</code>${copy(v.v, v.label)}</span>`);
+      }
     };
     const mine = wrote()[run] ?? {};
     for (const box of boxes) box.value = mine[`${task}/${box.dataset.write}`]?.v ?? '';

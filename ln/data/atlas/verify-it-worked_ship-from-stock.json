@@ -1,5 +1,5 @@
 {
-  "contract": 23,
+  "contract": 24,
   "tier": "export",
   "kind": "task",
   "id": "verify-it-worked_ship-from-stock",
@@ -21,7 +21,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
@@ -108,7 +108,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-there-is-stock",
+              "step": "4",
+              "n": 0,
+              "label": "item"
+            }
+          ]
         },
         {
           "cells": [
@@ -253,7 +261,21 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "confirm-there-is-stock",
+              "step": "4",
+              "n": 1,
+              "label": "warehouse"
+            },
+            {
+              "task": "confirm-there-is-stock",
+              "step": "4",
+              "n": 2,
+              "label": "on-hand"
+            }
+          ]
         }
       ]
     },

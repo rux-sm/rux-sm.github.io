@@ -1,5 +1,5 @@
 {
-  "contract": 23,
+  "contract": 24,
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_ship-from-stock",
@@ -153,7 +153,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "generate-outbound-advice",
+              "step": "10",
+              "n": 0,
+              "label": "Run"
+            }
+          ]
         },
         {
           "cells": [
@@ -296,7 +304,15 @@
           ],
           "id": "4",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "generate-outbound-advice",
+              "step": "10",
+              "n": 1,
+              "label": "Mission"
+            }
+          ]
         },
         {
           "cells": [

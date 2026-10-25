@@ -1,5 +1,5 @@
 {
-  "contract": 23,
+  "contract": 24,
   "tier": "export",
   "kind": "task",
   "id": "create-and-approve-the-sales-order",
@@ -24,7 +24,7 @@
     "Warehousing"
   ],
   "status": "approved",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
@@ -375,7 +375,15 @@
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-there-is-stock",
+              "step": "4",
+              "n": 1,
+              "label": "warehouse"
+            }
+          ]
         },
         {
           "cells": [
@@ -522,7 +530,15 @@
           ],
           "id": "9",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-there-is-stock",
+              "step": "4",
+              "n": 0,
+              "label": "item"
+            }
+          ]
         },
         {
           "cells": [

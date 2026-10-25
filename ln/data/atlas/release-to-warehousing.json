@@ -1,5 +1,5 @@
 {
-  "contract": 23,
+  "contract": 24,
   "tier": "export",
   "kind": "task",
   "id": "release-to-warehousing",
@@ -105,7 +105,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-and-approve-the-sales-order",
+              "step": "7",
+              "n": 0,
+              "label": "sales order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -372,7 +380,15 @@
           ],
           "id": "7",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-and-approve-the-sales-order",
+              "step": "7",
+              "n": 0,
+              "label": "sales order number"
+            }
+          ]
         },
         {
           "cells": [

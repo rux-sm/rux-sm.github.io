@@ -132,7 +132,7 @@
 /* Each figure to write down has a box of its own. */
 .ln-step__writes { display: grid; gap: 1rem; margin-block-start: .5rem; }
 /* Your values: one row a value, its name and step on the left. */
-.ln-values { display: grid; }
+.ln-values, .ln-step__uses { display: grid; }
 .ln-values__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .5rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
 .ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }

@@ -1,9 +1,9 @@
-commit   99d9d3414a986e59c433f64f47a90fe118172047
-date     2026-10-25T20:09:35Z
-subject  fix(tasks): Name Cross the boundary's first screen
-contract 23 
+commit   913c3c40c59c35cc700d0935134ea88f0c883e26
+date     2026-10-25T20:30:02Z
+subject  feat(tasks): Mark the figures a step uses
+contract 24 
 tier     export
-sha256   4b8a0b0219ba22e0e4bfaa57b77dc299758ae8448e8ecafc99122d300b28aa79
+sha256   febc6fb3401c848c0a7474f3eca51afac531805e622e357f3fe0871b7ccd8de9
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

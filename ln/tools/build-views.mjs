@@ -254,7 +254,7 @@ function seeBox(r, step) {
     if (t.t === 'pencil') notes.push([]);
     else notes.at(-1).push(t.t === 'value' || t.t === 'literal' ? { t: 'text', v: t.v } : t);
   }
-  const written = notes.map((seg) => tokens(seg).replace(/^[\s,]+|[\s,]+$/g, '')).filter(Boolean).map((w, i) => {
+  const written = notes.map((seg, i) => [tokens(seg).replace(/^[\s,]+|[\s,]+$/g, ''), i]).filter(([w]) => w).map(([w, i]) => {
     const [label, ...note] = w.split(' — ');
     const plainLabel = cap(label.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
     return `<div class="rux--form-item rux--text-input-wrapper rux--layer-two">
@@ -267,6 +267,20 @@ function seeBox(r, step) {
   });
   return `
     <div class="ln-step__see">${lead ? `<span class="ln-quiet">You should see</span><p>${lead}</p>` : ''}${written.length ? `<span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes">${written.join('')}</div>` : ''}</div>`;
+}
+// The figures a guided step uses from a Write down earlier in the run, each
+// named with the step it was written at. app.js puts in the value the reader
+// typed there, with the copy button, or a link back to that step.
+function usedBox(r, t) {
+  if (!r.uses?.length) return '';
+  const rowsHtml = r.uses.map((u) => {
+    const from = taskById.get(u.task);
+    const at = from?.process ? `${from.process.n + 1}.${u.step}` : u.step;
+    const k = rowsOf(from).findIndex((x) => x.id === u.step) + 1;
+    const href = u.task === t.id ? `?walk=${k}` : `${hrefTask(u.task)}?walk=${k}`;
+    return `<div class="ln-values__row" data-use="${esc(u.task)}/${esc(u.step)}/${u.n}"><span class="ln-quiet">${esc(cap(u.label))} · ${esc(at)}</span><span data-use-missing><a class="rux--link" href="${href}">Write it down at step ${esc(at)}</a></span></div>`;
+  }).join('');
+  return `<div class="ln-step__uses"><span class="ln-quiet">Your values</span>${rowsHtml}</div>`;
 }
 // What atlas wrote around a task's steps, drawn on the guided step it belongs
 // to: what comes before them on the first, what follows them on the last.
@@ -1019,7 +1033,7 @@ ${signOff()}`;
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main">${k === 0 && !elsewhere(k) ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<div class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<div>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}</div>`).join('')}</div>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r, t.process ? `${t.process.n + 1}.${r.id}` : r.id)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main">${k === 0 && !elsewhere(k) ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<div class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<div>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}</div>`).join('')}</div>` : ''}${lines[k].typed ?? ''}${usedBox(r, t)}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r, t.process ? `${t.process.n + 1}.${r.id}` : r.id)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.walked ? '' : `

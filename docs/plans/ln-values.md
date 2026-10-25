@@ -7,16 +7,14 @@ type: plan
 ## Goal
 
 A guided step that needs a figure written down earlier shows that figure, with
-a button that copies it, so the reader never goes looking for it. Each Write
-down already has a box, and Your values already lists the run's figures.
+a button that copies it, so the reader never goes looking for it. Ship from
+stock does; every other guide gets the same.
 
 ## Decisions
 
-- **Atlas marks the use, and the build does not guess.** A step that uses an
-  earlier figure names the step and the label of the Write down it reads, and
-  atlas's emit sends it as a token of its own under a new contract.
-- **Atlas's check fails a use that points at no Write down**, so a reworded
-  step cannot leave a value behind.
+- **Atlas marks the use in a task's frontmatter, `uses:`**, so marking one
+  needs no new walk; atlas's `task-rules.md` says how, and its check fails a
+  use that points at no Write down.
 - **Guided shows the value under the step's action**: its label, the step it
   was written at, the value and Design's copy button. Nothing written yet
   shows the label and a link to that step.
@@ -31,7 +29,5 @@ down already has a box, and Your values already lists the run's figures.
 
 ## Tasks
 
-- [ ] In atlas, add the use marker, its token, the contract and the check.
-- [ ] In LN Guide, draw a used value under its step in Guided.
-- [ ] Mark the uses in Ship from stock.
-- [ ] Mark the uses in each other guide as it is reworded.
+- [ ] Mark the uses in each guide other than Ship from stock as it is
+      reworded.

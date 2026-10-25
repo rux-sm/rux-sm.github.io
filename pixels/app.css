@@ -24,10 +24,10 @@
 
 /* THE FRAME is what the game or the maker sits in, and the width its sizes
    are worked out from, as 100cqi. On a phone it takes back all but 4px of
-   the 3rem the page keeps clear each side, and 1rem from the top. */
+   the 1rem the page keeps clear each side, and 1rem from the top. */
 .pixels-frame { container-type: inline-size; }
 @media (max-width: 28rem) {
-  .pixels-frame { --pixels-above: 1rem; margin: -1rem -2.75rem 0; }
+  .pixels-frame { --pixels-above: 1rem; margin: -1rem -.75rem 0; }
 }
 
 /* THE BOARD. Four parts in a two by two grid: a corner, the column numbers,

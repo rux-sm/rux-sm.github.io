@@ -1,11 +1,11 @@
 /* ==========================================================================
    make.js — the puzzle maker
    --------------------------------------------------------------------------
-   DRAW: tap a square to fill or empty it, or drag. The numbers update as the
-   picture changes, and the check in the board's corner says whether a
-   player can solve it by logic alone, and how hard that is, and a line
-   under the board how much the first look decides and how much of the
-   board is filled; squares that would need a guess are outlined. COLOUR:
+   DRAW: tap a square to fill or empty it, or drag. The board shows no
+   numbers, so its squares take the whole width; the line under it says
+   whether a player can solve it by logic alone, and how hard that is, how
+   much the first look decides and how much of the board is filled; squares
+   that would need a guess are outlined. COLOUR:
    the sixty inks stand open under the board; pick one and paint any
    square, filled or not; that is the picture the puzzle finishes as. The paintbrush colours the
    squares tapped or dragged over, the bucket every square joined to the one
@@ -161,19 +161,14 @@
     } catch { /* a convenience */ }
   };
 
-  // The check, over the board's corner, which holds a tag and two short
-  // lines at the pixel font's one size: the tag, a word or a count, then a
-  // line for each of `lines`. `under` is the line under the board. `kind`
-  // is the whole class, so the site's check can find it.
-  const report = (kind, text, lines = [], under = '') => {
+  // The check, a tag at the start of the line under the board, and `under`,
+  // the rest of that line. `kind` is the whole class, so the site's check
+  // can find it.
+  const report = (kind, text, under = '') => {
     const span = document.createElement('span');
     span.className = `rux--tag rux--layout--size-sm rux--tag--sm ${kind}`;
     span.textContent = text;
-    check.replaceChildren(span, ...lines.map(line => {
-      const row = document.createElement('span');
-      row.textContent = line;
-      return row;
-    }));
+    check.replaceChildren(span);
     stats.textContent = under;
   };
 
@@ -241,13 +236,16 @@
     const unknown = unreached(draft);
     const guesses = unknown.flat().filter(Boolean).length;
     const empty = draft.every(r => r.every(c => !c));
-    // The board keeps the room for numbers a player's has, so the squares
-    // never move under a finger as the numbers change.
+    // The board is the game's, and app.css hides its numbers here.
     board(host, draft, draft, step === 'colour' ? { inks: colours, label: 'Picture' } : { unknown, label: 'Picture' });
     const full = `${Math.round(draft.flat().filter(Boolean).length * 100 / (side * side))}% filled`;
     if (empty) report('rux--tag--gray', 'Empty');
-    else if (guesses) report('rux--tag--red', String(guesses), ['to guess'], full);
-    else report('rux--tag--green', 'Ready', [grade(rounds(draft))], `${Math.round(firstLook(draft) * 100)}% first look · ${full}`);
+    else if (guesses) report('rux--tag--red', `${guesses} to guess`, full);
+    else {
+      // A green tag is ready, and says how hard the puzzle is.
+      const hard = grade(rounds(draft));
+      report('rux--tag--green', hard[0].toUpperCase() + hard.slice(1), `${Math.round(firstLook(draft) * 100)}% first look · ${full}`);
+    }
     solvable = !empty && !guesses;
     save.disabled = !ready();
   };

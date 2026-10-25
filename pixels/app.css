@@ -6,16 +6,15 @@
    cover and the finish panel. */
 
 /* WHOLE PIXELS. Every size below is chosen so that what is divided comes
-   out in whole pixels: the maker's corner is 84px, since the game is a
-   phone's column on every screen, the squares together a multiple of their
-   count, and the keys' gaps 6px. They are pixels and not rems because they
+   out in whole pixels: the squares together a multiple of their count, and
+   the keys' gaps 6px. They are pixels and not rems because they
    are a drawing's measures, not text's.
 
    A NUMBER IS SHARP only at a size whose every pixel of Silkscreen, an
    eighth of the size, is a whole number of the screen's: so the sizes a
    number may take are `--pixels-clue-step` apart, 8px on a screen of one
    pixel to the CSS pixel, 4px on one of two, and 8/3px on one of three. */
-:root { --pixels-corner: 84px; --pixels-thumb: 30px; --pixels-clue-step: 8px; }
+:root { --pixels-thumb: 30px; --pixels-clue-step: 8px; }
 /* THE HEADER'S HEIGHT, which the game and the maker leave out of the
    window's: Carbon's 3rem from 66rem, once data.js shows it. */
 @media (min-width: 66rem) { :root:has(.game-header:not([hidden])) { --pixels-head: 3rem; } }
@@ -918,37 +917,34 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
 .pixels-game[hidden], .pixels-controls[hidden], .pixels-info[hidden], .pixels-maker[hidden] { display: none; }
 
 /* THE MAKER. One column the width of its board, in the order of the work:
-   the head, which is the name and the size; then the toolbar set on the
-   board, and the board's check over its empty corner. Where the puzzle goes
-   is asked as it is saved.
-   Its board is the game's, set in by a whole number of pixels as the game
-   is. `--chrome` is the height everything but the board takes, so the board
-   takes what the window leaves and the whole maker is in view without
-   scrolling. The inks stand under the board and are as wide as it is, so
-   their height grows with it, five twelfths of its width: `--side` is
-   what is left of the window's height after the header, the phone's home
-   bar and the 216px the page's top, the head, the line under the board and
-   the toolbar's two lines take, shared twelve parts to the board and five
-   to the inks.
+   the head, which is the name and the size; then the board, the line under
+   it with the check, and the toolbar. Where the puzzle goes is asked as it
+   is saved.
+   Its board is the game's without the numbers, so its squares take the
+   whole width; Play shows the numbers. The board takes what the window
+   leaves, so the whole maker is in view without scrolling. The inks stand
+   under the board and are as wide as it is, so their height grows with it,
+   five twelfths of its width: `--side` is what is left of the window's
+   height after the header, the phone's home bar and the 216px the page's
+   top, the head, the line under the board and the toolbar's two lines take,
+   shared twelve parts to the board and five to the inks.
    ITS BOARD HAS ONE FOOTPRINT, whatever its size, so a new size does not
    move the page: `--side` is taken down to a multiple of `--step`, 30px,
    which fives, tens and fifteens all divide, or 20px for a board of twenty,
-   which make.js marks with `data-side`. The numbers keep the corner's
-   measure both ways, so they do not move the board as it is drawn. */
+   which make.js marks with `data-side`. */
 .pixels-maker {
   --step: 30px;
-  --foot: calc(var(--side) + var(--pixels-corner));
-  --clue-w: var(--pixels-corner);
-  --clue-h: var(--pixels-corner);
+  --clue-w: 0px;
+  --clue-h: 0px;
   --most: 600px;
-  --chrome: 185px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: .5rem;
-  inline-size: var(--foot);
-  margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
+  inline-size: var(--side);
+  margin-inline-start: round(down, calc((100cqi - var(--side)) / 2), 1px);
 }
-.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - var(--pixels-head, 0px) - env(safe-area-inset-bottom, 0px) - 216px) * 12 / 17 - var(--pixels-corner)), var(--most)), var(--step)); }
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi, (100dvh - var(--pixels-head, 0px) - env(safe-area-inset-bottom, 0px) - 216px) * 12 / 17), var(--most)), var(--step)); }
+.pixels-maker :is(.pixels-corner, .pixels-cols, .pixels-rows) { display: none; }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem; gap: .5rem; }
@@ -957,8 +953,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    The rule is drawn inside a group's edge and takes no room, because twelve
    buttons are exactly a phone's board across; a narrower board lets the
    last group down to a line of its own. Back, Save and Delete start the
-   bar, over the board's corner, and the drawing's keys are pushed to its
-   end, over the squares.
+   bar, and the drawing's keys are pushed to its end.
 
    The bar is the container its step key asks for its width, and stands
    over the board so the menu it opens does too. It sets the height its
@@ -1037,30 +1032,14 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   cursor: pointer;
 }
 .pixels-ink[aria-checked="true"] { outline: 2px solid var(--rux-focus); outline-offset: 1px; }
-.pixels-maker-board { position: relative; }
-/* THE CHECK, over the board's empty corner, which at the pixel font's one
-   size holds a tag of five letters and two short lines: the tag, then how
-   hard the puzzle is, or what its count is of. Under the board a line says
-   how much the first look gives and how much is filled, and keeps its
-   height when it has nothing to say, so the keys under it do not move. */
-.pixels-maker-check {
-  position: absolute;
-  inset: 0 auto auto 0;
-  box-sizing: border-box;
-  inline-size: var(--pixels-corner);
-  block-size: var(--pixels-corner);
-  display: grid;
-  align-content: end;
-  justify-items: start;
-  gap: .125rem;
-  padding: 0 .5rem .5rem 0;
-  color: var(--rux-text-secondary);
-  font-size: 16px;
-  line-height: 20px;
-  pointer-events: none;
-}
-.pixels-maker-check > span:not([class])::first-letter { text-transform: uppercase; }
-.pixels-maker-stats { min-block-size: 20px; margin: .25rem 0 0; line-height: 20px; }
+/* THE LINE UNDER THE BOARD: the check, a tag that is grey while the board
+   is empty, red with how many squares would need a guess, and green with
+   how hard the puzzle is once it is ready; then how much the first look
+   gives and how much is filled. It keeps its height when it has nothing to
+   say and never wraps, so the keys under it do not move. */
+.pixels-maker-line { display: flex; align-items: center; gap: .5rem; min-block-size: 24px; margin-block-start: .25rem; }
+.pixels-maker-check { flex: none; display: flex; }
+.pixels-maker-stats { flex: 1; min-inline-size: 0; margin: 0; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* THE SAVED NOTICE floats at the page's top corner, so it moves nothing. */
 .pixels-saved { position: fixed; inset-block-start: 1rem; inset-inline-end: 1rem; z-index: 2; max-inline-size: calc(100vw - 2rem); }
 

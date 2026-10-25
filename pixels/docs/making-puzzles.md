@@ -25,9 +25,10 @@ filled squares and let the extra room go to detail, not to a bigger blob.
 
 ## What the maker holds you to
 
-- **One answer.** Save stays off until the tag in the board's corner is green
-  and says Ready. A square outlined in yellow is one the numbers cannot
-  decide, so the player would have to guess, and the red tag counts them.
+- **One answer.** Save stays off until the tag under the board is green,
+  when it says how hard the puzzle is. A square outlined in yellow is one the
+  numbers cannot decide, so the player would have to guess, and the red tag
+  counts them. The maker shows no numbers; Play shows them.
 - **A name**, up to 40 letters. It is hidden until the puzzle is solved, so it
   is the reward: name the thing, in one or two words.
 
@@ -57,7 +58,7 @@ has a next move, and the picture comes out bit by bit.
 1. **Give an easy way in.** Two or three lines with a number over half the
    board, 6 or more on 10×10, let the player fill squares at the first look.
 2. **Let one thing lead to the next.** Each square found should help a line
-   that crosses it. Normal, in the board's corner, is the sign of that.
+   that crosses it. Normal, on the green tag, is the sign of that.
 3. **Mix the lines.** Some long runs, and some lines with two or three
    numbers, which are the most fun to work out.
 4. **Reveal it slowly.** The player should guess the picture halfway
@@ -124,7 +125,7 @@ the game makes itself, which has no name but its date.
 
 ## How hard it is
 
-Under the green tag the corner says easy, normal or hard. It counts rounds: one round is one
+The green tag says easy, normal or hard. It counts rounds: one round is one
 look at every row and every column, filling in what each can now decide.
 
 | It says | Rounds | What it feels like |

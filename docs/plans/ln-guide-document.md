@@ -89,7 +89,7 @@ And a team, after log-in, sees what the public page cannot carry.
   Sevens. rux, as the environment's user, allows them to see captures of LN.
 
 - **The team sees one screenshot per task**, cropped and redacted in atlas,
-  sent by atlas's sync to a private Supabase bucket, and drawn by the page
+  sent by atlas's sync to the private `ln-screens` bucket, and drawn by the page
   after log-in through links signed for a few minutes, as the scheduler's
   documents are. A logged-out visitor sees the page without them. Text stays
   the step, because a screenshot goes stale and the reader reads words first.
@@ -116,8 +116,6 @@ And a team, after log-in, sees what the public page cannot carry.
       and reference documents, published as idea pages and a reference sheet.
 - [ ] In atlas, send a callout as a block and a step's parts as fields under
       a new contract, and remove the build's pattern matching for them.
-- [ ] In the database, add a private screenshot bucket readable by every
-      account that can open LN Guide, as a migration shown to rux first.
 - [ ] In atlas, record each task's screenshot, its step and its caption, and
       have the sync crop, redact and upload it, starting with Ship from stock's
       seven from its walk of 2026-10-24.

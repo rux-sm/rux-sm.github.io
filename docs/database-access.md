@@ -77,8 +77,10 @@ migration does.
 
 ## Files
 
-**Seven buckets.** LN Guide's `ln-confirmations` is private and its rules ask
-for the owner. `notes-tile-files` and `notes-walk-shots` are private and carry
+**Eight buckets.** LN Guide's `ln-confirmations` is private and its rules ask
+for the owner. Its `ln-screens` is private and its one rule lets any account
+`can_open_app('ln')` allows read it, because every LN reader sees a task's
+screenshot; atlas writes it with the secret key, so no account does. `notes-tile-files` and `notes-walk-shots` are private and carry
 no rule, so no account reaches them.
 `trip-documents`, `driver-photos` and `company-documents` are private: staff
 read them through links signed for ten minutes, and the link pages reach a

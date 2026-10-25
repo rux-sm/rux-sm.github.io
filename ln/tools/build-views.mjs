@@ -985,10 +985,13 @@ ${signOff()}`;
   });
   const guidedUps = guidedProse(firstSteps < 0 ? t.blocks : t.blocks.slice(0, firstSteps));
   const guidedDowns = firstSteps < 0 ? '' : guidedProse(t.blocks.slice(firstSteps));
-  // The screen the task starts on leads step 1, above what to do there, so it
-  // is read before the reader acts; later steps are already on it. A step 1
-  // that names its own way in keeps that alone, since the two can disagree.
+  // The task's first screen leads step 1, above what to do there, so it is
+  // read before the reader acts; later steps are already on it. The route
+  // line names the screens a task works in, not where it begins, so a step 1
+  // that names its own way in or another screen keeps that alone.
   const startsAt = t.route ? `<p class="ln-step__route">This task starts at ${route(t.route)} ${t.sessionCode ? coded(t.sessionCode) : ''}</p>` : '';
+  const elsewhere = (k) => lines[k].routes.length > 0
+    || [...lines[k].head.matchAll(/screens\/([a-z0-9]+)\.html/g)].some((m) => m[1] !== t.sessionCode);
   const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
 <a class="rux--link ln-back" href="${hrefUp(s)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
 <div class="rux--progress-bar rux--progress-bar--small">
@@ -999,7 +1002,7 @@ ${signOff()}`;
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main">${k === 0 && !lines[k].routes.length ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main">${k === 0 && !elsewhere(k) ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.walked ? '' : `

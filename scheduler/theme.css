@@ -155,6 +155,13 @@
   --scheduler-hover: var(--rux-tag-hover-gray);
   --scheduler-border: var(--rux-tag-border-gray);
 }
+/* Its trip not yet confirmed is a deep red at nearly all the chroma Display P3
+   holds there, so it stays rich on a P3 screen while standing back from the
+   board, and its hover is a step lighter at the same strength. */
+[data-theme="rux-dark"] .scheduler-bar--red {
+  --scheduler-bg: oklch(0.34 0.15 27);
+  --scheduler-hover: oklch(0.38 0.165 27);
+}
 
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a

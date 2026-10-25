@@ -106,11 +106,8 @@
   .ln-proc__table.ln-proc__summary .rux--data-table tbody tr td:first-child { padding-block-start: .625rem; }
 }
 
-/* A card's facts keep their values in one column. The code is a copy button,
-   so it gives back its own inset and its words start where the others do; a
-   list of links, a task's uses or its ideas, stands one link to a line, 6px
+/* A card's facts keep their values in one column. A list of links, a task's uses or its ideas, stands one link to a line, 6px
    apart, so a link that wraps does not read as two. */
-.ln-card__facts .ln-task__code { padding-inline: .5rem; margin-inline-start: -.5rem; }
 .ln-card__facts dd > .rux--link { display: block; inline-size: fit-content; }
 .ln-card__facts dd > .rux--link + br { display: none; }
 .ln-card__facts dd > .rux--link + br + .rux--link { margin-block-start: .375rem; }

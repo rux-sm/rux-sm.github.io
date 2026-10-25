@@ -240,9 +240,11 @@ function headline(list, taskRoute) {
   return { head: tokens(head), note: note.length ? tokens(note) : '', routes: [...new Set(routes)].map(route) };
 }
 const see = (r) => !r.cells[2] || r.cells[2].text.trim() === '—' ? '' : tokens(r.cells[2].tokens);
-// What a guided step shows below its action: what you should see, then the
-// figures to write down under a label of their own, as paper labels them.
-function seeBox(r) {
+// What a guided step shows below its action: what you should see, then a
+// box for each figure to write down, under a label of their own as paper
+// labels them. app.js keeps what is typed in this browser for the run.
+let writes = 0;
+function seeBox(r, step) {
   const cell = r.cells[2];
   if (!cell || cell.text.trim() === '—') return '';
   const at = cell.tokens.findIndex((t) => t.t === 'pencil');
@@ -252,9 +254,19 @@ function seeBox(r) {
     if (t.t === 'pencil') notes.push([]);
     else notes.at(-1).push(t.t === 'value' || t.t === 'literal' ? { t: 'text', v: t.v } : t);
   }
-  const written = notes.map((seg) => tokens(seg).replace(/^[\s,]+|[\s,]+$/g, '')).filter(Boolean);
+  const written = notes.map((seg) => tokens(seg).replace(/^[\s,]+|[\s,]+$/g, '')).filter(Boolean).map((w, i) => {
+    const [label, ...note] = w.split(' — ');
+    const plainLabel = cap(label.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
+    return `<div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-${++writes}">${cap(label)}</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-${writes}" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="${esc(r.id)}/${i}" data-at="${esc(step)}" data-label="${esc(plainLabel)}">
+      </div></div>${note.length ? `
+      <div class="rux--form__helper-text">${note.join(' — ')}</div>` : ''}
+    </div>`;
+  });
   return `
-    <div class="ln-step__see">${lead ? `<span class="ln-quiet">You should see</span><p>${lead}</p>` : ''}${written.length ? `<span class="ln-quiet ln-step__write">Write down</span><p>${written.join(', ')}</p>` : ''}</div>`;
+    <div class="ln-step__see">${lead ? `<span class="ln-quiet">You should see</span><p>${lead}</p>` : ''}${written.length ? `<span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes">${written.join('')}</div>` : ''}</div>`;
 }
 // What atlas wrote around a task's steps, drawn on the guided step it belongs
 // to: what comes before them on the first, what follows them on the last.
@@ -356,8 +368,8 @@ const list = (items) => `<ul class="ln-list">${items.map((q) => `
   <li>${q.lead ? `<small class="ln-quiet">${q.lead}</small>` : ''}<b>${q.title}</b>${q.body}</li>`).join('')}
 </ul>`;
 const problems = (rows, lead) => rows.map((row) => ({ lead: lead?.(row), title: tokens(row.cells[0].tokens), body: `<p>${tokens(row.cells[1].tokens)}</p>` }));
-const accordion = (items) => `<ul class="rux--accordion rux--accordion--end rux--layout--size-md">${items.filter(Boolean).map(([id, title, body]) => `
-  <li class="rux--accordion__item" id="${id}">
+const accordion = (items) => `<ul class="rux--accordion rux--accordion--end rux--layout--size-md">${items.filter(Boolean).map(([id, title, body, attrs]) => `
+  <li class="rux--accordion__item" id="${id}"${attrs ? ` ${attrs}` : ''}>
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">${title}</div>
@@ -365,9 +377,12 @@ const accordion = (items) => `<ul class="rux--accordion rux--accordion--end rux-
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold">${body}</div></div>
   </li>`).join('')}
 </ul>`;
-const copyChip = (v, label = v) => `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm ln-task__code" data-copy="${esc(v)}" aria-label="Copy ${esc(label)}">${esc(v)}</button>`;
+// Design's copy button, icon-only; its tooltip says Copied! when the copy
+// lands. app.js draws the same button for the values a reader wrote down.
+const copyButton = (v, label) => `<span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="${esc(v)}" aria-label="Copy ${esc(label)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span>`;
+const copyChip = (v, label = v) => `<span class="ln-copy"><code class="ln-task__code">${esc(v)}</code>${copyButton(v, label)}</span>`;
 const codeChip = (code) => copyChip(code, `the code ${code}`);
-// A value whose exact text is a chip that copies it, as Guided shows it.
+// A value whose exact text has a button that copies it, as Guided shows it.
 const valueOf = (cell) => cell.tokens.map((t) => t.t === 'literal' ? copyChip(t.v) : token(t)).join('');
 const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" method="get" role="search">
   <div class="rux--search rux--layout--size-lg">
@@ -437,6 +452,8 @@ ${body}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="/design/js/popover.js"></script>
+<script src="/design/js/copy-button.js"></script>
 <script src="${at('data.js')}"></script>
 <script src="${at('app.js')}"></script>
 </body>
@@ -566,7 +583,7 @@ function looking(x) {
     if (texts.at(-1)?.name === name) texts.at(-1).lines.push(line); else texts.push({ name, lines: [line] });
   }
   return texts.map((t) => `<div class="ln-type">
-  <p class="ln-type__name"><b>${esc(t.name)}</b><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-copy="${esc(t.lines.join('\n'))}">Copy</button></p>
+  <div class="ln-type__name"><b>${esc(t.name)}</b>${copyButton(t.lines.join('\n'), `the ${t.name}`)}</div>
   <div class="ln-type__text">${t.lines.map((l) => `<p>${esc(l)}</p>`).join('')}</div>
 </div>`).join('');
 }
@@ -992,7 +1009,7 @@ ${signOff()}`;
   const startsAt = t.route ? `<p class="ln-step__route">This task starts at ${route(t.route)} ${t.sessionCode ? coded(t.sessionCode) : ''}</p>` : '';
   const elsewhere = (k) => lines[k].routes.length > 0
     || [...lines[k].head.matchAll(/screens\/([a-z0-9]+)\.html/g)].some((m) => m[1] !== t.sessionCode);
-  const guided = `<section class="ln-guided" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
+  const guided = `<section class="ln-guided" data-run="${esc(s.id || t.id)}" data-task="${esc(t.id)}" data-title="${esc(t.title)}" data-process="${esc(s.title)}" data-process-href="${hrefUp(s)}"${t.next ? ` data-next-href="${hrefTask(t.next.id)}?walk=1"` : ''}>
 <a class="rux--link ln-back" href="${hrefUp(s)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>${esc(s.title)}</a>
 <div class="rux--progress-bar rux--progress-bar--small">
   <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">${esc(t.title)}</span></div>
@@ -1002,12 +1019,12 @@ ${signOff()}`;
 <ol class="ln-steps">${rows.map((r, k) => `
   <li data-k="${k + 1}" data-ref="${esc(r.id)}" hidden>${k === 0 && guidedUps ? `
     <div class="ln-step__prose">${guidedUps}</div>` : ''}
-    <div class="ln-step__main">${k === 0 && !elsewhere(k) ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<p class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<br>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}`).join('')}</p>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r)}${k === rows.length - 1 && guidedDowns ? `
+    <div class="ln-step__main">${k === 0 && !elsewhere(k) ? startsAt : ''}<h1 class="ln-step__do">${lines[k].head}</h1>${lines[k].note ? `<p class="ln-step__note">${lines[k].note}</p>` : ''}${lines[k].routes.map((x) => `<p class="ln-step__route">${x}</p>`).join('')}${r.example?.length ? `<div class="ln-step__example"><span class="ln-quiet">Example</span>${r.example.map((i) => `<div>${tokens(t.example.rows[i].cells[0].tokens)} ${valueOf(t.example.rows[i].cells[1])}</div>`).join('')}</div>` : ''}${lines[k].typed ?? ''}${shotStep(t, r) ? shotFigure(t, t.process ? `${t.process.n + 1}.${r.id}` : r.id) : ''}</div>${seeBox(r, t.process ? `${t.process.n + 1}.${r.id}` : r.id)}${k === rows.length - 1 && guidedDowns ? `
     <div class="ln-step__prose">${guidedDowns}</div>` : ''}
   </li>`).join('')}
 </ol>${t.walked ? '' : `
 ${confirmBox(t.id)}`}
-${accordion([stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
+${accordion([['your-values', 'Your values', `<p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div>`, 'hidden'], stuck('stuck', 'Stuck?'), why && ['why-guided', 'Why LN works this way', why]])}
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>
 </section>
 <div class="ln-nav">

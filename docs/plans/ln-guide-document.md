@@ -21,7 +21,7 @@ And a team, after log-in, sees what the public page cannot carry.
   become, and what Print prints.
 
 - **The Guide gives the value its own box**, above You should see and as large,
-  with the value's exact text a chip that copies it, and a task ends on a card
+  with the value's exact text beside Design's copy button, and a task ends on a card
   naming its result and the next task, so finishing one is never silent.
 
 - **A process is one Document, every task's steps inline**, the way a

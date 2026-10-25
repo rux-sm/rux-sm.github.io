@@ -126,7 +126,14 @@
 .ln-step__main { display: grid; gap: .625rem; }
 .ln-step__note { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
 .ln-step__route { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--rux-text-secondary); }
-.ln-step__example { margin: 0; font-size: 1.0625rem; line-height: 1.5; }
+.ln-step__example { font-size: 1.0625rem; line-height: 1.5; }
+/* A value and the button that copies it sit together, the button beside its text. */
+.ln-copy { display: inline-flex; align-items: center; gap: .75rem; vertical-align: middle; }
+/* Each figure to write down has a box of its own. */
+.ln-step__writes { display: grid; gap: 1rem; margin-block-start: .5rem; }
+/* Your values: one row a value, its name and step on the left. */
+.ln-values { display: grid; }
+.ln-values__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .5rem; border-block-end: 1px solid var(--rux-border-subtle-01); }
 .ln-step__see { padding: 1rem 1.25rem; background: var(--rux-layer-01); }
 .ln-step__see p { margin: .25rem 0 0; font-size: 1.0625rem; line-height: 1.5; }
 /* Write down follows what you should see with a space of its own. */

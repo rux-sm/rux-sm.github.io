@@ -233,7 +233,7 @@ tutorial, reference and explanation.
 
 - **Every control is Carbon.** The wide layout is Design's `document-page`
   template; Guided's progress is Carbon's progress bar, a fold its accordion,
-  and the code chip its inline code snippet.
+  and a value to copy sits beside Carbon's copy button.
   Search results start from `search-results-page` and the task index from
   `list-page`.
 

@@ -37,6 +37,7 @@
 <symbol id="i-chevron--right" viewBox="0 0 16 16"><path d="M11 8 6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z" style="fill:var(--rux-icon-path-1)"/></symbol>
 <symbol id="i-checkmark--filled" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8c0,3.9,3.1,7,7,7s7-3.1,7-7C15,4.1,11.9,1,8,1z M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" style="fill:var(--rux-icon-path-1)"/><path d="M7,11L4.3,8.3l0.9-0.8L7,9.3l4-3.9l0.9,0.8L7,11z" data-icon-path="inner-path" opacity="0" style="fill:var(--rux-icon-path-2,var(--rux-icon-inner,none));opacity:1"/></symbol>
 <symbol id="i-close" viewBox="0 0 32 32"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z" style="fill:var(--rux-icon-path-1)"/></symbol>
+<symbol id="i-copy" viewBox="0 0 32 32"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z" style="fill:var(--rux-icon-path-1)"/><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2 12H14V13H2z" style="fill:var(--rux-icon-path-1)"/><path d="M2 9H14V10H2z" style="fill:var(--rux-icon-path-2)"/><path d="M2 6H14V7H2z"/><path d="M2 3H14V4H2z"/></symbol>
 <symbol id="i-user--avatar" viewBox="0 0 16 16"><path d="M8,1C4.1,1,1,4.1,1,8s3.1,7,7,7s7-3.1,7-7S11.9,1,8,1z M5,13.2v-1.5c0-0.9,0.6-1.6,1.5-1.7h3c0.9,0.1,1.5,0.8,1.5,1.7v1.5	C9.1,14.3,6.9,14.3,5,13.2L5,13.2z M12,12l0-0.8c0-0.9-1.1-2.1-2.5-2.2h-3C5.1,9.1,4,10.3,4,11.7l0,0.5v0.3c-2.5-2.2-2.7-6-0.5-8.5	s6-2.7,8.5-0.5s2.7,6,0.5,8.5c-0.1,0.2-0.3,0.3-0.5,0.5V12z" style="fill:var(--rux-icon-path-1)"/><path d="M8,3C6.6,3,5.5,4.1,5.5,5.5S6.6,8,8,8s2.5-1.1,2.5-2.5S9.4,3,8,3z M8,7C7.2,7,6.5,6.3,6.5,5.5S7.2,4,8,4s1.5,0.7,1.5,1.5	S8.8,7,8,7z" style="fill:var(--rux-icon-path-2)"/></symbol>
 <symbol id="m-close" viewBox="0 -960 960 960"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></symbol>
@@ -213,7 +214,7 @@
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="guided" hidden>
 <div class="rux--stack-vertical rux--stack-scale-6">
-<section class="ln-guided" data-task="write-the-prompt" data-title="Write the prompt" data-process="Set up a GenAI prompt" data-process-href="../follow/set-up-a-genai-prompt.html" data-next-href="../do/link-the-prompt-to-a-session.html?walk=1">
+<section class="ln-guided" data-run="set-up-a-genai-prompt" data-task="write-the-prompt" data-title="Write the prompt" data-process="Set up a GenAI prompt" data-process-href="../follow/set-up-a-genai-prompt.html" data-next-href="../do/link-the-prompt-to-a-session.html?walk=1">
 <a class="rux--link ln-back" href="../follow/set-up-a-genai-prompt.html"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Set up a GenAI prompt</a>
 <div class="rux--progress-bar rux--progress-bar--small">
   <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">Write the prompt</span></div>
@@ -227,7 +228,12 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Type your prompt's name over the one in <span class="ln-t-named">GenAI Prompt</span></h1><p class="ln-step__note">Example: <span class="ln-t-exact">stock_check</span></p></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><p>prompt name</p></div>
+    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-142">Prompt name</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-142" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="2/0" data-at="3.2" data-label="Prompt name">
+      </div></div>
+    </div></div></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">In the <span class="ln-t-named">Label</span> lookup, enter <span class="ln-t-exact">2</span> under <span class="ln-t-named">Language</span>. 2 is English</h1></div>
@@ -238,7 +244,12 @@
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Tick a label that reads as the command's name and click <span class="ln-t-press">OK</span></h1><p class="ln-step__note">Pick one no command on the screen uses. Example: Item Inventory</p></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The label's name beside its code. Two labels can share a code, so check it is the one you ticked</p><span class="ln-quiet ln-step__write">Write down</span><p>command name</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The label's name beside its code. Two labels can share a code, so check it is the one you ticked</p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-143">Command name</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-143" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="5/0" data-at="3.5" data-label="Command name">
+      </div></div>
+    </div></div></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Type your dataset name in <span class="ln-t-named">Dataset</span>, over anything it holds</h1></div>
@@ -269,6 +280,13 @@
   </li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
+  <li class="rux--accordion__item" id="your-values" hidden>
+    <button type="button" class="rux--accordion__heading" aria-expanded="false">
+      <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
+      <div class="rux--accordion__title">Your values</div>
+    </button>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p class="ln-quiet">Kept in this browser until you start a new run.</p><div class="ln-values" data-values></div><div><button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-values-clear>Start a new run</button></div></div></div>
+  </li>
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
@@ -307,6 +325,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="/account.js"></script>
 <script src="/design/js/accordion.js"></script>
+<script src="/design/js/popover.js"></script>
+<script src="/design/js/copy-button.js"></script>
 <script src="../data.js"></script>
 <script src="../app.js"></script>
 </body>

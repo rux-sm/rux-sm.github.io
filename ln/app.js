@@ -1,8 +1,8 @@
 // app.js -- the behaviour of LN Guide's pages. Each page is complete as
 // tools/build-views.mjs wrote it. This picks a task page's view and walks
 // Guided one step at a time, keeps where the reader stopped in this browser
-// and offers it back on Home, reads search.json for search.html, copies a
-// code, and reads a step aloud. For the owner, logged in, data.js adds two
+// and offers it back on Home, keeps the values a reader writes down, reads
+// search.json for search.html, and reads a step aloud. For the owner, logged in, data.js adds two
 // things from the database: a screen's or an idea's whole text, and the
 // answers given where a step is unconfirmed.
 
@@ -184,6 +184,50 @@
     apply();
   }
 
+  // ---- Guided: the values a reader writes down --------------------------------
+  // Each Write down has a box. What is typed is kept in this browser for the
+  // run, one pass through a process, and every value of the run is listed
+  // under Your values with a button that copies it, until Start a new run.
+  const WROTE = 'ln-values';
+  const wrote = () => { try { return JSON.parse(localStorage.getItem(WROTE)) ?? {}; } catch (e) { return {}; } };
+  const keep = (all) => { try { localStorage.setItem(WROTE, JSON.stringify(all)); } catch (e) { /* a private window keeps nothing */ } };
+  const values = document.querySelector('[data-values]');
+  if (guided && values) {
+    const run = guided.dataset.run, task = guided.dataset.task;
+    const boxes = [...guided.querySelectorAll('[data-write]')];
+    const order = (v) => [...v.at.split('.').map(Number), Number(v.key.split('/').at(-1))];
+    const before = (a, b) => { const x = order(a), y = order(b); for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return (x[i] || 0) - (y[i] || 0); return 0; };
+    const copy = (v, label) => `<span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="${esc(v)}" aria-label="Copy ${esc(label)}"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span>`;
+    const draw = () => {
+      const list = Object.entries(wrote()[run] ?? {}).map(([key, v]) => ({ key, ...v })).sort(before);
+      const item = values.closest('.rux--accordion__item');
+      item.hidden = !list.length;
+      item.querySelector('.rux--accordion__title').textContent = `Your values · ${list.length}`;
+      values.innerHTML = list.map((v) => `<div class="ln-values__row"><span class="ln-quiet">${esc(v.label)} · ${esc(v.at)}</span><span class="ln-copy"><code class="ln-task__code">${esc(v.v)}</code>${copy(v.v, v.label)}</span></div>`).join('');
+    };
+    const mine = wrote()[run] ?? {};
+    for (const box of boxes) box.value = mine[`${task}/${box.dataset.write}`]?.v ?? '';
+    guided.addEventListener('input', (event) => {
+      const box = event.target.closest('[data-write]');
+      if (!box) return;
+      const all = wrote(), key = `${task}/${box.dataset.write}`, v = box.value.trim();
+      all[run] ??= {};
+      if (v) all[run][key] = { label: box.dataset.label, at: box.dataset.at, v };
+      else delete all[run][key];
+      if (!Object.keys(all[run]).length) delete all[run];
+      keep(all);
+      draw();
+    });
+    guided.querySelector('[data-values-clear]').addEventListener('click', () => {
+      const all = wrote();
+      delete all[run];
+      keep(all);
+      for (const box of boxes) box.value = '';
+      draw();
+    });
+    draw();
+  }
+
   // ---- Home: offer back the place the reader stopped --------------------------
   const resume = document.querySelector('[data-resume]');
   if (resume) {
@@ -266,7 +310,6 @@
   document.addEventListener('click', (event) => {
     const el = event.target.closest('a, button');
     if (!el) return;
-    if (el.matches('[data-copy]')) return void navigator.clipboard?.writeText(el.dataset.copy);
     if (el.matches('[data-print]')) return void printPage();
     if (el.matches('[data-say]')) {
       if (el.dataset.say === 'matched') return void say('matched');

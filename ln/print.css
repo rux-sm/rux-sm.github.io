@@ -28,7 +28,7 @@ html { font-size: 10pt; }
    the procedure looks for. A step that names a section of the Reference says where it
    is, and its link opens it on the guide's page. */
 .rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
-.ln-confirm, .ln-task__code, .ln-type__name .rux--btn, .ln-proc__related,
+.ln-confirm, .ln-copy .rux--tooltip, .ln-type__name .rux--tooltip, .ln-proc__related,
 .ln-proc__next, .ln-proc__ref, .ln-proc__gaps { display: none; }
 
 /* A printed copy is handed on as the procedure, so a guide nobody has walked

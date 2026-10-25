@@ -205,25 +205,27 @@
   [data-theme="pixel-dark"] .game-keys:not(:has(> :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]) ~ :not([hidden]))) > .game-key { font-size: 16px; line-height: 24px; white-space: nowrap; }
 }
 /* The bar of places is drawn as the theme draws every edge: a 2px black
-   edge along its top in place of the quiet line, 4px of room round its
-   places and 6px between them, and the place the page is a raised key, as
-   a game key is, on the raised grey, where elsewhere it carries a line.
-   Every place keeps the raised key's padding, 4px over its icon and 10px
-   under its word, which the 6px lip takes, so nothing moves between the
-   current place and the rest. The places stand 16px in from the sides,
-   as the page's text does, so a square key keeps clear of a phone's
-   rounded corners. */
+   edge along its top in place of the quiet line, and its places as bare
+   icons over words, since a box is for a key that does something and a
+   place is somewhere to go. The place the page is stands in the brighter
+   text with a bar of two of the font's pixels under its word, 24px long,
+   where elsewhere it carries a line along its top; the rest are in the
+   quieter text. Every place keeps 4px over its icon and 10px under its
+   word, which the bar sits in, so nothing moves between the current place
+   and the rest. The places stand 16px in from the sides, as the page's
+   text does. */
 [data-theme="pixel-dark"] .game-places { gap: 6px; padding: 4px 16px calc(4px + env(safe-area-inset-bottom, 0px)); border-block-start: 2px solid #000000; }
-[data-theme="pixel-dark"] .game-place { margin: 0; padding: 4px 0 10px; border: 0; }
-[data-theme="pixel-dark"] .game-place[aria-current] {
-  color: var(--rux-text-primary);
-  background-color: var(--rux-layer-accent-01);
-  clip-path: polygon(2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px), 0 2px, 2px 2px);
-  background-image: linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000), linear-gradient(#000000, #000000);
-  background-position: 2px 2px, right 2px top 2px, left 2px bottom 2px, right 2px bottom 2px;
-  background-repeat: no-repeat;
-  background-size: 2px 2px;
-  box-shadow: inset 0 0 0 2px #000000, inset 0 -6px 0 rgba(0, 0, 0, 0.45);
+[data-theme="pixel-dark"] .game-place { position: relative; margin: 0; padding: 4px 0 10px; border: 0; }
+[data-theme="pixel-dark"] .game-place:hover { color: var(--rux-text-primary); background: none; }
+[data-theme="pixel-dark"] .game-place[aria-current] { color: var(--rux-text-primary); }
+[data-theme="pixel-dark"] .game-place[aria-current]::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 2px;
+  inset-inline-start: calc(50% - 12px);
+  inline-size: 24px;
+  block-size: 4px;
+  background: currentColor;
 }
 @media (prefers-reduced-motion: reduce) {
   [data-theme="pixel-dark"] .game-key:active:not(:disabled) { transform: none; }

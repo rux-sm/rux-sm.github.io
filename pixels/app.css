@@ -710,7 +710,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
      most under it that the puzzle's size divides. */
 .pixels-game {
   --most: 600px;
-  --chrome: 276px;
+  --chrome: 264px;
   --fewest: max(300px, var(--cols, 15) * 22px);
   --clue-least: 8px;
   --clue: clamp(var(--clue-least), round(down, min(16px, (100cqi - 4px - var(--fewest)) / var(--units, 5), (100cqi - 5px - 3px * var(--cols, 15)) / (var(--units, 5) + var(--cols, 15))) + .01px, var(--pixels-clue-step)), 16px);
@@ -727,11 +727,12 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
   touch-action: manipulation;
 }
-/* THE GAME HANGS FROM THE TOP and its keys stand at the foot: the game is
-   the window's height less the page's room above and below it,
-   `--pixels-around`, and the height to spare falls between the board and
-   Fill and X, where a thumb does not need to reach. */
-.pixels-game { --pixels-around: calc(var(--pixels-above, 2rem) + var(--game-top, 0px) + max(2rem, env(safe-area-inset-bottom, 0px))); }
+/* THE GAME HANGS FROM THE TOP and its keys stand at the foot, in Design's
+   bar along the column's foot: the game is the window's height less the
+   page's room above it and the bar's below it, `--pixels-around`, and the
+   height to spare falls between the board and Fill and X, where a thumb
+   does not need to reach. */
+.pixels-game { --pixels-around: calc(var(--pixels-above, 2rem) + var(--game-top, 0px) + 5.5rem + env(safe-area-inset-bottom, 0px)); }
 .pixels-controls { margin-block-start: auto; }
 @media (pointer: fine) { .pixels-game { --fewest: 240px; } }
 @media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) { .pixels-game { --clue-least: 12px; } }

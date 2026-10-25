@@ -20,14 +20,19 @@ What stands now:
   logo's `#f4f4f4` on a `#000000` page, with neutral greys between.
 - **Colour is a status.** The palette is vivid, and it marks success,
   warning, error, info and a tag's kind. Links, the on toggle and focus are
-  the ink; a link is underlined, except in a heading.
+  the ink; a link is underlined, except in a heading. Strong colour is for
+  small marks; a big surface takes a soft tint, as an alert does, or a deep
+  fill, as a trip not yet confirmed does, and a normal trip is grey. The
+  placeholder's gold is the one bright bar, because amber held deep turns
+  brown.
 - **Every corner is square.** Buttons, fields, tags, menus, alerts, cards,
   panels, tables and the scheduler's trip bars all have square corners. Only
   things round by shape stay round: profile pictures, radio buttons, toggles,
   a slider's thumb, and status dots and counts. A side menu's chosen row is a
   square block of the ink with black words.
-- **Figures and small labels are Plex Mono.** A field's label is small
-  capitals; text LN or an app prints on screen is shown exactly, in mono.
+- **Figures are Plex Mono, words are Plex Sans.** A number, a code and text
+  LN or an app prints on screen are shown exactly, in mono; a field's label
+  and a tag's word are in the sans, in sentence case.
 
 What it is made of:
 

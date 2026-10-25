@@ -141,3 +141,8 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 /* A step and its screenshot stay on one page, so a picture never opens a page
    under a header row with no step beside it. */
 .ln-proc__steps tr:has(+ .ln-proc__shot:not([hidden])) { break-after: avoid; }
+
+/* Variations and Screens used head their table's title row instead of a
+   heading, so a page they continue on repeats their name, set as a heading. */
+.ln-proc__h2--sect { display: none; }
+.ln-proc__sect .ln-proc__table-title th { padding: .5rem 0 .5rem; border-block-start: 2px solid var(--rux-text-primary); font-size: 15pt; font-weight: 400; }

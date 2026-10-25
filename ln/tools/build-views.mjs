@@ -672,8 +672,8 @@ ${docH2('procedure', 'Procedure')}
 ${procedure}
 </section>${variants.length ? `
 <section>
-${docH2('cases', 'Variations')}
-${docTable([['Case', '30%'], ['What changes']], variants)}
+${docH2('cases', 'Variations', 'ln-proc__h2--sect')}
+${docTable([['Case', '30%'], ['What changes']], variants, 'ln-proc__sect', 'Variations')}
 </section>` : ''}${next.length ? `
 <section class="ln-proc__next">
 ${docH2('next', 'What comes next')}
@@ -682,7 +682,7 @@ ${docTable(next[0].cells.length === 3 ? [['When', '28%'], ['Then'], ['Start at',
 ${reference}
 ${gapsSection()}
 <section class="ln-proc__screens">
-${docH2('screens', 'Screens used')}
+${docH2('screens', 'Screens used', 'ln-proc__h2--sect')}
 ${screensTable(ts)}
 </section>
 ${checkSection(ts.map((t) => [K.get(t.id), t.achieves ? docText(t.achieves.tokens, t) : '']))}
@@ -800,7 +800,10 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 <tr class="ln-proc__shot" hidden><td></td><td colspan="${cols.length - 1}">${r.shot}</td></tr>` : ''}`).join('')}
 </tbody>
 </table></div>`;
-const docH2 = (id, title) => `<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="${id}">${esc(title)}</h2>`;
+// A section whose table may run onto another page names itself in the
+// table's own title row on paper, so each page it continues on says what it
+// is; the screen keeps the heading, and paper the title row.
+const docH2 = (id, title, cls = '') => `<h2 class="rux--type-productive-heading-04 ln-proc__h2${cls ? ` ${cls}` : ''}" id="${id}">${esc(title)}</h2>`;
 const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
 // Paper opens with the Rux mark and LN Notes, the kind of document, its
 // version, module and product, and lines to write the client and Prepared by
@@ -883,7 +886,7 @@ function valuesTable(rows, owner) {
 function screensTable(ts) {
   const codes = [...new Set(ts.flatMap((t) => [...codesOf(t)]))].filter((c) => cards.has(c));
   const how = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r) : esc(cap(r ?? '—'));
-  return docTable([['Screen', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })));
+  return docTable([['Screen', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })), 'ln-proc__sect', 'Screens used');
 }
 const gapsSection = () => doc.gaps.length ? `<section class="ln-proc__gaps">
 ${docH2('gaps', 'Known gaps')}
@@ -964,12 +967,12 @@ ${docH2('wrong', 'If something goes wrong')}
 ${wrongHtml}
 </section>` : ''}${caseRows.length ? `
 <section>
-${docH2('cases', 'Variations')}
-${docTable([['Case', '30%'], ['What changes']], caseRows)}
+${docH2('cases', 'Variations', 'ln-proc__h2--sect')}
+${docTable([['Case', '30%'], ['What changes']], caseRows, 'ln-proc__sect', 'Variations')}
 </section>` : ''}
 ${gapsSection()}
 <section class="ln-proc__screens">
-${docH2('screens', 'Screens used')}
+${docH2('screens', 'Screens used', 'ln-proc__h2--sect')}
 ${screensTable([t])}
 </section>
 <section class="ln-proc__related">

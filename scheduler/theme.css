@@ -395,7 +395,7 @@
     border-radius: 6px;
   }
   [data-theme="rux-dark"] .scheduler-viewer .scheduler-viewer__pick {
-    border-radius: 4px;
+    border-radius: 0;
   }
   :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
     margin-inline-start: calc(var(--scheduler-head-inset) - var(--rux-spacing-05));
@@ -404,13 +404,13 @@
     border-radius: 6px;
   }
   [data-theme="rux-dark"] .scheduler-viewer .rux--side-panel .rux--btn.rux--side-panel__navigation-back-button {
-    border-radius: 4px;
+    border-radius: 0;
   }
   :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
     border-radius: 6px;
   }
   [data-theme="rux-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) :is(.rux--btn, .scheduler-weekbtn) {
-    border-radius: 4px;
+    border-radius: 0;
   }
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
@@ -470,7 +470,7 @@
     border-radius: 6px;
   }
   [data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel .rux--btn--md.rux--side-panel__close-button {
-    border-radius: 4px;
+    border-radius: 0;
   }
   /* apple-light's are capsules, as every button beside them in a head is:
      Design keeps a panel's close and back buttons out of its capsule rule
@@ -915,26 +915,14 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-panel.rux--side-panel--left-placement {
   border-inline-end: 1px solid var(--rux-border-subtle-01);
 }
-/* rux-dark rounds only a placed panel's inner top corner (Design's
-   rux-overrides.css), since one stands on the window's edge and foot. The
-   document viewer is placed left for Carbon's sake but stands in the page
-   with the board around it, as the trip editor does, so it keeps the
-   theme's four corners as the editor does. */
-[data-theme="rux-dark"] .scheduler-page .rux--side-panel.rux--side-panel--left-placement {
-  border-radius: var(--scheduler-surface-radius);
-}
-
 /* The rounded themes round this app's own shapes to match Design's: 6px on a
    trip bar, like a button, 12px on the week, the largest box on the page, and 4px on a bar's
    marks, like a tag. Ant Design Pro and Geist were both measured at those
-   three, which is why one block serves both. rux-dark takes Design's steps
-   instead: 4px on a bar and a mark, which are controls, and a square week,
-   because Design squares its cards and panels, so its last row keeps its
-   rule. Every other theme leaves them square, as Carbon draws
-   them. */
+   three, which is why one block serves both. Every other theme leaves them
+   square, as Carbon draws them, rux-dark among them, as Design squares every
+   corner in that theme. */
 [data-theme="ant-dark"],
 [data-theme="geist-dark"],
-[data-theme="rux-dark"],
 [data-theme^="apple-"] {
   --scheduler-bar-radius: 6px;
   --scheduler-surface-radius: 12px;
@@ -947,22 +935,18 @@
      keeps its rule, by `.scheduler-week--short` in app.css. */
   --scheduler-last-rule: 0;
 }
-[data-theme="rux-dark"] {
-  --scheduler-bar-radius: 4px;
-  --scheduler-surface-radius: 0;
-  --scheduler-mark-radius: 4px;
-  --scheduler-tile-radius: 0;
-  --scheduler-last-rule: initial;
+/* rux-dark squares this app's pills too: a bar's Complete, Paid, kind and
+   Live labels, an update's hover, a carried name, a Departures need and the
+   live meters. A dot, a ring and a numbered or counting badge stay round. */
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-bar__done, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-road__bars > i, .scheduler-road__meter, .scheduler-crew__left) {
+  border-radius: 0;
 }
 
 /* AN UPDATE'S HOVER IS A TILE OF THE THEME'S SMALL CORNER, as a row of
-   Geist's own Menu is and Design's menus are in this theme: 6px in
-   geist-dark, and 4px in rux-dark, which runs parallel to its 8px surface. */
+   Geist's own Menu is: 6px in geist-dark. rux-dark's is square, as its
+   menus' rows are. */
 [data-theme="geist-dark"] {
   --scheduler-shortcut-radius: 6px;
-}
-[data-theme="rux-dark"] {
-  --scheduler-shortcut-radius: 4px;
 }
 
 /* CALL, TEXT AND MAP WEAR THE SECONDARY BUTTON'S COLOURS (app.css), and three
@@ -979,7 +963,7 @@
 }
 :is([data-theme="geist-dark"], [data-theme="ant-dark"]) .scheduler-call-button { border-radius: 6px; }
 [data-theme="rux-dark"] .scheduler-call-button {
-  border-radius: 4px;
+  border-radius: 0;
 }
 [data-theme^="apple-"] .scheduler-call-button { border-radius: 10px; }
 
@@ -1028,7 +1012,7 @@
 }
 [data-theme="rux-dark"] .scheduler-contacts__menu .rux--overflow-menu {
   border: 1px solid var(--rux-border-subtle-02);
-  border-radius: 4px;
+  border-radius: 0;
   block-size: 2.25rem;
   inline-size: 2.25rem;
   min-block-size: 2.25rem;
@@ -1039,7 +1023,7 @@
 /* On a phone a panel's head buttons are Carbon's squares against the
    corner, in rux-dark too. Design stands that theme's close button 12px
    clear at 32px and rings it, so here it is put back beside the squares it
-   sits with: in the corner, their size, the corner's curve, no ring. */
+   sits with: in the corner, their size, square, no ring. */
 @media (max-width: 41.98rem) {
   [data-theme="rux-dark"] .scheduler-page .rux--side-panel .rux--side-panel__decorator-and-close {
     inset-block-start: 0;
@@ -1047,7 +1031,6 @@
   }
   [data-theme="rux-dark"] .scheduler-page .rux--side-panel .rux--btn.rux--side-panel__close-button {
     border-radius: 0;
-    border-start-end-radius: 8px;
     block-size: var(--rux-layout-size-height-lg);
     inline-size: var(--rux-layout-size-height-lg);
   }
@@ -1071,15 +1054,16 @@
   gap: var(--rux-spacing-03);
 }
 
-/* RUX-DARK MARKS TODAY IN ITS OWN INK, not in a colour: blue is a trip here,
-   red time off and amber an alert, so today's date sits in a pill of the
-   primary text with the page's black on it, as a primary button does, its
-   weekday staying grey, and the roster's letter in a disc of the same. Its
-   column keeps its day's stripe, so the pattern runs unbroken through it. */
+/* RUX-DARK MARKS TODAY IN ITS OWN INK, not in a colour: colour is a trip's
+   status here, red time off and amber an alert, so today's date sits in a
+   block of the primary text with the page's black on it, as a primary button
+   does, its weekday staying grey, and the roster's letter in a square of the
+   same. Its column keeps its day's stripe, so the pattern runs unbroken
+   through it. */
 [data-theme="rux-dark"] .scheduler-day--today { color: var(--rux-text-secondary); }
 [data-theme="rux-dark"] .scheduler-day--today .scheduler-day__num {
   padding-inline: var(--rux-spacing-03);
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--rux-text-primary);
   color: var(--rux-background);
   line-height: 1.5rem;
@@ -1094,7 +1078,7 @@
   place-items: center;
   inline-size: 1.375rem;
   block-size: 1.375rem;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--rux-text-primary);
   line-height: 1;
 }

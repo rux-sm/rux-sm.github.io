@@ -432,12 +432,14 @@
      numbers move one way each and stay in view.
 
      app.css sizes it. The board is told how wide its widest row's numbers
-     are, as `--units`, in ems, a digit being .75, or .625 for a 1, and the
-     gap between two numbers .25, as Silkscreen draws them, and how many its
+     are, as `--units`, in ems, a digit being .75, or .625 for a 1, a number
+     of two digits .125 less, its digits drawn a pixel closer, and the gap
+     between two numbers .5, as Silkscreen draws them, and how many its
      longest column has, as `--count`, and app.css draws every number at the
      one size that fits both, and gives the game's numbers just that room. A
-     column's number of two digits is marked `is-wide`, since a narrow
-     square holds it only a size smaller. */
+     number of two digits is marked `is-wide`: in a row its digits close up,
+     so it reads as one number and not two, and in a column a narrow square
+     holds it only a size smaller. */
   const board = (host, answer, state, options = {}) => {
     const H = answer.length, W = answer[0].length;
     const part = (name, parent) => {
@@ -461,12 +463,12 @@
     let units = 0, count = 0;
     const numbers = (target, line, across) => {
       const runs = runsOf(line), all = clues(line);
-      if (across) units = Math.max(units, [...all.join('')].reduce((u, d) => u + (d === '1' ? .625 : .75), 0) + (all.length - 1) * .25);
+      if (across) units = Math.max(units, [...all.join('')].reduce((u, d) => u + (d === '1' ? .625 : .75), 0) - all.filter(n => n > 9).length * .125 + (all.length - 1) * .5);
       else count = Math.max(count, all.length);
       all.forEach((n, i) => {
         const span = document.createElement('span');
         span.textContent = n;
-        if (!across && n > 9) span.className = 'is-wide';
+        if (n > 9) span.className = 'is-wide';
         if (runs[i]) [span.dataset.from, span.dataset.length] = runs[i];
         target.appendChild(span);
       });

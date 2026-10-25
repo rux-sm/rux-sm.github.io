@@ -36,24 +36,23 @@ puzzle, a friend's time to beat.
   now has for a player who has found everything.
 - **How to play is three steps, each a sentence and a tiny board to try,**
   and its words say fill and cross out, not strike and guard.
-- **Goals are worked out from what the database already keeps** where they
-  can be: days in a row, sprites found, a best time. A goal that needs
-  something new stored waits on its question.
+- **Me shows two goals first: a rift cleared and a solve with no
+  mistakes.** A rift cleared is worked out from the results already kept;
+  no mistakes needs the mistakes kept with each result, a database change
+  applied as its own migration.
 - **Once today's puzzle is solved, its tile counts down to tomorrow's,** and
   shows the days in a row.
+- **The front page says when a friend beats your best time on a puzzle,**
+  from a new database function returning friends' recent bests, applied as
+  its own migration and given to the player's key alone.
+- **An iPhone shows the logo's star on the page's colour while Pixels
+  opens.**
+- **How to play's board to try replaces the lesson puzzle,** so there is one
+  way to learn.
 
 ## Questions
 
-- Which goals first? Seven days in a row, a rift cleared, a 10×10 under two
-  minutes and a solve with no mistakes are the candidates; no mistakes
-  needs the mistakes kept with each result, a database change.
-- May the front page show a friend's new best time over yours ("Mex beat
-  your time on Mona Lisa")? It needs a database function that returns
-  friends' recent bests, applied as its own migration.
-- Who draws the launch picture an iPhone shows while Pixels opens: rux in
-  Curve, or the logo star on the page's colour?
-- Does How to play's tiny board replace the lesson puzzle, or stand beside
-  it?
+None open.
 
 ## Tasks
 
@@ -68,8 +67,11 @@ puzzle, a friend's time to beat.
 - [ ] Turn the maker's toolbar into a bar like the game's.
 - [ ] Give Friends, a rift with nothing found and a player with no mana an
   empty state each.
-- [ ] Rewrite How to play as three steps with a board to try.
+- [ ] Rewrite How to play as three steps with a board to try, and retire the
+  lesson puzzle for it.
 - [ ] Count down to tomorrow's puzzle on the Today tile once it is solved.
-- [ ] Draw the goals answered in Questions on Me.
-- [ ] Add the launch picture for an iPhone.
-- [ ] Show a friend's new best on the front page, if Questions says yes.
+- [ ] Keep the mistakes with each result, as a migration shown first.
+- [ ] Draw the two goals on Me: a rift cleared and no mistakes.
+- [ ] Add the logo star launch picture for an iPhone.
+- [ ] Write the friends' bests function, as a migration shown first, and
+  show a friend's new best on the front page.

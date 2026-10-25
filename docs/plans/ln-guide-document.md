@@ -82,25 +82,31 @@ And a team, after log-in, sees what the public page cannot carry.
 - **The site stays public, and the team reads more after log-in.** GitHub Pages
   serves every committed file to anyone, so a log-in on the page hides nothing;
   what only the team sees is read from the database under row security, as the
-  owner's private detail is now. An LN reader is an account given LN Guide, as
-  Sevens and Coins give one app.
+  owner's private detail is now.
 
-- **The team sees one screenshot per task and a screen's whole field
-  reference**, redacted in atlas before it leaves, sent by atlas's sync to a
-  private bucket, and drawn by the page after log-in. Text stays the step,
-  because a screenshot goes stale and the reader reads words first.
+- **The team is every account that can open LN Guide**, the same access the
+  switcher gives, so its rules ask the app check Sevens' tables ask for
+  Sevens. rux, as the environment's user, allows them to see captures of LN.
+
+- **The team sees one screenshot per task**, cropped and redacted in atlas,
+  sent by atlas's sync to a private Supabase bucket, and drawn by the page
+  after log-in through links signed for a few minutes, as the scheduler's
+  documents are. A logged-out visitor sees the page without them. Text stays
+  the step, because a screenshot goes stale and the reader reads words first.
+
+- **Paper carries the screenshots.** Print's copy of the page is logged in
+  too, so it fetches them, and it waits until every picture has loaded before
+  the print dialog opens, so none prints blank.
+
+- **A screen's whole field reference stays the owner's**, because it rests on
+  Infor's help, which the permission given covers only for captures of LN.
 
 - **The team's screenshots and real test records follow
   [the standard](../../ln/docs/document-standard.md).**
 
 ## Questions
 
-- Who is the team, and do Infor's licence and the environment's owner allow
-  captures of LN and Infor's help to be shown to them?
-- What must a screenshot hide before it leaves atlas: user names, the company
-  number, partner names, order numbers, anything else?
-- Does a Document printed by a team member carry the screenshots, or do they
-  stay on screen?
+- None open.
 
 ## Tasks
 
@@ -110,7 +116,12 @@ And a team, after log-in, sees what the public page cannot carry.
       and reference documents, published as idea pages and a reference sheet.
 - [ ] In atlas, send a callout as a block and a step's parts as fields under
       a new contract, and remove the build's pattern matching for them.
-- [ ] Once the questions are answered, add the LN reader access, its row
-      security and a screenshot bucket as a migration, and have atlas's sync
-      send redacted screenshots and each walk's real records that Guided and
-      the Document draw after log-in.
+- [ ] In the database, add a private screenshot bucket readable by every
+      account that can open LN Guide, as a migration shown to rux first.
+- [ ] In atlas, record each task's screenshot, its step and its caption, and
+      have the sync crop, redact and upload it, starting with Ship from stock's
+      seven from its walk of 2026-10-24.
+- [ ] In LN Guide, draw each task's screenshot under its step after log-in, in
+      Guided and the Document, and make Print wait for them.
+- [ ] Send each walk's real records, the customer, item and warehouse, to the
+      same readers, and show them beside the example values.

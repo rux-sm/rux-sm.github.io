@@ -925,10 +925,11 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
    is. `--chrome` is the height everything but the board takes, so the board
    takes what the window leaves and the whole maker is in view without
    scrolling. The inks stand under the board and are as wide as it is, so
-   their height grows with it, five elevenths of its width: `--side` is
-   what is left of the window's height after the header and the 277px the
-   head, the line under the board and the toolbar's two lines take, shared
-   eleven parts to the board and five to the inks.
+   their height grows with it, five twelfths of its width: `--side` is
+   what is left of the window's height after the header, the phone's home
+   bar and the 216px the page's top, the head, the line under the board and
+   the toolbar's two lines take, shared twelve parts to the board and five
+   to the inks.
    ITS BOARD HAS ONE FOOTPRINT, whatever its size, so a new size does not
    move the page: `--side` is taken down to a multiple of `--step`, 30px,
    which fives, tens and fifteens all divide, or 20px for a board of twenty,
@@ -947,7 +948,7 @@ html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-u
   inline-size: var(--foot);
   margin-inline-start: round(down, calc((100cqi - var(--foot)) / 2), 1px);
 }
-.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - var(--pixels-head, 0px) - 277px) * 11 / 16 - var(--pixels-corner)), var(--most)), var(--step)); }
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi - var(--pixels-corner), (100dvh - var(--pixels-head, 0px) - env(safe-area-inset-bottom, 0px) - 216px) * 12 / 17 - var(--pixels-corner)), var(--most)), var(--step)); }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem; gap: .5rem; }

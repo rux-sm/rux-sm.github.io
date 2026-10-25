@@ -50,6 +50,7 @@
 <symbol id="m-pause_circle-fill" viewBox="0 -960 960 960"><path d="M370-320h60v-320h-60v320Zm160 0h60v-320h-60v320ZM480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-156t86-127Q252-817 325-848.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 82-31.5 155T763-197.5q-54 54.5-127 86T480-80Z"/></symbol>
 <symbol id="m-redo" viewBox="0 -960 960 960"><path d="M392-200q-95 0-163.5-64T160-422q0-94 68.5-158T392-644h294L572-758l42-42 186 186-186 186-42-42 114-114H391q-70 0-120.5 46.5T220-422q0 69 50.5 115.5T391-260h310v60H392Z"/></symbol>
 <symbol id="m-undo" viewBox="0 -960 960 960"><path d="M259-200v-60h310q70 0 120.5-46.5T740-422q0-69-50.5-115.5T569-584H274l114 114-42 42-186-186 186-186 42 42-114 114h294q95 0 163.5 64T800-422q0 94-68.5 158T568-200H259Z"/></symbol>
+<symbol id="m-upload" viewBox="0 -960 960 960"><path d="M450-313v-371L330-564l-43-43 193-193 193 193-43 43-120-120v371h-60ZM160-160v-203h60v143h520v-143h60v203H160Z"/></symbol>
 </svg>
 <!-- SPRITE:END -->
 
@@ -184,18 +185,20 @@
             <button type="button" class="game-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
           </div>
         </div>
-        <!-- Shown under the finished picture, which is the board itself. play.js puts the puzzle's rift between the time and the keys, in place of the way out. -->
+        <!-- Shown under the finished picture, which is the board itself. play.js puts the puzzle's rift under the time. -->
         <div class="game-finish pixels-solved" id="pixels-solved" hidden>
           <div>
             <h1 class="rux--type-productive-heading-04" id="pixels-solved-name"></h1>
             <span class="pixels-clock game-finish-score" id="pixels-solved-clock"></span>
+            <!-- Shown by play.js where this time beats the one kept. -->
+            <span class="rux--tag rux--layout--size-sm rux--tag--sm rux--tag--green pixels-best" id="pixels-best" hidden>New best</span>
             <p class="pixels-meta" id="pixels-solved-time"></p>
-            <!-- The finished picture as an image, through the phone's share sheet. play.js draws it. -->
-            <button type="button" class="rux--btn rux--btn--tertiary pixels-share" id="pixels-share">Share picture</button>
           </div>
-          <div class="game-finish-actions">
-            <a class="rux--btn rux--btn--primary" id="pixels-next" href="./">Next puzzle</a>
-            <a class="rux--btn rux--btn--ghost" id="pixels-out" href="./">Play</a>
+          <!-- The way on, in Design's bar along the foot where the game's keys stood: back, the finished picture through the phone's share sheet, and the next puzzle, which play.js leaves out where there is none. -->
+          <div class="game-keys game-keys--bar">
+            <a class="game-key" id="pixels-out" href="./"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Exit</a>
+            <button type="button" class="game-key" id="pixels-share"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-upload"/></svg>Share</button>
+            <a class="game-key" id="pixels-next" href="./"><svg class="pixels-key-icon pixels-key-icon--on" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Next</a>
           </div>
         </div>
       </div>

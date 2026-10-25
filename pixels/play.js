@@ -68,7 +68,8 @@
    EXIT, from the Back key and from Pause, goes back where the player came
    from in this tab, or to the puzzle's category where there is no such
    page. Once it is solved, the category's own tile stands under the time
-   with the sprite counted and goes to the category. Next is the next unsolved puzzle of that category, then the first
+   with the sprite counted and goes to the category, and the bar along the
+   foot holds Exit, Share and Next. Next is the next unsolved puzzle of that category, then the first
    unsolved of the category after it, and so round to the first, passing by
    a rift that is still locked and a boss still held back. A boss held
    back, by app.js's `holds`, is not played by its address either.
@@ -85,7 +86,7 @@
    in red and costs nothing, and the finish says Relaxed. Its time is kept
    only where none was, so it never replaces one played with hearts.
 
-   SHARE PICTURE, on the finish, draws the finished picture large on a card
+   SHARE, in the finish's bar, draws the finished picture large on a card
    with its name, its time and Pixels, as a PNG, and hands it to the phone's
    share sheet, or saves it as a file where there is none.
 
@@ -200,7 +201,6 @@
     })();
     const back = isLesson ? './' : cameFrom || (trial ? 'create.html?view=game' : home ? where(home) : './');
     $('pixels-back').href = $('pixels-out').href = $('pixels-exit').href = back;
-    if (trial && !isLesson) $('pixels-out').textContent = 'Create';
     // What a result is kept under: the day, or the puzzle's id.
     const key = isDaily ? puzzle.day : puzzle.id;
     // A name stays hidden until its puzzle is solved; the day's shows its
@@ -380,7 +380,7 @@
       else if (isLesson) parts.push('lesson done');
       else if (trial) parts.push('a trial, not kept');
       else if (!best.isNew) parts.push(`best ${time(best.best)}`);
-      else if (results.has(key)) parts.push('a new best');
+      else if (results.has(key)) $('pixels-best').hidden = false;
       if (isDaily && !lost) {
         const row = streak(new Set([...results.keys(), key]));
         parts.push(`${row} day${row === 1 ? '' : 's'} in a row`);
@@ -437,12 +437,9 @@
         const list = document.createElement('div');
         list.className = 'game-tiles';
         list.append(rift, ...opened.map(c => riftTile(c, known, { tag: 'Opened' })));
-        $('pixels-out').remove();
-        const keys = $('pixels-solved').querySelector('.game-finish-actions');
-        keys.before(list);
-        if (!keys.childElementCount) keys.remove();
+        $('pixels-solved').firstElementChild.after(list);
         if (first) arrive(key);
-        if (first && !still) turn(rift.querySelector('.pixels-rift-art > .pixels-picture'), 500);
+        if (first && !still) landing = () => fly(rift, found, all);
       }
       // The numbers and the controls leave, and the picture slides from
       // where the board had it to the middle.
@@ -455,7 +452,44 @@
       if (!still) el.animate([
         { transformOrigin: '0 0', transform: `translate(${from.x - to.x}px, ${from.y - to.y}px) scale(${from.width / to.width})` },
         { transformOrigin: '0 0', transform: 'none' },
-      ], { duration: 400, easing: 'ease-out' });
+      ], { duration: 400, easing: 'ease-out' }).finished.then(() => landing?.());
+    };
+
+    /* THE SPRITE FLIES HOME. Once the picture has slid to the middle, a copy
+       of it shrinks along a curve into its rift's tile, where the tile's own
+       picture waits hidden; it lands, the tile's picture pops, and the count
+       ticks from the sprites found before to the sprites found now, with a
+       +1 beside it, and the bar grows to match. With motion turned down
+       none of it runs and the tile shows the count as it is. */
+    let landing = null;
+    const fly = (rift, found, all) => {
+      const spot = rift.querySelector('.pixels-rift-art'), count = rift.querySelector('.pixels-rift-count'), fill = rift.querySelector('.rux--progress-bar__bar');
+      const was = count.firstChild, tick = was?.nodeType === 3 ? was : null;
+      if (tick) tick.textContent = `${found - 1}/${all}`;
+      if (fill) fill.style.transform = `scaleX(${(found - 1) / all})`;
+      spot.style.visibility = 'hidden';
+      const from = el.querySelector('.pixels-squares').getBoundingClientRect(), to = spot.getBoundingClientRect();
+      const copy = art(puzzle, true);
+      copy.classList.add('pixels-flying');
+      Object.assign(copy.style, { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px` });
+      document.body.append(copy);
+      const dx = to.left - from.left, dy = to.top - from.top, k = to.width / from.width;
+      copy.animate([
+        { transform: 'none' },
+        { transform: `translate(${dx * .35}px, ${dy * .2}px) scale(${(1 + k) / 2})`, offset: .4 },
+        { transform: `translate(${dx}px, ${dy}px) scale(${k})` },
+      ], { duration: 700, delay: 250, easing: 'ease-in', fill: 'forwards' }).finished.then(() => {
+        copy.remove();
+        spot.style.visibility = '';
+        spot.animate([{ transform: 'scale(1.25)' }, { transform: 'none' }], { duration: 300, easing: 'ease-out' });
+        if (tick) tick.textContent = `${found}/${all}`;
+        const plus = document.createElement('span');
+        plus.className = 'pixels-plus';
+        plus.textContent = '+1';
+        count.prepend(plus);
+        if (fill) fill.style.transform = `scaleX(${found / all})`;
+        buzz(20);
+      });
     };
 
     /* THE SHARED CARD: 600 by 720, the page's dark, the picture at a whole

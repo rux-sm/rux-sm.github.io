@@ -57,10 +57,10 @@ and a tap that was only a mistake is no move to take back. Pause, P or Escape, o
 the clock under a cover with Resume, Restart and Exit, which goes where the player came from; Restart
 empties the board, and Undo straight after brings it back. The picture so far stands beside the clock.
 When the picture is complete the squares fill in as the picture, in its colours if it has them, and its
-name shows with the time, the mistakes, the hints and Share picture. Under them the rift's tile counts
-the sprite, says +1 mana where the find earned one and +3 fairies where it cleared the rift, and opens
-the rift; a rift the sprite opened stands under it, saying Opened. Next goes to that rift's next unsolved
-puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
+name shows with the time, New best where it beats the one kept, the mistakes and the hints. A first find
+flies into the rift's tile under them, whose count ticks up with +1, +1 mana or +3 fairies where earned;
+a rift it opened stands under it, saying Opened. The bar holds Exit, Share and Next, which goes to that
+rift's next unsolved puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
 numbers, filling and crossing out, and what a mistake costs. It opens from Me's list and the button under
 Start, and the clock stands meanwhile. A player who has solved none is sent once to `play.html?lesson`, a
 5×5 heart taught a line at a time. Each move plays a tone and a phone ticks on each fill. A game in

@@ -379,6 +379,15 @@
 .pixels-rift-line { display: flex; flex: 1; align-items: center; gap: .5rem; min-inline-size: 0; color: var(--rux-text-secondary); }
 .pixels-rift-count { display: flex; flex: none; align-items: center; gap: 6px; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 .pixels-rift.is-cleared .pixels-rift-count { color: var(--rux-support-caution-minor); }
+/* THE FINISH. New best stands on its own line under the time; the sprite
+   flying home is drawn over the page at the board's size and play.js moves
+   it; the +1 it brings stands before the rift's count. */
+.pixels-best { margin-block-start: .5rem; }
+.pixels-best[hidden] { display: none; }
+.pixels-flying { position: fixed; z-index: 5; margin: 0; transform-origin: 0 0; image-rendering: pixelated; box-shadow: 0 0 1.5rem .25rem var(--rux-support-caution-major); pointer-events: none; }
+.pixels-plus { color: var(--rux-support-success); }
+/* Next's arrow is Exit's turned round, so the two are one drawing. */
+.pixels-key-icon--on { transform: scaleX(-1); }
 .pixels-star { flex: none; inline-size: 16px; block-size: 16px; background: currentColor; -webkit-mask: url(brand/icon.svg) center / 16px no-repeat; mask: url(brand/icon.svg) center / 16px no-repeat; }
 .pixels-rift .game-tile-head > .pixels-icon { flex: none; color: var(--rux-text-secondary); }
 .pixels-tabs[hidden] { display: none; }

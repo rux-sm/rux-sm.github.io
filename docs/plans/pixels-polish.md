@@ -16,11 +16,6 @@ puzzle, a friend's time to beat.
 
 - **Each task is its own change, shown as options in the real page before
   it is built,** and checked in the iOS simulator from the home-screen icon.
-- **The finish builds on what is there,** the picture filling in, the
-  rift's tile with the sprite turning in, Share picture: it adds a count
-  that ticks up on the rift, a New best that stands out from the line of
-  words, and confetti of the picture's own colours, only where motion is
-  allowed.
 - **No page draws in two steps.** A page holds its shape with placeholder
   tiles of the right size while its data loads, and a page change fades in
   where the browser can.
@@ -56,8 +51,6 @@ None open.
 
 ## Tasks
 
-- [ ] Show the finish's options: the ticking count, a New best mark, and the
-  picture's confetti; build the one chosen.
 - [ ] Hold every page's shape while it loads: placeholder tiles on Play, a
   rift, Create and Me, and Me's numbers drawn with the page.
 - [ ] Answer a touch on the board as the finger lands, and stop the board

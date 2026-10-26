@@ -1972,7 +1972,8 @@ button.scheduler-row-head__num::after {
    edge of the bus column, where a bar starting on the week's first day has
    its words, so a trip whose
    first day has scrolled out of sight still says what it is; the bar holds
-   them, so they stop at its end. */
+   them, so they stop at its end. The update row alone runs on to the bar's
+   end, since its words are the ones a day's width cuts short. */
 .scheduler-bar {
   --scheduler-live-day: calc((100% + 2 * var(--rux-spacing-02) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
@@ -1982,6 +1983,7 @@ button.scheduler-row-head__num::after {
   inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--rux-spacing-02));
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
 }
+.scheduler-bar > .scheduler-bar__update { max-inline-size: none; }
 .scheduler-bar--road > :is(.scheduler-bar__row, .scheduler-road__card) {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }

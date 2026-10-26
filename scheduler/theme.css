@@ -147,12 +147,13 @@
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
-/* rux-dark's standard trip is a raised grey, layer-03, a solid tile on the
-   board's page colour with no edge, as LN Notes' tiles are, so colour on its
+/* rux-dark's standard trip is a raised grey, layer-02, a solid tile on the
+   board's page colour with no edge, the fill LN Notes' tiles and the panels'
+   tiles take, so a tile is one grey wherever it stands, and colour on its
    board marks only a trip that is not confirmed or one someone gave a
    colour, and any edge a bar wears means something. */
 [data-theme="rux-dark"] .scheduler-bar--blue {
-  --scheduler-bg: var(--rux-layer-03);
+  --scheduler-bg: var(--rux-layer-02);
   --scheduler-fg: var(--rux-text-primary);
   --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-border: var(--rux-border-subtle-01);
@@ -350,9 +351,9 @@
 /* RUX-DARK'S BOARD IS THE PAGE, as GitHub's panes are: the schedule, the
    roster, the panes, the trip editor and the document panel all take the
    page's colour, parted only by their lines, and everything raised inside them
-   stands one layer lower than Carbon puts it, so a tile is layer-01 and its
-   fields field-02 where Carbon would give layer-02 and field-03. The card that
-   opens over a trip keeps the raised surface, which parts it from the board. */
+   stands where Carbon puts it on the page, so a tile is layer-02, as a trip
+   bar and LN Notes' tiles are, and its fields field-03. The card that opens
+   over a trip keeps the raised surface, which parts it from the board. */
 [data-theme="rux-dark"] .scheduler-frame {
   --rux-layer: var(--rux-background);
   --scheduler-band-surface: var(--rux-background);
@@ -373,53 +374,9 @@
 [data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel :is(.rux--side-panel__header, .rux--side-panel__title, .rux--side-panel__subtitle-text, .rux--side-panel__action-toolbar, .rux--side-panel__actions-container) {
   background-color: var(--rux-layer);
 }
-[data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--layer-two {
-  --rux-layer: var(--rux-layer-01);
-  --rux-layer-active: var(--rux-layer-active-01);
-  --rux-layer-background: var(--rux-layer-background-01);
-  --rux-layer-hover: var(--rux-layer-hover-01);
-  --rux-layer-selected: var(--rux-layer-selected-01);
-  --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
-  --rux-layer-accent: var(--rux-layer-accent-01);
-  --rux-layer-accent-hover: var(--rux-layer-accent-hover-01);
-  --rux-layer-accent-active: var(--rux-layer-accent-active-01);
-  --rux-field: var(--rux-field-01);
-  --rux-field-hover: var(--rux-field-hover-01);
-  --rux-border-subtle: var(--rux-border-subtle-00);
-  --rux-border-subtle-selected: var(--rux-border-subtle-selected-01);
-  --rux-border-strong: var(--rux-border-strong-01);
-  --rux-border-tile: var(--rux-border-tile-01);
-}
-[data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--layer-three {
-  --rux-layer: var(--rux-layer-02);
-  --rux-layer-active: var(--rux-layer-active-02);
-  --rux-layer-background: var(--rux-layer-background-02);
-  --rux-layer-hover: var(--rux-layer-hover-02);
-  --rux-layer-selected: var(--rux-layer-selected-02);
-  --rux-layer-selected-hover: var(--rux-layer-selected-hover-02);
-  --rux-layer-accent: var(--rux-layer-accent-02);
-  --rux-layer-accent-hover: var(--rux-layer-accent-hover-02);
-  --rux-layer-accent-active: var(--rux-layer-accent-active-02);
-  --rux-field: var(--rux-field-02);
-  --rux-field-hover: var(--rux-field-hover-02);
-  --rux-border-subtle: var(--rux-border-subtle-01);
-  --rux-border-subtle-selected: var(--rux-border-subtle-selected-02);
-  --rux-border-strong: var(--rux-border-strong-02);
-  --rux-border-tile: var(--rux-border-tile-02);
-}
 /* The Forms list is print.html framed in the document panel, its own page, so
-   it takes the panel's page colour and its tiles step down the same layer. */
+   it takes the panel's page colour, and its tiles stand on it as the panel's. */
 [data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print { background: var(--rux-background); }
-[data-theme="rux-dark"]:not([data-rux-standalone]) #scheduler-print-hub.rux--layer-two {
-  --rux-layer: var(--rux-layer-01);
-  --rux-layer-hover: var(--rux-layer-hover-01);
-  --rux-layer-selected: var(--rux-layer-selected-01);
-  --rux-layer-accent: var(--rux-layer-accent-01);
-  --rux-field: var(--rux-field-01);
-  --rux-border-subtle: var(--rux-border-subtle-00);
-  --rux-border-strong: var(--rux-border-strong-01);
-  --rux-border-tile: var(--rux-border-tile-01);
-}
 [data-theme="rux-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   --rux-layer: var(--rux-layer-01);
   --scheduler-band-surface: var(--rux-layer-01);
@@ -737,10 +694,12 @@
 /* apple-light's bar ink is the faintest that reads, so its Complete pill
    is not dimmed further. */
 [data-theme="apple-light"] .scheduler-bar__done { opacity: 1; }
-/* The Tasks and Departures cards are solid tiles too, parted from the pane by
-   their fill alone: Design rings a tile inside a layer, and here the pane is
-   the page's colour, which the tile's step already clears. */
-[data-theme="rux-dark"] .scheduler-to-do--pane .rux--tile { box-shadow: none; }
+/* The panels' tiles are solid too, the Tasks and Departures cards, the
+   editor's and the Forms list's, parted from the panel by their fill alone:
+   Design rings a tile inside a layer, and here the panel is the page's
+   colour, which the tile's step already clears. */
+[data-theme="rux-dark"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile,
+[data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print .rux--tile { box-shadow: none; }
 /* Its rows start and end on that 12px edge. A row gives up its 16px sides,
    so its words stand on the edge; a row that lights under
    the pointer carries the light 6px past each side, where the row itself

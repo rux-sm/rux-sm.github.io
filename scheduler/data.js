@@ -12289,8 +12289,24 @@
     selectBar(bar);
     placeBarOpen();
     prepareBarMenu(bar);
+    stowBarTitles(bar);
     popMenuAt(barMenu, e);
   });
+
+  /* The browser leaves a tooltip under the pointer showing when the menu
+     opens there, over its first items, so the bar's tooltips are put away
+     while its menu is open and given back when it shuts. */
+  let stowedTitles = [];
+  function stowBarTitles(bar) {
+    restoreBarTitles();
+    stowedTitles = [bar, ...bar.querySelectorAll('[title]')]
+      .filter(n => n.hasAttribute('title')).map(n => [n, n.getAttribute('title')]);
+    for (const [n] of stowedTitles) n.removeAttribute('title');
+  }
+  function restoreBarTitles() {
+    for (const [n, title] of stowedTitles) if (!n.hasAttribute('title')) n.setAttribute('title', title);
+    stowedTitles = [];
+  }
 
   barMenu?.addEventListener('click', async e => {
     const item = e.target.closest('.rux--menu-item');
@@ -12424,6 +12440,7 @@
   barMenu?.addEventListener('rux:menu-closed', e => {
     if (e.target !== barMenu) return;
     barMenu.hidden = true;
+    restoreBarTitles();
     if (menuHidesCard) { menuHidesCard = false; placeBarOpen(); }
   });
 
@@ -12477,6 +12494,8 @@
     due.hidden = !tells.length;
     due.querySelector('.rux--visually-hidden').textContent = tells.length ? `, tell ${listed(tells)}` : '';
     tidyRules(barMenu);
+    // A driver's rule before Change driver goes where Change driver is hidden.
+    for (const sub of barMenu.querySelectorAll('[data-crew-part] > .rux--menu')) tidyRules(sub);
   }
 
   /* A rule parts two groups, so one with nothing shown before it, after it,
@@ -12503,13 +12522,20 @@
     return assign ? { trip, crew: crewOf(trip, assign, panelIndex.driversById, panelIndex.statuses) } : null;
   }
 
-  /* One status item per driver on the bar, after Mark hotel booked: the driver's role
-     icon in their status's tone, their name and status, and a submenu of the
-     five statuses with theirs checked. A role nobody fills has no status. */
+  /* One item per driver on the bar, after Call or text and Assign driver: the
+     driver's role icon in their status's tone, their name and status, and a
+     submenu of the five statuses with theirs checked. The Driver seat's
+     submenu ends with Change driver, moved in from beside Call or text, so a
+     driver's status and who drives are one item. A role nobody fills has no
+     status. */
   function fillCrewItems(bar) {
+    // Assign driver goes back beside Call or text before the old items go,
+    // since it may sit inside one of them.
+    const assign = document.getElementById('scheduler-bar-menu-assign');
+    const anchor = document.getElementById('scheduler-bar-menu-contacts');
+    anchor.after(assign);
     for (const old of barMenu.querySelectorAll('[data-crew-part]')) old.remove();
     const found = barCrew(bar);
-    const anchor = document.getElementById('scheduler-bar-menu-hotel');
     const items = (found?.crew ?? []).filter(c => !c.needed).map(c => {
       const name = crewName(c);
       const item = el('li', 'rux--menu-item');
@@ -12524,7 +12550,7 @@
       caret.appendChild(svgUse('#m-arrow_right', '16', '0 0 32 32'));
       const sub = el('ul', 'rux--menu rux--menu--sm rux--menu--with-icons rux--menu--with-selectable-items');
       sub.setAttribute('role', 'menu');
-      sub.setAttribute('aria-label', `${c.label} status`);
+      sub.setAttribute('aria-label', name);
       sub.tabIndex = -1;
       const groupItem = el('li', 'rux--menu-item-radio-group');
       groupItem.setAttribute('role', 'none');
@@ -12549,11 +12575,16 @@
       }
       groupItem.appendChild(group);
       sub.appendChild(groupItem);
+      if (c.role === 'driver') {
+        const rule = el('li', 'rux--menu-item-divider');
+        rule.setAttribute('role', 'separator');
+        sub.append(rule, assign);
+      }
       item.append(el('div', 'rux--menu-item__selection-icon'), icon,
-        el('div', 'rux--menu-item__label', `${name}: ${c.status.label}`), caret, sub);
+        el('div', 'rux--menu-item__label', `${name} · ${c.status.label}`), caret, sub);
       return item;
     });
-    let at = anchor;
+    let at = assign.parentElement === barMenu ? assign : anchor;
     for (const item of items) { at.after(item); at = item; }
   }
 

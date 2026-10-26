@@ -910,14 +910,18 @@
   }
 }
 /* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in
-   from the pane's sides and foot, level with the Tasks cards and the editor's
+   from every side of the pane, level with the Tasks cards and the editor's
    tiles, inside one line and on the pane's own colour. The box holds the list
    and ends at its last driver, scrolling once the pane is too short, so its
-   edge is the day band's top and the last row's foot. */
+   edge is the day band's top and the last row's foot. With no band meeting
+   it, the pane's head draws the rule a list pane's head does. */
 [data-theme="rux-dark"] .scheduler-aside .scheduler-week--avail {
   flex: 0 1 auto;
-  margin: 0 var(--rux-spacing-05) var(--rux-spacing-05);
+  margin: var(--rux-spacing-05);
   border: 1px solid var(--rux-border-subtle-01);
+}
+[data-theme="rux-dark"] .scheduler-aside > .scheduler-aside__head {
+  border-block-end: 1px solid var(--rux-border-subtle-01);
 }
 [data-theme="rux-dark"] .scheduler-aside .scheduler-avail__day { border-block-start: 0; }
 [data-theme="rux-dark"] .scheduler-aside .scheduler-avail__row:last-child > * { border-block-end: 0; }

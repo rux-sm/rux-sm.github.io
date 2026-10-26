@@ -18,8 +18,6 @@ shows who solved it.
   sprite, as now.
 - **Fairies stay optional help.** They are never needed to finish a puzzle,
   and the game never asks a player to spend one.
-- **A finished rift gets a star in its tile's corner,** shown as a picture
-  first, and a course rift still gives three fairies as a bonus.
 - **Every seven daily puzzles solved give one fairy,** counted from the days
   already kept, so a missed day loses nothing.
 - **A maker sees how many players solved each puzzle.** Reactions wait until
@@ -36,7 +34,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the finished-rift star on its tile.
 - [ ] Add a fairy for every seven dailies to `pixels_fairies`, as a
   migration shown first, and say `+1 fairy` on the finish bar.
 - [ ] Show each puzzle's solve count on Create.

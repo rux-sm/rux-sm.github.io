@@ -1021,7 +1021,8 @@
      sprites are found against a star, its name and a bar of that. The
      picture is the sprite last found in it, in its order, or `featured`
      where that one is found, a ? before any is, and once all are found its
-     boss, framed in gold, with the count and the bar gold too. `found` has
+     boss, framed in gold, with the count and the bar gold too, and the
+     star moved from the count to a gold corner folded over the tile's. `found` has
      the ids of the puzzles found; `next` marks the rift the game goes on
      to with Next, in the interactive colour, and `tag` is a word or two,
      both beside its number and apart from the count, and `under` one on a
@@ -1063,7 +1064,13 @@
     const count = words('pixels-rift-count', `${have}/${all}`);
     const star = document.createElement('span');
     star.className = 'pixels-star';
-    count.append(star);
+    if (cleared) {
+      const corner = document.createElement('span');
+      corner.className = 'pixels-corner';
+      corner.setAttribute('aria-hidden', 'true');
+      corner.append(star);
+      a.append(corner);
+    } else count.append(star);
     head.append(line, count);
     a.setAttribute('aria-label', `${heading(c)}, ${c.number ? `rift ${c.number}, ` : ''}${have} of ${all} sprites found${tag ? `, ${tag}` : ''}${under ? `, ${under}` : ''}`);
     a.append(picture, head, words('game-tile-name', heading(c)), bar(have, all));

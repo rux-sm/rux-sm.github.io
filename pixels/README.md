@@ -15,7 +15,7 @@ Pixels goes on a phone's home screen as an app, as `docs/home-screen.md` says.
 the next puzzle; then today's puzzle on a card with the days solved in a row; then a tile for each rift,
 which the code calls a category, in the owner's order. A tile is the way into its rift: the sprite last
 found in it, its number, its name, how many of its sprites are found and a bar of that; once all are, its
-boss in a gold frame and the bar gold. A rift of the course from the sixth on is locked until enough
+boss in a gold frame, the bar gold and a gold corner with a star folded over the tile. A rift of the course from the sixth on is locked until enough
 sprites are found, which `app.js`'s `locks` counts: its tile is one dim line saying how many more open
 it, and its page shows no puzzle. With `WORLD` in `app.js` on, the owner is drawn the course as a map in
 place of its tiles, their character by their rift (`docs/drawing-the-art.md`). Leaderboard: today's

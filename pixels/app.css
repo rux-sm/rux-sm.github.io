@@ -379,6 +379,13 @@
 .pixels-rift-line { display: flex; flex: 1; align-items: center; gap: .5rem; min-inline-size: 0; color: var(--rux-text-secondary); }
 .pixels-rift-count { display: flex; flex: none; align-items: center; gap: 6px; color: var(--rux-text-secondary); font-variant-numeric: tabular-nums; }
 .pixels-rift.is-cleared .pixels-rift-count { color: var(--rux-support-caution-minor); }
+/* A cleared rift's star is a gold corner folded over the tile's own, in the
+   tile's colour, and its count keeps the place the star had. Placed by
+   nothing in the grid, it reaches the tile's very corner. */
+.game-tile.pixels-rift.is-cleared { position: relative; }
+.game-tile.pixels-rift.is-cleared .pixels-rift-count { margin-inline-end: 22px; }
+.pixels-rift > .pixels-corner { position: absolute; inset-block-start: 0; inset-inline-end: 0; grid-area: auto; inline-size: 40px; block-size: 40px; background: var(--rux-support-caution-minor); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.pixels-corner > .pixels-star { position: absolute; inset-block-start: 4px; inset-inline-end: 4px; color: var(--rux-layer-01); }
 /* THE FINISH. New best stands on its own line under the time; the sprite
    flying home is drawn over the page at the board's size and play.js moves
    it; the +1 it brings stands before the rift's count. */

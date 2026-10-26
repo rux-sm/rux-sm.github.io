@@ -37,8 +37,7 @@ everything has played a whole game.
   and no lock, and stands after the course on the front page. Fruit and the
   live 15×15 rift are the owner's own.
 - **A player's own rift holds up to fifteen,** and is published with three or
-  more as now. It stays 5, 10 or 15 a side, and a new player's nine mana
-  stays.
+  more as now. It stays 5, 10 or 15 a side.
 - **Rifts are drawn in order.** Rifts 1 to 5 are the ones open from the
   start.
 - **rux draws every picture.** The course takes Picross's shape and feel and

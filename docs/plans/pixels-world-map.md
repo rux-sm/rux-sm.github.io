@@ -135,7 +135,6 @@ The character:
 - **The base character carries a sword and a plain shield from the start,**
   since they are how it plays. The helmet and the body armour are worn once
   unlocked, and the shield is drawn on once unlocked.
-- **Drawing on armour costs no mana,** since it makes no puzzle.
 - **A player's armour and colours are kept with the player in the database,**
   as their gear, so they come back on any phone with their name and PIN.
 - **Me picks the skin's and the eyes' colour, from eight inks each, and

@@ -38,13 +38,13 @@
 
    THE OWNER'S puzzles go in the owner's rifts, which every player is sent.
    ANY OTHER PLAYER makes puzzles for rifts of their own, by data.js's
-   `own`: a new puzzle costs one mana, the Rift field lists their rifts and
+   `own`: a new puzzle costs nothing, the Rift field lists their rifts and
    New rift, with no Unsorted and no puzzle of the day, a rift holds fifteen,
    and Exit and Delete go back to Create. A rift just started is hidden
    until it is published on Create, and a new puzzle in a rift already
    published waits, off, until the rift is published again. A new puzzle
    of the owner's in a published rift is saved off too, for Game's switch. make.html?own is the same for the owner's own rifts,
-   which cost no mana, and keeps its draft under `pixels-own-draft`.
+   and keeps its draft under `pixels-own-draft`.
 
    make.html?me draws the player's own picture, for any player: the board is
    15 squares a side and starts as the picture they have, or the one made
@@ -83,8 +83,7 @@
   // or the player's own. The owner draws their own at make.html?own.
   const personal = !owner || query.has('own');
   const DRAFT = wearing ? `pixels-${wearing}-draft` : mine ? 'pixels-face-draft' : personal && owner ? 'pixels-own-draft' : 'pixels-draft';
-  // Where a puzzle is kept: the owner's tables, or a player's own rifts,
-  // which cost mana. `mana` is the player's, and the owner's is never asked.
+  // Where a puzzle is kept: the owner's tables, or a player's own rifts.
   const store = personal ? data?.own || null : data;
   /* EXIT goes back to Create, to the view the puzzle is in, and for the base
      game to the rift it is for, whose panel opens there. LAST is the rift
@@ -99,7 +98,6 @@
   // Twenty a side is the course's alone: a player's own rifts stop at
   // fifteen, which the database holds them to.
   if (personal || mine) size.querySelector('option[value="20"]').remove();
-  let mana = Infinity;
   // The inks, a colour at a time, pale to dark, and last the greys from
   // white to black. Each is the character a picture stores, then its name.
   // app.css lays them out a colour to a row, or to a column on a phone.
@@ -189,11 +187,7 @@
     theme.value = themeOf();
     $('pixels-more-theme').hidden = daily() || loose() || puzzles.some(p => p.level === levelOf() && !p.day);
     $('pixels-more-day').hidden = !daily();
-    saveNow.disabled = (daily() && !day.value) || (!editing && mana < 1);
-    $('pixels-mana').hidden = owner;
-    $('pixels-mana').textContent = editing ? `You have ${mana} mana. A change costs none.`
-      : mana < 1 ? 'You have no mana. Find a sprite in a rift somebody else made to earn one.'
-        : `A new puzzle costs 1 mana. You have ${mana}.`;
+    saveNow.disabled = daily() && !day.value;
   };
   // How many puzzles each category has on and off, of any size, and whether
   // it is full: fifteen on besides the one being edited leave that one no room.
@@ -543,7 +537,6 @@
         saved(`Saved “${row.name}”${row.level == null && !row.day ? '. It is in Unsorted, where no player is sent it.' : fresh && store.setHidden ? `. ${named || 'More'} is hidden until you publish it.` : turnedOff ? `. It is off: ${named || 'More'} has fifteen on.` : ''}`);
       } else {
         dropDraft();
-        mana -= 1;
         name.value = '';
         clear();
         forget();
@@ -560,9 +553,8 @@
     } catch (error) {
       // The database lets a day have one puzzle.
       if (error?.code === '23505') say('That day already has a puzzle', 'Pick another day, or edit the one it has.');
-      else if (error?.refused === 'mana') say('You have no mana', 'Find a sprite in a rift somebody else made to earn one.');
       else if (error?.refused === 'full') say('That rift has fifteen puzzles', 'Pick another rift, or start a new one.');
-      else if (error?.refused === 'gates') say('You have five rifts', 'Delete one on Me to start another.');
+      else if (error?.refused === 'gates') say('You have five rifts', 'Delete one on Create to start another.');
       else say('The puzzle was not saved', 'Try again.');
     }
     render();
@@ -631,8 +623,8 @@
       return;
     }
     if (personal) {
-      // A player's Back is Me, and what they have to spend is asked first;
-      // the owner spends none.
+      // A player's Back is Create, and whether they are a player is asked
+      // first.
       let got = null;
       try { got = await store.mine(); } catch { /* said below */ }
       if (!got) {
@@ -640,7 +632,6 @@
         maker.hidden = true;
         return;
       }
-      if (!owner) mana = got.mana;
       $('pixels-exit').href = home;
     }
     const id = query.get('id');

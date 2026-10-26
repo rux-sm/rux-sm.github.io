@@ -32,10 +32,8 @@ done and how.
 - A guest with no PIN who loses their browser's key has no way back: one
   who joined before the door asked for a PIN, or removed it on Me. The owner
   needs a way, on Players, to hand a player a new key.
-- Mana falls below nothing when a puzzle a player solved is deleted or
-  redrawn, and Me shows the minus.
 - An unticked tile in a rift's panel on Game shows a grey check that reads as
   ticked.
-- The leaderboard cannot go on as it is: a time, a solve and so mana are the
+- The leaderboard cannot go on as it is: a time and a solve are the
   browser's word, Restart zeroes the clock, and it runs on an idle page.
 

@@ -28,3 +28,15 @@
   padding-block: .75rem calc(1rem + var(--frame-safe-bottom));
   background: var(--rux-background);
 }
+
+/* THE MARK BESIDE A NAME, `frame-mark`: the screen header's measures, a 24px
+   mark and a .17rem gap beside a 14px name, held as fractions of the name's
+   size, so a printed header that sets its name at any size keeps the
+   screen's balance. It sizes from the font size it sits in, so it goes in
+   the element that sets the name's size. */
+.frame-mark {
+  block-size: calc(1em * 24 / 14);
+  inline-size: auto;
+  margin-inline-end: calc(.17em * 16 / 14);
+  flex: none;
+}

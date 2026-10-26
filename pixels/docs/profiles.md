@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Pixels profiles, friends, mana and rifts of your own
+# Pixels profiles, friends and rifts of your own
 
 What a player has besides the puzzles, and the rule for who is sent a rift.
 `../README.md` says what each page draws.
@@ -18,8 +18,8 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
 - **Until it is drawn, the picture is made from the username,** by `face` in
   `app.js`, the same in every browser.
 - **Me** shows the picture, the username, the sprites found and the
-  fairies, and changes the first two. A player's own rifts and their mana
-  are on Create.
+  fairies, and changes the first two. A player's own rifts are on
+  Create.
 - **A player's character is kept as their gear,** which `pixels_me` sends
   and `pixels_set_gear` takes whole: one ink for the skin, one for the
   eyes, and for a piece of armour the player's drawing of it, 225
@@ -101,25 +101,22 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   maker is the owner's, so a player's first rift and the owner's can both be
   number one.
 
-## Mana and rifts of your own
+## Rifts of your own
 
 - **Every player has the Pixelator,** for their own picture, puzzles and
   rifts only.
-- **Finding a sprite in somebody else's puzzle gives one mana, and keeping a
-  puzzle of your own costs one.** A player starts with nine.
-- **Mana is counted by the database from what is there,** so deleting a
-  puzzle gives its mana back, and solving your own gives none.
+- **Making a puzzle is free,** so the game never asks a player to earn the
+  right to make one.
 - **The owner has rifts of their own too,** on Create's Mine and sent to
-  their friends as any player's are. They cost the owner no mana and are not
-  held to five, so Create shows the owner no mana. The rifts every player is
-  sent are made on Create's Game.
+  their friends as any player's are. They are not held to five. The rifts
+  every player is sent are made on Create's Game.
 - **A new puzzle in a rift already published waits, off,** until the rift
   is published again, which switches on all its puzzles, so a half-made
   puzzle is never sent.
 - **A player has at most five rifts.** A rift holds 15 puzzles and is
   published with 3 or more. One left with no puzzle is gone.
 - **A player writes through database functions, never a table,** which
-  refuse a wrong size, wrong squares, a long name, too little mana, a full
+  refuse a wrong size, wrong squares, a long name, a full
   rift or a sixth rift.
 - **Only the browser checks that a puzzle has one answer,** because the
   database cannot run the solver. On Players the owner hides or deletes any
@@ -137,7 +134,7 @@ What a player has besides the puzzles, and the rule for who is sent a rift.
   one of the owner's rifts that everyone is sent, with every puzzle of it
   that is on found. A player's own rift and a friend's give none, because
   three puzzles make a rift and two players could trade them for ever.
-- **The database counts them from what is there, as it counts mana.**
+- **The database counts them from what is there.**
   `pixels_fairies` is three, three for each such rift, less
   `pixels_players.fairies_used`, and never under none, so a rift that gains
   a puzzle gives its three again once that one is found.

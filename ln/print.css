@@ -113,9 +113,9 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 /* The first page opens with the Rux mark, LN Notes and the kind of document
    over a rule, then the version and a line to write Prepared by on. */
 .ln-brand { margin-block-end: 1.25rem; }
-.ln-brand__top { display: flex; align-items: center; gap: 4mm; padding-block-end: 3mm; border-block-end: 1.5px solid var(--rux-text-primary); }
-.ln-brand__logo { max-block-size: 12mm; max-inline-size: 45mm; inline-size: auto; block-size: auto; }
-.ln-brand__name { flex: 1; font-size: 14pt; font-weight: 600; }
+/* The mark is Design's frame-mark, sized from the 14pt the name takes here. */
+.ln-brand__top { display: flex; align-items: center; padding-block-end: 3mm; font-size: 14pt; border-block-end: 1.5px solid var(--rux-text-primary); }
+.ln-brand__name { flex: 1; font-weight: 600; }
 .ln-brand__kind { font-size: 9pt; letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary); }
 .ln-brand__facts { display: flex; gap: 10mm; margin: 2.5mm 0 0; font-size: 9pt; }
 .ln-brand__facts + .ln-brand__facts { margin-block-start: 3.5mm; }

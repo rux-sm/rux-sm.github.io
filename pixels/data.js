@@ -321,13 +321,13 @@
     async renewInvite() { return call('pixels_renew_invite', { p_key: key() }); },
     /* A PLAYER'S OWN PUZZLES AND RIFTS, by the names the owner's have, so
        the Pixelator saves either. `mine` is everything of the player's:
-       their mana, their puzzles, each with its rift's name, whether the
+       their puzzles, each with its rift's name, whether the
        rift is hidden and whether the puzzle is off, and who has solved how
        much of each rift. A new puzzle in a rift already published is saved
        off, and publishing a rift switches all of its puzzles on. A save the
-       database turns down for mana, a full rift or a sixth rift throws with
+       database turns down for a full rift or a sixth rift throws with
        `refused` saying which. The owner has rifts of this kind too, apart
-       from the ones every player is sent, and is charged no mana for them. */
+       from the ones every player is sent, and is held to no limit on them. */
     own: {
       async mine() { return call('pixels_mine', { p_key: key() }); },
       async all() {

@@ -415,14 +415,11 @@
       /* THE PUZZLE'S RIFT stands under the time as the front page draws it,
          with this sprite counted, and is the way back to it. A sprite found
          for the first time turns into view on it and is kept for the rift's
-         page to turn too, and one in a puzzle somebody else made earns a
-         mana, which the tile says; the owner has no mana to earn. A time that was not saved counts
-         nothing. A rift this sprite cleared says the fairies it freed,
+         page to turn too. A time that was not saved counts nothing. A rift this sprite cleared says the fairies it freed,
          and one it opened stands under it, saying Opened. */
       if (home) {
         const first = !results.has(key) && !lost, all = home.puzzles.length;
         const found = home.puzzles.filter(p => results.has(p.id)).length + (first ? 1 : 0);
-        const earned = first && !owner && me.mana != null && puzzle.maker !== me.id;
         // A rift of the course just cleared frees three fairies. The
         // database is the one that counts them, so it is asked again.
         let freed = 0;
@@ -433,7 +430,7 @@
             fairies += freed;
           } catch { /* Me says how many, the next time it is opened */ }
         }
-        const rift = riftTile(home, known, { tag: earned ? '+1 mana' : '', under: freed ? `+${freed} fairies` : '', featured: key });
+        const rift = riftTile(home, known, { under: freed ? `+${freed} fairies` : '', featured: key });
         const list = document.createElement('div');
         list.className = 'game-tiles';
         list.append(rift, ...opened.map(c => riftTile(c, known, { tag: 'Opened' })));

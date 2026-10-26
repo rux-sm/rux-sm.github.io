@@ -13,8 +13,7 @@ shows who solved it.
 
 ## Decisions
 
-- **Making a puzzle is free.** Mana goes from the database, every page and
-  `pixels/docs/profiles.md`. The limit of five rifts of 15 puzzles stays.
+- **Making a puzzle is free.** The limit of five rifts of 15 puzzles stays.
 - **Sprites are the collection and the progress.** Each puzzle solved is one
   sprite, as now.
 - **Fairies stay optional help.** They are never needed to finish a puzzle,
@@ -37,11 +36,6 @@ None open.
 
 ## Tasks
 
-- [ ] Show rux the migration that removes mana from `pixels_keep_puzzle`,
-  `pixels_me` and `pixels_mine` and drops `pixels_mana`, and apply it on a
-  yes.
-- [ ] Take mana off Create, the maker, the finish bar and the docs, in the
-  same push as the migration.
 - [ ] Draw the finished-rift star on its tile.
 - [ ] Add a fairy for every seven dailies to `pixels_fairies`, as a
   migration shown first, and say `+1 fairy` on the finish bar.

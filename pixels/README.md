@@ -35,7 +35,7 @@ Players and New players can join. A guest's Delete my player is at the foot. `fr
 link and the friends, each with a menu to remove them. Every page is one phone-wide column on every
 screen, in Design's `pixel-dark`, locked. The places, Play, Create and Me, are the header's links from
 66rem and a bar along the foot below that, each with its word, but for a puzzle being played or drawn.
-`docs/profiles.md` has the door, profiles, friends, mana and who gets a rift.
+`docs/profiles.md` has the door, profiles, friends and who gets a rift.
 
 `play.html?id=` plays one puzzle, 5, 10, 15 or 20 squares a side. The board waits bare behind Tap to
 start, or Start with a mouse, and the clock runs from that tap. Fill a square or cross it out with X, by
@@ -58,7 +58,7 @@ the clock under a cover with Resume, Restart and Exit, which goes where the play
 empties the board, and Undo straight after brings it back. The picture so far stands beside the clock.
 When the picture is complete the squares fill in as the picture, in its colours if it has them, and its
 name shows with the time, New best where it beats the one kept, the mistakes and the hints. A first find
-flies into the rift's tile under them, whose count ticks up with +1, +1 mana or +3 fairies where earned;
+flies into the rift's tile under them, whose count ticks up with +1, or +3 fairies where earned;
 a rift it opened stands under it, saying Opened. The bar holds Exit, Share and Next, which goes to that
 rift's next unsolved puzzle, then to the next open rift. How to play is three steps in a modal, each with a small board: the
 numbers, filling and crossing out, and what a mistake costs. It opens from Me's list and the button under
@@ -76,7 +76,7 @@ counts toward the days in a row. A player is never sent a day's puzzle before it
 
 `make.html` draws a picture that becomes a puzzle, and `make.html?id=` edits or deletes one. The owner's
 puzzles go in the owner's rifts, the game's; a player's go in rifts of their own, through functions that
-count their mana, and so do the owner's own at `make.html?own`, which cost none. `make.html?me` draws a
+hold them to five rifts, and so do the owner's own at `make.html?own`, which have no limit. `make.html?me` draws a
 player's picture, and `?wear=helmet` the helmet of the owner's character. It checks as you draw whether
 the numbers alone can solve the picture and how hard that is, outlines each square that would need a
 guess, and saves only a picture with one answer. Size starts a blank board of 5, 10 or 15 a side, 20 in
@@ -89,10 +89,9 @@ Unsorted, and Puzzle of the day makes it a day's puzzle, in no rift; a day takes
 Create, to the view and rift it came from. `docs/making-puzzles.md` is the guide to a good picture and a
 good rift.
 
-`create.html` is Create. Mine is a heading with the mana, New puzzle, and a block for each of the
+`create.html` is Create. Mine is a heading, New puzzle, and a block for each of the
 player's rifts with its count and sizes, Hidden or how many new puzzles wait, a menu of Rename, Publish
-or Hide and Delete, and its pictures, each opening it in the Pixelator, then an add tile; at no mana New
-puzzle and the add tiles are off. The owner has Mine and Game, a switch the browser keeps, and
+or Hide and Delete, and its pictures, each opening it in the Pixelator, then an add tile, gone from a full rift. The owner has Mine and Game, a switch the browser keeps, and
 `?view=game` is Game, the base game: a block to each rift, then Unsorted and Dailies, with its pictures,
 an add tile, its Published switch and a menu of Who sees it, Rename and Delete. A rift's name replaces
 its previews with a management grid; a second tap closes it, and `?rift=3` keeps it on reload. Arrows

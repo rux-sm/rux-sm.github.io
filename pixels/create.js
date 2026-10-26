@@ -8,13 +8,11 @@
    opening it in the Pixelator, and an add tile that opens the Pixelator for
    that rift. Under a block is everyone who has found a sprite in it.
 
-   NEW PUZZLE opens a blank Pixelator, whose Save asks for the rift. A new
-   puzzle costs one mana, taken as it is saved, which the heading says; at
-   no mana New puzzle and the add tiles are off, and a line says how mana is
-   earned. A new puzzle in a rift already published waits, off, until the
-   rift is published again, which switches all its puzzles on.
+   NEW PUZZLE opens a blank Pixelator, whose Save asks for the rift. Making
+   a puzzle is free. A new puzzle in a rift already published waits, off,
+   until the rift is published again, which switches all its puzzles on.
 
-   THE OWNER has the same, for rifts of their own that cost no mana, drawn
+   THE OWNER has the same, for rifts of their own, drawn
    at make.html?own, and a switch at the top, Mine and Game: Game is the
    base game every player is sent, which game.js draws. The view is
    `?view=game` in the address and is kept in this browser, Mine on a first
@@ -62,19 +60,17 @@
     });
     host.hidden = to !== 'mine';
     $('pixels-desk').hidden = to !== 'game';
-    $('pixels-mana').hidden = true;
     $('pixels-new-note').hidden = true;
     const add = $('pixels-new');
     add.hidden = false;
     if (to === 'game') {
       add.href = 'make.html';
-      add.removeAttribute('aria-disabled');
       window.Pixels.game?.();
     } else mine();
   };
 
   /* A RIFT OF ONE'S OWN, by its menu: its name, publishing it, and deleting
-     it with its puzzles, which gives their mana back. `asked` is the rift a
+     it with its puzzles. `asked` is the rift a
      window is open for. */
   let asked = null;
   const rename = (g, from) => {
@@ -101,7 +97,7 @@
     asked = g;
     const n = g.puzzles.length;
     $('pixels-mine-remove-heading').textContent = `Delete ${g.theme || 'this rift'}?`;
-    $('pixels-mine-remove-text').textContent = `Its ${n === 1 ? 'puzzle goes' : `${n} puzzles go`} too${owner ? '' : `, and ${n === 1 ? 'its mana comes' : 'their mana comes'} back`}.`;
+    $('pixels-mine-remove-text').textContent = `Its ${n === 1 ? 'puzzle goes' : `${n} puzzles go`} too.`;
     modal.open('pixels-mine-remove-modal', from);
   };
   $('pixels-mine-remove-confirm').addEventListener('click', async () => {
@@ -125,15 +121,9 @@
   }
   function drawMine(got) {
     drawn = got;
-    const broke = !owner && got.mana < 1;
-    const add = $('pixels-new');
-    add.href = make();
-    if (broke) add.setAttribute('aria-disabled', 'true'); else add.removeAttribute('aria-disabled');
-    $('pixels-mana').hidden = owner;
-    $('pixels-mana').textContent = `${got.mana} mana`;
-    $('pixels-new-note').hidden = !broke && !!got.puzzles.length;
-    $('pixels-new-note').textContent = broke ? 'You have no mana. Find a sprite in a rift somebody else made to earn one.'
-      : owner ? 'Your own rifts go to your friends once they are published.' : 'A new puzzle costs 1 mana. A rift holds fifteen and is published with three.';
+    $('pixels-new').href = make();
+    $('pixels-new-note').hidden = !!got.puzzles.length;
+    $('pixels-new-note').textContent = owner ? 'Your own rifts go to your friends once they are published.' : 'A rift holds fifteen and is published with three.';
     const found = new Map();
     got.puzzles.forEach(p => {
       if (!found.has(p.level)) found.set(p.level, { level: p.level, theme: p.theme, hidden: p.hidden, puzzles: [] });
@@ -156,7 +146,7 @@
         ])],
         puzzles: g.puzzles,
         href: p => make(`id=${encodeURIComponent(p.id)}`),
-        add: full || broke ? null : make(`size=${Math.max(...g.sizes)}&gate=${g.level}`),
+        add: full ? null : make(`size=${Math.max(...g.sizes)}&gate=${g.level}`),
         addLabel: `Add a puzzle to ${name}`,
       });
       const solvers = got.solvers.filter(s => s.level === g.level);
@@ -174,8 +164,6 @@
       return block;
     }));
   }
-  // New puzzle is a link, so at no mana it is stopped here.
-  $('pixels-new').addEventListener('click', e => { if ($('pixels-new').getAttribute('aria-disabled') === 'true') e.preventDefault(); });
 
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }

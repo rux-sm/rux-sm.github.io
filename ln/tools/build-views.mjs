@@ -841,7 +841,7 @@ const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]
 // version, module and product, and lines to write the client and Prepared by
 // on, because no client's name goes on a public page.
 const brandBlock = (updated, modules) => `<div class="ln-paper-only ln-brand">
-<div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
+<div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
 <dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>`;

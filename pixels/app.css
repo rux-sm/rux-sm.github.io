@@ -520,15 +520,13 @@
 .pixels-shown { display: flex; align-items: center; gap: .5rem; }
 .pixels-moves { display: flex; }
 .pixels-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; max-inline-size: 32rem; }
-/* CREATE. Its heading with the mana beside it, Mine and Game across the
-   page, and New puzzle across it too. */
-.pixels-create-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+/* CREATE. Its heading, Mine and Game across the page, and New puzzle
+   across it too. */
 .pixels-view { inline-size: 100%; }
 /* Each view's display would outrank the hidden attribute. */
 :is(.pixels-view, .pixels-new, .pixels-blocks, .pixels-desk)[hidden] { display: none; }
 .pixels-view > .rux--content-switcher-btn { flex: 1; }
 .pixels-new { inline-size: 100%; max-inline-size: none; }
-.pixels-new[aria-disabled="true"] { background: var(--rux-button-disabled); color: var(--rux-text-on-color-disabled); pointer-events: none; }
 /* A RIFT'S BLOCK, Mine's and Game's: a raised plate, its words, tags, switch
    and menu along its top, and its pictures five to a row under them, each
    square, a dim one off, the add tile last. Game's open one is marked, and

@@ -52,6 +52,10 @@ controls clear of a phone's home bar, which an iPhone measures only when the
 page's viewport meta carries `viewport-fit=cover`; what the bar holds and how
 wide it stands are the app's.
 
+**The Rux mark beside a name is `frame-mark`,** from the same file. It sizes
+from the font size it sits in, so a printed header keeps the screen
+header's balance at whatever size it sets the name.
+
 **Do not start from `sink/ui-shell.html`.** It is the same shell in a 22rem
 sandbox, so its header and nav are positioned for a specimen rather than a page.
 

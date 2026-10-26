@@ -454,8 +454,8 @@
    the roster's head, the trip editor's head and the document panel's head
    each hold the buttons Design
    sizes that theme's controls at, inset from every edge of its bar:
-   geist-dark's and rux-dark's 36px buttons 16px in and 8px apart in a 68px
-   bar, the inset their header keeps around its buttons as Geist's own does,
+   geist-dark's 36px buttons 16px in and 8px apart in a 68px
+   bar, the inset its header keeps around its buttons as Geist's own does,
    and their tiles, fields and footers keep, and ant-dark's 32px ones 8px in
    and 8px apart in a 48px bar. Nothing fills
    its bar edge to edge, so the four heads
@@ -464,7 +464,20 @@
    following the card's curve. A panel's close button fixes its own 40px,
    so it is named. The roster's head keeps its full height where the grid
    under it wants more room than the pane has. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { --scheduler-head-inset: var(--rux-spacing-05); --scheduler-head-gap: var(--rux-spacing-03); }
+[data-theme="geist-dark"] { --scheduler-head-inset: var(--rux-spacing-05); --scheduler-head-gap: var(--rux-spacing-03); }
+/* RUX-DARK'S HEADS ARE CARBON'S TOOLBAR, flush as its board is: no inset and
+   no gap, each head the 48px lg height, its buttons that tall and square
+   against its edges and parted by Carbon's rule, the close button in the
+   corner, so the four heads read as one band over the board. */
+[data-theme="rux-dark"] { --scheduler-head-inset: 0px; --scheduler-head-gap: 0px; }
+@media (min-width: 42rem) {
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head, .rux--side-panel__header) {
+    --rux-layout-size-height-md: var(--rux-layout-size-height-lg);
+  }
+  [data-theme="rux-dark"] .scheduler-page .rux--side-panel .rux--btn.rux--side-panel__close-button:not(:focus) {
+    border-color: transparent;
+  }
+}
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme^="apple-"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }
 @media (min-width: 42rem) {
@@ -523,42 +536,21 @@
   /* Buttons that stand apart by a gap take no rule between them: on a 6px
      corner the toolbar's dividing rule bends into a bracket. The spacer's
      rule goes with them. */
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-inline-color: transparent;
   }
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
+  :is([data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme^="apple-"]) .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
   /* Geist's bar buttons are its outlined button: the quiet ring Design gives
      the secondary button, on the 1px border a ghost button already carries,
      so each one reads as a button. It gives way to the focus ring, which is
-     that same border. rux-dark's are bare icons that fill under the pointer,
-     so New trip is the one button that stands out. */
+     that same border. */
   [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-color: var(--rux-border-subtle-02);
   }
   /* The week's name opens the calendar, so it takes the same ring. It has no
      border of its own, so the ring is an inset shadow and nothing moves. */
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
+  [data-theme="geist-dark"] .scheduler-page .scheduler-toolbar .scheduler-weekbtn {
     box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
-  }
-  /* rux-dark rings the buttons in a panel's head as it does the bar's, the
-     close button among them: they stand clear of the corner here, so each
-     reads as a button. Primer leaves a close button bare, and this theme
-     does not follow it there. The ring gives way to the focus ring, which is
-     that same border, only where the focus shows: a panel that opens puts the
-     focus on its close button, and a press puts no ring there to replace it. */
-  [data-theme="rux-dark"] .scheduler-page .scheduler-aside__head > .rux--btn:not(:focus-visible),
-  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__header .rux--btn:not(:focus-visible) {
-    border-color: var(--rux-border-subtle-02);
-  }
-  /* Ringed buttons that touch draw a doubled line between them, so a
-     panel's head buttons stand the bar's gap apart; the roster's head has it
-     already. The trip's title gives up those 16px from the 32px Carbon keeps
-     clear after it, and so holds the letters it held. */
-  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel__decorator-and-close {
-    gap: var(--scheduler-head-gap);
-  }
-  [data-theme="rux-dark"] .scheduler-page .scheduler-trip .rux--side-panel__title-text {
-    padding-inline-end: calc(2rem - 2 * var(--scheduler-head-gap));
   }
   /* apple-light's bar buttons are a Mac's push buttons: the grey fill under
      the label colour, each a capsule, the week's name with them. */

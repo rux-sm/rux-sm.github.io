@@ -167,6 +167,13 @@
 }
 [data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 [data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
+/* A RUX-DARK BAR READS IN ORDER OF NEED: the destination and the times are
+   bold, the times in even-width figures so they line up, the customer stays
+   in the bar's ink, and the contact steps back to two thirds of it. A row
+   that says there are no times stays plain, so an absence does not shout. */
+[data-theme="rux-dark"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 66%, transparent); }
+[data-theme="rux-dark"] .scheduler-bar__time { font-weight: 600; font-variant-numeric: tabular-nums; }
+[data-theme="rux-dark"] .scheduler-bar__time:has(.scheduler-bar__none) { font-weight: 400; }
 /* Its trip not yet confirmed is red's deep step, 0.34, at 95% of the chroma
    Display P3 holds there, so it stays rich on a P3 screen while standing
    back from the board, and its hover is a step lighter at the same strength. */
@@ -458,8 +465,9 @@
   /* Geist's bar buttons are its outlined button: the quiet ring Design gives
      the secondary button, on the 1px border a ghost button already carries,
      so each one reads as a button. It gives way to the focus ring, which is
-     that same border. */
-  :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
+     that same border. rux-dark's are bare icons that fill under the pointer,
+     so New trip is the one button that stands out. */
+  [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
     border-color: var(--rux-border-subtle-02);
   }
   /* The week's name opens the calendar, so it takes the same ring. It has no

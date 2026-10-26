@@ -145,6 +145,15 @@
    not a container, and take the same inks, so a bell is its disc's colour. */
 [data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator--count) { background: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
+/* A BAR'S COUNT OF JOBS IS QUIET in rux-dark: a disc of the bar's own ink at
+   16% under its figure in that ink, so a week of trips with work still to do
+   is not a field of amber. What it counts is unchanged, and the card lists
+   the jobs. A bus that does not fit keeps its red disc, the board's one
+   mistake, and the placeholder's gold bar keeps its black one. */
+[data-theme="rux-dark"] .scheduler-bar .scheduler-bar__msg.scheduler-bar__msg--warning {
+  background: color-mix(in srgb, var(--scheduler-fg) 16%, transparent);
+  color: var(--scheduler-fg);
+}
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
 /* rux-dark's standard trip is a raised grey, layer-02, a solid tile on the
@@ -235,8 +244,11 @@
   --scheduler-age-week: var(--scheduler-mark-warning);
   --scheduler-age-old: color-mix(in srgb, var(--scheduler-mark-error) 90%, #fff);
 }
+/* Rux-dark's update in its first two days is the bar's own ink, as a settled
+   trip's is: a follow-up answered lately is routine, and the board's colour
+   is kept for one going stale, amber in its first week and red after. */
 [data-theme="rux-dark"] {
-  --scheduler-age-new: var(--scheduler-mark-success);
+  --scheduler-age-new: currentColor;
   --scheduler-age-week: var(--scheduler-mark-warning);
   --scheduler-age-old: oklch(0.85 0.11 25);
 }
@@ -363,6 +375,21 @@
    where a day starts, and each bus keeps its row's rule. The roster is a
    table in a box and keeps its own. */
 [data-theme="rux-dark"] .scheduler-frame .scheduler-track { --scheduler-day-rule: transparent; }
+/* A field in a panel's tile is set into it, a step above the page and two
+   below the tile's hover, field-01, rather than Carbon's field-03, which
+   stood lighter than the tile holding it. Its hover is field-01's own. */
+[data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer, .scheduler-to-do--pane) .rux--layer-three {
+  --rux-field: var(--rux-field-01);
+  --rux-field-hover: var(--rux-field-hover-01);
+}
+/* Its toolbar parts its groups, not every button: the week, Today, the two
+   arrows as one, search, the panels as one, and the view menu each stand
+   behind a rule, and a button inside a group has none. The spacer draws no
+   rule, so where it has no room it is not an empty button between two. */
+[data-theme="rux-dark"] .scheduler-page :is(#scheduler-next, #scheduler-prep-toggle, #scheduler-avail-toggle, #scheduler-forms-open, #scheduler-calc-open):not(:focus-visible) {
+  border-inline-start-color: transparent;
+}
+[data-theme="rux-dark"] .scheduler-toolbar__spacer { border-inline-start-color: transparent; }
 [data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
   --rux-layer: var(--rux-background);
   --rux-layer-active: var(--rux-background-active);

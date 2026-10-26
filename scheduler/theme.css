@@ -917,6 +917,18 @@
     margin-inline-start: -1px;
   }
 }
+/* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in
+   from the pane's sides and foot, level with the Tasks cards and the editor's
+   tiles, inside one line and on the pane's own colour. The box holds the list
+   and ends at its last driver, scrolling once the pane is too short, so its
+   edge is the day band's top and the last row's foot. */
+[data-theme="rux-dark"] .scheduler-aside .scheduler-week--avail {
+  flex: 0 1 auto;
+  margin: 0 var(--rux-spacing-05) var(--rux-spacing-05);
+  border: 1px solid var(--rux-border-subtle-01);
+}
+[data-theme="rux-dark"] .scheduler-aside .scheduler-avail__day { border-block-start: 0; }
+[data-theme="rux-dark"] .scheduler-aside .scheduler-avail__row:last-child > * { border-block-end: 0; }
 /* The Apple themes' regions are a fill on the page, so each is told apart by
    that fill. Their day band is the region's own surface over a rule, as
    geist-dark's is. On apple-light a soft lift takes the place of the dark

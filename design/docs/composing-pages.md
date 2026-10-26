@@ -41,6 +41,11 @@ links. `css/rux-game.css` holds the parts Carbon lacks, under
 `game-`; the comment at the head of `templates/game-hub.html` says what each
 page is for.
 
+**A game's buttons are three kinds and red.** Primary for the one thing a
+screen is for, secondary for every other action, and a ghost link only for a
+way back or a small extra; danger only where a delete is confirmed. Tertiary
+is not used, since a grey box with link-coloured words reads as neither.
+
 **A bar of actions fixed to a page's foot is `frame-bar`,** from
 `css/rux-frame.css`, linked after `css/rux-overrides.css`. It keeps its
 controls clear of a phone's home bar, which an iPhone measures only when the

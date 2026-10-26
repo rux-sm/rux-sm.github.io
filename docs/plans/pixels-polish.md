@@ -16,10 +16,6 @@ puzzle, a friend's time to beat.
 
 - **Each task is its own change, shown as options in the real page before
   it is built,** and checked in the iOS simulator from the home-screen icon.
-- **Two buttons and a link:** Carbon's primary for the one thing a screen is
-  for, its secondary for the rest, and a plain link for a way back or a
-  small extra. The ghost-blue box and the other styles go. They are
-  Design's, in `design/css/rux-game.css`, so every game gets them.
 - **The maker's toolbar becomes a bar like the game's,** icons over words,
   and Clear's icon is not a refresh arrow.
 - **Every list has an empty state that says what to do,** as the front page
@@ -46,8 +42,6 @@ None open.
 
 ## Tasks
 
-- [ ] Cut the buttons to two and a link in Design, and move every Pixels
-  page onto them.
 - [ ] Turn the maker's toolbar into a bar like the game's.
 - [ ] Give Friends, a rift with nothing found and a player with no mana an
   empty state each.

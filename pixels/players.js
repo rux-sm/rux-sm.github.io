@@ -74,7 +74,7 @@
       stats.textContent = [...(DAILY ? [p.today ? `today ${p.today}` : 'not today', `${p.days} in a row`] : []), `${p.solved} solved`].join(' · ');
       // When they last played, on a line of its own.
       text.append(name, stats, words('pixels-meta', when(p.last_played_at)));
-      const edit = key('rux--btn--ghost', 'Edit');
+      const edit = key('rux--btn--secondary', 'Edit');
       edit.setAttribute('aria-expanded', 'false');
       edit.setAttribute('aria-label', `Edit ${p.name}`);
       li.append(portrait({ name: p.name, picture: p.picture, colours: p.picture_colours }), text, edit);
@@ -108,7 +108,7 @@
       open.append(named);
       // A picture the player drew can be taken away; the one made from their name shows again.
       if (p.picture) {
-        const clear = key('rux--btn--ghost', 'Clear picture');
+        const clear = key('rux--btn--secondary', 'Clear picture');
         clear.addEventListener('click', async () => {
           clear.disabled = true;
           try { await data.clearPicture(p.id); } catch { say('The picture was not cleared', 'Try again.'); }
@@ -174,7 +174,7 @@
         });
         return b;
       };
-      if (!g.hidden) keys.append(act('rux--btn--ghost', 'Hide', null, () => data.hideGate(g.id)));
+      if (!g.hidden) keys.append(act('rux--btn--secondary', 'Hide', null, () => data.hideGate(g.id)));
       keys.append(act('rux--btn--danger--ghost', 'Delete', 'Delete it and its puzzles?', () => data.deleteGate(g)));
       li.append(portrait({ name: who.name, picture: who.picture, colours: who.picture_colours }), text, keys);
       return li;

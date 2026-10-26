@@ -228,7 +228,7 @@
     picks.append(...tones('Skin', 'skin', SKIN), ...tones('Eyes', 'eyes', EYES));
     if (wear.includes('helmet')) {
       const a = document.createElement('a');
-      a.className = 'rux--btn rux--btn--tertiary';
+      a.className = 'rux--btn rux--btn--secondary';
       a.href = 'make.html?wear=helmet';
       a.textContent = 'Draw on your helmet';
       picks.append(a);
@@ -266,7 +266,7 @@
     shown = me;
 
     const drawIt = document.createElement('a');
-    drawIt.className = 'rux--btn rux--btn--tertiary';
+    drawIt.className = 'rux--btn rux--btn--secondary';
     drawIt.href = 'make.html?me';
     drawIt.textContent = 'Draw your picture';
 
@@ -423,7 +423,7 @@
     if (me.pin) {
       const remove = document.createElement('button');
       remove.type = 'button';
-      remove.className = 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm';
+      remove.className = 'rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm';
       remove.textContent = 'Remove the PIN';
       remove.addEventListener('click', () => set(null));
       form.append(remove);

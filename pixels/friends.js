@@ -51,7 +51,7 @@
     note.textContent = 'Whoever opens it is asked to add you. New link stops the old one working.';
     const keys = document.createElement('div');
     keys.className = 'pixels-link-keys';
-    const copy = button('rux--btn--tertiary', 'Copy');
+    const copy = button('rux--btn--secondary', 'Copy');
     copy.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(address.textContent);

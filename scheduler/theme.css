@@ -921,15 +921,32 @@
    takes whatever of it the open panels leave rather than stopping its days
    at 187px, so opening or closing a panel moves no edge of the board. Two
    weeks stop at the same sum for fourteen days, and Fill the window takes
-   the stop off. The board stands centred in a wider window. */
+   the stop off. The shell is framed to the same width, as LN Notes frames
+   its own: the board stands centred in a wider window, and the header and
+   its panels stand over it rather than on the window's edges, so the
+   header's line ends where the board does. */
+:root[data-theme="rux-dark"] {
+  --scheduler-shell-days: 7;
+  --scheduler-shell-max: calc(var(--scheduler-list-w) + var(--scheduler-editor-w) + 2rem + var(--scheduler-shell-days) * 187px);
+  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max)) / 2));
+}
+:root[data-theme="rux-dark"]:has(.scheduler-week--two) { --scheduler-shell-days: 14; }
+:root[data-theme="rux-dark"]:has(.scheduler-week--fill) { --scheduler-shell-max: 100%; }
 [data-theme="rux-dark"] .scheduler-week:not(.scheduler-week--static) { --scheduler-day-max: none; }
-[data-theme="rux-dark"] .scheduler-board:not(:has(.scheduler-week--fill)) {
-  --scheduler-board-days: 7;
-  max-inline-size: calc(var(--scheduler-list-w) + var(--scheduler-editor-w) + 2rem + var(--scheduler-board-days) * 187px);
+[data-theme="rux-dark"] .scheduler-board {
+  max-inline-size: var(--scheduler-shell-max);
   inline-size: 100%;
   margin-inline: auto;
 }
-[data-theme="rux-dark"] .scheduler-board:has(.scheduler-week--two) { --scheduler-board-days: 14; }
+/* The frame's sides run up through the header as the board's edges do below
+   it: two 1px shadows just outside the header, which fall off the window
+   where the header reaches its edges. */
+:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--header {
+  inset-inline: var(--scheduler-shell-inset);
+  box-shadow: -1px 0 0 var(--rux-border-subtle-01), 1px 0 0 var(--rux-border-subtle-01);
+}
+:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--header-panel { inset-inline-end: var(--scheduler-shell-inset); }
+:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--side-nav { inset-inline-start: var(--scheduler-shell-inset); }
 /* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in
    from every side of the pane, level with the Tasks cards and the editor's
    tiles, inside one line and on the pane's own colour. The box holds the list

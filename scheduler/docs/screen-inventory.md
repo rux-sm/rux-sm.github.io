@@ -137,7 +137,7 @@ Three homes, and one rule for choosing.
   until turned on and kept by the browser, for days that share the whole window rather than
   stopping at 187px each, a one-day bar 180px, with the week and its open panels centred in the spare width; in rux-dark the board
   stops instead at a list, the trip editor and a week of 187px days, or fourteen in two weeks, and the week fills what its open
-  panels leave of that, then Motion, full, calm or
+  panels leave of that, the header framed to the same width over it as LN Notes frames its own, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to
   reduce motion, and What the colours mean, a window of each colour of a live bar's dial. It hangs under its ⋮ and opens
   attached to it, one surface.

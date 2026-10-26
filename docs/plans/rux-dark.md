@@ -30,8 +30,14 @@ What stands now:
 - **Every corner is square.** Buttons, fields, tags, menus, alerts, cards,
   panels, tables and the scheduler's trip bars all have square corners. Only
   things round by shape stay round: profile pictures, radio buttons, toggles,
-  a slider's thumb, and status dots and counts. A side menu's chosen row is a
-  square block of the ink with black words.
+  a slider's thumb, and status dots and counts. A side menu's chosen row is
+  the selected grey with bold words, so white is kept for the main action.
+- **Depth comes from fill, and shadow only from floating.** Tiles, panels and
+  selected rows are flat; menus, popovers, dialogs, toasts and the trip card
+  cast one soft shadow. A border stays where it identifies a control or holds
+  a group together, such as a field, an outlined button, a table with its own
+  toolbar or the board's edge, and goes where a fill already does the work,
+  such as a tile on the page, a plain table or a toolbar icon.
 - **Figures are Plex Mono, words are Plex Sans.** A number, a code and text
   LN or an app prints on screen are shown exactly, in mono; a field's label
   and a tag's word are in the sans, in sentence case.

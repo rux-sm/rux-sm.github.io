@@ -665,14 +665,6 @@
 :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action {
   border-radius: 0;
 }
-/* RUX-DARK RINGS ITS HEADER BUTTONS, as GitHub rings the buttons in its
-   header: the 1px border each one already carries takes the colour a
-   button's border has. The account button is a face and takes none, as
-   GitHub's does not, and the ring gives way to the focus ring, which is that
-   same border. */
-:is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:not(:has(.rux--user-avatar), :focus-visible) {
-  border-color: var(--rux-border-subtle-02);
-}
 /* THE ACCOUNT BUTTON IS THE FACE ITSELF where the header's buttons are small:
    the picture is Carbon's 32px avatar, which sits inside Carbon's 48px
    button and fills the dark themes' 32px one. So the button is round with it, the picture is kept from shrinking into
@@ -1440,6 +1432,12 @@
 [data-theme="rux-dark"] .rux--data-table-container {
   border-radius: 0;
 }
+/* A plain rux-dark table needs no box: its fill, its header's rule and the
+   rules between rows hold it. One with its own toolbar or a pager under it
+   keeps the box, which holds those controls together. */
+[data-theme="rux-dark"] .rux--data-table-container:not(:has(.rux--table-toolbar)):not(:has(+ .rux--pagination)) {
+  border-color: transparent;
+}
 /* Inside the box, the header takes no fill and carries one rule under it, as
    Geist's does on the same page; Carbon's filled header inside a bordered box
    reads as two boxes fighting.
@@ -1796,6 +1794,28 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :is(.rux--tile, .rux--popover-content, .rux--list-box__menu, .rux--menu, .rux--overflow-menu-options, .rux--date-picker__calendar) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
+/* RUX-DARK'S TILE STANDS ON ITS FILL where it can: on the page it takes the
+   ladder's step above the layer, layer-02, and no ring, since that step parts
+   it from the page. Inside a raised surface -- a modal, a side panel, a tile,
+   a layer zone -- no further step reads, so it keeps its layer and the ring.
+   A selected tile's ink ring is its border and stands either way. */
+[data-theme="rux-dark"] .rux--tile {
+  background-color: var(--rux-layer-02);
+  box-shadow: none;
+}
+[data-theme="rux-dark"] :is(.rux--modal-container, .rux--side-panel, .rux--layer-two, .rux--layer-three, .rux--tile) .rux--tile {
+  background-color: var(--rux-layer);
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
+}
+/* RUX-DARK CASTS A SHADOW ONLY UNDER WHAT FLOATS: a menu, a list's menu, the
+   calendar, a popover, a dialog and a toast take the soft shadow the
+   scheduler's trip card already casts, so lifting off the page means one
+   thing. A drop shadow, so it follows a popover's caret and leaves the ring
+   above it alone; a tooltip is too small to lift. Tiles, panels and a
+   selected row stay flat. */
+[data-theme="rux-dark"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar, .rux--popover-content:not(.rux--tooltip-content), .rux--modal-container, .rux--toast-notification, .rux--actionable-notification--toast) {
+  filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.5));
+}
 /* GEIST'S MENU HOLDS ITS ITEMS OFF ITS EDGE, measured on its Menu page: 6px of
    padding inside a 12px corner, and each item a 6px pill, so the corners nest.
    Carbon runs its items to the menu's edge, which in this theme laid a hovered
@@ -1887,29 +1907,30 @@
 [data-theme="geist-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
   border-radius: 6px;
 }
-/* rux-dark squares the pill, and its chosen row is the ink with black words,
-   so the one row that says where you are is the brightest thing in the list.
-   Hovering it steps to the inverse hover, and its focus ring is the inset
-   black, since the white ring would vanish on the white row. */
+/* rux-dark squares the pill, and its chosen row is the selected grey with
+   the ink's words set bold: it says where you are without the white fill,
+   which is kept for the page's main action. Hovering it steps to the
+   selected hover, and its focus ring is the theme's own. */
 [data-theme="rux-dark"] :is(a.rux--side-nav__link, .rux--side-nav a.rux--header__menu-item, .rux--side-nav__submenu, .rux--switcher__item-link) {
   border-radius: 0;
 }
 [data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected) {
-  background-color: var(--rux-background-inverse);
-  color: var(--rux-text-inverse);
+  background-color: var(--rux-layer-selected-01);
+  color: var(--rux-text-primary);
+  font-weight: 600;
 }
 [data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected):hover {
-  background-color: var(--rux-background-inverse-hover);
-  color: var(--rux-text-inverse);
+  background-color: var(--rux-layer-selected-hover-01);
+  color: var(--rux-text-primary);
 }
 [data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected) :is(span, .rux--side-nav__submenu-title, .rux--text-truncate-end) {
-  color: var(--rux-text-inverse);
+  color: var(--rux-text-primary);
 }
 [data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false]) .rux--side-nav__icon > svg {
-  fill: var(--rux-icon-inverse);
+  fill: var(--rux-icon-primary);
 }
 [data-theme="rux-dark"] :is(a.rux--side-nav__link[aria-current=page], a.rux--side-nav__link--current, .rux--side-nav a.rux--header__menu-item[aria-current=page], .rux--side-nav .rux--header__menu-item--current, .rux--side-nav__item--active .rux--side-nav__submenu[aria-expanded=false], .rux--switcher__item-link--selected):focus-visible {
-  outline-color: var(--rux-focus-inset);
+  outline-color: var(--rux-focus);
 }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--side-nav__submenu {
   inline-size: calc(100% - 1rem);

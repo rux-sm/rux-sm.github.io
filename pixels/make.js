@@ -6,9 +6,9 @@
    whether a player can solve it by logic alone, and how hard that is, how
    much the first look decides and how much of the board is filled; squares
    that would need a guess are outlined. COLOUR:
-   Brush, Bucket and Eraser and the sixty inks stand open under the board;
-   pick an ink and paint any
-   square, filled or not; that is the picture the puzzle finishes as. The paintbrush colours the
+   Bucket and Eraser, a row under Draw and Colour, and the sixty inks stand
+   open under the board; pick an ink and paint any
+   square, filled or not; that is the picture the puzzle finishes as. Colour paints the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
    starts: dark if it is filled, light if not. A picture never coloured
@@ -250,23 +250,23 @@
   const plain = (y, x) => (under ? under[y][x] : draft[y][x] ? 0 : 1);
   // One key of a group is the chosen one, which app.css fills.
   const choose = (group, on) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', on(b)));
-  // The step's switch shows the step the board is in. In the colour step
-  // its row holds a way back to Draw and the tools instead, and the inks
-  // stand open under it.
+  // The step's switch shows the step the board is in, in both steps. In the
+  // colour step the tools' row and the inks stand open under it.
   const other = () => (step === 'draw' ? 'colour' : 'draw');
   const showStep = () => choose(steps, b => b.dataset.step === step);
   showStep();
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
-    steps.hidden = step === 'colour';
-    $('pixels-tools').hidden = inks.hidden = step !== 'colour';
+    tools.hidden = inks.hidden = step !== 'colour';
     showStep();
     render();
   };
   maker.addEventListener('click', e => {
     const picked = e.target.closest('[data-step]');
-    if (picked && picked.dataset.step !== step) setStep(picked.dataset.step);
+    if (!picked) return;
+    if (picked.dataset.step !== step) setStep(picked.dataset.step);
+    else if (step === 'colour') setTool('paint');
   });
   // Space changes the step from the board and the bar, so the two pictures
   // are compared without the pointer moving. A key of the bar that has the
@@ -308,15 +308,16 @@
     const picked = e.target.closest('.pixels-ink');
     if (picked) setInk(CHARS.indexOf(picked.dataset.ink));
   });
-  // The tool the colour step works with: paint, fill or erase.
+  // The tool the colour step works with: paint, fill or erase. The bucket
+  // and the eraser are each on until tapped again, which goes back to paint.
   let tool = 'paint';
-  const setTool = to => {
+  function setTool(to) {
     tool = to;
-    choose(tools, b => b.dataset.tool === tool);
-  };
+    tools.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tool === tool));
+  }
   tools.addEventListener('click', e => {
     const picked = e.target.closest('[data-tool]');
-    if (picked) setTool(picked.dataset.tool);
+    if (picked) setTool(picked.dataset.tool === tool ? 'paint' : picked.dataset.tool);
   });
 
   // UNDO AND REDO. A step is the picture as it stood: its size, and its
@@ -605,7 +606,7 @@
         draft = grid([...squares].map(s => (s === '.' ? '0' : '1')).join(''));
         under = grid(inked(figure([wearing], { ...me.gear, [wearing]: null })).join(''));
         colours = grid(now.map((s, i) => (squares[i] !== '.' && kept?.length === 225 ? kept[i] : s)).join(''));
-        $('pixels-to-draw').hidden = true;
+        steps.hidden = true;
         setStep('colour');
         return;
       }

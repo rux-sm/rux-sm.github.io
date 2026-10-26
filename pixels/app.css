@@ -858,7 +858,7 @@ html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
 /* FILL AND X, two large keys, each showing only the mark it leaves on a
    square. The chosen one is drawn in the page's opposite colours. */
 .pixels-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.pixels-pick > button, .pixels-tool-group > button {
+.pixels-pick > button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -873,12 +873,12 @@ html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
   font-weight: 600;
   cursor: pointer;
 }
-.pixels-pick > [aria-checked="true"], .pixels-tool-group > [aria-checked="true"] {
+.pixels-pick > :is([aria-checked="true"], [aria-pressed="true"]) {
   border-color: var(--rux-background-inverse);
   background: var(--rux-background-inverse);
   color: var(--rux-text-inverse);
 }
-.pixels-pick > button:focus-visible, .pixels-tool-group > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
+.pixels-pick > button:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: 2px; }
 .pixels-mark { position: relative; flex: none; inline-size: 1.75rem; block-size: 1.75rem; }
 .pixels-mark--fill { background: currentColor; }
 .pixels-mark--x::before,
@@ -933,7 +933,7 @@ html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
    under the board and are as wide as it is, so their height grows with it,
    five twelfths of its width: `--side` is what is left of the window's
    height after the header, the phone's home bar and the 242px the page's
-   top, the head, the line under the board, the row of switches and the bar
+   top, the head, the line under the board, the two rows of switches and the bar
    take, shared twelve parts to the board and five to the inks, so the
    colour step fits and the board is one size in both steps.
    ITS BOARD HAS ONE FOOTPRINT, whatever its size, so a new size does not
@@ -951,23 +951,20 @@ html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
   inline-size: var(--side);
   margin-inline-start: round(down, calc((100cqi - var(--side)) / 2), 1px);
 }
-.pixels-maker { --side: round(down, clamp(150px, min(100cqi, (100dvh - var(--pixels-head, 0px) - var(--game-top, 0px) - env(safe-area-inset-bottom, 0px) - 242px) * 12 / 17), var(--most)), var(--step)); }
+.pixels-maker { --side: round(down, clamp(150px, min(100cqi, (100dvh - var(--pixels-head, 0px) - var(--game-top, 0px) - env(safe-area-inset-bottom, 0px) - 296px) * 12 / 17), var(--most)), var(--step)); }
 .pixels-maker :is(.pixels-corner, .pixels-cols, .pixels-rows) { display: none; }
 .pixels-maker[data-side="20"] { --step: 20px; }
 .pixels-maker-top[hidden], .pixels-maker-check[hidden] { display: none; }
 .pixels-maker-top { display: grid; grid-template-columns: minmax(0, 1fr) 9rem; gap: .5rem; }
 /* THE STEP AND THE TOOLS, under the board's line, are big switches as the
-   game's Fill and X are, one row of them: Draw and Colour, and in the
-   colour step in their place a way back to Draw and Brush, Bucket and
-   Eraser, a quarter of the row each, its icon over its word. */
-.pixels-pick--tools { grid-template-columns: repeat(4, 1fr); }
-.pixels-tool-group { display: contents; }
+   game's Fill and X are: Draw and Colour in both steps, and in the colour
+   step a row of their own under them, Bucket and Eraser, a half each, as
+   Draw and Colour are. The two rows take the same room in both steps, so
+   the board is one size. */
 .pixels-maker-work > .pixels-pick > button { block-size: 3rem; }
-.pixels-pick--tools button { flex-direction: column; gap: 0; block-size: 3rem; padding: 0; }
-.pixels-pick--tools button > svg { inline-size: 1rem; block-size: 1rem; }
-.pixels-pick[hidden], .pixels-pick--tools > [hidden] { display: none; }
+.pixels-pick[hidden] { display: none; }
 .pixels-maker-work > .pixels-pick { margin-block-start: .375rem; }
-/* THE INKS, open under the board for the colour step and hidden while
+/* THE INKS, open under the tools for the colour step and hidden while
    drawing, when they cannot be used, twelve across: a colour to a column,
    from pale to dark, and last the greys from white to black; the chosen
    one is ringed. */

@@ -536,10 +536,13 @@
    secondary text and icons, and #9e9e9e for helper and placeholder text,
    6.37 and 4.93 to 1 on layer-03.
 
-   THE GREYS ARE NEUTRAL, as the mark is, and climb ONE LADDER: from a page of
+   THE GREYS ARE NEUTRAL, as the mark is, and climb ONE LADDER: from
    #181818, each step 0.034 of OKLCH lightness above the last -- #202020,
    #282828, #303030, #393939, #424242, #4b4b4b, #545454 -- so every raised
    surface, hover, press and line is a whole step and none is an in-between.
+   The page alone stands off it, at #1b1b1b, a third of a step above its
+   foot, so a wide empty page under tiles of #282828 reads as the page
+   rather than a hole; a layer's own background keeps the same value.
    A layer's hover is two steps above it, its press four, and its selected
    row three. One grey is set by contrast rather than by the ladder: the
    control grey, #7a7a7a, the ring of an outlined button and the off toggle,
@@ -601,7 +604,7 @@
   --rux-color-scheme: dark;
 
   /* background */
-  --rux-background: #181818;
+  --rux-background: #1b1b1b;
   --rux-background-active: rgba(244, 244, 244, 0.18);
   --rux-background-brand: #f4f4f4;
   --rux-background-hover: rgba(244, 244, 244, 0.06);
@@ -626,7 +629,7 @@
   --rux-layer-active-01: #424242;
   --rux-layer-active-02: #4b4b4b;
   --rux-layer-active-03: #545454;
-  --rux-layer-background-01: #181818;
+  --rux-layer-background-01: #1b1b1b;
   --rux-layer-background-02: #202020;
   --rux-layer-background-03: #282828;
   --rux-layer-hover-01: #303030;
@@ -732,7 +735,7 @@
   --rux-chat-button-text-selected: #b4b4b4;
   --rux-chat-header-background: #202020;
   --rux-chat-header-text: #f4f4f4;
-  --rux-chat-prompt-background: #181818;
+  --rux-chat-prompt-background: #1b1b1b;
   --rux-chat-prompt-border-end: rgba(57, 57, 57, 0);
   --rux-chat-prompt-border-start: #393939;
   --rux-chat-prompt-text: #f4f4f4;
@@ -761,7 +764,7 @@
   --rux-button-danger-secondary: oklch(0.75 0.183 25);
   --rux-button-danger-hover: oklch(0.54 0.2 25);
   --rux-button-danger-active: oklch(0.49 0.2 25);
-  --rux-button-separator: #181818;
+  --rux-button-separator: #1b1b1b;
   --rux-button-disabled: #303030;
 
   /* tag */
@@ -807,10 +810,10 @@
   --rux-tag-hover-warm-gray: #5e5e5e;
 
   /* notification */
-  --rux-notification-background-error: color-mix(in oklab, oklch(0.75 0.183 25) 15%, #181818);
-  --rux-notification-background-success: color-mix(in oklab, oklch(0.75 0.2 150) 15%, #181818);
-  --rux-notification-background-info: color-mix(in oklab, oklch(0.75 0.132 262) 15%, #181818);
-  --rux-notification-background-warning: color-mix(in oklab, oklch(0.82 0.188 75) 15%, #181818);
+  --rux-notification-background-error: color-mix(in oklab, oklch(0.75 0.183 25) 15%, #1b1b1b);
+  --rux-notification-background-success: color-mix(in oklab, oklch(0.75 0.2 150) 15%, #1b1b1b);
+  --rux-notification-background-info: color-mix(in oklab, oklch(0.75 0.132 262) 15%, #1b1b1b);
+  --rux-notification-background-warning: color-mix(in oklab, oklch(0.82 0.188 75) 15%, #1b1b1b);
   --rux-notification-action-hover: var(--rux-layer-hover);
   --rux-notification-action-tertiary-inverse: oklch(0.575 0.2 262);
   --rux-notification-action-tertiary-inverse-active: oklch(0.475 0.2 262);

@@ -15,9 +15,9 @@ is that ink at the strength geist-dark gives white. Below the ink, words take
 two greys: `#b4b4b4` for secondary text and icons, `#9e9e9e` for helper and
 placeholder text.
 
-**The greys are neutral and climb one ladder,** from a page of `#181818`, each
+**The greys are neutral and climb one ladder,** from `#181818`, each
 step 0.034 of OKLCH lightness above the last: `#202020`, `#282828`, `#303030`,
-`#393939`, `#424242`, `#4b4b4b`, `#545454`. A layer's hover is two steps above
+`#393939`, `#424242`, `#4b4b4b`, `#545454`. The page alone stands off it, at `#1b1b1b`, so a wide empty page under `#282828` tiles reads as the page rather than a hole. A layer's hover is two steps above
 it, its press four and its selected row three. **The lines are quiet:** a rule
 and a box's edge are `#424242`, and the faint rule `#393939`. **One control
 grey,** `#7a7a7a`, 4.1 to 1 on the page, rings a field and an outlined button,
@@ -59,7 +59,7 @@ the page, so a big surface stays calm.
 | Token | geist-dark | rux-dark | From |
 | :--- | :--- | :--- | :--- |
 | `color-scheme` | `dark` | `dark` | kept |
-| `background` | `#000000` | `#181818` | the page, the ladder's first step |
+| `background` | `#000000` | `#1b1b1b` | the page, a third of a step above the ladder's foot |
 | `background-active` | `rgba(255, 255, 255, 0.18)` | `rgba(244, 244, 244, 0.18)` | the ink at 0.18 |
 | `background-brand` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `background-hover` | `rgba(255, 255, 255, 0.06)` | `rgba(244, 244, 244, 0.06)` | the ink at 0.06 |
@@ -82,7 +82,7 @@ the page, so a big surface stays calm.
 | `layer-active-01` | `#2e2e2e` | `#424242` | the ladder, step 5 |
 | `layer-active-02` | `#333333` | `#4b4b4b` | the ladder, step 6 |
 | `layer-active-03` | `#3f3f3f` | `#545454` | the ladder, step 7 |
-| `layer-background-01` | `#000000` | `#181818` | the page, the ladder's first step |
+| `layer-background-01` | `#000000` | `#1b1b1b` | the page, a third of a step above the ladder's foot |
 | `layer-background-02` | `#0a0a0a` | `#202020` | the ladder, step 1 |
 | `layer-background-03` | `#111111` | `#282828` | the ladder, step 2 |
 | `layer-hover-01` | `#1a1a1a` | `#303030` | the ladder, step 3 |
@@ -172,7 +172,7 @@ the page, so a big surface stays calm.
 | `chat-button-text-selected` | `#a1a1a1` | `#b4b4b4` | secondary text grey, 6.37 to 1 on layer-03 |
 | `chat-header-background` | `#0a0a0a` | `#202020` | the ladder, step 1 |
 | `chat-header-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
-| `chat-prompt-background` | `#000000` | `#181818` | the page, the ladder's first step |
+| `chat-prompt-background` | `#000000` | `#1b1b1b` | the page, a third of a step above the ladder's foot |
 | `chat-prompt-border-end` | `rgba(26, 26, 26, 0)` | `rgba(57, 57, 57, 0)` | the faint line, clear |
 | `chat-prompt-border-start` | `#1a1a1a` | `#393939` | the ladder, step 4 |
 | `chat-prompt-text` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
@@ -197,7 +197,7 @@ the page, so a big surface stays calm.
 | `button-danger-secondary` | `#ff565f` | `oklch(0.75 0.183 25)` | red ink |
 | `button-danger-hover` | `#cd2b31` | `oklch(0.54 0.2 25)` | red fill, hover |
 | `button-danger-active` | `#b81d26` | `oklch(0.49 0.2 25)` | red fill, pressed |
-| `button-separator` | `#000000` | `#181818` | the page, the ladder's first step |
+| `button-separator` | `#000000` | `#1b1b1b` | the page, a third of a step above the ladder's foot |
 | `button-disabled` | `#1a1a1a` | `#303030` | the ladder, step 3 |
 | `tag-background-red` | `#4f000f` | `oklch(0.40 0.165 25)` | red container |
 | `tag-color-red` | `#ff565f` | `oklch(0.92 0.05 25)` | red words |
@@ -239,10 +239,10 @@ the page, so a big surface stays calm.
 | `tag-background-warm-gray` | `#262626` | `#545454` | neutral, the ladder, step 7 |
 | `tag-color-warm-gray` | `#ededed` | `#f4f4f4` | the ink, the mark's Carbon gray 10 |
 | `tag-hover-warm-gray` | `#2b2b2b` | `#5e5e5e` | neutral, the ladder, step 8 |
-| `notification-background-error` | `#220b0c` | `color-mix(in oklab, oklch(0.75 0.183 25) 15%, #181818)` | red ink at 15% over the page, #181818 |
-| `notification-background-success` | `#0b190d` | `color-mix(in oklab, oklch(0.75 0.2 150) 15%, #181818)` | green ink at 15% over the page, #181818 |
-| `notification-background-info` | `#0c1926` | `color-mix(in oklab, oklch(0.75 0.132 262) 15%, #181818)` | blue ink at 15% over the page, #181818 |
-| `notification-background-warning` | `#251905` | `color-mix(in oklab, oklch(0.82 0.188 75) 15%, #181818)` | amber ink at 15% over the page, #181818 |
+| `notification-background-error` | `#220b0c` | `color-mix(in oklab, oklch(0.75 0.183 25) 15%, #1b1b1b)` | red ink at 15% over the page, #1b1b1b |
+| `notification-background-success` | `#0b190d` | `color-mix(in oklab, oklch(0.75 0.2 150) 15%, #1b1b1b)` | green ink at 15% over the page, #1b1b1b |
+| `notification-background-info` | `#0c1926` | `color-mix(in oklab, oklch(0.75 0.132 262) 15%, #1b1b1b)` | blue ink at 15% over the page, #1b1b1b |
+| `notification-background-warning` | `#251905` | `color-mix(in oklab, oklch(0.82 0.188 75) 15%, #1b1b1b)` | amber ink at 15% over the page, #1b1b1b |
 | `notification-action-hover` | `var(--rux-layer-hover)` | `var(--rux-layer-hover)` | Carbon g100, by reference |
 | `notification-action-tertiary-inverse` | `#0f62fe` | `oklch(0.575 0.2 262)` | blue fill |
 | `notification-action-tertiary-inverse-active` | `#002d9c` | `oklch(0.475 0.2 262)` | blue fill, pressed |

@@ -949,7 +949,10 @@
     // One week or two, from the range asked for. The board's columns follow
     // it; a spare week inherits the count from the pane.
     const days = Math.round((weekEnd - weekStart) / DAY) + 1;
-    if (!target) schEl.style.setProperty('--scheduler-days', String(days));
+    if (!target) {
+      schEl.style.setProperty('--scheduler-days', String(days));
+      schEl.classList.toggle('scheduler-week--two', days === 14);
+    }
     const driversById = new Map(drivers.map(d => [d.id, d]));
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip

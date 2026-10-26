@@ -29,8 +29,8 @@ showing them what to do: calm, clear and specific. The voice is atlas's
 
 ## Tasks
 
+- [ ] Run order planning for one item: reword and walk
 - [ ] Ideas' full text, which only the owner sees, in atlas's concepts
 - [ ] Demand to shipment via planning: reword and walk
-- [ ] Run order planning for one item: reword and walk
 - [ ] Create basic test items and defaults: reword and walk
 - [ ] Side tasks with steps: reword and walk with the guide nearest them

@@ -36,12 +36,9 @@
   /* The roster, the lists' pane, Tasks and Departures, and the Forms and
      Quote calculator panels: Carbon's `rux--side-panel--sm`. */
   --scheduler-list-w: 20rem;
-  /* The document viewer, and made larger Carbon's `md`,
-     `lg` and then its `xl`. `--scheduler-viewer-w` is the one showing. */
+  /* The document viewer; opened larger it leaves its column for a window
+     centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
-  --scheduler-viewer-md-w: 30rem;
-  --scheduler-viewer-lg-w: 40rem;
-  --scheduler-viewer-xl-w: 65rem;
   --scheduler-viewer-w: var(--scheduler-viewer-sm-w);
   /* The trip editor. */
   --scheduler-editor-w: 22rem;
@@ -2313,18 +2310,12 @@ button.scheduler-row-head__num::after {
 }
 
 /* Each document panel's column: a stored file's, the forms list's and the
-   calculator's. The file's width
-   matches the panel's `rux--side-panel--sm`, `--md`, `--lg` or `--xl` class,
-   which data.js swaps together with the stored file's column's `data-size`;
-   the column hands its width to the panel through Carbon's own custom-size
-   property, since the small size is the roster's 24rem rather than Carbon's
-   20rem. The forms list and the calculator have columns of their own at the
-   lists' 20rem, Carbon's `sm`, with no size button. Like the editor's column each never shrinks and app.js gives it a
+   calculator's. The file's column hands its 24rem to the panel through
+   Carbon's own custom-size property, since that is wider than Carbon's
+   20rem `sm`. The forms list and the calculator have columns of their own at
+   the lists' 20rem, Carbon's `sm`, with no expand button. Like the editor's column each never shrinks and app.js gives it a
    definite height, and data.js orders it left of the week among the open
    panels. */
-.scheduler-viewer[data-size="md"] { --scheduler-viewer-w: var(--scheduler-viewer-md-w); }
-.scheduler-viewer[data-size="lg"] { --scheduler-viewer-w: var(--scheduler-viewer-lg-w); }
-.scheduler-viewer[data-size="xl"] { --scheduler-viewer-w: var(--scheduler-viewer-xl-w); }
 .scheduler-viewer--list { --scheduler-viewer-w: var(--scheduler-list-w); }
 .scheduler-viewer {
   --rux-side-panel-modified-size: var(--scheduler-viewer-w);
@@ -2332,6 +2323,31 @@ button.scheduler-row-head__num::after {
   min-inline-size: var(--scheduler-viewer-w);
   max-inline-size: 100%;
   block-size: max(24rem, calc(100dvh - 15rem));
+}
+/* A STORED FILE OPENED LARGER stands in a window centred over the page, as
+   Carbon's modal stands, a letter page's reading width and the window's
+   height less 32px each side, and the whole screen on a phone. data.js makes
+   the panel the browser's popover, so it is drawn in the top layer, over the
+   header and clear of the board; the page under it is dimmed with Carbon's
+   overlay. The browser's own popover box, its border, padding and fitted
+   size, gives way to the panel's. The column keeps its width beside the week. */
+.scheduler-viewer[data-expanded] > .rux--side-panel:popover-open {
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  inline-size: min(calc(100vw - 2 * var(--rux-spacing-07)), 64rem);
+  max-inline-size: none;
+  block-size: calc(100dvh - 2 * var(--rux-spacing-07));
+  max-block-size: none;
+}
+.scheduler-viewer[data-expanded] > .rux--side-panel::backdrop { background-color: var(--rux-overlay, rgba(0, 0, 0, 0.6)); }
+@media (max-width: 41.98rem) {
+  .scheduler-viewer[data-expanded] > .rux--side-panel:popover-open {
+    inline-size: 100vw;
+    block-size: 100dvh;
+  }
 }
 /* A TITLE THAT LISTS. Where a document is one of several the head's title is
    the button that names the others, so it takes a pointer and the chevron sits

@@ -13489,8 +13489,8 @@
       const aside = column.querySelector('aside');
       aside?.setAttribute('aria-label', VIEWER_NAMES[key]);
       column.querySelector(`#${prefix}-close`)?.setAttribute('aria-label', `Close ${VIEWER_NAMES[key].toLowerCase()}`);
-      // Only a stored file takes a larger size, so the copies have no size button.
-      column.querySelector(`#${prefix}-size`)?.remove();
+      // Only a stored file opens larger, so the copies have no expand button.
+      column.querySelector(`#${prefix}-expand`)?.remove();
       // The forms list and the calculator open at the lists' width; see app.css.
       column.classList.add('scheduler-viewer--list');
     }
@@ -13622,9 +13622,8 @@
      send `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is
      fluid instead; there is no file to download, and the print dialog saves a
      PDF. Print stands for both, and a form adds its own controls ahead of it.
-     The size button is a stored file's too: a form, the forms list and the
-     calculator lay themselves out to the panel, so they open at its small
-     width with no button, and a file brings back the size this browser keeps.
+     The expand button is a stored file's too: a form, the forms list and the
+     calculator lay themselves out to the panel, so they have no button.
 
      OPEN IN NEW TAB IS A STORED FILE'S ALONE. A form opened as a page took the
      board's place and the week with it, and everything the page offers the
@@ -13989,6 +13988,7 @@
   function closeViewer(returnFocus = true) {
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.hidden = true;
+    viewerEl.removeAttribute('data-expanded');
     viewerDocId = null;
     viewerType = null;
     viewerMark = null;
@@ -16178,44 +16178,70 @@
   document.getElementById('scheduler-new-trip')?.addEventListener('click', () => whenSafe(() => openCreate()));
   document.getElementById('scheduler-panel-close')?.addEventListener('click', () => whenSafe(() => closePanel()));
 
-  /* THE VIEWER'S FOUR SIZES. Each press of the size button takes the panel a
-     Carbon size wider, small to medium to large to extra-large, and the
-     widest goes back to small. A wider panel is a larger page, since the
-     document fits its width. The choice is this browser's, kept for the next
-     document. */
-  const VIEWER_SIZES = ['sm', 'md', 'lg', 'xl'];
-  const VIEWER_CLASSES = { sm: 'rux--side-panel--sm', md: 'rux--side-panel--md', lg: 'rux--side-panel--lg', xl: 'rux--side-panel--xl' };
-  const VIEWER_SIZE_KEY = 'rux.scheduler.viewer-size';
-  const viewerSizeBtn = document.getElementById('scheduler-viewer-size');
+  /* A STORED FILE OPENS LARGER IN THE MIDDLE OF THE SCREEN. The expand
+     button lifts the panel itself to a window centred over the dimmed page,
+     its head, toolbar and file with it. The window is the browser's popover:
+     it stands in the top layer, above the header and clear of the board's
+     clipping, without leaving its place in the page, so the file does not
+     reload, and the browser puts it back on Escape or a press outside. The
+     button again puts it back too, and closing the panel lets it go. The
+     column keeps its place beside the week meanwhile, so nothing behind the
+     window moves. The column's `data-expanded` is the state, and everything
+     else follows it. */
+  const viewerColumn = document.getElementById('scheduler-viewer');
   const viewerPanelEl = document.getElementById('scheduler-viewer-panel');
-  function setViewerSize(size) {
-    const column = viewers.doc?.el;
-    if (!column || !viewerPanelEl) return;
-    if (size === 'sm') delete column.dataset.size; else column.dataset.size = size;
-    for (const each of VIEWER_SIZES) viewerPanelEl.classList.toggle(VIEWER_CLASSES[each], each === size);
-    if (viewerSizeBtn) {
-      const widest = size === VIEWER_SIZES.at(-1);
-      const words = widest ? 'Smaller document' : 'Larger document';
-      viewerSizeBtn.setAttribute('aria-label', words);
-      viewerSizeBtn.title = words;
-      viewerSizeBtn.querySelector('use')?.setAttribute('href', widest ? '#m-close_fullscreen' : '#m-open_in_full');
+  const viewerExpandBtn = document.getElementById('scheduler-viewer-expand');
+  const viewerExpanded = () => !!viewerColumn?.hasAttribute('data-expanded');
+  const setViewerExpanded = on => viewerColumn?.toggleAttribute('data-expanded', on);
+  function syncViewerExpand() {
+    const on = viewerExpanded();
+    if (viewerPanelEl && on && !viewerPanelEl.hasAttribute('popover')) {
+      viewerPanelEl.setAttribute('popover', 'auto');
+      viewerPanelEl.showPopover();
+    } else if (viewerPanelEl && !on && viewerPanelEl.hasAttribute('popover')) {
+      if (viewerPanelEl.matches(':popover-open')) viewerPanelEl.hidePopover();
+      viewerPanelEl.removeAttribute('popover');
     }
-    placeRoom();
+    // The button names what a press does.
+    if (!viewerExpandBtn) return;
+    const words = on ? 'Back to the panel' : 'Open larger';
+    viewerExpandBtn.setAttribute('aria-label', words);
+    viewerExpandBtn.title = words;
+    viewerExpandBtn.querySelector('use')?.setAttribute('href', on ? '#m-close_fullscreen' : '#m-open_in_full');
   }
-  viewerSizeBtn?.addEventListener('click', () => {
-    const now = VIEWER_SIZES.indexOf(viewers.doc?.el?.dataset.size ?? 'sm');
-    const size = VIEWER_SIZES[(now + 1) % VIEWER_SIZES.length];
-    try { localStorage.setItem(VIEWER_SIZE_KEY, size); } catch { /* kept for this visit */ }
-    setViewerSize(size);
-  });
-  // The size this browser keeps for a stored file, small where it keeps none.
-  function keptViewerSize() {
-    try {
-      const kept = localStorage.getItem(VIEWER_SIZE_KEY);
-      return VIEWER_SIZES.includes(kept) ? kept : 'sm';
-    } catch { return 'sm'; }
-  }
-  setViewerSize(keptViewerSize());
+  if (viewerColumn) new MutationObserver(syncViewerExpand).observe(viewerColumn, { attributes: true, attributeFilter: ['data-expanded'] });
+  viewerExpandBtn?.addEventListener('click', () => setViewerExpanded(!viewerExpanded()));
+  /* The window's close is the window's, as a modal's is: it puts the file back
+     in its panel, which stays open, and only the panel's own close shuts it.
+     Caught first, so the panel's close handler never hears it. */
+  document.getElementById('scheduler-viewer-close')?.addEventListener('click', e => {
+    if (!viewerExpanded()) return;
+    e.stopImmediatePropagation();
+    setViewerExpanded(false);
+  }, true);
+  // The browser's own dismissal, Escape or a press outside, puts it back as the button does.
+  viewerPanelEl?.addEventListener('toggle', e => { if (e.newState === 'closed') setViewerExpanded(false); });
+  /* A press outside the window only puts it back, as a press on a modal's
+     scrim does: the browser lets it through to whatever lies under the
+     window, and a trip selected there would take the panel to its own file.
+     It is held at the document before anything below hears it. A menu the
+     window opened is part of it. */
+  let viewerSwallow = false;
+  const holdOutside = e => {
+    if (!viewerExpanded() || viewerPanelEl.contains(e.target) || e.target.closest?.('.rux--menu, .rux--modal')) return;
+    viewerSwallow = true;
+    e.stopPropagation();
+  };
+  document.addEventListener('pointerdown', holdOutside, true);
+  document.addEventListener('mousedown', e => { if (viewerSwallow) e.stopPropagation(); }, true);
+  // A press that ends without a click, a drag, holds nothing after it.
+  document.addEventListener('pointerup', () => { if (viewerSwallow) setTimeout(() => { viewerSwallow = false; }); }, true);
+  document.addEventListener('click', e => {
+    if (!viewerSwallow) return;
+    viewerSwallow = false;
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
   /* Leaving whichever panel is in front of the board, which Escape and a press
      on the scrim both do. It answers whether there was one, so Escape can go
      on to what it means with nothing in front. */
@@ -16237,6 +16263,8 @@
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || e.defaultPrevented) return;
     if (document.querySelector('.rux--modal.is-visible')) return;
+    // A document opened larger goes back to its panel first.
+    if (viewerExpanded()) { e.preventDefault(); setViewerExpanded(false); viewerExpandBtn?.focus(); return; }
     /* A panel in front of the board is the only thing on screen, so Escape
        leaves it wherever focus is: the board behind it is inert and has
        nothing to take the key for. The editor beside a panel over the week

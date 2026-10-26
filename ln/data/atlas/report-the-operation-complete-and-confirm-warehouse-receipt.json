@@ -21,72 +21,16 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
-  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations",
-  "session": "Report Operations",
-  "sessionCode": "tisfc0130m000",
-  "walked": "2026-08-18",
+  "updated": "2026-10-25",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The finished item is posted to inventory and on-hand increases at the receiving warehouse."
-      }
-    ],
-    "text": "The finished item is posted to inventory and on-hand increases at the receiving warehouse."
-  },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "You need step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the existing foundation",
-          "href": "confirm-the-existing-foundation.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 4 of "
-        },
-        {
-          "t": "link",
-          "v": "Create the production order",
-          "href": "create-the-production-order.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 5 of "
-        },
-        {
-          "t": "link",
-          "v": "Create the production order",
-          "href": "create-the-production-order.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 7 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the existing foundation",
-          "href": "confirm-the-existing-foundation.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "You need step 1 of Confirm the existing foundation; step 4 of Create the production order; step 5 of Create the production order; step 7 of Confirm the existing foundation."
-    }
-  ],
-  "why": {
-    "tokens": [
-      {
-        "t": "text",
-        "v": "Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes "
+        "v": "The order reads "
       },
       {
         "t": "strong",
@@ -94,18 +38,39 @@
       },
       {
         "t": "text",
-        "v": " when reported and "
-      },
-      {
-        "t": "strong",
-        "v": "Completed"
-      },
-      {
-        "t": "text",
-        "v": " only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The task ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+        "v": ", and the finished item's on-hand rose by the quantity made."
       }
     ],
-    "text": "Reporting the last operation complete records the quantity produced and, depending on a parameter, posts it to inventory silently, not at all, or after asking. The order becomes Production Completed when reported and Completed only when Warehousing finishes the inbound receipt, so the two statuses are a handoff, not a failure. The task ends with an inventory read because the Manufacturing-side status alone does not prove the stock arrived."
+    "text": "The order reads Production Completed, and the finished item's on-hand rose by the quantity made."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need the active order from step 10 of "
+        },
+        {
+          "t": "link",
+          "v": "Issue material to the job shop",
+          "href": "issue-material-to-the-job-shop.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need the active order from step 10 of Issue material to the job shop."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Two reports finish the order. Reporting the operation records what was made. Reporting the order delivers it to the receiving warehouse, and your answer to one question decides whether Warehousing has to receive it by hand. The on-hand figure is the proof the stock arrived."
+      }
+    ],
+    "text": "Two reports finish the order. Reporting the operation records what was made. Reporting the order delivers it to the receiving warehouse, and your answer to one question decides whether Warehousing has to receive it by hand. The on-hand figure is the proof the stock arrived."
   },
   "blocks": [
     {
@@ -131,61 +96,48 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "On "
+                },
+                {
+                  "t": "chip",
+                  "v": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", tick the order and choose "
                 },
                 {
                   "t": "command",
-                  "route": "Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations"
-                },
-                {
-                  "t": "text",
-                  "v": " ("
-                },
-                {
-                  "t": "session",
-                  "code": "tisfc0130m000"
-                },
-                {
-                  "t": "text",
-                  "v": ") for the order's next operation"
+                  "route": "Actions ➔ Report Operations Completed"
                 }
               ],
-              "text": "Open Manufacturing ➔ Job Shop ➔ Production Control ➔ Report Operations (tisfc0130m000) for the order's next operation"
+              "text": "On Production Orders, tick the order and choose Actions ➔ Report Operations Completed"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The operation line shows "
+                  "v": "One line per operation, "
                 },
                 {
-                  "t": "field",
-                  "v": "Operation Status"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Output"
-                },
-                {
-                  "t": "text",
-                  "v": ", and the item from step 1 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the existing foundation",
-                  "href": "confirm-the-existing-foundation.md"
+                  "t": "status",
+                  "v": "Active"
                 }
               ],
-              "text": "The operation line shows Operation Status, Planned Output, and the item from step 1 of Confirm the existing foundation"
+              "text": "One line per operation, Active"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-production-order",
+              "step": "6",
+              "n": 0,
+              "label": "production order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -202,37 +154,43 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the production quantity from step 4 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the production order",
-                  "href": "create-the-production-order.md"
-                },
-                {
-                  "t": "text",
-                  "v": " in "
+                  "v": "Double-click the operation's "
                 },
                 {
                   "t": "field",
-                  "v": "Completed"
+                  "v": "Additional Completed"
+                },
+                {
+                  "t": "text",
+                  "v": " and type the production quantity"
                 }
               ],
-              "text": "Enter the production quantity from step 4 of Create the production order in Completed"
+              "text": "Double-click the operation's Additional Completed and type the production quantity"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The quantity is accepted"
+                  "v": "—"
                 }
               ],
-              "text": "The quantity is accepted"
+              "text": "—"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "create-the-production-order",
+              "step": "4",
+              "n": 0,
+              "label": "production quantity"
+            }
+          ]
         },
         {
           "cells": [
@@ -249,19 +207,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Save"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Cumulative Completed"
+                },
+                {
                   "t": "text",
-                  "v": "If this was the last operation, LN can book the completed product into inventory"
+                  "v": " = the production quantity. The operation is still "
+                },
+                {
+                  "t": "status",
+                  "v": "Active"
                 }
               ],
-              "text": "If this was the last operation, LN can book the completed product into inventory"
+              "text": "Cumulative Completed = the production quantity. The operation is still Active"
             }
           ],
           "id": "3",
@@ -283,19 +253,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Repeat steps 1–3 for each remaining operation, in routing sequence"
+                  "v": "Tick the operation and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
                 }
               ],
-              "text": "Repeat steps 1–3 for each remaining operation, in routing sequence"
+              "text": "Tick the operation and click Complete on the toolbar"
             },
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Operation Status"
+                },
+                {
                   "t": "text",
-                  "v": "Each operation reports complete in turn"
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Completed"
                 }
               ],
-              "text": "Each operation reports complete in turn"
+              "text": "Operation Status = Completed"
             }
           ],
           "id": "4",
@@ -317,32 +303,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If "
+                  "v": "Back on "
                 },
                 {
-                  "t": "session",
-                  "code": "tisfc0120s000",
-                  "name": "Report Orders Completed"
+                  "t": "chip",
+                  "v": "Production Orders"
                 },
                 {
                   "t": "text",
-                  "v": " opens on the last operation's save, enter the completed quantity. It goes in "
+                  "v": ", with the order still ticked, choose "
                 },
                 {
-                  "t": "field",
-                  "v": "Additional Quantity to Deliver"
+                  "t": "command",
+                  "route": "Actions ➔ Report Orders Completed"
                 }
               ],
-              "text": "If Report Orders Completed (tisfc0120s000) opens on the last operation's save, enter the completed quantity. It goes in Additional Quantity to Deliver"
+              "text": "Back on Production Orders, with the order still ticked, choose Actions ➔ Report Orders Completed"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Report Orders Completed"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " opens, with the receiving warehouse"
                 }
               ],
-              "text": "—"
+              "text": "Report Orders Completed opens, with the receiving warehouse"
             }
           ],
           "id": "5",
@@ -364,32 +353,51 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the quantity"
+                  "v": "Type the production quantity in "
+                },
+                {
+                  "t": "field",
+                  "v": "Additional Quantity to Deliver"
+                },
+                {
+                  "t": "text",
+                  "v": " and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Save the quantity"
+              "text": "Type the production quantity in Additional Quantity to Deliver and click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN asks "
+                  "v": "LN asks: "
                 },
                 {
-                  "t": "chip",
-                  "v": "\"Automatically confirm receipt when activating warehouse order inbound line?\""
-                },
-                {
-                  "t": "text",
-                  "v": " — see the note below before answering"
+                  "t": "literal",
+                  "v": "Automatically confirm receipt when activating warehouse order inbound line?"
                 }
               ],
-              "text": "LN asks \"Automatically confirm receipt when activating warehouse order inbound line?\" — see the note below before answering"
+              "text": "LN asks: Automatically confirm receipt when activating warehouse order inbound line?"
             }
           ],
           "id": "6",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            1
+          ],
+          "uses": [
+            {
+              "task": "create-the-production-order",
+              "step": "4",
+              "n": 0,
+              "label": "production quantity"
+            }
+          ]
         },
         {
           "cells": [
@@ -406,54 +414,40 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Answer the receipt question, and record which way you answered"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Yes"
                 }
               ],
-              "text": "Answer the receipt question, and record which way you answered"
+              "text": "Click Yes"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "field",
+                  "v": "Delivered"
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = the production quantity, "
                 },
                 {
-                  "t": "value",
-                  "v": "receipt answer"
-                },
-                {
-                  "t": "text",
-                  "v": "; "
-                },
-                {
-                  "t": "pencil"
+                  "t": "field",
+                  "v": "Quantity to Deliver"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "delivered"
-                },
-                {
-                  "t": "text",
-                  "v": " = the production quantity if you answered "
-                },
-                {
-                  "t": "chip",
-                  "v": "Yes"
+                  "v": " = 0"
                 }
               ],
-              "text": "receipt answer; delivered = the production quantity if you answered Yes"
+              "text": "Delivered = the production quantity, Quantity to Deliver = 0"
             }
           ],
           "id": "7",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -470,104 +464,48 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Return to "
-                },
-                {
-                  "t": "session",
-                  "code": "tisfc0501m000",
-                  "name": "Production Orders"
-                },
-                {
-                  "t": "text",
-                  "v": " and read "
+                  "v": "Set "
                 },
                 {
                   "t": "field",
                   "v": "Order Status"
-                }
-              ],
-              "text": "Return to Production Orders (tisfc0501m000) and read Order Status"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " to "
                 },
                 {
-                  "t": "value",
-                  "v": "order status after reporting"
-                },
-                {
-                  "t": "text",
-                  "v": ". "
-                },
-                {
-                  "t": "status",
+                  "t": "chip",
                   "v": "Production Completed"
                 },
                 {
                   "t": "text",
-                  "v": " means Warehousing has not finished the inbound procedure yet; "
+                  "v": " and click "
                 },
                 {
-                  "t": "status",
-                  "v": "Completed"
-                },
-                {
-                  "t": "text",
-                  "v": " means the goods are in inventory. On the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Yes"
-                },
-                {
-                  "t": "text",
-                  "v": " path expect "
-                },
-                {
-                  "t": "field",
-                  "v": "Quantity Delivered"
-                },
-                {
-                  "t": "text",
-                  "v": " = the production quantity and "
-                },
-                {
-                  "t": "field",
-                  "v": "Quantity to Deliver"
-                },
-                {
-                  "t": "text",
-                  "v": " = 0; on the "
-                },
-                {
-                  "t": "chip",
-                  "v": "No"
-                },
-                {
-                  "t": "text",
-                  "v": " path the quantity sits in "
-                },
-                {
-                  "t": "field",
-                  "v": "Quantity to Deliver"
-                },
-                {
-                  "t": "text",
-                  "v": " until Warehousing processes the inbound line"
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "order status after reporting. Production Completed means Warehousing has not finished the inbound procedure yet; Completed means the goods are in inventory. On the Yes path expect Quantity Delivered = the production quantity and Quantity to Deliver = 0; on the No path the quantity sits in Quantity to Deliver until Warehousing processes the inbound line"
+              "text": "Set Order Status to Production Completed and click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Completion Date"
+                },
+                {
+                  "t": "text",
+                  "v": " fills in"
+                }
+              ],
+              "text": "Completion Date fills in"
             }
           ],
           "id": "8",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -584,27 +522,83 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "On "
                 },
                 {
-                  "t": "session",
-                  "code": "whwmd4300m000",
-                  "name": "Inventory 360"
+                  "t": "chip",
+                  "v": "Production Orders"
                 },
                 {
                   "t": "text",
-                  "v": " and filter the finished item at the receiving warehouse from step 5 of "
+                  "v": ", click "
                 },
                 {
-                  "t": "link",
-                  "v": "Create the production order",
-                  "href": "create-the-production-order.md"
+                  "t": "button",
+                  "label": "Refresh"
                 }
               ],
-              "text": "Open Inventory 360 (whwmd4300m000) and filter the finished item at the receiving warehouse from step 5 of Create the production order"
+              "text": "On Production Orders, click Refresh"
             },
             {
               "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Production Completed"
+                }
+              ],
+              "text": "Order Status = Production Completed"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
+                },
+                {
+                  "t": "text",
+                  "v": ", filter the finished item, tick its row and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                }
+              ],
+              "text": "Open Inventory 360, filter the finished item, tick its row and click Warehouse Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The receiving warehouse's on-hand rose by the production quantity — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -615,45 +609,106 @@
                 {
                   "t": "value",
                   "v": "finished item on-hand after"
-                },
-                {
-                  "t": "text",
-                  "v": "; on-hand has increased by the production quantity over step 7 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the existing foundation",
-                  "href": "confirm-the-existing-foundation.md"
-                },
-                {
-                  "t": "text",
-                  "v": ". On the "
-                },
-                {
-                  "t": "chip",
-                  "v": "No"
-                },
-                {
-                  "t": "text",
-                  "v": " path this only holds once Warehousing has finished the inbound procedure"
                 }
               ],
-              "text": "finished item on-hand after; on-hand has increased by the production quantity over step 7 of Confirm the existing foundation. On the No path this only holds once Warehousing has finished the inbound procedure"
+              "text": "The receiving warehouse's on-hand rose by the production quantity — finished item on-hand after"
             }
           ],
-          "id": "9",
+          "id": "10",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "confirm-the-existing-foundation",
+              "step": "3",
+              "n": 2,
+              "label": "finished item on-hand before"
+            }
+          ]
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Additional Completed"
+              }
+            ],
+            "text": "Additional Completed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "1"
+              }
+            ],
+            "text": "1"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Additional Quantity to Deliver"
+              }
+            ],
+            "text": "Additional Quantity to Deliver"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "1"
+              }
+            ],
+            "text": "1"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receipt question"
+              }
+            ],
+            "text": "The receipt question"
+          },
+          {
+            "tokens": [
+              {
+                "t": "button",
+                "label": "Yes"
+              }
+            ],
+            "text": "Yes"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Production Orders, the Actions menu's two Report entries",
+    "path": "report-the-operation-complete-and-confirm-warehouse-receipt.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -666,20 +721,24 @@
           {
             "tokens": [
               {
+                "t": "button",
+                "label": "Complete"
+              },
+              {
                 "t": "text",
-                "v": "The order cannot be reported completed"
+                "v": " is greyed out"
               }
             ],
-            "text": "The order cannot be reported completed"
+            "text": "Complete is greyed out"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open"
+                "v": "Tick the operation's row first"
               }
             ],
-            "text": "An earlier operation is not completed, an operation is blocked, or an inspection order is still open"
+            "text": "Tick the operation's row first"
           }
         ]
       },
@@ -693,19 +752,27 @@
               },
               {
                 "t": "text",
-                "v": " does not open after the last operation"
+                "v": " has nothing to deliver"
               }
             ],
-            "text": "Report Orders Completed does not open after the last operation"
+            "text": "Report Orders Completed has nothing to deliver"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop and record the operation's status and any message; this dialog's trigger condition is not documented "
+                "v": "The operation isn't "
+              },
+              {
+                "t": "status",
+                "v": "Completed"
+              },
+              {
+                "t": "text",
+                "v": " yet. Go back to step 4"
               }
             ],
-            "text": "Stop and record the operation's status and any message; this dialog's trigger condition is not documented"
+            "text": "The operation isn't Completed yet. Go back to step 4"
           }
         ]
       },
@@ -715,41 +782,73 @@
             "tokens": [
               {
                 "t": "field",
-                "v": "Quantity Delivered"
+                "v": "Quantity to Deliver"
               },
               {
                 "t": "text",
-                "v": " stays at 0 or finished-item on-hand does not increase"
+                "v": " keeps the quantity"
               }
             ],
-            "text": "Quantity Delivered stays at 0 or finished-item on-hand does not increase"
+            "text": "Quantity to Deliver keeps the quantity"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The production receipt warehousing order may need manual processing, like "
+                "v": "You answered "
               },
               {
-                "t": "link",
-                "v": "Issue material to the job shop",
-                "href": "issue-material-to-the-job-shop.md"
-              },
-              {
-                "t": "text",
-                "v": "'s issue order. Check "
-              },
-              {
-                "t": "session",
-                "code": "whinh2100m000",
-                "name": "Warehousing Orders"
+                "t": "button",
+                "label": "No"
               },
               {
                 "t": "text",
-                "v": " for an open receipt order before assuming an error "
+                "v": ". Receive the receipt order in Warehousing, then read the on-hand"
               }
             ],
-            "text": "The production receipt warehousing order may need manual processing, like Issue material to the job shop's issue order. Check Warehousing Orders (whinh2100m000) for an open receipt order before assuming an error"
+            "text": "You answered No. Receive the receipt order in Warehousing, then read the on-hand"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On-hand didn't go up"
+              }
+            ],
+            "text": "On-hand didn't go up"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check "
+              },
+              {
+                "t": "field",
+                "v": "Delivered"
+              },
+              {
+                "t": "text",
+                "v": " on "
+              },
+              {
+                "t": "chip",
+                "v": "Report Orders Completed"
+              },
+              {
+                "t": "text",
+                "v": ", and that the receipt order reads "
+              },
+              {
+                "t": "status",
+                "v": "Received"
+              }
+            ],
+            "text": "Check Delivered on Report Orders Completed, and that the receipt order reads Received"
           }
         ]
       }
@@ -777,19 +876,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Confirm every expected operation in routing sequence in "
-              },
-              {
-                "t": "link",
-                "v": "Verify the generated foundation",
-                "href": "verify-the-generated-foundation.md"
-              },
-              {
-                "t": "text",
-                "v": "; report each one complete in this task (step 4); the steps do not change"
+                "v": "Do steps 2–4 for each operation, in sequence, before step 5"
               }
             ],
-            "text": "Confirm every expected operation in routing sequence in Verify the generated foundation; report each one complete in this task (step 4); the steps do not change"
+            "text": "Do steps 2–4 for each operation, in sequence, before step 5"
           }
         ]
       }

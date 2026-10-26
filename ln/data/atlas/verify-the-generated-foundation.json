@@ -24,26 +24,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
-  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
-  "session": "Production Orders",
-  "sessionCode": "tisfc0501m000",
-  "walked": "2026-08-12",
+  "updated": "2026-10-25",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The expected BOM, routing, operation, and estimated component are attached."
+        "v": "The order's operations and materials are the ones you expect."
       }
     ],
-    "text": "The expected BOM, routing, operation, and estimated component are attached."
+    "text": "The order's operations and materials are the ones you expect."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 9 of "
+          "v": "You need the production order from step 6 of "
         },
         {
           "t": "link",
@@ -52,29 +52,20 @@
         },
         {
           "t": "text",
-          "v": "; step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the existing foundation",
-          "href": "confirm-the-existing-foundation.md"
-        },
-        {
-          "t": "text",
-          "v": "."
+          "v": ", still open."
         }
       ],
-      "text": "You need step 9 of Create the production order; step 1 of Confirm the existing foundation."
+      "text": "You need the production order from step 6 of Create the production order, still open."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order."
+        "v": "On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order."
       }
     ],
-    "text": "The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order."
+    "text": "On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order."
   },
   "blocks": [
     {
@@ -100,28 +91,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Double-click the production order recorded in step 9 of "
+                  "v": "On the order, open the "
                 },
                 {
-                  "t": "link",
-                  "v": "Create the production order",
-                  "href": "create-the-production-order.md"
+                  "t": "chip",
+                  "v": "Operations"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Double-click the production order recorded in step 9 of Create the production order"
+              "text": "On the order, open the Operations tab"
             },
             {
               "tokens": [
                 {
-                  "t": "chip",
-                  "v": "Production Order"
-                },
-                {
                   "t": "text",
-                  "v": " opens for the same order"
+                  "v": "One line per operation, with its work center"
                 }
               ],
-              "text": "Production Order opens for the same order"
+              "text": "One line per operation, with its work center"
             }
           ],
           "id": "1",
@@ -143,35 +133,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare the displayed BOM and revision with the qualified training case"
+                  "v": "Open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Materials"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Compare the displayed BOM and revision with the qualified training case"
+              "text": "Open the Materials tab"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "BOM and revision"
-                },
-                {
-                  "t": "text",
-                  "v": " match the expected foundation"
+                  "v": "One line per component, with its estimated quantity and warehouse"
                 }
               ],
-              "text": "BOM and revision match the expected foundation"
+              "text": "One line per component, with its estimated quantity and warehouse"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -188,35 +175,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare the displayed routing and revision with the qualified training case"
+                  "v": "Check each component's warehouse"
                 }
               ],
-              "text": "Compare the displayed routing and revision with the qualified training case"
+              "text": "Check each component's warehouse"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "routing and revision"
-                },
-                {
-                  "t": "text",
-                  "v": " match the expected foundation"
+                  "v": "The component warehouse"
                 }
               ],
-              "text": "routing and revision match the expected foundation"
+              "text": "The component warehouse"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-the-existing-foundation",
+              "step": "4",
+              "n": 0,
+              "label": "component warehouse"
+            }
+          ]
         },
         {
           "cells": [
@@ -233,133 +217,30 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the production-planning area and confirm the expected operation is present"
-                }
-              ],
-              "text": "Open the production-planning area and confirm the expected operation is present"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "expected operation"
-                },
-                {
-                  "t": "text",
-                  "v": "; "
+                  "v": "Read "
                 },
                 {
                   "t": "field",
-                  "v": "Operations Present"
-                },
-                {
-                  "t": "text",
-                  "v": " is selected in the overview"
+                  "v": "Order Status"
                 }
               ],
-              "text": "expected operation; Operations Present is selected in the overview"
-            }
-          ],
-          "id": "4",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
+              "text": "Read Order Status"
             },
             {
               "tokens": [
-                {
-                  "t": "text",
-                  "v": "Open the estimated-materials area and confirm the expected component and quantity"
-                }
-              ],
-              "text": "Open the estimated-materials area and confirm the expected component and quantity"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "estimated component quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " for the component from step 1 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Confirm the existing foundation",
-                  "href": "confirm-the-existing-foundation.md"
-                }
-              ],
-              "text": "estimated component quantity for the component from step 1 of Confirm the existing foundation"
-            }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "6"
-                }
-              ],
-              "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Return to the overview without running a release or processing action"
-                }
-              ],
-              "text": "Return to the overview without running a release or processing action"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The order remains "
-                },
                 {
                   "t": "status",
                   "v": "Created"
                 },
                 {
                   "t": "text",
-                  "v": " and no material issue has begun"
+                  "v": ". Nothing is released or issued yet"
                 }
               ],
-              "text": "The order remains Created and no material issue has begun"
+              "text": "Created. Nothing is released or issued yet"
             }
           ],
-          "id": "6",
+          "id": "4",
           "optional": false,
           "produces": false
         }
@@ -368,10 +249,78 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Operations"
+              }
+            ],
+            "text": "Operations"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "One: operation 10, Cutting - shear"
+              }
+            ],
+            "text": "One: operation 10, Cutting - shear"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Materials"
+              }
+            ],
+            "text": "Materials"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "2 "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and 1 "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " for one pair"
+              }
+            ],
+            "text": "2 BAM-ROD and 1 BAM-SLEEVE for one pair"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "2",
+    "caption": "Production Order, the Materials tab",
+    "path": "verify-the-generated-foundation.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -385,60 +334,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "BOM or routing is blank or unexpected"
+                "v": "No operations, or no materials"
               }
             ],
-            "text": "BOM or routing is blank or unexpected"
+            "text": "No operations, or no materials"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Check the qualified dates/revisions and record the mismatch "
-              }
-            ],
-            "text": "Check the qualified dates/revisions and record the mismatch"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Validation reports a multilevel BOM loop"
-              }
-            ],
-            "text": "Validation reports a multilevel BOM loop"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented "
-              }
-            ],
-            "text": "Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Expected operation or component is absent"
-              }
-            ],
-            "text": "Expected operation or component is absent"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Leave the order at "
+                "v": "The routing or BOM wasn't found. Leave the order at "
               },
               {
                 "t": "status",
@@ -446,10 +351,32 @@
               },
               {
                 "t": "text",
-                "v": " and return it to the master-data owner for diagnosis"
+                "v": " and check the item's master data"
               }
             ],
-            "text": "Leave the order at Created and return it to the master-data owner for diagnosis"
+            "text": "The routing or BOM wasn't found. Leave the order at Created and check the item's master data"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A component comes from another warehouse"
+              }
+            ],
+            "text": "A component comes from another warehouse"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN takes the warehouse from the item's setup. Check that warehouse has the stock, or stop"
+              }
+            ],
+            "text": "LN takes the warehouse from the item's setup. Check that warehouse has the stock, or stop"
           }
         ]
       }
@@ -468,37 +395,6 @@
             "tokens": [
               {
                 "t": "chip",
-                "v": "More than one component"
-              }
-            ],
-            "text": "More than one component"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Record and compare every expected component and estimated quantity in this task; issue every material line in "
-              },
-              {
-                "t": "link",
-                "v": "Issue material to the job shop",
-                "href": "issue-material-to-the-job-shop.md"
-              },
-              {
-                "t": "text",
-                "v": "; the steps do not change"
-              }
-            ],
-            "text": "Record and compare every expected component and estimated quantity in this task; issue every material line in Issue material to the job shop; the steps do not change"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "chip",
                 "v": "More than one operation"
               }
             ],
@@ -508,7 +404,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Confirm every expected operation in routing sequence in this task; report each one complete in "
+                "v": "Each one is reported in "
               },
               {
                 "t": "link",
@@ -517,19 +413,10 @@
               },
               {
                 "t": "text",
-                "v": " (step 4 of "
-              },
-              {
-                "t": "link",
-                "v": "Report the operation complete and confirm warehouse receipt",
-                "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
-              },
-              {
-                "t": "text",
-                "v": "); the steps do not change"
+                "v": ", in sequence"
               }
             ],
-            "text": "Confirm every expected operation in routing sequence in this task; report each one complete in Report the operation complete and confirm warehouse receipt (step 4 of Report the operation complete and confirm warehouse receipt); the steps do not change"
+            "text": "Each one is reported in Report the operation complete and confirm warehouse receipt, in sequence"
           }
         ]
       }

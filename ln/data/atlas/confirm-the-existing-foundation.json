@@ -21,29 +21,66 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-08-12",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
+        "v": "The finished item, its components and their on-hand are written down."
       }
     ],
-    "text": "A qualified finished item, component, BOM, routing, warehouses, and stock are known."
+    "text": "The finished item, its components and their on-hand are written down."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The finished item has a BOM and a routing, and each component has stock in a warehouse. "
+        },
+        {
+          "t": "link",
+          "v": "Build the job shop bill of material",
+          "href": "build-the-job-shop-bill-of-material.md"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "link",
+          "v": "Build the job shop routing",
+          "href": "build-the-job-shop-routing.md"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "link",
+          "v": "Stock the components",
+          "href": "stock-the-components.md"
+        },
+        {
+          "t": "text",
+          "v": " make them."
+        }
+      ],
+      "text": "The finished item has a BOM and a routing, and each component has stock in a warehouse. Build the job shop bill of material, Build the job shop routing and Stock the components make them."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+        "v": "Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before."
       }
     ],
-    "text": "Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them."
+    "text": "Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before."
   },
   "blocks": [
     {
@@ -69,50 +106,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Obtain one prequalified training case from the master-data owner"
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inventory 360"
                 }
               ],
-              "text": "Obtain one prequalified training case from the master-data owner"
+              "text": "Open Inventory 360"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "finished item"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "component item"
-                },
-                {
-                  "t": "text",
-                  "v": ", with an existing valid BOM and routing"
+                  "v": "One row for each item"
                 }
               ],
-              "text": "finished item and component item, with an existing valid BOM and routing"
+              "text": "One row for each item"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -129,7 +144,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Type the component item in the filter box above the grid's "
+                  "v": "Above the grid's "
                 },
                 {
                   "t": "field",
@@ -137,19 +152,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " column and press Enter"
+                  "v": " column are two filter boxes; the first, small one is for a project. Type the finished item in the second and press Enter"
                 }
               ],
-              "text": "Type the component item in the filter box above the grid's Item column and press Enter"
+              "text": "Above the grid's Item column are two filter boxes; the first, small one is for a project. Type the finished item in the second and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The component's row with its inventory totals, and a row for any item whose code starts with it"
+                  "v": "The item's row, and a row for any item whose code starts with it"
                 }
               ],
-              "text": "The component's row with its inventory totals, and a row for any item whose code starts with it"
+              "text": "The item's row, and a row for any item whose code starts with it"
             }
           ],
           "id": "2",
@@ -171,45 +186,73 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the component's own row and click "
+                  "v": "Tick the item's own row and click "
                 },
                 {
                   "t": "button",
                   "label": "Warehouse Inventory"
-                },
-                {
-                  "t": "text",
-                  "v": " in the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Inventory"
-                },
-                {
-                  "t": "text",
-                  "v": " group"
                 }
               ],
-              "text": "Tick the component's own row and click Warehouse Inventory in the Inventory group"
+              "text": "Tick the item's own row and click Warehouse Inventory"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "whwmd2515m000",
-                  "name": "Warehouse - Item Inventory"
+                  "t": "chip",
+                  "v": "Warehouse - Item Inventory"
                 },
                 {
                   "t": "text",
-                  "v": " opens for the component"
+                  "v": " opens, one row per warehouse — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "receiving warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "finished item on-hand before"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens for the component"
+              "text": "Warehouse - Item Inventory opens, one row per warehouse — finished item, receiving warehouse, finished item on-hand before"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -226,10 +269,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+                  "v": "Close that tab, untick the row, and do the same for each component"
                 }
               ],
-              "text": "Select a warehouse row with enough unblocked stock for the quantity-one order"
+              "text": "Close that tab, untick the row, and do the same for each component"
             },
             {
               "tokens": [
@@ -246,7 +289,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " and "
+                  "v": ", "
                 },
                 {
                   "t": "pencil"
@@ -260,119 +303,10 @@
                   "v": "component on-hand before"
                 }
               ],
-              "text": "component warehouse and component on-hand before"
+              "text": "component warehouse, component on-hand before"
             }
           ],
           "id": "4",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm the training case names the receiving warehouse and the expected operation"
-                }
-              ],
-              "text": "Confirm the training case names the receiving warehouse and the expected operation"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
-            }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "6"
-                }
-              ],
-              "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm it names a valid BOM revision and a valid routing revision"
-                }
-              ],
-              "text": "Confirm it names a valid BOM revision and a valid routing revision"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "All inputs needed to check the created order are known before entry begins"
-                }
-              ],
-              "text": "All inputs needed to check the created order are known before entry begins"
-            }
-          ],
-          "id": "6",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "7"
-                }
-              ],
-              "text": "7"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Repeat steps 2–3 for the finished item, and read the row of the receiving warehouse the training case names"
-                }
-              ],
-              "text": "Repeat steps 2–3 for the finished item, and read the row of the receiving warehouse the training case names"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "finished item on-hand before"
-                }
-              ],
-              "text": "finished item on-hand before"
-            }
-          ],
-          "id": "7",
           "optional": false,
           "produces": true
         }
@@ -381,15 +315,9 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
-  },
-  "screenshot": null,
-  "problems": {
-    "kind": "troubleshooting",
     "columns": [
-      "Symptom",
-      "What to check or do"
+      "What",
+      "Value"
     ],
     "rows": [
       {
@@ -398,22 +326,74 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No qualified item/BOM/routing combination is available"
+                "v": "Finished item"
               }
             ],
-            "text": "No qualified item/BOM/routing combination is available"
+            "text": "Finished item"
           },
           {
             "tokens": [
               {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              },
+              {
                 "t": "text",
-                "v": "Stop. Production order does not create or repair master data; request a qualified training case"
+                "v": ", Bamboo Chopstick Pair"
               }
             ],
-            "text": "Stop. Production order does not create or repair master data; request a qualified training case"
+            "text": "BAM-CHOP-PAIR, Bamboo Chopstick Pair"
           }
         ]
       },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Components"
+              }
+            ],
+            "text": "Components"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " — 2 rods and 1 sleeve make one pair"
+              }
+            ],
+            "text": "BAM-ROD and BAM-SLEEVE — 2 rods and 1 sleeve make one pair"
+          }
+        ]
+      }
+    ]
+  },
+  "screenshot": {
+    "step": "3",
+    "caption": "Warehouse - Item Inventory, the finished item's warehouses",
+    "path": "confirm-the-existing-foundation.jpg"
+  },
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
       {
         "cells": [
           {
@@ -427,24 +407,15 @@
                 "v": " opens "
               },
               {
-                "t": "session",
-                "code": "whwmd2615m000",
-                "name": "Warehouse - Item Inventory Ownership"
+                "t": "chip",
+                "v": "Warehouse - Item Inventory Ownership"
               },
               {
                 "t": "text",
-                "v": ", "
-              },
-              {
-                "t": "path",
-                "route": "Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory Ownership"
-              },
-              {
-                "t": "text",
-                "v": ", instead"
+                "v": " instead"
               }
             ],
-            "text": "Warehouse Inventory opens Warehouse - Item Inventory Ownership (whwmd2615m000), Warehousing ➔ Inventory Reporting ➔ Inventory Position ➔ Warehouse - Item Inventory Ownership, instead"
+            "text": "Warehouse Inventory opens Warehouse - Item Inventory Ownership instead"
           },
           {
             "tokens": [
@@ -495,19 +466,28 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Component has no suitable warehouse stock"
+                "v": "A component has no stock"
               }
             ],
-            "text": "Component has no suitable warehouse stock"
+            "text": "A component has no stock"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Choose another qualified case or replenish it before creating an order intended for later execution"
+                "v": "Stock it first. "
+              },
+              {
+                "t": "link",
+                "v": "Purchase to receipt",
+                "href": "purchase-order-to-warehouse-receipt.md"
+              },
+              {
+                "t": "text",
+                "v": " buys it in"
               }
             ],
-            "text": "Choose another qualified case or replenish it before creating an order intended for later execution"
+            "text": "Stock it first. Purchase to receipt buys it in"
           }
         ]
       }

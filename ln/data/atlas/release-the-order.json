@@ -24,11 +24,11 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
-  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
-  "session": "Production Orders",
-  "sessionCode": "tisfc0501m000",
-  "walked": "2026-08-18",
+  "updated": "2026-10-25",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
@@ -41,17 +41,17 @@
       },
       {
         "t": "text",
-        "v": "; warehousing issue and receipt orders exist."
+        "v": ", with a warehousing order to issue the materials and one to receive the finished item."
       }
     ],
-    "text": "The order is Released; warehousing issue and receipt orders exist."
+    "text": "The order is Released, with a warehousing order to issue the materials and one to receive the finished item."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 9 of "
+          "v": "You need the production order from step 6 of "
         },
         {
           "t": "link",
@@ -60,46 +60,20 @@
         },
         {
           "t": "text",
-          "v": "."
+          "v": ", still open."
         }
       ],
-      "text": "You need step 9 of Create the production order."
+      "text": "You need the production order from step 6 of Create the production order, still open."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Release changes the order to "
-      },
-      {
-        "t": "strong",
-        "v": "Released"
-      },
-      {
-        "t": "text",
-        "v": ", the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. "
-      },
-      {
-        "t": "link",
-        "v": "Issue material to the job shop",
-        "href": "issue-material-to-the-job-shop.md"
-      },
-      {
-        "t": "text",
-        "v": " works the first; "
-      },
-      {
-        "t": "link",
-        "v": "Report the operation complete and confirm warehouse receipt",
-        "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
-      },
-      {
-        "t": "text",
-        "v": " depends on the second."
+        "v": "Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them."
       }
     ],
-    "text": "Release changes the order to Released, the state in which production can start, and at the same moment LN creates two warehousing orders: one to issue the component out of its warehouse and one to receive the finished item into its own. Issue material to the job shop works the first; Report the operation complete and confirm warehouse receipt depends on the second."
+    "text": "Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them."
   },
   "blocks": [
     {
@@ -125,24 +99,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the production order row from step 9 of "
+                  "v": "On the order's toolbar, click "
                 },
                 {
-                  "t": "link",
-                  "v": "Create the production order",
-                  "href": "create-the-production-order.md"
+                  "t": "chip",
+                  "v": "Release Order…"
                 }
               ],
-              "text": "Select the production order row from step 9 of Create the production order"
+              "text": "On the order's toolbar, click Release Order…"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Release Production Orders"
+                },
+                {
                   "t": "text",
-                  "v": "The row is highlighted"
+                  "v": " opens for this order"
                 }
               ],
-              "text": "The row is highlighted"
+              "text": "Release Production Orders opens for this order"
             }
           ],
           "id": "1",
@@ -163,25 +140,36 @@
             {
               "tokens": [
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Release Orders"
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Release"
                 }
               ],
-              "text": "Actions ➔ Release Orders"
+              "text": "Click Release"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "tisfc0204m000",
-                  "name": "Release Production Orders"
+                  "t": "text",
+                  "v": "The dialog closes. "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Status"
                 },
                 {
                   "t": "text",
-                  "v": " opens"
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Released"
                 }
               ],
-              "text": "Release Production Orders (tisfc0204m000) opens"
+              "text": "The dialog closes. Order Status = Released"
             }
           ],
           "id": "2",
@@ -203,19 +191,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the selection range narrows to this one production order"
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing Orders"
                 }
               ],
-              "text": "Confirm the selection range narrows to this one production order"
+              "text": "Open Warehousing Orders"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Only this order is in scope for the release run"
+                  "v": "—"
                 }
               ],
-              "text": "Only this order is in scope for the release run"
+              "text": "—"
             }
           ],
           "id": "3",
@@ -237,108 +229,158 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Run the release"
+                  "v": "Type the production order number in the filter box above the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Run the release"
+              "text": "Type the production order number in the filter box above the Order column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The dialog closes; back in "
-                },
-                {
-                  "t": "chip",
-                  "v": "Production Orders"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "order status after release"
-                },
-                {
-                  "t": "text",
-                  "v": " = "
+                  "v": "Two rows, both "
                 },
                 {
                   "t": "status",
-                  "v": "Released"
+                  "v": "Planned"
+                },
+                {
+                  "t": "text",
+                  "v": ": a "
+                },
+                {
+                  "t": "chip",
+                  "v": "Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " to the receiving warehouse, and an "
+                },
+                {
+                  "t": "chip",
+                  "v": "Issue"
+                },
+                {
+                  "t": "text",
+                  "v": " from the component warehouse to a work center"
                 }
               ],
-              "text": "The dialog closes; back in Production Orders, order status after release = Released"
+              "text": "Two rows, both Planned: a Receipt to the receiving warehouse, and an Issue from the component warehouse to a work center"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
+          "produces": false,
+          "uses": [
             {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm no other order changed status"
-                }
-              ],
-              "text": "Confirm no other order changed status"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Only the order from step 9 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the production order",
-                  "href": "create-the-production-order.md"
-                },
-                {
-                  "t": "text",
-                  "v": " shows "
-                },
-                {
-                  "t": "status",
-                  "v": "Released"
-                }
-              ],
-              "text": "Only the order from step 9 of Create the production order shows Released"
+              "task": "create-the-production-order",
+              "step": "6",
+              "n": 0,
+              "label": "production order number"
             }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": false
+          ]
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Issue order"
+              }
+            ],
+            "text": "Issue order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Sequence 2, "
+              },
+              {
+                "t": "field",
+                "v": "Order Type"
+              },
+              {
+                "t": "text",
+                "v": " "
+              },
+              {
+                "t": "literal",
+                "v": "30-"
+              },
+              {
+                "t": "text",
+                "v": " Production (Out)"
+              }
+            ],
+            "text": "Sequence 2, Order Type 30- Production (Out)"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Receipt order"
+              }
+            ],
+            "text": "Receipt order"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Sequence 1, "
+              },
+              {
+                "t": "field",
+                "v": "Order Type"
+              },
+              {
+                "t": "text",
+                "v": " "
+              },
+              {
+                "t": "literal",
+                "v": "30+"
+              },
+              {
+                "t": "text",
+                "v": " Production (In)"
+              }
+            ],
+            "text": "Sequence 1, Order Type 30+ Production (In)"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "4",
+    "caption": "Warehousing Orders, the two orders release made",
+    "path": "release-the-order.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -352,32 +394,49 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The order does not reach "
+                "v": "The order doesn't reach "
               },
               {
                 "t": "status",
                 "v": "Released"
               }
             ],
-            "text": "The order does not reach Released"
+            "text": "The order doesn't reach Released"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against "
-              },
-              {
-                "t": "session",
-                "code": "tisfc0100s000",
-                "name": "Production Order Parameters"
-              },
-              {
-                "t": "text",
-                "v": " before assuming a fault "
+                "v": "Read the message. Release may need the documents printed first; see the note"
               }
             ],
-            "text": "Record the message; the release options this task does not exercise (shortages, quality, printing) may be blocking it — check them against Production Order Parameters (tisfc0100s000) before assuming a fault"
+            "text": "Read the message. Release may need the documents printed first; see the note"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No warehousing orders are listed"
+              }
+            ],
+            "text": "No warehousing orders are listed"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check the number in the filter, and that the order reads "
+              },
+              {
+                "t": "status",
+                "v": "Released"
+              }
+            ],
+            "text": "Check the number in the filter, and that the order reads Released"
           }
         ]
       }

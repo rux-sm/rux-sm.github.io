@@ -1,0 +1,331 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "supply-a-warehouse-by-ocb",
+  "title": "Supply a warehouse by OCB",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Warehousing",
+  "modules": [
+    "Warehousing"
+  ],
+  "status": null,
+  "updated": "2026-10-25",
+  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)",
+  "session": "Generate Orders (OCB)",
+  "sessionCode": "whinh2205m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The material a production order needs is moved into the warehouse it is issued from."
+      }
+    ],
+    "text": "The material a production order needs is moved into the warehouse it is issued from."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The material has a row in "
+        },
+        {
+          "t": "session",
+          "code": "whwmd2510m000",
+          "name": "Item Data by Warehouse"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Warehousing ➔ Master Data ➔ Items ➔ Item Data by Warehouse"
+        },
+        {
+          "t": "text",
+          "v": ", for the warehouse its bill of material issues from. On that row's Supply tab, "
+        },
+        {
+          "t": "field",
+          "v": "Supply System"
+        },
+        {
+          "t": "text",
+          "v": " is Order Controlled/Batch, "
+        },
+        {
+          "t": "field",
+          "v": "Supply from Warehouse"
+        },
+        {
+          "t": "text",
+          "v": " is selected, and "
+        },
+        {
+          "t": "field",
+          "v": "Supply Company"
+        },
+        {
+          "t": "text",
+          "v": " and "
+        },
+        {
+          "t": "field",
+          "v": "Supply Warehouse"
+        },
+        {
+          "t": "text",
+          "v": " name where the stock is kept. A production order for the parent item has been created and released."
+        }
+      ],
+      "text": "The material has a row in Item Data by Warehouse (whwmd2510m000), Warehousing ➔ Master Data ➔ Items ➔ Item Data by Warehouse, for the warehouse its bill of material issues from. On that row's Supply tab, Supply System is Order Controlled/Batch, Supply from Warehouse is selected, and Supply Company and Supply Warehouse name where the stock is kept. A production order for the parent item has been created and released."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Order Controlled is a supply system that fills a warehouse from another one when an order needs the material. With Order Controlled/Batch, nothing moves until this session is run: it makes warehouse transfer orders from the supply warehouse for what the orders need. The transfer is an ordinary warehousing order, so it is shipped and received before the material can be issued."
+      }
+    ],
+    "text": "Order Controlled is a supply system that fills a warehouse from another one when an order needs the material. With Order Controlled/Batch, nothing moves until this session is run: it makes warehouse transfer orders from the supply warehouse for what the orders need. The transfer is an ordinary warehousing order, so it is shipped and received before the material can be issued."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Set the Selection Range to the material and the warehouse it goes to, or leave it open"
+                }
+              ],
+              "text": "Set the Selection Range to the material and the warehouse it goes to, or leave it open"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Press "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
+                }
+              ],
+              "text": "Press GENERATE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A report lists each transfer it made: the order, the warehouse it comes from and goes to, the item and the quantity"
+                }
+              ],
+              "text": "A report lists each transfer it made: the order, the warehouse it comes from and goes to, the item and the quantity"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Orders ➔ Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the order the report names"
+                }
+              ],
+              "text": "Open Warehousing Orders (whinh2100m000), Warehousing ➔ Orders ➔ Orders, for the order the report names"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A Transfer order, order type "
+                },
+                {
+                  "t": "literal",
+                  "v": "40="
+                },
+                {
+                  "t": "text",
+                  "v": " Transfer (External), status Open"
+                }
+              ],
+              "text": "A Transfer order, order type 40= Transfer (External), status Open"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Ship and receive the transfer, as in "
+                },
+                {
+                  "t": "link",
+                  "v": "Pick the goods",
+                  "href": "pick-the-goods_transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "link",
+                  "v": "Receive at the destination",
+                  "href": "receive-at-the-destination.md"
+                }
+              ],
+              "text": "Ship and receive the transfer, as in Pick the goods and Receive at the destination"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The quantity leaves the supply warehouse and is on hand in the production warehouse"
+                }
+              ],
+              "text": "The quantity leaves the supply warehouse and is on hand in the production warehouse"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A material cannot be issued because the warehouse its bill of material names holds none"
+              }
+            ],
+            "text": "A material cannot be issued because the warehouse its bill of material names holds none"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Give the material an Order Controlled/Batch row for that warehouse in Item Data by Warehouse, then run this task"
+              }
+            ],
+            "text": "Give the material an Order Controlled/Batch row for that warehouse in Item Data by Warehouse, then run this task"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

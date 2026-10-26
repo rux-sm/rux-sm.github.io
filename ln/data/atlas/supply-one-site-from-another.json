@@ -1,0 +1,372 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "supply-one-site-from-another",
+  "title": "Supply one site from another",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Enterprise Planning",
+  "modules": [
+    "Enterprise Planning"
+  ],
+  "status": null,
+  "updated": "2026-10-25",
+  "route": "Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)",
+  "session": "Supplying Relationships (old)",
+  "sessionCode": "cprpd7130m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Planning covers a site's demand with a planned distribution order from another site."
+      }
+    ],
+    "text": "Planning covers a site's demand with a planned distribution order from another site."
+  },
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "The item is at both sites on the Sites tab of "
+        },
+        {
+          "t": "session",
+          "code": "tcibd0501m100",
+          "name": "Item"
+        },
+        {
+          "t": "text",
+          "v": ", with the receiving site's "
+        },
+        {
+          "t": "field",
+          "v": "Default Supply Source"
+        },
+        {
+          "t": "text",
+          "v": " set to Distribution. The receiving site has a planning cluster row for the item, made from the item's Clusters tab, with "
+        },
+        {
+          "t": "field",
+          "v": "Ordering Site"
+        },
+        {
+          "t": "text",
+          "v": " the receiving site in "
+        },
+        {
+          "t": "session",
+          "code": "cprpd1100m000",
+          "name": "Items - Planning"
+        },
+        {
+          "t": "text",
+          "v": ", "
+        },
+        {
+          "t": "path",
+          "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning"
+        },
+        {
+          "t": "text",
+          "v": ". The sites themselves are made as in "
+        },
+        {
+          "t": "link",
+          "v": "Create a site",
+          "href": "create-a-site.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "The item is at both sites on the Sites tab of Item (tcibd0501m100), with the receiving site's Default Supply Source set to Distribution. The receiving site has a planning cluster row for the item, made from the item's Clusters tab, with Ordering Site the receiving site in Items - Planning (cprpd1100m000), Planning ➔ Master Data ➔ Items ➔ Items - Planning. The sites themselves are made as in Create a site."
+    }
+  ],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Distribution is a source of supply like purchase or production: a site set to it gets its goods from elsewhere in the company. A supplying relationship tells planning which planning cluster supplies which, item by item. Planning then covers the receiving site's shortfall with a planned distribution order, and transferring that order makes a warehouse transfer order."
+      }
+    ],
+    "text": "Distribution is a source of supply like purchase or production: a site set to it gets its goods from elsewhere in the company. A supplying relationship tells planning which planning cluster supplies which, item by item. Planning then covers the receiving site's shortfall with a planned distribution order, and transferring that order makes a warehouse transfer order."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Press "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": ", and set "
+                },
+                {
+                  "t": "field",
+                  "v": "Receiving Planning Cluster"
+                },
+                {
+                  "t": "text",
+                  "v": " to the receiving site's cluster and "
+                },
+                {
+                  "t": "field",
+                  "v": "Receiving Item"
+                },
+                {
+                  "t": "text",
+                  "v": " to the item"
+                }
+              ],
+              "text": "Press New, and set Receiving Planning Cluster to the receiving site's cluster and Receiving Item to the item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On a line, set "
+                },
+                {
+                  "t": "field",
+                  "v": "Supplying Company"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Supplying Planning Cluster"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Supplying Item"
+                },
+                {
+                  "t": "text",
+                  "v": " to the supplying site's cluster and item"
+                }
+              ],
+              "text": "On a line, set Supplying Company, Supplying Planning Cluster and Supplying Item to the supplying site's cluster and item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Each description shows beside its field"
+                }
+              ],
+              "text": "Each description shows beside its field"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Run order planning for the item, as in "
+                },
+                {
+                  "t": "link",
+                  "v": "Run MRP",
+                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                }
+              ],
+              "text": "Run order planning for the item, as in Run MRP"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "cprrp0520m000",
+                  "name": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Order Planning ➔ Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", for the receiving cluster's plan item"
+                }
+              ],
+              "text": "Open Item Order Plan (cprrp0520m000), Planning ➔ Order Planning ➔ Item Order Plan, for the receiving cluster's plan item"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A Planned Distribution Order covers the demand, at the receiving site"
+                }
+              ],
+              "text": "A Planned Distribution Order covers the demand, at the receiving site"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [],
+    "rows": []
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

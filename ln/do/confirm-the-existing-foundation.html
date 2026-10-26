@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Confirm the existing foundation · LN Notes · Updated 22 Oct 2026 · Walked in LN 12 Aug 2026"; } }</style>
+<style>@page { @bottom-left { content: "Confirm the existing foundation · LN Notes · Updated 25 Oct 2026 · Walked in LN 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,38 +106,51 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="e320a086f701d4fa309f758364c5fb0aaea2a07b">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d01b4255c668abce5837038aa02c10457ae4168d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Confirm the existing foundation</h1>
-<p class="rux--type-body-long-01">A qualified finished item, component, BOM, routing, warehouses, and stock are known.</p>
+<p class="rux--type-body-long-01">The finished item, its components and their on-hand are written down.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>4 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 1 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
+<ul class="ln-proc__list"><li>The finished item has a BOM and a routing, and each component has stock in a warehouse. <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a>, <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> and <a class="rux--link" href="../do/stock-the-components.html">Stock the components</a> make them.</li></ul>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="values">Values</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__values">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Field</span></th><th scope="col"><span class="rux--table-header-label">Value</span></th><th scope="col" style="width:6rem"><span class="rux--table-header-label">Step</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Field">Finished item</td><td data-k="Value"><span class="ln-t-exact">BAM-CHOP-PAIR</span>, Bamboo Chopstick Pair</td><td data-k="Step"></td></tr>
+<tr><td data-k="Field">Components</td><td data-k="Value"><span class="ln-t-exact">BAM-ROD</span> and <span class="ln-t-exact">BAM-SLEEVE</span> — 2 rods and 1 sleeve make one pair</td><td data-k="Step"></td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>1.1</b></td><td data-k="Action">Obtain one prequalified training case from the master-data owner</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component item, with an existing valid BOM and routing</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-2"><td data-k="Step"><b>1.2</b></td><td data-k="Action">Type the component item in the filter box above the grid's <span class="ln-t-named">Item</span> column and press Enter</td><td data-k="You should see">The component's row with its inventory totals, and a row for any item whose code starts with it</td></tr>
-<tr id="step-3"><td data-k="Step"><b>1.3</b></td><td data-k="Action">Tick the component's own row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</td><td data-k="You should see"><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens for the component</td></tr>
-<tr id="step-4"><td data-k="Step"><b>1.4</b></td><td data-k="Action">Select a warehouse row with enough unblocked stock for the quantity-one order</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component warehouse and</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>1.5</b></td><td data-k="Action">Confirm the training case names the receiving warehouse and the expected operation</td><td data-k="You should see"></td></tr>
-<tr id="step-6"><td data-k="Step"><b>1.6</b></td><td data-k="Action">Confirm it names a valid BOM revision and a valid routing revision</td><td data-k="You should see">All inputs needed to check the created order are known before entry begins</td></tr>
-<tr id="step-7"><td data-k="Step"><b>1.7</b></td><td data-k="Action">Repeat <a class="rux--link" href="#step-2">steps 1.2–1.3</a> for the finished item, and read the row of the receiving warehouse the training case names</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-1"><td data-k="Step"><b>1.1</b></td><td data-k="Action">Open <span class="ln-t-named">Inventory 360</span></td><td data-k="You should see">One row for each item</td></tr>
+<tr id="step-2"><td data-k="Step"><b>1.2</b></td><td data-k="Action">Above the grid's <span class="ln-t-named">Item</span> column are two filter boxes; the first, small one is for a project. Type the finished item in the second and press Enter</td><td data-k="You should see">The item's row, and a row for any item whose code starts with it</td></tr>
+<tr id="step-3"><td data-k="Step"><b>1.3</b></td><td data-k="Action">Tick the item's own row and click <span class="ln-t-press">Warehouse Inventory</span></td><td data-k="You should see"><span class="ln-proc__see"><span class="ln-t-named">Warehouse - Item Inventory</span> opens, one row per warehouse</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">receiving warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">finished item on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="confirm-the-existing-foundation.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 1.3 · Warehouse - Item Inventory, the finished item's warehouses</figcaption></figure></td></tr>
+<tr id="step-4"><td data-k="Step"><b>1.4</b></td><td data-k="Action">Close that tab, untick the row, and do the same for each component</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">component warehouse</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write"><span class="ln-proc__write-label">component on-hand before</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -148,9 +161,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">No qualified item/BOM/routing combination is available</td><td data-k="What to do">Stop. Production order does not create or repair master data; request a qualified training case</td></tr>
-<tr><td data-k="Symptom"><span class="ln-t-press">Warehouse Inventory</span> opens <span class="ln-t-named">Warehouse - Item Inventory Ownership</span> (<span class="ln-t-exact">whwmd2615m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory Ownership</span></span>, instead</td><td data-k="What to do">A warehouse is set in <span class="ln-t-named">Filter Items</span>. Clear <span class="ln-t-named">Site</span> and <span class="ln-t-named">Warehouse</span>, click <span class="ln-t-press">Refresh</span>, and tick the row again</td></tr>
-<tr><td data-k="Symptom">Component has no suitable warehouse stock</td><td data-k="What to do">Choose another qualified case or replenish it before creating an order intended for later execution</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-press">Warehouse Inventory</span> opens <span class="ln-t-named">Warehouse - Item Inventory Ownership</span> instead</td><td data-k="What to do">A warehouse is set in <span class="ln-t-named">Filter Items</span>. Clear <span class="ln-t-named">Site</span> and <span class="ln-t-named">Warehouse</span>, click <span class="ln-t-press">Refresh</span>, and tick the row again</td></tr>
+<tr><td data-k="Symptom">A component has no stock</td><td data-k="What to do">Stock it first. <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> buys it in</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -162,7 +174,6 @@
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Screens used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Screen"><a class="rux--link" href="../screens/whwmd4300m000.html">Inventory 360</a></td><td data-k="Code"><span class="ln-t-exact">whwmd4300m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span></td></tr>
-<tr><td data-k="Screen"><a class="rux--link" href="../screens/whwmd2515m000.html">Warehouse - Item Inventory</a></td><td data-k="Code"><span class="ln-t-exact">whwmd2515m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest ln-t-whole">Warehouse - Item Inventory</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -180,7 +191,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>1</b></td><td data-k="Expected result">A qualified finished item, component, BOM, routing, warehouses, and stock are known.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>1</b></td><td data-k="Expected result">The finished item, its components and their on-hand are written down.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -209,54 +220,43 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</p><h1 class="ln-step__do">Obtain one prequalified training case from the master-data owner</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-79">Finished item and</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-79" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="1/0" data-at="1.1" data-label="Finished item and">
-      </div></div>
-    </div><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-80">Component item, with an existing valid BOM and routing</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-80" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="1/1" data-at="1.1" data-label="Component item, with an existing valid BOM and routing">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="dest ln-t-whole">Inventory 360</span></span> (<span class="ln-t-exact">whwmd4300m000</span>)</p><h1 class="ln-step__do">Open <span class="ln-t-named">Inventory 360</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One row for each item</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Type the component item in the filter box above the grid's <span class="ln-t-named">Item</span> column and press Enter</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The component's row with its inventory totals, and a row for any item whose code starts with it</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Above the grid's <span class="ln-t-named">Item</span> column are two filter boxes</h1><p class="ln-step__note">The first, small one is for a project. Type the finished item in the second and press Enter</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item's row, and a row for any item whose code starts with it</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Tick the component's own row and click <span class="ln-t-press">Warehouse Inventory</span> in the <span class="ln-t-named">Inventory</span> group</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whwmd2515m000.html"><span class="ln-t-named">Warehouse - Item Inventory</span></a> (<span class="ln-t-exact">whwmd2515m000</span>) opens for the component</p></div>
-  </li>
-  <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Select a warehouse row with enough unblocked stock for the quantity-one order</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-81">Component warehouse and</label></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Tick the item's own row and click <span class="ln-t-press">Warehouse Inventory</span></h1><figure class="ln-shot" data-shot="confirm-the-existing-foundation.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 1.3 · Warehouse - Item Inventory, the finished item's warehouses</figcaption></figure></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Warehouse - Item Inventory</span> opens, one row per warehouse</p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-79">Finished item</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-81" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/0" data-at="1.4" data-label="Component warehouse and">
+        <input id="write-79" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/0" data-at="1.3" data-label="Finished item">
       </div></div>
     </div><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-82">Component on-hand before</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-80">Receiving warehouse</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-82" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/1" data-at="1.4" data-label="Component on-hand before">
+        <input id="write-80" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/1" data-at="1.3" data-label="Receiving warehouse">
+      </div></div>
+    </div><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-81">Finished item on-hand before</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-81" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/2" data-at="1.3" data-label="Finished item on-hand before">
       </div></div>
     </div></div></div>
   </li>
-  <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Confirm the training case names the receiving warehouse and the expected operation</h1></div>
-  </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Confirm it names a valid BOM revision and a valid routing revision</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>All inputs needed to check the created order are known before entry begins</p></div>
-  </li>
-  <li data-k="7" data-ref="7" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Repeat steps 2–3 for the finished item, and read the row of the receiving warehouse the training case names</h1></div>
+  <li data-k="4" data-ref="4" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Close that tab, untick the row, and do the same for each component</h1></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-83">Finished item on-hand before</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-82">Component warehouse</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-83" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="7/0" data-at="1.7" data-label="Finished item on-hand before">
+        <input id="write-82" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/0" data-at="1.4" data-label="Component warehouse">
+      </div></div>
+    </div><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-83">Component on-hand before</label></div>
+      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
+        <input id="write-83" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/1" data-at="1.4" data-label="Component on-hand before">
       </div></div>
     </div></div></div>
   </li>
@@ -272,12 +272,11 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 3</div>
+      <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>No qualified item/BOM/routing combination is available</b><p>Stop. Production order does not create or repair master data; request a qualified training case</p></li>
-  <li><b><span class="ln-t-press">Warehouse Inventory</span> opens <span class="ln-t-named">Warehouse - Item Inventory Ownership</span> (<span class="ln-t-exact">whwmd2615m000</span>), <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Reporting</span><span class="sep">➔</span><span class="ln-t-whole">Inventory Position</span><span class="sep">➔</span><span class="dest">Warehouse - Item Inventory Ownership</span></span>, instead</b><p>A warehouse is set in <span class="ln-t-named">Filter Items</span>. Clear <span class="ln-t-named">Site</span> and <span class="ln-t-named">Warehouse</span>, click <span class="ln-t-press">Refresh</span>, and tick the row again</p></li>
-  <li><b>Component has no suitable warehouse stock</b><p>Choose another qualified case or replenish it before creating an order intended for later execution</p></li>
+  <li><b><span class="ln-t-press">Warehouse Inventory</span> opens <span class="ln-t-named">Warehouse - Item Inventory Ownership</span> instead</b><p>A warehouse is set in <span class="ln-t-named">Filter Items</span>. Clear <span class="ln-t-named">Site</span> and <span class="ln-t-named">Warehouse</span>, click <span class="ln-t-press">Refresh</span>, and tick the row again</p></li>
+  <li><b>A component has no stock</b><p>Stock it first. <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> buys it in</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -285,7 +284,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing yet. A production order is built from master data that must already exist, and LN will not say at creation which of it is missing or wrong; it says so at release, at material issue or at completion. This task reads the finished item, its component, the BOM and routing revisions, the warehouses and the stock before the order asks for them.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

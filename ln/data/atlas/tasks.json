@@ -2560,6 +2560,75 @@
           "tokens": [
             {
               "t": "session",
+              "code": "cprpd7130m000",
+              "name": "distribution · Supplying Relationships (old)"
+            },
+            {
+              "t": "text",
+              "v": " · stage 3 · step"
+            }
+          ],
+          "text": "distribution · Supplying Relationships (old) (cprpd7130m000) · stage 3 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)"
+                }
+              ],
+              "text": "Route — Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — supply one site from another, so planning raises planned distribution orders"
+                }
+              ],
+              "text": "Does — supply one site from another, so planning raises planned distribution orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "link",
+                  "v": "Supply one site from another",
+                  "href": "supply-one-site-from-another.md"
+                }
+              ],
+              "text": "Do - Supply one site from another"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
               "code": "cprao1120m000",
               "name": "exception-messages · Exception Messages by Planner"
             },
@@ -4319,6 +4388,75 @@
                 }
               ],
               "text": "Do - Adjustment Orders"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
+              "code": "whinh2205m000",
+              "name": "ocb · Generate Orders (OCB)"
+            },
+            {
+              "t": "text",
+              "v": " · stage 5 · step"
+            }
+          ],
+          "text": "ocb · Generate Orders (OCB) (whinh2205m000) · stage 5 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)"
+                }
+              ],
+              "text": "Route — Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — move a production order's material into the warehouse it is issued from"
+                }
+              ],
+              "text": "Does — move a production order's material into the warehouse it is issued from"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "link",
+                  "v": "Supply a warehouse by OCB",
+                  "href": "supply-a-warehouse-by-ocb.md"
+                }
+              ],
+              "text": "Do - Supply a warehouse by OCB"
             }
           ]
         },
@@ -6290,6 +6428,54 @@
         }
       },
       {
+        "id": "distribution",
+        "session": "Supplying Relationships (old)",
+        "lane": "Enterprise Planning",
+        "stage": 3,
+        "kind": "step",
+        "code": "cprpd7130m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)"
+            }
+          ],
+          "text": "Planning ➔ Master Data ➔ Sourcing ➔ Supplying Relationships (old)"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "supply one site from another, so planning raises planned distribution orders"
+            }
+          ],
+          "text": "supply one site from another, so planning raises planned distribution orders"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "link",
+                "v": "Supply one site from another",
+                "href": "supply-one-site-from-another.md"
+              }
+            ],
+            "text": "Supply one site from another"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "link",
+              "v": "Supply one site from another",
+              "href": "supply-one-site-from-another.md"
+            }
+          ],
+          "text": "Supply one site from another"
+        }
+      },
+      {
         "id": "exception-messages",
         "session": "Exception Messages by Planner",
         "lane": "Enterprise Planning",
@@ -7347,6 +7533,54 @@
             }
           ],
           "text": "Adjustment Orders"
+        }
+      },
+      {
+        "id": "ocb",
+        "session": "Generate Orders (OCB)",
+        "lane": "Warehousing",
+        "stage": 5,
+        "kind": "step",
+        "code": "whinh2205m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)"
+            }
+          ],
+          "text": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "move a production order's material into the warehouse it is issued from"
+            }
+          ],
+          "text": "move a production order's material into the warehouse it is issued from"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "link",
+                "v": "Supply a warehouse by OCB",
+                "href": "supply-a-warehouse-by-ocb.md"
+              }
+            ],
+            "text": "Supply a warehouse by OCB"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "link",
+              "v": "Supply a warehouse by OCB",
+              "href": "supply-a-warehouse-by-ocb.md"
+            }
+          ],
+          "text": "Supply a warehouse by OCB"
         }
       },
       {

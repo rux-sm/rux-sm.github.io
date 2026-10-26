@@ -1,9 +1,9 @@
-commit   e320a086f701d4fa309f758364c5fb0aaea2a07b
-date     2026-10-26T02:59:41Z
-subject  feat(tasks): Write Create a site
+commit   d01b4255c668abce5837038aa02c10457ae4168d
+date     2026-10-26T03:28:39Z
+subject  feat(walks): Walk the reworded production tasks
 contract 24 
 tier     export
-sha256   db5df4c25d8174a57ed44efdc330337bf07a489ca590f32ef17d0f1cee213902
+sha256   d30e9016bd66547a8dec92ebd08aec0e2f2c826640e27131e08a1c26ac1e7703
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

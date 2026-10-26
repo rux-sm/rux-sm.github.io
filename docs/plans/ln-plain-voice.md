@@ -30,7 +30,6 @@ showing them what to do: calm, clear and specific. The voice is atlas's
 ## Tasks
 
 - [ ] Ideas' full text, which only the owner sees, in atlas's concepts
-- [ ] Manual production order from existing master data: reword and walk
 - [ ] Demand to shipment via planning: reword and walk
 - [ ] Run order planning for one item: reword and walk
 - [ ] Create basic test items and defaults: reword and walk

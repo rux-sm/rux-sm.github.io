@@ -24,16 +24,16 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
-  "walked": "2026-08-12",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A quantity-one order exists at "
+        "v": "A production order for the finished item is saved, with status "
       },
       {
         "t": "strong",
@@ -41,71 +41,20 @@
       },
       {
         "t": "text",
-        "v": " status."
+        "v": "."
       }
     ],
-    "text": "A quantity-one order exists at Created status."
+    "text": "A production order for the finished item is saved, with status Created."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "You need step 1 of "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the existing foundation",
-          "href": "confirm-the-existing-foundation.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "You need step 1 of Confirm the existing foundation."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "On save LN reads the item's BOM and routing valid on the "
-      },
-      {
-        "t": "field",
-        "v": "Reference Date"
-      },
-      {
-        "t": "text",
-        "v": " and generates the order's operations and estimated materials from them. "
-      },
-      {
-        "t": "field",
-        "v": "Quantity Ordered"
-      },
-      {
-        "t": "text",
-        "v": " is what is to be produced and "
-      },
-      {
-        "t": "field",
-        "v": "Warehouse"
-      },
-      {
-        "t": "text",
-        "v": " is where the result will be received. The order exists at "
-      },
-      {
-        "t": "strong",
-        "v": "Created"
-      },
-      {
-        "t": "text",
-        "v": "; nothing has moved."
+        "v": "LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet."
       }
     ],
-    "text": "On save LN reads the item's BOM and routing valid on the Reference Date and generates the order's operations and estimated materials from them. Quantity Ordered is what is to be produced and Warehouse is where the result will be received. The order exists at Created; nothing has moved."
+    "text": "LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet."
   },
   "blocks": [
     {
@@ -131,23 +80,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Click "
+                  "v": "Open "
                 },
                 {
-                  "t": "button",
-                  "label": "New"
+                  "t": "chip",
+                  "v": "Production Orders"
                 }
               ],
-              "text": "Click New"
+              "text": "Open Production Orders"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A new production-order record opens"
+                  "v": "The list of production orders"
                 }
               ],
-              "text": "A new production-order record opens"
+              "text": "The list of production orders"
             }
           ],
           "id": "1",
@@ -169,24 +118,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the finished item from step 1 of "
+                  "v": "Click "
                 },
                 {
-                  "t": "link",
-                  "v": "Confirm the existing foundation",
-                  "href": "confirm-the-existing-foundation.md"
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Enter the finished item from step 1 of Confirm the existing foundation"
+              "text": "Click New"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Production Order"
+                },
+                {
                   "t": "text",
-                  "v": "The item is accepted for the order"
+                  "v": " opens, empty, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " filled in"
                 }
               ],
-              "text": "The item is accepted for the order"
+              "text": "Production Order opens, empty, with Site filled in"
             }
           ],
           "id": "2",
@@ -207,40 +167,52 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Confirm "
-                },
-                {
                   "t": "field",
-                  "v": "Site"
+                  "v": "Item"
                 },
                 {
                   "t": "text",
-                  "v": " for the training case"
+                  "v": " has two boxes. Leave the first, for a project, empty. Type the finished item in the second and press Tab"
                 }
               ],
-              "text": "Confirm Site for the training case"
+              "text": "Item has two boxes. Leave the first, for a project, empty. Type the finished item in the second and press Tab"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "text",
+                  "v": "The item's description fills in, with "
+                },
+                {
+                  "t": "field",
+                  "v": "BOM"
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": ", its revision and "
                 },
                 {
-                  "t": "value",
-                  "v": "site"
+                  "t": "field",
+                  "v": "Warehouse"
                 }
               ],
-              "text": "site"
+              "text": "The item's description fills in, with BOM, its revision and Warehouse"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "confirm-the-existing-foundation",
+              "step": "3",
+              "n": 0,
+              "label": "finished item"
+            }
+          ]
         },
         {
           "cells": [
@@ -257,17 +229,29 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter 1 in "
+                  "v": "Press Tab to reach "
                 },
                 {
                   "t": "field",
                   "v": "Quantity Ordered"
+                },
+                {
+                  "t": "text",
+                  "v": ", type the quantity to make, and press Tab"
                 }
               ],
-              "text": "Enter 1 in Quantity Ordered"
+              "text": "Press Tab to reach Quantity Ordered, type the quantity to make, and press Tab"
             },
             {
               "tokens": [
+                {
+                  "t": "field",
+                  "v": "Routing"
+                },
+                {
+                  "t": "text",
+                  "v": " and its revision fill in — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -278,18 +262,17 @@
                 {
                   "t": "value",
                   "v": "production quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " = 1"
                 }
               ],
-              "text": "production quantity = 1"
+              "text": "Routing and its revision fill in — production quantity"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -306,39 +289,36 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
                   "v": "Warehouse"
-                },
-                {
-                  "t": "text",
-                  "v": " is the intended receiving warehouse"
                 }
               ],
-              "text": "Confirm Warehouse is the intended receiving warehouse"
+              "text": "Check Warehouse"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "receiving warehouse"
+                  "v": "The receiving warehouse"
                 }
               ],
-              "text": "receiving warehouse"
+              "text": "The receiving warehouse"
             }
           ],
           "id": "5",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "uses": [
+            {
+              "task": "confirm-the-existing-foundation",
+              "step": "3",
+              "n": 1,
+              "label": "receiving warehouse"
+            }
+          ]
         },
         {
           "cells": [
@@ -350,132 +330,6 @@
                 }
               ],
               "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm "
-                },
-                {
-                  "t": "field",
-                  "v": "Production Start"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "field",
-                  "v": "Planned Delivery Date"
-                },
-                {
-                  "t": "text",
-                  "v": " suit the training run"
-                }
-              ],
-              "text": "Confirm Production Start and Planned Delivery Date suit the training run"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
-            }
-          ],
-          "id": "6",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "7"
-                }
-              ],
-              "text": "7"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Confirm "
-                },
-                {
-                  "t": "field",
-                  "v": "Planning Method"
-                },
-                {
-                  "t": "text",
-                  "v": " suits the training run"
-                }
-              ],
-              "text": "Confirm Planning Method suits the training run"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The order dates remain within the qualified BOM and routing dates"
-                }
-              ],
-              "text": "The order dates remain within the qualified BOM and routing dates"
-            }
-          ],
-          "id": "7",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "8"
-                }
-              ],
-              "text": "8"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "If the item is revision controlled, select the qualified item revision supplied with the training case"
-                }
-              ],
-              "text": "If the item is revision controlled, select the qualified item revision supplied with the training case"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The selected revision is visible before save"
-                }
-              ],
-              "text": "The selected revision is visible before save"
-            }
-          ],
-          "id": "8",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "9"
-                }
-              ],
-              "text": "9"
             },
             {
               "tokens": [
@@ -494,11 +348,19 @@
               "tokens": [
                 {
                   "t": "field",
+                  "v": "Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " shows the new number, "
+                },
+                {
+                  "t": "field",
                   "v": "Order Status"
                 },
                 {
                   "t": "text",
-                  "v": " = "
+                  "v": " "
                 },
                 {
                   "t": "status",
@@ -520,10 +382,10 @@
                   "v": "production order number"
                 }
               ],
-              "text": "Order Status = Created — production order number"
+              "text": "Production Order shows the new number, Order Status Created — production order number"
             }
           ],
-          "id": "9",
+          "id": "6",
           "optional": false,
           "produces": true
         }
@@ -532,10 +394,62 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              }
+            ],
+            "text": "BAM-CHOP-PAIR"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Quantity Ordered"
+              }
+            ],
+            "text": "Quantity Ordered"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "1"
+              }
+            ],
+            "text": "1"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Production Order, the item and what LN filled in",
+    "path": "create-the-production-order.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -548,20 +462,32 @@
           {
             "tokens": [
               {
+                "t": "field",
+                "v": "BOM"
+              },
+              {
                 "t": "text",
-                "v": "The item or revision is rejected"
+                "v": " or "
+              },
+              {
+                "t": "field",
+                "v": "Routing"
+              },
+              {
+                "t": "text",
+                "v": " stays empty"
               }
             ],
-            "text": "The item or revision is rejected"
+            "text": "BOM or Routing stays empty"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this task"
+                "v": "The item may have no BOM or routing valid today. Stop, and check them with whoever maintains the item"
               }
             ],
-            "text": "Stop and have the master-data owner verify the existing item and revision; do not change setup from this task"
+            "text": "The item may have no BOM or routing valid today. Stop, and check them with whoever maintains the item"
           }
         ]
       },
@@ -571,23 +497,67 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The order does not save at "
-              },
-              {
-                "t": "status",
-                "v": "Created"
+                "v": "The item code is cut short"
               }
             ],
-            "text": "The order does not save at Created"
+            "text": "The item code is cut short"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Record the message and visible fields; do not substitute guessed values"
+                "v": "It went into the project box. Clear both boxes and type it in the second"
               }
             ],
-            "text": "Record the message and visible fields; do not substitute guessed values"
+            "text": "It went into the project box. Clear both boxes and type it in the second"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "LN says "
+              },
+              {
+                "t": "literal",
+                "v": "Enter a value for the Quantity Ordered field."
+              }
+            ],
+            "text": "LN says Enter a value for the Quantity Ordered field."
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab"
+              }
+            ],
+            "text": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The form stops responding"
+              }
+            ],
+            "text": "The form stops responding"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Discard the order and reload LN"
+              }
+            ],
+            "text": "Discard the order and reload LN"
           }
         ]
       }

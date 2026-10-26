@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Verify the generated foundation · LN Notes · Updated 22 Oct 2026 · Walked in LN 12 Aug 2026"; } }</style>
+<style>@page { @bottom-left { content: "Verify the generated foundation · LN Notes · Updated 25 Oct 2026 · Walked in LN 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,41 +106,50 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="e320a086f701d4fa309f758364c5fb0aaea2a07b">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="d01b4255c668abce5837038aa02c10457ae4168d">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Verify the generated foundation</h1>
-<p class="rux--type-body-long-01">The expected BOM, routing, operation, and estimated component are attached.</p>
+<p class="rux--type-body-long-01">The order's operations and materials are the ones you expect.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>4 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <p class="ln-strip">Task 3 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/release-the-order.html">Release the order</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
-<ul class="ln-proc__list"><li>You need <a class="rux--link" href="../do/create-the-production-order.html#step-9">step 2.9</a> (Create the production order); <a class="rux--link" href="../do/confirm-the-existing-foundation.html#step-1">step 1.1</a> (Confirm the existing foundation).</li></ul>
+<ul class="ln-proc__list"><li>You need the production order from <a class="rux--link" href="../do/create-the-production-order.html#step-6">step 2.6</a> (Create the production order), still open.</li></ul>
+</section>
+<section>
+<h2 class="rux--type-productive-heading-04 ln-proc__h2" id="values">Values</h2>
+<div class="rux--data-table-container ln-proc__table ln-proc__values">
+<table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
+<thead><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Field</span></th><th scope="col"><span class="rux--table-header-label">Value</span></th><th scope="col" style="width:6rem"><span class="rux--table-header-label">Step</span></th></tr></thead>
+<tbody>
+<tr><td data-k="Field">Operations</td><td data-k="Value">One: operation 10, Cutting - shear</td><td data-k="Step"></td></tr>
+<tr><td data-k="Field">Materials</td><td data-k="Value">2 <span class="ln-t-exact">BAM-ROD</span> and 1 <span class="ln-t-exact">BAM-SLEEVE</span> for one pair</td><td data-k="Step"></td></tr>
+</tbody>
+</table></div>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>3.1</b></td><td data-k="Action">Double-click the production order recorded in <a class="rux--link" href="../do/create-the-production-order.html#step-9">step 2.9</a> (Create the production order)</td><td data-k="You should see"><span class="ln-t-named">Production Order</span> opens for the same order</td></tr>
-<tr id="step-2"><td data-k="Step"><b>3.2</b></td><td data-k="Action">Compare the displayed BOM and revision with the qualified training case</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">BOM and revision match the expected foundation</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-3"><td data-k="Step"><b>3.3</b></td><td data-k="Action">Compare the displayed routing and revision with the qualified training case</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">routing and revision match the expected foundation</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-4"><td data-k="Step"><b>3.4</b></td><td data-k="Action">Open the production-planning area and confirm the expected operation is present</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">expected operation; <span class="ln-t-named">Operations Present</span> is selected in the overview</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>3.5</b></td><td data-k="Action">Open the estimated-materials area and confirm the expected component and quantity</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">estimated component quantity for the component from <a class="rux--link" href="../do/confirm-the-existing-foundation.html#step-1">step 1.1</a> (Confirm the existing foundation)</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-6"><td data-k="Step"><b>3.6</b></td><td data-k="Action">Return to the overview without running a release or processing action</td><td data-k="You should see">The order remains <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and no material issue has begun</td></tr>
+<tr id="step-1"><td data-k="Step"><b>3.1</b></td><td data-k="Action">On the order, open the <span class="ln-t-named">Operations</span> tab</td><td data-k="You should see">One line per operation, with its work center</td></tr>
+<tr id="step-2"><td data-k="Step"><b>3.2</b></td><td data-k="Action">Open the <span class="ln-t-named">Materials</span> tab</td><td data-k="You should see">One line per component, with its estimated quantity and warehouse</td></tr>
+<tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="verify-the-generated-foundation.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 3.2 · Production Order, the Materials tab</figcaption></figure></td></tr>
+<tr id="step-3"><td data-k="Step"><b>3.3</b></td><td data-k="Action">Check each component's warehouse</td><td data-k="You should see">The component warehouse</td></tr>
+<tr id="step-4"><td data-k="Step"><b>3.4</b></td><td data-k="Action">Read <span class="ln-t-named">Order Status</span></td><td data-k="You should see"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span>. Nothing is released or issued yet</td></tr>
 </tbody>
 </table></div>
 
@@ -151,9 +160,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">BOM or routing is blank or unexpected</td><td data-k="What to do">Check the qualified dates/revisions and record the mismatch</td></tr>
-<tr><td data-k="Symptom">Validation reports a multilevel BOM loop</td><td data-k="What to do">Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented</td></tr>
-<tr><td data-k="Symptom">Expected operation or component is absent</td><td data-k="What to do">Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and return it to the master-data owner for diagnosis</td></tr>
+<tr><td data-k="Symptom">No operations, or no materials</td><td data-k="What to do">The routing or BOM wasn't found. Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and check the item's master data</td></tr>
+<tr><td data-k="Symptom">A component comes from another warehouse</td><td data-k="What to do">LN takes the warehouse from the item's setup. Check that warehouse has the stock, or stop</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -163,8 +171,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Variations</th></tr><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Case"><span class="ln-t-named">More than one component</span></td><td data-k="What changes"><p>Record and compare every expected component and estimated quantity in this task; issue every material line in <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a>; the steps do not change</p></td></tr>
-<tr><td data-k="Case"><span class="ln-t-named">More than one operation</span></td><td data-k="What changes"><p>Confirm every expected operation in routing sequence in this task; report each one complete in <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> (step 4 of <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a>); the steps do not change</p></td></tr>
+<tr><td data-k="Case"><span class="ln-t-named">More than one operation</span></td><td data-k="What changes"><p>Each one is reported in <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a>, in sequence</p></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -175,15 +182,12 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Screens used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Screen"><a class="rux--link" href="../screens/tisfc0501m000.html">Production Orders</a></td><td data-k="Code"><span class="ln-t-exact">tisfc0501m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Screen</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>)<br><span class="ln-quiet">Lists production orders with their item, dates, status, warehouse and main quantities.</span></p></li>
-  <li><b>Ideas</b><p><a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/release-the-order.html">Release the order</a> in Production order</p></li>
 </ul>
 </section>
@@ -193,7 +197,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>3</b></td><td data-k="Expected result">The expected BOM, routing, operation, and estimated component are attached.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>3</b></td><td data-k="Expected result">The order's operations and materials are the ones you expect.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -222,48 +226,20 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</p><h1 class="ln-step__do">Double-click the production order recorded in step 9 of <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Production Order</span> opens for the same order</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">On the order, open the <span class="ln-t-named">Operations</span> tab</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One line per operation, with its work center</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Compare the displayed BOM and revision with the qualified training case</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-88">BOM and revision match the expected foundation</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-88" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="2/0" data-at="3.2" data-label="BOM and revision match the expected foundation">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Materials</span> tab</h1><figure class="ln-shot" data-shot="verify-the-generated-foundation.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 3.2 · Production Order, the Materials tab</figcaption></figure></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One line per component, with its estimated quantity and warehouse</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Compare the displayed routing and revision with the qualified training case</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-89">Routing and revision match the expected foundation</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-89" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="3/0" data-at="3.3" data-label="Routing and revision match the expected foundation">
-      </div></div>
-    </div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check each component's warehouse</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="confirm-the-existing-foundation/4/0"><span class="ln-quiet">Component warehouse · 1.4</span><span data-use-missing><a class="rux--link" href="../do/confirm-the-existing-foundation.html?walk=4">Write it down at step 1.4</a></span></div></div></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The component warehouse</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Open the production-planning area and confirm the expected operation is present</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-90">Expected operation; <span class="ln-t-named">Operations Present</span> is selected in the overview</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-90" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/0" data-at="3.4" data-label="Expected operation; Operations Present is selected in the overview">
-      </div></div>
-    </div></div></div>
-  </li>
-  <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Open the estimated-materials area and confirm the expected component and quantity</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-91">Estimated component quantity for the component from step 1 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a></label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-91" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="5/0" data-at="3.5" data-label="Estimated component quantity for the component from step 1 of Confirm the existing foundation">
-      </div></div>
-    </div></div></div>
-  </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Return to the overview without running a release or processing action</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The order remains <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and no material issue has begun</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">Order Status</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span>. Nothing is released or issued yet</p></div>
   </li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
@@ -277,12 +253,11 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 3</div>
+      <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>BOM or routing is blank or unexpected</b><p>Check the qualified dates/revisions and record the mismatch </p></li>
-  <li><b>Validation reports a multilevel BOM loop</b><p>Stop. Do not improvise a replacement component or revision; the supported correction route is not yet documented </p></li>
-  <li><b>Expected operation or component is absent</b><p>Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and return it to the master-data owner for diagnosis</p></li>
+  <li><b>No operations, or no materials</b><p>The routing or BOM wasn't found. Leave the order at <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span> and check the item's master data</p></li>
+  <li><b>A component comes from another warehouse</b><p>LN takes the warehouse from the item's setup. Check that warehouse has the stock, or stop</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -290,7 +265,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>The detail session shows what LN generated at creation: the planning area holds the operations from the routing and the estimated-materials area holds the components from the BOM, scaled to the order quantity. A missing operation, BOM or component here is a stop condition, not something to repair inside the order.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

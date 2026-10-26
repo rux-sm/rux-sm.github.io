@@ -288,7 +288,9 @@
      opts.fit         when neither side of the anchor has room, cap the surface
                       to the roomier side and let it scroll inside itself.
                       Without it the surface overhangs below, which is what the
-                      overflow menu has always done. */
+                      overflow menu has always done.
+     opts.gap         the space left between the anchor and the surface, below
+                      or above it; a menu passes `floatGap` of itself. */
   /* WHERE A `fixed` BOX IS ACTUALLY MEASURED FROM. It is the viewport only
      while nothing above it establishes a containing block, and a transform, a
      filter, a backdrop filter, a perspective, `will-change: transform`, paint
@@ -333,8 +335,9 @@
     if (opts.matchWidth) surface.style.inlineSize = `${Math.round(t.width)}px`;
     if (opts.fit) surface.style.maxBlockSize = '';
     let box = surface.getBoundingClientRect();
-    const below = window.innerHeight - t.bottom;
-    const above = t.top;
+    const gap = opts.gap || 0;
+    const below = window.innerHeight - t.bottom - gap;
+    const above = t.top - gap;
     const fitsBelow = below >= box.height;
     const fitsAbove = above >= box.height;
     /* NEITHER SIDE HOLDS IT: cap to the roomier side and go to THAT side. The
@@ -346,8 +349,8 @@
       box = surface.getBoundingClientRect();
     }
     const top = squeezed
-      ? (below >= above ? t.bottom : Math.max(0, t.top - box.height))
-      : (fitsBelow || !fitsAbove ? t.bottom : t.top - box.height);
+      ? (below >= above ? t.bottom + gap : Math.max(0, t.top - gap - box.height))
+      : (fitsBelow || !fitsAbove ? t.bottom + gap : t.top - gap - box.height);
     const left = Math.max(0, Math.min(t.left, window.innerWidth - box.width));
     /* Written in the containing block's coordinates, which are the viewport's
        only when nothing above the surface establishes one. See fixedOrigin. */
@@ -355,6 +358,11 @@
     surface.style.insetBlockStart = `${Math.round(top - o.top)}px`;
     surface.style.insetInlineStart = `${Math.round(left - o.left)}px`;
   };
+  /* THE SPACE A THEME LEAVES BETWEEN A MENU AND WHAT OPENS IT: its
+     `--float-gap`, 8px in the floating themes and none in Carbon's. A
+     menu's placement adds it, rather than a clear border on the menu, so the
+     menu's box is its fill and a shadow cast from it fits every side. */
+  const floatGap = surface => parseFloat(getComputedStyle(surface).getPropertyValue('--float-gap')) || 0;
   const unanchor = surface => {
     surface.style.insetBlockStart = '';
     surface.style.insetInlineStart = '';
@@ -365,5 +373,6 @@
   window.Rux = window.Rux || {};
   window.Rux.overlay = { register, autoId, focusables, trapFocus };
   window.Rux.anchorTo = anchorTo;
+  window.Rux.floatGap = floatGap;
   window.Rux.unanchor = unanchor;
 })();

@@ -1892,11 +1892,12 @@
 
     /* It opens to the left, because the trigger sits against the panel's right
        edge. Clamped to the viewport, and flipped above the trigger when the
-       space below cannot hold it. */
+       space below cannot hold it, the theme's gap off it either way. */
+    const gap = window.Rux?.floatGap?.(menu) ?? 0;
     const left = Math.max(0, Math.min(box.right - width, window.innerWidth - width));
-    const top = box.bottom + height <= window.innerHeight
-      ? box.bottom
-      : Math.max(0, box.top - height);
+    const top = box.bottom + gap + height <= window.innerHeight
+      ? box.bottom + gap
+      : Math.max(0, box.top - gap - height);
     menu.style.insetInlineStart = `${Math.round(left)}px`;
     menu.style.insetBlockStart = `${Math.round(top)}px`;
 
@@ -2016,8 +2017,9 @@
     const box = trigger.getBoundingClientRect();
     const width = menu.offsetWidth;
     const height = menu.offsetHeight;
+    const gap = window.Rux?.floatGap?.(menu) ?? 0;
     const left = Math.max(0, Math.min(box.right - width, window.innerWidth - width));
-    const top = box.bottom + height <= window.innerHeight ? box.bottom : Math.max(0, box.top - height);
+    const top = box.bottom + gap + height <= window.innerHeight ? box.bottom + gap : Math.max(0, box.top - gap - height);
     menu.style.insetInlineStart = `${Math.round(left)}px`;
     menu.style.insetBlockStart = `${Math.round(top)}px`;
   };
@@ -12210,8 +12212,9 @@
     let y = fit(py, height, vh);
     if (from) {
       const r = from.getBoundingClientRect();
+      const gap = window.Rux?.floatGap?.(menu) ?? 0;
       x = r.left + width <= vw - MENU_SPACING ? r.left : Math.max(0, r.right - width);
-      y = r.bottom + height <= vh - MENU_SPACING ? r.bottom : Math.max(0, r.top - height);
+      y = r.bottom + gap + height <= vh - MENU_SPACING ? r.bottom + gap : Math.max(0, r.top - gap - height);
     }
     menu.style.insetInlineStart = `${x - page.left}px`;
     menu.style.insetBlockStart = `${y - page.top}px`;

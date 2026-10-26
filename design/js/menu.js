@@ -90,19 +90,20 @@
   function anchor(surface, trigger) {
     if (!trigger) return;
     if (getComputedStyle(surface).position !== 'fixed') return;
-    // A SUBMENU OPENS BESIDE ITS MENU, Carbon's `right-start`: against the
-    // parent menu's edge, not its item's, which a theme's padding holds inside
-    // it; its first item level with the parent item, flipped to the left where
-    // there is no room. The first item stands below the surface's top border
-    // and padding both, since a theme may hold the surface off its trigger
-    // with a clear border.
+    // A SUBMENU OPENS BESIDE ITS MENU, Carbon's `right-start`: the theme's
+    // gap off the parent menu's edge, not its item's, which a theme's padding
+    // holds inside it; its first item level with the parent item, flipped to
+    // the left where there is no room. The first item stands below the
+    // surface's top border and padding both.
     if (trigger.matches(ITEMS)) {
       const t = trigger.getBoundingClientRect();
       const side = (ownSurface(trigger) ?? trigger).getBoundingClientRect();
       const box = surface.getBoundingClientRect();
       const cs = getComputedStyle(surface);
       const pad = (parseFloat(cs.borderBlockStartWidth) || 0) + (parseFloat(cs.paddingBlockStart) || 0);
-      const left = side.right + box.width <= window.innerWidth ? side.right : Math.max(0, side.left - box.width);
+      const gap = window.Rux?.floatGap?.(surface) ?? 0;
+      const left = side.right + gap + box.width <= window.innerWidth
+        ? side.right + gap : Math.max(0, side.left - gap - box.width);
       const top = Math.max(0, Math.min(t.top - pad, window.innerHeight - box.height));
       surface.style.insetBlockStart = `${Math.round(top)}px`;
       surface.style.insetInlineStart = `${Math.round(left)}px`;
@@ -116,9 +117,9 @@
     //
     // THE BELOW-OR-ABOVE ARITHMETIC IS Rux.anchorTo, in js/overlay.js, because
     // js/list-box.js needs the same answer and a second copy would be the one
-    // that missed the next fix. No option is passed, so a menu that fits
-    // neither way still overhangs below, which is what it has always done.
-    window.Rux?.anchorTo?.(surface, comboContainer(trigger) ?? trigger);
+    // that missed the next fix. Only the theme's gap is passed, so a menu that
+    // fits neither way still overhangs below, which is what it has always done.
+    window.Rux?.anchorTo?.(surface, comboContainer(trigger) ?? trigger, { gap: window.Rux?.floatGap?.(surface) });
   }
   function unanchor(surface) {
     window.Rux?.unanchor?.(surface);

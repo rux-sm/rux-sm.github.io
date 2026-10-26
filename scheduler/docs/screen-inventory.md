@@ -145,12 +145,14 @@ Three homes, and one rule for choosing.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any stored file opens
   there under its type, and a form `print.html` draws opens in the Forms panel.
-- **Every panel is its own, as many as fit beside the week.** Tasks, Departures,
+- **Every panel is its own, two at most beside the week, the editor counted.** Tasks, Departures,
   Drivers, Forms, the quote calculator and the stored file each
   have a panel, none replacing another, and stand left of the week in the order
   they opened, oldest farthest left; the trip editor stands right of it. While
-  the board holds the open panels and the week's 19.5rem minimum, all of them
-  show. Opening one past that closes the oldest, then the next, without a word,
+  the board holds the open panels and the week's minimum, 33rem for one week
+  and 56rem for two, up to two of them show, so with the editor open one list
+  stands left of the week. Opening one past either closes the
+  oldest, then the next, without a word,
   except one with something typed in it, which asks first and stays on a no.
   The board never closes the editor: where it alone stands in the way, the
   one other panel comes in front of the week, no wider than the week's side,

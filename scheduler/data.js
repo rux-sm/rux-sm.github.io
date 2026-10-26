@@ -11326,7 +11326,7 @@
   // Every selection change, from a click, a key or a script, lands here.
   new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
 
-  /* ── Beside the week, as many as fit ───────────────────────────────────────
+  /* ── Beside the week, two at most, the editor among them ───────────────────
      Every panel has its own place beside the week: Tasks, Departures, Driver
      availability, Forms, the quote calculator and the stored file stand left
      of it, oldest farthest left, and the trip editor right of it. From md up
@@ -11334,7 +11334,9 @@
      and the bus column, the two things the week cannot be read without.
 
      One sum decides it. The week's minimum plus every open panel is what the
-     board is asked for. Opening a panel past it closes the oldest, then the
+     board is asked for, and no more than two panels stand beside the week
+     however wide the window, the editor counted, so with it open one list stays
+     left of the week. Opening a panel past either closes the oldest, then the
      next, until the new one fits; one with something typed in it asks first,
      and the editor is never closed for room, so where it alone stands in the
      way the new panel does not open and the board says why. A window narrowed
@@ -11346,14 +11348,19 @@
      one of them closes, while the schedule's width is this decision's own
      outcome and reading it back would flip-flop.
 
-     `WEEK_MIN` is 19.5rem, the width the tight toolbar is measured to read at in
-     app.css: the week never goes narrower than its own controls, which is what
-     makes it a derived number rather than a chosen one. `SCHEDULE_FLOOR` is a
-     different question -- whether the board can show three readable days,
-     three of app.css's 10rem day floor and the bus column --
-     and only the compact week asks it. A toolbar under 30rem is one `Today`
+     `WEEK_MIN` is 33rem, wide enough to read a week's bars by, which leaves a
+     20rem list and the 22rem editor beside it, gaps and all, on a 77rem board,
+     a laptop's; two weeks ask `TWO_WEEKS_MIN`, 56rem, so the same board keeps
+     one list, which comes in front of the week while the editor is open. Both
+     stay well over the 19.5rem the tight toolbar is measured to read at in
+     app.css, the week's own floor. `SCHEDULE_FLOOR` is a different question
+     -- whether the board can show three readable days, three of app.css's
+     10rem day floor and the bus column -- and only the compact week asks it. A toolbar under 30rem is one `Today`
      will not fit in beside its week's months, measured in app.css's terms. */
-  const WEEK_MIN = 19.5;
+  const WEEK_MIN = 33;
+  const TWO_WEEKS_MIN = 56;
+  const PANELS_MAX = 2;
+  const weekMin = () => (daysShown() === 14 ? TWO_WEEKS_MIN : WEEK_MIN);
   const SCHEDULE_FLOOR = 33;
   const TOOLBAR_TIGHT = 30;
   const boardEl = document.querySelector('.scheduler-board');
@@ -11403,8 +11410,9 @@
     if (!board) return false;
     const open = panels().filter(p => p.open || p.name === adding);
     if (matchMedia('(max-width: 41.98rem)').matches) return open.length > 1;
+    if (open.length > PANELS_MAX) return true;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
-    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * remPx() > board;
+    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() * remPx() > board;
   }
 
   /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
@@ -11681,8 +11689,9 @@
     // Changing the first day re-asks the server for a different range; the
     // row toggles are drawing only and need no fetch.
     if (key === 'sunday') { cursor = mondayOf(cursor); show(); }
-    // Two weeks reads a longer range from the same first day.
-    if (key === 'twoWeeks') show();
+    // Two weeks reads a longer range from the same first day, and asks the
+    // board for more room, which may close a panel.
+    if (key === 'twoWeeks') { show(); placeRoom(); }
   });
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;

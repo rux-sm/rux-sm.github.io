@@ -147,26 +147,16 @@
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
-/* rux-dark's standard trip is a raised grey, layer-03, inside the quiet line,
-   a small card on the board's page colour, so colour on its board marks only
-   a trip that is not confirmed or one someone gave a colour. The line is four
-   painted strips, as the light themes' edges are, so the bar's shadow stays
-   free for the selection ring and the lift, and an end that runs into another
-   week has none. */
+/* rux-dark's standard trip is a raised grey, layer-03, a solid tile on the
+   board's page colour with no edge, as LN Notes' tiles are, so colour on its
+   board marks only a trip that is not confirmed or one someone gave a
+   colour, and any edge a bar wears means something. */
 [data-theme="rux-dark"] .scheduler-bar--blue {
   --scheduler-bg: var(--rux-layer-03);
   --scheduler-fg: var(--rux-text-primary);
   --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-border: var(--rux-border-subtle-01);
-  --scheduler-edge: var(--rux-border-subtle-01);
-  background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
-    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
-  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
-  background-repeat: no-repeat;
 }
-[data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
-[data-theme="rux-dark"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
 /* A RUX-DARK BAR READS IN ORDER OF NEED: the destination and the times are
    bold, the times in even-width figures so they line up, the customer stays
    in the bar's ink, and the contact steps back to two thirds of it. A row
@@ -747,14 +737,10 @@
 /* apple-light's bar ink is the faintest that reads, so its Complete pill
    is not dimmed further. */
 [data-theme="apple-light"] .scheduler-bar__done { opacity: 1; }
-/* A RUX-DARK TRIP BAR HAS A 1px EDGE a step lighter than its fill, drawn
-   inside it, so a bar reads as a card on the dark board. The selected bar's
-   white ring, the open trip's ring, the rule a trip somebody else has open
-   wears and the focus ring each stand in its place. */
-:where([data-theme="rux-dark"]) .scheduler-bar:not([aria-pressed="true"], .scheduler-bar--same-trip, .scheduler-bar--open, .scheduler-bar--watched, :focus-visible) {
-  outline: 1px solid rgb(255 255 255 / .16);
-  outline-offset: -1px;
-}
+/* The Tasks and Departures cards are solid tiles too, parted from the pane by
+   their fill alone: Design rings a tile inside a layer, and here the pane is
+   the page's colour, which the tile's step already clears. */
+[data-theme="rux-dark"] .scheduler-to-do--pane .rux--tile { box-shadow: none; }
 /* Its rows start and end on that 12px edge. A row gives up its 16px sides,
    so its words stand on the edge; a row that lights under
    the pointer carries the light 6px past each side, where the row itself

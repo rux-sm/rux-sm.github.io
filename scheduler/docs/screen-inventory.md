@@ -336,6 +336,6 @@ open trip — the return leg, or the same leg on another bus, too — wears the 
 fading slowly from a third of its strength to full and back, which costs none of its writing; with
 less motion, by the view menu or the system, the ring stands still. The other bars of a trip merely selected wear the selection's still ring, as the selected bar
 does. Every ring is 1px: the selected trip's in the selection colour, white on a dark theme, the open
-trip's, and the rule a trip somebody else has open wears; in rux-dark a bar with none of them has a
-1px edge a step lighter than its fill. Save checks the trip's `updated_at` against the value the panel opened with and asks before
+trip's, and the rule a trip somebody else has open wears; in rux-dark a bar with none of them is a
+solid tile with no edge. Save checks the trip's `updated_at` against the value the panel opened with and asks before
 replacing a change someone else saved in between.

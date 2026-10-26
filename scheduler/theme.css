@@ -358,6 +358,11 @@
   --rux-layer: var(--rux-background);
   --scheduler-band-surface: var(--rux-background);
 }
+/* Its board draws no rule between the days, as LN Notes' grid draws none
+   between its tiles: the solid bars and the day band above them already say
+   where a day starts, and each bus keeps its row's rule. The roster is a
+   table in a box and keeps its own. */
+[data-theme="rux-dark"] .scheduler-frame .scheduler-track { --scheduler-day-rule: transparent; }
 [data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
   --rux-layer: var(--rux-background);
   --rux-layer-active: var(--rux-background-active);

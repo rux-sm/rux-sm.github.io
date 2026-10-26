@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Confirm the receipt · LN Notes · Updated 22 Oct 2026 · Walked in LN 18 Aug 2026"; } }</style>
+<style>@page { @bottom-left { content: "Confirm the receipt · LN Notes · Updated 25 Oct 2026 · Walked in LN 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,37 +106,36 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="3e39f4b918e2199a4daaee1994d9d973dfd6f788">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="eafdf254fbdf800810950b845e1f8605f97e38d9">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Confirm the receipt</h1>
-<p class="rux--type-body-long-01">The receipt reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span> with all lines final and complete.</p>
+<p class="rux--type-body-long-01">The receipt reads <strong>Confirmed</strong>, with <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> set and <span class="ln-t-named">Errors Logged</span> clear.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
-<p class="ln-strip">Task 5 of 6 in <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> · next: <a class="rux--link" href="../do/verify-the-inventory-increase.html">Verify the inventory increase</a></p>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Length</dt><dd>5 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<p class="ln-strip">Task 6 of 7 in <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> · next: <a class="rux--link" href="../do/verify-the-inventory-increase.html">Verify the inventory increase</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so <span class="ln-t-named">Confirmed</span> is cleared both when a line is unconfirmed and when there are no lines at all.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN builds the receipt lines from the inbound lines you ticked, each with its full quantity received. Confirming the receipt is what puts the goods into the warehouse. The flags in <strong>Status</strong> sum up the lines, so read them before you leave.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">Read the receipt number LN assigned</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receipt number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Enter the packing-slip reference for each line as delivered</td><td data-k="You should see">The walked run recorded packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</td></tr>
-<tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">Confirm the receipt</td><td data-k="You should see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the header's <span class="ln-t-named">Confirmed</span> check box is set once every receipt line is confirmed</td></tr>
-<tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></td><td data-k="You should see">Both are set — a receipt confirmed with either clear has left something behind</td></tr>
-<tr id="step-5"><td data-k="Step"><b>5.5</b></td><td data-k="Action">Read <span class="ln-t-named">Errors Logged</span> before leaving the session</td><td data-k="You should see">Clear means the receipt logged nothing. Set means it did, whatever the status says</td></tr>
-<tr id="step-6"><td data-k="Step"><b>5.6</b></td><td data-k="Action">If <span class="ln-t-named">Errors Logged</span> is set, read the messages in <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>). They are also on the <span class="ln-t-named">Message Log</span> tab in this session's lines pane</td><td data-k="You should see"></td></tr>
-<tr id="step-7"><td data-k="Step"><b>5.7</b></td><td data-k="Action">Then capture them</td><td data-k="You should see">The messages behind the confirmation are on record.</td></tr>
+<tr id="step-1"><td data-k="Step"><b>6.1</b></td><td data-k="Action">Read the <span class="ln-t-named">Receipt</span> number and each line's <span class="ln-t-named">Received Quantity</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">receipt number. Each line has its ordered quantity received</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-2"><td data-k="Step"><b>6.2</b></td><td data-k="Action">Enter the supplier's <span class="ln-t-named">Packing Slip</span> on each line and click <span class="ln-t-press">Save</span></td><td data-k="You should see">Each line shows its packing slip</td></tr>
+<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">Click <span class="ln-t-press">Confirm Receipt</span> on the toolbar</td><td data-k="You should see"><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and each line's <span class="ln-t-named">Confirmed</span> is ticked</td></tr>
+<tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="confirm-the-receipt.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 6.3 · Warehouse Receipt, confirmed with each line's packing slip</figcaption></figure></td></tr>
+<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></td><td data-k="You should see">Both are set</td></tr>
+<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Check <span class="ln-t-named">Errors Logged</span></td><td data-k="You should see">It's clear. If it's set, open the <span class="ln-t-named">Message Log</span> tab below and read the messages</td></tr>
 </tbody>
 </table></div>
 
@@ -147,8 +146,9 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom"><span class="ln-t-exact">whinh0032</span> at the receipt</td><td data-k="What to do">The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>), which hold the messages once the dialog is gone</td></tr>
-<tr><td data-k="Symptom">The receipt looks confirmed but nothing was received</td><td data-k="What to do">Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</td></tr>
+<tr><td data-k="Symptom">A message about missing stock point details</td><td data-k="What to do">The warehouse may be missing a setting the receipt needs. Read it on the <span class="ln-t-named">Message Log</span> tab, and ask whoever set up the warehouse</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-exact">The packing slip number must be entered on receipt line</span></td><td data-k="What to do">A line has no <span class="ln-t-named">Packing Slip</span>. Choose <span class="ln-t-press">OK</span>, enter it on each line, save, and confirm again</td></tr>
+<tr><td data-k="Symptom"><span class="ln-t-named">Confirmed</span> is clear but nothing looks wrong</td><td data-k="What to do">The receipt may have no lines. Go back to <a class="rux--link" href="../do/receive-against-the-order.html#step-3">step 5.3</a> (Receive against the order) and tick the inbound lines</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -159,7 +159,6 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Screens used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Screen</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Screen"><a class="rux--link" href="../screens/whinh3530m000.html">Receipt Message Log</a></td><td data-k="Code"><span class="ln-t-exact">whinh3530m000</span></td><td data-k="How to open it">The Message Log tab in the lines pane of Warehouse Receipt (whinh3512m000), or opened from it</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -175,7 +174,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>5</b></td><td data-k="Expected result">The receipt reaches <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span> with all lines final and complete.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">The receipt reads <strong>Confirmed</strong>, with <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span> set and <span class="ln-t-named">Errors Logged</span> clear.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -204,36 +203,29 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Read the receipt number LN assigned</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Read the <span class="ln-t-named">Receipt</span> number and each line's <span class="ln-t-named">Received Quantity</span></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="book-the-lines/3/0"><span class="ln-quiet">Material 1 quantity ordered · 3.3</span><span data-use-missing><a class="rux--link" href="../do/book-the-lines.html?walk=3">Write it down at step 3.3</a></span></div><div class="ln-values__row" data-use="book-the-lines/6/0"><span class="ln-quiet">Material 2 quantity ordered · 3.6</span><span data-use-missing><a class="rux--link" href="../do/book-the-lines.html?walk=6">Write it down at step 3.6</a></span></div></div></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-34">Receipt number</label></div>
+      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-31">Receipt number. Each line has its ordered quantity received</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-34" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="1/0" data-at="5.1" data-label="Receipt number">
+        <input id="write-31" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="1/0" data-at="6.1" data-label="Receipt number. Each line has its ordered quantity received">
       </div></div>
     </div></div></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Enter the packing-slip reference for each line as delivered</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The walked run recorded packing slips <span class="ln-t-exact">123</span> (rod) and <span class="ln-t-exact">124</span> (sleeve)</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Enter the supplier's <span class="ln-t-named">Packing Slip</span> on each line and click <span class="ln-t-press">Save</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Each line shows its packing slip</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Confirm the receipt</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the header's <span class="ln-t-named">Confirmed</span> check box is set once every receipt line is confirmed</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Confirm Receipt</span> on the toolbar</h1><figure class="ln-shot" data-shot="confirm-the-receipt.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 6.3 · Warehouse Receipt, confirmed with each line's packing slip</figcaption></figure></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and each line's <span class="ln-t-named">Confirmed</span> is ticked</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">All Lines Final</span> and <span class="ln-t-named">All Lines Complete</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Both are set — a receipt confirmed with either clear has left something behind</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Both are set</p></div>
   </li>
   <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Read <span class="ln-t-named">Errors Logged</span> before leaving the session</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Clear means the receipt logged nothing. Set means it did, whatever the status says</p></div>
-  </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">If <span class="ln-t-named">Errors Logged</span> is set, read the messages in <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a></h1><p class="ln-step__note">They are also on the <span class="ln-t-named">Message Log</span> tab in this session's lines pane</p></div>
-  </li>
-  <li data-k="7" data-ref="7" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Then capture them</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The messages behind the confirmation are on record.</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Errors Logged</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>It's clear. If it's set, open the <span class="ln-t-named">Message Log</span> tab below and read the messages</p></div>
   </li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">
@@ -247,11 +239,12 @@
   <li class="rux--accordion__item" id="stuck">
     <button type="button" class="rux--accordion__heading" aria-expanded="false">
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
-      <div class="rux--accordion__title">Stuck? · 2</div>
+      <div class="rux--accordion__title">Stuck? · 3</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b><span class="ln-t-exact">whinh0032</span> at the receipt</b><p>The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's <span class="ln-t-named">Errors Logged</span> flag and <a class="rux--link" href="../screens/whinh3530m000.html"><span class="ln-t-named">Receipt Message Log</span></a> (<span class="ln-t-exact">whinh3530m000</span>), which hold the messages once the dialog is gone </p></li>
-  <li><b>The receipt looks confirmed but nothing was received</b><p>Whether the receipt has any lines at all. <a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-exact">whinh3512m000</span></a>'s help states <span class="ln-t-named">Confirmed</span> is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed</p></li>
+  <li><b>A message about missing stock point details</b><p>The warehouse may be missing a setting the receipt needs. Read it on the <span class="ln-t-named">Message Log</span> tab, and ask whoever set up the warehouse </p></li>
+  <li><b><span class="ln-t-exact">The packing slip number must be entered on receipt line</span></b><p>A line has no <span class="ln-t-named">Packing Slip</span>. Choose <span class="ln-t-press">OK</span>, enter it on each line, save, and confirm again</p></li>
+  <li><b><span class="ln-t-named">Confirmed</span> is clear but nothing looks wrong</b><p>The receipt may have no lines. Go back to step 3 of <a class="rux--link" href="../do/receive-against-the-order.html">Receive against the order</a> and tick the inbound lines</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -259,7 +252,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so <span class="ln-t-named">Confirmed</span> is cleared both when a line is unconfirmed and when there are no lines at all.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>LN builds the receipt lines from the inbound lines you ticked, each with its full quantity received. Confirming the receipt is what puts the goods into the warehouse. The flags in <strong>Status</strong> sum up the lines, so read them before you leave.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

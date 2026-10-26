@@ -8,7 +8,7 @@
     "id": "purchase-order-to-warehouse-receipt",
     "title": "Purchase to receipt",
     "n": 0,
-    "of": 6
+    "of": 7
   },
   "previous": null,
   "next": {
@@ -21,26 +21,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-23",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "On-hand at the receiving warehouse is recorded before anything is booked."
+        "v": "Each material's on-hand at the receiving warehouse is written down."
       }
     ],
-    "text": "On-hand at the receiving warehouse is recorded before anything is booked."
+    "text": "Each material's on-hand at the receiving warehouse is written down."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "The materials exist as items with purchase defaults, and the receiving warehouse exists. "
+          "v": "The materials exist as items you can buy, and the warehouse you're buying into exists. "
         },
         {
           "t": "link",
@@ -58,20 +58,20 @@
         },
         {
           "t": "text",
-          "v": " build both. A buy-from business partner must also exist — Purchase to receipt selects one and does not create one."
+          "v": " make both."
         }
       ],
-      "text": "The materials exist as items with purchase defaults, and the receiving warehouse exists. Configure the purchased group and Create the three items build both. A buy-from business partner must also exist — Purchase to receipt selects one and does not create one."
+      "text": "The materials exist as items you can buy, and the warehouse you're buying into exists. Configure the purchased group and Create the three items make both."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+        "v": "Nothing changes yet. A confirmed receipt only tells you a document changed status. The proof that stock arrived is the on-hand figure at the receiving warehouse going up, and that needs the figure from before. A new item isn't always at zero."
       }
     ],
-    "text": "Nothing yet. A confirmed receipt is a document reaching a status; only the on-hand figure at the receiving warehouse proves stock moved, and it cannot prove anything unless it was read before the order existed. A new item is not necessarily at zero."
+    "text": "Nothing changes yet. A confirmed receipt only tells you a document changed status. The proof that stock arrived is the on-hand figure at the receiving warehouse going up, and that needs the figure from before. A new item isn't always at zero."
   },
   "blocks": [
     {
@@ -100,41 +100,25 @@
                   "v": "Open "
                 },
                 {
-                  "t": "session",
-                  "code": "whwmd4300m000",
-                  "name": "Inventory 360"
-                },
-                {
-                  "t": "text",
-                  "v": " and identify the raw-material warehouse you are buying into"
+                  "t": "chip",
+                  "v": "Inventory 360"
                 }
               ],
-              "text": "Open Inventory 360 (whwmd4300m000) and identify the raw-material warehouse you are buying into"
+              "text": "Open Inventory 360"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "receiving warehouse"
-                },
-                {
-                  "t": "text",
-                  "v": " — the walked run used the raw-materials warehouse "
+                  "v": "One row for each item"
                 }
               ],
-              "text": "receiving warehouse — the walked run used the raw-materials warehouse"
+              "text": "One row for each item"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -159,54 +143,27 @@
                 },
                 {
                   "t": "text",
-                  "v": " column, press Enter, tick its row and click "
-                },
-                {
-                  "t": "button",
-                  "label": "Warehouse Inventory"
-                },
-                {
-                  "t": "text",
-                  "v": ". Read its row for that warehouse"
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Type the first material in the filter box above the grid's Item column, press Enter, tick its row and click Warehouse Inventory. Read its row for that warehouse"
+              "text": "Type the first material in the filter box above the grid's Item column and press Enter"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "material 1 code"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "material 1 on-hand before"
+                  "v": "The item's row, and a row for any item whose code starts with it"
                 }
               ],
-              "text": "material 1 code and material 1 on-hand before"
+              "text": "The item's row, and a row for any item whose code starts with it"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -223,14 +180,26 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Close that tab, untick the row, and repeat step 2 for the second material"
+                  "v": "Tick the item's own row and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
                 }
               ],
-              "text": "Close that tab, untick the row, and repeat step 2 for the second material"
+              "text": "Tick the item's own row and click Warehouse Inventory"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, one row per warehouse — "
+                },
+                {
                   "t": "pencil"
                 },
                 {
@@ -239,11 +208,11 @@
                 },
                 {
                   "t": "value",
-                  "v": "material 2 code"
+                  "v": "material 1"
                 },
                 {
                   "t": "text",
-                  "v": " and "
+                  "v": ", "
                 },
                 {
                   "t": "pencil"
@@ -254,10 +223,25 @@
                 },
                 {
                   "t": "value",
-                  "v": "material 2 on-hand before"
+                  "v": "receiving warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 1 on-hand before"
                 }
               ],
-              "text": "material 2 code and material 2 on-hand before"
+              "text": "Warehouse - Item Inventory opens, one row per warehouse — material 1, receiving warehouse, material 1 on-hand before"
             }
           ],
           "id": "3",
@@ -279,34 +263,98 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Record both figures before booking anything"
+                  "v": "Close that tab, untick the row, and do the same for the second material"
                 }
               ],
-              "text": "Record both figures before booking anything"
+              "text": "Close that tab, untick the row, and do the same for the second material"
             },
             {
               "tokens": [
                 {
+                  "t": "pencil"
+                },
+                {
                   "t": "text",
-                  "v": "Both baselines are written down, not remembered"
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 on-hand before"
                 }
               ],
-              "text": "Both baselines are written down, not remembered"
+              "text": "material 2, material 2 on-hand before"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": false
+          "produces": true
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " — test items that Create test items makes"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE — test items that Create test items makes"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Warehouse - Item Inventory, the material by warehouse",
+    "path": "read-the-baseline.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

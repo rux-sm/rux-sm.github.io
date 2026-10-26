@@ -9,9 +9,9 @@
     "Procurement",
     "Warehousing"
   ],
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "status": "draft",
-  "summary": "buy raw materials on a purchase order and receive them into a warehouse.",
+  "summary": "buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received.",
   "order": 5,
   "sources": [
     "tccom4120s000",
@@ -39,7 +39,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "Know the item's stock before you start: "
+          "v": "A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow "
         },
         {
           "t": "link",
@@ -51,7 +51,7 @@
           "v": "."
         }
       ],
-      "text": "Know the item's stock before you start: Check an item's inventory."
+      "text": "A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow Check an item's inventory."
     }
   ],
   "tasks": [
@@ -63,13 +63,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand at the receiving warehouse is recorded before anything is booked."
+            "v": "Each material's on-hand at the receiving warehouse is written down."
           }
         ],
-        "text": "On-hand at the receiving warehouse is recorded before anything is booked."
+        "text": "Each material's on-hand at the receiving warehouse is written down."
       },
       "steps": 4,
-      "walked": "2026-10-23"
+      "walked": "2026-10-25"
     },
     {
       "id": "create-the-purchase-order",
@@ -79,13 +79,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "An order exists against a buy-from business partner."
+            "v": "The purchase order is saved for your buy-from business partner, with status "
+          },
+          {
+            "t": "strong",
+            "v": "Created"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "An order exists against a buy-from business partner."
+        "text": "The purchase order is saved for your buy-from business partner, with status Created."
       },
-      "steps": 7,
-      "walked": "2026-08-18"
+      "steps": 6,
+      "walked": "2026-10-25"
     },
     {
       "id": "book-the-lines",
@@ -95,75 +103,244 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Each material is ordered in the right quantity, to the right warehouse."
+            "v": "Each material is a line of the order, in its quantity, to the receiving warehouse."
           }
         ],
-        "text": "Each material is ordered in the right quantity, to the right warehouse."
+        "text": "Each material is a line of the order, in its quantity, to the receiving warehouse."
       },
-      "steps": 5,
-      "walked": "2026-08-18"
+      "steps": 8,
+      "walked": "2026-10-25"
     },
     {
-      "id": "receive-against-the-order",
+      "id": "approve-the-purchase-order",
       "n": 3,
-      "title": "Receive against the order",
+      "title": "Approve the purchase order",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "LN's generated inbound order is found and receiving is started."
+            "v": "The purchase order reads "
+          },
+          {
+            "t": "strong",
+            "v": "In Process"
+          },
+          {
+            "t": "text",
+            "v": ", and a warehousing order with its number is listed."
           }
         ],
-        "text": "LN's generated inbound order is found and receiving is started."
+        "text": "The purchase order reads In Process, and a warehousing order with its number is listed."
       },
-      "steps": 6,
-      "walked": "2026-08-18"
+      "steps": 4,
+      "walked": "2026-10-25"
+    },
+    {
+      "id": "receive-against-the-order",
+      "n": 4,
+      "title": "Receive against the order",
+      "achieves": {
+        "tokens": [
+          {
+            "t": "strong",
+            "v": "Warehouse Receipt"
+          },
+          {
+            "t": "text",
+            "v": " is open with a line for each purchase order line."
+          }
+        ],
+        "text": "Warehouse Receipt is open with a line for each purchase order line."
+      },
+      "steps": 4,
+      "walked": "2026-10-25"
     },
     {
       "id": "confirm-the-receipt",
-      "n": 4,
+      "n": 5,
       "title": "Confirm the receipt",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The receipt reaches "
+            "v": "The receipt reads "
           },
           {
-            "t": "status",
+            "t": "strong",
             "v": "Confirmed"
           },
           {
             "t": "text",
-            "v": " with all lines final and complete."
+            "v": ", with "
+          },
+          {
+            "t": "field",
+            "v": "All Lines Final"
+          },
+          {
+            "t": "text",
+            "v": " and "
+          },
+          {
+            "t": "field",
+            "v": "All Lines Complete"
+          },
+          {
+            "t": "text",
+            "v": " set and "
+          },
+          {
+            "t": "field",
+            "v": "Errors Logged"
+          },
+          {
+            "t": "text",
+            "v": " clear."
           }
         ],
-        "text": "The receipt reaches Confirmed with all lines final and complete."
+        "text": "The receipt reads Confirmed, with All Lines Final and All Lines Complete set and Errors Logged clear."
       },
-      "steps": 7,
-      "walked": "2026-08-18"
+      "steps": 5,
+      "walked": "2026-10-25"
     },
     {
       "id": "verify-the-inventory-increase",
-      "n": 5,
+      "n": 6,
       "title": "Verify the inventory increase",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand rose by exactly the quantity received."
+            "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
           }
         ],
-        "text": "On-hand rose by exactly the quantity received."
+        "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
       },
-      "steps": 3,
-      "walked": null
+      "steps": 2,
+      "walked": "2026-10-25"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " — test items that Create test items makes"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE — test items that Create test items makes"
+          }
+        ],
+        "task": "read-the-baseline"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Type"
+              }
+            ],
+            "text": "Order Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "IPO"
+              },
+              {
+                "t": "text",
+                "v": " — Inventory Purchase Order, which LN fills in"
+              }
+            ],
+            "text": "IPO — Inventory Purchase Order, which LN fills in"
+          }
+        ],
+        "task": "create-the-purchase-order"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": ", one pair's bill of material"
+              }
+            ],
+            "text": "2 for BAM-ROD and 1 for BAM-SLEEVE, one pair's bill of material"
+          }
+        ],
+        "task": "book-the-lines"
+      }
+    ]
   },
   "sections": [
     {
@@ -175,27 +352,10 @@
         },
         {
           "t": "text",
-          "v": " buy raw materials on a purchase order and receive them into a warehouse. "
-        },
-        {
-          "t": "strong",
-          "v": "Base walkthrough"
-        },
-        {
-          "t": "text",
-          "v": " — this is the atomic \"buy it in\" process. It was extracted from phase 9 of "
-        },
-        {
-          "t": "link",
-          "v": "Create test items",
-          "href": "create-basic-test-items-and-defaults.md"
-        },
-        {
-          "t": "text",
-          "v": ", which walked it inside a master-data walkthrough. "
+          "v": " buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received."
         }
       ],
-      "text": "Objective: buy raw materials on a purchase order and receive them into a warehouse. Base walkthrough — this is the atomic \"buy it in\" process. It was extracted from phase 9 of Create test items, which walked it inside a master-data walkthrough."
+      "text": "Objective: buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received."
     },
     {
       "kind": "prose",
@@ -210,7 +370,7 @@
         },
         {
           "t": "text",
-          "v": " > Know the item's stock before you start: "
+          "v": " > A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow "
         },
         {
           "t": "link",
@@ -222,7 +382,41 @@
           "v": "."
         }
       ],
-      "text": "> Prerequisite > Know the item's stock before you start: Check an item's inventory."
+      "text": "> Prerequisite > A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow Check an item's inventory."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
+        },
+        {
+          "t": "strong",
+          "v": "Warning"
+        },
+        {
+          "t": "text",
+          "v": " > "
+        },
+        {
+          "t": "strong",
+          "v": "This guide ends when on-hand has risen by the quantity received."
+        },
+        {
+          "t": "text",
+          "v": " A receipt reading "
+        },
+        {
+          "t": "strong",
+          "v": "Confirmed"
+        },
+        {
+          "t": "text",
+          "v": " is a status; the stock figure is the proof."
+        }
+      ],
+      "text": "> Warning > This guide ends when on-hand has risen by the quantity received. A receipt reading Confirmed is a status; the stock figure is the proof."
     },
     {
       "kind": "glance",
@@ -267,10 +461,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand at the receiving warehouse is recorded before anything is booked"
+                  "v": "Each material's on-hand at the receiving warehouse is written down"
                 }
               ],
-              "text": "On-hand at the receiving warehouse is recorded before anything is booked"
+              "text": "Each material's on-hand at the receiving warehouse is written down"
             }
           ]
         },
@@ -299,19 +493,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Purchase Order Intake Workbench; Purchase Order"
+                  "v": "PO Intake Workbench"
                 }
               ],
-              "text": "Purchase Order Intake Workbench; Purchase Order"
+              "text": "PO Intake Workbench"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "An order exists against a buy-from business partner"
+                  "v": "The purchase order is saved for your buy-from business partner, with status "
+                },
+                {
+                  "t": "chip",
+                  "v": "Created"
                 }
               ],
-              "text": "An order exists against a buy-from business partner"
+              "text": "The purchase order is saved for your buy-from business partner, with status Created"
             }
           ]
         },
@@ -349,10 +547,59 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each material is ordered in the right quantity, to the right warehouse"
+                  "v": "Each material is a line of the order, in its quantity, to the receiving warehouse"
                 }
               ],
-              "text": "Each material is ordered in the right quantity, to the right warehouse"
+              "text": "Each material is a line of the order, in its quantity, to the receiving warehouse"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "☐"
+                }
+              ],
+              "text": "☐"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "link",
+                  "v": "Approve the purchase order",
+                  "href": "approve-the-purchase-order.md"
+                }
+              ],
+              "text": "Approve the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Purchase Order; Warehousing Orders"
+                }
+              ],
+              "text": "Purchase Order; Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The purchase order reads "
+                },
+                {
+                  "t": "chip",
+                  "v": "In Process"
+                },
+                {
+                  "t": "text",
+                  "v": ", and a warehousing order with its number is listed"
+                }
+              ],
+              "text": "The purchase order reads In Process, and a warehousing order with its number is listed"
             }
           ]
         },
@@ -389,11 +636,15 @@
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Warehouse Receipt"
+                },
+                {
                   "t": "text",
-                  "v": "LN's generated inbound order is found and receiving is started"
+                  "v": " is open with a line for each purchase order line"
                 }
               ],
-              "text": "LN's generated inbound order is found and receiving is started"
+              "text": "Warehouse Receipt is open with a line for each purchase order line"
             }
           ]
         },
@@ -431,18 +682,42 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receipt reaches "
+                  "v": "The receipt reads "
                 },
                 {
-                  "t": "status",
+                  "t": "chip",
                   "v": "Confirmed"
                 },
                 {
                   "t": "text",
-                  "v": " with all lines final and complete"
+                  "v": ", with "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Final"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "All Lines Complete"
+                },
+                {
+                  "t": "text",
+                  "v": " set and "
+                },
+                {
+                  "t": "field",
+                  "v": "Errors Logged"
+                },
+                {
+                  "t": "text",
+                  "v": " clear"
                 }
               ],
-              "text": "The receipt reaches Confirmed with all lines final and complete"
+              "text": "The receipt reads Confirmed, with All Lines Final and All Lines Complete set and Errors Logged clear"
             }
           ]
         },
@@ -480,10 +755,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand rose by exactly the quantity received"
+                  "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for"
                 }
               ],
-              "text": "On-hand rose by exactly the quantity received"
+              "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for"
             }
           ]
         }
@@ -495,23 +770,14 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "The receipt number is the progress indicator."
+          "v": "Nothing is in the warehouse until the receipt is confirmed."
         },
         {
           "t": "text",
-          "v": " Until "
-        },
-        {
-          "t": "link",
-          "v": "Confirm the receipt",
-          "href": "confirm-the-receipt.md"
-        },
-        {
-          "t": "text",
-          "v": " produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock."
+          "v": " A purchase order at any status is a promise from the supplier, not stock."
         }
       ],
-      "text": "The receipt number is the progress indicator. Until Confirm the receipt produces one, nothing has entered the warehouse — a purchase order at any status is a commitment, not stock.",
+      "text": "Nothing is in the warehouse until the receipt is confirmed. A purchase order at any status is a promise from the supplier, not stock.",
       "under": "At a glance"
     },
     {
@@ -690,6 +956,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 0, 1, 2, 3, 4 have been performed against a live system and confirmed. Phase 5 has not. Follow that one as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 4
 }

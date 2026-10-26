@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Receive against the order · LN Notes · Updated 22 Oct 2026 · Walked in LN 18 Aug 2026"; } }</style>
+<style>@page { @bottom-left { content: "Receive against the order · LN Notes · Updated 25 Oct 2026 · Walked in LN 25 Oct 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -106,41 +106,40 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="3e39f4b918e2199a4daaee1994d9d973dfd6f788">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="eafdf254fbdf800810950b845e1f8605f97e38d9">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
 <div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="ln-brand__logo" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>22 Oct 2026</dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Version</dt><dd>25 Oct 2026</dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Receive against the order</h1>
-<p class="rux--type-body-long-01">LN's generated inbound order is found and receiving is started.</p>
+<p class="rux--type-body-long-01"><strong>Warehouse Receipt</strong> is open with a line for each purchase order line.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
-<p class="ln-strip">Task 4 of 6 in <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> · next: <a class="rux--link" href="../do/confirm-the-receipt.html">Confirm the receipt</a></p>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Procurement, Warehousing</dd></div><div><dt>Length</dt><dd>4 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<p class="ln-strip">Task 5 of 7 in <a class="rux--link" href="../follow/purchase-order-to-warehouse-receipt.html">Purchase to receipt</a> · next: <a class="rux--link" href="../do/confirm-the-receipt.html">Confirm the receipt</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
-<ul class="ln-proc__list"><li>You need <a class="rux--link" href="../do/create-the-purchase-order.html#step-4">step 2.4</a> (Create the purchase order); <a class="rux--link" href="../do/read-the-baseline.html#step-1">step 1.1</a> (Read the baseline).</li></ul>
+<ul class="ln-proc__list"><li>You need the warehousing order from <a class="rux--link" href="../do/approve-the-purchase-order.html#step-4">step 4.4</a> (Approve the purchase order).</li></ul>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Screen</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Orders</span></span> (<span class="ln-t-exact">whinh2100m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own <strong>Release to Warehousing</strong> tab shows which lines are still waiting, and its line status session says which activity has to happen first.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> You don't create this order. Approving the purchase order made it, with the same number, and its inbound lines are the purchase order lines waiting to be received. Receiving them opens a receipt with the lines already on it.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>4.1</b></td><td data-k="Action">Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a> (<span class="ln-t-exact">whinh2100m000</span>)</td><td data-k="You should see"></td></tr>
-<tr id="step-2"><td data-k="Step"><b>4.2</b></td><td data-k="Action">Find the order LN generated from the purchase order</td><td data-k="You should see"></td></tr>
-<tr id="step-3"><td data-k="Step"><b>4.3</b></td><td data-k="Action">Click <span class="ln-t-press">Drill In</span></td><td data-k="You should see">An inbound order exists that you did not create by hand</td></tr>
-<tr id="step-4"><td data-k="Step"><b>4.4</b></td><td data-k="Action">Confirm its <span class="ln-t-named">Order Type</span> and ship-from</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">warehousing order number</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the walked run showed order type PUI &quot;Purchase Receipts&quot;, ship-from the partner from <a class="rux--link" href="../do/create-the-purchase-order.html#step-4">step 2.4</a> (Create the purchase order), ship-to the receiving warehouse from <a class="rux--link" href="../do/read-the-baseline.html#step-1">step 1.1</a> (Read the baseline)</span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>4.5</b></td><td data-k="Action">Select the inbound lines</td><td data-k="You should see">The lines correspond to the purchase order lines from <a class="rux--link" href="../do/book-the-lines.html">Book the lines</a></td></tr>
-<tr id="step-6"><td data-k="Step"><b>4.6</b></td><td data-k="Action">Run <span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Receive</span></span> on the selected inbound lines</td><td data-k="You should see"><a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> (<span class="ln-t-exact">whinh3512m000</span>) opens</td></tr>
+<tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">On the warehousing order's row, click <span class="ln-t-press">Drill In</span></td><td data-k="You should see"><span class="ln-t-named">Warehousing Order</span> opens, with <span class="ln-t-named">Inbound Lines</span> below</td></tr>
+<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Check <span class="ln-t-named">Order Type</span> and the two warehouses</td><td data-k="You should see"><span class="ln-t-named">Order Type</span> <span class="ln-t-exact">PUI</span>, ship-from your business partner, ship-to the receiving warehouse</td></tr>
+<tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="receive-against-the-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 5.2 · Warehousing Order, its inbound lines</figcaption></figure></td></tr>
+<tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">On the <span class="ln-t-named">Inbound Lines</span> tab, tick every line</td><td data-k="You should see">One inbound line for each purchase order line, each <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">On the <span class="ln-t-named">Inbound Lines</span> toolbar, choose <span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Receive…</span></span></td><td data-k="You should see"><a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> (<span class="ln-t-exact">whinh3512m000</span>) opens</td></tr>
 </tbody>
 </table></div>
 
@@ -151,8 +150,8 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">No warehousing order appears after saving the purchase order</td><td data-k="What to do">The warehouse on the order lines (<a class="rux--link" href="../do/book-the-lines.html#step-4">step 3.4</a> (Book the lines)). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's <span class="ln-t-named">Release to Warehousing</span> tab: a line still sitting there has not been released, and <a class="rux--link" href="../screens/tdpur4534m000.html"><span class="ln-t-named">Purchase Order Line Status</span></a> (<span class="ln-t-exact">tdpur4534m000</span>) names the activity it is waiting on</td></tr>
-<tr><td data-k="Symptom">The Actions menu offers no receive command</td><td data-k="What to do">The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from <a class="rux--link" href="#step-1">step 4.1</a>, not the purchase order</td></tr>
+<tr><td data-k="Symptom">The <span class="ln-t-named">Actions</span> menu has no <span class="ln-t-named">Receive…</span></td><td data-k="What to do">You may be on the screen's own toolbar. Use the one above the <span class="ln-t-named">Inbound Lines</span></td></tr>
+<tr><td data-k="Symptom">The ship-to isn't the receiving warehouse</td><td data-k="What to do">A purchase order line went to another warehouse. Check <span class="ln-t-named">Warehouse</span> at <a class="rux--link" href="../do/book-the-lines.html#step-8">step 3.8</a> (Book the lines)</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -182,7 +181,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result">LN's generated inbound order is found and receiving is started.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>5</b></td><td data-k="Expected result"><strong>Warehouse Receipt</strong> is open with a line for each purchase order line.</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -211,31 +210,19 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Orders</span></span> (<span class="ln-t-exact">whinh2100m000</span>)</p><h1 class="ln-step__do">Open <a class="rux--link" href="../screens/whinh2100m000.html"><span class="ln-t-named">Warehousing Orders</span></a></h1></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Orders</span><span class="sep">➔</span><span class="dest ln-t-whole">Orders</span></span> (<span class="ln-t-exact">whinh2100m000</span>)</p><h1 class="ln-step__do">On the warehousing order's row, click <span class="ln-t-press">Drill In</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Warehousing Order</span> opens, with <span class="ln-t-named">Inbound Lines</span> below</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Find the order LN generated from the purchase order</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Order Type</span> and the two warehouses</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="read-the-baseline/3/1"><span class="ln-quiet">Receiving warehouse · 1.3</span><span data-use-missing><a class="rux--link" href="../do/read-the-baseline.html?walk=3">Write it down at step 1.3</a></span></div></div><figure class="ln-shot" data-shot="receive-against-the-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 5.2 · Warehousing Order, its inbound lines</figcaption></figure></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Order Type</span> <span class="ln-t-exact">PUI</span>, ship-from your business partner, ship-to the receiving warehouse</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>An inbound order exists that you did not create by hand</p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">On the <span class="ln-t-named">Inbound Lines</span> tab, tick every line</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>One inbound line for each purchase order line, each <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span></p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Confirm its <span class="ln-t-named">Order Type</span> and ship-from</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
-      <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-33">Warehousing order number</label></div>
-      <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-33" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/0" data-at="4.4" data-label="Warehousing order number">
-      </div></div>
-      <div class="rux--form__helper-text">the walked run showed order type PUI &quot;Purchase Receipts&quot;, ship-from the partner from step 4 of <a class="rux--link" href="../do/create-the-purchase-order.html">Create the purchase order</a>, ship-to the receiving warehouse from step 1 of <a class="rux--link" href="../do/read-the-baseline.html">Read the baseline</a></div>
-    </div></div></div>
-  </li>
-  <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Select the inbound lines</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The lines correspond to the purchase order lines from <a class="rux--link" href="../do/book-the-lines.html">Book the lines</a></p></div>
-  </li>
-  <li data-k="6" data-ref="6" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Run <span class="ln-t-named">Receive</span> on the selected inbound lines</h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Receive</span></span></p></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">On the <span class="ln-t-named">Inbound Lines</span> toolbar, choose <span class="ln-t-named">Receive…</span></h1><p class="ln-step__route"><span class="ln-t-route"><span class="ln-t-whole">Actions</span><span class="sep">➔</span><span class="dest ln-t-whole">Receive…</span></span></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/whinh3512m000.html"><span class="ln-t-named">Warehouse Receipt</span></a> (<span class="ln-t-exact">whinh3512m000</span>) opens</p></div>
   </li>
 </ol>
@@ -253,8 +240,8 @@
       <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>No warehousing order appears after saving the purchase order</b><p>The warehouse on the order lines (step 4 of <a class="rux--link" href="../do/book-the-lines.html">Book the lines</a>). Without one, there is nothing for LN to raise an inbound order against. Then the purchase order's <span class="ln-t-named">Release to Warehousing</span> tab: a line still sitting there has not been released, and <a class="rux--link" href="../screens/tdpur4534m000.html"><span class="ln-t-named">Purchase Order Line Status</span></a> (<span class="ln-t-exact">tdpur4534m000</span>) names the activity it is waiting on</p></li>
-  <li><b>The Actions menu offers no receive command</b><p>The order origin. An outbound order carries outbound activities; confirm you opened the generated inbound order from step 1, not the purchase order</p></li>
+  <li><b>The <span class="ln-t-named">Actions</span> menu has no <span class="ln-t-named">Receive…</span></b><p>You may be on the screen's own toolbar. Use the one above the <span class="ln-t-named">Inbound Lines</span></p></li>
+  <li><b>The ship-to isn't the receiving warehouse</b><p>A purchase order line went to another warehouse. Check <span class="ln-t-named">Warehouse</span> at step 8 of <a class="rux--link" href="../do/book-the-lines.html">Book the lines</a></p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -262,7 +249,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>You do not create this order; the purchase order generates a warehousing order whose origin, purchase, gives it inbound activities. That is the handoff from Procurement to Warehousing. The purchase order's own <strong>Release to Warehousing</strong> tab shows which lines are still waiting, and its line status session says which activity has to happen first.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>You don't create this order. Approving the purchase order made it, with the same number, and its inbound lines are the purchase order lines waiting to be received. Receiving them opens a receipt with the lines already on it.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

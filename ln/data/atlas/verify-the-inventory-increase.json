@@ -7,8 +7,8 @@
   "process": {
     "id": "purchase-order-to-warehouse-receipt",
     "title": "Purchase to receipt",
-    "n": 5,
-    "of": 6
+    "n": 6,
+    "of": 7
   },
   "previous": {
     "id": "confirm-the-receipt",
@@ -21,92 +21,29 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": null,
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "On-hand rose by exactly the quantity received."
+        "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
       }
     ],
-    "text": "On-hand rose by exactly the quantity received."
+    "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "You need step 2 of "
-        },
-        {
-          "t": "link",
-          "v": "Book the lines",
-          "href": "book-the-lines.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 3 of "
-        },
-        {
-          "t": "link",
-          "v": "Book the lines",
-          "href": "book-the-lines.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 2 of "
-        },
-        {
-          "t": "link",
-          "v": "Read the baseline",
-          "href": "read-the-baseline.md"
-        },
-        {
-          "t": "text",
-          "v": "; step 3 of "
-        },
-        {
-          "t": "link",
-          "v": "Read the baseline",
-          "href": "read-the-baseline.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "You need step 2 of Book the lines; step 3 of Book the lines; step 2 of Read the baseline; step 3 of Read the baseline."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. This task re-reads the figure from "
-      },
-      {
-        "t": "link",
-        "v": "Read the baseline",
-        "href": "read-the-baseline.md"
-      },
-      {
-        "t": "text",
-        "v": ", because the receipt reaching "
-      },
-      {
-        "t": "strong",
-        "v": "Confirmed"
-      },
-      {
-        "t": "text",
-        "v": " is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+        "v": "Nothing new. A confirmed receipt is a status. The proof is the on-hand figure at the receiving warehouse going up by what you received."
       }
     ],
-    "text": "Nothing new. This task re-reads the figure from Read the baseline, because the receipt reaching Confirmed is not the proof; the number changing by exactly the received quantity is. A difference that is not the ordered quantity means something else moved stock in between, and adjusting it to match buries the evidence."
+    "text": "Nothing new. A confirmed receipt is a status. The proof is the on-hand figure at the receiving warehouse going up by what you received."
   },
   "blocks": [
     {
@@ -132,10 +69,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Re-read the first material at the receiving warehouse"
+                  "v": "Read the first material's on-hand at the receiving warehouse, in the same view as step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
                 }
               ],
-              "text": "Re-read the first material at the receiving warehouse"
+              "text": "Read the first material's on-hand at the receiving warehouse, in the same view as step 3 of Read the baseline"
             },
             {
               "tokens": [
@@ -152,20 +94,29 @@
                 },
                 {
                   "t": "text",
-                  "v": " — up by exactly the quantity from step 2 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Book the lines",
-                  "href": "book-the-lines.md"
+                  "v": " — up by its quantity ordered"
                 }
               ],
-              "text": "material 1 on-hand after — up by exactly the quantity from step 2 of Book the lines"
+              "text": "material 1 on-hand after — up by its quantity ordered"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "read-the-baseline",
+              "step": "3",
+              "n": 2,
+              "label": "material 1 on-hand before"
+            },
+            {
+              "task": "book-the-lines",
+              "step": "3",
+              "n": 0,
+              "label": "material 1 quantity ordered"
+            }
+          ]
         },
         {
           "cells": [
@@ -182,10 +133,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Re-read the second material"
+                  "v": "Do the same for the second material"
                 }
               ],
-              "text": "Re-read the second material"
+              "text": "Do the same for the second material"
             },
             {
               "tokens": [
@@ -202,59 +153,29 @@
                 },
                 {
                   "t": "text",
-                  "v": " — up by exactly the quantity from step 3 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Book the lines",
-                  "href": "book-the-lines.md"
+                  "v": " — up by its quantity ordered"
                 }
               ],
-              "text": "material 2 on-hand after — up by exactly the quantity from step 3 of Book the lines"
+              "text": "material 2 on-hand after — up by its quantity ordered"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
+          "produces": true,
+          "uses": [
             {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "3"
-                }
-              ],
-              "text": "3"
+              "task": "read-the-baseline",
+              "step": "4",
+              "n": 1,
+              "label": "material 2 on-hand before"
             },
             {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Compare both against the baselines from steps 2 and 3 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Read the baseline",
-                  "href": "read-the-baseline.md"
-                }
-              ],
-              "text": "Compare both against the baselines from steps 2 and 3 of Read the baseline"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Each difference equals what was ordered and received, with nothing unexplained"
-                }
-              ],
-              "text": "Each difference equals what was ordered and received, with nothing unexplained"
+              "task": "book-the-lines",
+              "step": "6",
+              "n": 0,
+              "label": "material 2 quantity ordered"
             }
-          ],
-          "id": "3",
-          "optional": false,
-          "produces": false
+          ]
         }
       ]
     }
@@ -264,7 +185,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Warehouse - Item Inventory after the receipt",
+    "path": "verify-the-inventory-increase.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -278,49 +203,46 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The receipt confirms but on-hand does not move"
+                "v": "On-hand didn't go up"
               }
             ],
-            "text": "The receipt confirms but on-hand does not move"
+            "text": "On-hand didn't go up"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Whether "
-              },
-              {
-                "t": "field",
-                "v": "All Lines Final"
-              },
-              {
-                "t": "text",
-                "v": " and "
-              },
-              {
-                "t": "field",
-                "v": "All Lines Complete"
-              },
-              {
-                "t": "text",
-                "v": " were both set (step 4 of "
+                "v": "The receipt may not be confirmed. Check step 3 of "
               },
               {
                 "t": "link",
                 "v": "Confirm the receipt",
                 "href": "confirm-the-receipt.md"
-              },
-              {
-                "t": "text",
-                "v": "), and whether the receiving warehouse in this task is the one from step 1 of "
-              },
-              {
-                "t": "link",
-                "v": "Read the baseline",
-                "href": "read-the-baseline.md"
               }
             ],
-            "text": "Whether All Lines Final and All Lines Complete were both set (step 4 of Confirm the receipt), and whether the receiving warehouse in this task is the one from step 1 of Read the baseline"
+            "text": "The receipt may not be confirmed. Check step 3 of Confirm the receipt"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "It went up by a different amount"
+              }
+            ],
+            "text": "It went up by a different amount"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Something else may have moved the item in between. Look for other movements of the item before trusting the result"
+              }
+            ],
+            "text": "Something else may have moved the item in between. Look for other movements of the item before trusting the result"
           }
         ]
       }

@@ -8,15 +8,15 @@
     "id": "purchase-order-to-warehouse-receipt",
     "title": "Purchase to receipt",
     "n": 2,
-    "of": 6
+    "of": 7
   },
   "previous": {
     "id": "create-the-purchase-order",
     "title": "Create the purchase order"
   },
   "next": {
-    "id": "receive-against-the-order",
-    "title": "Receive against the order"
+    "id": "approve-the-purchase-order",
+    "title": "Approve the purchase order"
   },
   "module": "Procurement · Warehousing",
   "modules": [
@@ -24,26 +24,26 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-21",
+  "updated": "2026-10-25",
   "route": null,
   "session": null,
   "sessionCode": null,
-  "walked": "2026-08-18",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each material is ordered in the right quantity, to the right warehouse."
+        "v": "Each material is a line of the order, in its quantity, to the receiving warehouse."
       }
     ],
-    "text": "Each material is ordered in the right quantity, to the right warehouse."
+    "text": "Each material is a line of the order, in its quantity, to the receiving warehouse."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 1 of "
+          "v": "You need the materials and the receiving warehouse from "
         },
         {
           "t": "link",
@@ -52,7 +52,7 @@
         },
         {
           "t": "text",
-          "v": "; step 7 of "
+          "v": ", and the order from "
         },
         {
           "t": "link",
@@ -64,26 +64,17 @@
           "v": "."
         }
       ],
-      "text": "You need step 1 of Read the baseline; step 7 of Create the purchase order."
+      "text": "You need the materials and the receiving warehouse from Read the baseline, and the order from Create the purchase order."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in "
-      },
-      {
-        "t": "link",
-        "v": "Receive against the order",
-        "href": "receive-against-the-order.md"
-      },
-      {
-        "t": "text",
-        "v": ". A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+        "v": "Each line names an item, a quantity and a warehouse. The warehouse on the line decides where the goods are received, so a line to the wrong warehouse puts the stock somewhere you didn't mean."
       }
     ],
-    "text": "Each line names an item, a quantity and a warehouse, and the warehouse on the line is what LN will raise the inbound order against in Receive against the order. A line saved to the wrong warehouse produces a receipt that never reaches the stock you meant to build."
+    "text": "Each line names an item, a quantity and a warehouse. The warehouse on the line decides where the goods are received, so a line to the wrong warehouse puts the stock somewhere you didn't mean."
   },
   "blocks": [
     {
@@ -109,19 +100,47 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the order's lines"
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Order Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab under the header, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Open the order's lines"
+              "text": "On the Order Lines tab under the header, click New"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The line grid is empty"
+                  "v": "A new line, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Line"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "10"
+                },
+                {
+                  "t": "text",
+                  "v": " and the site filled in"
                 }
               ],
-              "text": "The line grid is empty"
+              "text": "A new line, with Line 10 and the site filled in"
             }
           ],
           "id": "1",
@@ -143,63 +162,55 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a line for the first material, with the quantity your downstream demand requires"
+                  "v": "Enter the first material as "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Add a line for the first material, with the quantity your downstream demand requires"
+              "text": "Enter the first material as Item and press Tab"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "text",
+                  "v": "Its description fills in, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "material 1 quantity ordered"
-                },
-                {
-                  "t": "text",
-                  "v": " — the walked run booked line "
+                  "v": " reads "
                 },
                 {
                   "t": "literal",
-                  "v": "10"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "BAM-ROD"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "2.0000"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "literal",
-                  "v": "ea"
+                  "v": "1"
                 }
               ],
-              "text": "material 1 quantity ordered — the walked run booked line 10, BAM-ROD, 2.0000 ea"
+              "text": "Its description fills in, and Ordered Quantity reads 1"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "read-the-baseline",
+              "step": "3",
+              "n": 0,
+              "label": "material 1"
+            }
+          ]
         },
         {
           "cells": [
@@ -216,10 +227,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add a line for the second material"
+                  "v": "Enter its "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
                 }
               ],
-              "text": "Add a line for the second material"
+              "text": "Enter its Ordered Quantity"
             },
             {
               "tokens": [
@@ -232,47 +247,18 @@
                 },
                 {
                   "t": "value",
-                  "v": "material 2 quantity ordered"
-                },
-                {
-                  "t": "text",
-                  "v": " — the walked run booked line "
-                },
-                {
-                  "t": "literal",
-                  "v": "20"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "BAM-SLEEVE"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "literal",
-                  "v": "1.0000"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "literal",
-                  "v": "ea"
+                  "v": "material 1 quantity ordered"
                 }
               ],
-              "text": "material 2 quantity ordered — the walked run booked line 20, BAM-SLEEVE, 1.0000 ea"
+              "text": "material 1 quantity ordered"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            1
+          ]
         },
         {
           "cells": [
@@ -289,24 +275,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set the warehouse on every line to the receiving warehouse from step 1 of "
+                  "v": "Click "
                 },
                 {
-                  "t": "link",
-                  "v": "Read the baseline",
-                  "href": "read-the-baseline.md"
+                  "t": "button",
+                  "label": "New"
+                },
+                {
+                  "t": "text",
+                  "v": " again"
                 }
               ],
-              "text": "Set the warehouse on every line to the receiving warehouse from step 1 of Read the baseline"
+              "text": "Click New again"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land "
+                  "v": "A second line, "
+                },
+                {
+                  "t": "literal",
+                  "v": "20"
                 }
               ],
-              "text": "Both lines point at the receiving warehouse in the walked run — this is what decides where the goods land"
+              "text": "A second line, 20"
             }
           ],
           "id": "4",
@@ -328,39 +321,277 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the lines"
+                  "v": "Enter the second material as "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Save the lines"
+              "text": "Enter the second material as Item and press Tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both lines are stored against the order from step 7 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the purchase order",
-                  "href": "create-the-purchase-order.md"
+                  "v": "Its description fills in"
                 }
               ],
-              "text": "Both lines are stored against the order from step 7 of Create the purchase order"
+              "text": "Its description fills in"
             }
           ],
           "id": "5",
           "optional": false,
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "read-the-baseline",
+              "step": "4",
+              "n": 0,
+              "label": "material 2"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter its "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
+                }
+              ],
+              "text": "Enter its Ordered Quantity"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "material 2 quantity ordered"
+                }
+              ],
+              "text": "material 2 quantity ordered"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true,
+          "example": [
+            1
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Both lines are listed"
+                }
+              ],
+              "text": "Both lines are listed"
+            }
+          ],
+          "id": "7",
+          "optional": false,
           "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check "
+                },
+                {
+                  "t": "field",
+                  "v": "Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " on each line"
+                }
+              ],
+              "text": "Check Warehouse on each line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN fills in the item's default warehouse. It should be the receiving warehouse; if it isn't, change it and save"
+                }
+              ],
+              "text": "LN fills in the item's default warehouse. It should be the receiving warehouse; if it isn't, change it and save"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false,
+          "uses": [
+            {
+              "task": "read-the-baseline",
+              "step": "3",
+              "n": 1,
+              "label": "receiving warehouse"
+            }
+          ]
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "BAM-ROD, then BAM-SLEEVE"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "2"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "literal",
+                "v": "1"
+              },
+              {
+                "t": "text",
+                "v": " for "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": ", one pair's bill of material"
+              }
+            ],
+            "text": "2 for BAM-ROD and 1 for BAM-SLEEVE, one pair's bill of material"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "8",
+    "caption": "Purchase Order, the lines with their warehouse",
+    "path": "book-the-lines.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [],

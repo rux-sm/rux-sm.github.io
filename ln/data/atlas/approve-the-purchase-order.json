@@ -1,0 +1,376 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "approve-the-purchase-order",
+  "title": "Approve the purchase order",
+  "process": {
+    "id": "purchase-order-to-warehouse-receipt",
+    "title": "Purchase to receipt",
+    "n": 3,
+    "of": 7
+  },
+  "previous": {
+    "id": "book-the-lines",
+    "title": "Book the lines"
+  },
+  "next": {
+    "id": "receive-against-the-order",
+    "title": "Receive against the order"
+  },
+  "module": "Procurement · Warehousing",
+  "modules": [
+    "Procurement",
+    "Warehousing"
+  ],
+  "status": "draft",
+  "updated": "2026-10-25",
+  "route": null,
+  "session": null,
+  "sessionCode": null,
+  "walked": "2026-10-25",
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "The purchase order reads "
+      },
+      {
+        "t": "strong",
+        "v": "In Process"
+      },
+      {
+        "t": "text",
+        "v": ", and a warehousing order with its number is listed."
+      }
+    ],
+    "text": "The purchase order reads In Process, and a warehousing order with its number is listed."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "Only an approved order goes to Warehousing. Approving prints the purchase order, and in the example it also released the order to Warehousing at once, so a warehousing order with the same number appeared without a separate release. That warehousing order is what you receive against."
+      }
+    ],
+    "text": "Only an approved order goes to Warehousing. Approving prints the purchase order, and in the example it also released the order to Warehousing at once, so a warehousing order with the same number appeared without a separate release. That warehousing order is what you receive against."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the purchase order's toolbar, click "
+                },
+                {
+                  "t": "button",
+                  "label": "Approve"
+                }
+              ],
+              "text": "On the purchase order's toolbar, click Approve"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The purchase order prints in a tab of its own, sometimes with an annex"
+                }
+              ],
+              "text": "The purchase order prints in a tab of its own, sometimes with an annex"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the print tabs and go back to the purchase order"
+                }
+              ],
+              "text": "Close the print tabs and go back to the purchase order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "In Process"
+                }
+              ],
+              "text": "Status = In Process"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing Orders"
+                }
+              ],
+              "text": "Open Warehousing Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the purchase order number in the filter box above the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " column and press Enter"
+                }
+              ],
+              "text": "Type the purchase order number in the filter box above the Order column and press Enter"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One row: "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Origin"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "chip",
+                  "v": "Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": ", "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "literal",
+                  "v": "PUI"
+                }
+              ],
+              "text": "One row: Order Origin Purchase, Receipt, Open, Order Type PUI"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-purchase-order",
+              "step": "6",
+              "n": 0,
+              "label": "purchase order number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": {
+    "step": "4",
+    "caption": "Warehousing Orders, the order Approve made",
+    "path": "approve-the-purchase-order.jpg"
+  },
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "button",
+                "label": "Approve"
+              },
+              {
+                "t": "text",
+                "v": " is greyed out"
+              }
+            ],
+            "text": "Approve is greyed out"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The order may have no lines yet, or they aren't saved. Go back to "
+              },
+              {
+                "t": "link",
+                "v": "Book the lines",
+                "href": "book-the-lines.md"
+              }
+            ],
+            "text": "The order may have no lines yet, or they aren't saved. Go back to Book the lines"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "No warehousing order after approving"
+              }
+            ],
+            "text": "No warehousing order after approving"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The lines may not be released yet. Open the purchase order's "
+              },
+              {
+                "t": "chip",
+                "v": "Release to Warehousing"
+              },
+              {
+                "t": "text",
+                "v": " tab: a line still listed there is waiting, and the workbench's "
+              },
+              {
+                "t": "button",
+                "label": "Release to Warehousing"
+              },
+              {
+                "t": "text",
+                "v": " releases it"
+              }
+            ],
+            "text": "The lines may not be released yet. Open the purchase order's Release to Warehousing tab: a line still listed there is waiting, and the workbench's Release to Warehousing releases it"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [],
+    "rows": []
+  }
+}

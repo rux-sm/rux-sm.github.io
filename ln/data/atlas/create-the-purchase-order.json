@@ -8,7 +8,7 @@
     "id": "purchase-order-to-warehouse-receipt",
     "title": "Purchase to receipt",
     "n": 1,
-    "of": 6
+    "of": 7
   },
   "previous": {
     "id": "read-the-baseline",
@@ -24,53 +24,37 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
   "session": "Purchase Order Intake Workbench",
   "sessionCode": "tdpur4601m200",
-  "walked": "2026-08-18",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "An order exists against a buy-from business partner."
+        "v": "The purchase order is saved for your buy-from business partner, with status "
+      },
+      {
+        "t": "strong",
+        "v": "Created"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "An order exists against a buy-from business partner."
+    "text": "The purchase order is saved for your buy-from business partner, with status Created."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The buy-from business partner decides most of the header: LN defaults the "
-      },
-      {
-        "t": "field",
-        "v": "Purchase Order Type"
-      },
-      {
-        "t": "text",
-        "v": ", "
-      },
-      {
-        "t": "field",
-        "v": "Purchase Office"
-      },
-      {
-        "t": "text",
-        "v": " and "
-      },
-      {
-        "t": "field",
-        "v": "Buyer"
-      },
-      {
-        "t": "text",
-        "v": " from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+        "v": "The buy-from business partner fills in most of the header: the order type, the purchase office and the buyer come from the partner's record. The partner has to exist already; this guide picks one and doesn't create one."
       }
     ],
-    "text": "The buy-from business partner decides most of the header: LN defaults the Purchase Order Type, Purchase Office and Buyer from the partner record, falling back to the user profile where the partner leaves a field empty. The workbench opens the Purchase Order session to carry the order; the lookup only selects a partner and never creates one."
+    "text": "The buy-from business partner fills in most of the header: the order type, the purchase office and the buyer come from the partner's record. The partner has to exist already; this guide picks one and doesn't create one."
   },
   "blocks": [
     {
@@ -99,21 +83,28 @@
                   "v": "Open "
                 },
                 {
-                  "t": "session",
-                  "code": "tdpur4601m200",
-                  "name": "Purchase Order Intake Workbench"
+                  "t": "chip",
+                  "v": "Purchase Order Intake Workbench"
                 }
               ],
-              "text": "Open Purchase Order Intake Workbench (tdpur4601m200)"
+              "text": "Open Purchase Order Intake Workbench"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The intake workbench opens"
+                  "v": "The workbench, with a "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " tab below"
                 }
               ],
-              "text": "The intake workbench opens"
+              "text": "The workbench, with a Purchase Orders tab below"
             }
           ],
           "id": "1",
@@ -135,28 +126,47 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Start a new order"
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Purchase Orders"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Start a new order"
+              "text": "On the Purchase Orders tab, click New"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "A blank "
-                },
-                {
-                  "t": "session",
-                  "code": "tdpur4100m900",
-                  "name": "Purchase Order"
+                  "t": "chip",
+                  "v": "Purchase Order"
                 },
                 {
                   "t": "text",
-                  "v": " opens"
+                  "v": " opens, empty, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "status",
+                  "v": "Created"
                 }
               ],
-              "text": "A blank Purchase Order (tdpur4100m900) opens"
+              "text": "Purchase Order opens, empty, with Status Created"
             }
           ],
           "id": "2",
@@ -178,32 +188,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the lookup on "
+                  "v": "Enter the buy-from "
                 },
                 {
                   "t": "field",
-                  "v": "Buy-from Business Partner"
+                  "v": "Business Partner"
                 },
                 {
                   "t": "text",
-                  "v": ". It is "
-                },
-                {
-                  "t": "session",
-                  "code": "tccom4520m000",
-                  "name": "Buy-from Business Partners"
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Open the lookup on Buy-from Business Partner. It is Buy-from Business Partners (tccom4520m000)"
+              "text": "Enter the buy-from Business Partner and press Tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Its name and address fill in, and the ship-from with them"
                 }
               ],
-              "text": "—"
+              "text": "Its name and address fill in, and the ship-from with them"
             }
           ],
           "id": "3",
@@ -225,35 +230,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select the partner"
+                  "v": "Check the "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " LN fills in"
                 }
               ],
-              "text": "Select the partner"
+              "text": "Check the Order Type LN fills in"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "buy-from business partner"
-                },
-                {
-                  "t": "text",
-                  "v": " — the walked run used one of the standard test partners "
+                  "v": "The partner's default order type"
                 }
               ],
-              "text": "buy-from business partner — the walked run used one of the standard test partners"
+              "text": "The partner's default order type"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": false,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -270,35 +275,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the "
+                  "v": "Check the "
                 },
                 {
                   "t": "field",
-                  "v": "Purchase Order Type"
+                  "v": "Purchase Office"
                 },
                 {
                   "t": "text",
-                  "v": " LN defaulted from the partner"
+                  "v": " LN fills in"
                 }
               ],
-              "text": "Confirm the Purchase Order Type LN defaulted from the partner"
+              "text": "Check the Purchase Office LN fills in"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The walked run showed "
+                  "v": "The partner's purchase office. If LN says "
                 },
                 {
                   "t": "literal",
-                  "v": "IPO"
+                  "v": "Purchase offices for business partner and user differ."
                 },
                 {
                   "t": "text",
-                  "v": " (Inventory Purchase Order)"
+                  "v": ", you can leave it"
                 }
               ],
-              "text": "The walked run showed IPO (Inventory Purchase Order)"
+              "text": "The partner's purchase office. If LN says Purchase offices for business partner and user differ., you can leave it"
             }
           ],
           "id": "5",
@@ -320,55 +325,25 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the "
+                  "v": "Click "
                 },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
                 {
                   "t": "field",
-                  "v": "Purchase Office"
+                  "v": "Order"
                 },
                 {
                   "t": "text",
-                  "v": " LN defaulted from the partner"
-                }
-              ],
-              "text": "Confirm the Purchase Office LN defaulted from the partner"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The partner's purchase office "
-                }
-              ],
-              "text": "The partner's purchase office"
-            }
-          ],
-          "id": "6",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "7"
-                }
-              ],
-              "text": "7"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Save the header"
-                }
-              ],
-              "text": "Save the header"
-            },
-            {
-              "tokens": [
+                  "v": " shows the new number — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -379,31 +354,12 @@
                 {
                   "t": "value",
                   "v": "purchase order number"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "order type"
-                },
-                {
-                  "t": "text",
-                  "v": " "
                 }
               ],
-              "text": "purchase order number and order type"
+              "text": "Order shows the new number — purchase order number"
             }
           ],
-          "id": "7",
+          "id": "6",
           "optional": false,
           "produces": true
         }
@@ -412,10 +368,44 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Type"
+              }
+            ],
+            "text": "Order Type"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "IPO"
+              },
+              {
+                "t": "text",
+                "v": " — Inventory Purchase Order, which LN fills in"
+              }
+            ],
+            "text": "IPO — Inventory Purchase Order, which LN fills in"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "6",
+    "caption": "Purchase Order, saved with its number",
+    "path": "create-the-purchase-order.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -429,20 +419,20 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Order type is not "
+                "v": "The order type isn't "
               },
               {
                 "t": "literal",
                 "v": "IPO"
               }
             ],
-            "text": "Order type is not IPO"
+            "text": "The order type isn't IPO"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Nothing. "
+                "v": "Nothing, if it's the type your partner uses. "
               },
               {
                 "t": "literal",
@@ -450,10 +440,32 @@
               },
               {
                 "t": "text",
-                "v": " is what the walked run defaulted, not a required value"
+                "v": " is what the example used"
               }
             ],
-            "text": "Nothing. IPO is what the walked run defaulted, not a required value"
+            "text": "Nothing, if it's the type your partner uses. IPO is what the example used"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The partner's name doesn't fill in"
+              }
+            ],
+            "text": "The partner's name doesn't fill in"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The partner may not exist as a buy-from business partner. Check the code, or ask whoever maintains business partners"
+              }
+            ],
+            "text": "The partner may not exist as a buy-from business partner. Check the code, or ask whoever maintains business partners"
           }
         ]
       }

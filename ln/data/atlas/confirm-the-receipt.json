@@ -7,8 +7,8 @@
   "process": {
     "id": "purchase-order-to-warehouse-receipt",
     "title": "Purchase to receipt",
-    "n": 4,
-    "of": 6
+    "n": 5,
+    "of": 7
   },
   "previous": {
     "id": "receive-against-the-order",
@@ -24,45 +24,69 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-22",
+  "updated": "2026-10-25",
   "route": null,
   "session": null,
   "sessionCode": null,
-  "walked": "2026-08-18",
+  "walked": "2026-10-25",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The receipt reaches "
+        "v": "The receipt reads "
       },
       {
-        "t": "status",
+        "t": "strong",
         "v": "Confirmed"
       },
       {
         "t": "text",
-        "v": " with all lines final and complete."
+        "v": ", with "
+      },
+      {
+        "t": "field",
+        "v": "All Lines Final"
+      },
+      {
+        "t": "text",
+        "v": " and "
+      },
+      {
+        "t": "field",
+        "v": "All Lines Complete"
+      },
+      {
+        "t": "text",
+        "v": " set and "
+      },
+      {
+        "t": "field",
+        "v": "Errors Logged"
+      },
+      {
+        "t": "text",
+        "v": " clear."
       }
     ],
-    "text": "The receipt reaches Confirmed with all lines final and complete."
+    "text": "The receipt reads Confirmed, with All Lines Final and All Lines Complete set and Errors Logged clear."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so "
+        "v": "LN builds the receipt lines from the inbound lines you ticked, each with its full quantity received. Confirming the receipt is what puts the goods into the warehouse. The flags in "
       },
       {
-        "t": "field",
-        "v": "Confirmed"
+        "t": "strong",
+        "v": "Status"
       },
       {
         "t": "text",
-        "v": " is cleared both when a line is unconfirmed and when there are no lines at all."
+        "v": " sum up the lines, so read them before you leave."
       }
     ],
-    "text": "The receive command lands you in a receipt whose lines LN built from the inbound order lines you linked, and confirming it is what books the goods. Every flag on the header summarises its lines, so Confirmed is cleared both when a line is unconfirmed and when there are no lines at all."
+    "text": "LN builds the receipt lines from the inbound lines you ticked, each with its full quantity received. Confirming the receipt is what puts the goods into the warehouse. The flags in Status sum up the lines, so read them before you leave."
   },
   "blocks": [
     {
@@ -88,10 +112,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the receipt number LN assigned"
+                  "v": "Read the "
+                },
+                {
+                  "t": "field",
+                  "v": "Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " number and each line's "
+                },
+                {
+                  "t": "field",
+                  "v": "Received Quantity"
                 }
               ],
-              "text": "Read the receipt number LN assigned"
+              "text": "Read the Receipt number and each line's Received Quantity"
             },
             {
               "tokens": [
@@ -108,15 +144,29 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": ". Each line has its ordered quantity received"
                 }
               ],
-              "text": "receipt number"
+              "text": "receipt number. Each line has its ordered quantity received"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "uses": [
+            {
+              "task": "book-the-lines",
+              "step": "3",
+              "n": 0,
+              "label": "material 1 quantity ordered"
+            },
+            {
+              "task": "book-the-lines",
+              "step": "6",
+              "n": 0,
+              "label": "material 2 quantity ordered"
+            }
+          ]
         },
         {
           "cells": [
@@ -133,35 +183,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the packing-slip reference for each line as delivered"
+                  "v": "Enter the supplier's "
+                },
+                {
+                  "t": "field",
+                  "v": "Packing Slip"
+                },
+                {
+                  "t": "text",
+                  "v": " on each line and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Enter the packing-slip reference for each line as delivered"
+              "text": "Enter the supplier's Packing Slip on each line and click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The walked run recorded packing slips "
-                },
-                {
-                  "t": "literal",
-                  "v": "123"
-                },
-                {
-                  "t": "text",
-                  "v": " (rod) and "
-                },
-                {
-                  "t": "literal",
-                  "v": "124"
-                },
-                {
-                  "t": "text",
-                  "v": " (sleeve)"
+                  "v": "Each line shows its packing slip"
                 }
               ],
-              "text": "The walked run recorded packing slips 123 (rod) and 124 (sleeve)"
+              "text": "Each line shows its packing slip"
             }
           ],
           "id": "2",
@@ -183,10 +229,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm the receipt"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Confirm Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
                 }
               ],
-              "text": "Confirm the receipt"
+              "text": "Click Confirm Receipt on the toolbar"
             },
             {
               "tokens": [
@@ -204,7 +258,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and the header's "
+                  "v": ", and each line's "
                 },
                 {
                   "t": "field",
@@ -212,10 +266,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " check box is set once every receipt line is confirmed"
+                  "v": " is ticked"
                 }
               ],
-              "text": "Status = Confirmed, and the header's Confirmed check box is set once every receipt line is confirmed"
+              "text": "Status = Confirmed, and each line's Confirmed is ticked"
             }
           ],
           "id": "3",
@@ -258,10 +312,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both are set — a receipt confirmed with either clear has left something behind"
+                  "v": "Both are set"
                 }
               ],
-              "text": "Both are set — a receipt confirmed with either clear has left something behind"
+              "text": "Both are set"
             }
           ],
           "id": "4",
@@ -283,66 +337,20 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
                   "v": "Errors Logged"
-                },
-                {
-                  "t": "text",
-                  "v": " before leaving the session"
                 }
               ],
-              "text": "Read Errors Logged before leaving the session"
+              "text": "Check Errors Logged"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Clear means the receipt logged nothing. Set means it did, whatever the status says"
-                }
-              ],
-              "text": "Clear means the receipt logged nothing. Set means it did, whatever the status says"
-            }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "6"
-                }
-              ],
-              "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "If "
-                },
-                {
-                  "t": "field",
-                  "v": "Errors Logged"
-                },
-                {
-                  "t": "text",
-                  "v": " is set, read the messages in "
-                },
-                {
-                  "t": "session",
-                  "code": "whinh3530m000",
-                  "name": "Receipt Message Log"
-                },
-                {
-                  "t": "text",
-                  "v": ". They are also on the "
+                  "v": "It's clear. If it's set, open the "
                 },
                 {
                   "t": "chip",
@@ -350,56 +358,13 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab in this session's lines pane"
+                  "v": " tab below and read the messages"
                 }
               ],
-              "text": "If Errors Logged is set, read the messages in Receipt Message Log (whinh3530m000). They are also on the Message Log tab in this session's lines pane"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
+              "text": "It's clear. If it's set, open the Message Log tab below and read the messages"
             }
           ],
-          "id": "6",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "7"
-                }
-              ],
-              "text": "7"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Then capture them"
-                }
-              ],
-              "text": "Then capture them"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The messages behind the confirmation are on record. "
-                }
-              ],
-              "text": "The messages behind the confirmation are on record."
-            }
-          ],
-          "id": "7",
+          "id": "5",
           "optional": false,
           "produces": false
         }
@@ -411,7 +376,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Warehouse Receipt, confirmed with each line's packing slip",
+    "path": "confirm-the-receipt.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -424,41 +393,28 @@
           {
             "tokens": [
               {
-                "t": "literal",
-                "v": "whinh0032"
-              },
-              {
                 "t": "text",
-                "v": " at the receipt"
+                "v": "A message about missing stock point details"
               }
             ],
-            "text": "whinh0032 at the receipt"
+            "text": "A message about missing stock point details"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's "
+                "v": "The warehouse may be missing a setting the receipt needs. Read it on the "
               },
               {
-                "t": "field",
-                "v": "Errors Logged"
-              },
-              {
-                "t": "text",
-                "v": " flag and "
-              },
-              {
-                "t": "session",
-                "code": "whinh3530m000",
-                "name": "Receipt Message Log"
+                "t": "chip",
+                "v": "Message Log"
               },
               {
                 "t": "text",
-                "v": ", which hold the messages once the dialog is gone "
+                "v": " tab, and ask whoever set up the warehouse "
               }
             ],
-            "text": "The message names missing stock point details for the receipt line. Capture the LOG detail before clearing it — and afterwards, read the receipt's Errors Logged flag and Receipt Message Log (whinh3530m000), which hold the messages once the dialog is gone"
+            "text": "The warehouse may be missing a setting the receipt needs. Read it on the Message Log tab, and ask whoever set up the warehouse"
           }
         ]
       },
@@ -467,36 +423,71 @@
           {
             "tokens": [
               {
-                "t": "text",
-                "v": "The receipt looks confirmed but nothing was received"
+                "t": "literal",
+                "v": "The packing slip number must be entered on receipt line"
               }
             ],
-            "text": "The receipt looks confirmed but nothing was received"
+            "text": "The packing slip number must be entered on receipt line"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Whether the receipt has any lines at all. "
+                "v": "A line has no "
               },
               {
-                "t": "session",
-                "code": "whinh3512m000"
+                "t": "field",
+                "v": "Packing Slip"
               },
               {
                 "t": "text",
-                "v": "'s help states "
+                "v": ". Choose "
               },
+              {
+                "t": "button",
+                "label": "OK"
+              },
+              {
+                "t": "text",
+                "v": ", enter it on each line, save, and confirm again"
+              }
+            ],
+            "text": "A line has no Packing Slip. Choose OK, enter it on each line, save, and confirm again"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
               {
                 "t": "field",
                 "v": "Confirmed"
               },
               {
                 "t": "text",
-                "v": " is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed"
+                "v": " is clear but nothing looks wrong"
               }
             ],
-            "text": "Whether the receipt has any lines at all. whinh3512m000's help states Confirmed is cleared when the receipt has no receipt lines — the same cleared box as a receipt whose lines are merely unconfirmed"
+            "text": "Confirmed is clear but nothing looks wrong"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The receipt may have no lines. Go back to step 3 of "
+              },
+              {
+                "t": "link",
+                "v": "Receive against the order",
+                "href": "receive-against-the-order.md"
+              },
+              {
+                "t": "text",
+                "v": " and tick the inbound lines"
+              }
+            ],
+            "text": "The receipt may have no lines. Go back to step 3 of Receive against the order and tick the inbound lines"
           }
         ]
       }

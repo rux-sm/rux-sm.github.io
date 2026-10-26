@@ -1831,8 +1831,19 @@
 [data-theme="rux-dark"] :is(.rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar, .rux--popover-content:not(.rux--tooltip-content), .rux--toast-notification, .rux--actionable-notification--toast) {
   filter: drop-shadow(0 10px 14px rgb(0 0 0 / 0.5));
 }
+/* RUX-DARK'S MENU IS THE NEAREST THING ON THE PAGE, so it is the lightest:
+   on layer-01 it was darker than the scheduler's grey trip bars, layer-03,
+   that it opens over, and read as a hole in the board. It takes the accent
+   step above them, its hover and press a step each above that, and its ring
+   and rules the press step, so they still show on the lighter fill. Its
+   shadow is two, a tight one at the edge and a deep wide one, since a dark
+   page hides a soft shadow. */
 [data-theme="rux-dark"] .rux--menu {
-  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02), 0 10px 14px -8px rgb(0 0 0 / 0.5);
+  --rux-layer: var(--rux-layer-accent-02);
+  --rux-layer-hover: var(--rux-layer-accent-hover-02);
+  --rux-layer-active: var(--rux-layer-accent-active-01);
+  --rux-border-subtle: var(--rux-layer-accent-active-01);
+  box-shadow: inset 0 0 0 1px var(--rux-layer-accent-active-01), 0 4px 10px -6px rgb(0 0 0 / 0.7), 0 14px 36px -8px rgb(0 0 0 / 0.8);
 }
 [data-theme="rux-dark"] .rux--modal-container {
   box-shadow: 0 10px 14px rgb(0 0 0 / 0.5);

@@ -38,6 +38,9 @@ What stands now:
   a group together, such as a field, an outlined button, a table with its own
   toolbar or the board's edge, and goes where a fill already does the work,
   such as a tile on the page, a plain table or a toolbar icon.
+- **A control's edge is the control grey,** `#7a7a7a`, at least 3 to 1 on
+  what it sits on: a field and an outlined button always, and a bare button
+  under the pointer.
 - **Figures are Plex Mono, words are Plex Sans.** A number, a code and text
   LN or an app prints on screen are shown exactly, in mono; a field's label
   and a tag's word are in the sans, in sentence case.

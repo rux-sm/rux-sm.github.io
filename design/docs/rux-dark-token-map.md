@@ -20,8 +20,9 @@ step 0.034 of OKLCH lightness above the last: `#202020`, `#282828`, `#303030`,
 `#393939`, `#424242`, `#4b4b4b`, `#545454`. A layer's hover is two steps above
 it, its press four and its selected row three. **The lines are quiet:** a rule
 and a box's edge are `#424242`, and the faint rule `#393939`. **One control
-grey,** `#7a7a7a`, rings an outlined button and draws the off toggle. **A field
-is filled** two steps above the layer it sits on, inside the quiet line.
+grey,** `#7a7a7a`, 4.1 to 1 on the page, rings a field and an outlined button,
+edges a bare button under the pointer and draws the off toggle. **A field is
+filled** two steps above the layer it sits on.
 
 **The palette** is vivid, and every hue takes the same four named steps. A
 step is an OKLCH lightness, and each takes 95% of the most chroma Display P3

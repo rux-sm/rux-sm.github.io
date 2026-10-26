@@ -421,6 +421,17 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .rux--btn--ghost:not(:disabled):not(.rux--btn--disabled) {
   color: var(--rux-text-primary, #161616);
 }
+/* RUX-DARK DRAWS A BARE BUTTON'S EDGE UNDER THE POINTER. A ghost button and
+   a header button rest bare, and hovering one rings its 1px border in
+   border-strong-01, the line a field and an outlined button carry, 4.1 to 1
+   on the page, where the faint hover fill alone reached 1.2. Keyboard focus
+   keeps its own ring on that border, and a disabled button takes none. */
+@media (any-hover: hover) {
+  [data-theme="rux-dark"] .rux--btn--ghost:hover:not(:disabled):not(.rux--btn--disabled):not(:focus-visible),
+  :is([data-theme="rux-dark"] .rux--header, .rux--header[data-theme="rux-dark"]) .rux--header__action:hover:not(:has(.rux--user-avatar), :focus-visible) {
+    border-color: var(--rux-border-strong-01);
+  }
+}
 
 /* A FILLED BUTTON'S LABEL IS DARK ONLY WHERE THE FILL IS THE BRAND'S. Carbon
    gives every filled button `text-on-color`, which this theme sets to black
@@ -460,7 +471,7 @@
   border-color: var(--rux-border-subtle-02, #e0e0e0);
 }
 /* rux-dark rings its outlined buttons, Secondary and Tertiary, as it rings a
-   field, in border-strong-01, 3.6 to 1 on the page, because the ring is the
+   field, in border-strong-01, 4.1 to 1 on the page, because the ring is the
    whole of their shape. Every other button it rings -- a ghost button in a
    bar, an icon button, a close -- keeps the quiet line, because its icon or
    its place already says it is one, and a row of strong rings reads as a
@@ -838,14 +849,15 @@
 [data-theme="geist-dark"] .rux--number :is(input[type=number], input[type=text]) {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
 }
-/* RUX-DARK FILLS A FIELD AND RINGS IT QUIETLY. The field tokens lift it one
-   step above the surface it sits on, and it takes the same quiet line as a
-   box, so a column of fields reads as soft slabs under their labels rather
-   than as a stack of bright frames. A disabled field keeps half the fill and
-   loses the line; a read-only one keeps the line and loses the fill. */
+/* RUX-DARK FILLS A FIELD AND RINGS IT IN THE CONTROL GREY. The field tokens
+   lift it above the surface it sits on, and its ring is border-strong-01, the
+   outlined button's, 4.1 to 1 on the page and 3.4 in a raised panel, so its
+   edge meets the 3 to 1 a control's shape needs, which the quiet box line, at
+   1.8, did not. A disabled field keeps half the fill and loses the line; a
+   read-only one keeps the line and loses the fill. */
 [data-theme="rux-dark"] :is(.rux--text-input, .rux--text-area, .rux--select-input, .rux--date-picker__input, .rux--search-input, .rux--list-box, .rux--dropdown),
 [data-theme="rux-dark"] .rux--number :is(input[type=number], input[type=text]) {
-  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
 }
 /* A DISABLED FIELD IS THE ONE THAT LIFTS OFF ITS SURFACE: #1a1a1a with its
    value in #8f8f8f inside the same ring, measured on Geist's Input, Select

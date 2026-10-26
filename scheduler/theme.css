@@ -620,21 +620,21 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-card__action {
   margin-inline-end: -10px;
 }
-/* The dark themes' header is 65px, not the shell's 48 (Design's
+/* Geist-dark's header is 65px, not the shell's 48 (Design's
    rux-overrides.css), so what the board places under it -- a panel brought
    in front, its scrim and the quote's pinned total -- sits that far down
-   rather than 3rem. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) { --scheduler-header-height: calc(4rem + 1px); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="roster"] .scheduler-aside,
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
+   rather than 3rem. Rux-dark's is the shell's. */
+[data-theme="geist-dark"] { --scheduler-header-height: calc(4rem + 1px); }
+[data-theme="geist-dark"] .scheduler-page[data-takeover="editor"] .scheduler-trip .rux--side-panel,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="viewer"] .scheduler-viewer .rux--side-panel,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="roster"] .scheduler-aside,
+[data-theme="geist-dark"] .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {
   inset-block-start: calc(var(--scheduler-header-height) + var(--rux-spacing-05));
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-page[data-takeover] .scheduler-scrim {
+[data-theme="geist-dark"] .scheduler-page[data-takeover] .scheduler-scrim {
   inset-block-start: var(--scheduler-header-height);
 }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"]) .scheduler-quote__quote > .scheduler-quote__body {
+[data-theme="geist-dark"] .scheduler-quote__quote > .scheduler-quote__body {
   inset-block-start: calc(var(--scheduler-header-height) + var(--rux-spacing-07));
 }
 

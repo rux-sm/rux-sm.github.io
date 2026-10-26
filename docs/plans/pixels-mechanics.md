@@ -19,12 +19,13 @@ shows who solved it.
   sprite, as now.
 - **Fairies stay optional help.** They are never needed to finish a puzzle,
   and the game never asks a player to spend one.
-- **A finished rift gets a mark that stays on its tile,** and a course rift
-  still gives three fairies as a bonus beside it.
-- **Every seven daily puzzles solved give a reward,** counted from the days
+- **A finished rift gets a star in its tile's corner,** shown as a picture
+  first, and a course rift still gives three fairies as a bonus.
+- **Every seven daily puzzles solved give one fairy,** counted from the days
   already kept, so a missed day loses nothing.
-- **A maker sees how many players solved each puzzle first.** Reactions
-  come after, if at all; no fairy for each solve of a player's puzzle.
+- **A maker sees how many players solved each puzzle.** Reactions wait until
+  solve counts are in; no fairy for each solve of a player's puzzle.
+- **Collection is a section on Me,** so the bottom bar keeps its four places.
 - **Actions say what they do:** Create puzzle, Play, Use a fairy and
   Collection.
 - **Rewards are counted by the database from what is there,** as fairies are
@@ -32,15 +33,7 @@ shows who solved it.
 
 ## Questions
 
-- **What is a finished rift's mark?** A gold border on its tile, a star in
-  its corner, or its picture drawn in full colour. Recommended: the star,
-  shown as a picture first.
-- **What do seven dailies give?** One fairy, or a new colour for the
-  Pixelator. Recommended: one fairy, since it needs no new thing to build.
-- **Reactions now or later?** Recommended: later, once solve counts are
-  in and seen.
-- **Is Collection its own place in the bottom bar,** or a section on Me?
-  Recommended: a section on Me, so the bar keeps its four places.
+None open.
 
 ## Tasks
 
@@ -49,9 +42,9 @@ shows who solved it.
   yes.
 - [ ] Take mana off Create, the maker, the finish bar and the docs, in the
   same push as the migration.
-- [ ] Draw the finished-rift mark on its tile.
-- [ ] Count every seven dailies in the database and give the reward on the
-  finish bar.
+- [ ] Draw the finished-rift star on its tile.
+- [ ] Add a fairy for every seven dailies to `pixels_fairies`, as a
+  migration shown first, and say `+1 fairy` on the finish bar.
 - [ ] Show each puzzle's solve count on Create.
 - [ ] Rename the actions to Create puzzle, Play, Use a fairy and Collection.
-- [ ] Build Collection: every sprite found, grouped by rift.
+- [ ] Build Collection on Me: every sprite found, grouped by rift.

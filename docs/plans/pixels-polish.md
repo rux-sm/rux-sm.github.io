@@ -16,8 +16,6 @@ puzzle, a friend's time to beat.
 
 - **Each task is its own change, shown as options in the real page before
   it is built,** and checked in the iOS simulator from the home-screen icon.
-- **The maker's toolbar becomes a bar like the game's,** icons over words,
-  and Clear's icon is not a refresh arrow.
 - **Every list has an empty state that says what to do,** as the front page
   now has for a player who has found everything.
 - **How to play is three steps, each a sentence and a tiny board to try,**
@@ -42,7 +40,6 @@ None open.
 
 ## Tasks
 
-- [ ] Turn the maker's toolbar into a bar like the game's.
 - [ ] Give Friends, a rift with nothing found and a player with no mana an
   empty state each.
 - [ ] Rewrite How to play as three steps with a board to try, and retire the

@@ -6,18 +6,19 @@
    whether a player can solve it by logic alone, and how hard that is, how
    much the first look decides and how much of the board is filled; squares
    that would need a guess are outlined. COLOUR:
-   the sixty inks stand open under the board; pick one and paint any
+   Brush, Bucket and Eraser and the sixty inks stand open under the board;
+   pick an ink and paint any
    square, filled or not; that is the picture the puzzle finishes as. The paintbrush colours the
    squares tapped or dragged over, the bucket every square joined to the one
    tapped through its own ink, and the eraser puts a square back as it
    starts: dark if it is filled, light if not. A picture never coloured
-   finishes in black and white. One key of the toolbar shows the step and
-   changes to the other, and so does Space. UNDO takes back the last tap, drag, fill or
+   finishes in black and white. Draw and Colour, two switches under the
+   board, choose the step, and so does Space. UNDO takes back the last tap, drag, fill or
    Clear, in either step, and Redo puts it back; Cmd or Ctrl with Z undoes,
-   and with Shift and Z, or Y, redoes. These are the toolbar over the board,
+   and with Shift and Z, or Y, redoes. These are the bar along the foot,
    which the arrow keys move along. Size starts a blank board of 5, 10 or 15
    squares a side, or 20 for the owner's course, which Undo takes back, and
-   a saved puzzle keeps the size it has. Exit, the toolbar's first button,
+   a saved puzzle keeps the size it has. Exit, the bar's first key,
    goes back to Create, to the view and the rift it came from; a new
    picture and an edit are kept as drafts, so nothing is lost by it.
 
@@ -70,7 +71,7 @@
   const saveNow = $('pixels-save-now');
   const day = $('pixels-day'), theme = $('pixels-theme');
   const inks = $('pixels-inks');
-  const tools = $('pixels-tool'), stepKey = $('pixels-step'), size = $('pixels-size');
+  const tools = $('pixels-tool'), steps = $('pixels-step'), size = $('pixels-size');
   const undoKey = $('pixels-undo'), redoKey = $('pixels-redo');
   const maker = document.querySelector('.pixels-maker');
   // The player's own picture is drawn here too, and keeps a draft of its own.
@@ -255,35 +256,32 @@
   const plain = (y, x) => (under ? under[y][x] : draft[y][x] ? 0 : 1);
   // One key of a group is the chosen one, which app.css fills.
   const choose = (group, on) => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', on(b)));
-  // The tools and the colour are there in both steps and out of reach in
-  // Draw, so the toolbar never changes shape. The step's one key shows the
-  // step the board is in and names the other, which pressing it changes to.
-  const STEPS_NAMED = { draw: 'Draw', colour: 'Colour' };
+  // The step's switch shows the step the board is in. In the colour step
+  // its row holds a way back to Draw and the tools instead, and the inks
+  // stand open under it.
   const other = () => (step === 'draw' ? 'colour' : 'draw');
-  const showStep = () => {
-    stepKey.dataset.step = step;
-    stepKey.querySelector('.pixels-bar-word').textContent = STEPS_NAMED[step];
-    stepKey.title = `${STEPS_NAMED[step]}. Press this, or Space, for ${STEPS_NAMED[other()]}`;
-    stepKey.setAttribute('aria-label', stepKey.title);
-  };
+  const showStep = () => choose(steps, b => b.dataset.step === step);
   showStep();
   const setStep = to => {
     step = to;
     if (step === 'colour' && !colours) colours = draft.map((r, y) => r.map((_, x) => plain(y, x)));
-    tools.querySelectorAll('button').forEach(b => { b.disabled = step !== 'colour'; });
-    inks.hidden = step !== 'colour';
+    steps.hidden = step === 'colour';
+    $('pixels-tools').hidden = inks.hidden = step !== 'colour';
     showStep();
     render();
   };
-  stepKey.addEventListener('click', () => setStep(other()));
-  // Space changes the step from the board and the toolbar, so the two
-  // pictures are compared without the pointer moving. A key of the toolbar
-  // that has the focus is not pressed by it, as Enter presses it; a field
+  maker.addEventListener('click', e => {
+    const picked = e.target.closest('[data-step]');
+    if (picked && picked.dataset.step !== step) setStep(picked.dataset.step);
+  });
+  // Space changes the step from the board and the bar, so the two pictures
+  // are compared without the pointer moving. A key of the bar that has the
+  // focus is not pressed by it, as Enter presses it; a field, the switches
   // and the inks keep their own Space.
   const spaced = e => {
     if (wearing || e.key !== ' ' || e.metaKey || e.ctrlKey || e.altKey || maker.hidden) return false;
     const at = e.target;
-    return (at === document.body || !!at.closest?.('.pixels-maker')) && !at.closest?.('input, select, textarea, .pixels-inks');
+    return (at === document.body || !!at.closest?.('.pixels-maker')) && !at.closest?.('input, select, textarea, .pixels-inks, .pixels-pick');
   };
   addEventListener('keydown', e => {
     if (!spaced(e)) return;
@@ -447,10 +445,10 @@
     colours = null;
     setStep('draw');
   };
-  // The arrows move along the toolbar, as they do along Carbon's.
+  // The arrows move along the bar, as they do along Carbon's toolbar.
   $('pixels-toolbar').addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    const keys = [...e.currentTarget.querySelectorAll('.pixels-bar-key')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
+    const keys = [...e.currentTarget.querySelectorAll('.game-key')].filter(b => !b.disabled && b.offsetParent), at = keys.indexOf(document.activeElement);
     if (at < 0) return;
     e.preventDefault();
     keys[(at + (e.key === 'ArrowRight' ? 1 : keys.length - 1)) % keys.length].focus();
@@ -615,7 +613,7 @@
         draft = grid([...squares].map(s => (s === '.' ? '0' : '1')).join(''));
         under = grid(inked(figure([wearing], { ...me.gear, [wearing]: null })).join(''));
         colours = grid(now.map((s, i) => (squares[i] !== '.' && kept?.length === 225 ? kept[i] : s)).join(''));
-        stepKey.hidden = true;
+        $('pixels-to-draw').hidden = true;
         setStep('colour');
         return;
       }

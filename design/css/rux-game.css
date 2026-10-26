@@ -17,7 +17,7 @@
    panel. */
 
 /* Each part's display would outrank the hidden attribute. */
-.game-places[hidden], .game-place[hidden], .game-keys[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
+.game-places[hidden], .game-place[hidden], .game-keys[hidden], .game-key[hidden], .game-cover[hidden], .game-finish[hidden] { display: none; }
 
 /* THE PAGE, on the game's <main> beside Carbon's content class: one column
    a phone wide, centred, on every screen, so a game is laid out once, as a

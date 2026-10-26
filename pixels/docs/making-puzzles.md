@@ -71,24 +71,16 @@ has a next move, and the picture comes out bit by bit.
 ## The colour picture
 
 Once the tag is green, Colour paints the picture the player sees at the
-finish. The toolbar's last button shows the colour in hand; press it for the
-sixty inks, pick one and paint any square, filled or empty. The inks
-are ten colours and a row of skin, each in five tones from pale to dark,
-then five greys from white to black.
+finish. Pick one of the sixty inks under the board and paint any square,
+filled or empty. The inks are ten colours and a row of skin, each in five
+tones from pale to dark, then five greys from white to black.
 
-- **The toolbar over the board** holds every button, each an icon that
-  names itself when you rest on it. At its start are Back and Save, with
-  Delete for a saved puzzle. At its end, over the squares, are Undo, Redo
-  and Clear, then the step, then the paintbrush, the bucket and the
-  eraser, then the colour.
-- **The step is one key.** It shows the step the board is in, a pencil for
-  Draw or a palette for Colour, with the word beside it where the bar has
-  the room. Press it, or Space, to change to the other, as often as it
-  takes to compare the two pictures.
-- **On a phone** the toolbar is under the board, by your thumb, in two rows
-  of large keys, each with its word under its icon: Back, Undo and Redo, and
-  Save at the end with Delete before it, then the step, the three tools
-  and Clear. The colours stand open under it, a tap each.
+- **The bar along the foot** holds Exit, Undo, Redo, Clear and Save, with
+  Delete for a saved puzzle, each its icon over its word, as the game's.
+- **Draw and Colour are two switches** under the board. Press one, or Space,
+  to change step, as often as it takes to compare the two pictures. In
+  Colour the same row holds Draw, to go back, then the paintbrush, the
+  bucket and the eraser, and the inks stand open under it, a tap each.
 - **Paintbrush, Bucket and Eraser** work in Colour. The paintbrush colours
   the squares you tap or drag over. The bucket colours every square joined
   to the one you tap that has its colour. The eraser puts a square back

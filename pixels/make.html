@@ -53,7 +53,6 @@
 <symbol id="m-menu" viewBox="0 -960 960 960"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></symbol>
 <symbol id="m-brush" viewBox="0 -960 960 960"><path d="M215-117q-33.83 0-66.92-11.5Q115-140 90-166q35-12 50-35t15-62q0-43.75 30.68-74.38Q216.35-368 260.18-368q43.82 0 74.32 30.62Q365-306.75 365-263q0 64-43.5 105T215-117Zm0-60q35 0 62.5-25t27.5-61q0-20-12.5-32.5T260-308q-20 0-32.5 12.5T215-263q0 39-8.5 57.5T175-183q6 1 20 3.5t20 2.5Zm230-177-90-95 408-408 92 93-410 410Zm-185 91Z"/></symbol>
 <symbol id="m-redo" viewBox="0 -960 960 960"><path d="M392-200q-95 0-163.5-64T160-422q0-94 68.5-158T392-644h294L572-758l42-42 186 186-186 186-42-42 114-114H391q-70 0-120.5 46.5T220-422q0 69 50.5 115.5T391-260h310v60H392Z"/></symbol>
-<symbol id="m-restart_alt" viewBox="0 -960 960 960"><path d="M451-122q-123-10-207-101t-84-216q0-77 35.5-145T295-695l43 43q-56 33-87 90.5T220-439q0 100 66 173t165 84v60Zm60 0v-60q100-12 165-84.5T741-439q0-109-75.5-184.5T481-699h-20l60 60-43 43-133-133 133-133 43 43-60 60h20q134 0 227 93.5T801-439q0 125-83.5 216T511-122Z"/></symbol>
 <symbol id="m-save" viewBox="0 -960 960 960"><path d="M840-683v563H120v-720h563l157 157Zm-60 27L656-780H180v600h600v-476ZM553.5-275.26q30.5-30.27 30.5-73.5 0-43.24-30.26-73.74-30.27-30.5-73.5-30.5-43.24 0-73.74 30.26-30.5 30.27-30.5 73.5 0 43.24 30.26 73.74 30.27 30.5 73.5 30.5 43.24 0 73.74-30.26ZM233-584h358v-143H233v143Zm-53-72v476-600 124Z"/></symbol>
 <symbol id="m-format_color_fill" viewBox="0 -960 960 960"><path d="m255-917 43-43 405 404-289 289-288-289 245-245-116-116Zm159 159L215-559h398L414-758Zm287 456q-21-21-21-51 0-17 8-37t22-41q8-13 19.5-28t22.5-28q11 13 22.5 28t19.5 28q14 21 22 41t8 37q0 30-21 51t-51 21q-30 0-51-21ZM80 1v-121h800V1H80Z"/></symbol>
 <symbol id="m-delete" viewBox="0 -960 960 960"><path d="M201-120v-630h-41v-60h188v-30h264v30h188v60h-41v630H201Zm60-60h438v-570H261v570Zm106-86h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/></symbol>
@@ -172,34 +171,6 @@
             </div>
           </div>
           <div class="pixels-maker-work">
-            <!-- At the bar's start, the puzzle's own: Exit to Create, then Save, and Delete for a saved one; on a phone Back starts the first line and these two end it. At its end, over the squares, what acts on the drawing in four groups: what takes a move back or wipes the board, the step, the colour step's tools, and its colour, which opens the inks; Draw puts the last two out of reach. -->
-            <div class="pixels-toolbar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
-              <div class="pixels-toolbar-group pixels-toolbar-back">
-                <a class="pixels-bar-key" id="pixels-exit" href="create.html" aria-label="Exit to Create" title="Exit to Create"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg><span class="pixels-bar-word">Exit</span></a>
-              </div>
-              <div class="pixels-toolbar-group pixels-toolbar-file">
-                <button type="submit" class="pixels-bar-key pixels-bar-key--go" id="pixels-save" disabled aria-label="Save" title="Save"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg><span class="pixels-bar-word">Save</span></button>
-                <button type="button" class="pixels-bar-key pixels-bar-key--danger" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden aria-label="Delete" title="Delete"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg><span class="pixels-bar-word">Delete</span></button>
-              </div>
-              <div class="pixels-toolbar-group pixels-toolbar-history">
-                <button type="button" class="pixels-bar-key" id="pixels-undo" disabled aria-label="Undo" title="Undo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg><span class="pixels-bar-word">Undo</span></button>
-                <button type="button" class="pixels-bar-key" id="pixels-redo" disabled aria-label="Redo" title="Redo"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg><span class="pixels-bar-word">Redo</span></button>
-              </div>
-              <div class="pixels-toolbar-group pixels-toolbar-clear">
-                <button type="button" class="pixels-bar-key" id="pixels-clear" aria-label="Clear" title="Clear"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-restart_alt"/></svg><span class="pixels-bar-word">Clear</span></button>
-              </div>
-              <!-- On a phone the bar is two lines, and this is where the first ends. -->
-              <span class="pixels-toolbar-break" aria-hidden="true"></span>
-              <!-- The step: one key, which shows the step the board is in and changes to the other, as Space does. It holds both icons and make.js says which shows. Its word is beside it where the bar has the room. -->
-              <div class="pixels-toolbar-group pixels-toolbar-step">
-                <button type="button" class="pixels-bar-key" id="pixels-step" data-step="draw" aria-label="Draw" title="Draw"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span class="pixels-bar-word">Draw</span></button>
-              </div>
-              <div class="pixels-toolbar-group pixels-toolbar-tools" role="radiogroup" aria-label="Tool" id="pixels-tool">
-                <button type="button" class="pixels-bar-key" role="radio" aria-checked="true" data-tool="paint" disabled aria-label="Paintbrush" title="Paintbrush"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg><span class="pixels-bar-word">Brush</span></button>
-                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-tool="fill" disabled aria-label="Bucket" title="Bucket"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg><span class="pixels-bar-word">Bucket</span></button>
-                <button type="button" class="pixels-bar-key" role="radio" aria-checked="false" data-tool="erase" disabled aria-label="Eraser" title="Eraser"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg><span class="pixels-bar-word">Eraser</span></button>
-              </div>
-            </div>
             <div class="pixels-maker-board">
               <div id="pixels-board"></div>
             </div>
@@ -208,8 +179,31 @@
               <div class="pixels-maker-check" id="pixels-check" aria-live="polite"></div>
               <p class="pixels-meta pixels-maker-stats" id="pixels-stats"></p>
             </div>
-            <!-- The inks, open under the board for the colour step and hidden while drawing; make.js fills them. -->
+            <!-- The step, Draw or Colour, which Space changes too. -->
+            <div class="pixels-pick" role="radiogroup" aria-label="Step" id="pixels-step">
+              <button type="button" role="radio" aria-checked="true" data-step="draw"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span>Draw</span></button>
+              <button type="button" role="radio" aria-checked="false" data-step="colour"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-palette"/></svg><span>Colour</span></button>
+            </div>
+            <!-- In the colour step the same row holds a way back to Draw and the colour step's tools; make.js shows it in place of the switch. -->
+            <div class="pixels-pick pixels-pick--tools" id="pixels-tools" hidden>
+              <button type="button" data-step="draw" id="pixels-to-draw"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-edit"/></svg><span>Draw</span></button>
+              <div class="pixels-tool-group" role="radiogroup" aria-label="Tool" id="pixels-tool">
+                <button type="button" role="radio" aria-checked="true" data-tool="paint"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-brush"/></svg><span>Brush</span></button>
+                <button type="button" role="radio" aria-checked="false" data-tool="fill"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-format_color_fill"/></svg><span>Bucket</span></button>
+                <button type="button" role="radio" aria-checked="false" data-tool="erase"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-ink_eraser"/></svg><span>Eraser</span></button>
+              </div>
+            </div>
+            <!-- The inks, open under the tools for the colour step and hidden while drawing; make.js fills them. -->
             <div class="pixels-inks" id="pixels-inks" role="radiogroup" aria-label="Colour"></div>
+            <!-- The bar along the foot, Design's as the game's: Exit to Create, Undo, Redo, Clear, Delete for a saved puzzle, and Save. -->
+            <div class="game-keys game-keys--bar" role="toolbar" aria-label="Maker" id="pixels-toolbar">
+              <a class="game-key" id="pixels-exit" href="create.html" aria-label="Exit to Create" title="Exit to Create"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-arrow_back"/></svg>Exit</a>
+              <button type="button" class="game-key" id="pixels-undo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-undo"/></svg>Undo</button>
+              <button type="button" class="game-key" id="pixels-redo" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-redo"/></svg>Redo</button>
+              <button type="button" class="game-key" id="pixels-clear"><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-close"/></svg>Clear</button>
+              <button type="button" class="game-key" id="pixels-delete" data-rux-open="pixels-delete-modal" hidden><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-delete"/></svg>Delete</button>
+              <button type="submit" class="game-key" id="pixels-save" disabled><svg class="pixels-key-icon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-save"/></svg>Save</button>
+            </div>
           </div>
         </form>
         </div>

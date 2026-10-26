@@ -477,6 +477,13 @@
   [data-theme="rux-dark"] .scheduler-page .rux--side-panel .rux--btn.rux--side-panel__close-button:not(:focus) {
     border-color: transparent;
   }
+  /* Every head is 48px with its rule under it: the toolbar's is the day
+     band's top and a list pane's its own border. Carbon draws a side panel's
+     divider inside its head's last pixel, so the editor's and the document
+     panel's heads take one more, and their rule meets the others. */
+  [data-theme="rux-dark"] .scheduler-page :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel .rux--side-panel__header.rux--side-panel__header--has-title {
+    min-block-size: calc(var(--rux-layout-size-height-lg) + 1px);
+  }
 }
 [data-theme="ant-dark"] { --scheduler-head-inset: 8px; --scheduler-head-gap: var(--rux-spacing-03); }
 [data-theme^="apple-"] { --scheduler-head-inset: var(--rux-spacing-04); --scheduler-head-gap: var(--rux-spacing-03); }

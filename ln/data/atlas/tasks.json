@@ -1090,6 +1090,75 @@
           "tokens": [
             {
               "t": "session",
+              "code": "tcemm0150m000",
+              "name": "create-a-site · Sites"
+            },
+            {
+              "t": "text",
+              "v": " · stage 1 · step"
+            }
+          ],
+          "text": "create-a-site · Sites (tcemm0150m000) · stage 1 · step"
+        },
+        {
+          "kind": "list",
+          "ordered": false,
+          "items": [
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Route"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "path",
+                  "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites"
+                }
+              ],
+              "text": "Route — Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Does"
+                },
+                {
+                  "t": "text",
+                  "v": " — create a site, linked to a planning cluster and an enterprise unit"
+                }
+              ],
+              "text": "Does — create a site, linked to a planning cluster and an enterprise unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "strong",
+                  "v": "Do"
+                },
+                {
+                  "t": "text",
+                  "v": " - "
+                },
+                {
+                  "t": "link",
+                  "v": "Create a site",
+                  "href": "create-a-site.md"
+                }
+              ],
+              "text": "Do - Create a site"
+            }
+          ]
+        },
+        {
+          "kind": "prose",
+          "tokens": [
+            {
+              "t": "session",
               "code": "tcccp0119m000",
               "name": "calendars · Non-working Days"
             },
@@ -5326,6 +5395,54 @@
             }
           ],
           "text": "Not documented for this release."
+        }
+      },
+      {
+        "id": "create-a-site",
+        "session": "Sites",
+        "lane": "Master Data",
+        "stage": 1,
+        "kind": "step",
+        "code": "tcemm0150m000",
+        "route": {
+          "tokens": [
+            {
+              "t": "path",
+              "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites"
+            }
+          ],
+          "text": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites"
+        },
+        "does": {
+          "tokens": [
+            {
+              "t": "text",
+              "v": "create a site, linked to a planning cluster and an enterprise unit"
+            }
+          ],
+          "text": "create a site, linked to a planning cluster and an enterprise unit"
+        },
+        "steps": [
+          {
+            "tokens": [
+              {
+                "t": "link",
+                "v": "Create a site",
+                "href": "create-a-site.md"
+              }
+            ],
+            "text": "Create a site"
+          }
+        ],
+        "do": {
+          "tokens": [
+            {
+              "t": "link",
+              "v": "Create a site",
+              "href": "create-a-site.md"
+            }
+          ],
+          "text": "Create a site"
         }
       },
       {

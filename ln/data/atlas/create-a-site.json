@@ -1,0 +1,1062 @@
+{
+  "contract": 24,
+  "tier": "export",
+  "kind": "task",
+  "id": "create-a-site",
+  "title": "Create a site",
+  "process": null,
+  "previous": null,
+  "next": null,
+  "module": "Master Data",
+  "modules": [
+    "Master Data"
+  ],
+  "status": null,
+  "updated": "2026-10-25",
+  "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites",
+  "session": "Sites",
+  "sessionCode": "tcemm0150m000",
+  "walked": null,
+  "achieves": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A new internal site, linked to a planning cluster, an enterprise unit, a calendar and an address, ready for its warehouses."
+      }
+    ],
+    "text": "A new internal site, linked to a planning cluster, an enterprise unit, a calendar and an address, ready for its warehouses."
+  },
+  "before": [],
+  "why": {
+    "tokens": [
+      {
+        "t": "text",
+        "v": "A site is a business location, and the record ties it to one planning cluster, one enterprise unit, one calendar and, through its address, one country. Under multisite a site cannot exist without its cluster, so the cluster and the enterprise unit are chosen from ones that already exist. Saving makes only the site: its warehouses, departments and settings by site are added afterwards, from its own tabs."
+      }
+    ],
+    "text": "A site is a business location, and the record ties it to one planning cluster, one enterprise unit, one calendar and, through its address, one country. Under multisite a site cannot exist without its cluster, so the cluster and the enterprise unit are chosen from ones that already exist. Saving makes only the site: its warehouses, departments and settings by site are added afterwards, from its own tabs."
+  },
+  "blocks": [
+    {
+      "kind": "steps",
+      "columns": [
+        "#",
+        "Do this",
+        "You should see"
+      ],
+      "rows": [
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "1"
+                }
+              ],
+              "text": "1"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Open "
+                },
+                {
+                  "t": "session",
+                  "code": "tcemm0150m000",
+                  "name": "Sites"
+                }
+              ],
+              "text": "Open Sites (tcemm0150m000)"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The list of sites, each with its "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Cluster"
+                }
+              ],
+              "text": "The list of sites, each with its Planning Cluster"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose an internal site in the same country as the new one, and double-click its line"
+                }
+              ],
+              "text": "Choose an internal site in the same country as the new one, and double-click its line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "tcemm0650m000",
+                  "name": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " opens on that site"
+                }
+              ],
+              "text": "Site (tcemm0650m000) opens on that site"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read its "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Cluster"
+                }
+              ],
+              "text": "Read its Planning Cluster"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planning cluster"
+                }
+              ],
+              "text": "planning cluster"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read its "
+                },
+                {
+                  "t": "field",
+                  "v": "Calendar"
+                },
+                {
+                  "t": "text",
+                  "v": ", both parts"
+                }
+              ],
+              "text": "Read its Calendar, both parts"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "calendar"
+                }
+              ],
+              "text": "calendar"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read its "
+                },
+                {
+                  "t": "field",
+                  "v": "Enterprise Unit"
+                }
+              ],
+              "text": "Read its Enterprise Unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "enterprise unit"
+                }
+              ],
+              "text": "enterprise unit"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read its "
+                },
+                {
+                  "t": "field",
+                  "v": "Address"
+                }
+              ],
+              "text": "Read its Address"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "address"
+                }
+              ],
+              "text": "address"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the site without changing anything"
+                }
+              ],
+              "text": "Close the site without changing anything"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Back on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                }
+              ],
+              "text": "Back on Sites"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Press "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
+                }
+              ],
+              "text": "Press New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "An empty "
+                },
+                {
+                  "t": "chip",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, "
+                },
+                {
+                  "t": "field",
+                  "v": "Logistic Company"
+                },
+                {
+                  "t": "text",
+                  "v": " already filled in"
+                }
+              ],
+              "text": "An empty Site opens, Logistic Company already filled in"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the new site's code in "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                }
+              ],
+              "text": "Type the new site's code in Site"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "10"
+                }
+              ],
+              "text": "10"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type a description in the box beside it"
+                }
+              ],
+              "text": "Type a description in the box beside it"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "10",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "11"
+                }
+              ],
+              "text": "11"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the address from step 6 in "
+                },
+                {
+                  "t": "field",
+                  "v": "Address"
+                }
+              ],
+              "text": "Enter the address from step 6 in Address"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The address text shows beside the code"
+                }
+              ],
+              "text": "The address text shows beside the code"
+            }
+          ],
+          "id": "11",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "12"
+                }
+              ],
+              "text": "12"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, enter the cluster from step 3 in "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Cluster"
+                }
+              ],
+              "text": "On the General tab, enter the cluster from step 3 in Planning Cluster"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The cluster's description shows beside it"
+                }
+              ],
+              "text": "The cluster's description shows beside it"
+            }
+          ],
+          "id": "12",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "13"
+                }
+              ],
+              "text": "13"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the calendar code and availability type from step 4 in "
+                },
+                {
+                  "t": "field",
+                  "v": "Calendar"
+                }
+              ],
+              "text": "Enter the calendar code and availability type from step 4 in Calendar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The calendar's description shows below it"
+                }
+              ],
+              "text": "The calendar's description shows below it"
+            }
+          ],
+          "id": "13",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "14"
+                }
+              ],
+              "text": "14"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter the enterprise unit from step 5 in "
+                },
+                {
+                  "t": "field",
+                  "v": "Enterprise Unit"
+                }
+              ],
+              "text": "Enter the enterprise unit from step 5 in Enterprise Unit"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The unit's description shows beside it"
+                }
+              ],
+              "text": "The unit's description shows beside it"
+            }
+          ],
+          "id": "14",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "15"
+                }
+              ],
+              "text": "15"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Leave "
+                },
+                {
+                  "t": "field",
+                  "v": "Default Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " empty and "
+                },
+                {
+                  "t": "field",
+                  "v": "Administrative Only"
+                },
+                {
+                  "t": "text",
+                  "v": " cleared"
+                }
+              ],
+              "text": "Leave Default Warehouse empty and Administrative Only cleared"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "15",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "16"
+                }
+              ],
+              "text": "16"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Press "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Press Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The site is saved, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Site"
+                },
+                {
+                  "t": "text",
+                  "v": " can no longer be typed in"
+                }
+              ],
+              "text": "The site is saved, and Site can no longer be typed in"
+            }
+          ],
+          "id": "16",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "17"
+                }
+              ],
+              "text": "17"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Close the site and press "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
+                },
+                {
+                  "t": "text",
+                  "v": " on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Sites"
+                }
+              ],
+              "text": "Close the site and press Refresh on Sites"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The new site is in the list with its "
+                },
+                {
+                  "t": "field",
+                  "v": "Planning Cluster"
+                }
+              ],
+              "text": "The new site is in the list with its Planning Cluster"
+            }
+          ],
+          "id": "17",
+          "optional": false,
+          "produces": false
+        }
+      ]
+    }
+  ],
+  "example": {
+    "kind": "example",
+    "columns": [],
+    "rows": []
+  },
+  "screenshot": null,
+  "problems": {
+    "kind": "troubleshooting",
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Save refuses the record"
+              }
+            ],
+            "text": "Save refuses the record"
+          },
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Calendar"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "field",
+                "v": "Address"
+              },
+              {
+                "t": "text",
+                "v": " are required; both parts of "
+              },
+              {
+                "t": "field",
+                "v": "Calendar"
+              },
+              {
+                "t": "text",
+                "v": " need a value, see step 13"
+              }
+            ],
+            "text": "Calendar and Address are required; both parts of Calendar need a value, see step 13"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Planning Cluster"
+              },
+              {
+                "t": "text",
+                "v": " cannot be filled in"
+              }
+            ],
+            "text": "Planning Cluster cannot be filled in"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Check "
+              },
+              {
+                "t": "field",
+                "v": "Administrative Only"
+              },
+              {
+                "t": "text",
+                "v": " is cleared; planning clusters are unavailable for an administrative site"
+              }
+            ],
+            "text": "Check Administrative Only is cleared; planning clusters are unavailable for an administrative site"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "A warehouse or department added later is refused for its country"
+              }
+            ],
+            "text": "A warehouse or department added later is refused for its country"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The site's address sets its country, and every entity linked to the site must be in that country; see step 11"
+              }
+            ],
+            "text": "The site's address sets its country, and every entity linked to the site must be in that country; see step 11"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The new site is not in the list"
+              }
+            ],
+            "text": "The new site is not in the list"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Press "
+              },
+              {
+                "t": "button",
+                "label": "Refresh"
+              },
+              {
+                "t": "text",
+                "v": " on "
+              },
+              {
+                "t": "chip",
+                "v": "Sites"
+              },
+              {
+                "t": "text",
+                "v": ", see step 17"
+              }
+            ],
+            "text": "Press Refresh on Sites, see step 17"
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "kind": "variants",
+    "columns": [
+      "Variant",
+      "What changes"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "An external site"
+              }
+            ],
+            "text": "An external site"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "On the "
+              },
+              {
+                "t": "chip",
+                "v": "External Relations"
+              },
+              {
+                "t": "text",
+                "v": " tab, select "
+              },
+              {
+                "t": "field",
+                "v": "External Site"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "field",
+                "v": "Subcontractor Site"
+              },
+              {
+                "t": "text",
+                "v": " or "
+              },
+              {
+                "t": "field",
+                "v": "Customer Site"
+              },
+              {
+                "t": "text",
+                "v": ", and name the business partner who owns it"
+              }
+            ],
+            "text": "On the External Relations tab, select External Site, then Subcontractor Site or Customer Site, and name the business partner who owns it"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "An administrative site"
+              }
+            ],
+            "text": "An administrative site"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Select "
+              },
+              {
+                "t": "field",
+                "v": "Administrative Only"
+              },
+              {
+                "t": "text",
+                "v": "; the site gets no planning cluster and holds only offices, such as a purchase or sales office"
+              }
+            ],
+            "text": "Select Administrative Only; the site gets no planning cluster and holds only offices, such as a purchase or sales office"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "chip",
+                "v": "A cluster of its own"
+              }
+            ],
+            "text": "A cluster of its own"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "Create the cluster first in "
+              },
+              {
+                "t": "session",
+                "code": "tcemm1135m000",
+                "name": "Planning Clusters"
+              },
+              {
+                "t": "text",
+                "v": ", then use it at step 12"
+              }
+            ],
+            "text": "Create the cluster first in Planning Clusters (tcemm1135m000), then use it at step 12"
+          }
+        ]
+      }
+    ]
+  }
+}

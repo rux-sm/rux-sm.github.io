@@ -122,6 +122,30 @@
       "route": "Product Lifecycle Management ➔ PLM Administration ➔ Master Data ➔ Business Partners ➔ Buy-from Business Partners"
     },
     {
+      "code": "tcemm0130m000",
+      "name": "Enterprise Units",
+      "purpose": "Lists the enterprise units, each tying a logistic company to the financial company its transactions post to.",
+      "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Enterprise Units"
+    },
+    {
+      "code": "tcemm0150m000",
+      "name": "Sites",
+      "purpose": "Lists the sites of the logistic company, each with its planning cluster, and opens one to create or change it.",
+      "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Sites"
+    },
+    {
+      "code": "tcemm0650m000",
+      "name": "Site",
+      "purpose": "Holds one site: its planning cluster, calendar and enterprise unit, its external links, and the warehouses and departments that belong to it.",
+      "route": "drill-in from Sites (tcemm0150m000), by New or by double-clicking a line"
+    },
+    {
+      "code": "tcemm1135m000",
+      "name": "Planning Clusters",
+      "purpose": "Defines the planning clusters that sites are planned in, and marks which are external or left out of Enterprise Planning.",
+      "route": "Master Data ➔ Enterprise Model ➔ Enterprise Structure ➔ Planning Clusters"
+    },
+    {
       "code": "tcemm1170m000",
       "name": "Companies",
       "purpose": "Sets each company's own settings, among them its calendar and its currency system.",

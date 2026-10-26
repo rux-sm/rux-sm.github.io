@@ -861,6 +861,15 @@
     margin-inline-start: -1px;
   }
 }
+/* EVERY RUX-DARK PANEL OPENS 22rem WIDE, the trip editor's width: the lists,
+   Forms, the quote calculator and a stored file at its smallest, so any
+   panel opening or closing moves the week's edge the same distance. Two of
+   them and the week's 33rem make 77rem, which a laptop's board holds, since
+   this theme sets no gap between its regions. */
+:root[data-theme="rux-dark"] {
+  --scheduler-list-w: 22rem;
+  --scheduler-viewer-sm-w: 22rem;
+}
 /* RUX-DARK'S BOARD STOPS AT ONE WIDTH, a list, the trip editor and a week
    of 187px days between them, the widest app.css lets a day be, and the week
    takes whatever of it the open panels leave rather than stopping its days

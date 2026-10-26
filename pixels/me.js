@@ -24,7 +24,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, guest, enter, iphone, installed, portrait, worn, hero, words, sounds, relaxed, categories, streak, time, DAILY, WORLD } = window.Pixels;
+  const { data, owner, guest, enter, early, same, iphone, installed, portrait, worn, hero, words, sounds, relaxed, categories, streak, time, DAILY, WORLD } = window.Pixels;
   const { modal } = window.Rux;
   const host = document.getElementById('pixels-me');
   const say = (heading, detail) => {
@@ -281,8 +281,10 @@
 
   /* YOUR NUMBERS, four in a grid under the head: sprites found, rifts
      cleared, days in a row at the puzzle of the day, and the best time on a
-     10×10, read from what the player has solved. One the database cannot
-     give is a dash. */
+     10×10, read from what the player has solved. They are drawn at once
+     from the kept copy, or as dashes with none, and again as the database
+     answers, so the grid never arrives late and moves the page. One the
+     database cannot give stays a dash. */
   const stats = async (me, el) => {
     const one = (value, label) => {
       const d = document.createElement('div');
@@ -291,15 +293,21 @@
       d.append(dd, dt);
       return d;
     };
-    let cleared = '–', row = '–', best = '–';
+    const fill = (puzzles, results, days) => {
+      let cleared = '–', row = '–', best = '–';
+      if (puzzles) {
+        cleared = String(categories(puzzles).filter(c => c.puzzles.every(p => results.has(p.id))).length);
+        if (DAILY) row = String(streak(new Set(days.keys())));
+        const tens = puzzles.filter(p => p.width === 10 && results.has(p.id)).map(p => results.get(p.id).seconds);
+        if (tens.length) best = time(Math.min(...tens));
+      }
+      el.replaceChildren(one(String(me.found ?? 0), 'Sprites'), one(cleared, 'Rifts cleared'), ...(DAILY ? [one(row, 'Days in a row')] : []), one(best, 'Best 10×10'));
+    };
+    const kept = data.kept?.();
+    fill(kept?.list, kept?.results, kept?.days);
     try {
-      const [puzzles, results, days] = await Promise.all([data.list(), data.results(), DAILY ? data.days() : Promise.resolve(new Map())]);
-      cleared = String(categories(puzzles).filter(c => c.puzzles.every(p => results.has(p.id))).length);
-      if (DAILY) row = String(streak(new Set(days.keys())));
-      const tens = puzzles.filter(p => p.width === 10 && results.has(p.id)).map(p => results.get(p.id).seconds);
-      if (tens.length) best = time(Math.min(...tens));
-    } catch { /* the dashes stay */ }
-    el.replaceChildren(one(String(me.found ?? 0), 'Sprites'), one(cleared, 'Rifts cleared'), ...(DAILY ? [one(row, 'Days in a row')] : []), one(best, 'Best 10×10'));
+      fill(...await Promise.all([data.list(), data.results(), DAILY ? data.days() : Promise.resolve(new Map())]));
+    } catch { /* what was drawn stays */ }
   };
 
   /* THE USERNAME'S WINDOW. Save keeps a new one, unless another player has
@@ -430,8 +438,15 @@
     b.textContent = text;
     return b;
   };
+  // The page from the kept player at once, where there is one, and again
+  // once the database answers, where the player has changed.
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
+    const kept = data.kept?.();
+    if (kept) {
+      early(kept.me);
+      draw(kept.me);
+    }
     let me;
     try {
       me = await enter(host);
@@ -439,7 +454,8 @@
       say('Your page did not load', 'Reload the page to try again.');
       return;
     }
-    if (!me) return;
+    if (!me || (kept && same(kept.me, me))) return;
+    host.replaceChildren(document.getElementById('pixels-error'));
     draw(me);
   })();
 })();

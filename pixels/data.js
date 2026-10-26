@@ -595,6 +595,25 @@
     addEventListener('online', send);
     setTimeout(send, 2000);
     cloud.waiting = () => waiting().length;
+    const { own } = cloud;
+    if (own) own.mine = remembered(`mine:${key() || 'account'}`, own.mine.bind(own));
+    /* THE KEPT COPY FIRST. `kept()` is the player, the puzzles they are
+       sent, what they have solved, their days and their own rifts, as the
+       database last said and this browser kept them, or null where any of
+       the first four is not kept yet: a page draws from it at once, so it
+       opens on what it showed last time, and again once the database
+       answers, where that differs. */
+    cloud.kept = () => {
+      const kept = snaps(), me = kept[`me:${key() || 'account'}`];
+      if (!me || !kept.list || !kept.results || !kept.days) return null;
+      return {
+        me,
+        list: kept.list,
+        results: withWaiting(toMap(kept.results), 'puzzle'),
+        days: withWaiting(toMap(kept.days), 'day'),
+        mine: kept[`mine:${key() || 'account'}`] ?? null,
+      };
+    };
   }
 
   const store = cloud || (local ? preview : null);
@@ -761,8 +780,16 @@
     return me;
   };
 
+  // A page drawn from the kept copy shows the header and the places at
+  // once, as `enter` does once the database answers.
+  const early = me => {
+    show();
+    window.Pixels.shell?.(me);
+  };
+
   window.Pixels = Object.assign(window.Pixels || {}, {
     data: store,
+    early,
     preview: !cloud && local,
     owner,
     guest,

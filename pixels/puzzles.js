@@ -46,7 +46,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, boss, letter, side, bar, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
+  const { data, owner, enter, early, waiting, same, carry, iphone, installed, fresh, seen, stood, locks, worn, hero, portal, heading, where, riftTile, boss, letter, side, bar, DAILY, BOARD, WORLD, grid, rounds, grade, categories, daily, today, streak, time, words, art, switcher } = window.Pixels;
   const host = document.getElementById('pixels-levels'), leader = document.getElementById('pixels-leader');
 
   const say = (heading, detail) => {
@@ -312,22 +312,14 @@
     }
   }
 
-  (async () => {
-    if (!data) {
-      say('Pixels could not connect', 'Reload the page to try again.');
-      return;
-    }
-    let me, puzzles, results, days, ranks;
-    try {
-      me = await enter(host);
-      if (!me) return;
-      [puzzles, results, days, ranks] = await Promise.all([data.list(), data.results(), data.days(), BOARD ? data.board(today()) : null]);
-    } catch {
-      say('The puzzles did not load', 'Reload the page to try again.');
-      return;
-    }
-    fresh();
-    // With no leaderboard there is one panel and nothing to switch between.
+  /* THE PAGE, drawn from what the player is sent and has solved: first
+     from the kept copy, where this browser has one, and again once the
+     database answers, where that differs. Each drawing starts clean. */
+  const paint = ({ me, puzzles, results, days, ranks }) => {
+    host.replaceChildren();
+    leader.replaceChildren();
+    document.querySelectorAll('.pixels-continue-list').forEach(el => el.remove());
+        // With no leaderboard there is one panel and nothing to switch between.
     document.getElementById('pixels-tabs').hidden = !BOARD;
     // Solves made with no connection, still to reach the database.
     const held = data.waiting?.() || 0;
@@ -446,5 +438,33 @@
       who.animate([shift(moved), shift([(moved[0] + next[0]) / 2, (moved[1] + next[1]) / 2], who.offsetHeight / 2), shift(next)], { duration: 500, easing: 'ease-in-out' })
         .finished.then(settle);
     });
+  };
+
+  (async () => {
+    if (!data) {
+      say('Pixels could not connect', 'Reload the page to try again.');
+      return;
+    }
+    // The kept copy at once, or a first visit's waiting tiles.
+    const kept = data.kept?.();
+    if (kept) {
+      early(kept.me);
+      paint({ me: kept.me, puzzles: kept.list, results: kept.results, days: kept.days, ranks: null });
+    } else host.replaceChildren(waiting(3));
+    let me, puzzles, results, days, ranks;
+    try {
+      me = await enter(host);
+      if (!me) {
+        document.querySelectorAll('.pixels-continue-list').forEach(el => el.remove());
+        return;
+      }
+      [puzzles, results, days, ranks] = await Promise.all([data.list(), data.results(), data.days(), BOARD ? data.board(today()) : null]);
+    } catch {
+      say('The puzzles did not load', 'Reload the page to try again.');
+      return;
+    }
+    fresh();
+    if (kept && !ranks && same([kept.me, kept.list, kept.results, kept.days], [me, puzzles, results, days])) return;
+    paint({ me, puzzles, results, days, ranks });
   })();
 })();

@@ -168,6 +168,16 @@
 .game-tile-head > .game-tile-name, .game-tile-head > .game-tile-note { flex: 1; min-inline-size: 0; }
 .game-tile-tag { flex: none; margin: 0; }
 .game-tile.is-locked > .game-tile-art { opacity: .3; }
+/* A WAITING TILE, `is-waiting`, holds a tile's place while a page's first
+   data loads: the picture's square and two lines, in the raised grey,
+   dimming and brightening where motion is allowed. */
+.game-tile.is-waiting > .game-tile-art { inline-size: 4rem; block-size: 4rem; background: var(--rux-layer-accent-01); }
+.game-tile-line { display: block; inline-size: 60%; block-size: .75rem; margin-block: .25rem; background: var(--rux-layer-accent-01); }
+.game-tile-line + .game-tile-line { inline-size: 85%; }
+@media (prefers-reduced-motion: no-preference) {
+  .game-tile.is-waiting > * { animation: game-waiting 1.2s ease-in-out infinite alternate; }
+}
+@keyframes game-waiting { to { opacity: .5; } }
 .game-tile.is-locked .game-tile-name { color: var(--rux-text-secondary); }
 /* WHAT IS DONE, a tile or the page of what it stands for, carries
    game-done, and its progress bar is drawn in the warm colour, so a thing

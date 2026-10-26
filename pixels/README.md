@@ -64,8 +64,8 @@ rift's next unsolved puzzle, then to the next open rift. How to play is three st
 numbers, filling and crossing out, and what a mistake costs. It opens from Me's list and the button under
 Start, and the clock stands meanwhile. A player who has solved none is sent once to `play.html?lesson`, a
 5×5 heart taught a line at a time. Each move plays a tone and a phone ticks on each fill. A game in
-progress is kept in the browser for a reload. It plays offline, and a solve made offline waits until the
-connection is back.
+progress is kept for a reload. Play, a rift, Create and Me open on what they showed last time, then
+update. It plays offline, and a solve made offline waits until the connection is back.
 
 The leaderboard is switched off by `BOARD` in `app.js`: the front page has no tabs and no ranking, and
 results are saved as ever. The puzzle of the day is on, by `DAILY` in `app.js`; turned off, no page shows

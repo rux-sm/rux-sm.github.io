@@ -30,7 +30,7 @@
 (() => {
   'use strict';
 
-  const { data, enter, fresh, see, stand, portrait, categories, locks, heading, side, boss, holds, title, letter, words, art, bar, time, arrived, turn } = window.Pixels;
+  const { data, enter, early, waiting, same, fresh, see, stand, portrait, categories, locks, heading, side, boss, holds, title, letter, words, art, bar, time, arrived, turn } = window.Pixels;
   const host = document.getElementById('pixels-category');
 
   const say = (heading, detail) => {
@@ -40,21 +40,12 @@
     box.hidden = false;
   };
 
-  (async () => {
-    if (!data) {
-      say('Pixels could not connect', 'Reload the page to try again.');
-      return;
-    }
-    const query = new URLSearchParams(location.search), at = +query.get('at');
-    let puzzles, results;
-    try {
-      if (!(await enter(host))) return;
-      [puzzles, results] = await Promise.all([data.list(), data.results()]);
-    } catch {
-      say('The puzzles did not load', 'Reload the page to try again.');
-      return;
-    }
-    fresh();
+  /* THE RIFT, drawn from what the player is sent and has solved: first
+     from the kept copy, where this browser has one, and again once the
+     database answers, where that differs. Each drawing starts clean. */
+  const query = new URLSearchParams(location.search), at = +query.get('at');
+  const paint = (puzzles, results) => {
+    host.replaceChildren(...host.querySelectorAll(':scope > .pixels-back, :scope > #pixels-error'));
     const by = query.get('by') || '';
     const cats = categories(puzzles);
     locks(cats, results);
@@ -156,5 +147,29 @@
       turned.forEach((id, n) => turn(squares[all.findIndex(p => p.id === id)].querySelector('.pixels-picture'), 300 + n * 150));
     }
     host.append(el);
+  };
+
+  (async () => {
+    if (!data) {
+      say('Pixels could not connect', 'Reload the page to try again.');
+      return;
+    }
+    // The kept copy at once, or a first visit's waiting tiles.
+    const kept = data.kept?.();
+    if (kept) {
+      early(kept.me);
+      paint(kept.list, kept.results);
+    } else host.append(waiting(2));
+    let puzzles, results;
+    try {
+      if (!(await enter(host))) return;
+      [puzzles, results] = await Promise.all([data.list(), data.results()]);
+    } catch {
+      say('The puzzles did not load', 'Reload the page to try again.');
+      return;
+    }
+    fresh();
+    if (kept && same([kept.list, kept.results], [puzzles, results])) return;
+    paint(puzzles, results);
   })();
 })();

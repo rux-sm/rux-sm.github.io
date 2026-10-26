@@ -26,7 +26,7 @@
 (() => {
   'use strict';
 
-  const { data, owner, enter, words, riftBlock, menu, portrait, side, time, switcher } = window.Pixels;
+  const { data, owner, enter, early, waiting, same, words, riftBlock, menu, portrait, side, time, switcher } = window.Pixels;
   const $ = id => document.getElementById(id);
   const { modal } = window.Rux;
   const VIEW = 'pixels-create-view';
@@ -109,11 +109,22 @@
     mine();
   });
 
-  /* MINE, drawn again after each change. */
+  /* MINE, drawn again after each change. The first time it is drawn at once
+     from the kept copy, or holds its place with waiting tiles, and then
+     again as the database answers, where that differs from what was drawn. */
+  let drawn = null;
   async function mine() {
+    if (!drawn) {
+      const kept = data.kept?.()?.mine;
+      if (kept) drawMine(kept); else host.replaceChildren(waiting(2));
+    }
     let got;
     try { got = await data.own.mine(); } catch { say('Your rifts did not load', 'Reload the page to try again.'); return; }
-    if (!got || view !== 'mine') return;
+    if (!got || view !== 'mine' || same(drawn, got)) return;
+    drawMine(got);
+  }
+  function drawMine(got) {
+    drawn = got;
     const broke = !owner && got.mana < 1;
     const add = $('pixels-new');
     add.href = make();
@@ -131,15 +142,15 @@
     host.replaceChildren(...[...found.values()].sort((a, b) => a.level - b.level).map(g => {
       g.sizes = [...new Set(g.puzzles.map(p => p.width))].sort((a, b) => a - b);
       g.width = g.sizes[0];
-      const name = g.theme || 'Unnamed rift', waiting = g.puzzles.filter(p => p.off).length;
+      const name = g.theme || 'Unnamed rift', held = g.puzzles.filter(p => p.off).length;
       const full = g.puzzles.length >= 15;
       const block = riftBlock({
         name,
         meta: `${g.puzzles.length} of 15 · ${side(g)}`,
-        tags: g.hidden ? ['Hidden'] : waiting ? [`${waiting} new waiting`] : [],
+        tags: g.hidden ? ['Hidden'] : held ? [`${held} new waiting`] : [],
         controls: [menu(`More for ${name}`, [
           ['Rename', from => rename(g, from)],
-          g.hidden ? ['Publish', () => publish(g, true)] : waiting ? [`Publish ${count(waiting, 'new puzzle', 'new puzzles')}`, () => publish(g, true)] : null,
+          g.hidden ? ['Publish', () => publish(g, true)] : held ? [`Publish ${count(held, 'new puzzle', 'new puzzles')}`, () => publish(g, true)] : null,
           g.hidden ? null : ['Hide', () => publish(g, false)],
           ['Delete', from => remove(g, from), true],
         ])],
@@ -168,6 +179,12 @@
 
   (async () => {
     if (!data) { say('Pixels could not connect', 'Reload the page to try again.'); return; }
+    // Mine from the kept copy at once, before the player is asked for.
+    const kept = data.kept?.();
+    if (kept?.mine && view === 'mine' && data.own) {
+      early(kept.me);
+      drawMine(kept.mine);
+    }
     let me;
     try { me = await enter($('pixels-create')); } catch { say('Create did not load', 'Reload the page to try again.'); return; }
     if (!me) return;

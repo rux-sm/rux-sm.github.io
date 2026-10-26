@@ -16,9 +16,6 @@ puzzle, a friend's time to beat.
 
 - **Each task is its own change, shown as options in the real page before
   it is built,** and checked in the iOS simulator from the home-screen icon.
-- **No page draws in two steps.** A page holds its shape with placeholder
-  tiles of the right size while its data loads, and a page change fades in
-  where the browser can.
 - **A touch answers on the finger's landing,** not its lifting, and the
   board takes no scroll or zoom but the two-finger zoom it has.
 - **Two buttons and a link:** Carbon's primary for the one thing a screen is
@@ -51,8 +48,6 @@ None open.
 
 ## Tasks
 
-- [ ] Hold every page's shape while it loads: placeholder tiles on Play, a
-  rift, Create and Me, and Me's numbers drawn with the page.
 - [ ] Answer a touch on the board as the finger lands, and stop the board
   scrolling the page.
 - [ ] Cut the buttons to two and a link in Design, and move every Pixels

@@ -1195,7 +1195,27 @@
     });
   };
 
+  /* WHILE A PAGE FIRST LOADS, with no kept copy to draw from yet, `waiting`
+     holds its place with `n` of Design's waiting tiles, and `same` says
+     whether what the database answered is what the page was drawn from, so
+     a page drawn from the kept copy is drawn again only where it changed. */
+  const waiting = n => {
+    const list = document.createElement('div');
+    list.className = 'game-tiles';
+    list.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < n; i++) {
+      const t = document.createElement('div');
+      t.className = 'rux--tile game-tile is-waiting';
+      t.append(words('game-tile-art', ''), words('game-tile-line', ''), words('game-tile-line', ''));
+      list.append(t);
+    }
+    return list;
+  };
+  const plain = v => JSON.stringify(v, (_, x) => (x instanceof Map ? [...x] : x));
+  const same = (a, b) => plain(a) === plain(b);
+
   window.Pixels = Object.assign(window.Pixels || {}, {
+    waiting, same,
     iphone, installed, fresh, face, portrait, seen, see, stand, stood, side, sprites, portal, fairy, heart, sword, shield, worn, hero, shade, piece, figure, locks, boss, holds, letter,
     SIZES, DAILY, BOARD, WORLD, CHARS, grid, squaresOf, column, clues, solveLine, unreached, rounds, firstLook, grade, order, categories, heading, where,
     daily, today, streak, board, paint, highlight, drag, picture, HEARTS, HINT, added, buzz, sound, sounds, relaxed, listen, time, title,

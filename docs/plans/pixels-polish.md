@@ -40,8 +40,7 @@ None open.
 
 ## Tasks
 
-- [ ] Give Friends, a rift with nothing found and a player with no mana an
-  empty state each.
+- [ ] Give Friends and a rift with nothing found an empty state each.
 - [ ] Rewrite How to play as three steps with a board to try, and retire the
   lesson puzzle for it.
 - [ ] Count down to tomorrow's puzzle on the Today tile once it is solved.

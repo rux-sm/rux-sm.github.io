@@ -16,8 +16,6 @@ puzzle, a friend's time to beat.
 
 - **Each task is its own change, shown as options in the real page before
   it is built,** and checked in the iOS simulator from the home-screen icon.
-- **A touch answers on the finger's landing,** not its lifting, and the
-  board takes no scroll or zoom but the two-finger zoom it has.
 - **Two buttons and a link:** Carbon's primary for the one thing a screen is
   for, its secondary for the rest, and a plain link for a way back or a
   small extra. The ghost-blue box and the other styles go. They are
@@ -48,8 +46,6 @@ None open.
 
 ## Tasks
 
-- [ ] Answer a touch on the board as the finger lands, and stop the board
-  scrolling the page.
 - [ ] Cut the buttons to two and a link in Design, and move every Pixels
   page onto them.
 - [ ] Turn the maker's toolbar into a bar like the game's.

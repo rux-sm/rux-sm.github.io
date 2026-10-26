@@ -540,8 +540,8 @@
      `paint(y, x)` on each square the finger crosses. In the game the drag
      keeps to the first row or column it moves along; `free` lets the maker
      draw in any direction. A mouse moving with no button down calls
-     `hover(y, x)`, and so does a finger resting on a board that fills as
-     it lifts, so the line under it shows before it fills. Along a line,
+     `hover(y, x)`, and so does a finger as it lands on a board that may
+     zoom, so the line under it shows before it fills. Along a line,
      `reach(y, x, n)` is told the square the drag has reached and how many
      squares it spans, and `reach()` that it has ended. Where `right` is set
      a mouse's right button drags too,
@@ -556,16 +556,17 @@
      its squares are in fact under 32px, which a phone's are and a tablet's
      are not, two fingers pinch it larger and slide it, up to squares 48px
      wide. The square the pinch began over stays under the fingers. There a touch
-     fills when it lifts or crosses into a second square, not when it lands,
-     so the first finger of a pinch leaves no stray fill; and after a pinch
-     nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
+     fills `SETTLE`, 80ms, after it lands, or sooner where it lifts or crosses
+     into a second square: soon enough to feel at once, and long enough for
+     a pinch's second finger, which lands within it, to leave no stray fill.
+     After a pinch nothing fills until every finger is up. `--zoom`, `--tx` and `--ty` on
      the host are what app.css sizes and slides the board by. `reset()`
      takes the board back to its whole. */
   const drag = (host, { start, paint, hover, reach, free = false, right = false, zoom = () => false }) => {
     let from = null, axis = null, last = null, pen = null;
-    const FINE = 32;
+    const FINE = 32, SETTLE = 80;
     const fingers = new Map();
-    let waiting = null, pinch = null, spent = false, z = 1, tx = 0, ty = 0;
+    let waiting = null, pinch = null, spent = false, z = 1, tx = 0, ty = 0, settle = 0;
     const at = e => {
       const el = document.elementFromPoint(e.clientX, e.clientY)?.closest('.pixels-cell');
       return el && host.contains(el) ? [+el.dataset.y, +el.dataset.x] : null;
@@ -582,6 +583,14 @@
       return { gap: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
     };
     const begin = (p, other = false) => { from = last = p; axis = null; start(...p, other); reach?.(...p, 1); };
+    // A resting finger's square fills on its own, as a tap's does, with no count.
+    const land = () => {
+      if (!waiting || fingers.size !== 1) return;
+      from = last = waiting;
+      axis = null;
+      start(...waiting);
+      waiting = null;
+    };
     // Too fine for a finger: measured without the zoom, which a board whose
     // squares have since grown, on a turned screen, is taken out of.
     const fine = () => {
@@ -608,8 +617,15 @@
         const view = host.querySelector('.pixels-squares').getBoundingClientRect(), now = span(), size = square();
         pinch = { gap: now.gap, z, x: (now.x - view.x - tx) / size, y: (now.y - view.y - ty) / size };
         if (from) reach?.();
+        clearTimeout(settle);
         waiting = from = null;
-      } else if (fingers.size === 1 && !spent) { waiting = p; pen = e.pointerId; hover?.(...p); }
+      } else if (fingers.size === 1 && !spent) {
+        waiting = p;
+        pen = e.pointerId;
+        hover?.(...p);
+        clearTimeout(settle);
+        settle = setTimeout(land, SETTLE);
+      }
     });
     host.addEventListener('contextmenu', e => { if (right && at(e)) e.preventDefault(); });
     host.addEventListener('pointermove', e => {
@@ -632,6 +648,7 @@
       const p = at(e);
       if (waiting) {
         if (!p || (p[0] === waiting[0] && p[1] === waiting[1])) return;
+        clearTimeout(settle);
         begin(waiting);
         waiting = null;
       }
@@ -654,6 +671,7 @@
       // Another finger lifting ends nothing.
       else if (e.pointerId !== pen) { if (!fingers.size) spent = false; return; }
       // A tap: the finger lifted on the square it landed on.
+      clearTimeout(settle);
       if (waiting && e.type === 'pointerup') start(...waiting);
       if (from) reach?.();
       waiting = from = pen = null;

@@ -666,6 +666,9 @@ html:has(.pixels-game, .pixels-maker),
 html:has(.pixels-game, .pixels-maker) select,
 html:has(.pixels-game, .pixels-maker) input:not(:focus) { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 html:has(.pixels-game, .pixels-maker) input:focus { user-select: text; -webkit-user-select: text; }
+/* The game and the maker stand still under a finger: a swipe off the board
+   does not pull the whole page and spring it back. */
+html:has(.pixels-game, .pixels-maker) { overscroll-behavior: none; }
 
 /* THE GAME. One column exactly as wide as the board, so the keys under it
    end where it does, set in from the frame's edge by a whole number of

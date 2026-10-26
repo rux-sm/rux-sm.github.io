@@ -357,13 +357,78 @@
   --rux-layer: var(--rux-layer-01);
   --scheduler-band-surface: var(--rux-layer-01);
 }
-/* RUX-DARK'S BOARD IS THE PAGE, as apple-dark's is: the schedule's toolbar,
-   bands and grid take the page's colour inside the line every region already
-   has, and the roster, the panes and the card that opens over a trip keep the
-   raised surface, so the board reads as the page and the tools sit on it. */
+/* RUX-DARK'S BOARD IS THE PAGE, as GitHub's panes are: the schedule, the
+   roster, the panes, the trip editor and the document panel all take the
+   page's colour, parted only by their lines, and everything raised inside them
+   stands one layer lower than Carbon puts it, so a tile is layer-01 and its
+   fields field-02 where Carbon would give layer-02 and field-03. The card that
+   opens over a trip keeps the raised surface, which parts it from the board. */
 [data-theme="rux-dark"] .scheduler-frame {
   --rux-layer: var(--rux-background);
   --scheduler-band-surface: var(--rux-background);
+}
+[data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
+  --rux-layer: var(--rux-background);
+  --rux-layer-active: var(--rux-background-active);
+  --rux-layer-hover: var(--rux-background-hover);
+  --rux-layer-selected: var(--rux-background-selected);
+  --rux-layer-selected-hover: var(--rux-background-selected-hover);
+  --scheduler-band-surface: var(--rux-background);
+}
+/* Carbon paints a side panel's body, head and foot with layer-01 by name
+   rather than through `--rux-layer`, as overrides.css paints the editor's
+   sticky tab strip, so they are pointed at it here. */
+[data-theme="rux-dark"] #scheduler-panel-body .rux--tabs,
+[data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel,
+[data-theme="rux-dark"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel :is(.rux--side-panel__header, .rux--side-panel__title, .rux--side-panel__subtitle-text, .rux--side-panel__action-toolbar, .rux--side-panel__actions-container) {
+  background-color: var(--rux-layer);
+}
+[data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--layer-two {
+  --rux-layer: var(--rux-layer-01);
+  --rux-layer-active: var(--rux-layer-active-01);
+  --rux-layer-background: var(--rux-layer-background-01);
+  --rux-layer-hover: var(--rux-layer-hover-01);
+  --rux-layer-selected: var(--rux-layer-selected-01);
+  --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
+  --rux-layer-accent: var(--rux-layer-accent-01);
+  --rux-layer-accent-hover: var(--rux-layer-accent-hover-01);
+  --rux-layer-accent-active: var(--rux-layer-accent-active-01);
+  --rux-field: var(--rux-field-01);
+  --rux-field-hover: var(--rux-field-hover-01);
+  --rux-border-subtle: var(--rux-border-subtle-00);
+  --rux-border-subtle-selected: var(--rux-border-subtle-selected-01);
+  --rux-border-strong: var(--rux-border-strong-01);
+  --rux-border-tile: var(--rux-border-tile-01);
+}
+[data-theme="rux-dark"] :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--layer-three {
+  --rux-layer: var(--rux-layer-02);
+  --rux-layer-active: var(--rux-layer-active-02);
+  --rux-layer-background: var(--rux-layer-background-02);
+  --rux-layer-hover: var(--rux-layer-hover-02);
+  --rux-layer-selected: var(--rux-layer-selected-02);
+  --rux-layer-selected-hover: var(--rux-layer-selected-hover-02);
+  --rux-layer-accent: var(--rux-layer-accent-02);
+  --rux-layer-accent-hover: var(--rux-layer-accent-hover-02);
+  --rux-layer-accent-active: var(--rux-layer-accent-active-02);
+  --rux-field: var(--rux-field-02);
+  --rux-field-hover: var(--rux-field-hover-02);
+  --rux-border-subtle: var(--rux-border-subtle-01);
+  --rux-border-subtle-selected: var(--rux-border-subtle-selected-02);
+  --rux-border-strong: var(--rux-border-strong-02);
+  --rux-border-tile: var(--rux-border-tile-02);
+}
+/* The Forms list is print.html framed in the document panel, its own page, so
+   it takes the panel's page colour and its tiles step down the same layer. */
+[data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print { background: var(--rux-background); }
+[data-theme="rux-dark"]:not([data-rux-standalone]) #scheduler-print-hub.rux--layer-two {
+  --rux-layer: var(--rux-layer-01);
+  --rux-layer-hover: var(--rux-layer-hover-01);
+  --rux-layer-selected: var(--rux-layer-selected-01);
+  --rux-layer-accent: var(--rux-layer-accent-01);
+  --rux-field: var(--rux-field-01);
+  --rux-border-subtle: var(--rux-border-subtle-00);
+  --rux-border-strong: var(--rux-border-strong-01);
+  --rux-border-tile: var(--rux-border-tile-01);
 }
 [data-theme="rux-dark"] .scheduler-bar-shortcuts:not([data-docked]) {
   --rux-layer: var(--rux-layer-01);
@@ -824,9 +889,33 @@
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   /* The same line around each region, so the schedule and the roster are told
      apart the way the trip panel beside them already is. It is drawn at every
-     width, the page keeping 16px around the board throughout. */
+     width, geist-dark's page keeping 16px around the board throughout. */
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge-width: 1px;
+}
+/* RUX-DARK'S BOARD IS ONE SHEET UNDER THE HEADER, as GitHub lays out its
+   panes: no page around it and no gutter between its regions, which meet on a
+   single line. The header's own rule is the regions' top and the window their
+   foot, so each draws only its sides, and each sits 1px over the one before
+   it so two sides make one line. A phone's safe areas still hold the board
+   clear of the cutout and the home bar. A panel brought in front of the board
+   is a card and keeps its whole edge, so the panels' rules stop at a takeover
+   and below md, where they are fixed over the board. */
+[data-theme="rux-dark"] .rux--content:has(.scheduler-board) {
+  padding: 0 var(--scheduler-safe-right) var(--scheduler-safe-bottom) var(--scheduler-safe-left);
+}
+[data-theme="rux-dark"] .scheduler-board { gap: 0; }
+[data-theme="rux-dark"] .scheduler-frame {
+  border-block: 0;
+  margin-inline-start: -1px;
+}
+@media (min-width: 42rem) {
+  [data-theme="rux-dark"] .scheduler-page:not([data-takeover]) :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
+    border-block: 0;
+  }
+  [data-theme="rux-dark"] .scheduler-page:not([data-takeover]) :is(.scheduler-aside, .scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) {
+    margin-inline-start: -1px;
+  }
 }
 /* The Apple themes' regions are a fill on the page, so each is told apart by
    that fill. Their day band is the region's own surface over a rule, as

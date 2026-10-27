@@ -143,6 +143,15 @@
    the day as ISO through `Rux.datePicker.toISO(text)` and
    `Rux.datePicker.format(iso)`, so storage never sees the display.
 
+   TWO DATA ATTRIBUTES ON THE ROOT, both read on every render, so a page may
+   change them while the picker stands. `data-rux-first-day="1"` starts each
+   week on Monday, the weekday row and the grid with it; anything else is
+   Sunday, Carbon's. `data-rux-span="7"` on a single picker marks that many
+   days from the picked one, its ends `selected` and the days between
+   `inRange`, Carbon's own range classes, so a picker that chooses a week
+   shows the week. Neither is Carbon's: its React picker takes a locale and
+   has no span.
+
    NOT DONE, and deliberately: no locale, no other display format, no
    min/max, no disabled-date predicate. Carbon takes those as props on a
    React component; this layer makes the markup work, and a consumer that
@@ -197,7 +206,8 @@
 
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
-  // Sunday first, matching the reference's seven weekday cells.
+  // Sunday first, matching the reference's seven weekday cells; a root's
+  // `data-rux-first-day` turns them.
   var WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   var iso = function (d) {
@@ -247,14 +257,13 @@
     var navs = [].slice.call(calendar.querySelectorAll('.rux--date-picker__month-nav'));
     if (!daysEl || !monthEl) return;
 
-    // The weekday row is static; the reference renders seven divs and the
-    // module fills them rather than creating them, so a page that wants other
-    // labels can write them and keep them.
-    if (weekdaysEl && !weekdaysEl.textContent.trim()) {
-      [].slice.call(weekdaysEl.children).forEach(function (cell, i) {
-        cell.textContent = WEEKDAYS[i] || '';
-      });
-    }
+    // The weekday row: the reference renders seven divs and the module fills
+    // them rather than creating them, so a page that wants other labels can
+    // write them and keep them. Labels the module wrote follow the first day.
+    var ownLabels = !!weekdaysEl && !weekdaysEl.textContent.trim();
+    // 1 for a Monday start, 0 for Carbon's Sunday; the span is 1 unless set.
+    function firstDay() { return root.dataset.ruxFirstDay === '1' ? 1 : 0; }
+    function span() { var n = parseInt(root.dataset.ruxSpan, 10); return n > 1 ? n : 1; }
 
     // Where the container lives while closed. Carbon's CSS has no closed
     // state (see the header), so absence from the DOM IS the closed state.
@@ -278,11 +287,20 @@
       var sel = selection();
       var from = sel[0], to = isRange ? sel[1] : null;
       monthEl.textContent = MONTHS[view.getMonth()] + ' ' + view.getFullYear();
+      var fd = firstDay();
+      if (ownLabels) {
+        [].slice.call(weekdaysEl.children).forEach(function (cell, i) {
+          cell.textContent = WEEKDAYS[(i + fd) % 7] || '';
+        });
+      }
+      // A single picker's span runs from the picked day.
+      var last = !isRange && from && span() > 1
+        ? new Date(from.getFullYear(), from.getMonth(), from.getDate() + span() - 1) : null;
 
       // 42 cells, always — six weeks, which is what the reference renders and
       // what stops the calendar changing height as months change.
       var first = new Date(view.getFullYear(), view.getMonth(), 1);
-      var start = new Date(first); start.setDate(1 - first.getDay());
+      var start = new Date(first); start.setDate(1 - (first.getDay() - fd + 7) % 7);
       daysEl.textContent = '';
       for (var n = 0; n < 42; n++) {
         var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + n);
@@ -296,8 +314,9 @@
         if (d.getMonth() !== view.getMonth())
           b.classList.add(d < first ? 'prevMonthDay' : 'nextMonthDay');
         if (same(d, today)) { b.classList.add('today'); b.setAttribute('aria-current', 'date'); }
-        if (same(d, from) || same(d, to)) b.classList.add('selected');
+        if (same(d, from) || same(d, to) || same(d, last)) b.classList.add('selected');
         else if (isRange && from && to && d > from && d < to) b.classList.add('inRange');
+        else if (last && d > from && d < last) b.classList.add('inRange');
         if (same(d, cursor)) b.classList.add('focused');
         daysEl.appendChild(b);
       }
@@ -430,8 +449,8 @@
       else if (k === 'ArrowRight') { move(1); }
       else if (k === 'ArrowUp') { move(-7); }
       else if (k === 'ArrowDown') { move(7); }
-      else if (k === 'Home') { move(-cursor.getDay()); }
-      else if (k === 'End') { move(6 - cursor.getDay()); }
+      else if (k === 'Home') { move(-((cursor.getDay() - firstDay() + 7) % 7)); }
+      else if (k === 'End') { move(6 - (cursor.getDay() - firstDay() + 7) % 7); }
       else if (k === 'PageUp') { shiftMonth(-1); }
       else if (k === 'PageDown') { shiftMonth(1); }
       else if (k === 'Enter' || k === ' ') { pick(iso(cursor)); }

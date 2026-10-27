@@ -3684,6 +3684,6 @@
   --rux-layer-accent: var(--rux-layer-accent-02);
   --rux-border-subtle: var(--rux-border-subtle-02);
 }
-[data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu):not(:is(.rux--layer-two, .rux--layer-three) *) {
+[data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar):not(:is(.rux--layer-two, .rux--layer-three) *) {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
 }

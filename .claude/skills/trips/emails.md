@@ -29,6 +29,7 @@ the new text and replace this file with it.
 - Availability that is not confirmed, or a discount beyond the quote.
 - A booking before signed paperwork and a deposit or PO; a PO in progress is "we'll hold the buses while it goes through".
 - A changed date or route may change the price.
+- A partner company covering buses we lack, since it may not be possible when the day comes.
 
 ## By type
 

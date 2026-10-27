@@ -903,7 +903,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar > .scheduler-bar__contact > .scheduler-bar__phone { display: none; }
 /* One icon leads the update row, a mark's glyph square, and the words
    after it give way. */
-.scheduler-bar__update { justify-content: flex-start; }
+.scheduler-bar__update { justify-content: flex-start; gap: var(--rux-spacing-02); }
 .scheduler-bar__lead {
   display: inline-flex;
   flex: none;
@@ -1871,25 +1871,25 @@ button.scheduler-row-head__num::after {
    amber sent and waiting, green confirmed, red declined.
    The disc each sat on is gone, as every block on this bar is -- see the
    contrast note above, which is the same trade and the same choice.
-   EVERY DRIVER'S MARK HAS ONE 12px SLOT, 4px before the name, a dot, a
-   relief's arrows or a live seat's duty, so every name on the board starts
-   16px in. */
+   EVERY ICON ON THE BAR IS ONE SIZE, 4px before its words: a driver's
+   status, a relief's arrows, a live seat's duty and the update's warning or
+   clock, so every name and update starts 20px in. */
 .scheduler-crew__mark {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: 12px;
+  inline-size: var(--scheduler-mark-glyph);
   block-size: var(--scheduler-row-h);
 }
 .scheduler-crew__mark svg {
   display: block;
-  inline-size: 12px;
-  block-size: 12px;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
 }
 /* A seat still to fill: a dashed empty ring, Carbon's circle dash, the size
    of the filled circle a driver not yet sent wears, so only the dashes differ. */
-.scheduler-crew__dot { inline-size: 10px; block-size: 10px; border-radius: 50%; background: currentColor; }
+.scheduler-crew__dot { inline-size: 13px; block-size: 13px; border-radius: 50%; background: currentColor; }
 .scheduler-crew__mark--empty > .scheduler-crew__dot { box-sizing: border-box; background: none; border: 1.5px dashed currentColor; }
 
 /* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says so in
@@ -2145,7 +2145,6 @@ button.scheduler-row-head__num::after {
 .scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
 .scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) { flex: 1 1 auto; }
 .scheduler-crew--seat:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
-.scheduler-crew--seat > .scheduler-crew__duty svg { inline-size: 12px; block-size: 12px; }
 .scheduler-crew--seat > .scheduler-crew__hours { display: none; margin-inline-start: auto; }
 .scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) > .scheduler-crew__hours,
 .scheduler-crew--seat > .scheduler-crew__hours--low { display: block; }
@@ -2177,7 +2176,7 @@ button.scheduler-row-head__num::after {
    each its own shape so the colour is never the only signal. Ringed, the
    ring is the hours they may still drive, of ten, amber under one. */
 .scheduler-crew[data-duty]:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
-.scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: 12px; }
+.scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty--ring {
   --scheduler-ring: var(--scheduler-mark-success);

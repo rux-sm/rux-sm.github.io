@@ -2577,6 +2577,11 @@ button.scheduler-row-head__num::after {
   z-index: 100000;
   background: var(--rux-layer-02);
 }
+/* Under the pointer it takes the calendar's own hover, solid, as the open ⋮
+   takes its menu's. */
+@media (hover: hover) {
+  .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--rux-layer-hover-02); }
+}
 /* The calendar the trip editor's date fields carry, because a calendar is
    what the press opens. It is a `<use>` from the inlined sprite, like every
    glyph here. */

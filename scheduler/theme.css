@@ -142,12 +142,12 @@
   --scheduler-mark-info: oklch(0.82 0.093 262);
   --scheduler-mark-rest: oklch(0.82 0.111 300);
 }
-/* Its alert discs and the toolbar's counts are badges, one set with Design's
-   count badge, and a filled disc holds 3.3 to 1 on any container at the inks
+/* Its alert discs and the toolbar's dots are badges, set with Design's
+   badge indicator, and a filled disc holds 3.3 to 1 on any container at the inks
    themselves, so they take the palette's inks: the amber and the red that
    the support colours are. The trip card's bells stand on the card's grey,
    not a container, and take the same inks, so a bell is its disc's colour. */
-[data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator--count) { background: var(--rux-support-warning); }
+[data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator) { background: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
 /* A BAR'S COUNT OF JOBS IS QUIET in rux-dark: a disc of the bar's own ink at
    16% under its figure in that ink, so a week of trips with work still to do

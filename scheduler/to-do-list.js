@@ -582,14 +582,17 @@
     menuItem('Delete', true, row => { openId = null; remove(row); }));
   document.body.appendChild(menu);
 
-  /* How many are due, on each list's button: Design's count badge, and the
-     button's name says it too. Tasks counts its Overdue and Today rows. */
+  /* Whether any are due, on each list's button: Design's plain badge dot,
+     and how many the button's name and tooltip say. Tasks counts its
+     Overdue and Today rows. */
   function drawCount(list, n) {
     const { button, name, due } = LISTS[list];
     if (!button) return;
     button.querySelector('.rux--badge-indicator')?.remove();
-    if (n) button.appendChild(el('div', 'rux--badge-indicator rux--badge-indicator--count', n > 99 ? '99+' : String(n)));
-    button.setAttribute('aria-label', n ? `${name}, ${n} ${due}` : name);
+    if (n) button.appendChild(el('div', 'rux--badge-indicator'));
+    const said = n ? `${name}, ${n} ${due}` : name;
+    button.setAttribute('aria-label', said);
+    button.title = said;
   }
   const drawPrepCount = () => drawCount('prep', window.SchedulerDeparturesPanel?.summary().due ?? 0);
 

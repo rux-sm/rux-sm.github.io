@@ -806,21 +806,18 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   border-inline-start-color: var(--rux-border-subtle-01);
 }
 
-/* A list's count on its toolbar button: Design's count badge, set against
-   the glyph and not the button's corner, where Carbon puts it for the
-   header's 48px actions and where it would cover a glyph at the toolbar's
-   size. It stands off the glyph's upper outer corner by the same step at
-   either button size, the desktop's and the phone's. A wide count stands
-   past its button's edge, so it is lifted over the next button, whose rule
-   would otherwise cross it. It counts what is still to do, so it wears a
-   trip's alert disc's warning colours and not Carbon's red, which on the
-   board means something is wrong. */
-.scheduler-toolbar .rux--btn > .rux--badge-indicator--count {
+/* A list's due work on its toolbar button: Design's plain badge dot, the
+   count left to the button's tooltip and name, set against the glyph and
+   not the button's corner, where Carbon puts it for the header's 48px
+   actions. It stands off the glyph's upper outer corner by the same step at
+   either button size, the desktop's and the phone's. It marks what is still
+   to do, so it wears a trip's alert disc's warning colour and not Carbon's
+   red, which on the board means something is wrong. */
+.scheduler-toolbar .rux--btn > .rux--badge-indicator {
   z-index: 1;
   inset: auto auto calc(50% + var(--rux-spacing-02)) calc(50% + var(--rux-spacing-03));
   margin: 0;
   background: var(--scheduler-mark-warning);
-  color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning));
 }
 
 /* Today is the toolbar's one worded ghost button, and Carbon writes a ghost

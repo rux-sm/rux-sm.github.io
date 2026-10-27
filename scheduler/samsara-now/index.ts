@@ -62,16 +62,23 @@ Deno.serve(req => {
       const rows = await samsara<Vehicle>('/fleet/vehicles', { limit: '512' })
       return rows.map(v => ({ id: String(v.id), name: String(v.name ?? '') }))
     },
-    // Samsara gives three kinds of reading a call, so the fault codes are a
-    // second call, and a bus's two answers are joined by its id.
+    // Samsara gives three kinds of reading a call, so the fault codes and the
+    // odometers are calls of their own, and a bus's answers are joined by its id.
     async stats(vehicleIds) {
       const ids = vehicleIds.join(',')
-      const [main, faults] = await Promise.all([
+      const [main, faults, odometers] = await Promise.all([
         samsara<Stat>('/fleet/vehicles/stats', { types: 'engineStates,gps,fuelPercents', vehicleIds: ids }),
         samsara<Stat>('/fleet/vehicles/stats', { types: 'faultCodes', vehicleIds: ids }).catch(() => [] as Stat[]),
+        samsara<Stat>('/fleet/vehicles/stats', { types: 'obdOdometerMeters,gpsOdometerMeters', vehicleIds: ids }).catch(() => [] as Stat[]),
       ])
       const faultOf = new Map(faults.map(f => [String(f.id), f.faultCodes]))
-      return main.map(s => ({ ...s, faultCodes: faultOf.get(String(s.id)) }))
+      const odometerOf = new Map(odometers.map(o => [String(o.id), o]))
+      return main.map(s => ({
+        ...s,
+        faultCodes: faultOf.get(String(s.id)),
+        obdOdometerMeters: odometerOf.get(String(s.id))?.obdOdometerMeters,
+        gpsOdometerMeters: odometerOf.get(String(s.id))?.gpsOdometerMeters,
+      }))
     },
     clocks() {
       return samsara<Clock>('/fleet/hos/clocks', { limit: '512' })

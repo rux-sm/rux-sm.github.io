@@ -55,6 +55,8 @@ export type Stat = {
   gps?: { time: string; latitude?: number; longitude?: number; headingDegrees?: number; speedMilesPerHour?: number; reverseGeo?: { formattedLocation?: string } }
   fuelPercent?: { time: string; value: number }
   faultCodes?: Faults
+  obdOdometerMeters?: { time: string; value: number }
+  gpsOdometerMeters?: { time: string; value: number }
 }
 type Lamps = { emissionsIsOn?: boolean; protectIsOn?: boolean; stopIsOn?: boolean; warningIsOn?: boolean }
 export type Faults = {
@@ -124,6 +126,8 @@ export type LiveBus = {
   path?: [number, number, number][]
   seen: string | null
   fuel: number | null
+  // Miles on the odometer, the engine's reading where there is one, else the GPS's.
+  odometer: number | null
   fault: 'stop' | 'check' | null
   faults: string[]
   drivers: LiveDriver[]
@@ -339,12 +343,21 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         heading: gpsFresh && typeof s!.gps!.headingDegrees === 'number' ? Math.round(s!.gps!.headingDegrees) : null,
         seen: seen.length ? new Date(Math.max(...seen)).toISOString() : null,
         fuel: typeof s?.fuelPercent?.value === 'number' ? Math.round(Math.min(100, Math.max(0, s.fuelPercent.value))) : null,
+        odometer: odometerOf(s),
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),
         ...(since.has(vehicle) ? { path: thin((history[vehicle] ?? []).filter(f => Date.parse(f.time) >= since.get(vehicle)!)) } : {}),
       }
     }),
   }
+}
+
+// The odometer in whole miles, from the engine's reading where the bus reports
+// one, else the GPS's, else null.
+const METERS_PER_MILE = 1609.344
+function odometerOf(s?: Stat): number | null {
+  const meters = s?.obdOdometerMeters?.value ?? s?.gpsOdometerMeters?.value
+  return typeof meters === 'number' && meters > 0 ? Math.round(meters / METERS_PER_MILE) : null
 }
 
 export async function handle(req: Request, deps: Deps): Promise<Response> {

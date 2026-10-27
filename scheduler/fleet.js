@@ -993,16 +993,32 @@
     $('scheduler-i-items').hidden = exit;
     $('scheduler-i-exit').hidden = !exit;
     $('scheduler-i-legend').textContent = exit ? 'Emergency exit inspection' : 'Monthly inspection';
-    iField('odometer').closest('.rux--form-item').querySelector('label').textContent = exit ? 'Odometer, miles (optional)' : 'Odometer, miles';
+    iField('odometer').closest('.rux--form-item').querySelector('label').textContent =
+      `${exit ? 'Odometer, miles (optional)' : 'Odometer, miles'}${fromSamsara ? ', from Samsara' : ''}`;
     iError('odometer', '');
   }
   iField('kind').addEventListener('change', drawKind);
+
+  /* The odometer Samsara reads from the unit's engine, filled in when the form
+     opens and left alone when the unit reports none or the reading is slow. */
+  let fromSamsara = false;
+  async function prefillOdometer() {
+    try {
+      const r = await client.functions.invoke('samsara-now', { body: {} });
+      const bus = r.data?.buses?.find(b => b.bus_id === loaded?.id);
+      if (iForm.hidden || bus?.odometer == null || iField('odometer').value) return;
+      iField('odometer').value = Number(bus.odometer).toLocaleString('en-US');
+      fromSamsara = true;
+      drawKind();
+    } catch { /* the reading is typed, as it was */ }
+  }
 
   function openInspection(on) {
     $('scheduler-maint-view').hidden = on || !rForm.hidden;
     iForm.hidden = !on;
     if (!on) return;
     iForm.reset();
+    fromSamsara = false;
     drawKind();
     for (const b of iForm.querySelectorAll('.rux--content-switcher-btn')) {
       const ok = b.dataset.result === 'ok';
@@ -1016,6 +1032,7 @@
     const seen = maint.find(m => m.odometer != null);
     iField('odometer').placeholder = seen ? `Last recorded ${Number(seen.odometer).toLocaleString('en-US')}` : '';
     iField('odometer').focus();
+    prefillOdometer();
   }
   $('scheduler-inspection-add').addEventListener('click', () => openInspection(true));
   $('scheduler-inspection-cancel').addEventListener('click', () => openInspection(false));

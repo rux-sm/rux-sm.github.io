@@ -283,7 +283,8 @@ session, so a caller who is not staff finds no fleet and Samsara is never asked.
 Samsara names with its number it answers where it is; the engine, speed, place and heading, none
 from a reading over fifteen minutes old but the engine's, kept while the GPS reports, with when the
 engine came to its state; the fuel's percent and the engine's lamp, `stop` or `check`, with up to
-three of its codes in words, from a second call because Samsara gives three readings a call; for a bus the
+three of its codes in words, from a second call because Samsara gives three readings a call; the
+odometer in whole miles, the engine's reading else the GPS's, from a third; for a bus the
 body's `paths` names, its path since the time given, a point a tenth of a mile, four days back at
 most; and the drivers logged in: each one's duty, the least of their three clocks as hours left, and
 who is at the wheel, with the key's Compliance permission. A Samsara driver is the scheduler's with

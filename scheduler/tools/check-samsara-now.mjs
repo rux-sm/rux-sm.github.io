@@ -100,8 +100,9 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
       stats: async ids => { calls++; return [
         { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), latitude: 26.2, longitude: -97.7, headingDegrees: 271.6, speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } },
           fuelPercent: { time: ago(5), value: 68.4 },
+          obdOdometerMeters: { time: ago(5), value: 470_000_000 }, gpsOdometerMeters: { time: ago(5), value: 1_000 },
           faultCodes: { time: ago(5), j1939: { checkEngineLights: { warningIsOn: true }, diagnosticTroubleCodes: [{ spnDescription: 'Coolant level', fmiDescription: 'Low' }] } } },
-        { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), latitude: 26.1, longitude: -98.2, headingDegrees: 90, speedMilesPerHour: 30 } },
+        { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), latitude: 26.1, longitude: -98.2, headingDegrees: 90, speedMilesPerHour: 30 } , gpsOdometerMeters: { time: ago(40), value: 160_934.4 } },
         { id: 'v103', engineState: { time: ago(90), value: 'On' }, gps: { time: ago(1), speedMilesPerHour: 32 } },
       ].filter(s => ids.includes(s.id)); },
       clocks: async () => { calls++; if (clocksFail) throw new Error('403'); return [
@@ -127,6 +128,8 @@ expect('a fresh reading gives the engine, the speed and the place',
   [a.buses[0].engine, a.buses[0].mph, a.buses[0].place], ['on', 65, 'Somewhere, TX']);
 expect('the fuel, and the engine lamp with what its code says',
   [a.buses[0].fuel, a.buses[0].fault, a.buses[0].faults], [68, 'check', ['Coolant level: Low']]);
+expect('the odometer is the engine reading in miles, else the GPS one, else empty',
+  [a.buses[0].odometer, a.buses[1].odometer], [292_044, 100]);
 expect('a bus that reports no fuel and no fault has them empty',
   [a.buses[1].fuel, a.buses[1].fault, a.buses[1].faults], [null, null, []]);
 expect('the red stop lamp outranks an amber one',

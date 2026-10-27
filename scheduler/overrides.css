@@ -990,17 +990,16 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    pair is Carbon's own specificity for a size variant. */
 .scheduler-card .rux--user-avatar { color: var(--rux-text-on-color); }
 
-/* THE COMPANY'S LOGO, ESCAMILLA over TOUR BUSES, is 32px tall where the
-   header's buttons stand inset from the bar's edges, the height of
-   geist-dark's 32px buttons. On Carbon's bar of edge-to-edge 48px squares,
-   rux-dark's among them, it is their icons' 20px. The file's own aspect sets
-   its width. */
+/* THE COMPANY'S LOGO, ESCAMILLA without TOUR BUSES, is 16px tall on
+   Carbon's bar of edge-to-edge 48px squares, rux-dark's among them, and 20px
+   where the header's buttons stand inset from the bar's edges, as
+   geist-dark's 32px buttons do. The file's own aspect sets its width. */
 .scheduler-logo {
   flex: none;
-  block-size: 1.25rem;
+  block-size: 1rem;
   inline-size: auto;
 }
-[data-theme="geist-dark"] .scheduler-logo { block-size: 2rem; }
+[data-theme="geist-dark"] .scheduler-logo { block-size: 1.25rem; }
 
 /* WHO ELSE HAS THE SCHEDULER OPEN, in the header beside the Account action's
    own face and at its size, so the row reads as the people here. This app's

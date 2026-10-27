@@ -3431,6 +3431,7 @@ button.scheduler-row-head__num::after {
 .scheduler-avail__cell--rest { justify-content: center; }
 .scheduler-avail__cell--rest > span {
   visibility: visible;
+  font-weight: var(--rux-heading-compact-01-font-weight);
   position: relative;
   z-index: 1;
   inline-size: auto;

@@ -222,13 +222,12 @@
    does; js/ui-shell.js gives its hamburger the panel trigger's active state.
    So it takes the panel's own layer and edges, from Carbon's
    `.rux--header-panel` and `--expanded`, and the active button joins onto it
-   as the switcher's does. A persistent nav keeps Carbon's background, because
-   it is part of the page beside the content. */
+   as the switcher's does, with the panel's line on its open side only: it
+   opens against the window's edge, where a line on that side only thickens
+   the edge. A persistent nav keeps Carbon's background, because it is part
+   of the page beside the content. */
 .rux--side-nav--hidden { background-color: var(--rux-layer); }
-.rux--side-nav--hidden.rux--side-nav--expanded {
-  border-inline-end: 1px solid var(--rux-border-subtle);
-  border-inline-start: 1px solid var(--rux-border-subtle);
-}
+.rux--side-nav--hidden.rux--side-nav--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
 /* The header's links mirrored into it take the same layer, as a header menu's
    links do when it opens: Carbon fills each with the header's background,
    which drew them as a dark strip across the lighter panel. */

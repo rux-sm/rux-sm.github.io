@@ -10701,10 +10701,19 @@
   // Whether this bar's card is on screen now, which a press toggles.
   const cardShowing = bar => bar === selectedBar() && cardAsked(bar) && !barShortcuts?.hidden;
   // Asking again brings back a card put away by one of its actions.
-  function askCard(bar, open) {
+  function askCard(bar, open, section = '') {
     cardOpenFor = open ? barKey(bar) : null;
     if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
     placeBarOpen();
+    markCardSection(open ? section : '');
+  }
+  /* The part of the card the press was on, its alert badge for Needs and its
+     update line for Updates, is marked and brought into view; Space, the Live
+     pill and the card put away mark none. */
+  function markCardSection(section) {
+    if (!barShortcuts) return;
+    if (section) barShortcuts.dataset.section = section; else delete barShortcuts.dataset.section;
+    if (section) barShortcuts.querySelector(`.scheduler-card__${section}`)?.scrollIntoView({ block: 'nearest' });
   }
   function putCardAway(bar) {
     cardAwayFor = barKey(bar);
@@ -11340,9 +11349,11 @@
      not selected yet app.js's click then selects it. A double-click's second
      press is the double-click's. */
   gridEl.addEventListener('click', e => {
-    const bar = e.target.closest('[data-card-opener]')?.closest('.scheduler-bar[data-trip-id]');
+    const opener = e.target.closest('[data-card-opener]');
+    const bar = opener?.closest('.scheduler-bar[data-trip-id]');
     if (!bar || e.detail > 1) return;
-    askCard(bar, !cardShowing(bar));
+    const section = opener.matches('.scheduler-bar__alert') ? 'needs' : opener.closest('.scheduler-bar__update') ? 'updates' : '';
+    askCard(bar, !cardShowing(bar), section);
   });
   // A double-click on a trip opens it, as Enter does; its first click selected it.
   gridEl.addEventListener('dblclick', e => {

@@ -160,8 +160,8 @@ const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
   ['No times', ['Ben'], null]);
-const kindOf = b => { const k = b.querySelector('.scheduler-bar__time > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
-expect('one way wears its pill at the time row\'s end, an arrow across', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
+const kindOf = b => { const k = b.querySelector('.scheduler-bar__dest > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
+expect('one way wears its pill after the destination, an arrow across', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
 expect('a split\'s drop-off points down and its pickup up; a round trip wears none',
   [...drawn('trip-bar', 'Drop-off and pickup'), ...drawn('trip-bar', 'Colours').slice(0, 1)].map(kindOf),
   [['#m-download', 'Drop-off'], ['#m-upload', 'Pickup'], null]);
@@ -178,10 +178,10 @@ expect('either side of the week', drawn('trip-bar', 'Either side of the week').m
 const [back] = drawn('trip-bar', 'Back at the yard');
 expect('a trip back stays put and raises no alert, though its record lacks miles and pay', [back.classList.contains('scheduler-bar--back'), mark(back)],
   [true, null]);
-expect('a trip back wears Complete, or Paid once paid in full, its update row when it reached the pickup and got back, amber when late, or its miles',
-  drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest > .scheduler-bar__done'), b.querySelector('.scheduler-bar__complete')?.textContent ?? null,
-    has(b, '.scheduler-bar__complete-time--late')]),
-  [['Complete', '', false], ['Paid', '412 mi', false], ['Complete', 'Back 5:40p', true], ['Paid', 'Spot 6:52a·Back 4:52p', false]]);
+expect('a trip back gives in its update row when it reached the pickup and got back, amber when late, or its miles, then Paid or what is due',
+  drawn('trip-bar', 'Back at the yard').map(b => [b.querySelector('.scheduler-bar__complete')?.textContent ?? null,
+    has(b, '.scheduler-bar__complete-time--late'), has(b, '.scheduler-bar__complete-paid'), has(b, '.scheduler-bar__complete-due')]),
+  [['', false, false, false], ['412 mi·Paid', false, true, false], ['Back 5:40p·$1,240 due', true, false, true], ['Spot 6:52a·Back 4:52p·Paid', false, true, false]]);
 expect('a trip back keeps each driver\'s slot, the confirmed check whatever they last said',
   drawn('trip-bar', 'Back at the yard').map(b => [...b.querySelectorAll('.scheduler-crew__mark use')].map(u => u.getAttribute('href'))),
   [['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill']]);
@@ -215,6 +215,8 @@ expect('each alert counted in its colour', alerts.map(n => mark(drawn('alerts', 
   'amber Hotel booking pending', 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', 'amber HOS form pending', 'red Coach needed', 'red Sleeper needed',
   'red Sleeper needed · Trip contact missing']);
+expect('the alert count leads the update row', alerts.map(n => { const u = drawn('alerts', n)[0].querySelector('.scheduler-bar__update'); return u.children[0]?.classList.contains('scheduler-bar__msg'); }),
+  alerts.map(() => true));
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 
 console.log('\n  Out on the road');

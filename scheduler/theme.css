@@ -723,9 +723,6 @@
 /* apple-light's bar ink is already the faintest that reads, so its band is
    fainter still, keeping the words over it at 4.5 to 1. */
 [data-theme="apple-light"] .scheduler-bar--road { --scheduler-road-band: color-mix(in srgb, currentColor 3%, transparent); }
-/* apple-light's bar ink is the faintest that reads, so its Complete pill
-   is not dimmed further. */
-[data-theme="apple-light"] .scheduler-bar__done { opacity: 1; }
 /* The panels' tiles are solid too, the Tasks and Departures cards, the
    editor's and the Forms list's, parted from the panel by their fill alone:
    Design rings a tile inside a layer, and here the panel is the page's
@@ -1108,10 +1105,9 @@
      keeps its rule, by `.scheduler-week--short` in app.css. */
   --scheduler-last-rule: 0;
 }
-/* rux-dark squares this app's pills too: a bar's Complete, Paid, kind and
-   Live labels, an update's hover, a carried name, a Departures need and the
+/* rux-dark squares this app's pills too: a bar's kind and Live labels, an update's hover, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
-[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-bar__done, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-road__bars > i, .scheduler-road__meter, .scheduler-crew__left) {
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-road__bars > i, .scheduler-road__meter, .scheduler-crew__left) {
   border-radius: 0;
 }
 

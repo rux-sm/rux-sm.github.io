@@ -16858,7 +16858,7 @@
         box.appendChild(face);
       }
       if (here.length > shown) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - shown}`));
-      row.insertBefore(box, row.querySelector(':scope > :is(.scheduler-road__dot, .scheduler-bar__done, .scheduler-bar__msg)'));
+      row.insertBefore(box, row.querySelector(':scope > :is(.scheduler-road__dot, .scheduler-bar__msg)'));
     }
   }
 

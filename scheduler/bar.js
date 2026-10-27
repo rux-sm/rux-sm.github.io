@@ -88,10 +88,10 @@
     return (words.length > 1 ? words.map(w => w[0]).join('') : words[0]).slice(0, 3).toUpperCase();
   };
 
-  /* The pill a one-way trip and each leg of a split wear at the time row's
-     end: an arrow the way the bus goes and the word, in the bar's own ink
-     inside a quiet outline of it. `fitKind` drops the word when the times
-     beside it would be cut, and the tooltip keeps it. */
+  /* The pill a one-way trip and each leg of a split wear after the
+     destination: an arrow the way the bus goes and the word, in the bar's own
+     ink inside a quiet outline of it. `fitKind` drops the word when the
+     destination beside it would be cut, and the tooltip keeps it. */
   const KINDS = {
     'one way': { icon: '#m-arrow_forward', word: 'One way' },
     'drop-off': { icon: '#m-download', word: 'Drop-off' },
@@ -105,16 +105,20 @@
     return pill;
   };
   const fitKind = bar => {
-    const pill = bar.querySelector(':scope > .scheduler-bar__time > .scheduler-bar__kind');
+    const pill = bar.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__kind');
     if (!pill) return;
     pill.classList.remove('scheduler-bar__kind--icon');
-    const times = pill.parentElement.firstElementChild;
-    if (times.scrollWidth > times.clientWidth) pill.classList.add('scheduler-bar__kind--icon');
+    // A trip of more than one bus cuts its name inside the count's box.
+    const first = pill.parentElement.firstElementChild;
+    const name = first.classList.contains('scheduler-bar__multi') ? first.firstElementChild : first;
+    if (name.scrollWidth > name.clientWidth) pill.classList.add('scheduler-bar__kind--icon');
   };
 
   /* The bar's attention mark: how many alerts the trip has, in a disc of
-     `tone`, saying in `words` what they are. A press on it opens the trip's
-     card, which lists them, so it is one of the bar's card openers. */
+     `tone`, saying in `words` what they are, at the start of the update row,
+     since what is still to do and what last happened are read together. A
+     press on it opens the trip's card, which lists them, so it is one of the
+     bar's card openers. */
   const attentionMark = (tone, words) => {
     const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`, String(words.length));
     m.dataset.cardOpener = '';
@@ -200,12 +204,11 @@
      on-time pay counts it, then when it got back to the yard, Back and the
      time, in amber when more than ten minutes past its planned yard-back, a
      dimmed dot between: two facts, which fit the narrowest bar. With neither
-     time yet, the miles driven once they are in. The money is the pill's to
-     say, Paid or Complete; the tooltip says every fact in a sentence, the
-     balance with them. */
+     time yet, the miles driven once they are in. Then the money: Paid in
+     green once paid in full, or what is still due in amber; a trip with no
+     price says nothing of it. The tooltip says every fact in a sentence. */
   const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
   const LATE_BACK_MS = 10 * 60e3;
-  const paidInFull = trip => { const { price, paid, remaining } = window.SchedulerBilling.of(trip); return price > 0 && paid > 0 && remaining <= 0; };
   function completeEl(trip, assign, leg) {
     const Road = window.SchedulerRoad;
     const { price, paid, remaining } = window.SchedulerBilling.of(trip);
@@ -232,9 +235,13 @@
       if (!parts.length) parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
       said.push(`${Math.round(miles).toLocaleString('en-US')} miles`);
     }
-    if (price > 0 && remaining > 0) said.push(`${money(remaining)} of ${money(price)} still due`);
-    else if (price > 0 && paid > 0) said.push('paid in full');
-    else if (price <= 0) said.push('no price yet');
+    if (price > 0 && remaining > 0) {
+      parts.push(el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
+      said.push(`${money(remaining)} of ${money(price)} still due`);
+    } else if (price > 0 && paid > 0) {
+      parts.push(el('span', 'scheduler-bar__complete-paid', 'Paid'));
+      said.push('paid in full');
+    } else if (price <= 0) said.push('no price yet');
     parts.forEach((p, k) => item.append(...(k ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
     item.title = said.join(', ');
     return item;
@@ -480,7 +487,7 @@
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
     const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };
 
-    /* The one mark, at the destination row's end: how many alerts the trip's
+    /* The one mark, at the update row's start: how many alerts the trip's
        card opens with, its colour how badly. Red is a bus that does not fit,
        a mistake on the board; the warning colour is a job still to do. A trip
        with both shows red, and a trip with no alert shows no mark. A mark,
@@ -488,21 +495,20 @@
     const alerts = alertsOf(trip, facts);
     const attention = alerts.length
       ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
-    /* A trip that is back says so in the same place a bus out says Live: a
-       pill, Complete in the bar's own ink inside a quiet outline of it, as
-       neutral as the trip now is, or Paid inside a green one once it is paid
-       in full. A back trip raises no alert, so the two
-       never stand together. */
+    /* A trip that is back is faded on the board and says what it came to in
+       its update row; a back trip raises no alert. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
-    const doneMark = isDone ? el('span', `scheduler-bar__done${paidInFull(trip) ? ' scheduler-bar__done--paid' : ''}`, paidInFull(trip) ? 'Paid' : 'Complete') : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
-    addRow(bar, 'scheduler-bar__dest', dest, doneMark, attention);
+    /* The destination row holds what the trip is on the left, and only what
+       is happening now on the right: the faces of whoever else has it, which
+       data.js adds, and Live while the bus is out, road-bar.js's. */
+    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
-    // The booking contact as the trip records it. When both do not fit, the
-    // phone drops out and the name stays; app.css does that.
+    // The booking contact as the trip records it. The board shows the name
+    // alone; the phone is kept for the docked sheet, where it dials.
     const contact = tripContact(trip, 0);
     const who = el('span', null, contact?.name || '');
     if (contact) who.title = [contact.name, showPhone(contact.phone)].filter(Boolean).join(' · ');
@@ -542,7 +548,7 @@
     if (dep) whenDep.append(clockEl(dep));
     else if (back) whenDep.append('Ret ', clockEl(back));
     else whenDep.append('No times');
-    addRow(bar, 'scheduler-bar__time', when, whenDep, kind ? kindEl(kind) : null);
+    addRow(bar, 'scheduler-bar__time', when, whenDep);
 
     /* The newest update's words on one line, the last thing anyone said
        about the trip, as the card's list starts with it. While the trip has
@@ -557,7 +563,7 @@
        balance not in. A settled trip's update stays in the bar's ink, since
        its age asks for nothing. A trip with none leaves the row empty, so
        every bar on the board is one height.
-       ONCE THE TRIP IS BACK, which the Complete pill says, the row gives its
+       ONCE THE TRIP IS BACK, which its faded colour says, the row gives its
        facts instead, since the last update is no longer news: when this bus
        got back to the yard, the miles driven, once they are in, then Paid in
        green, or what is still due in amber; a trip with none leaves the row
@@ -575,8 +581,9 @@
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
     }
-    // The update line opens the card, whose Updates it begins, empty or not.
-    addRow(bar, `scheduler-bar__update${tone}`, news).dataset.cardOpener = '';
+    // The update line opens the card, whose Updates it begins, empty or not,
+    // and the alert count leads it.
+    addRow(bar, `scheduler-bar__update${tone}`, attention, news).dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.

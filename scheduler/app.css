@@ -840,10 +840,10 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--from-prev { --scheduler-run-start: 20px; }
 .scheduler-bar--to-next { --scheduler-run-end: 20px; }
 
-/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill at the time row's
-   end, in the Complete pill's shape: the arrow and the word in the bar's own
-   ink inside a quiet outline of it. With the times cut beside it, bar.js
-   leaves the arrow alone in a 16px circle. */
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill after its
+   destination, in the Live pill's shape: the arrow and the word in the bar's
+   own ink inside a quiet outline of it. With the destination cut beside it,
+   bar.js leaves the arrow alone in a 16px circle. */
 .scheduler-bar__row > .scheduler-bar__kind {
   flex: none;
   align-self: center;
@@ -897,19 +897,27 @@ button.scheduler-row-head__num::after {
 /* The phone sits straight after the name rather than at the bar's far end.
    The row wraps, and only its first line shows, so a phone with no room beside
    the name drops to the hidden second line; a name too long for the row alone
-   still gives way. */
+   still gives way. The board shows the name alone; the docked sheet's copy of
+   the row keeps the phone, which dials there. */
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
+.scheduler-bar > .scheduler-bar__contact > .scheduler-bar__phone { display: none; }
+/* The alert count leads the update row, and the words after it give way. */
+.scheduler-bar__update { justify-content: flex-start; }
+.scheduler-bar__update > .scheduler-bar__msg { flex: none; }
+.scheduler-bar__update > .scheduler-bar__msg + * { min-inline-size: 0; }
 /* THE UPDATE ROW'S WORDS take the colour of the update's age, the text
    steps theme.css sets beside the marks' inks: new, in its first week, or
    older. A settled trip's row has no age and keeps the bar's ink. */
 .scheduler-bar__update--new { color: var(--scheduler-age-new); }
 .scheduler-bar__update--week { color: var(--scheduler-age-week); }
 .scheduler-bar__update--old { color: var(--scheduler-age-old); }
-/* A trip that is back: Complete and Paid in the green an update's first two
-   days take, what is still due in its amber, a dimmed dot between. */
+/* A trip that is back: Paid in the green of a confirmed driver's mark, what
+   is still due in amber, a dimmed dot between each fact. */
 .scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-bar__complete-time { white-space: nowrap; }
 .scheduler-bar__complete-time--late { color: var(--scheduler-age-week); }
+.scheduler-bar__complete-paid { color: var(--scheduler-mark-success); }
+.scheduler-bar__complete-due { color: var(--scheduler-age-week); }
 .scheduler-bar__complete-sep { opacity: .55; }
 .scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
@@ -1695,9 +1703,11 @@ button.scheduler-row-head__num::after {
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
-/* The name takes the row's spare room, so the disc sits at the end. */
+/* The name, and the trip's pill after it, take the row's spare room, so
+   the faces and Live sit at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }
-.scheduler-bar__dest > :first-child { margin-inline-end: auto; }
+.scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
+.scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
 /* A live bus's pill: Live in 10px, 16px tall, the height of a face and the
    alert count beside it, in the bar's own ink inside a
@@ -1735,29 +1745,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-road__dot--scan .scheduler-road__ping::after { content: none; }
 .scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
-/* A trip that is back: Complete in the Live pill's shape, in the bar's own
-   ink inside a quiet outline of it, no dot and no colour, neutral as the
-   trip now is. A bar still lit from Samsara shows Live instead. */
-.scheduler-bar__done {
-  flex: none;
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  block-size: 16px;
-  padding-inline: 6px;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 35%, transparent);
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: .2px;
-  opacity: .85;
-}
-/* Paid in full: the word in the bar's ink inside the green of a confirmed
-   driver's mark, still no fill. */
-.scheduler-bar__done--paid { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-mark-success) 60%, transparent); }
-.scheduler-bar--road .scheduler-bar__done { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-bar__done { display: none; }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
 .scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
@@ -1798,7 +1785,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-01);
   pointer-events: none;
 }
-.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__done, .scheduler-bar__msg) { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__msg) { margin-inline-start: var(--rux-spacing-02); }
 /* OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears
    their face alone; one they have open wears the face and this rule round
    the whole bar, in the selection ring's own colour, so the state that

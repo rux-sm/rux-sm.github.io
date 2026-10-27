@@ -249,9 +249,20 @@
    Carbon already gives it. The global actions already span
    the header's full 48px; the menu toggle is centred in the 47px above the
    line and so stopped half a pixel short, and is set to the header's top as
-   they are. Carbon's selectors, so its specificity. */
-.rux--header__menu-trigger.rux--header__action--active { border-inline-start-color: transparent; }
-.rux--header__global .rux--header__action--active { border-inline-end-color: transparent; }
+   they are. The kept line is painted as a background 1px wide, not drawn as
+   Carbon's border: a border meets the transparent top and bottom borders on
+   a slant, so it thinned to a point at the window's top and stopped short
+   of the header's line, where the painted line runs square across the full
+   48px. Carbon's selectors, so its specificity. */
+.rux--header__action--active {
+  border-inline-color: transparent;
+  background-image: linear-gradient(var(--rux-border-subtle) 0 0);
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-size: 1px 100%;
+}
+.rux--header__menu-trigger.rux--header__action--active { background-position: right; }
+.rux--header__global .rux--header__action--active { background-position: left; }
 /* Under the pointer it takes the panel's own hover, solid, where Carbon's
    hover is a see-through grey that let the header's line show beneath the
    button and parted it from the panel again. */
@@ -3650,7 +3661,7 @@
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--side-nav--hidden.rux--side-nav--expanded { inset-inline-start: 0.5rem; }
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header-panel--expanded { inset-inline-end: 0.5rem; }
   /* A panel that floats clear of its button keeps no line on the button. */
-  :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header__action--active { border-inline-color: transparent; }
+  :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--header__action--active { background-image: none; }
 }
 @media (min-width: 76.25rem) {
   :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) :where(body:has(> .rux--side-nav--ux:not(.rux--side-nav--hidden), > .rux--header > .rux--side-nav--ux:not(.rux--side-nav--hidden)):not(:has(.rux--content > .rux--css-grid--full-width))) .rux--header-panel--expanded {

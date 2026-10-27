@@ -263,7 +263,7 @@
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
     const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
-    // Not sent's broken ring in the slot every driver has, so the name lines
+    // Not sent's circle in the slot every driver has, so the name lines
     // up: this driver has no status on the trip to colour it.
     const mark = el('span', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
     mark.appendChild(svgUse(NOT_SENT_ICON, '16', '0 0 32 32'));

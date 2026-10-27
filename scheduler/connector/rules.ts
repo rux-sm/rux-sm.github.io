@@ -197,15 +197,15 @@ const window = {};
   ];
   /* The five states `trip_driver_statuses` holds, the tone each paints and
      the shape it is drawn as, on the bar and in the editor alike, each its own
-     so the colour is never the only signal. Not sent is the broken ring rather
-     than nothing: it is the first step of the run, not the absence of one. Its
+     so the colour is never the only signal. Every seat with a driver in it wears a
+     solid shape, so only an empty seat's dashed ring is hollow. Its
      stored value stays `off`, the value the rows already hold. */
   const DRIVER_STATUSES = [
-    { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-motion_photos_on' },
-    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-do_not_disturb_on-fill' },
-    { value: 'pending-response', label: 'Pending response', tone: 'warning', icon: '#m-warning-fill' },
+    { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-circle-fill' },
+    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-error-fill' },
+    { value: 'pending-response', label: 'Pending response', tone: 'warning', icon: '#m-pending-fill' },
     { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
-    { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-error-fill' },
+    { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-cancel-fill' },
   ];
   /* A status row's identity: trip, driver, leg and role, the leg by the key
      week.js gives it, its id on a trip read with its legs. */

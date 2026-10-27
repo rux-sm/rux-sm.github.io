@@ -1887,9 +1887,9 @@ button.scheduler-row-head__num::after {
   inline-size: 12px;
   block-size: 12px;
 }
-/* A driver's dot: 8px in the status colour, centred in the slot. A seat
-   still to fill is the same circle drawn dashed and empty. */
-.scheduler-crew__dot { inline-size: 8px; block-size: 8px; border-radius: 50%; background: currentColor; }
+/* A seat still to fill: a dashed empty ring, Carbon's circle dash, the size
+   of the filled circle a driver not yet sent wears, so only the dashes differ. */
+.scheduler-crew__dot { inline-size: 10px; block-size: 10px; border-radius: 50%; background: currentColor; }
 .scheduler-crew__mark--empty > .scheduler-crew__dot { box-sizing: border-box; background: none; border: 1.5px dashed currentColor; }
 
 /* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says so in

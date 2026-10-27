@@ -199,8 +199,8 @@ const useOf = m => m ? [...m.walk()].find(n => n.tagName === 'USE')?.getAttribut
 const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
 expect('each status its tone and shape, a declined name struck through',
   drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
-  [['off', '#m-motion_photos_on', false], ['error', '#m-do_not_disturb_on-fill', false], ['warning', '#m-warning-fill', false],
-    ['success', '#m-check_circle-fill', false], ['success', '#m-check_circle-fill', false], ['error', '#m-error-fill', true]]);
+  [['off', '#m-circle-fill', false], ['error', '#m-error-fill', false], ['warning', '#m-pending-fill', false],
+    ['success', '#m-check_circle-fill', false], ['success', '#m-check_circle-fill', false], ['error', '#m-cancel-fill', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',
   [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, icon(c) === '#m-swap_horiz-fill']),

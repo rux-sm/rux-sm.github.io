@@ -196,7 +196,7 @@
     }))));
     const crew = {
       id: 'crew', title: 'The crew',
-      intro: "Each seat in role order, its mark the driver's answer, each its own shape: a grey broken ring not sent, a red bar to assign, an amber triangle waiting, a green check confirmed, a red mark declined.",
+      intro: "Each seat in role order, its mark the driver's answer, each its own shape: a grey filled circle not sent, a red disc with a mark to assign, amber dots waiting, a green check confirmed, a red cross declined.",
       samples: [
         { name: 'Each status', note: 'A declined name is struck through, so colour is never the only sign.', days: 3, rows: statusRows },
         { name: 'Co-driver and relief', note: 'A driver wears their answer; a relief driver at either end is two arrows.', days: 3,

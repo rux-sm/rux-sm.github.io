@@ -101,7 +101,7 @@ import { tmpdir } from 'node:os';
 // APP_CHECK_SKIP names extra top-level folders to leave out: the repository
 // root is the hub AND holds every other app, so the hub's own check skips them.
 const SKIP = new Set(['node_modules', 'build', '.git', '.claude', '.github', ...(process.env.APP_CHECK_SKIP ? process.env.APP_CHECK_SKIP.split(',') : [])]);
-const THEMES = 'white g10 g90 g100 geist-dark rux-dark ant-dark spotify-dark apple-light apple-dark pixel-dark';
+const THEMES = 'white g10 g90 g100 geist-dark rux-dark rux-100 ant-dark spotify-dark apple-light apple-dark pixel-dark';
 // A resource carries a file the page needs to render; anything else with an
 // href is navigation. The distinction only matters for root-absolute values:
 // /design/css/rux.css is a file this can resolve, and <a href="/"> is the hub.

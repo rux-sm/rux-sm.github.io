@@ -37,6 +37,7 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="geist-dark"],
 [data-theme="rux-dark"],
 [data-theme="ant-dark"],
@@ -56,6 +57,7 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="geist-dark"],
 [data-theme="rux-dark"],
 [data-theme="ant-dark"],
@@ -75,6 +77,7 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="geist-dark"],
 [data-theme="rux-dark"],
 [data-theme="ant-dark"],
@@ -98,6 +101,7 @@
 [data-theme="g10"],
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"],
 [data-theme^="apple-"] {
@@ -224,6 +228,7 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="spotify-dark"] {
   --scheduler-age-new: #6fdc8c;
   --scheduler-age-week: var(--rux-support-warning);
@@ -275,6 +280,7 @@
 }
 [data-theme="g90"],
 [data-theme="g100"],
+[data-theme="rux-100"],
 [data-theme="ant-dark"],
 [data-theme="spotify-dark"] {
   --scheduler-amber-bg: var(--rux-support-warning);

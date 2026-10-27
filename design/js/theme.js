@@ -21,7 +21,8 @@
    background on the theme's `layer-01`, the raised surface a tile uses, so
    the bar still stands off the page instead of running into it. Geist is the
    exception: its header is the page's own black, parted by a hairline, so
-   geist-dark keeps the page's background, and rux-dark with it. A header
+   geist-dark keeps the page's background, and rux-dark with it. rux-100,
+   begun as g100's copy, keeps it too, so its bar is g100's. A header
    with no `data-theme` of its own — the kitchen sink's specimens, inside a
    themed sandbox — is left to its sandbox.
 
@@ -74,9 +75,9 @@
   // found from it, so a page at any depth asks for the same two files.
   const HERE = document.currentScript?.src;
   const NAME = /^[a-z][a-z0-9-]*$/;
-  // Carbon's four compiled themes, then the seven css/rux-theme.css adds.
+  // Carbon's four compiled themes, then the eight css/rux-theme.css adds.
   const CARBON = new Set(['white', 'g10', 'g90', 'g100']);
-  const KNOWN = new Set([...CARBON, 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark']);
+  const KNOWN = new Set([...CARBON, 'geist-dark', 'rux-dark', 'rux-100', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark']);
   // The shell's zone, and the side nav sits inside it, so one element themes
   // both. The attribute is part of the selector on purpose — see the head.
   const SHELL = '.rux--header[data-theme]';
@@ -164,10 +165,10 @@
   // leave the bar and the page one 1px border apart. Geist draws its header on
   // the page's own surface and parts it with a line, so a geist-dark bar, a
   // rux-dark one, or a saved theme built on either, is left on the page's
-  // background. Set inline
+  // background, and so is rux-100's, which begins as g100's bar. Set inline
   // because a saved theme writes its own `background` inline too, and this has
   // to beat it; clearOverrides() takes it off again on the next apply().
-  const FLAT = new Set(['geist-dark', 'rux-dark']);
+  const FLAT = new Set(['geist-dark', 'rux-dark', 'rux-100']);
   const dressShell = (el, name, custom) => {
     wear(el, name, custom);
     if ((custom || !CARBON.has(name)) && !FLAT.has(el.dataset.theme)) el.style.setProperty('--rux-background', 'var(--rux-layer-01)');

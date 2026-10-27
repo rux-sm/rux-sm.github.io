@@ -271,18 +271,18 @@
    `text-inverse`: dark initials on a dark fill, as low as 1.8 to 1. These are
    Carbon's dark set, copied, and they read at 5.4 to 1 or better under each
    dark theme's `text-inverse`. */
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
-:is([data-theme="g90"], [data-theme="g100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-1-cyan { background-color: #1192e8; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-2-gray { background-color: #8d8d8d; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-3-green { background-color: #24a148; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-4-magenta { background-color: #ee5396; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-5-purple { background-color: #a56eff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-6-teal { background-color: #009d9a; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-7-cyan { background-color: #82cfff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-8-gray { background-color: #c6c6c6; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-9-green { background-color: #6fdc8c; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-10-magenta { background-color: #ffafd2; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-11-purple { background-color: #d4bbff; }
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="rux-100"], [data-theme="geist-dark"], [data-theme="ant-dark"], [data-theme="spotify-dark"], [data-theme="apple-dark"]) .rux--user-avatar--order-12-teal { background-color: #3ddbd9; }
 /* rux-dark's avatars are its palette: the first six take each hue's ink,
    0.75, and the second six its hover step,
    0.82, Carbon's two sets in the same order. The greys are its neutral grey at

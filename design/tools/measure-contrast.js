@@ -45,7 +45,7 @@
 (function () {
   'use strict';
   const opts = window.MEASURE_CONTRAST || {};
-  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
+  const THEMES = opts.themes || ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'rux-100', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
   const scope = opts.scope ? document.querySelector(opts.scope) : document.body;
   if (!scope) throw new Error(`measure-contrast: nothing matches ${opts.scope}`);
 
@@ -101,7 +101,7 @@
 
   // theme.js corrects a stored name that resolves to nothing by writing
   // 'white' over it, so only a name it knows is ever handed to it.
-  const KNOWN = ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
+  const KNOWN = ['white', 'g10', 'g90', 'g100', 'geist-dark', 'rux-dark', 'rux-100', 'ant-dark', 'spotify-dark', 'apple-light', 'apple-dark', 'pixel-dark'];
   const KEY = window.Rux?.theme?.KEY;
   const root = document.documentElement;
   for (const t of THEMES) {

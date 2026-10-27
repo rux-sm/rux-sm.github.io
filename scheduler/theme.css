@@ -149,15 +149,6 @@
    not a container, and take the same inks, so a bell is its disc's colour. */
 [data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator) { background: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
-/* A BAR'S COUNT OF JOBS IS QUIET in rux-dark: a disc of the bar's own ink at
-   16% under its figure in that ink, so a week of trips with work still to do
-   is not a field of amber. What it counts is unchanged, and the card lists
-   the jobs. A bus that does not fit keeps its red disc, the board's one
-   mistake, and the placeholder's gold bar keeps its black one. */
-[data-theme="rux-dark"] .scheduler-bar .scheduler-bar__msg.scheduler-bar__msg--warning {
-  background: color-mix(in srgb, var(--scheduler-fg) 16%, transparent);
-  color: var(--scheduler-fg);
-}
 [data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
 [data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
 /* rux-dark's standard trip is a raised grey, layer-02, a solid tile on the
@@ -705,10 +696,6 @@
   --scheduler-amber-hover: oklch(0.72 0.166 75);
   --scheduler-amber-border: #000000;
   --scheduler-amber-hover-ring: inset 0 0 0 1px #000000;
-}
-[data-theme="rux-dark"] .scheduler-bar.scheduler-bar--amber .scheduler-bar__msg.scheduler-bar__msg--warning {
-  background: #000000;
-  color: var(--rux-support-warning);
 }
 /* The selected trip's floating card sits on Geist's menu surface rather
    than the header band: a raised dark surface inside a hairline, so the

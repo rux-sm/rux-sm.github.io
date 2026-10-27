@@ -219,7 +219,7 @@
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;
     const alerts = {
       id: 'alerts', title: 'Alerts',
-      intro: "The count at the destination's end is how many alerts the trip's card opens with: amber for a job still to do, red once a bus does not fit.",
+      intro: "A problem puts the warning sign at the update's start: red once a bus does not fit, amber for seats or a driver. Paperwork, the trip contact, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
       samples: [
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },
@@ -236,7 +236,7 @@
           rows: [row('104', bar(trip({ customer: 'Lakeview High School', buses: [{ ...crewed('b104'), type: 'Coach' }] })))] },
         { name: 'A bus short of a need', note: 'The trip asks for a sleeper this bus lacks.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ ...crewed('b102'), needs: { sleeper: true } }] })))] },
-        { name: 'Both', note: 'A trip with a mistake and a job shows red, counting both.', days: 3,
+        { name: 'Both', note: 'A trip with a mistake and a job shows red for the mistake; the card lists both.', days: 3,
           rows: [row('103', bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })))] },
       ],
     };

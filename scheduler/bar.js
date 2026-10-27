@@ -1,8 +1,8 @@
 /* ==========================================================================
    Rux Scheduler — BAR, a trip's bar as the board draws it
    --------------------------------------------------------------------------
-   One assignment's bar: the trip's colour, its rows, its crew and the count
-   of its alerts. data.js draws the board's bars with it and components.html
+   One assignment's bar: the trip's colour, its rows, its crew and the icon
+   that leads its update, a warning for a problem or a clock for its age. data.js draws the board's bars with it and components.html
    draws its samples with it, so the two cannot differ.
 
    `draw(b, board)` is one bar, `b` the board's `{ trip, leg, assign, place,
@@ -114,19 +114,27 @@
     if (name.scrollWidth > name.clientWidth) pill.classList.add('scheduler-bar__kind--icon');
   };
 
-  /* The bar's attention mark: how many alerts the trip has, in a disc of
-     `tone`, saying in `words` what they are, at the start of the update row,
-     since what is still to do and what last happened are read together. A
-     press on it opens the trip's card, which lists them, so it is one of the
-     bar's card openers. */
-  const attentionMark = (tone, words) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone}`, String(words.length));
+  /* The one icon that leads the update row, in a colour of `tone`, saying in
+     `words` what it marks: the warning sign for a problem, or the clock for
+     how lately an open trip was touched. A press on it opens the trip's
+     card, so it is one of the bar's card openers. */
+  const leadMark = (tone, href, words) => {
+    const m = el('span', `scheduler-bar__lead scheduler-bar__lead--${tone}`);
+    m.appendChild(svgUse(href, '16', '0 0 32 32'));
     m.dataset.cardOpener = '';
     m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', words.join(' · '));
-    m.title = words.join(' · ');
+    m.setAttribute('aria-label', words);
+    m.title = words;
     return m;
   };
+  /* WHAT IS A PROBLEM ON THE BOARD: a bus that does not fit, more passengers
+     than seats, and a driver who said no or must be told of a change. The
+     paperwork the office works through on every trip -- a confirmation, PO,
+     itinerary or balance waited on, the trip contact, a hotel or an HOS form
+     -- is the card's to list and the Tasks list's to ask for, and marks
+     nothing here, or every bar would carry a warning. */
+  const PROBLEM_SPOTS = new Set(['seats', 'driver']);
+  const isProblem = a => a.row === 'scheduler-card__misfit' || PROBLEM_SPOTS.has(a.spot);
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at
      the end, is left off, since nearly every trip is in Texas and the two
      letters cut the place's own name short. Another state stays. What was
@@ -487,14 +495,14 @@
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
     const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };
 
-    /* The one mark, at the update row's start: how many alerts the trip's
-       card opens with, its colour how badly. Red is a bus that does not fit,
-       a mistake on the board; the warning colour is a job still to do. A trip
-       with both shows red, and a trip with no alert shows no mark. A mark,
-       not a button, because the bar is the button. */
-    const alerts = alertsOf(trip, facts);
-    const attention = alerts.length
-      ? attentionMark(misfits.length ? 'error' : 'warning', alerts.map(a => a.words)) : null;
+    /* THE WARNING SIGN, at the update row's start, for a trip with a
+       problem, its words on the tooltip: red for a bus that does not fit, a
+       mistake on the board, and the warning colour for the rest. The card
+       still lists every alert. A mark, not a button, because the bar is the
+       button. */
+    const problems = alertsOf(trip, facts).filter(isProblem);
+    let lead = problems.length
+      ? leadMark(misfits.length ? 'error' : 'warning', '#m-error-fill', problems.map(a => a.words).join(' · ')) : null;
     /* A trip that is back is faded on the board and says what it came to in
        its update row; a back trip raises no alert. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
@@ -550,19 +558,18 @@
     else whenDep.append('No times');
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
-    /* The newest update's words on one line, the last thing anyone said
-       about the trip, as the card's list starts with it. While the trip has
-       anything open, the words take the colour of the update's age, so
-       down a week the eye finds the trips still in play and how lately
-       each was touched, with no mark beside them, since the colour is the
-       mark: green while the card's age reads in
-       minutes, hours or 1d, amber for the rest of its first week, and red
-       once the card shows a date. Open is anything the card would warn of
-       or the office still waits on: a bus that does not fit, a need still
-       to do, nobody to call on the day, or a confirmation, PO, itinerary or
-       balance not in. A settled trip's update stays in the bar's ink, since
-       its age asks for nothing. A trip with none leaves the row empty, so
-       every bar on the board is one height.
+    /* The newest update's words on one line, in the bar's ink, the last
+       thing anyone said about the trip, as the card's list starts with it.
+       While the trip has anything open and no problem, a clock leads them
+       in the colour of the update's age, so down a week the eye finds the
+       trips still in play and how lately each was touched: green while the
+       card's age reads in minutes, hours or 1d, amber for the rest of its
+       first week, and red once the card shows a date. Open is anything the
+       card would warn of or the office still waits on: a bus that does not
+       fit, a need still to do, nobody to call on the day, or a
+       confirmation, PO, itinerary or balance not in. A settled trip has no
+       clock, since its age asks for nothing. A trip with none leaves the row
+       empty, so every bar on the board is one height.
        ONCE THE TRIP IS BACK, which its faded colour says, the row gives its
        facts instead, since the last update is no longer news: when this bus
        got back to the yard, the miles driven, once they are in, then Paid in
@@ -579,11 +586,15 @@
       const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
           || (!dayOfContact(trip, leg.key) && !trip.contact_not_needed));
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
-      if (open) tone = ` scheduler-bar__update--${days < 2 ? 'new' : days < 7 ? 'week' : 'old'}`;
+      if (open) {
+        const age = days < 2 ? 'new' : days < 7 ? 'week' : 'old';
+        tone = ` scheduler-bar__update--${age}`;
+        lead ??= leadMark(age, '#m-schedule', `Latest update ${updateStamp(latest)}`);
+      }
     }
     // The update line opens the card, whose Updates it begins, empty or not,
-    // and the alert count leads it.
-    addRow(bar, `scheduler-bar__update${tone}`, attention, news).dataset.cardOpener = '';
+    // and its icon leads it.
+    addRow(bar, `scheduler-bar__update${tone}`, lead, news).dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.

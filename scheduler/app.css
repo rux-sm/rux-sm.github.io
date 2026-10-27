@@ -901,16 +901,31 @@ button.scheduler-row-head__num::after {
    the row keeps the phone, which dials there. */
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
 .scheduler-bar > .scheduler-bar__contact > .scheduler-bar__phone { display: none; }
-/* The alert count leads the update row, and the words after it give way. */
+/* One icon leads the update row, a mark's glyph square, and the words
+   after it give way. */
 .scheduler-bar__update { justify-content: flex-start; }
-.scheduler-bar__update > .scheduler-bar__msg { flex: none; }
-.scheduler-bar__update > .scheduler-bar__msg + * { min-inline-size: 0; }
-/* THE UPDATE ROW'S WORDS take the colour of the update's age, the text
-   steps theme.css sets beside the marks' inks: new, in its first week, or
-   older. A settled trip's row has no age and keeps the bar's ink. */
-.scheduler-bar__update--new { color: var(--scheduler-age-new); }
-.scheduler-bar__update--week { color: var(--scheduler-age-week); }
-.scheduler-bar__update--old { color: var(--scheduler-age-old); }
+.scheduler-bar__lead {
+  display: inline-flex;
+  flex: none;
+  align-self: center;
+  inline-size: var(--scheduler-mark-glyph);
+  block-size: var(--scheduler-mark-glyph);
+  border-radius: 50%;
+}
+.scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
+/* The row's first part gives way by app.css's general rule; the icon never
+   does, so the words are what a long update cuts. */
+.scheduler-bar__update > .scheduler-bar__lead { flex: none; }
+.scheduler-bar__update > .scheduler-bar__lead + * { min-inline-size: 0; }
+/* THE ICON CARRIES THE COLOUR, the words keep the bar's ink: the warning sign
+   in the marks' red for a bus that does not fit and their warning colour for
+   any other problem, and the clock in the update's age, the text steps
+   theme.css sets beside the marks' inks: new, in its first week, or older. */
+.scheduler-bar__lead--error { color: var(--scheduler-mark-error); }
+.scheduler-bar__lead--warning { color: var(--scheduler-mark-warning); }
+.scheduler-bar__lead--new { color: var(--scheduler-age-new); }
+.scheduler-bar__lead--week { color: var(--scheduler-age-week); }
+.scheduler-bar__lead--old { color: var(--scheduler-age-old); }
 /* A trip that is back: Paid in the green of a confirmed driver's mark, what
    is still due in amber, a dimmed dot between each fact. */
 .scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
@@ -921,12 +936,12 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__complete-sep { opacity: .55; }
 .scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
-   the inks reads on it, so its update keeps the bar's own. */
-.scheduler-bar--amber .scheduler-bar__update { color: inherit; }
+   the inks reads on it, so its icon keeps the bar's own. */
+.scheduler-bar--amber .scheduler-bar__lead { color: inherit; }
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
    anywhere else on the bar only selects it: the update line takes a tint of
    the bar's own ink, run 2px past the line by its shadow so nothing moves,
-   and an empty one says No updates; the alert count takes a 2px ring of the
+   and an empty one says No updates; its icon takes a 2px ring of the
    ink; the Live pill fills with its bus's colour. A touch screen has no
    pointer to wait for, so it shows none of them. */
 @media (hover: hover) {
@@ -940,7 +955,7 @@ button.scheduler-row-head__num::after {
     content: 'No updates';
     opacity: .7;
   }
-  .scheduler-bar__msg[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
+  .scheduler-bar__lead[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
   .scheduler-road__dot[data-card-opener]:hover {
     background: color-mix(in srgb, var(--scheduler-dot) 24%, transparent);
     box-shadow: inset 0 0 0 1px var(--scheduler-dot);
@@ -1744,7 +1759,7 @@ button.scheduler-row-head__num::after {
   animation: scheduler-road-ping 1.6s cubic-bezier(0, 0, .2, 1) infinite;
 }
 .scheduler-road__dot--scan .scheduler-road__ping::after { content: none; }
-.scheduler-road__dot + .scheduler-bar__msg { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-road__dot + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
 .scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
 .scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
@@ -1785,7 +1800,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-01);
   pointer-events: none;
 }
-.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__msg) { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__lead) { margin-inline-start: var(--rux-spacing-02); }
 /* OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears
    their face alone; one they have open wears the face and this rule round
    the whole bar, in the selection ring's own colour, so the state that
@@ -3919,7 +3934,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__row { display: flex; }
 /* The bar's alert count is left off: the alerts are read just above it,
    under their own count, and so is its newest update's row. */
-.scheduler-bar-shortcuts__trip .scheduler-bar__msg { display: none; }
+.scheduler-bar-shortcuts__trip :is(.scheduler-bar__msg, .scheduler-bar__lead) { display: none; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip .scheduler-bar__update { display: none; }
 /* A live trip says its times on its own times row, so the bar's is left off. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcuts__trip:has(> .scheduler-road__times) > .scheduler-bar__time { display: none; }

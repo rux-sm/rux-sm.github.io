@@ -212,10 +212,11 @@ expect('an empty seat is in the warning colour only while the leg is due',
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
   'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both'];
-expect('a problem wears the warning sign in its colour, paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
-  null, null, 'amber More passengers than seats: 52 passengers and 49 seats',
+// The samples leave today, so a missing trip contact is near enough to warn of.
+expect('a problem wears the warning sign in its colour, a contact missing near the day too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
+  null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
-  'red Sleeper needed']);
+  'red Sleeper needed · Trip contact missing']);
 expect('the warning sign leads the update row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__update').children[0]?.classList.contains('scheduler-bar__lead')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('an open trip with no problem leads its update with a clock in the update\'s age',

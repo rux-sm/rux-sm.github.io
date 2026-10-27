@@ -85,6 +85,7 @@
     clash: t => asked('clash', t),
     declined: t => asked('declined', t),
     tell: t => asked('tell', t),
+    missing: t => asked('missing', t),
     leaving: t => asked('leaving', t),
     past: t => !t.cancelled_at && (lastDay(t) || '9999') < today,
     close: t => window.SchedulerCloseOut.asks(t).length > 0,
@@ -219,7 +220,7 @@
   // to-do-rows.js reads its trips after this page draws, so a view that shows
   // one of its kinds is drawn again when they arrive.
   document.addEventListener('scheduler:to-do-rows', () => {
-    if (['short', 'times', 'clash', 'declined', 'tell', 'leaving'].includes(filter)) drawList();
+    if (['short', 'times', 'clash', 'declined', 'tell', 'missing', 'leaving'].includes(filter)) drawList();
   });
   $('scheduler-trips-page')?.addEventListener('change', e => { pageAt = Number(e.target.value) || 0; drawList(); });
   $('scheduler-trips-prev')?.addEventListener('click', () => { pageAt -= 1; drawList(); });

@@ -135,6 +135,11 @@
      nothing here, or every bar would carry a warning. */
   const PROBLEM_SPOTS = new Set(['seats', 'driver']);
   const isProblem = a => a.row === 'scheduler-card__misfit' || PROBLEM_SPOTS.has(a.spot);
+  /* BUT THE TRIP CONTACT AND THE ITINERARY BECOME A PROBLEM as the leg
+     comes near: still missing from today to SOON_DAYS days before the leg
+     leaves, they put up the warning sign too. The Tasks list has asked for
+     them over the week before, by to-do.js's missing rule. */
+  const SOON_DAYS = 2;
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at
      the end, is left off, since nearly every trip is in Texas and the two
      letters cut the place's own name short. Another state stays. What was
@@ -500,9 +505,15 @@
        mistake on the board, and the warning colour for the rest. The card
        still lists every alert. A mark, not a button, because the bar is the
        button. */
-    const problems = alertsOf(trip, facts).filter(isProblem);
+    const problems = alertsOf(trip, facts).filter(isProblem).map(a => a.words);
+    const today = new Date();
+    if (!window.SchedulerCloseOut.isBack(trip) && !placeholder && leg.from >= iso(today) && leg.from <= iso(addDays(today, SOON_DAYS))) {
+      if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed) problems.push('Trip contact missing');
+      const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
+      if (!trip.itinerary_not_needed && !SHAPE.itineraryFor(trip, firstLeg)) problems.push(WAIT_WORDS.itinerary);
+    }
     let lead = problems.length
-      ? leadMark(misfits.length ? 'error' : 'warning', '#m-error-fill', problems.map(a => a.words).join(' · ')) : null;
+      ? leadMark(misfits.length ? 'error' : 'warning', '#m-error-fill', problems.join(' · ')) : null;
     /* A trip that is back is faded on the board and says what it came to in
        its update row; a back trip raises no alert. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);

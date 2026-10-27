@@ -149,6 +149,8 @@
       ['Today', 3 * HOUR, true], ['This week', 4 * DAY, true], ['Older', 12 * DAY, true], ['Settled', 12 * DAY, false],
     ].map(([customer, ago, open], i) => row(BUSES[i].number, bar(trip({
       customer, buses: [crewed(BUSES[i].id)], trip_updates: [update('Pickup moved to the gym doors', ago)],
+      // Ten days out, so the missing contact that keeps it open is no warning yet.
+      start_date: day(10), end_date: day(11),
       ...(open ? { trip_contacts: [] } : {}),
     }))));
 
@@ -179,7 +181,7 @@
             row('105', bar(trip({ customer: 'Coastal Youth Choir', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
               trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
-        { name: 'Update ages', note: "While a trip has anything open, the newest update takes its age's colour; a settled trip's stays in ink.", days: 3, rows: aged },
+        { name: 'Update ages', note: "While a trip has anything open and no problem, a clock in the update's age colour leads it; a settled trip has none.", days: 3, rows: aged },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,
           rows: [row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
       ],
@@ -219,7 +221,7 @@
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;
     const alerts = {
       id: 'alerts', title: 'Alerts',
-      intro: "A problem puts the warning sign at the update's start: red once a bus does not fit, amber for seats or a driver. Paperwork, the trip contact, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
+      intro: "A problem puts the warning sign at the update's start: red once a bus does not fit, amber for seats or a driver, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
       samples: [
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },

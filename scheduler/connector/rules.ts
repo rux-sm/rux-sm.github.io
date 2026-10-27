@@ -2051,7 +2051,7 @@ const window = {};
    --------------------------------------------------------------------------
    The one copy of the to-do list's computed rows. Nothing writes one and
    nothing stores one: each is worked out from the trips every time, so it
-   asks while it is true and is gone once its trip is fixed. Seven rules, each
+   asks while it is true and is gone once its trip is fixed. Eight rules, each
    read from the file that owns it:
 
      Follow-up     a trip that asks for a follow-up, as follow-up.js decides
@@ -2068,6 +2068,9 @@ const window = {};
      Declined      a leg leaving within 30 days a driver said no to
      Tell          a leg leaving within 30 days that changed for a driver
                    since they accepted, as driver-job.js reads it
+     Missing       a leg leaving within a week whose trip has no trip contact
+                   or no itinerary, as checklist.js decides, an itinerary a
+                   follow-up already asks for left to the follow-up
 
    A leaving-soon row leaves out what another row on the same trip already
    says, so one fault is one line.
@@ -2096,6 +2099,9 @@ const window = {};
   const SOON_DAYS = 2;
   const SHORT_DAYS = 30;
   const TIMES_DAYS = 7;
+  // A trip contact or itinerary still missing asks this many days ahead.
+  const MISSING_DAYS = 7;
+  const MISSING_ITEMS = ['contact', 'itinerary'];
   // The checklist groups a leaving-soon row reads; the rest is the Departures list's.
   const SOON_GROUPS = ['Customer', 'Buses'];
 
@@ -2106,6 +2112,7 @@ const window = {};
     'clash': { label: 'Clash' },
     'declined': { label: 'Driver declined' },
     'tell': { label: 'Tell the driver' },
+    'missing': { label: 'Missing' },
     'leaving': { label: 'Leaving soon' },
     'follow-up': { label: 'Follow-up' },
   };
@@ -2198,8 +2205,18 @@ const window = {};
       }
 
       for (const leg of Checklist.legsOf(trip)) {
+        if (!within(legDay(trip, leg), MISSING_DAYS)) continue;
+        const gone = Checklist.legItems(trip, leg, factsAt(leg), contactOf(trip)).filter(i => {
+          const id = i.id.split(':')[0];
+          return !i.done && MISSING_ITEMS.includes(id) && !(id === 'itinerary' && waits.includes('itinerary'));
+        });
+        if (gone.length) out.push(row('missing', trip, leg, { what: gone.map(openWords).join(' · '), detail: null }));
+      }
+
+      for (const leg of Checklist.legsOf(trip)) {
         if (!within(legDay(trip, leg), SOON_DAYS)) continue;
-        const said = new Set([
+        // The missing rule asks for the contact and itinerary over the whole week before.
+        const said = new Set([...MISSING_ITEMS,
           ...(waits.includes('confirmation') ? ['confirmed'] : []),
           ...(waits.includes('itinerary') ? ['itinerary'] : []),
           ...(short.has(leg) ? ['buses'] : []),

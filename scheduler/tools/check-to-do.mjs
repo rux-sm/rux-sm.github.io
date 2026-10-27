@@ -82,13 +82,17 @@ expect('a split trip dropped off with times and picked up in two days with none 
   [['times:a:l2', 'Pickup', day(2)]]);
 
 const soon = { ...good, start_date: day(1), end_date: day(1) };
-expect('a leg leaving tomorrow with a seat open and no contact says both, and nothing from Paperwork',
+expect('a leg leaving tomorrow with a seat open and no contact asks for the contact as missing and the seat as leaving soon, and nothing from Paperwork',
   said(rows([soon], { factsOf: () => ({ ...full, seatsOpen: 1, seats: 0 }), contactOf: () => false })),
-  ['leaving:a:l1 Trip contact missing · 1 seat open']);
+  ['missing:a:l1 Trip contact missing', 'leaving:a:l1 1 seat open']);
 
-expect('a leg leaving in three days is not leaving soon',
+expect('a leg leaving in three days is not leaving soon, but its missing contact is asked for',
   said(rows([{ ...good, start_date: day(3), end_date: day(3) }], { factsOf: () => ({ ...full, seatsOpen: 1 }), contactOf: () => false })),
-  []);
+  ['missing:a:l1 Trip contact missing']);
+
+expect('a missing contact is asked for from seven days out, not eight',
+  [7, 8].map(n => said(rows([{ ...good, start_date: day(n), end_date: day(n) }], { factsOf: () => full, contactOf: () => false }))),
+  [['missing:a:l1 Trip contact missing'], []]);
 
 const clash = ['Bus 897: On trip Austin', 'Rigo: Time off'];
 expect('a leg within 30 days with something in its way is a Clash row, whatever its confirmation',

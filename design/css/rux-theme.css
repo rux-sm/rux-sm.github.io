@@ -2120,11 +2120,15 @@
 }
 
 /* ==========================================================================
-   RUX 100, rux's own theme, begun as Carbon's Gray 100 copied whole: these
-   three blocks are Carbon's own `[data-theme=g100]` sets from css/rux.css,
-   the values unchanged and the selector renamed, so on its first day a
-   rux-100 page is a g100 page. js/theme.js leaves its header on the page's
-   background, as g100's shell is.
+   RUX 100, rux's own theme, begun as Carbon's Gray 100: these three blocks
+   are Carbon's own `[data-theme=g100]` sets from css/rux.css under the new
+   name. ITS BASE IS BLACK. The page is #000000, and every layer, field,
+   hover, selected, accent and subtle-border step stands one step lower on
+   Carbon's grey ladder than g100's, so the board is #161616, a tile or a
+   menu #262626, and each surface keeps g100's one step from what is behind
+   it. The strong borders, text, icons and support colours are g100's, so
+   every field's edge and every word keeps its contrast. js/theme.js leaves
+   its header on the page's background, as g100's shell is.
    ========================================================================== */
 [data-theme="rux-100"] {
   --rux-ai-aura-end: rgba(0, 0, 0, 0);
@@ -2148,7 +2152,7 @@
   --rux-ai-popover-shadow-outer-02: rgba(0, 0, 0, 0.08);
   --rux-ai-skeleton-background: rgba(120, 169, 255, 0.5);
   --rux-ai-skeleton-element-background: rgba(120, 169, 255, 0.3);
-  --rux-background: #161616;
+  --rux-background: #000000;
   --rux-background-active: rgba(141, 141, 141, 0.4);
   --rux-background-brand: #0f62fe;
   --rux-background-hover: rgba(141, 141, 141, 0.16);
@@ -2162,10 +2166,10 @@
   --rux-border-strong-01: #6f6f6f;
   --rux-border-strong-02: #8d8d8d;
   --rux-border-strong-03: #a8a8a8;
-  --rux-border-subtle-00: #393939;
-  --rux-border-subtle-01: #525252;
-  --rux-border-subtle-02: #6f6f6f;
-  --rux-border-subtle-03: #6f6f6f;
+  --rux-border-subtle-00: #262626;
+  --rux-border-subtle-01: #393939;
+  --rux-border-subtle-02: #525252;
+  --rux-border-subtle-03: #525252;
   --rux-border-subtle-selected-01: #6f6f6f;
   --rux-border-subtle-selected-02: #8d8d8d;
   --rux-border-subtle-selected-03: #8d8d8d;
@@ -2194,12 +2198,12 @@
   --rux-chat-prompt-text: #f4f4f4;
   --rux-chat-shell-background: #262626;
   --rux-color-scheme: dark;
-  --rux-field-01: #262626;
-  --rux-field-02: #393939;
-  --rux-field-03: #525252;
-  --rux-field-hover-01: #333333;
-  --rux-field-hover-02: #474747;
-  --rux-field-hover-03: #636363;
+  --rux-field-01: #161616;
+  --rux-field-02: #262626;
+  --rux-field-03: #393939;
+  --rux-field-hover-01: #1f1f1f;
+  --rux-field-hover-02: #333333;
+  --rux-field-hover-03: #474747;
   --rux-focus: #ffffff;
   --rux-focus-inset: #161616;
   --rux-focus-inverse: #0f62fe;
@@ -2212,34 +2216,34 @@
   --rux-icon-primary: #f4f4f4;
   --rux-icon-secondary: #c6c6c6;
   --rux-interactive: #4589ff;
-  --rux-layer-01: #262626;
-  --rux-layer-02: #393939;
-  --rux-layer-03: #525252;
-  --rux-layer-accent-01: #393939;
-  --rux-layer-accent-02: #525252;
-  --rux-layer-accent-03: #6f6f6f;
-  --rux-layer-accent-active-01: #6f6f6f;
-  --rux-layer-accent-active-02: #8d8d8d;
-  --rux-layer-accent-active-03: #393939;
-  --rux-layer-accent-hover-01: #474747;
-  --rux-layer-accent-hover-02: #636363;
-  --rux-layer-accent-hover-03: #5e5e5e;
-  --rux-layer-active-01: #525252;
-  --rux-layer-active-02: #6f6f6f;
-  --rux-layer-active-03: #8d8d8d;
-  --rux-layer-background-01: #161616;
-  --rux-layer-background-02: #262626;
-  --rux-layer-background-03: #393939;
-  --rux-layer-hover-01: #333333;
-  --rux-layer-hover-02: #474747;
-  --rux-layer-hover-03: #636363;
-  --rux-layer-selected-01: #393939;
-  --rux-layer-selected-02: #525252;
-  --rux-layer-selected-03: #6f6f6f;
+  --rux-layer-01: #161616;
+  --rux-layer-02: #262626;
+  --rux-layer-03: #393939;
+  --rux-layer-accent-01: #262626;
+  --rux-layer-accent-02: #393939;
+  --rux-layer-accent-03: #525252;
+  --rux-layer-accent-active-01: #525252;
+  --rux-layer-accent-active-02: #6f6f6f;
+  --rux-layer-accent-active-03: #262626;
+  --rux-layer-accent-hover-01: #333333;
+  --rux-layer-accent-hover-02: #474747;
+  --rux-layer-accent-hover-03: #474747;
+  --rux-layer-active-01: #393939;
+  --rux-layer-active-02: #525252;
+  --rux-layer-active-03: #6f6f6f;
+  --rux-layer-background-01: #000000;
+  --rux-layer-background-02: #161616;
+  --rux-layer-background-03: #262626;
+  --rux-layer-hover-01: #1f1f1f;
+  --rux-layer-hover-02: #333333;
+  --rux-layer-hover-03: #474747;
+  --rux-layer-selected-01: #262626;
+  --rux-layer-selected-02: #393939;
+  --rux-layer-selected-03: #525252;
   --rux-layer-selected-disabled: #a8a8a8;
-  --rux-layer-selected-hover-01: #474747;
-  --rux-layer-selected-hover-02: #636363;
-  --rux-layer-selected-hover-03: #5e5e5e;
+  --rux-layer-selected-hover-01: #333333;
+  --rux-layer-selected-hover-02: #474747;
+  --rux-layer-selected-hover-03: #474747;
   --rux-layer-selected-inverse: #f4f4f4;
   --rux-link-inverse: #0f62fe;
   --rux-link-inverse-active: #161616;

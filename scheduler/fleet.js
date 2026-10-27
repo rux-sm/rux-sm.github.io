@@ -887,6 +887,155 @@
     }
   }
 
+  // ── monthly inspection form ──
+  /* Add inspection swaps the history for the form. Saving writes one
+     `bus_inspections` row, and a `defect` record for each item not marked OK,
+     so an item to watch or fix stays on the unit's list until it is closed. */
+  const INSPECTION = window.SchedulerInspection;
+  const iForm = $('scheduler-inspection-form');
+  const iField = id => $(`scheduler-i-${id}`);
+  const iError = (id, message) => pair.textError(iField(id), `scheduler-i-${id}-error`, message);
+  const RESULT_ORDER = ['ok', 'watch', 'now'];
+  const RESULT_LABEL = { ok: 'OK', watch: 'Watch', now: 'Now' };
+
+  function textInput(id, label, { numeric = true, narrow = false } = {}) {
+    const item = el('div', 'rux--form-item');
+    const lab = el('div', 'rux--text-input__label-wrapper');
+    const l = el('label', 'rux--label', label);
+    l.htmlFor = id;
+    lab.appendChild(l);
+    const outer = el('div', 'rux--text-input__field-outer-wrapper');
+    const wrap = el('div', 'rux--text-input__field-wrapper');
+    const input = el('input', 'rux--text-input');
+    input.id = id;
+    input.type = 'text';
+    input.autocomplete = 'off';
+    if (numeric) input.inputMode = 'numeric';
+    wrap.appendChild(input);
+    outer.appendChild(wrap);
+    item.append(lab, outer);
+    return item;
+  }
+
+  function switcher(label) {
+    const box = el('div', 'rux--content-switcher rux--content-switcher--sm rux--layout--size-sm');
+    box.setAttribute('role', 'tablist');
+    box.setAttribute('aria-label', label);
+    RESULT_ORDER.forEach((key, i) => {
+      const b = el('button', `rux--content-switcher-btn${i === 0 ? ' rux--content-switcher--selected' : ''}`);
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.dataset.result = key;
+      b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      b.tabIndex = i === 0 ? 0 : -1;
+      b.appendChild(el('span', 'rux--content-switcher__label', RESULT_LABEL[key]));
+      box.appendChild(b);
+    });
+    return box;
+  }
+
+  // The tire fields and the items are drawn once, from inspection-items.js.
+  (() => {
+    const tires = $('scheduler-i-tires');
+    for (const [pos, name] of INSPECTION.TIRES) {
+      const group = el('fieldset', 'rux--form-item');
+      group.appendChild(el('legend', 'rux--label', name));
+      const pair2 = el('div', 'scheduler-tire-pair');
+      pair2.append(textInput(`scheduler-i-psi-${pos}`, 'PSI'), textInput(`scheduler-i-tread-${pos}`, 'Tread'));
+      group.appendChild(pair2);
+      tires.appendChild(group);
+    }
+    const items = $('scheduler-i-items');
+    for (const section of INSPECTION.SECTIONS) {
+      const fs = el('fieldset', 'scheduler-pair-group');
+      fs.appendChild(el('legend', 'rux--type-heading-compact-02', section.name));
+      for (const item of section.items) {
+        const row = el('div', 'scheduler-check-row');
+        row.dataset.item = item.id;
+        row.append(el('span', 'rux--type-body-compact-01', item.label), switcher(item.label));
+        fs.appendChild(row);
+      }
+      items.appendChild(fs);
+    }
+  })();
+
+  function openInspection(on) {
+    $('scheduler-maint-view').hidden = on;
+    iForm.hidden = !on;
+    if (!on) return;
+    iForm.reset();
+    for (const b of iForm.querySelectorAll('.rux--content-switcher-btn')) {
+      const ok = b.dataset.result === 'ok';
+      b.classList.toggle('rux--content-switcher--selected', ok);
+      b.setAttribute('aria-selected', String(ok));
+      b.tabIndex = ok ? 0 : -1;
+    }
+    iField('date').value = shownDay(iso(today()));
+    for (const id of ['odometer', 'inspector']) iError(id, '');
+    // The newest odometer on record is the floor a reading should clear.
+    const seen = maint.find(m => m.odometer != null);
+    iField('odometer').placeholder = seen ? `Last recorded ${Number(seen.odometer).toLocaleString('en-US')}` : '';
+    iField('odometer').focus();
+  }
+  $('scheduler-inspection-add').addEventListener('click', () => openInspection(true));
+  $('scheduler-inspection-cancel').addEventListener('click', () => openInspection(false));
+
+  iForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const date = fieldDay(iField('date').value);
+    const odometer = iField('odometer').value.replace(/[,\s]/g, '');
+    const inspector = iField('inspector').value.trim();
+    iError('odometer', '');
+    iError('inspector', '');
+    let first = null;
+    if (!/^\d{1,7}$/.test(odometer)) { iError('odometer', 'Enter the odometer reading in whole miles.'); first ??= iField('odometer'); }
+    if (!inspector) { iError('inspector', 'Enter who inspected the unit.'); first ??= iField('inspector'); }
+    if (!date) first ??= iField('date');
+    if (first) { first.focus(); return; }
+
+    const results = {};
+    for (const row of iForm.querySelectorAll('.scheduler-check-row')) {
+      results[row.dataset.item] = row.querySelector('[aria-selected="true"]')?.dataset.result || 'ok';
+    }
+    const tires = {};
+    for (const [pos] of INSPECTION.TIRES) {
+      const psi = iField(`psi-${pos}`).value.replace(/\D/g, '');
+      const tread = iField(`tread-${pos}`).value.replace(/\D/g, '');
+      if (psi || tread) tires[pos] = { ...(psi ? { psi: Number(psi) } : {}), ...(tread ? { tread: Number(tread) } : {}) };
+    }
+    const save = $('scheduler-inspection-save');
+    save.disabled = true;
+    result(null);
+    try {
+      const { data, error } = await client.from('bus_inspections').insert({
+        bus_id: loaded.id, kind: 'monthly', inspected_on: date, inspector, odometer: Number(odometer),
+        results, tires, comments: iField('comments').value.trim() || null,
+      }).select('id').single();
+      if (error) throw error;
+      const flagged = INSPECTION.SECTIONS.flatMap(s => s.items).filter(i => results[i.id] !== 'ok');
+      if (flagged.length) {
+        const defects = await client.from('bus_maintenance_records').insert(flagged.map(i => ({
+          bus_id: loaded.id, inspection_id: data.id, kind: 'defect', performed_on: date, odometer: Number(odometer),
+          summary: `${i.label}: ${INSPECTION.RESULTS[results[i.id]].toLowerCase()}`,
+          details: { item: i.id, result: results[i.id] },
+        })));
+        if (defects.error) {
+          result('error', "The inspection saved, but its defects didn't. Add them as repairs, or ask for help.");
+          openInspection(false);
+          loadMaintenance();
+          return;
+        }
+      }
+      openInspection(false);
+      await loadMaintenance();
+      result('success', flagged.length ? `Inspection saved with ${flagged.length} open defect${flagged.length === 1 ? '' : 's'}.` : 'Inspection saved.');
+    } catch {
+      result('error', "The inspection wasn't saved. Try again.");
+    } finally {
+      save.disabled = false;
+    }
+  });
+
   // ── load, change, save ──
   async function loadBus() {
     result(null);

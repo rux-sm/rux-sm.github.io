@@ -644,8 +644,16 @@
           </section>
         </div>
 
-        <!-- Read only for now: inspections and repairs are listed newest first. -->
+        <!-- Inspections and repairs are listed newest first. Add inspection
+             swaps the list for the form, which writes one `bus_inspections`
+             row and a defect for every item not marked OK. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-bus-panel-maintenance" aria-labelledby="scheduler-bus-tab-maintenance" tabindex="0" hidden>
+          <div class="rux--stack-vertical rux--stack-scale-7" id="scheduler-maint-view">
+          <div>
+            <button type="button" class="rux--btn rux--btn--secondary rux--layout--size-md" id="scheduler-inspection-add">Add inspection
+              <svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg>
+            </button>
+          </div>
           <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-bus-maint-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-bus-maint-h">At a glance</h2>
             <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
@@ -658,6 +666,55 @@
               <ul role="list" id="scheduler-bus-maint-history"></ul>
             </div>
           </section>
+          </div>
+
+          <form class="rux--stack-vertical rux--stack-scale-7" id="scheduler-inspection-form" novalidate autocomplete="off" hidden>
+            <fieldset class="scheduler-pair-group">
+              <legend class="rux--type-heading-compact-02">Monthly inspection</legend>
+              <div class="rux--stack-vertical rux--stack-scale-6">
+                <div class="scheduler-pair-grid">
+              <div class="rux--form-item">
+                  <div class="rux--date-picker rux--date-picker--next rux--date-picker--single">
+                    <div class="rux--date-picker-container rux--date-picker-container--single">
+                      <label class="rux--label" for="scheduler-i-date">Date</label>
+                      <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-i-date" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="mm/dd/yyyy"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button></span></div>
+                    </div>
+                    <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
+                  </div>
+                </div>
+                  <div class="rux--form-item">
+                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-i-odometer">Odometer, miles</label></div>
+                    <div class="rux--text-input__field-outer-wrapper">
+                      <div class="rux--text-input__field-wrapper"><input id="scheduler-i-odometer" class="rux--text-input" type="text" autocomplete="off" inputmode="numeric" data-scheduler-invalid-text="Enter the odometer reading"></div>
+                      <div class="rux--form-requirement" id="scheduler-i-odometer-error"></div>
+                    </div>
+                  </div>
+                  <div class="rux--form-item">
+                    <div class="rux--text-input__label-wrapper"><label class="rux--label" for="scheduler-i-inspector">Inspected by</label></div>
+                    <div class="rux--text-input__field-outer-wrapper">
+                      <div class="rux--text-input__field-wrapper"><input id="scheduler-i-inspector" class="rux--text-input" type="text" autocomplete="off" data-scheduler-invalid-text="Enter who inspected the unit"></div>
+                      <div class="rux--form-requirement" id="scheduler-i-inspector-error"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset class="scheduler-pair-group">
+              <legend class="rux--type-heading-compact-02">Tires, PSI and tread in 32nds</legend>
+              <div class="scheduler-pair-grid" id="scheduler-i-tires"></div>
+            </fieldset>
+            <div class="rux--stack-vertical rux--stack-scale-7" id="scheduler-i-items"></div>
+            <fieldset class="scheduler-pair-group">
+              <div class="rux--form-item">
+                <div class="rux--text-area__label-wrapper"><label class="rux--label" for="scheduler-i-comments">Comments and recommendations</label></div>
+                <div class="rux--text-area__wrapper"><textarea id="scheduler-i-comments" class="rux--text-area" rows="3"></textarea></div>
+              </div>
+            </fieldset>
+            <div class="rux--btn-set scheduler-pair-buttons">
+              <button type="button" class="rux--btn rux--btn--secondary" id="scheduler-inspection-cancel">Cancel</button>
+              <button type="submit" class="rux--btn rux--btn--primary" id="scheduler-inspection-save">Save inspection</button>
+            </div>
+          </form>
         </div>
         </div>
       </div>
@@ -755,6 +812,7 @@
 
 <script src="/design/js/overlay.js"></script>
 <script src="/design/js/tabs.js"></script>
+<script src="/design/js/content-switcher.js"></script>
 <script src="/design/js/popover.js"></script>
 <script src="/design/js/date-picker.js"></script>
 <script src="/design/js/form-controls.js"></script>
@@ -770,6 +828,7 @@
 <script src="vehicles.js"></script>
 <script src="requirements.js"></script>
 <script src="trip-shape.js"></script>
+<script src="inspection-items.js"></script>
 <script src="fleet.js"></script>
 </body>
 </html>

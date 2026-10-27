@@ -832,10 +832,10 @@
 }
 /* The roster's marks in rux-dark and rux-100 are the blue and red containers,
    as their bars are, with no edge, so a run of days reads as one stretch and
-   the grid stays quiet; a short rest is an amber of the same weight as the
-   blue and red, with white text. */
+   the grid stays quiet; a short rest is a yellow, in dark text, as strong as the
+   blue and red. */
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) {
-  --scheduler-rest-tone: oklch(0.50 0.13 75);
+  --scheduler-rest-tone: #d2a106;
   /* A free day is the booked blue and a partly free one the short rest's
      amber, outlined in a lighter step of the same colour over a tint of it. */
   --scheduler-avail-whole: var(--rux-tag-background-blue);
@@ -843,7 +843,19 @@
   --scheduler-open-lift: 50%;
   --scheduler-open-tint: 45%;
 }
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--scheduler-rest-tone); color: #fff; }
+:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--scheduler-rest-tone); color: #161616; }
+/* The time at the yard is drawn as the roster's marks are: a solid tile with
+   no edge, grey for a normal gap and the short rest's yellow, in dark text,
+   for a short one. */
+:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard {
+  border-color: transparent;
+  background: var(--rux-layer-02);
+}
+:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short {
+  background: var(--scheduler-rest-tone);
+  color: #161616;
+}
+:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

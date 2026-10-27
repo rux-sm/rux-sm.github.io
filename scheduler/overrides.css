@@ -796,9 +796,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
    buttons a narrow board hides; app.css's spacer draws the one that closes
    the week's controls. It colours the 1px border a ghost button already
    carries, so nothing moves, and it gives way to the focus ring, which is
-   that same border. */
+   that same border. The button's see-through top and bottom borders go
+   while the rule stands, because a border meeting another at a corner is
+   cut on the diagonal, which ended the rule in a point at each end; the
+   button is sized by its own box, so its height stays. */
 .scheduler-toolbar__weekrow ~ .rux--btn--ghost:not(:focus-visible),
-.scheduler-toolbar__strip > .rux--btn--ghost:not(:focus-visible) { border-inline-start-color: var(--rux-border-subtle-01); }
+.scheduler-toolbar__strip > .rux--btn--ghost:not(:focus-visible) {
+  border-block-width: 0;
+  border-inline-start-color: var(--rux-border-subtle-01);
+}
 
 /* A list's count on its toolbar button: Design's count badge, set against
    the glyph and not the button's corner, where Carbon puts it for the

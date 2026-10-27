@@ -537,6 +537,7 @@
      so each one reads as a button. It gives way to the focus ring, which is
      that same border. */
   [data-theme="geist-dark"] .scheduler-page :is(.scheduler-toolbar, .scheduler-toolbar__strip) > .rux--btn--ghost:not(:focus-visible) {
+    border-block-width: 1px;
     border-color: var(--rux-border-subtle-02);
   }
   /* The week's name opens the calendar, so it takes the same ring. It has no

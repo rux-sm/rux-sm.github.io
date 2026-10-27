@@ -2124,8 +2124,7 @@
    three blocks are Carbon's own `[data-theme=g100]` sets from css/rux.css,
    the values unchanged and the selector renamed, so on its first day a
    rux-100 page is a g100 page. js/theme.js leaves its header on the page's
-   background, as g100's shell is. It is not in the theme menus until it is
-   ready.
+   background, as g100's shell is.
    ========================================================================== */
 [data-theme="rux-100"] {
   --rux-ai-aura-end: rgba(0, 0, 0, 0);

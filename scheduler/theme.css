@@ -1254,3 +1254,6 @@
   background: var(--rux-text-primary);
   line-height: 1;
 }
+/* Rux 100's menus stand on Carbon's second layer, as Design sets them, so
+   the board's ⋮ joins its menu in that grey. */
+[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { --rux-layer: var(--rux-layer-02); }

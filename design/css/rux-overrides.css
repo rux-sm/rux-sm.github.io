@@ -3662,3 +3662,21 @@
   }
   .rux--side-nav__overlay { display: none; }
 }
+
+/* RUX 100'S FLOATING MENUS STAND A LAYER UP. Carbon draws a menu that opens
+   from the page on the page's own layer, #262626 in g100, the same grey as
+   the panels it opens over, so only its shadow parted the two. Here an
+   overflow menu, a context menu and a dropdown's list take Carbon's second
+   layer, #393939, the way `.rux--layer-two` maps it, with dividers in
+   that layer's own subtle border so they still show; one inside a raised
+   layer keeps the layer it is given. An open overflow trigger joins its menu
+   in the same grey. */
+[data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--overflow-menu.rux--overflow-menu--open):not(:is(.rux--layer-two, .rux--layer-three) *) {
+  --rux-layer: var(--rux-layer-02);
+  --rux-layer-active: var(--rux-layer-active-02);
+  --rux-layer-hover: var(--rux-layer-hover-02);
+  --rux-layer-selected: var(--rux-layer-selected-02);
+  --rux-layer-selected-hover: var(--rux-layer-selected-hover-02);
+  --rux-layer-accent: var(--rux-layer-accent-02);
+  --rux-border-subtle: var(--rux-border-subtle-02);
+}

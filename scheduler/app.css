@@ -551,12 +551,12 @@ button.scheduler-row-head__num::after {
    card, the earlier half the card less the rule its gap already counts, so
    each keeps its clear space to the card. The compact board's days are too
    narrow to give anything up, so it keeps the bars whole and shows none. A
-   clock over the hours over "yard", centred, so a short bar keeps the hours
-   and loses the clock and the word first. Under four hours, unknown, or
+   clock over the hours, centred, so a short bar keeps the hours and loses the
+   clock first. Under four hours, unknown, or
    overlapping, it takes the warning tone the driver grid's short rest uses. */
-/* 2.25rem holds "21h" at the bar's own 12px with room either side, so the
-   bars give up as little as they can. */
-.scheduler-week { --scheduler-yard-w: 2.25rem; }
+/* As wide as a roster day, 32px, which holds "21h" at the bar's own 12px, so
+   the bars give up as little as they can. */
+.scheduler-week { --scheduler-yard-w: var(--rux-layout-size-height-sm); }
 .scheduler-yard {
   display: none;
   position: absolute;

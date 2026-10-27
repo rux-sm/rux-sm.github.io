@@ -893,7 +893,7 @@
     const shown = hours == null ? '?' : hours < 0 ? '!' : `${Math.floor(hours)}h`;
     const mark = el('span', 'scheduler-yard__icon');
     mark.appendChild(svgUse('#m-schedule', '16', '0 0 960 960'));
-    card.append(mark, el('span', 'scheduler-yard__hours', shown), el('span', 'scheduler-yard__word', 'yard'));
+    card.append(mark, el('span', 'scheduler-yard__hours', shown));
     const back = hhmm(after.leg.back, true), leaves = hhmm(before.leg.depart, true);
     const said = hours == null ? 'Time at the yard unknown until both trips have times'
       : hours < 0 ? `Overlaps: back ${back}, leaves ${leaves}`

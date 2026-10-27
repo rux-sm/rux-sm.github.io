@@ -236,8 +236,8 @@ as the lists' panes are, and 22rem in rux-dark; for two weeks it is 34rem, and
 A view option in the board's overflow menu, off until turned on and kept by
 the browser. On, a card the trips' own height sits between two trips of one
 bus on days side by side, and the two trips pull their facing ends back to make
-room: a clock, the hours from the earlier trip's return to the yard to the
-later one's departure, and "yard", for cleaning and fuel. Under 4 hours, "?"
+room, as wide as a roster day: a clock and the hours from the earlier trip's
+return to the yard to the later one's departure. Under 4 hours, "?"
 until both trips have times, or "!" where they overlap, the card takes the
 warning tone. A day or more at the yard draws no card. The compact board's
 days are too narrow to give up room, so it shows none.

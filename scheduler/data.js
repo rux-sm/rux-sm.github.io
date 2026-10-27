@@ -10312,18 +10312,10 @@
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
-  /* WITH TWO WEEKS ON THE BOARD the roster shows one of them: the week the
-     selected trip starts in, or with nothing selected the week holding today,
-     else the first. A trip crossing into the second week shows its first. The
-     pane stays one week wide, the width of every panel beside the board. */
+  /* The roster shows every day the board does. With two weeks its day columns
+     narrow and its pane widens a little (see `.scheduler-aside--two`). */
   function rosterSlice() {
-    const { weekStart, days } = availAll;
-    if (days <= 7) return { first: 0, count: days };
-    const on = currentTripDay();
-    const midnight = new Date();
-    midnight.setHours(0, 0, 0, 0);
-    const at = on ? on.start : daysBetween(weekStart, midnight);
-    return { first: at >= 7 && at < days ? 7 : 0, count: 7 };
+    return { first: 0, count: availAll.days };
   }
 
   // Draws the roster when the days it shows have changed, or when `force`
@@ -10471,6 +10463,7 @@
   function drawAvailability(rows, weekStart, first, count, days) {
     availGrid.textContent = '';
     availEl.style.setProperty('--scheduler-days', String(count));
+    asideSlot.classList.toggle('scheduler-aside--two', count > 7);
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
@@ -10499,6 +10492,7 @@
       // Today is marked on its letter, as on the board's header.
       if (iso(d) === iso(new Date())) { cell.classList.add('scheduler-avail__day--today'); cell.setAttribute('aria-current', 'date'); }
       cell.dataset.day = String(i);
+      if (i === 7) cell.classList.add('scheduler-avail__day--week');
       head.appendChild(cell);
     }
     availGrid.appendChild(head);
@@ -10545,6 +10539,7 @@
           : 'scheduler-avail__cell';
         const cell = el('div', cls);
         cell.dataset.day = String(i);
+        if (i === 7) cell.classList.add('scheduler-avail__cell--week');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
         // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.
@@ -11424,7 +11419,7 @@
      it stands right of the week and the board never closes it. */
   const PANEL_NAMES = { roster: 'Drivers', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
-    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-list-w'),
+    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth(asideSlot.classList.contains('scheduler-aside--two') ? '--scheduler-roster-two-w' : '--scheduler-list-w'),
       close: () => { availOn = false; placeAvailability(); } },
     { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('tasks') },

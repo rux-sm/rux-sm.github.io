@@ -891,6 +891,7 @@
    this theme sets no gap between its regions. */
 :root[data-theme="rux-dark"] {
   --scheduler-list-w: 22rem;
+  --scheduler-roster-two-w: 26rem;
   --scheduler-viewer-sm-w: 22rem;
 }
 /* RUX-DARK'S DAYS ARE 167px AT EVERY WIDTH, so a one-day trip bar is 160px

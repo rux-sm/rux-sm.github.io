@@ -226,9 +226,10 @@ before shows the hours off between them, from the earlier trip's return to the
 yard to the later one's departure: "15h", in the warning tone under 10 hours,
 "!" where the two overlap, and "?" until both trips have times.
 
-With two weeks on the board the grid shows one of them: the week the selected
-trip starts in, or with nothing selected the week holding today, else the
-first. The pane is 20rem, Carbon's sm, as the lists' panes are, and 22rem in rux-dark.
+With two weeks on the board the grid shows both, its day columns narrowed to
+20px and a rule parting the weeks. The pane is 20rem for one week, Carbon's sm,
+as the lists' panes are, and 22rem in rux-dark; for two weeks it is 24rem, and
+26rem in rux-dark.
 
 ### Time at the yard
 

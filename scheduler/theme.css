@@ -858,6 +858,30 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
+/* In rux-100 a colour on a tile says what the trip is and a coloured word says
+   what needs doing. A short rest stays grey with its hours in the warning
+   yellow, a trip not yet quoted or not yet confirmed keeps the booked blue
+   with its status line in the warning or a light red, and time off is a
+   hatched grey so red means only a problem. */
+[data-theme="rux-100"] .scheduler-yard--short {
+  background: var(--rux-layer-03);
+  color: var(--rux-support-warning);
+}
+[data-theme="rux-100"] :is(.scheduler-bar--amber, .scheduler-bar--red) {
+  --scheduler-bg: var(--rux-tag-background-blue);
+  --scheduler-fg: var(--rux-tag-color-blue);
+  --scheduler-hover: var(--rux-tag-hover-blue);
+  --scheduler-border: var(--rux-tag-border-blue);
+  --scheduler-amber-hover-ring: none;
+}
+[data-theme="rux-100"] .scheduler-bar--amber :is(.scheduler-bar__lead, .scheduler-bar__update) { color: var(--rux-support-warning); }
+[data-theme="rux-100"] .scheduler-bar--red .scheduler-bar__lead--error { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
+[data-theme="rux-100"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 80%, transparent); }
+[data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
+[data-theme="rux-100"] .scheduler-avail__cell--off {
+  --scheduler-avail-fill: repeating-linear-gradient(135deg, var(--rux-layer-02) 0 6px, var(--rux-layer-03) 6px 12px);
+  color: var(--rux-text-secondary);
+}
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

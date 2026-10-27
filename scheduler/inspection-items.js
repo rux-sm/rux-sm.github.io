@@ -57,8 +57,17 @@
     ] },
   ].map(s => ({ name: s.name, items: s.items.map(([id, label]) => ({ id, label })) }));
 
+  // The quarterly emergency exit inspection, the paper's other checklist.
+  const EXIT_SECTIONS = [
+    { name: 'Emergency exits', items: [
+      ['pushout-windows', 'Check push-out windows'],
+      ['emergency-doors', 'Emergency doors'],
+      ['emergency-door-lights', 'Emergency door lights'],
+    ] },
+  ].map(s => ({ name: s.name, items: s.items.map(([id, label]) => ({ id, label })) }));
+
   // What a result is called on the form and in a defect's summary.
   const RESULTS = { ok: 'OK', watch: 'May need attention', now: 'Requires immediate attention' };
 
-  window.SchedulerInspection = { TIRES, SECTIONS, RESULTS };
+  window.SchedulerInspection = { TIRES, SECTIONS, EXIT_SECTIONS, RESULTS };
 })();

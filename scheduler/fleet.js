@@ -825,7 +825,7 @@
     monthly: 'Monthly inspection', exit: 'Exit inspection', annual: 'Annual inspection',
     oil: 'Oil change', tires: 'Tires', battery: 'Battery', repair: 'Repair', defect: 'Defect', other: 'Other',
   };
-  let maint = [];        // { date, kind, text, odometer, open, at }, newest first
+  let maint = [];        // { id (records only), date, kind, text, odometer, open, at }, newest first
   let maintFailed = false;
   async function loadMaintenance() {
     const [insp, recs] = await Promise.all([
@@ -839,10 +839,25 @@
         return { date: day(r.inspected_on), kind: r.kind, text: flagged ? `${flagged} item${flagged === 1 ? '' : 's'} flagged` : 'All items OK',
           odometer: r.odometer, open: false, at: r.created_at };
       }),
-      ...(recs.data || []).map(r => ({ date: day(r.performed_on), kind: r.kind, text: r.summary,
+      ...(recs.data || []).map(r => ({ id: r.id, date: day(r.performed_on), kind: r.kind, text: r.summary,
         odometer: r.odometer, open: r.kind === 'defect' && !r.closed_on, at: r.created_at })),
     ].sort((a, b) => b.date.localeCompare(a.date) || String(b.at).localeCompare(String(a.at)));
     drawMaintenance();
+  }
+
+  // A defect is closed by dating it; the record stays in the history.
+  async function closeDefect(m, button) {
+    button.disabled = true;
+    result(null);
+    const { error } = await client.from('bus_maintenance_records')
+      .update({ closed_on: iso(today()), updated_at: new Date().toISOString() }).eq('id', m.id);
+    if (error) {
+      button.disabled = false;
+      result('error', "The defect wasn't closed. Try again.");
+      return;
+    }
+    await loadMaintenance();
+    result('success', 'Defect closed.');
   }
 
   function noteItem(list, text) {
@@ -875,7 +890,7 @@
     }
     if (!maint.length) { noteItem(history, 'No inspections or repairs recorded.'); return; }
     for (const m of maint) {
-      const li = el('li', 'rux--contained-list-item');
+      const li = el('li', `rux--contained-list-item${m.open ? ' rux--contained-list-item--with-action' : ''}`);
       const lines = el('span', 'scheduler-pair-item');
       lines.appendChild(el('span', 'scheduler-pair-item__main', `${shownDay(m.date)} · ${KIND[m.kind] || m.kind}${m.open ? ' · Open' : ''}`));
       lines.appendChild(el('span', 'scheduler-pair-item__detail',
@@ -883,6 +898,15 @@
       const box = el('div', 'rux--contained-list-item__content');
       box.appendChild(lines);
       li.appendChild(box);
+      if (m.open) {
+        const actions = el('div', 'rux--contained-list-item__action');
+        const close = el('button', 'rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm', 'Close');
+        close.type = 'button';
+        close.setAttribute('aria-label', `Close defect ${m.text}`);
+        close.addEventListener('click', () => closeDefect(m, close));
+        actions.appendChild(close);
+        li.appendChild(actions);
+      }
       history.appendChild(li);
     }
   }
@@ -893,6 +917,7 @@
      so an item to watch or fix stays on the unit's list until it is closed. */
   const INSPECTION = window.SchedulerInspection;
   const iForm = $('scheduler-inspection-form');
+  const rForm = $('scheduler-repair-form');
   const iField = id => $(`scheduler-i-${id}`);
   const iError = (id, message) => pair.textError(iField(id), `scheduler-i-${id}-error`, message);
   const RESULT_ORDER = ['ok', 'watch', 'now'];
@@ -945,25 +970,40 @@
       group.appendChild(pair2);
       tires.appendChild(group);
     }
-    const items = $('scheduler-i-items');
-    for (const section of INSPECTION.SECTIONS) {
-      const fs = el('fieldset', 'scheduler-pair-group');
-      fs.appendChild(el('legend', 'rux--type-heading-compact-02', section.name));
-      for (const item of section.items) {
-        const row = el('div', 'scheduler-check-row');
-        row.dataset.item = item.id;
-        row.append(el('span', 'rux--type-body-compact-01', item.label), switcher(item.label));
-        fs.appendChild(row);
+    for (const [id, sections] of [['scheduler-i-items', INSPECTION.SECTIONS], ['scheduler-i-exit', INSPECTION.EXIT_SECTIONS]]) {
+      const items = $(id);
+      for (const section of sections) {
+        const fs = el('fieldset', 'scheduler-pair-group');
+        fs.appendChild(el('legend', 'rux--type-heading-compact-02', section.name));
+        for (const item of section.items) {
+          const row = el('div', 'scheduler-check-row');
+          row.dataset.item = item.id;
+          row.append(el('span', 'rux--type-body-compact-01', item.label), switcher(item.label));
+          fs.appendChild(row);
+        }
+        items.appendChild(fs);
       }
-      items.appendChild(fs);
     }
   })();
 
+  // The monthly form shows the tires and its items; the exit inspection its three.
+  function drawKind() {
+    const exit = iField('kind').value === 'exit';
+    $('scheduler-i-tires-group').hidden = exit;
+    $('scheduler-i-items').hidden = exit;
+    $('scheduler-i-exit').hidden = !exit;
+    $('scheduler-i-legend').textContent = exit ? 'Emergency exit inspection' : 'Monthly inspection';
+    iField('odometer').closest('.rux--form-item').querySelector('label').textContent = exit ? 'Odometer, miles (optional)' : 'Odometer, miles';
+    iError('odometer', '');
+  }
+  iField('kind').addEventListener('change', drawKind);
+
   function openInspection(on) {
-    $('scheduler-maint-view').hidden = on;
+    $('scheduler-maint-view').hidden = on || !rForm.hidden;
     iForm.hidden = !on;
     if (!on) return;
     iForm.reset();
+    drawKind();
     for (const b of iForm.querySelectorAll('.rux--content-switcher-btn')) {
       const ok = b.dataset.result === 'ok';
       b.classList.toggle('rux--content-switcher--selected', ok);
@@ -988,17 +1028,19 @@
     iError('odometer', '');
     iError('inspector', '');
     let first = null;
-    if (!/^\d{1,7}$/.test(odometer)) { iError('odometer', 'Enter the odometer reading in whole miles.'); first ??= iField('odometer'); }
+    const exit = iField('kind').value === 'exit';
+    if (!(exit && !odometer) && !/^\d{1,7}$/.test(odometer)) { iError('odometer', 'Enter the odometer reading in whole miles.'); first ??= iField('odometer'); }
     if (!inspector) { iError('inspector', 'Enter who inspected the unit.'); first ??= iField('inspector'); }
     if (!date) first ??= iField('date');
     if (first) { first.focus(); return; }
 
     const results = {};
-    for (const row of iForm.querySelectorAll('.scheduler-check-row')) {
+    const sections = exit ? INSPECTION.EXIT_SECTIONS : INSPECTION.SECTIONS;
+    for (const row of (exit ? $('scheduler-i-exit') : $('scheduler-i-items')).querySelectorAll('.scheduler-check-row')) {
       results[row.dataset.item] = row.querySelector('[aria-selected="true"]')?.dataset.result || 'ok';
     }
     const tires = {};
-    for (const [pos] of INSPECTION.TIRES) {
+    for (const [pos] of exit ? [] : INSPECTION.TIRES) {
       const psi = iField(`psi-${pos}`).value.replace(/\D/g, '');
       const tread = iField(`tread-${pos}`).value.replace(/\D/g, '');
       if (psi || tread) tires[pos] = { ...(psi ? { psi: Number(psi) } : {}), ...(tread ? { tread: Number(tread) } : {}) };
@@ -1008,14 +1050,14 @@
     result(null);
     try {
       const { data, error } = await client.from('bus_inspections').insert({
-        bus_id: loaded.id, kind: 'monthly', inspected_on: date, inspector, odometer: Number(odometer),
+        bus_id: loaded.id, kind: exit ? 'exit' : 'monthly', inspected_on: date, inspector, odometer: odometer ? Number(odometer) : null,
         results, tires, comments: iField('comments').value.trim() || null,
       }).select('id').single();
       if (error) throw error;
-      const flagged = INSPECTION.SECTIONS.flatMap(s => s.items).filter(i => results[i.id] !== 'ok');
+      const flagged = sections.flatMap(s => s.items).filter(i => results[i.id] !== 'ok');
       if (flagged.length) {
         const defects = await client.from('bus_maintenance_records').insert(flagged.map(i => ({
-          bus_id: loaded.id, inspection_id: data.id, kind: 'defect', performed_on: date, odometer: Number(odometer),
+          bus_id: loaded.id, inspection_id: data.id, kind: 'defect', performed_on: date, odometer: odometer ? Number(odometer) : null,
           summary: `${i.label}: ${INSPECTION.RESULTS[results[i.id]].toLowerCase()}`,
           details: { item: i.id, result: results[i.id] },
         })));
@@ -1031,6 +1073,55 @@
       result('success', flagged.length ? `Inspection saved with ${flagged.length} open defect${flagged.length === 1 ? '' : 's'}.` : 'Inspection saved.');
     } catch {
       result('error', "The inspection wasn't saved. Try again.");
+    } finally {
+      save.disabled = false;
+    }
+  });
+
+  // ── repair form ──
+  const rField = id => $(`scheduler-r-${id}`);
+  const rError = (id, message) => pair.textError(rField(id), `scheduler-r-${id}-error`, message);
+
+  function openRepair(on) {
+    $('scheduler-maint-view').hidden = on || !iForm.hidden;
+    rForm.hidden = !on;
+    if (!on) return;
+    rForm.reset();
+    rField('date').value = shownDay(iso(today()));
+    for (const id of ['odometer', 'summary', 'cost']) rError(id, '');
+    rField('summary').focus();
+  }
+  $('scheduler-repair-add').addEventListener('click', () => openRepair(true));
+  $('scheduler-repair-cancel').addEventListener('click', () => openRepair(false));
+
+  rForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const date = fieldDay(rField('date').value);
+    const odometer = rField('odometer').value.replace(/[,\s]/g, '');
+    const summary = rField('summary').value.trim();
+    const cost = rField('cost').value.replace(/[$,\s]/g, '');
+    for (const id of ['odometer', 'summary', 'cost']) rError(id, '');
+    let first = null;
+    if (!summary) { rError('summary', 'Enter what was done.'); first ??= rField('summary'); }
+    if (odometer && !/^\d{1,7}$/.test(odometer)) { rError('odometer', 'Use whole miles, or leave it empty.'); first ??= rField('odometer'); }
+    if (cost && !/^\d{1,8}(\.\d{1,2})?$/.test(cost)) { rError('cost', 'Use dollars and cents, such as 125.50.'); first ??= rField('cost'); }
+    if (!date) first ??= rField('date');
+    if (first) { first.focus(); return; }
+    const save = $('scheduler-repair-save');
+    save.disabled = true;
+    result(null);
+    try {
+      const { error } = await client.from('bus_maintenance_records').insert({
+        bus_id: loaded.id, kind: rField('kind').value, performed_on: date, summary,
+        odometer: odometer ? Number(odometer) : null, vendor: rField('vendor').value.trim() || null,
+        cost: cost ? Number(cost) : null,
+      });
+      if (error) throw error;
+      openRepair(false);
+      await loadMaintenance();
+      result('success', 'Repair saved.');
+    } catch {
+      result('error', "The repair wasn't saved. Try again.");
     } finally {
       save.disabled = false;
     }

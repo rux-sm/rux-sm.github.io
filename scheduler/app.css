@@ -1956,10 +1956,10 @@ button.scheduler-row-head__num::after {
    edge of the bus column, where a bar starting on the week's first day has
    its words, so a trip whose
    first day has scrolled out of sight still says what it is; the bar holds
-   them, so they stop at its end. The update row alone may run on to the
-   bar's end, since its words are the ones a day's width cuts short; it is
-   only as wide as its words, so it has room to slide with the others and
-   only a long update fills the bar and scrolls with it. */
+   them, so they stop at its end. The customer and update rows may run on
+   to the bar's end, since their words are the ones a day's width cuts
+   short; each is only as wide as its words, so it has room to slide with
+   the others, and only a long one fills the bar and scrolls with it. */
 .scheduler-bar {
   --scheduler-live-day: calc((100% + 2 * var(--rux-spacing-02) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
@@ -1969,9 +1969,9 @@ button.scheduler-row-head__num::after {
   inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--rux-spacing-02));
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
 }
-/* At least a day wide, as every other row is, so an empty one still opens
-   the card from the whole line. */
-.scheduler-bar > .scheduler-bar__update {
+/* At least a day wide, as every other row is, so an empty update still
+   opens the card from the whole line. */
+.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update) {
   inline-size: fit-content;
   min-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
   max-inline-size: 100%;

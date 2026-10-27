@@ -145,6 +145,7 @@
     sch.style.removeProperty('--scheduler-day-track');
     sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
+    document.documentElement.style.removeProperty('--scheduler-shell-max');
     // The bus column is `max-content`, so its width is measured from the
     // corner cell, which is that column.
     const corner = sch.querySelector('.scheduler-corner');
@@ -152,6 +153,9 @@
     const dayMin = px(sch, '--scheduler-day-min');
     // Unset where the days may fill the pane, which reads as NaN.
     const dayMax = px(sch, '--scheduler-day-max');
+    // A theme that sets one day's width for every window, which reads as NaN
+    // where unset.
+    const dayFixed = px(sch, '--scheduler-day-fixed');
     const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
@@ -159,8 +163,28 @@
     const available = pane - headBase;
     let day = Math.floor(available / days);
     let head = headBase;
-    const crowded = day < dayMin;
-    if (crowded) {
+    const fixed = Number.isFinite(dayFixed);
+    const crowded = fixed ? day < Math.floor(dayFixed) : day < dayMin;
+    if (fixed) {
+      /* Every day is the theme's width whatever the window: the frame is
+         held to the week, and the shell, which theme.css centres the board
+         and the header in, to the week and the panels open beside it. The
+         panels are measured as they stand and the frame as it is to be, so
+         a pass that finds the frame squeezed asks for its room back. A
+         window narrower than that holds the shell to itself, and the week
+         scrolls. */
+      day = Math.floor(dayFixed);
+      const want = frame ? frame.offsetWidth - pane + head + day * days : 0;
+      if (frame) frame.style.maxInlineSize = `${want}px`;
+      const board = frame?.parentElement;
+      if (board) {
+        const shown = [...board.children].filter(c => c.getClientRects().length);
+        const rects = shown.map(c => c.getBoundingClientRect());
+        const extent = Math.max(...rects.map(r => r.right)) - Math.min(...rects.map(r => r.left));
+        const shell = Math.ceil(extent - frame.getBoundingClientRect().width + want);
+        document.documentElement.style.setProperty('--scheduler-shell-max', `${shell}px`);
+      }
+    } else if (crowded) {
       // The floor binds and the grid is wider than the pane: it scrolls, there
       // is no remainder to place, and the head stays at its content width.
       day = Math.floor(dayMin);
@@ -212,6 +236,9 @@
     const watch = new ResizeObserver(fit);
     watch.observe(sch);
     if (sch.parentElement) watch.observe(sch.parentElement);
+    // A panel opening or closing beside the week changes the shell a fixed
+    // day width holds the board to, without the week's own size changing.
+    for (const panel of sch.closest('.scheduler-board')?.children ?? []) watch.observe(panel);
     window.addEventListener('resize', fit);
     window.Rux = window.Rux || {};
     window.Rux.schedule = { fit };

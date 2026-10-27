@@ -899,25 +899,22 @@
   --scheduler-list-w: 22rem;
   --scheduler-viewer-sm-w: 22rem;
 }
-/* RUX-DARK'S BOARD STOPS AT ONE WIDTH, a list, the trip editor and a week
-   of 187px days between them, the widest app.css lets a day be, and the week
-   takes whatever of it the open panels leave rather than stopping its days
-   at 187px, so opening or closing a panel moves no edge of the board. Two
-   weeks stop at the same sum for fourteen days, and Fill the window takes
-   the stop off. The shell is framed to the same width, as LN Notes frames
-   its own: the board stands centred in a wider window, and the header and
-   its panels stand over it rather than on the window's edges, so the
-   header's line ends where the board does. */
+/* RUX-DARK'S DAYS ARE 167px AT EVERY WIDTH, so a one-day trip bar is 160px
+   once the gap and its clear space come off, and a wider window adds no
+   width to a day. app.js holds the week to its seven or fourteen days, and
+   sets `--scheduler-shell-max` to the week and the panels open beside it;
+   Fill the window takes the fixed width off, and the days fill again. The
+   shell is framed to that width, as LN Notes frames its own: the board
+   stands centred in a wider window, and the header and its panels stand
+   over it rather than on the window's edges, so the header's line ends
+   where the board does. */
+[data-theme="rux-dark"] .scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-fixed: 167px; }
+[data-theme="rux-dark"] .scheduler-week--fill { --scheduler-day-max: none; }
 :root[data-theme="rux-dark"] {
-  --scheduler-shell-days: 7;
-  --scheduler-shell-max: calc(var(--scheduler-list-w) + var(--scheduler-editor-w) + 2rem + var(--scheduler-shell-days) * 187px);
-  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max)) / 2));
+  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max, 100%)) / 2));
 }
-:root[data-theme="rux-dark"]:has(.scheduler-week--two) { --scheduler-shell-days: 14; }
-:root[data-theme="rux-dark"]:has(.scheduler-week--fill) { --scheduler-shell-max: 100%; }
-[data-theme="rux-dark"] .scheduler-week:not(.scheduler-week--static) { --scheduler-day-max: none; }
 [data-theme="rux-dark"] .scheduler-board {
-  max-inline-size: var(--scheduler-shell-max);
+  max-inline-size: var(--scheduler-shell-max, 100%);
   inline-size: 100%;
   margin-inline: auto;
 }

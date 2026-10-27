@@ -2480,6 +2480,13 @@ button.scheduler-row-head__num::after {
   clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
+/* Under the pointer the open ⋮ takes the menu's own hover, solid, as an open
+   header button does, and the strip at its foot takes it with it, so no band
+   of the menu's grey shows across the ⋮'s bottom. */
+@media (hover: hover) {
+  .scheduler-toolbar__more[data-attached]:hover { background-color: var(--rux-layer-hover); }
+  body:has(.scheduler-toolbar__more[data-attached]:hover) .scheduler-view-menu[data-attached]::before { background-color: var(--rux-layer-hover); }
+}
 .scheduler-view-menu[data-attached]::before {
   position: absolute;
   content: "";

@@ -1257,7 +1257,7 @@
 }
 /* Rux 100's menus stand on Carbon's second layer, as Design sets them, so
    the board's ⋮ joins its menu in that grey. */
-[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { --rux-layer: var(--rux-layer-02); }
+[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { --rux-layer: var(--rux-layer-02); --rux-layer-hover: var(--rux-layer-hover-02); }
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }

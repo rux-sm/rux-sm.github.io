@@ -60,7 +60,6 @@ expiry dates on `buses`, all empty, and Samsara's odometer is already read by
 
 ## Tasks
 
-- [ ] Deploy `samsara-now` with its odometer, so the inspection form's prefill reads a value.
 - [ ] Add service rules and the due board.
 - [ ] Make Details' mileage and service dates read-only and derived.
 - [ ] Backfill the paper logs, each figure checked against the page.

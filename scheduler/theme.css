@@ -1316,3 +1316,10 @@
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
   clip-path: inset(0 -6px -6px -6px);
 }
+
+/* The one-way chip is a near-black square with a white arrow in every theme,
+   so it reads on a blue bar as well as a pale one. */
+[data-theme] {
+  --scheduler-kind-bg: #161616;
+  --scheduler-kind-fg: #fff;
+}

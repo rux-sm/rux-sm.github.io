@@ -842,10 +842,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--from-prev { --scheduler-run-start: 20px; }
 .scheduler-bar--to-next { --scheduler-run-end: 20px; }
 
-/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a pill after its
-   destination, in the Live pill's shape: the arrow and the word in the bar's
-   own ink inside a quiet outline of it. With the destination cut beside it,
-   bar.js leaves the arrow alone in a 16px circle. */
+/* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a chip after its
+   destination: the arrow alone, in white on a near-black square, so it is the
+   one solid dark mark on a bar and is found at a glance. */
 .scheduler-bar__row > .scheduler-bar__kind {
   flex: none;
   align-self: center;
@@ -862,7 +861,17 @@ button.scheduler-row-head__num::after {
   letter-spacing: .2px;
 }
 .scheduler-bar__kind > svg { flex: none; }
-.scheduler-bar__row > .scheduler-bar__kind--icon { justify-content: center; inline-size: 16px; padding: 0; }
+.scheduler-bar__row > .scheduler-bar__kind--icon {
+  justify-content: center;
+  inline-size: 20px;
+  block-size: 20px;
+  padding: 0;
+  border-radius: 2px;
+  background: var(--scheduler-kind-bg);
+  color: var(--scheduler-kind-fg);
+  box-shadow: none;
+}
+.scheduler-bar__kind--icon > svg { inline-size: 16px; block-size: 16px; }
 .scheduler-bar__kind--icon > .scheduler-bar__kind-word { display: none; }
 
 /* The rows the view menu can turn off. `display: none` rather than

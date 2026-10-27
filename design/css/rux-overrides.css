@@ -3706,3 +3706,6 @@
 [data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--number input[type="number"], .rux--number__control-btn, .rux--list-box, .rux--time-picker__input-field) {
   border-block-end-color: transparent;
 }
+/* A number's stepper draws its line under the pointer as an inset shadow,
+   not a border, so that goes too. */
+[data-theme="rux-100"] .rux--number__control-btn:hover { box-shadow: none; }

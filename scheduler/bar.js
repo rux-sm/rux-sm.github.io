@@ -1,9 +1,10 @@
 /* ==========================================================================
    Rux Scheduler — BAR, a trip's bar as the board draws it
    --------------------------------------------------------------------------
-   One assignment's bar: the trip's colour, its rows, its crew and the icon
-   that leads its update, a warning for a problem or a clock for its age. data.js draws the board's bars with it and components.html
-   draws its samples with it, so the two cannot differ.
+   One assignment's bar: the trip's colour, its rows, its crew, the badge that
+   counts its problems at the end of the destination row and the clock that
+   gives its update's age. data.js draws the board's bars with it and
+   components.html draws its samples with it, so the two cannot differ.
 
    `draw(b, board)` is one bar, `b` the board's `{ trip, leg, assign, place,
    slot, lane }`, and `board` what the bar reads from the board around it:
@@ -88,10 +89,10 @@
     return (words.length > 1 ? words.map(w => w[0]).join('') : words[0]).slice(0, 3).toUpperCase();
   };
 
-  /* The pill a one-way trip and each leg of a split wear after the
-     destination: an arrow the way the bus goes and the word, in the bar's own
-     ink inside a quiet outline of it. `fitKind` drops the word when the
-     destination beside it would be cut, and the tooltip keeps it. */
+  /* The chip a one-way trip and each leg of a split wear after the
+     destination: the arrow the way the bus goes, alone in a small circle of
+     the bar's own ink. The word is its tooltip, so the chip is the same width
+     on every bar and never competes with the destination for room. */
   const KINDS = {
     'one way': { icon: '#m-arrow_forward', word: 'One way' },
     'drop-off': { icon: '#m-download', word: 'Drop-off' },
@@ -99,28 +100,43 @@
   };
   const kindEl = kind => {
     const { icon, word } = KINDS[kind];
-    const pill = el('span', 'scheduler-bar__kind');
+    const pill = el('span', 'scheduler-bar__kind scheduler-bar__kind--icon');
     pill.title = word;
+    pill.setAttribute('role', 'img');
+    pill.setAttribute('aria-label', word);
     pill.append(svgUse(icon, '12', '0 0 12 12'), el('span', 'scheduler-bar__kind-word', word));
     return pill;
   };
-  const fitKind = bar => {
-    const pill = bar.querySelector(':scope > .scheduler-bar__dest > .scheduler-bar__kind');
-    if (!pill) return;
-    pill.classList.remove('scheduler-bar__kind--icon');
-    // A trip of more than one bus cuts its name inside the count's box.
-    const first = pill.parentElement.firstElementChild;
-    const name = first.classList.contains('scheduler-bar__multi') ? first.firstElementChild : first;
-    if (name.scrollWidth > name.clientWidth) pill.classList.add('scheduler-bar__kind--icon');
-  };
+  // The chip is always the icon alone, so there is nothing to fit; data.js still calls this on a card's head.
+  const fitKind = () => {};
 
-  /* The one icon that leads the update row, in a colour of `tone`, saying in
-     `words` what it marks: the warning sign for a problem, or the clock for
-     how lately an open trip was touched. A press on it opens the trip's
-     card, so it is one of the bar's card openers. */
-  const leadMark = (tone, href, words) => {
-    const m = el('span', `scheduler-bar__lead scheduler-bar__lead--${tone}`);
-    m.appendChild(svgUse(href, '16', '0 0 32 32'));
+  /* THE ALERT BADGE, at the end of the destination row: the warning sign and
+     how many problems the trip has, their words on the tooltip. Red for a bus
+     that does not fit, the warning colour for the rest. It stands in the same
+     place on every bar, and a bar with no problem has none. A press on it
+     opens the trip's card, so it is one of the bar's card openers. */
+  const alertMark = (tone, count, words) => {
+    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
+    m.append(svgUse('#m-error-fill', '12', '0 0 32 32'), String(count));
+    m.dataset.cardOpener = '';
+    m.setAttribute('role', 'img');
+    m.setAttribute('aria-label', words);
+    m.title = words;
+    return m;
+  };
+  /* THE AGE, at the start of the update row: a clock and how long ago the
+     newest update was, "20m", "3h", "5d", or the date after a month, in the
+     colour of its age. The clock means age and nothing else. */
+  const ageWords = at => {
+    const min = (Date.now() - Date.parse(at)) / 60e3;
+    if (min < 60) return `${Math.max(1, Math.floor(min))}m`;
+    if (min < 1440) return `${Math.floor(min / 60)}h`;
+    if (min < 43200) return `${Math.floor(min / 1440)}d`;
+    return new Date(at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  };
+  const ageMark = (tone, at, words) => {
+    const m = el('span', `scheduler-bar__age scheduler-bar__lead--${tone}`);
+    m.append(svgUse('#m-schedule', '16', '0 0 32 32'), ageWords(at));
     m.dataset.cardOpener = '';
     m.setAttribute('role', 'img');
     m.setAttribute('aria-label', words);
@@ -512,8 +528,8 @@
       const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
       if (!trip.itinerary_not_needed && !SHAPE.itineraryFor(trip, firstLeg)) problems.push(WAIT_WORDS.itinerary);
     }
-    let lead = problems.length
-      ? leadMark(misfits.length ? 'error' : 'warning', '#m-error-fill', problems.join(' · ')) : null;
+    const alert = problems.length
+      ? alertMark(misfits.length ? 'error' : 'warning', problems.length, problems.join(' · ')) : null;
     /* A trip that is back is faded on the board and says what it came to in
        its update row; a back trip raises no alert. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
@@ -523,7 +539,7 @@
     /* The destination row holds what the trip is on the left, and only what
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
-    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null);
+    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. The board shows the name
@@ -591,6 +607,7 @@
     const done = isDone;
     const news = done ? completeEl(trip, assign, leg) : el('span', null, latest?.body || '');
     let tone = done ? ' scheduler-bar__update--complete' : '';
+    let age = null;
     if (latest && done) news.title = `${news.title}\n${latest.body}\n${updateStamp(latest)}`;
     else if (latest) {
       news.title = `${latest.body}\n${updateStamp(latest)}`;
@@ -598,14 +615,14 @@
           || (!dayOfContact(trip, leg.key) && !trip.contact_not_needed));
       const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
       if (open) {
-        const age = days < 2 ? 'new' : days < 7 ? 'week' : 'old';
-        tone = ` scheduler-bar__update--${age}`;
-        lead ??= leadMark(age, '#m-schedule', `Latest update ${updateStamp(latest)}`);
+        const ageTone = days < 2 ? 'new' : days < 7 ? 'week' : 'old';
+        tone = ` scheduler-bar__update--${ageTone}`;
+        age = ageMark(ageTone, latest.created_at, `Latest update ${updateStamp(latest)}`);
       }
     }
     // The update line opens the card, whose Updates it begins, empty or not,
-    // and its icon leads it.
-    addRow(bar, `scheduler-bar__update${tone}`, lead, news).dataset.cardOpener = '';
+    // and its age leads it.
+    addRow(bar, `scheduler-bar__update${tone}`, age, news).dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.

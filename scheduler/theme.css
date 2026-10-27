@@ -874,8 +874,11 @@
   --scheduler-border: var(--rux-tag-border-blue);
   --scheduler-amber-hover-ring: none;
 }
-[data-theme="rux-100"] .scheduler-bar--amber :is(.scheduler-bar__lead, .scheduler-bar__update) { color: var(--rux-support-warning); }
-[data-theme="rux-100"] .scheduler-bar--red .scheduler-bar__lead--error { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
+[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__update { color: var(--rux-support-warning); }
+[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--new { color: var(--scheduler-age-new); }
+[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--week { color: var(--scheduler-age-week); }
+[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--old { color: var(--scheduler-age-old); }
+[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 [data-theme="rux-100"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 80%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 [data-theme="rux-100"] .scheduler-avail__cell--off {

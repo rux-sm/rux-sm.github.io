@@ -285,18 +285,13 @@
      road, the worst warning's amber or red, purple while a driver rests,
      grey and still with no signal, so a scan down the board finds the buses
      out. Its title says which. A press on it opens the live card, since the
-     update line it stands in for is not drawn while the bus is out. That
-     line leads with a warning sign when the trip has a problem, so while the
-     bus is out the sign moves up after the pill, and back when it comes in;
-     a clock for the update's age stays with its hidden line. */
+     update line it stands in for is not drawn while the bus is out. The
+     alert badge stays where it is, after the pill. */
   function liveDot(bar, bus, worst) {
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
-    const update = bar.querySelector(':scope > .scheduler-bar__update');
     let dot = row?.querySelector(':scope > .scheduler-road__dot');
     if (!bus || !row) {
       dot?.remove();
-      const sign = row?.querySelector(':scope > .scheduler-bar__lead');
-      if (sign && update) update.prepend(sign);
       return;
     }
     if (!dot) {
@@ -304,10 +299,8 @@
       dot.dataset.cardOpener = '';
       dot.setAttribute('role', 'img');
       dot.append(el('i', 'scheduler-road__ping'), 'Live');
-      row.appendChild(dot);
+      row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
     }
-    const sign = update?.querySelector(':scope > :is(.scheduler-bar__lead--error, .scheduler-bar__lead--warning)');
-    if (sign) row.appendChild(sign);
     const tone = worst?.tone ?? (bus.engine == null ? 'scan' : bar.dataset.light === 'rest' ? 'rest' : null);
     dot.className = `scheduler-road__dot${tone ? ` scheduler-road__dot--${tone}` : ''}`;
     const words = worst ? `Out on the road: ${worst.title}` : tone === 'scan' ? 'Out on the road: no signal'

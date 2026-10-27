@@ -144,7 +144,7 @@ function drawn(sectionId, name) {
 const has = (bar, sel) => !!bar.querySelector(sel);
 const text = (bar, sel) => bar.querySelector(sel)?.textContent ?? null;
 // The warning sign a bar wears for a problem, its colour and its words; a clock is not one.
-const mark = bar => { const m = bar.querySelector('.scheduler-bar__lead--error') ?? bar.querySelector('.scheduler-bar__lead--warning'); return m ? `${m.classList.contains('scheduler-bar__lead--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label')}` : null; };
+const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label')}` : null; };
 const hue = bar => bar.classes().find(c => /^scheduler-bar--(blue|red|teal|green|purple|magenta|amber)$/.test(c))?.slice(15);
 
 let failed = 0;
@@ -213,14 +213,14 @@ console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
   'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both'];
 // The samples leave today, so a missing trip contact is near enough to warn of.
-expect('a problem wears the warning sign in its colour, a contact missing near the day too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
+expect('a problem wears the alert badge in its colour, a contact missing near the day too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
   null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
   'red Sleeper needed · Trip contact missing']);
-expect('the warning sign leads the update row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__update').children[0]?.classList.contains('scheduler-bar__lead')),
+expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('an open trip with no problem leads its update with a clock in the update\'s age',
-  drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__lead')?.classes().find(c => /--(new|week|old)$/.test(c))?.split('--')[1] ?? null),
+  drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__age')?.classes().find(c => /--(new|week|old)$/.test(c))?.split('--')[1] ?? null),
   ['new', 'week', 'old', null]);
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 

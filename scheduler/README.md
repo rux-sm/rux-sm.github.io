@@ -33,9 +33,9 @@ everywhere as its type and number. `buses.html` forwards to it.
 
 `drivers.html` lists every driver, flags a licence or medical card that has
 run out or will within 45 days, and edits one driver at `drivers.html?id=`:
-details, photo and time off. A driver is set Inactive, never deleted, and the
-driver's schedule link is shown there and made on `driver-view.html`. A trip in a
-driver's list opens on the board through `./?trip=<id>&date=<day>`.
+details, photo, time off and a Documents tab for uploads. A driver is set
+Inactive, never deleted, and the schedule link is made on `driver-view.html`. A
+trip in a driver's list opens on the board through `./?trip=<id>&date=<day>`.
 
 `contacts.html` lists every contact, the people who book and travel, with
 their customer, phone, email and trips, and edits one at

@@ -232,8 +232,8 @@
     await readAll();
     $('scheduler-documents-h').hidden = false;
     $('scheduler-documents-table').hidden = false;
-    // A link from a customer's page arrives narrowed to that customer.
-    const from = customers.get(params.get('customer'));
+    // A link from a customer's or a driver's page arrives narrowed to them.
+    const from = customers.get(params.get('customer')) || drivers.get(params.get('driver'));
     if (from && !view.query) {
       const search = $('scheduler-documents-search');
       search.value = from.name;

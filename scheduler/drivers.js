@@ -12,7 +12,8 @@
 
    A driver is never deleted here, only set Inactive, so past trips keep the
    driver's name. The schedule link is shown, not made: driver-view.html makes,
-   changes and turns off driver links.
+   changes and turns off driver links. Its Documents tab lists the driver's
+   current documents, which the Documents page uploads and edits.
    ========================================================================== */
 (() => {
   'use strict';
@@ -701,6 +702,50 @@
     }
   }
 
+  // ── documents, read only ──
+  let papers = [];  // the driver's current documents, each with its kind's name
+  async function readPapers(id) {
+    const [kinds, docs] = await Promise.all([
+      client.from('document_kinds').select('id,name'),
+      client.from('company_documents').select('id,kind_id,holder,ends_on,parts,note')
+        .eq('driver_id', id).is('replaced_at', null).order('created_at', { ascending: false }),
+    ]);
+    if (kinds.error || docs.error) throw kinds.error || docs.error;
+    const names = new Map((kinds.data || []).map(k => [k.id, k.name]));
+    papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
+  }
+  // The current documents as rows, each opening its file and saying whether it
+  // is in force as the Documents page does.
+  function drawDocuments() {
+    const here = encodeURIComponent(loaded.id);
+    $('scheduler-driver-documents-upload').href = `documents.html?new&driver=${here}`;
+    $('scheduler-driver-documents-all').href = `documents.html?driver=${here}`;
+    const list = $('scheduler-driver-documents');
+    list.replaceChildren();
+    if (!papers.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No documents yet.'));
+      list.appendChild(li);
+      return;
+    }
+    for (const d of papers) {
+      const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
+      const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
+      a.href = `documents.html?open=${encodeURIComponent(d.id)}`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail',
+        [window.SchedulerDocumentStatus.of(d).text, d.note].filter(Boolean).join(' · ')));
+      a.appendChild(lines);
+      li.appendChild(a);
+      list.appendChild(li);
+    }
+  }
+  const loadPapers = id => readPapers(id).then(drawDocuments)
+    .catch(() => result('error', "The driver's documents didn't load. Reload the page to try again."));
+
   // ── load, change, save ──
   async function loadDriver() {
     result(null);
@@ -726,7 +771,7 @@
     baseline = snapshot();
     $('scheduler-driver').hidden = false;
     legs = null;
-    if (loaded) { drawLink(); readTrips().then(drawTrips); }
+    if (loaded) { drawLink(); readTrips().then(drawTrips); loadPapers(loaded.id); }
     return true;
   }
 
@@ -808,6 +853,7 @@
     baseline = snapshot();
     drawLink();
     readTrips().then(drawTrips);
+    loadPapers(loaded.id);
   }
 
   form?.addEventListener('submit', e => {

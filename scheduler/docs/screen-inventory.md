@@ -255,8 +255,8 @@ A click selects a trip bar, its outline and its days in the driver grid, kept th
 the same week, such as a save or a live change, and opens nothing more. A right-click selects it
 too, an open card waiting until the menu shuts. A double-click, Enter, the bar's right-click menu, or on a phone the docked sheet's
 Open loads it into the panel, and the board scrolls across to show that trip whole beside it. A trip
-opens on the tab the last one was on. New trip is the toolbar's last button, its + alone where the
-words do not fit, and a row of the overflow menu where the toolbar has no room; it puts down the
+opens on the tab the last one was on. New trip is the toolbar's + before its ⋮, an icon button like the
+others, and a row of the overflow menu where the toolbar has no room; it puts down the
 selected trip and opens on Details. The trip's card opens only when asked: a press on the bar's
 alert count, its update line or, out on the road, its Live pill, each lit under the pointer and an
 empty update line saying No updates, or Space on the bar, which selects it first; the same press, Space, Escape or its Close puts it away, Escape before the selection, and so does

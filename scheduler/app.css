@@ -2633,25 +2633,6 @@ button.scheduler-row-head__num::after {
   scrollbar-width: none;
 }
 .scheduler-toolbar__strip > .rux--btn { flex-shrink: 0; }
-/* 54rem is where New trip's words stop fitting in the roomiest theme:
-   Today, the arrows and five icons take 327px, the week 288px, the labelled
-   button 114px, the gaps and insets 104px, and the 27px over is the least
-   the spacer keeps between the two groups, 860px in all; a theme whose
-   buttons touch needs 800px. Below it the button is its + alone, sized in
-   overrides.css, and its words stay its name. */
-@container scheduler-toolbar (max-width: 54rem) {
-  .scheduler-toolbar__new-label {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    /* Hidden as well as clipped, or the words still widen what the page can
-       scroll to past the bar's end. */
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
-
 /* 40px region heads on a desktop, Carbon's md token as the toolbar and the
    driver panel's head and their controls ask for it, a step over the 32px day
    and tab bands beneath them. On a phone they take the 48px token instead, so
@@ -3941,12 +3922,10 @@ button.scheduler-row-head__num::after {
    place rather than two, and the menu row that stood in for it goes. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
 body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { display: none; }
-/* New trip is the toolbar's last button, and the menu's first row on a
-   phone's compact board and under the tight width, where the week label needs
-   the 40px. The ⋮ is then the last one showing, and takes the corner. */
+/* New trip is the menu's first row on a phone's compact board and under the
+   tight width, where the week label needs the 40px. */
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
-.scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-toolbar .scheduler-toolbar__more { border-start-end-radius: var(--scheduler-inner-radius); }
 body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .scheduler-menu-item--new { display: none; }
 /* In the same state, and on the compact board, the week's own button gives up
    two steps of inset: 24px, as the insets come down from 16px to 8px and the

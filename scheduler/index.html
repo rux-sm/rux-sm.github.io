@@ -392,15 +392,14 @@
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-forms-open" aria-pressed="false" aria-label="Forms" title="Forms"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></button>
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md" id="scheduler-calc-open" aria-pressed="false" aria-label="Quote calculator" title="Quote calculator"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calculate"/></svg></button>
             </div>
-            <!-- The overflow menu (#scheduler-view-menu): New trip where its
-                 toolbar button hides, Today below md, then the options for how
-                 the board draws. -->
+          <!-- New trip is a + like the buttons before it, its name on its
+               tooltip, and the overflow menu's first row where the bar has no
+               room for it. -->
+          <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__new" id="scheduler-new-trip" aria-label="New trip" title="New trip"><svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
+            <!-- The overflow menu (#scheduler-view-menu), last in the bar:
+                 New trip where its toolbar button hides, Today below md, then
+                 the options for how the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
-          <!-- New trip is the page's one primary button, last in the bar as
-               Carbon's table toolbar ends on its own. Where the bar is too
-               narrow for its words it is the + alone, in overrides.css, and
-               the overflow menu's first row where even that has no room. -->
-          <button type="button" class="rux--btn rux--btn--primary rux--btn--md rux--layout--size-md scheduler-toolbar__new" id="scheduler-new-trip" title="New trip"><span class="scheduler-toolbar__new-label">New trip</span><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-add"/></svg></button>
           </div>
             <!-- The loading skeleton: the corner, seven day cells and ten rows of
                  grey placeholders in the real grid's classes, so the first paint

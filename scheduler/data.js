@@ -97,6 +97,8 @@
   /* What stands in a bus's or a driver's way on a leg, who to ask first, and
      a driver's rest between two legs: clashes.js, with its sample cases. */
   const { REST_HOURS, RECENT_DAYS, datesOverlap, restBetween, fitFor, rankDrivers, autoPicks, cardLapse } = window.SchedulerClashes;
+  // A rest under this many hours, overlap included, is the roster's danger mark; under REST_HOURS it is the warning one.
+  const REST_SHORT_HOURS = 8;
 
   const PROJECT = 'https://udnmqhayzhrbltxzzhjw.supabase.co';
   const PUBLISHABLE = 'sb_publishable_w3h8Mtwam0ULemVKGKyBfw_DTbTaJIS';
@@ -10542,6 +10544,7 @@
         if (i === 7) cell.classList.add('scheduler-avail__cell--week');
         if (rest) cell.classList.add('scheduler-avail__cell--rest');
         if (tight) cell.classList.add('scheduler-avail__cell--tight');
+        if (rest?.hours != null && rest.hours < REST_SHORT_HOURS) cell.classList.add('scheduler-avail__cell--short');
         // `--busy` gives the press its cursor and `--rest` shows the mark; `--off` paints over both.
         if (offAndOn) cell.classList.add('scheduler-avail__cell--busy', 'scheduler-avail__cell--rest');
         // Whole hours, rounded down, so a rest is never shown longer than it is.

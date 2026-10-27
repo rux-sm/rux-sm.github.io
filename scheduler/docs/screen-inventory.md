@@ -223,7 +223,7 @@ Pick out trips, or Show every trip while they are picked, is the name's own
 press. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
-yard to the later one's departure: "15h", in the warning tone under 10 hours,
+yard to the later one's departure: "15h", in the warning tone under 10 hours and the danger tone under 8,
 "!" where the two overlap, and "?" until both trips have times.
 
 With two weeks on the board the grid shows both, its day columns the same 32px

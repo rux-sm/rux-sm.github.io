@@ -3335,16 +3335,17 @@ button.scheduler-row-head__num::after {
    and a booked day as taken: blue where the driver is free every day of the
    trip, the warning tone where only some, and joined into one bar across free
    days in a row, as a trip's days are. A booked or day-off cell keeps its own
-   mark instead. A theme can name either tone. */
+   mark instead. A theme can name either tone, how far its outline is lightened
+   and how strong its tint is. */
 .scheduler-avail__cell--on-day { position: relative; }
 .scheduler-avail__cell--open::before {
   content: '';
   position: absolute;
   inset: 2px;
   box-sizing: border-box;
-  border: 1px solid var(--scheduler-open-tone);
+  border: 1px solid color-mix(in oklab, var(--scheduler-open-tone) calc(100% - var(--scheduler-open-lift, 0%)), #fff);
   border-radius: var(--scheduler-mark-radius, 0);
-  background: color-mix(in srgb, var(--scheduler-open-tone) 18%, transparent);
+  background: color-mix(in srgb, var(--scheduler-open-tone) var(--scheduler-open-tint, 18%), transparent);
   --scheduler-open-tone: var(--scheduler-avail-part, var(--rux-support-warning));
 }
 .scheduler-avail__cell--whole::before { --scheduler-open-tone: var(--scheduler-avail-whole, var(--rux-support-info)); }

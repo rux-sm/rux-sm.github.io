@@ -60,8 +60,6 @@ expiry dates on `buses`, all empty, and Samsara's odometer is already read by
 
 ## Tasks
 
-- [ ] Draft the three tables and show the SQL to rux for a yes.
-- [ ] Add the Maintenance tab to the Fleet editor with the history list.
 - [ ] Build the monthly checklist form, prefilled from Samsara's odometer.
 - [ ] Build the exit inspection and Add repair forms.
 - [ ] Add service rules and the due board.

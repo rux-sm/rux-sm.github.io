@@ -818,6 +818,75 @@
     }
   }
 
+  // ── maintenance, read only ──
+  /* The bus's inspections and repairs, newest first, with the odometer and
+     open defects they add up to. Written by the inspection and repair forms. */
+  const KIND = {
+    monthly: 'Monthly inspection', exit: 'Exit inspection', annual: 'Annual inspection',
+    oil: 'Oil change', tires: 'Tires', battery: 'Battery', repair: 'Repair', defect: 'Defect', other: 'Other',
+  };
+  let maint = [];        // { date, kind, text, odometer, open, at }, newest first
+  let maintFailed = false;
+  async function loadMaintenance() {
+    const [insp, recs] = await Promise.all([
+      client.from('bus_inspections').select('id,kind,inspected_on,odometer,results,created_at').eq('bus_id', loaded.id),
+      client.from('bus_maintenance_records').select('id,kind,performed_on,summary,odometer,closed_on,created_at').eq('bus_id', loaded.id),
+    ]);
+    maintFailed = !!(insp.error || recs.error);
+    maint = maintFailed ? [] : [
+      ...(insp.data || []).map(r => {
+        const flagged = Object.values(r.results || {}).filter(v => v !== 'ok').length;
+        return { date: day(r.inspected_on), kind: r.kind, text: flagged ? `${flagged} item${flagged === 1 ? '' : 's'} flagged` : 'All items OK',
+          odometer: r.odometer, open: false, at: r.created_at };
+      }),
+      ...(recs.data || []).map(r => ({ date: day(r.performed_on), kind: r.kind, text: r.summary,
+        odometer: r.odometer, open: r.kind === 'defect' && !r.closed_on, at: r.created_at })),
+    ].sort((a, b) => b.date.localeCompare(a.date) || String(b.at).localeCompare(String(a.at)));
+    drawMaintenance();
+  }
+
+  function noteItem(list, text) {
+    const li = el('li', 'rux--contained-list-item');
+    li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', text));
+    list.appendChild(li);
+  }
+  function drawMaintenance() {
+    const glance = $('scheduler-bus-maint-glance'), history = $('scheduler-bus-maint-history');
+    glance.replaceChildren();
+    history.replaceChildren();
+    if (maintFailed) { noteItem(glance, "The maintenance records didn't load."); return; }
+    const miles = n => `${Number(n).toLocaleString('en-US')} mi`;
+    const seen = maint.find(m => m.odometer != null);
+    const lastCheck = maint.find(m => /inspection$/.test(KIND[m.kind] || ''));
+    const open = maint.filter(m => m.open).length;
+    for (const [label, value] of [
+      ['Odometer', seen ? `${miles(seen.odometer)} on ${shownDay(seen.date)}` : 'None recorded'],
+      ['Last inspection', lastCheck ? `${KIND[lastCheck.kind]}, ${shownDay(lastCheck.date)}` : 'None recorded'],
+      ['Open defects', String(open)],
+    ]) {
+      const li = el('li', 'rux--contained-list-item');
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', label));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', value));
+      const box = el('div', 'rux--contained-list-item__content');
+      box.appendChild(lines);
+      li.appendChild(box);
+      glance.appendChild(li);
+    }
+    if (!maint.length) { noteItem(history, 'No inspections or repairs recorded.'); return; }
+    for (const m of maint) {
+      const li = el('li', 'rux--contained-list-item');
+      const lines = el('span', 'scheduler-pair-item');
+      lines.appendChild(el('span', 'scheduler-pair-item__main', `${shownDay(m.date)} · ${KIND[m.kind] || m.kind}${m.open ? ' · Open' : ''}`));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail',
+        [m.text, m.odometer != null ? miles(m.odometer) : null].filter(Boolean).join(' · ')));
+      const box = el('div', 'rux--contained-list-item__content');
+      box.appendChild(lines);
+      li.appendChild(box);
+      history.appendChild(li);
+    }
+  }
+
   // ── load, change, save ──
   async function loadBus() {
     result(null);
@@ -850,7 +919,7 @@
     drawTitle();
     baseline = snapshot();
     $('scheduler-bus').hidden = false;
-    if (loaded) loadTrips();
+    if (loaded) { loadTrips(); loadMaintenance(); }
     return true;
   }
 
@@ -959,6 +1028,7 @@
     drawTitle();
     baseline = snapshot();
     loadTrips();
+    loadMaintenance();
   }
 
   form?.addEventListener('submit', e => {

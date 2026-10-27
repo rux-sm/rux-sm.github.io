@@ -423,6 +423,9 @@
             <button id="scheduler-bus-tab-trips" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-bus-panel-trips" tabindex="-1">
               <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Trips</span></div>
             </button>
+            <button id="scheduler-bus-tab-maintenance" class="rux--tabs__nav-item rux--tabs__nav-link" role="tab" type="button" aria-selected="false" aria-controls="scheduler-bus-panel-maintenance" tabindex="-1">
+              <div class="rux--tabs__nav-item-label-wrapper"><span class="rux--tabs__nav-item-label">Maintenance</span></div>
+            </button>
           </div>
           <button type="button" class="rux--tab--overflow-nav-button rux--tab--overflow-nav-button--next rux--tab--overflow-nav-button--hidden" aria-hidden="true" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button>
         </div>
@@ -637,6 +640,22 @@
             <h2 class="rux--type-heading-compact-02" id="scheduler-bus-trips-h">Upcoming trips</h2>
             <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
               <ul role="list" id="scheduler-bus-trips"></ul>
+            </div>
+          </section>
+        </div>
+
+        <!-- Read only for now: inspections and repairs are listed newest first. -->
+        <div class="rux--tab-content" role="tabpanel" id="scheduler-bus-panel-maintenance" aria-labelledby="scheduler-bus-tab-maintenance" tabindex="0" hidden>
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-bus-maint-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-bus-maint-h">At a glance</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-bus-maint-glance"></ul>
+            </div>
+          </section>
+          <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-bus-history-h">
+            <h2 class="rux--type-heading-compact-02" id="scheduler-bus-history-h">History</h2>
+            <div class="rux--contained-list rux--layout--size-md rux--contained-list--on-page">
+              <ul role="list" id="scheduler-bus-maint-history"></ul>
             </div>
           </section>
         </div>

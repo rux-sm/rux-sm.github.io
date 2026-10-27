@@ -36,8 +36,8 @@
   /* The roster, the lists' pane, Tasks and Departures, and the Forms and
      Quote calculator panels: Carbon's `rux--side-panel--sm`. */
   --scheduler-list-w: 20rem;
-  /* The roster with two weeks of day columns, 1.25rem each, beside the names. */
-  --scheduler-roster-two-w: 24rem;
+  /* The roster with two weeks of day columns, square as in one week, beside the names. */
+  --scheduler-roster-two-w: 34rem;
   /* The document viewer; opened larger it leaves its column for a window
      centred over the page (see `.scheduler-viewer[data-expanded]`). */
   --scheduler-viewer-sm-w: 24rem;
@@ -3156,17 +3156,13 @@ button.scheduler-row-head__num::after {
   inline-size: var(--scheduler-list-w);
 }
 
-/* Two weeks: the pane widens to hold fourteen narrow columns, and a rule
+/* Two weeks: the pane widens to hold fourteen square columns, and a rule
    parts the weeks. */
 .scheduler-aside--two {
   --scheduler-pane-w: var(--scheduler-roster-two-w);
   flex-basis: var(--scheduler-roster-two-w);
   inline-size: var(--scheduler-roster-two-w);
 }
-.scheduler-aside.scheduler-aside--two .scheduler-week--avail { --scheduler-day-track: 1.25rem; }
-/* A rest of two digits and an h still fits a 20px column at this size. */
-.scheduler-aside--two .scheduler-avail__cell { padding-inline: 0; font-size: 0.625rem; letter-spacing: -0.02em; }
-.scheduler-aside--two .scheduler-avail__cell > span { text-overflow: clip; }
 .scheduler-avail__cell--week,
 .scheduler-avail__day--week { border-inline-start: 1px solid var(--rux-border-strong-01); }
 

@@ -1261,3 +1261,17 @@
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
+/* The week's calendar hangs from the week's name as the ⋮'s menu does from
+   the ⋮: the name takes the calendar's outline and shadow up its sides and
+   over its top, stopping at its foot, and the calendar's outline and shadow
+   stop at its top, where the name stands on it, so one line goes round the
+   two. The calendar is set here and not with the menus in Design because it
+   stands inside the board's second layer, which those rules leave alone. */
+[data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] {
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
+  clip-path: inset(-6px -6px 0 -6px);
+}
+[data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar {
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
+  clip-path: inset(0 -6px -6px -6px);
+}

@@ -2480,6 +2480,9 @@ button.scheduler-row-head__num::after {
   clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
+/* While the week's calendar is open, Today's rule beside the week's name
+   goes, as the ⋮'s does while its menu is open. */
+.scheduler-toolbar:has(.scheduler-weekbtn[aria-expanded="true"]) .scheduler-toolbar__strip > #scheduler-today.rux--btn--ghost:not(:focus-visible) { border-inline-start-color: transparent; }
 /* Under the pointer the open ⋮ takes the menu's own hover, solid, as an open
    header button does, and the strip at its foot takes it with it, so no band
    of the menu's grey shows across the ⋮'s bottom. */

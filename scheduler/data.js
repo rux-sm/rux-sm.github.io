@@ -11627,9 +11627,19 @@
   const viewMenu = document.getElementById('scheduler-view-menu');
   const viewTrigger = document.getElementById('scheduler-view-trigger');
 
+  // The week picker starts its weeks where the board does and marks the
+  // days the board shows, one week or two, from the week's first day.
+  function dressWeekPicker() {
+    const picker = document.getElementById('scheduler-week-picker');
+    if (!picker) return;
+    picker.dataset.ruxFirstDay = weekStartsSunday ? '0' : '1';
+    picker.dataset.ruxSpan = twoWeeks ? '14' : '7';
+  }
+
   function applyView() {
     weekStartsSunday = view.sunday;
     twoWeeks = view.twoWeeks;
+    dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Equipment under the bus numbers, and every open or closed tip's switch
     // saying so.
@@ -17039,6 +17049,7 @@
     container.appendChild(wrap);
     root.append(container, calendarBody());
     weekRow.appendChild(root);
+    dressWeekPicker();
     rangeEl.setAttribute('data-rux-open', root.id);
 
     // A pick moves to the week containing the picked day, which `mondayOf`

@@ -554,9 +554,9 @@ button.scheduler-row-head__num::after {
    clock over the hours, centred, so a short bar keeps the hours and loses the
    clock first. Under four hours, unknown, or
    overlapping, it takes the warning tone the driver grid's short rest uses. */
-/* As wide as a roster day, 32px, which holds "21h" at the bar's own 12px, so
-   the bars give up as little as they can. */
-.scheduler-week { --scheduler-yard-w: var(--rux-layout-size-height-sm); }
+/* As wide as a roster day's mark, 27px, which holds "21h" at the bar's own
+   12px, so the bars give up as little as they can. */
+.scheduler-week { --scheduler-yard-w: 27px; }
 .scheduler-yard {
   display: none;
   position: absolute;

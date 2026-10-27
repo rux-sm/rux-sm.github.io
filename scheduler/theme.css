@@ -851,7 +851,7 @@
    for a short one. */
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard {
   border-color: transparent;
-  background: var(--rux-layer-02);
+  background: var(--rux-layer-03);
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short {
   background: var(--scheduler-rest-tone);

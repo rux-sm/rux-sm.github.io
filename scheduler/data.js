@@ -1212,6 +1212,7 @@
     syncSelection();
     // Every bar is new, so the faces on them are drawn again.
     presenceDraw();
+    fitStuckRows();
 
     // The only mark for today is its header cell, so the grid brings that cell
     // into view rather than leaving it past the right edge -- which is where a
@@ -10881,6 +10882,28 @@
     return svg;
   }
 
+  /* A LONG ROW KEEPS ITS LEFT EDGE WITH THE OTHERS. A bar's customer and
+     update rows may run as wide as their words, and every row sticks at the
+     bus column's edge as the board scrolls; but a sticky row that meets the
+     bar's end is pushed back past that edge. So while a bar's start is under
+     the bus column, those two rows are held to the room between the edge and
+     the bar's end, `--scheduler-row-room`, which app.css reads, and their
+     words are cut there instead. The edge is where the destination row
+     stands, read rather than worked out. */
+  function fitStuckRows() {
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
+      if (!(Number(bar.dataset.span) > 1)) continue;
+      const dest = bar.querySelector(':scope > .scheduler-bar__dest');
+      if (!dest) continue;
+      const box = bar.getBoundingClientRect();
+      const cs = getComputedStyle(bar);
+      const at = dest.getBoundingClientRect().left;
+      if (at > box.left + parseFloat(cs.paddingLeft) + 0.5) {
+        bar.style.setProperty('--scheduler-row-room', `${Math.max(0, box.right - parseFloat(cs.paddingRight) - at)}px`);
+      } else bar.style.removeProperty('--scheduler-row-room');
+    }
+  }
+
   function markTripBars() {
     const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
@@ -11288,13 +11311,18 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); fitStuckRows(); })).observe(gridEl);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. */
+  let stuckRowsAsked = false;
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
     nameBoardCorner();
+    if (!stuckRowsAsked) {
+      stuckRowsAsked = true;
+      requestAnimationFrame(() => { stuckRowsAsked = false; fitStuckRows(); });
+    }
   }, { passive: true });
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and

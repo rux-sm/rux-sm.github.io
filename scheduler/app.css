@@ -1974,7 +1974,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update) {
   inline-size: fit-content;
   min-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
-  max-inline-size: 100%;
+  /* While the bar's start is under the bus column, data.js holds the row to
+     the room left, so it is cut there rather than pushed back. */
+  max-inline-size: min(100%, var(--scheduler-row-room, 100%));
 }
 .scheduler-bar--road > :is(.scheduler-bar__row, .scheduler-road__card) {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));

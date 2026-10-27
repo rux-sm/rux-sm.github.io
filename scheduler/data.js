@@ -11673,8 +11673,9 @@
     viewTrigger.setAttribute('aria-expanded', 'true');
     const m = viewMenu.getBoundingClientRect();
     if (Math.abs(m.top - r.bottom) < 1) {
-      viewMenu.style.setProperty('--scheduler-attach-x', `${Math.round(r.left - m.left)}px`);
-      viewMenu.style.setProperty('--scheduler-attach-w', `${Math.round(r.width)}px`);
+      // Unrounded, so the strip lands on the ⋮ wherever the menu's width puts its edge.
+      viewMenu.style.setProperty('--scheduler-attach-x', `${r.left - m.left}px`);
+      viewMenu.style.setProperty('--scheduler-attach-w', `${r.width}px`);
       viewMenu.dataset.attached = '';
       viewTrigger.dataset.attached = '';
     }

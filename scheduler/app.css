@@ -2467,22 +2467,26 @@ button.scheduler-row-head__num::after {
    The week range, a date-picker trigger, first in the toolbar. */
 /* The board's ⋮ and its menu as one surface while the menu hangs under it,
    in Carbon's overflow menu's open treatment: the ⋮ takes the menu's layer and
-   shadow, and a 3px strip the ⋮'s width, in the menu's layer, covers the
-   menu's shadow along the ⋮'s foot. data.js sets where the strip sits. The
+   shadow, and a strip the ⋮'s width, in the menu's layer, covers the menu's
+   shadow along the ⋮'s foot. The strip is 5px, past the shadow's reach above
+   the menu, its 6px blur less its 2px drop, and the ⋮'s own shadow stops at its foot,
+   so the two never darken the corner where they meet. data.js sets where the
+   strip sits. The
    rule between the toolbar's buttons comes off the ⋮'s leading edge while it
    is open, as Carbon's open trigger has no line down its side. */
 .scheduler-toolbar__more[data-attached] {
   background-color: var(--rux-layer);
   box-shadow: 0 2px 6px var(--rux-shadow);
+  clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
 .scheduler-view-menu[data-attached]::before {
   position: absolute;
   content: "";
-  inset-block-start: -3px;
+  inset-block-start: -5px;
   inset-inline-start: var(--scheduler-attach-x);
   inline-size: var(--scheduler-attach-w);
-  block-size: 3px;
+  block-size: 5px;
   background-color: var(--rux-layer);
 }
 .scheduler-toolbar__weekrow {

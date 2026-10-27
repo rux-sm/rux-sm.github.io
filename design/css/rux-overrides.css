@@ -3670,7 +3670,9 @@
    layer, #393939, the way `.rux--layer-two` maps it, with dividers in
    that layer's own subtle border so they still show; one inside a raised
    layer keeps the layer it is given. An open overflow trigger joins its menu
-   in the same grey. */
+   in the same grey. Each also wears a 1px outline a step lighter, #525252,
+   so it has an edge over any grey it opens on, a panel's, a tile's or a
+   field's, where its fill alone matches one of them. */
 [data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--overflow-menu.rux--overflow-menu--open):not(:is(.rux--layer-two, .rux--layer-three) *) {
   --rux-layer: var(--rux-layer-02);
   --rux-layer-active: var(--rux-layer-active-02);
@@ -3679,4 +3681,7 @@
   --rux-layer-selected-hover: var(--rux-layer-selected-hover-02);
   --rux-layer-accent: var(--rux-layer-accent-02);
   --rux-border-subtle: var(--rux-border-subtle-02);
+}
+[data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu):not(:is(.rux--layer-two, .rux--layer-three) *) {
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
 }

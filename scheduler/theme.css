@@ -833,7 +833,8 @@
 /* The roster's marks in rux-dark and rux-100 are the blue and red containers,
    as their bars are, with no edge, so a run of days reads as one stretch and
    the grid stays quiet; a short rest is the same blue with its hours in the warning
-   yellow, and a shorter one the same red with them in that yellow still. */
+   yellow, and a shorter one the same blue with them in a light red, the error
+   red lifted enough to read on the blue. */
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) {
   --scheduler-rest-tone: #d2a106;
   /* A free day is the booked blue and a partly free one the short rest's
@@ -844,7 +845,7 @@
   --scheduler-open-tint: 45%;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--rux-tag-background-blue); color: var(--rux-support-warning); }
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--short { --scheduler-avail-fill: var(--rux-tag-background-red); }
+:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
 /* The time at the yard is drawn as the roster's marks are: a solid tile with
    no edge, grey for a normal gap and the short rest's yellow, in dark text,
    for a short one. */

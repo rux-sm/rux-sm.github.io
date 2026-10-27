@@ -252,6 +252,12 @@
   border-inline-end-color: transparent;
   border-inline-start-color: transparent;
 }
+/* Under the pointer it takes the panel's own hover, solid, where Carbon's
+   hover is a see-through grey that let the header's line show beneath the
+   button and parted it from the panel again. */
+@media (hover: hover) {
+  .rux--header__action--active:hover { background-color: var(--rux-layer-hover); }
+}
 .rux--header__menu-toggle { align-self: flex-start; }
 
 /* A FILTERED LIST'S FIRST ROW DRAWS A LINE ABOVE ITSELF. Carbon separates

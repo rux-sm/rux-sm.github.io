@@ -3696,3 +3696,13 @@
 [data-theme="rux-100"] :is(.rux--menu, .rux--overflow-menu-options, .rux--list-box__menu, .rux--date-picker__calendar):not(:is(.rux--layer-two, .rux--layer-three) *) {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
 }
+
+/* RUX 100'S FIELDS ARE THEIR FILL ALONE. Carbon underlines every field with
+   the strong border; here a text input, a text area, a search, a select, a
+   date, a number and its steppers, a dropdown and a time each lose the line,
+   and the field reads by its fill, a step off the surface it stands on. The
+   border keeps its width, so nothing moves, and the focus and error rings,
+   which are outlines, are unchanged. */
+[data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--number input[type="number"], .rux--number__control-btn, .rux--list-box, .rux--time-picker__input-field) {
+  border-block-end-color: transparent;
+}

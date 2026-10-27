@@ -62,7 +62,7 @@ expiry dates on `buses`, all empty, and Samsara's odometer is already read by
 
 - [ ] Add service rules and the due board.
 - [ ] Make Details' mileage and service dates read-only and derived.
-- [ ] Backfill the paper logs, each figure checked against the page.
+- [ ] Backfill the other buses' paper logs as they are scanned, each figure checked against the page.
 - [ ] Add the annual inspection record and the remaining reports.
 - [ ] Warn in the clash check about an overdue bus or an open now defect.
 - [ ] Add the driver page's Report a problem button.

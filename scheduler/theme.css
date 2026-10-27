@@ -184,11 +184,6 @@
 [data-theme="rux-dark"] .scheduler-bar--green { --scheduler-bg: oklch(0.34 0.124 150); --scheduler-hover: oklch(0.38 0.139 150); }
 [data-theme="rux-dark"] .scheduler-bar--teal { --scheduler-bg: oklch(0.34 0.077 185); --scheduler-hover: oklch(0.38 0.086 185); }
 [data-theme="rux-dark"] .scheduler-bar--cyan { --scheduler-bg: oklch(0.34 0.081 225); --scheduler-hover: oklch(0.38 0.09 225); }
-/* A driver free every day of the selected trip is a soft green tint, the
-   success ink at 22% over the roster's surface, as an alert is drawn: a
-   column of them reads at a glance without becoming a slab of colour. */
-[data-theme="rux-dark"] { --scheduler-avail-whole: color-mix(in oklab, var(--rux-support-success) 22%, var(--rux-layer-01)); }
-
 /* THE WORDS OF A BAR'S NEWEST UPDATE take the colour of its age: new, in its
    first week, or older. They are 12px text, which needs 4.5 to 1 where a
    glyph gets by on 3, so each theme sets them a step past its marks, away

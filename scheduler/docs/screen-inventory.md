@@ -209,8 +209,8 @@ The grid is a table edge to edge in the pane, its day band right under the
 pane's head and level with the board's, with the drivers in priority order:
 a rule parts one priority from the next, and a name's title says its
 priority. With a trip selected, its days are shaded in the header, and each
-driver free on one of them has a mark there: a green bar when free every day,
-and a grey one when free only some.
+driver free on one of them has a mark there: a blue outlined, tinted bar when free every day,
+and a warning-coloured one when free only some.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

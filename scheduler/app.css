@@ -2468,11 +2468,14 @@ button.scheduler-row-head__num::after {
 /* The board's ⋮ and its menu as one surface while the menu hangs under it,
    in Carbon's overflow menu's open treatment: the ⋮ takes the menu's layer and
    shadow, and a 3px strip the ⋮'s width, in the menu's layer, covers the
-   menu's shadow along the ⋮'s foot. data.js sets where the strip sits. */
+   menu's shadow along the ⋮'s foot. data.js sets where the strip sits. The
+   rule between the toolbar's buttons comes off the ⋮'s leading edge while it
+   is open, as Carbon's open trigger has no line down its side. */
 .scheduler-toolbar__more[data-attached] {
   background-color: var(--rux-layer);
   box-shadow: 0 2px 6px var(--rux-shadow);
 }
+.scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
 .scheduler-view-menu[data-attached]::before {
   position: absolute;
   content: "";

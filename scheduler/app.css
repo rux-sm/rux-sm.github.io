@@ -5873,3 +5873,7 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update {
   box-shadow: 0 0 0 2px var(--scheduler-fg);
 }
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="road"]) .scheduler-road__dot {
+  outline: 2px solid var(--scheduler-fg);
+  outline-offset: 1px;
+}

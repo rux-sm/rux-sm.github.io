@@ -10701,9 +10701,10 @@
   // Whether this bar's card is on screen now, which a press toggles.
   const cardShowing = bar => bar === selectedBar() && cardAsked(bar) && !barShortcuts?.hidden;
   // Asking again brings back a card put away by one of its actions.
-  /* THE CARD IS TWO CARDS: Alerts, opened from a bar's alert badge, and
-     Updates, opened from its update line. Each draws only its own part, sized
-     to what it holds; Space opens both, as the card always was. */
+  /* THE CARD IS THREE CARDS: Alerts, opened from a bar's alert badge, Updates,
+     from its update line, and Live, from the pill of a bus out on the road.
+     Each draws only its own part, sized to what it holds; Space opens the
+     whole card, as it always was, an out trip's with its two tabs. */
   let cardSection = '';
   function askCard(bar, open, section = '') {
     cardOpenFor = open ? barKey(bar) : null;
@@ -11352,7 +11353,8 @@
     const opener = e.target.closest('[data-card-opener]');
     const bar = opener?.closest('.scheduler-bar[data-trip-id]');
     if (!bar || e.detail > 1) return;
-    const section = opener.matches('.scheduler-bar__alert') ? 'needs' : opener.closest('.scheduler-bar__update') ? 'updates' : '';
+    const section = opener.matches('.scheduler-bar__alert') ? 'needs' : opener.matches('.scheduler-road__dot') ? 'road'
+      : opener.closest('.scheduler-bar__update') ? 'updates' : '';
     askCard(bar, !cardShowing(bar), section);
   });
   // A double-click on a trip opens it, as Enter does; its first click selected it.
@@ -15077,7 +15079,8 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
+    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
+      : cardSection === 'road' ? drawLiveCard(trip, bar) : cardSection ? drawCard(trip, bar, cardSection) : drawRoadCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 

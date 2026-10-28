@@ -92,6 +92,7 @@ export const ICONS = {
   'chevron--right': { material: 'keyboard_arrow_right', rux: null },
   'chevron--up': { material: 'keyboard_arrow_up', rux: null },
   'circle-dash': { material: 'motion_photos_on', rux: null },  // A broken ring, which is what not-started means here.
+  'send': { material: 'send', rux: null },
   'circle-fill': { material: 'circle-fill', rux: null },
   'circle-stroke': { material: 'trip_origin', rux: null },  // A plain ring; `radio_button_unchecked` is taken by radio-button.
   'close': { material: 'close', rux: null },

@@ -926,12 +926,22 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
 /* The alert badge and the age are the message pill, each with its icon before its words. */
 .scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age) { display: inline-flex; align-items: center; gap: 2px; }
-/* Filled in the colour of its age, with the theme's inverse ink, so the clock
-   reads as the same kind of mark as the alert badge beside it. */
-.scheduler-bar__age.scheduler-bar__lead--new { background: var(--scheduler-age-new); color: var(--rux-text-inverse); }
-.scheduler-bar__age.scheduler-bar__lead--week { background: var(--scheduler-age-week); color: var(--rux-text-inverse); }
-.scheduler-bar__age.scheduler-bar__lead--old { background: var(--scheduler-age-old); color: var(--rux-text-inverse); }
-.scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) { background: color-mix(in srgb, var(--scheduler-fg) 20%, transparent); color: var(--scheduler-fg); }
+/* Filled in the colour of its age, with black or white ink by the fill's
+   lightness, since a theme's age colours run from pale to deep. A trip that
+   asks nothing more, or has no update, is an outline of the bar's own ink, so
+   a pill that is filled is one that is worth a look. */
+.scheduler-bar__age.scheduler-bar__lead--new { --scheduler-age-fill: var(--scheduler-age-new); }
+.scheduler-bar__age.scheduler-bar__lead--week { --scheduler-age-fill: var(--scheduler-age-week); }
+.scheduler-bar__age.scheduler-bar__lead--old { --scheduler-age-fill: var(--scheduler-age-old); }
+.scheduler-bar__age:is(.scheduler-bar__lead--new, .scheduler-bar__lead--week, .scheduler-bar__lead--old) {
+  background: var(--scheduler-age-fill);
+  color: oklch(from var(--scheduler-age-fill) calc((0.59 - l) * 100) 0 0);
+}
+.scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) {
+  background: transparent;
+  color: var(--scheduler-fg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-fg) 55%, transparent);
+}
 /* The update and the crew are the bar's status, set off from the trip above
    them by a hairline of the bar's own ink. */
 .scheduler-bar__update { box-shadow: 0 -1px 0 color-mix(in srgb, var(--scheduler-fg) 22%, transparent); }
@@ -1738,6 +1748,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 .scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
+/* On a bar, the badge's ink is black or white by its fill's lightness, since a
+   theme's alert colours run from pale to deep. */
+.scheduler-bar:not(.scheduler-bar--amber) .scheduler-bar__alert.scheduler-bar__msg--warning { color: oklch(from var(--scheduler-mark-warning) calc((0.59 - l) * 100) 0 0); }
+.scheduler-bar:not(.scheduler-bar--amber) .scheduler-bar__alert.scheduler-bar__msg--error { color: oklch(from var(--scheduler-mark-error) calc((0.59 - l) * 100) 0 0); }
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
@@ -5866,10 +5880,17 @@ html:has(.scheduler-page[data-takeover]) {
 @media (hover: hover) {
   .scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age)[data-card-opener]:hover { filter: brightness(1.15); }
 }
+@media (hover: hover) {
+  .scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none)[data-card-opener]:hover { background: color-mix(in srgb, var(--scheduler-fg) 16%, transparent); filter: none; }
+}
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert,
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__age,
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="road"]) .scheduler-road__dot {
   filter: brightness(0.82);
+}
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) {
+  background: color-mix(in srgb, var(--scheduler-fg) 24%, transparent);
+  filter: none;
 }
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update:not(:has(.scheduler-bar__age)) {
   border-radius: 2px;

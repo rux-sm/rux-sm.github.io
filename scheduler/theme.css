@@ -1321,3 +1321,11 @@
   --scheduler-kind-bg: #161616;
   --scheduler-kind-fg: #fff;
 }
+
+/* In rux-dark a new update is the unremarkable state and takes the bar's own
+   ink, as its age colour says, so its pill is the outline a settled trip has. */
+[data-theme="rux-dark"] .scheduler-bar__age.scheduler-bar__lead--new {
+  background: transparent;
+  color: var(--scheduler-fg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-fg) 55%, transparent);
+}

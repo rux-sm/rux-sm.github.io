@@ -5,8 +5,8 @@
    customer, and the rows under them say what Samsara says, laid out for the
    narrowest bar, a one-day trip on the board's 10rem day, and kept to one
    day's width on a longer bar, in today's column, every row moving there.
-   - A dot at the destination row's end, a warning sign after it, in the
-     bus's colour, so a scan down the board finds the buses out.
+   - A blue route pill at the destination row's end says the bus status,
+     with a warning sign after it; its icon gently pulses while the trip is out.
    - The times, in the contact row's place: out and back either end of a
      track filled to now; a problem's words in its colour instead, Late to
      spot among them, the worst of live-trip.js's warnings or No signal.
@@ -284,13 +284,9 @@
   // What the bar says of a problem: the worst warning's name, or No signal and how long.
   const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
 
-  /* THE LIVE PILL at the destination row's end, a warning sign after it:
-     Live behind a dot sending out a ring, in the bus's colour, green on the
-     road, the worst warning's amber or red, purple while a driver rests,
-     grey and still with no signal, so a scan down the board finds the buses
-     out. Its title says which. A press on it opens the live card, since the
-     update line it stands in for is not drawn while the bus is out. The
-     alert badge stays where it is, after the pill. */
+  /* The route pill marks a trip in progress through stops and rest breaks.
+     Its blue stays constant while the label reports the bus activity; alerts
+     keep their own badge after it. A press opens the live card. */
   function liveDot(bar, bus, worst) {
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
     let dot = row?.querySelector(':scope > .scheduler-road__dot');
@@ -303,15 +299,21 @@
       dot.type = 'button';
       dot.setAttribute('aria-expanded', 'false');
       dot.dataset.cardOpener = '';
-      dot.append(el('i', 'scheduler-road__ping'), 'Live');
+      const icon = svgUse('#m-route', '16', '0 0 16 16');
+      icon.classList.add('scheduler-road__route');
+      dot.append(icon, el('span', 'scheduler-road__status'));
       row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
     }
-    const tone = worst?.tone ?? (bus.engine == null ? 'scan' : bar.dataset.light === 'rest' ? 'rest' : null);
-    dot.className = `scheduler-road__dot${tone ? ` scheduler-road__dot--${tone}` : ''}`;
-    const words = worst ? `Out on the road: ${worst.title}` : tone === 'scan' ? 'Out on the road: no signal'
-      : tone === 'rest' ? 'Out on the road: resting' : 'Out on the road';
-    dot.title = words;
-    dot.setAttribute('aria-label', words);
+    const status = bus.mph > 0 ? 'Moving' : bus.engine === 'idle' ? 'Idling'
+      : bus.engine === 'off' ? 'Engine off' : bus.engine === 'on' && bus.mph === 0 ? 'Stopped'
+      : bus.engine === 'on' ? 'Running' : 'Unknown';
+    dot.querySelector('.scheduler-road__status').textContent = status;
+    const duration = (bus.engine === 'idle' || bus.engine === 'off') && bus.engine_at
+      ? ` for ${ago(bus.engine_at)}` : '';
+    const detail = status === 'Unknown' && bus.seen ? ` · Last seen ${ago(bus.seen)} ago` : '';
+    const label = `Trip in progress · ${status}${duration}${detail}${worst ? ` · ${worst.title}` : ''}`;
+    dot.title = label;
+    dot.setAttribute('aria-label', `${label}. Open tracking details`);
   }
 
   // When the leg is due back at the yard, as an instant.
@@ -370,8 +372,7 @@
   /* THE INSTRUMENTS in place of the time and update rows, one 16px row in
      two whole-pixel halves either side of a 1px rule, with the room the
      second row leaves as air round them and the drivers. On the left the
-     speed, or Idle or Off and how long, Idle amber past IDLE_MS, or a dash
-     and how long since the last signal, then BARS bars rising like a
+     speed in mph, or a dash without a fresh speed reading, then BARS bars rising like a
      phone's signal, one lit for every BAR_MPH: green on the road, the worst
      warning's amber or red, purple while a driver rests. On the right the
      pump, a short bar filled to the tank's share and the percent, amber
@@ -389,14 +390,11 @@
     const say = sayOf(bus, worst);
     const tone = worst?.tone ?? (bus.engine == null ? 'scan' : bar.dataset.light === 'rest' ? 'rest' : null);
     box.className = `scheduler-road__card${tone ? ` scheduler-road__card--${tone}` : ''}${say ? ' scheduler-road__card--says' : ''}`;
-    const moving = bus.engine === 'on';
-    const long = bus.engine === 'idle' && bus.engine_at && Date.now() - Date.parse(bus.engine_at) >= IDLE_MS;
+    const moving = bus.mph > 0;
     const half = el('span', 'scheduler-road__half scheduler-road__half--speed');
-    const speed = el('span', `scheduler-road__speed${moving ? '' : ' scheduler-road__speed--still'}${long ? ' scheduler-road__speed--long' : ''}`);
-    speed.append(el('span', 'scheduler-road__big', bus.engine == null ? '–' : moving ? (bus.mph != null ? String(bus.mph) : '–')
-      : bus.engine === 'idle' ? 'Idle' : 'Off'));
-    const unit = bus.engine == null ? (bus.seen ? ago(bus.seen) : '') : moving ? 'mph' : bus.engine_at ? ago(bus.engine_at) : '';
-    if (unit) speed.appendChild(el('span', 'scheduler-road__unit', unit));
+    const speed = el('span', 'scheduler-road__speed');
+    speed.append(el('span', 'scheduler-road__big', bus.mph != null ? String(bus.mph) : '–'),
+      el('span', 'scheduler-road__unit', 'mph'));
     const bars = el('span', 'scheduler-road__bars');
     const lit = moving ? Math.min(BARS, Math.round((bus.mph ?? 0) / BAR_MPH)) : 0;
     for (let i = 0; i < BARS; i++) bars.appendChild(el('i', i < lit ? 'scheduler-road__bar--on' : null));

@@ -318,12 +318,12 @@
         one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
         one('On its second day', 'A trip longer than a day stands its rows in today\'s column while the bus is out, and on its first day before and after.', live('Coastal Youth Choir', { span: 3, day: 1 })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
-        one('Idling', 'Engine running and the bus still, at a stop: Idle and how long, beside the bars, all empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
+        one('Idling', 'The route pill says Idling; the speed stays 0 mph and the bars stay empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
         one('Resting', 'A driver in the sleeper and none driving: purple bars when the bus moves on.', live('Riverbend Seniors', {
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),
-        one('Idling a long time', 'Idle past half an hour turns amber.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
-        one('Engine off', 'Off and how long.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
+        one('Idling a long time', 'The route pill stays blue through a long idle; its tooltip gives the duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
+        one('Engine off', 'The route pill says Engine off; 0 mph stays in the instruments.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
         one('No signal', 'Samsara has not heard from the bus: a grey dash, and No signal in place of the times.', live('Mesa Robotics Club', { bus: { engine: null, mph: null, heading: null, fuel: null, seen: new Date(now - 25 * MIN).toISOString(), drivers: [] } })),
         one('Starting', 'Coming on the road, the bar shudders while its engine cranks, once a page load, at Full motion.', live('Lakeview High School'), { replay: true }),
         one('Not rolling', 'Red: the engine still off at the yard from ten minutes before yard-out. A red warning\'s bars blink for their first minute.', live('Northside Band', {

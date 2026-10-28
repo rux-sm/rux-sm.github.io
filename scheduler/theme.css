@@ -110,7 +110,7 @@
   --scheduler-mark-success: var(--rux-support-success);
   /* A driver's duty while the bus is out: on duty, and resting in the sleeper. */
   --scheduler-mark-info: var(--rux-support-info);
-  --scheduler-mark-rest: var(--rux-tag-color-purple);
+  --scheduler-mark-rest: var(--rux-status-purple);
 }
 /* The figure in a bar's alert count is the dark ink on the warning fill, which
    is a light colour in every theme. apple-light's is Apple's vivid orange,

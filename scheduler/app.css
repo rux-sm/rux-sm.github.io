@@ -959,8 +959,8 @@ button.scheduler-row-head__num::after {
    the inks reads on it, so its icon keeps the bar's own. */
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
    anywhere else on the bar only selects it: the update line fills with the
-   footer's hover tone, and an empty one says No updates; the Live pill fills
-   with its bus's colour. A touch screen has no pointer to wait for, so it
+   footer's hover tone, and an empty one says No updates; the route pill
+   brightens its blue fill. A touch screen has no pointer to wait for, so it
    shows none of them; a press fills on any screen. */
 @media (hover: hover) {
   .scheduler-bar__update[data-card-opener]:hover {
@@ -969,8 +969,7 @@ button.scheduler-row-head__num::after {
     background: var(--scheduler-opener-fill);
   }
   .scheduler-road__dot[data-card-opener]:hover {
-    background: color-mix(in srgb, var(--scheduler-dot) 24%, transparent);
-    box-shadow: inset 0 0 0 1px var(--scheduler-dot);
+    filter: brightness(1.1);
   }
 }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
@@ -1740,49 +1739,28 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* A live bus's pill: Live in 10px, 16px tall, the height of a face and the
-   alert count beside it, in the bar's own ink inside a
-   1px outline of the bus's colour with no fill, so the word reads as well as
-   the bar's own on every theme, behind a 6px dot of the colour that sends
-   out a ring every 1.6s, as a live signal does; the outline and the dot say
-   the colour. 4px before the alert count. With no signal the dot stands
-   still. */
-@keyframes scheduler-road-ping { 0% { transform: scale(1); opacity: .8; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+/* A trip in progress keeps a blue status pill through stops and rest.
+   Only its route icon pulses; the label and fill stay steady. */
+@keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
 .scheduler-road__dot {
-  --scheduler-dot: var(--scheduler-mark-success);
-  background: transparent;
-  padding-block: 0;
+  background: var(--rux-support-info);
+  color: var(--rux-text-inverse);
   flex: none;
   align-self: center;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  block-size: 16px;
-  padding-inline: 5px 6px;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-dot) 60%, transparent);
-  color: inherit;
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: .2px;
+  gap: var(--rux-spacing-02);
+  block-size: 18px;
+  padding: 0 var(--rux-spacing-03);
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: nowrap;
 }
-.scheduler-road__ping { position: relative; flex: none; inline-size: 6px; block-size: 6px; border-radius: 50%; background: var(--scheduler-dot); }
-.scheduler-road__ping::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: var(--scheduler-dot);
-  animation: scheduler-road-ping 1.6s cubic-bezier(0, 0, .2, 1) infinite;
-}
-.scheduler-road__dot--scan .scheduler-road__ping::after { content: none; }
+.scheduler-road__route { flex: none; animation: scheduler-road-pulse 3s ease-in-out infinite; }
 .scheduler-road__dot + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
-.scheduler-road__dot--warning { --scheduler-dot: var(--scheduler-mark-warning); }
-.scheduler-road__dot--error { --scheduler-dot: var(--scheduler-mark-error); }
-.scheduler-road__dot--rest { --scheduler-dot: var(--scheduler-mark-rest); }
-.scheduler-road__dot--scan { --scheduler-dot: var(--scheduler-road-scan); }
 .scheduler-page[data-board="compact"] .scheduler-road__dot { display: none; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
@@ -1918,12 +1896,12 @@ button.scheduler-row-head__num::after {
 /* A red warning's bars blink for the first minute the page has seen it,
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
-.scheduler-bar--road[data-alarm] :is(.scheduler-road__card--error .scheduler-road__bars, .scheduler-road__dot--error) { animation: scheduler-road-alarm 1.4s linear infinite; }
+.scheduler-bar--road[data-alarm] .scheduler-road__card--error .scheduler-road__bars { animation: scheduler-road-alarm 1.4s linear infinite; }
 :is([data-motion="calm"], [data-motion="off"]) :is(
   .scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low, .scheduler-road__bars, .scheduler-road__dot) { animation: none; }
-/* The pill's ring goes, leaving its dot still. */
-:is([data-motion="calm"], [data-motion="off"]) .scheduler-road__ping::after { content: none; }
-@media (prefers-reduced-motion: reduce) { .scheduler-road__ping::after { content: none; } }
+/* The route icon stays fully visible when motion is reduced or off. */
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-road__route { animation: none; }
+@media (prefers-reduced-motion: reduce) { .scheduler-road__route { animation: none; } }
 
 /* THE LEGEND, the view menu's What the colours mean: the speed's five bars
    in each colour they take. */
@@ -2093,12 +2071,7 @@ button.scheduler-row-head__num::after {
 .scheduler-road__half > .scheduler-road__say { display: none; }
 .scheduler-road__speed { display: flex; align-items: baseline; min-inline-size: 0; block-size: var(--scheduler-row-h); }
 .scheduler-road__big { font-size: 16px; line-height: var(--scheduler-row-h); font-weight: 600; }
-/* Idle and Off are words, not figures, so they are set a step smaller to
-   leave the half room for how long. */
-.scheduler-road__speed--still .scheduler-road__big { font-size: 13px; }
 .scheduler-road__unit { margin-inline-start: 2px; font-size: 9px; opacity: .75; }
-.scheduler-road__speed--long { color: var(--scheduler-age-week); }
-.scheduler-road__speed--long .scheduler-road__unit { opacity: 1; }
 .scheduler-road__card--scan .scheduler-road__speed { color: var(--scheduler-road-scan); }
 /* Five bars, 3px wide and 1px apart, rising 4px to 12px from the baseline. */
 .scheduler-road__bars { display: flex; align-items: flex-end; gap: 1px; flex: none; block-size: 12px; margin-inline-start: auto; }

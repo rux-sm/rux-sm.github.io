@@ -330,9 +330,12 @@ expect('moving: the speed, five bars with one lit for every 16 mph, green, a rul
   [text(lit('At highway speed'), '.scheduler-road__big'), text(lit('At highway speed'), '.scheduler-road__unit'), card(lit('At highway speed')).querySelectorAll('.scheduler-road__bars > i').length,
     lit5(lit('At highway speed')), tone(lit('At highway speed')), has(lit('At highway speed'), '.scheduler-road__rule'), text(lit('At highway speed'), '.scheduler-road__pct'), say(lit('At highway speed'))],
   ['64', 'mph', 5, 4, null, true, '72%', null]);
-const dot = b => { const d = b.querySelector('.scheduler-bar__dest > .scheduler-road__dot'); return d ? d.classes().find(c => /--(error|warning|rest|scan)$/.test(c))?.split('--')[1] ?? 'ok' : null; };
-expect('a dot at the destination row\'s end in the bus\'s colour',
-  ['At highway speed', 'Late to spot', 'Not rolling', 'Resting', 'No signal'].map(n => dot(lit(n))), ['ok', 'warning', 'error', 'rest', 'scan']);
+expect('the route pill marks an active trip while its label follows the bus, including stops and unknown readings',
+  ['At highway speed', 'Idling', 'Engine off', 'Resting', 'No signal'].map(n => {
+    const pill = lit(n).querySelector('.scheduler-bar__dest > .scheduler-road__dot');
+    return [text(pill, '.scheduler-road__status'), useOf(pill.querySelector('.scheduler-road__route')),
+      pill.getAttribute('aria-label').startsWith('Trip in progress · '), pill.hasAttribute('data-card-opener')];
+  }), ['Moving', 'Idling', 'Engine off', 'Idling', 'Unknown'].map(s => [s, '#m-route', true, true]));
 expect('where the bus is goes on the tooltip', card(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its colour on the bars and its name in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [tone(b), ...say(b)]; }), [
@@ -353,10 +356,11 @@ expect('two drivers: both in the row, the one at the wheel bold',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
 expect('resting turns the bars purple, and idling lights none', [tone(lit('Resting')), lit5(lit('Resting'))], ['rest', 0]);
-expect('no signal: a grey dash and how long since, and the words in place of the times',
-  [tone(lit('No signal')), text(lit('No signal'), '.scheduler-road__big'), text(lit('No signal'), '.scheduler-road__unit'), say(lit('No signal'))], ['scan', '–', '25m', ['quiet', 'No signal 25m']]);
-expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long time'].map(n => [text(lit(n), '.scheduler-road__big'), has(lit(n), '.scheduler-road__speed--long')]),
-  [['Idle', false], ['Idle', true]]);
+expect('no signal: speed stays a dash in mph, with freshness in place of the times',
+  [tone(lit('No signal')), text(lit('No signal'), '.scheduler-road__big'), text(lit('No signal'), '.scheduler-road__unit'), say(lit('No signal'))], ['scan', '–', 'mph', ['quiet', 'No signal 25m']]);
+expect('stationary buses keep a numeric speed while the pill carries engine state',
+  ['Idling', 'Idling a long time', 'Engine off'].map(n => [text(lit(n), '.scheduler-road__big'), text(lit(n), '.scheduler-road__unit')]),
+  [['0', 'mph'], ['0', 'mph'], ['0', 'mph']]);
 expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
 expect('a driver Samsara has in the bus reads confirmed whatever they answered',
   [lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), icon(lit('In the bus, not yet confirmed').querySelector('.scheduler-crew'))],

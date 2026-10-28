@@ -2343,6 +2343,35 @@ button.scheduler-row-head__num::after {
   max-inline-size: 100%;
   block-size: max(24rem, calc(100dvh - 15rem));
 }
+/* The handle that drags a document or a form wider, in the 16px the board
+   leaves between its regions so it covers neither panel; data.js shows it only
+   on a page worth reading. A line shows under the pointer, under the keyboard's
+   focus and while it is held. In a window over the page, in front of the board,
+   or below md the width is not the column's, so it is not drawn. */
+.scheduler-viewer { position: relative; }
+.scheduler-viewer__resize {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(-1 * var(--rux-spacing-05));
+  inline-size: var(--rux-spacing-05);
+  z-index: 1;
+  cursor: col-resize;
+  touch-action: none;
+  outline: 0;
+}
+.scheduler-viewer__resize[hidden],
+.scheduler-viewer[data-expanded] .scheduler-viewer__resize,
+.scheduler-page[data-takeover] .scheduler-viewer__resize { display: none; }
+.scheduler-viewer__resize::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(50% - 1px);
+  inline-size: 2px;
+}
+.scheduler-viewer__resize:hover::after { background: var(--rux-border-interactive); }
+.scheduler-viewer__resize:focus-visible::after,
+.scheduler-viewer__resize[data-dragging]::after { background: var(--rux-focus); }
 /* A STORED FILE OPENED LARGER stands in a window centred over the page, as
    Carbon's modal stands, a letter page's reading width and the window's
    height less 32px each side, and the whole screen on a phone. data.js makes
@@ -4098,6 +4127,7 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
     inline-size: 0;
     block-size: auto;
   }
+  .scheduler-viewer__resize { display: none; }
   /* And the lists' pane in front takes all the inset leaves, as the editor and
      the document panel do in overrides.css. */
   .scheduler-page[data-takeover="to-do"] .scheduler-to-do--pane {

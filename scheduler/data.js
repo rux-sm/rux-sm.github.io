@@ -13708,7 +13708,132 @@
      says so; opening anything else brings the row back. */
   function setToolbarShown(shown) {
     if (viewerToolbar) viewerToolbar.hidden = !shown;
+    setResizable(shown && key !== 'calc');
   }
+
+  /* A DOCUMENT IS DRAGGED WIDER AT ITS EDGE. A stored file and a form each
+     show a page that is small at the column's width, so they carry a handle in
+     the gap beside the panel; the forms list and the calculator have nothing
+     to read at length and stay at the lists' width. The width is the column's
+     own `--scheduler-viewer-w`, which `placeRoom` reads back, so the week gives
+     way as it does for any panel and the drag stops where the week would reach
+     its minimum. It lasts as long as the page is showing: closing the panel, or
+     going back to the list, returns the column to its width. */
+  const RESIZE_MIN = 20;
+  const RESIZE_MAX = 64;
+  const RESIZE_STEP = 1;
+  const resizer = document.createElement('div');
+  resizer.className = 'scheduler-viewer__resize';
+  resizer.setAttribute('role', 'separator');
+  resizer.setAttribute('aria-orientation', 'vertical');
+  resizer.setAttribute('aria-label', `Resize ${VIEWER_NAMES[key].toLowerCase()}`);
+  resizer.title = 'Drag to resize, double-click to reset';
+  resizer.tabIndex = 0;
+  resizer.hidden = true;
+  viewerEl?.append(resizer);
+
+  const viewerWidth = () => ownWidth(viewerEl, '--scheduler-viewer-w');
+  function resizeLimits() {
+    const rem = remPx();
+    const board = boardEl?.getBoundingClientRect().width ?? 0;
+    const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
+    const open = panels().filter(p => p.open);
+    const used = open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() * rem;
+    const max = Math.max(RESIZE_MIN * rem, Math.min(RESIZE_MAX * rem, viewerWidth() + board - used));
+    return { min: RESIZE_MIN * rem, max };
+  }
+  function syncResizer() {
+    const { min, max } = resizeLimits();
+    const now = viewerWidth();
+    resizer.setAttribute('aria-valuemin', String(Math.round(min)));
+    resizer.setAttribute('aria-valuemax', String(Math.round(max)));
+    resizer.setAttribute('aria-valuenow', String(Math.round(now)));
+  }
+  let resizeFrame = 0;
+  function setViewerWidth(px) {
+    const { min, max } = resizeLimits();
+    const rem = remPx();
+    viewerEl.style.setProperty('--scheduler-viewer-w', `${Math.min(max, Math.max(min, px)) / rem}rem`);
+    syncResizer();
+    // The board lays out once a frame, however fast the pointer moves.
+    if (resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
+      placeRoom();
+      window.Rux?.schedule?.fit?.();
+    });
+  }
+  function setResizable(on) {
+    if (!viewerEl) return;
+    resizer.hidden = !on;
+    if (on) { syncResizer(); return; }
+    if (!viewerEl.style.getPropertyValue('--scheduler-viewer-w')) return;
+    viewerEl.style.removeProperty('--scheduler-viewer-w');
+    placeRoom();
+    window.Rux?.schedule?.fit?.();
+  }
+  /* The pointer is captured by the handle, so the file's frame under it does not
+     take the drag, and the width follows how far the pointer has moved from
+     where it went down: the column is left of the week, so right is wider.
+
+     The week is not laid out again while the pointer moves: fitting its bars
+     to a new width costs far more than a frame, and it is the whole of what
+     made a drag stutter. It keeps the width it had, as the column grows over
+     its side, and the board clips what runs past; once the pointer is let go it
+     takes its place and is fitted once. The limits are read once, and the
+     width is set once a frame. */
+  resizer.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const startX = e.clientX;
+    const startW = viewerWidth();
+    const rem = remPx();
+    const sign = getComputedStyle(viewerEl).direction === 'rtl' ? -1 : 1;
+    const { min, max } = resizeLimits();
+    resizer.setPointerCapture(e.pointerId);
+    resizer.setAttribute('data-dragging', '');
+    // Read first: with `flex: none` the week measures as its content, not as it is shown.
+    const weekW = frameEl.getBoundingClientRect().width;
+    frameEl.style.flex = 'none';
+    frameEl.style.inlineSize = `${weekW}px`;
+    boardEl.style.overflowX = 'clip';
+    let x = startX;
+    let pending = 0;
+    const apply = () => {
+      pending = 0;
+      const w = Math.min(max, Math.max(min, startW + (x - startX) * sign));
+      viewerEl.style.setProperty('--scheduler-viewer-w', `${w / rem}rem`);
+      frameEl.style.marginInlineEnd = `${startW - w}px`;
+      resizer.setAttribute('aria-valuenow', String(Math.round(w)));
+    };
+    const move = ev => {
+      x = ev.clientX;
+      if (!pending) pending = requestAnimationFrame(apply);
+    };
+    const stop = () => {
+      cancelAnimationFrame(pending);
+      if (pending) apply();
+      resizer.removeAttribute('data-dragging');
+      resizer.removeEventListener('pointermove', move);
+      resizer.removeEventListener('pointerup', stop);
+      resizer.removeEventListener('pointercancel', stop);
+      for (const prop of ['flex', 'inlineSize', 'marginInlineEnd']) frameEl.style[prop] = '';
+      boardEl.style.overflowX = '';
+      syncResizer();
+      placeRoom();
+      window.Rux?.schedule?.fit?.();
+    };
+    resizer.addEventListener('pointermove', move);
+    resizer.addEventListener('pointerup', stop);
+    resizer.addEventListener('pointercancel', stop);
+  });
+  resizer.addEventListener('keydown', e => {
+    const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!dir) return;
+    e.preventDefault();
+    setViewerWidth(viewerWidth() + dir * (e.shiftKey ? 4 : RESIZE_STEP) * remPx());
+  });
+  resizer.addEventListener('dblclick', () => { setResizable(false); setResizable(true); });
 
   /* THE WAY BACK TO THE LIST a form was chosen from. The form says how to go
      back, since the list is its frame's page and not this one's; anything
@@ -13941,6 +14066,8 @@
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.hidden = true;
     viewerEl.removeAttribute('data-expanded');
+    resizer.hidden = true;
+    viewerEl.style.removeProperty('--scheduler-viewer-w');
     viewerDocId = null;
     viewerType = null;
     viewerMark = null;

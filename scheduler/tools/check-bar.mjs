@@ -222,6 +222,9 @@ expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn
 expect('an open trip with no problem leads its update with a clock in the update\'s age',
   drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__age')?.classes().find(c => /--(new|week|old)$/.test(c))?.split('--')[1] ?? null),
   ['new', 'week', 'old', null]);
+expect('a trip that asks nothing more still has a grey pill, and only the pill opens the card',
+  drawn('trip-bar', 'Update ages').map(b => [b.querySelector('.scheduler-bar__age')?.classes().includes('scheduler-bar__lead--settled'), b.querySelector('.scheduler-bar__update').attrs?.['data-card-opener'] ?? null]),
+  [[false, null], [false, null], [false, null], [true, null]]);
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 
 console.log('\n  Out on the road');

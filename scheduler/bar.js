@@ -126,8 +126,10 @@
   };
   /* THE AGE, at the start of the update row: a clock and how long ago the
      newest update was, "20m", "3h", "5d", or the date after a month, in a pill
-     the size and shape of the alert badge, filled in the colour of its age.
-     The clock means age and nothing else. */
+     the size and shape of the alert badge, filled in the colour of its age,
+     or grey for a trip that asks nothing more, or "No updates" for one with
+     none. The clock means age and nothing else, and the pill is the only part
+     of the row that opens the card. */
   const ageWords = at => {
     const min = (Date.now() - Date.parse(at)) / 60e3;
     if (min < 60) return `${Math.max(1, Math.floor(min))}m`;
@@ -137,7 +139,9 @@
   };
   const ageMark = (tone, at, words) => {
     const m = el('span', `scheduler-bar__msg scheduler-bar__age scheduler-bar__lead--${tone}`);
-    m.append(svgUse('#m-schedule', '12', '0 0 32 32'), ageWords(at));
+    // A trip with no update has no age to give, so its pill says so.
+    if (at) m.append(svgUse('#m-schedule', '12', '0 0 32 32'), ageWords(at));
+    else m.append('No updates');
     m.dataset.cardOpener = '';
     m.setAttribute('role', 'img');
     m.setAttribute('aria-label', words);
@@ -621,9 +625,13 @@
         age = ageMark(ageTone, latest.created_at, `Latest update ${updateStamp(latest)}`);
       }
     }
+    if (!age && !done) {
+      age = latest ? ageMark('settled', latest.created_at, `Latest update ${updateStamp(latest)}`)
+        : ageMark('none', null, 'No updates yet');
+    }
     // The age leads the update line and opens the card, whose Updates it begins.
     const updateRow = addRow(bar, `scheduler-bar__update${tone}`, age, news);
-    // The age pill opens the card; a row with none, empty or settled, opens it whole.
+    // The age pill opens the card; a finished trip's row, which gives facts, opens it whole.
     if (!age) updateRow.dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;

@@ -931,6 +931,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__age.scheduler-bar__lead--new { background: var(--scheduler-age-new); color: var(--rux-text-inverse); }
 .scheduler-bar__age.scheduler-bar__lead--week { background: var(--scheduler-age-week); color: var(--rux-text-inverse); }
 .scheduler-bar__age.scheduler-bar__lead--old { background: var(--scheduler-age-old); color: var(--rux-text-inverse); }
+.scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) { background: color-mix(in srgb, var(--scheduler-fg) 20%, transparent); color: var(--scheduler-fg); }
 /* The update and the crew are the bar's status, set off from the trip above
    them by a hairline of the bar's own ink. */
 .scheduler-bar__update { box-shadow: 0 -1px 0 color-mix(in srgb, var(--scheduler-fg) 22%, transparent); }

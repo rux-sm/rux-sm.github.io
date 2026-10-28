@@ -1150,6 +1150,7 @@ button.scheduler-row-head__num::after {
   box-sizing: border-box;
   inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
   block-size: var(--scheduler-card-h, 33rem);
+  max-block-size: var(--scheduler-card-max, none);
   flex-direction: column;
   flex-wrap: nowrap;
   --card-surface: var(--rux-layer-02);
@@ -5865,10 +5866,10 @@ html:has(.scheduler-page[data-takeover]) {
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
 
-/* The part of the card the press opened it at is marked by a 2px edge in the
-   focus colour inside its tile, so it is plain which of Needs and Updates the
-   bar's badge or update line meant. */
-.scheduler-bar-shortcuts[data-section="needs"] .scheduler-card__needs,
-.scheduler-bar-shortcuts[data-section="updates"] .scheduler-card__updates {
-  box-shadow: inset 2px 0 0 var(--card-focus, var(--rux-focus));
+/* The part of a bar the open card came from keeps a 2px ring, as the toolbar's
+   button stays lit while its menu is open. The card follows its bar in the
+   markup, so the ring survives the bar being drawn again. */
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert,
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update {
+  box-shadow: 0 0 0 2px var(--scheduler-fg);
 }

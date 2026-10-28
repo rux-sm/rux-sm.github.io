@@ -10701,19 +10701,15 @@
   // Whether this bar's card is on screen now, which a press toggles.
   const cardShowing = bar => bar === selectedBar() && cardAsked(bar) && !barShortcuts?.hidden;
   // Asking again brings back a card put away by one of its actions.
+  /* THE CARD IS TWO CARDS: Alerts, opened from a bar's alert badge, and
+     Updates, opened from its update line. Each draws only its own part, sized
+     to what it holds; Space opens both, as the card always was. */
+  let cardSection = '';
   function askCard(bar, open, section = '') {
     cardOpenFor = open ? barKey(bar) : null;
+    cardSection = open ? section : '';
     if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
     placeBarOpen();
-    markCardSection(open ? section : '');
-  }
-  /* The part of the card the press was on, its alert badge for Needs and its
-     update line for Updates, is marked and brought into view; Space, the Live
-     pill and the card put away mark none. */
-  function markCardSection(section) {
-    if (!barShortcuts) return;
-    if (section) barShortcuts.dataset.section = section; else delete barShortcuts.dataset.section;
-    if (section) barShortcuts.querySelector(`.scheduler-card__${section}`)?.scrollIntoView({ block: 'nearest' });
   }
   function putCardAway(bar) {
     cardAwayFor = barKey(bar);
@@ -10730,6 +10726,7 @@
       || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor
       || (!docked && (!cardAsked(bar) || isEditorTrip(bar)));
     barShortcuts.hidden = none;
+    if (cardSection) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
     // The Contacts window goes with its trip when it is put down.
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
@@ -10814,7 +10811,10 @@
     const INSET = 16;
     const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
     const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
-    barShortcuts.style.setProperty('--scheduler-card-h', `${Math.min(33 * parseFloat(getComputedStyle(document.documentElement).fontSize), roomH)}px`);
+    const cardMax = `${Math.min(33 * parseFloat(getComputedStyle(document.documentElement).fontSize), roomH)}px`;
+    // A card of one part is as tall as that part, up to the full card's height.
+    barShortcuts.style.setProperty('--scheduler-card-h', cardSection ? 'auto' : cardMax);
+    barShortcuts.style.setProperty('--scheduler-card-max', cardMax);
     const list = barShortcuts.querySelector('.scheduler-card__updates[data-open] .scheduler-card__update-list');
     list?.style.removeProperty('max-block-size');
     tip.width = barShortcuts.offsetWidth;
@@ -15054,7 +15054,7 @@
     const carded = !!trip;
     const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
-      bar.dataset.hotelBooked, slots.join(), cardKey(trip),
+      bar.dataset.hotelBooked, slots.join(), cardKey(trip), cardSection,
       JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadTabOf(bar)} ${roadTabOf(bar) === 'road' ? bar.dataset.road : ''}` : ''].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
@@ -15077,7 +15077,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar)] : []));
+    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), bar.dataset.road ? drawRoadCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
 
@@ -15805,7 +15805,7 @@
     list.setAttribute('aria-label', 'Trip card');
     tabs.appendChild(list);
     const alerts = alertsOf(trip, barFacts.get(bar));
-    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['updates', 'Updates', () => drawCard(trip, bar)]].map(([id, words, draw]) => {
+    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['updates', 'Updates', () => drawCard(trip, bar, '')]].map(([id, words, draw]) => {
       const selected = id === on;
       const tab = el('button', `rux--tabs__nav-item rux--tabs__nav-link${selected ? ' rux--tabs__nav-item--selected' : ''}`);
       tab.type = 'button';
@@ -15835,7 +15835,7 @@
     return wrap;
   }
 
-  function drawCard(trip, bar) {
+  function drawCard(trip, bar, section = '') {
     const card = el('div', 'scheduler-card');
     card.dataset.tripId = trip.id;
     const row = (cls, tag = 'div') => el(tag, `scheduler-card__row ${cls}`);
@@ -15859,6 +15859,8 @@
        and the list it counts read as one thing, and the list in a box of its
        own under it, apart from the updates. */
     const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
+    // Alerts alone or Updates alone when the press named one; Needs falls back to Updates when there is none.
+    const only = section === 'needs' && !alerts.length ? 'updates' : section;
     /* Floating, each part is a tile holding its title, its button and its
        rows, as the live card's are; docked on a phone the parts are the
        sheet's own bands. */
@@ -15869,7 +15871,7 @@
       const needs = part('scheduler-card__needs');
       needs.append(cardTitle('Needs', alerts.length, null,
         alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'), needsList);
-      card.appendChild(needs);
+      if (only !== 'updates') card.appendChild(needs);
     }
     let reminded = false;
     for (const a of alerts) {
@@ -15965,7 +15967,7 @@
       list.append(...shown.map(updateItem));
       updates.appendChild(list);
     }
-    card.appendChild(updates);
+    if (only !== 'needs') card.appendChild(updates);
     return card;
   }
 

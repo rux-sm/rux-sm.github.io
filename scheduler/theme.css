@@ -879,7 +879,8 @@
 [data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--week { color: var(--scheduler-age-week); }
 [data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--old { color: var(--scheduler-age-old); }
 [data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
-[data-theme="rux-100"] .scheduler-bar__contact { color: color-mix(in oklab, var(--scheduler-fg) 80%, transparent); }
+[data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
+[data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
   --scheduler-avail-fill: repeating-linear-gradient(135deg, var(--rux-layer-02) 0 6px, var(--rux-layer-03) 6px 12px);

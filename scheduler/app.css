@@ -5873,7 +5873,17 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update {
   box-shadow: 0 0 0 2px var(--scheduler-fg);
 }
+/* The badge sits at the bar's edge, which would cut an outer ring. */
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert {
+  box-shadow: inset 0 0 0 2px var(--scheduler-fg);
+}
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="road"]) .scheduler-road__dot {
   outline: 2px solid var(--scheduler-fg);
   outline-offset: 1px;
 }
+
+/* A card of one part, Alerts or Updates, has no head and no frame inside its
+   own: its rows stand on the card's surface, as an overflow menu's do, and it
+   closes on Escape, a press outside, or the same press that opened it. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-section="needs"], [data-section="updates"]) .scheduler-card:has(> .scheduler-card__tile) { padding: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-section="needs"], [data-section="updates"]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile { background: transparent; }

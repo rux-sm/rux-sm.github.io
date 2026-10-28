@@ -15079,7 +15079,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [...(docked ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
+    }), ...(carded ? [...(docked || cardSection === 'needs' || cardSection === 'updates' ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
       : cardSection === 'road' ? drawLiveCard(trip, bar) : cardSection ? drawCard(trip, bar, cardSection) : drawRoadCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
   }
@@ -15880,7 +15880,7 @@
     for (const a of alerts) {
       const band = goes(row(a.row), a.go, a.words);
       if (a.spot) band.dataset.spot = a.spot;
-      band.append(svgUse(a.row === 'scheduler-card__misfit' ? '#m-notification_important-fill' : '#m-notifications-fill', '16', '0 0 32 32'),
+      band.append(svgUse('#m-error-fill', '16', '0 0 32 32'),
         el('strong', null, a.words));
       if (a.row === 'scheduler-card__asks' && !reminded) {
         reminded = true;

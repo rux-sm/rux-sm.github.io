@@ -621,9 +621,10 @@
         age = ageMark(ageTone, latest.created_at, `Latest update ${updateStamp(latest)}`);
       }
     }
-    // The update line opens the card, whose Updates it begins, empty or not,
-    // and its age leads it.
-    addRow(bar, `scheduler-bar__update${tone}`, age, news).dataset.cardOpener = '';
+    // The age leads the update line and opens the card, whose Updates it begins.
+    const updateRow = addRow(bar, `scheduler-bar__update${tone}`, age, news);
+    // The age pill opens the card; a row with none, empty or settled, opens it whole.
+    if (!age) updateRow.dataset.cardOpener = '';
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.

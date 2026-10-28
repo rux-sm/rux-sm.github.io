@@ -290,8 +290,10 @@ reads only the ones before it. Nothing is written until step 10.
 - `draft_trip_change` fills only the fields the panel shows as one input: `bus_count` is named in the note at the top and left for the Buses tab.
 - A draft's `departure_time` fills Departs, but a Spot saved apart from it stays, since the editor keeps a customer's own spot time: set Spot in the pickup's window and read the Summary's Start back.
 - Any Save on a trip whose Estimated miles is blank writes the route's miles into it, even a route with a stop not yet measured, so a save made only to link a thread can write a wrong figure: check the Route tab's miles before such a save.
+- A draft's `destination` becomes a blank "McAllen, TX"-style stop on a round trip once saved, which blocks Route done and cannot be removed while the type is Round trip: set Type to One way, remove the stop, set Type back to Round trip and pick the pickup place as the drop-off, then save, and do the same on each leg Add leg copies; for a local trip with no stops, leave `destination` out of the draft.
+- Add leg makes the day after the last leg: change that leg's start date to the real day on its Details tab, then set its times and bus, and save.
 - Add leg saves the moment its update box is answered, a copy of every bus on the day after the trip, and the leg list over the tabs asks to save before it switches: ask rux before pressing it, and plan one Save a leg.
-- A Bus rental line counts the first leg's buses, and the calculator opened on a later leg reads the first leg's route: a later leg's own rental goes in as an Other line, quantity 1, its cost typed.
+- A Bus rental line counts the first leg's buses, and the calculator opened on a later leg reads the first leg's route: a later leg's own rental goes in as an Add line of kind Bus rental, quantity 1, its cost typed, never Other, because the quote prints a Bus Rental row for each day.
 
 ## When rux teaches something new
 

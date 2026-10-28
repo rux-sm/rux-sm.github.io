@@ -875,9 +875,6 @@
   --scheduler-amber-hover-ring: none;
 }
 [data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__update { color: var(--rux-support-warning); }
-[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--new { color: var(--scheduler-age-new); }
-[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--week { color: var(--scheduler-age-week); }
-[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__age.scheduler-bar__lead--old { color: var(--scheduler-age-old); }
 [data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 [data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }

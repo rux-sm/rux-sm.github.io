@@ -924,21 +924,13 @@ button.scheduler-row-head__num::after {
   border-radius: 50%;
 }
 .scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
-/* The alert badge is the message pill with its sign before the count, and
-   the age is a clock with its words after it, in the update's colour. */
-.scheduler-bar__alert { display: inline-flex; align-items: center; gap: 2px; }
-.scheduler-bar__age {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  align-self: center;
-  gap: 2px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  line-height: var(--scheduler-mark-glyph);
-}
-.scheduler-bar__age > svg { inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
+/* The alert badge and the age are the message pill, each with its icon before its words. */
+.scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age) { display: inline-flex; align-items: center; gap: 2px; }
+/* Filled in the colour of its age, with the theme's inverse ink, so the clock
+   reads as the same kind of mark as the alert badge beside it. */
+.scheduler-bar__age.scheduler-bar__lead--new { background: var(--scheduler-age-new); color: var(--rux-text-inverse); }
+.scheduler-bar__age.scheduler-bar__lead--week { background: var(--scheduler-age-week); color: var(--rux-text-inverse); }
+.scheduler-bar__age.scheduler-bar__lead--old { background: var(--scheduler-age-old); color: var(--rux-text-inverse); }
 /* The update and the crew are the bar's status, set off from the trip above
    them by a hairline of the bar's own ink. */
 .scheduler-bar__update { box-shadow: 0 -1px 0 color-mix(in srgb, var(--scheduler-fg) 22%, transparent); }
@@ -966,7 +958,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its icon keeps the bar's own. */
-.scheduler-bar--amber .scheduler-bar__age { color: inherit; }
 .scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-fg); color: var(--scheduler-bg); }
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
    anywhere else on the bar only selects it: the update line takes a tint of

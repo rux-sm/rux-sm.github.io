@@ -976,7 +976,7 @@ button.scheduler-row-head__num::after {
     content: 'No updates';
     opacity: .7;
   }
-  :is(.scheduler-bar__lead, .scheduler-bar__age)[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
+  .scheduler-bar__lead[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
   .scheduler-road__dot[data-card-opener]:hover {
     background: color-mix(in srgb, var(--scheduler-dot) 24%, transparent);
     box-shadow: inset 0 0 0 1px var(--scheduler-dot);
@@ -5857,20 +5857,22 @@ html:has(.scheduler-page[data-takeover]) {
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
 
-/* The part of a bar the open card came from keeps a 2px ring, as the toolbar's
-   button stays lit while its menu is open. The card follows its bar in the
-   markup, so the ring survives the bar being drawn again. */
+/* The badges that open a card answer the pointer as Carbon's operational tags
+   do: a lighter fill on hover, and a darker one while their card is open, so no
+   ring is drawn where the bar's edge or its row would cut it. The card follows
+   its bar in the markup, so the open state survives the bar being drawn again.
+   An update with no age to mark takes the update line's own tint. */
+@media (hover: hover) {
+  .scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age)[data-card-opener]:hover { filter: brightness(1.15); }
+}
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert,
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update {
-  box-shadow: 0 0 0 2px var(--scheduler-fg);
-}
-/* The badge sits at the bar's edge, which would cut an outer ring. */
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert {
-  box-shadow: inset 0 0 0 2px var(--scheduler-fg);
-}
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__age,
 .scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="road"]) .scheduler-road__dot {
-  outline: 2px solid var(--scheduler-fg);
-  outline-offset: 1px;
+  filter: brightness(0.82);
+}
+.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update:not(:has(.scheduler-bar__age)) {
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--scheduler-fg) 14%, transparent);
 }
 
 /* A card of one part, Alerts or Updates, has no head and no frame inside its

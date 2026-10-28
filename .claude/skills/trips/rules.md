@@ -22,7 +22,7 @@ section it belongs to; when one turns out wrong, the line is replaced.
 ## Route
 
 - Every stop with a time in the customer's itinerary goes on the route; a meal or stop with no time and no place stays off until it has one.
-- Times the itinerary leaves TBD get a sensible placeholder, said so in the report, because the route needs times to give hours.
+- Times the customer has not given stay TBD, always, never a placeholder of mine, because a guessed time can decide the sleeper or second-driver plan and the price; the quote email says the times are TBD and that a driver needs 8 hours off to reset after more than 10 driving hours, so a finalized itinerary may be needed to confirm.
 - A stop that matches a saved location uses the saved location, never a fresh map result, because the saved one already carries the right name and map point.
 - A local trip over several days is one trip with one leg a day, each from the yard and back, made with Add leg, and one Bus rental line for every leg, because the bus comes home every night and each day can have its own driver. The days need not be consecutive, each day's line is a Bus rental at the flat daily rate (never an Other line), the pickup and drop-off are the same saved place with no stop between, and each leg's own bus and times are set on its own leg, because the quote prints one rental row per day with that day's bus times.
 - A long day where the group stays nowhere overnight is kept as a one-day trip even when it gets back after midnight, because the +1 beside the time already shows the overlap.

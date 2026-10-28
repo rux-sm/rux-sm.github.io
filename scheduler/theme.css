@@ -413,9 +413,9 @@
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar {
   --scheduler-edge: color-mix(in srgb, var(--scheduler-fg) 30%, transparent);
   background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
-    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
-  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
+    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), var(--scheduler-footer-paint);
+  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%, 100% 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0, 0 0;
   background-repeat: no-repeat;
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
@@ -706,12 +706,6 @@
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
   --scheduler-shortcut-pad: var(--rux-spacing-04);
 }
-/* A light theme's bars are pale, so a live bar's band darkens toward the
-   bar's own ink rather than toward black. */
-:is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--road { --scheduler-road-band: color-mix(in srgb, currentColor 7%, transparent); }
-/* apple-light's bar ink is already the faintest that reads, so its band is
-   fainter still, keeping the words over it at 4.5 to 1. */
-[data-theme="apple-light"] .scheduler-bar--road { --scheduler-road-band: color-mix(in srgb, currentColor 3%, transparent); }
 /* The panels' tiles are solid too, the Tasks and Departures cards, the
    editor's and the Forms list's, parted from the panel by their fill alone:
    Design rings a tile inside a layer, and here the panel is the page's
@@ -858,24 +852,12 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* In rux-100 a colour on a tile says what the trip is and a coloured word says
-   what needs doing. A short rest stays grey with its hours in the warning
-   yellow, a trip not yet quoted or not yet confirmed keeps the booked blue
-   with its status line in the warning or a light red, and time off is a
-   hatched grey so red means only a problem. */
+/* In rux-100 a short rest stays grey with its hours in the warning yellow,
+   and time off is a hatched grey so red means only a problem. */
 [data-theme="rux-100"] .scheduler-yard--short {
   background: var(--rux-layer-03);
   color: var(--rux-support-warning);
 }
-[data-theme="rux-100"] :is(.scheduler-bar--amber, .scheduler-bar--red) {
-  --scheduler-bg: var(--rux-tag-background-blue);
-  --scheduler-fg: var(--rux-tag-color-blue);
-  --scheduler-hover: var(--rux-tag-hover-blue);
-  --scheduler-border: var(--rux-tag-border-blue);
-  --scheduler-amber-hover-ring: none;
-}
-[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__update { color: var(--rux-support-warning); }
-[data-theme="rux-100"] .scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 [data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
@@ -1051,8 +1033,8 @@
    stay free for the week's run-on marks and the selection ring. A bar that
    runs on from last week has no start here and takes none. */
 [data-theme^="apple-"] .scheduler-bar:not(.scheduler-bar--from-prev) {
-  background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border));
-  background-size: 3px 100%;
+  background-image: linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-footer-paint);
+  background-size: 3px 100%, 100% 100%;
   background-repeat: no-repeat;
 }
 /* ON A WIDE SCREEN THE EDGE IS CALENDAR'S OWN, as it reads on an iPad: a strip
@@ -1069,9 +1051,9 @@
     background-image:
       radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
       radial-gradient(circle, var(--scheduler-border) 1.2px, transparent 1.7px),
-      linear-gradient(var(--scheduler-border), var(--scheduler-border));
-    background-size: 3px 3px, 3px 3px, 3px calc(100% - 11px);
-    background-position: 4px 4px, 4px calc(100% - 4px), 4px 5.5px;
+      linear-gradient(var(--scheduler-border), var(--scheduler-border)), var(--scheduler-footer-paint);
+    background-size: 3px 3px, 3px 3px, 3px calc(100% - 11px), 100% 100%;
+    background-position: 4px 4px, 4px calc(100% - 4px), 4px 5.5px, 0 0;
   }
 }
 /* THE DOCUMENT PANEL'S BAR HOLDS ITS CONTROLS OFF ITS EDGES on the Apple
@@ -1315,17 +1297,58 @@
   clip-path: inset(0 -6px -6px -6px);
 }
 
-/* The one-way chip is a near-black square with a white arrow in every theme,
-   so it reads on a blue bar as well as a pale one. */
+/* Standard Carbon dark status colours sit on a footer in the hue the bar's
+   body shows, however its theme paints that body, a step darker and never
+   lighter than 0.34 in lightness, which holds the icons' 3:1 on every hue.
+   The same state fills lighten the footer in its own hue, as Carbon's layer
+   hover, selected and active tokens lighten Gray 80. */
 [data-theme] {
-  --scheduler-kind-bg: #161616;
-  --scheduler-kind-fg: #fff;
+  --scheduler-footer-base: #393939;
+  --scheduler-footer: var(--scheduler-footer-base);
+  --scheduler-footer-fg: #f4f4f4;
+  --scheduler-footer-warning: #f1c21b;
+  --scheduler-driver-neutral: #8d8d8d;
+  --scheduler-driver-major: #ff832b;
+  --scheduler-driver-normal: #4589ff;
+  --scheduler-driver-error: #fa4d56;
+  --scheduler-driver-success: #42be65;
 }
 
-/* In rux-dark a new update is the unremarkable state and takes the bar's own
-   ink, as its age colour says, so its pill is the outline a settled trip has. */
-[data-theme="rux-dark"] .scheduler-bar__age.scheduler-bar__lead--new {
-  background: transparent;
-  color: var(--scheduler-fg);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-fg) 55%, transparent);
+/* The footer lightens with the bar under the pointer, as the body does, so the
+   two never part; a selected bar, which keeps its colour, keeps its footer. */
+[data-theme] .scheduler-bar {
+  --scheduler-footer-base: oklch(from var(--scheduler-bg) min(calc(l - 0.09), 0.34) c h);
+  --scheduler-footer: var(--scheduler-footer-base);
+}
+@media (hover: hover) {
+  [data-theme] .scheduler-bar:hover:not([aria-current="true"]) { --scheduler-footer: oklch(from var(--scheduler-footer-base) calc(l + 0.06) c h); }
+  [data-theme] .scheduler-week--static .scheduler-bar:hover { --scheduler-footer: var(--scheduler-footer-base); }
+}
+[data-theme] .scheduler-bar {
+  --scheduler-footer-hover: oklch(from var(--scheduler-footer) calc(l + 0.06) c h);
+  --scheduler-footer-selected: oklch(from var(--scheduler-footer) calc(l + 0.08) c h);
+  --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
+}
+
+/* THE FLOATING CARD STANDS A STEP ABOVE THE BOARD IN EVERY THEME: its surface, hover, hairline and arrow are the raised layer mixed 9% toward
+   white, which on a dark theme is the next layer up and on a light one leaves white white, so it never falls back to the board's own step. A
+   black shadow barely shows on a dark board, so a tight one and a wide one are drawn from the theme's own shadow, and show where the card
+   crosses a trip. */
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+  --card-surface: color-mix(in srgb, var(--rux-layer-02), #fff 9%);
+  --card-hover: color-mix(in srgb, var(--rux-layer-hover-02), #fff 9%);
+  --card-rule: color-mix(in srgb, var(--rux-border-subtle-02), #fff 9%);
+  background: var(--card-surface);
+  box-shadow: 0 0 0 1px var(--card-edge),
+    0 4px 12px color-mix(in srgb, var(--rux-shadow) 50%, transparent),
+    0 16px 40px color-mix(in srgb, var(--rux-shadow) 75%, transparent);
+}
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
+/* A field is one step lighter than the surface it stands on, as Carbon's field-03 is on a layer-02 card; the card is already that step, so
+   its fields are one more, with the field's own bottom border keeping its edge. */
+[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked]) :is(.scheduler-card__quick .rux--text-input, .scheduler-card__edit .rux--text-area) {
+  background: color-mix(in srgb, var(--card-surface), #fff 9%);
 }

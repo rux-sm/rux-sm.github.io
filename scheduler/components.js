@@ -86,7 +86,7 @@
       driversById: data.driversById, busesById: data.busesById, statuses: data.statuses,
       saving: () => !!spec.state?.saving,
     });
-    if (spec.state?.pressed) bar.setAttribute('aria-pressed', 'true');
+    if (spec.state?.pressed) bar.setAttribute('aria-current', 'true');
     for (const c of spec.state?.classes ?? []) bar.classList.add(c);
     if (spec.live) {
       const { bus, look, before } = spec.live;

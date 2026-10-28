@@ -155,17 +155,14 @@
     { role: 'relief-start', label: 'Relief start', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
     { role: 'relief-end', label: 'Relief end', icon: '#m-swap_horiz-fill', box: '0 0 32 32' },
   ];
-  /* The five states `trip_driver_statuses` holds, the tone each paints and
-     the shape it is drawn as, on the bar and in the editor alike, each its own
-     so the colour is never the only signal. Every seat with a driver in it wears a
-     solid shape, so only an empty seat's dashed ring is hollow. Its
-     stored value stays `off`, the value the rows already hold. */
+  /* Stored driver states use Carbon's status icons. Display urgency for an
+     empty seat is decided by the leg's departure, without changing its data. */
   const DRIVER_STATUSES = [
-    { value: 'off', label: 'Not sent', tone: 'off', icon: '#m-circle-fill' },
-    { value: 'pending-assignment', label: 'Pending assignment', tone: 'error', icon: '#m-error-fill' },
-    { value: 'pending-response', label: 'Pending response', tone: 'warning', icon: '#m-pending-fill' },
-    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#m-check_circle-fill' },
-    { value: 'declined', label: 'Declined', tone: 'error', icon: '#m-cancel-fill' },
+    { value: 'off', label: 'Not sent', tone: 'off', icon: '#i-circle-dash', indicator: 'rux--icon-indicator--not-started' },
+    { value: 'pending-assignment', label: 'Pending assignment', tone: 'major', icon: '#i-warning--alt-inverted--filled', indicator: 'rux--icon-indicator--caution-major' },
+    { value: 'pending-response', label: 'Pending response', tone: 'off', icon: '#i-pending--filled', indicator: 'rux--icon-indicator--pending' },
+    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--filled', indicator: 'rux--icon-indicator--succeeded' },
+    { value: 'declined', label: 'Declined', tone: 'error', icon: '#i-error--filled', indicator: 'rux--icon-indicator--failed' },
   ];
   /* A status row's identity: trip, driver, leg and role, the leg by the key
      week.js gives it, its id on a trip read with its legs. */

@@ -123,6 +123,7 @@ const { SchedulerBar: Bar, SchedulerRoadBar: RoadBar, SchedulerLiveTrip: Live, S
 const data = window.SchedulerComponentsData.build();
 
 // Each sample's bars drawn as components.js draws them.
+const factsByBar = new WeakMap();
 function drawn(sectionId, name) {
   const sample = data.sections.find(s => s.id === sectionId)?.samples.find(s => s.name === name);
   if (!sample) throw new Error(`no sample ${sectionId} / ${name}`);
@@ -131,7 +132,8 @@ function drawn(sectionId, name) {
     const assigns = spec.trip.trip_assignments.filter(a => (a.leg || 'outbound') === spec.leg);
     const b = { trip: spec.trip, leg, slot: spec.slot, lane: 0, assign: 'assign' in spec ? spec.assign : assigns[spec.slot] ?? null,
       place: { start: spec.start, span: spec.span, fromPrev: !!spec.fromPrev, toNext: !!spec.toNext } };
-    const { bar } = Bar.draw(b, { ...data, saving: () => !!spec.state?.saving });
+    const { bar, facts } = Bar.draw(b, { ...data, saving: () => !!spec.state?.saving });
+    factsByBar.set(bar, facts);
     if (spec.live) {
       const { bus, look, before } = spec.live;
       const said = l => ({ warnings: Live.warningsOf(l), phase: Live.phaseOf(l) });
@@ -144,7 +146,7 @@ function drawn(sectionId, name) {
 const has = (bar, sel) => !!bar.querySelector(sel);
 const text = (bar, sel) => bar.querySelector(sel)?.textContent ?? null;
 // The warning sign a bar wears for a problem, its colour and its words; a clock is not one.
-const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label')}` : null; };
+const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.title}` : null; };
 const hue = bar => bar.classes().find(c => /^scheduler-bar--(blue|red|teal|green|purple|magenta|amber)$/.test(c))?.slice(15);
 
 let failed = 0;
@@ -162,7 +164,7 @@ expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
   ['No times', ['Ben'], null]);
 const kindOf = b => { const k = b.querySelector('.scheduler-bar__dest > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
-expect('one way wears its pill after the destination, an arrow across', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
+expect('one way wears its arrow after the destination', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
 expect('a split\'s drop-off points down and its pickup up; a round trip wears none',
   [...drawn('trip-bar', 'Drop-off and pickup'), ...drawn('trip-bar', 'Colours').slice(0, 1)].map(kindOf),
   [['#m-download', 'Drop-off'], ['#m-upload', 'Pickup'], null]);
@@ -179,28 +181,27 @@ expect('either side of the week', drawn('trip-bar', 'Either side of the week').m
 const [back] = drawn('trip-bar', 'Back at the yard');
 expect('a trip back stays put and raises no alert, though its record lacks miles and pay', [back.classList.contains('scheduler-bar--back'), mark(back)],
   [true, null]);
-expect('a trip back gives in its update row when it reached the pickup and got back, amber when late, or its miles, then Paid or what is due',
-  drawn('trip-bar', 'Back at the yard').map(b => [b.querySelector('.scheduler-bar__complete')?.textContent ?? null,
-    has(b, '.scheduler-bar__complete-time--late'), has(b, '.scheduler-bar__complete-paid'), has(b, '.scheduler-bar__complete-due')]),
-  [['', false, false, false], ['412 mi·Paid', false, true, false], ['Back 5:40p·$1,240 due', true, false, true], ['Spot 6:52a·Back 4:52p·Paid', false, true, false]]);
-expect('a trip back keeps each driver\'s slot, the confirmed check whatever they last said',
-  drawn('trip-bar', 'Back at the yard').map(b => [...b.querySelectorAll('.scheduler-crew__mark use')].map(u => u.getAttribute('href'))),
-  [['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill'], ['#m-check_circle-fill']]);
+expect('a trip back says Paid in the alert badge\'s place once paid in full, and nothing when it is not',
+  drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest .scheduler-bar__paid'), has(b, '.scheduler-bar__alert')]),
+  [['', false], ['Paid', false], ['', false], ['Paid', false]].map(([p, a]) => [p || null, a]));
+expect('a trip back keeps the regular update row and carries no driver status icon',
+  drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
+  [[true, false, 0], [true, false, 0], [true, false, 0], [true, false, 0]]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
   ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);
-expect('an open trip\'s update takes its age\'s colour, a settled one none',
+expect('update age stays neutral regardless of open work',
   drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__update').classes().find(c => c.startsWith('scheduler-bar__update--')) ?? null),
-  ['scheduler-bar__update--new', 'scheduler-bar__update--week', 'scheduler-bar__update--old', null]);
+  [null, null, null, null]);
 expect('a leg with no bus says so', drawn('trip-bar', 'Needs a bus').map(b => text(b, '.scheduler-bar__crew')), ['Needs a bus']);
 
 console.log('\n  The crew');
 // The href of the symbol a mark draws: its svg's one <use>.
 const useOf = m => m ? [...m.walk()].find(n => n.tagName === 'USE')?.getAttribute('href') ?? null : null;
 const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
-expect('each status its tone and shape, a declined name struck through',
-  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
-  [['off', '#m-circle-fill', false], ['error', '#m-error-fill', false], ['warning', '#m-pending-fill', false],
-    ['success', '#m-check_circle-fill', false], ['success', '#m-check_circle-fill', false], ['error', '#m-cancel-fill', true]]);
+expect('each driver state uses its Carbon icon and tone',
+  drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
+  [['off', '#i-circle-dash', false], ['major', '#i-warning--alt-inverted--filled', false], ['off', '#i-pending--filled', false],
+    ['success', '#i-checkmark--filled', false], ['success', '#i-checkmark--filled', false], ['error', '#i-error--filled', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',
   [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, icon(c) === '#m-swap_horiz-fill']),
@@ -208,6 +209,20 @@ expect('drivers wear their status and relief drivers arrows',
 expect('an empty seat is in the warning colour only while the leg is due',
   drawn('crew', 'Empty seats').map(b => [...b.querySelectorAll('.scheduler-crew')].filter(c => c.querySelector('.scheduler-bar__none')).map(c => c.classList.contains('scheduler-crew--due'))),
   [[true, true], [false, false]]);
+
+expect('staffing warning includes day fourteen, excludes day fifteen and ended legs',
+  [0, 14, 15, -1].map(days => {
+    const now = new Date(2026, 9, 27, 12);
+    const day = new Date(2026, 9, 27 + days);
+    const date = `${day.getFullYear()}-${String(day.getMonth()+1).padStart(2,'0')}-${String(day.getDate()).padStart(2,'0')}`;
+    return Bar.staffingDue({from:date,to:date}, now);
+  }), [true,true,false,false]);
+const emptyDriver = {needed:true,role:'driver',label:'Driver'};
+expect('empty seats show Caution major only when due',
+  [true,false].map(due => icon(Bar.crewEl(emptyDriver,due,false))),
+  ['#i-warning--alt-inverted--filled',null]);
+const declinedDriver = {role:'driver',label:'Driver',who:{name:'Alex'},status:window.SchedulerLegFacts.DRIVER_STATUSES.find(s=>s.value==='declined')};
+expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDriver,true,true)), '#i-error--filled');
 
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
@@ -219,12 +234,76 @@ expect('a problem wears the alert badge in its colour, a contact missing near th
   'red Sleeper needed · Trip contact missing']);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
-expect('an open trip with no problem leads its update with a clock in the update\'s age',
-  drawn('trip-bar', 'Update ages').map(b => b.querySelector('.scheduler-bar__age')?.classes().find(c => /--(new|week|old)$/.test(c))?.split('--')[1] ?? null),
-  ['new', 'week', 'old', null]);
-expect('a trip that asks nothing more still has a grey pill, and only the pill opens the card',
-  drawn('trip-bar', 'Update ages').map(b => [b.querySelector('.scheduler-bar__age')?.classes().includes('scheduler-bar__lead--settled'), b.querySelector('.scheduler-bar__update').attrs?.['data-card-opener'] ?? null]),
-  [[false, null], [false, null], [false, null], [true, null]]);
+expect('every update row is a button, including a settled trip, and the age has no clock',
+  drawn('trip-bar', 'Update ages').map(b => {
+    const row = b.querySelector('.scheduler-bar__update');
+    return [row.tagName, row.hasAttribute('data-card-opener'), row.getAttribute('aria-expanded'), b.querySelector('.scheduler-bar__age use') === null];
+  }),
+  Array.from({ length: 4 }, () => ['BUTTON', true, 'false', true]));
+expect('empty updates remain a visible Updates entry point',
+  [holder.querySelector('.scheduler-bar__update').tagName, text(holder, '.scheduler-bar__age')], ['BUTTON', 'No updates']);
+expect('alert buttons expose their purpose and expansion state',
+  alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => {
+    const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
+    return [badge.tagName, badge.getAttribute('aria-label').startsWith('Alerts:'), badge.getAttribute('aria-expanded')];
+  }), Array.from({ length: 7 }, () => ['BUTTON', true, 'false']));
+expect('same section toggles closed, another switches, and closed cards open',
+  [Bar.opensSection(true, 'needs', 'needs'), Bar.opensSection(true, 'needs', 'updates'), Bar.opensSection(false, 'updates', 'updates')],
+  [false, true, true]);
+expect('trip groups do not swallow their child button semantics',
+  [holder.getAttribute('role'), holder.getAttribute('aria-current')], ['group', 'false']);
+expect('the badge count and its tooltip come from the exact problem list',
+  alerts.map(n => {
+    const b = drawn('alerts', n)[0], problems = factsByBar.get(b).problems;
+    const badge = b.querySelector('.scheduler-bar__alert');
+    return badge ? [Number(badge.textContent), badge.title] : [0, ''];
+  }), alerts.map(n => {
+    const b = drawn('alerts', n)[0], problems = factsByBar.get(b).problems;
+    return [problems.length, problems.map(a=>a.words).join(' · ')];
+  }));
+
+// Exercise the actual card builder with specimen trips and a minimal page.
+const dataSource = readFileSync(new URL('../data.js', import.meta.url), 'utf8');
+const cardSource = dataSource.slice(dataSource.indexOf('  function drawCard('), dataSource.indexOf('  /* Whether the card\'s updates have more'));
+const make = (tag, cls, value) => { const n = new Element(tag); if (cls) n.className = cls; if (value != null) n.textContent = value; return n; };
+const cardContext = {
+  ...context, el: make, barFacts: factsByBar, alertsOf: Bar.alertsOf,
+  pageEl: { getAttribute: () => 'full' }, dueFollowUp: () => false,
+  updatesOf: window.SchedulerFollowUp.updatesOf, updatesOpenFor: null, quickOpenFor: null,
+  quickDraft: { tripId: null, text: '' },
+  svgUse: () => make('svg'), updateFace: () => make('span'), ageShort: () => '1d', updateStamp: Bar.updateStamp,
+  cardAction: () => make('button'),
+  cardClose: () => make('button'),
+  cardTitle: (name, count) => make('div', 'test-title', `${name}: ${count}`),
+};
+runInNewContext(cardSource + '\nglobalThis.testDrawCard = drawCard;', cardContext);
+const specimen = (section, name) => data.sections.find(s=>s.id===section).samples.find(s=>s.name===name).rows[0].bars[0].trip;
+const [needsBar] = drawn('alerts', 'Both');
+const needsCard = cardContext.testDrawCard(specimen('alerts','Both'), needsBar, 'needs');
+expect('the card leads with the exact badge count and lists broader needs separately',
+  needsCard.querySelector('.test-title')?.textContent, `Alerts: ${factsByBar.get(needsBar).problems.length}`);
+const [paperBar] = drawn('alerts','A hotel to book');
+const paperCard = cardContext.testDrawCard(specimen('alerts','A hotel to book'), paperBar,'needs');
+expect('paperwork does not turn into a counted operational alert in the card', paperCard.querySelector('.test-title')?.textContent, 'Other needs: 1');
+expect('Needs does not draw a second Updates editor', paperCard.querySelector('.scheduler-card__updates'), null);
+
+const tabsSource = dataSource.slice(dataSource.indexOf('  function drawRoadCard('), dataSource.indexOf('  function drawCard('));
+cardContext.roadTabOf = () => 'needs';
+cardContext.drawLiveCard = () => make('div');
+runInNewContext(tabsSource + '\nglobalThis.testDrawRoadCard = drawRoadCard;', cardContext);
+const tripWithPaperwork = specimen('alerts','A hotel to book');
+const tabsCard = cardContext.testDrawRoadCard(tripWithPaperwork, paperBar);
+expect('live cards keep three reachable sections and select the requested one',
+  tabsCard.querySelectorAll('[role="tab"]').map(t=>[t.dataset.roadTab,t.getAttribute('aria-selected')]),
+  [['road','false'],['needs','true'],['updates','false']]);
+cardContext.quickOpenFor = tripWithPaperwork.id;
+cardContext.quickDraft = { tripId: tripWithPaperwork.id, text: 'Draft still being written' };
+cardContext.markSave = () => {};
+const draftCards = [cardContext.testDrawRoadCard(tripWithPaperwork, paperBar), cardContext.testDrawRoadCard(tripWithPaperwork, paperBar)];
+expect('live-card redraws keep one Updates input and preserve the draft',
+  draftCards.map(c=>c.querySelectorAll('.scheduler-card__quick input').map(n=>n.value)),
+  [['Draft still being written'],['Draft still being written']]);
+
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 
 console.log('\n  Out on the road');
@@ -281,7 +360,10 @@ expect('idle is quiet, then amber past half an hour', ['Idling', 'Idling a long 
 expect('under a quarter tank the tank is amber', [has(lit('Low fuel'), '.scheduler-road__meter--low'), has(lit('At highway speed'), '.scheduler-road__meter--low')], [true, false]);
 expect('a driver Samsara has in the bus reads confirmed whatever they answered',
   [lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), icon(lit('In the bus, not yet confirmed').querySelector('.scheduler-crew'))],
-  ['scheduler-crew__mark--success', '#m-check_circle-fill']);
+  ['scheduler-crew__mark--success', '#i-checkmark--filled']);
+expect('a live-confirmed driver uses the success style as well as the success icon',
+  lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark svg').getAttribute('class'),
+  'rux--icon-indicator--succeeded');
 expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
 expect('a longer bar out stands its rows in today\'s column, and a one-day one on its own',
   [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);

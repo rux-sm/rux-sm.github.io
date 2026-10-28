@@ -75,12 +75,9 @@
   --scheduler-presence-rule: 1px;
   --scheduler-fs: var(--rux-label-01-font-size);
   --scheduler-ls: var(--rux-label-01-letter-spacing);
-  /* Carbon writes label-01's line height as 1.33333, so a row comes to
-     15.99996px and a six-row bar to 103.99976px. The bar then ends a fraction
-     above the whole pixel its gap was measured from, and the shortfall lands
-     in the gap below it. Snapped to whole pixels just below, where the browser
-     can do it. */
-  --scheduler-row-h: calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height));
+  /* Compact 14px times need an 18px row. Whole-pixel snapping below keeps
+     stacked bars and their gaps aligned when a theme changes the type scale. */
+  --scheduler-row-h: calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height));
   /* THE GLYPH INSIDE A MARK, one number for the bar's marks and its crew. The
      box around it is a row high whatever this is, so it changes the ink and
      not the row.
@@ -123,7 +120,7 @@
   border-end-end-radius: var(--scheduler-inner-radius);
 }
 @supports (block-size: round(1px, 1px)) {
-  .scheduler-week { --scheduler-row-h: round(calc(var(--rux-label-01-font-size) * var(--rux-label-01-line-height)), 1px); }
+  .scheduler-week { --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px); }
 }
 /* The widest a day column gets on the board, so a wide window does not
    stretch every bar past what it says. 187px makes a one-day bar 180px,
@@ -509,8 +506,8 @@ button.scheduler-row-head__num::after {
    the rules below, so a leaving bar's fade keeps its own. */
 .scheduler-bar { transition: transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out; }
 .scheduler-bar.scheduler-bar--pressed { z-index: 2; transform: scale(1.03); }
-.scheduler-bar.scheduler-bar--pressed:not([aria-pressed="true"]) { box-shadow: var(--scheduler-lift); }
-.scheduler-bar.scheduler-bar--amber.scheduler-bar--pressed:hover:not([aria-pressed="true"]) {
+.scheduler-bar.scheduler-bar--pressed:not([aria-current="true"]) { box-shadow: var(--scheduler-lift); }
+.scheduler-bar.scheduler-bar--amber.scheduler-bar--pressed:hover:not([aria-current="true"]) {
   box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift);
 }
 .scheduler-bar--dragging { opacity: .4; cursor: grabbing; }
@@ -675,26 +672,13 @@ button.scheduler-row-head__num::after {
    signals. Every bar of the selected trip is lifted as a dragged one is, a
    layer over the other bars so its shadow falls on them, and under the bus
    column and day header it scrolls beneath. */
-.scheduler-bar[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--rux-layer-selected-inverse), var(--scheduler-lift); }
-.scheduler-bar[aria-pressed="true"],
+/* The selected ring is an outline, which paints over the footer's hover fill; an inset shadow sat under it and the fill hid its edge. */
+.scheduler-bar[aria-current="true"] { outline: 1px solid var(--rux-layer-selected-inverse); outline-offset: -1px; box-shadow: var(--scheduler-lift); }
+.scheduler-bar[aria-current="true"],
 .scheduler-bar.scheduler-bar--same-trip,
 .scheduler-bar.scheduler-bar--open { z-index: 2; }
 .scheduler-bar.scheduler-bar--same-trip { box-shadow: var(--scheduler-lift); }
-.scheduler-bar[aria-pressed="true"]:hover { background-color: var(--scheduler-bg); }
-/* A TRIP THAT IS BACK is its colour mixed half way to the board, so the eye
-   passes over it to the trips still to run, while its words keep their full
-   ink and stay as easy to read. Hover and the selected bar mix the same. A
-   bar still lit from Samsara is not back, whatever its planned return says:
-   the bus is still out. */
-.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road) { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
-.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-hover) 55%, var(--rux-layer)); }
-.scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road)[aria-pressed="true"]:hover,
-.scheduler-week--static .scheduler-bar.scheduler-bar--back:not(.scheduler-bar--road):hover { background-color: color-mix(in srgb, var(--scheduler-bg) 55%, var(--rux-layer)); }
-/* Its drivers keep their slot, so names line up and stay apart as before and
-   during the trip: each wears the confirmed check bar.js draws, and a relief
-   its arrows, in the bar's own ink, since whether they said yes no longer
-   matters once the trip is run, which leaves the row's green to Paid. */
-.scheduler-bar--back:not(.scheduler-bar--road) .scheduler-crew__mark { color: inherit; }
+.scheduler-bar[aria-current="true"]:hover { background-color: var(--scheduler-bg); }
 
 .scheduler-bar--gray      { --scheduler-bg: var(--rux-tag-background-gray);      --scheduler-fg: var(--rux-tag-color-gray);      --scheduler-hover: var(--rux-tag-hover-gray);      --scheduler-border: var(--rux-tag-border-gray); }
 .scheduler-bar--blue      { --scheduler-bg: var(--rux-tag-background-blue);      --scheduler-fg: var(--rux-tag-color-blue);      --scheduler-hover: var(--rux-tag-hover-blue);      --scheduler-border: var(--rux-tag-border-blue); }
@@ -710,7 +694,7 @@ button.scheduler-row-head__num::after {
    bars in a light theme, the warning fill in a dark one, with the inner ring a
    dark theme shows on hover in place of a hover step. */
 .scheduler-bar--amber     { --scheduler-bg: var(--scheduler-amber-bg);           --scheduler-fg: var(--scheduler-amber-fg);       --scheduler-hover: var(--scheduler-amber-hover);   --scheduler-border: var(--scheduler-amber-border); }
-.scheduler-bar.scheduler-bar--amber:hover:not([aria-pressed="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
+.scheduler-bar.scheduler-bar--amber:hover:not([aria-current="true"]) { box-shadow: var(--scheduler-amber-hover-ring); }
 .scheduler-bar.scheduler-bar--amber.scheduler-bar--same-trip:hover { box-shadow: var(--scheduler-amber-hover-ring), var(--scheduler-lift); }
 
 /* A trip colour chip, in the editor's colour field and the bar menu. It wears
@@ -843,8 +827,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--to-next { --scheduler-run-end: 20px; }
 
 /* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a chip after its
-   destination: the arrow alone, in white on a near-black square, so it is the
-   one solid dark mark on a bar and is found at a glance. */
+   destination: the arrow alone in a high-contrast tag, the inverse surface
+   with its inverse ink, so it is the one light solid mark on a bar in a dark
+   theme and the one dark one in a light theme, found at a glance. */
 .scheduler-bar__row > .scheduler-bar__kind {
   flex: none;
   align-self: center;
@@ -863,15 +848,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__kind > svg { flex: none; }
 .scheduler-bar__row > .scheduler-bar__kind--icon {
   justify-content: center;
-  inline-size: 20px;
-  block-size: 20px;
+  inline-size: 18px;
+  block-size: 18px;
   padding: 0;
-  border-radius: 2px;
-  background: var(--scheduler-kind-bg);
-  color: var(--scheduler-kind-fg);
+  border-radius: 9px;
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
   box-shadow: none;
 }
-.scheduler-bar__kind--icon > svg { inline-size: 16px; block-size: 16px; }
+.scheduler-bar__kind--icon > svg { inline-size: 12px; block-size: 12px; }
 .scheduler-bar__kind--icon > .scheduler-bar__kind-word { display: none; }
 
 /* The rows the view menu can turn off. `display: none` rather than
@@ -912,8 +897,7 @@ button.scheduler-row-head__num::after {
    the row keeps the phone, which dials there. */
 .scheduler-bar__contact { justify-content: flex-start; flex-wrap: wrap; align-content: flex-start; }
 .scheduler-bar > .scheduler-bar__contact > .scheduler-bar__phone { display: none; }
-/* One icon leads the update row, a mark's glyph square, and the words
-   after it give way. */
+/* The neutral age leads the update; only the summary gives way. */
 .scheduler-bar__update { justify-content: flex-start; gap: var(--rux-spacing-02); }
 .scheduler-bar__lead {
   display: inline-flex;
@@ -924,70 +908,66 @@ button.scheduler-row-head__num::after {
   border-radius: 50%;
 }
 .scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
-/* The alert badge and the age are the message pill, each with its icon before its words. */
-.scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age) { display: inline-flex; align-items: center; gap: 2px; }
-/* Filled in the colour of its age, with black or white ink by the fill's
-   lightness, since a theme's age colours run from pale to deep. A trip that
-   asks nothing more, or has no update, is an outline of the bar's own ink, so
-   a pill that is filled is one that is worth a look. */
-.scheduler-bar__age.scheduler-bar__lead--new { --scheduler-age-fill: var(--scheduler-age-new); }
-.scheduler-bar__age.scheduler-bar__lead--week { --scheduler-age-fill: var(--scheduler-age-week); }
-.scheduler-bar__age.scheduler-bar__lead--old { --scheduler-age-fill: var(--scheduler-age-old); }
-.scheduler-bar__age:is(.scheduler-bar__lead--new, .scheduler-bar__lead--week, .scheduler-bar__lead--old) {
-  background: var(--scheduler-age-fill);
-  color: oklch(from var(--scheduler-age-fill) calc((0.59 - l) * 100) 0 0);
+/* The alert badge pairs its count with the warning icon. */
+.scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
+/* The footer spans the trip while its content keeps the existing sticky rows. */
+.scheduler-bar__update, .scheduler-bar__drivers { background: var(--scheduler-footer); color: var(--scheduler-footer-fg); }
+:is(.scheduler-bar__update, .scheduler-bar__drivers, .scheduler-road__card) {
+  --scheduler-age-week: var(--scheduler-footer-warning);
+  --scheduler-mark-warning: var(--scheduler-footer-warning);
+  --scheduler-mark-success: var(--scheduler-driver-success);
+  --scheduler-mark-error: var(--scheduler-driver-error);
 }
-.scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) {
-  background: transparent;
+.scheduler-bar {
+  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), transparent 0);
+  background-image: var(--scheduler-footer-paint);
+  background-size: 100% 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+.scheduler-bar--road { --scheduler-footer-paint: none; }
+.scheduler-week--no-update, .scheduler-week--no-drivers { --scheduler-footer-rows: 1; }
+.scheduler-week--no-update.scheduler-week--no-drivers { --scheduler-footer-rows: 0; }
+.scheduler-bar__age { flex: none; font-size: var(--rux-label-01-font-size); opacity: .85; }
+.scheduler-bar__dest, .scheduler-bar__time { font-size: var(--rux-body-compact-01-font-size); }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]) { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
+.scheduler-bar__update[data-card-opener] { padding: 0; border-radius: 0; box-shadow: -3px 0 0 var(--scheduler-opener-fill, transparent), 3px 0 0 var(--scheduler-opener-fill, transparent); color: var(--scheduler-footer-fg); font-size: inherit; line-height: inherit; text-align: start; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update, [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
+.scheduler-bar__alert:focus-visible { outline-offset: 2px; }
+/* THE ALERT IS A STATUS ICON AND ITS COUNT, with no pill: the error in the driver status red and the warning in the footer's yellow, and the count in the bar's own ink. */
+.scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  padding: 0;
+  border-radius: 0;
+  background: none;
   color: var(--scheduler-fg);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--scheduler-fg) 55%, transparent);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--scheduler-row-h);
+  block-size: var(--scheduler-row-h);
 }
-/* The update and the crew are the bar's status, set off from the trip above
-   them by a hairline of the bar's own ink. */
-.scheduler-bar__update { box-shadow: 0 -1px 0 color-mix(in srgb, var(--scheduler-fg) 22%, transparent); }
+.scheduler-bar__alert > svg { flex: none; inline-size: 16px; block-size: 16px; }
+.scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--scheduler-driver-error); }
+.scheduler-bar__alert.scheduler-bar__msg--warning > svg { color: var(--scheduler-footer-warning); }
 /* The row's first part gives way by app.css's general rule; the icon never
    does, so the words are what a long update cuts. */
 .scheduler-bar__update > :is(.scheduler-bar__lead, .scheduler-bar__age) { flex: none; }
 .scheduler-bar__update > :is(.scheduler-bar__lead, .scheduler-bar__age) + * { min-inline-size: 0; }
-/* THE ICON CARRIES THE COLOUR, the words keep the bar's ink: the warning sign
-   in the marks' red for a bus that does not fit and their warning colour for
-   any other problem, and the clock in the update's age, the text steps
-   theme.css sets beside the marks' inks: new, in its first week, or older. */
-.scheduler-bar__lead--error { color: var(--scheduler-mark-error); }
-.scheduler-bar__lead--warning { color: var(--scheduler-mark-warning); }
-.scheduler-bar__lead--new { color: var(--scheduler-age-new); }
-.scheduler-bar__lead--week { color: var(--scheduler-age-week); }
-.scheduler-bar__lead--old { color: var(--scheduler-age-old); }
-/* A trip that is back: Paid in the green of a confirmed driver's mark, what
-   is still due in amber, a dimmed dot between each fact. */
-.scheduler-bar__complete { display: inline-flex; gap: var(--rux-spacing-02); min-inline-size: 0; }
-.scheduler-bar__complete-time { white-space: nowrap; }
-.scheduler-bar__complete-time--late { color: var(--scheduler-age-week); }
-.scheduler-bar__complete-paid { color: var(--scheduler-mark-success); }
-.scheduler-bar__complete-due { color: var(--scheduler-age-week); }
-.scheduler-bar__complete-sep { opacity: .55; }
-.scheduler-bar--amber .scheduler-bar__complete > * { color: inherit; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its icon keeps the bar's own. */
-.scheduler-bar--amber .scheduler-bar__alert { background: var(--scheduler-fg); color: var(--scheduler-bg); }
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
-   anywhere else on the bar only selects it: the update line takes a tint of
-   the bar's own ink, run 2px past the line by its shadow so nothing moves,
-   and an empty one says No updates; its icon takes a 2px ring of the
-   ink; the Live pill fills with its bus's colour. A touch screen has no
-   pointer to wait for, so it shows none of them. */
+   anywhere else on the bar only selects it: the update line fills with the
+   footer's hover tone, and an empty one says No updates; the Live pill fills
+   with its bus's colour. A touch screen has no pointer to wait for, so it
+   shows none of them; a press fills on any screen. */
 @media (hover: hover) {
   .scheduler-bar__update[data-card-opener]:hover {
-    --scheduler-opener-tint: color-mix(in srgb, var(--scheduler-fg) 14%, transparent);
-    border-radius: 2px;
-    background: var(--scheduler-opener-tint);
-    box-shadow: 0 0 0 2px var(--scheduler-opener-tint);
+    --scheduler-opener-fill: var(--scheduler-footer-hover);
+    border-radius: 0;
+    background: var(--scheduler-opener-fill);
   }
-  .scheduler-bar__update[data-card-opener]:not(.scheduler-bar__update--complete):hover > span:empty::before {
-    content: 'No updates';
-    opacity: .7;
-  }
-  .scheduler-bar__lead[data-card-opener]:hover { box-shadow: 0 0 0 2px var(--scheduler-fg); }
   .scheduler-road__dot[data-card-opener]:hover {
     background: color-mix(in srgb, var(--scheduler-dot) 24%, transparent);
     box-shadow: inset 0 0 0 1px var(--scheduler-dot);
@@ -1140,8 +1120,9 @@ button.scheduler-row-head__num::after {
    week's sticky bands and under the trip panel. It is a raised card a step
    lighter than the board inside a hairline, so it stands off the week on a
    dark theme, where a shadow does not show, as well as on a light one.
-   EVERY CARD IS ONE SIZE, 22rem by 33rem, a trip's card or an out trip's
-   two tabs, full or nearly empty, so changing tab or trip moves no edge.
+   EVERY CARD IS ONE SIZE FOR ITS PLACE, 33rem tall and as wide as the two
+   days it stands over, 16rem to 20rem, a trip's card or an out trip's two
+   tabs, full or nearly empty, so changing tab moves no edge.
    data.js shortens it to the board's room on a short screen. What does not
    fit scrolls inside it: the updates list on a trip's card, the panel under
    the tabs on an out trip's. A trip with no card leaves it empty, and an empty
@@ -1150,7 +1131,7 @@ button.scheduler-row-head__num::after {
   position: fixed;
   z-index: 996;
   box-sizing: border-box;
-  inline-size: min(22rem, calc(100vw - 2 * var(--rux-spacing-05)));
+  inline-size: min(var(--scheduler-card-w, 20rem), calc(100vw - 2 * var(--rux-spacing-05)));
   block-size: var(--scheduler-card-h, 33rem);
   max-block-size: var(--scheduler-card-max, none);
   flex-direction: column;
@@ -1295,7 +1276,7 @@ button.scheduler-row-head__num::after {
   align-items: center;
 }
 .scheduler-card__asks > svg,
-.scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-warning); }
+.scheduler-card__warn > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-footer-warning); }
 /* A bus that does not fit is a row like the reminder's with the red bell,
    above it: a mistake on the board comes before a job still to do. */
 .scheduler-card__misfit {
@@ -1304,7 +1285,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-03);
   align-items: center;
 }
-.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-mark-error); }
+.scheduler-card__misfit > svg { inline-size: 1rem; block-size: 1rem; justify-self: center; color: var(--scheduler-driver-error); }
 :is(.scheduler-card__asks, .scheduler-card__warn, .scheduler-card__misfit) > strong { min-inline-size: 0; font-weight: 400; }
 /* A due reminder names the day it leaves at the row's end, quieter than the
    alerts it times. */
@@ -1339,7 +1320,7 @@ button.scheduler-row-head__num::after {
   line-height: var(--rux-heading-compact-01-line-height);
   letter-spacing: var(--rux-heading-compact-01-letter-spacing);
 }
-.scheduler-card__count { margin: 0; }
+.scheduler-card__count { margin: 0 0 0 var(--rux-spacing-03); color: var(--rux-text-secondary); font-weight: 400; }
 /* A part with nothing in it is its title alone, which says so. */
 .scheduler-card__title:last-child { margin-block-end: 0; }
 .scheduler-card__updates { padding-block: var(--rux-spacing-03); }
@@ -1355,10 +1336,6 @@ button.scheduler-row-head__num::after {
   display: flex;
   flex-direction: column;
   margin-block-start: var(--rux-spacing-03);
-  padding-block: var(--rux-spacing-02);
-  border-radius: var(--scheduler-shortcut-radius, 0);
-  background: var(--rux-layer-03);
-  overflow: hidden;
 }
 .scheduler-card__needs-list > .scheduler-card__row {
   display: flex;
@@ -1370,7 +1347,8 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-card__needs-list > .scheduler-card__row > svg { flex: none; margin-block-start: 1px; }
 .scheduler-card__needs-list > .scheduler-card__row > strong {
-  flex: 0 1 auto;
+  flex: 1 1 0;
+  min-inline-size: 0;
   margin-inline: var(--rux-spacing-03) var(--rux-spacing-02);
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
@@ -1380,7 +1358,7 @@ button.scheduler-row-head__num::after {
 /* A warning is a press that goes where it is put right, lit on hover in the
    box's own hover step. */
 .scheduler-card__needs-list > .scheduler-card__row[data-go] { cursor: pointer; }
-.scheduler-card__needs-list > .scheduler-card__row[data-go]:hover { background: var(--rux-layer-hover-03); }
+.scheduler-card__needs-list > .scheduler-card__row[data-go]:hover { background: var(--rux-layer-hover-02); }
 .scheduler-card__needs-list > .scheduler-card__row[data-go]:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
 /* On the road: a line for each stop still to come, its name and the time it
    is due, the next one bold with when the bus gets there; then a line for
@@ -1634,32 +1612,37 @@ button.scheduler-row-head__num::after {
    tile's foot; with none, a line says so 8px under the title, in a tile only as tall as that. A theme that holds
    the card 12px from its edge gives the 4px more in theme.css. A part is named four times to outrank the
    padding the card and the themes set for its rows. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: var(--rux-spacing-03); padding: var(--rux-spacing-05); }
+/* The parts sit straight on the card, a step apart, with no tile or rule of their own. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: 0; padding: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card) { padding: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile {
   min-block-size: 0;
   min-inline-size: 0;
   margin: 0;
-  padding: var(--rux-spacing-05);
+  padding: 0 var(--rux-spacing-05) var(--rux-spacing-05);
   border-block-start: 0;
+  border-radius: 0;
+  background: none;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile:has(> .scheduler-card__update-list) {
   padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
-  margin-block-end: calc(var(--rux-spacing-03) - (var(--rux-layout-size-height-sm) - 1.125rem) / 2);
+/* A part's heading is one 40px row, its title 16px in and its button, where it has one, the row's full height and flush to the card's edge. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title {
+  box-sizing: border-box;
+  min-block-size: var(--rux-layout-size-height-md);
+  margin: 0 calc(-1 * var(--rux-spacing-05));
+  padding-inline: var(--rux-spacing-05) 0;
 }
-/* Add's whole box stands in the tile's 16px, from its top and its side, as
-   the map's buttons do, so the title takes its height; the hairline over the
-   first update, or the quick update's box, stands the same 16px under it,
-   and that box 16px over the hairline. */
+/* Under the heading's hairline the updates run straight on; the quick
+   update's box stands 16px under it and 16px over the first update. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
-  margin-block-end: var(--rux-spacing-05);
+  margin-block-end: 0;
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(+ .scheduler-card__none) { margin-block-end: var(--rux-spacing-03); }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile:has(> .scheduler-card__none) { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__quick:has(+ .scheduler-card__update-list) { margin-block-end: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > .scheduler-card__action { margin: 0; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > :is(.scheduler-card__action, .scheduler-card__link) { align-self: stretch; align-items: center; block-size: var(--rux-layout-size-height-md); min-block-size: 0; margin: 0; padding-block: 0; border-radius: 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
   margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
   padding: 0;
@@ -1672,9 +1655,7 @@ button.scheduler-row-head__num::after {
   padding: calc((var(--rux-layout-size-height-md) - 1.125rem) / 2) var(--rux-spacing-05);
   border-radius: 0;
 }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update + .scheduler-card__update { border-block-start: 1px solid var(--rux-border-subtle-01); }
-/* The same hairline parts the title, with Add, from the first update. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list { border-block-start: 1px solid var(--rux-border-subtle-01); }
+/* Floating, the updates stand apart by their own padding, with no rule between them or under the heading. */
 .scheduler-card__none {
   margin: 0;
   color: var(--rux-text-secondary);
@@ -1748,10 +1729,8 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__msg--warning { background: var(--scheduler-mark-warning); color: var(--scheduler-mark-on-warning, var(--scheduler-on-warning)); }
 .scheduler-bar__msg--error { background: var(--scheduler-mark-error); color: var(--rux-text-inverse); }
-/* On a bar, the badge's ink is black or white by its fill's lightness, since a
-   theme's alert colours run from pale to deep. */
-.scheduler-bar:not(.scheduler-bar--amber) .scheduler-bar__alert.scheduler-bar__msg--warning { color: oklch(from var(--scheduler-mark-warning) calc((0.59 - l) * 100) 0 0); }
-.scheduler-bar:not(.scheduler-bar--amber) .scheduler-bar__alert.scheduler-bar__msg--error { color: oklch(from var(--scheduler-mark-error) calc((0.59 - l) * 100) 0 0); }
+/* Paid is the alert pill's shape in Carbon's success green, its ink black or white by the fill's lightness. */
+.scheduler-bar__msg--success { background: var(--scheduler-driver-success); color: oklch(from var(--scheduler-driver-success) calc((0.59 - l) * 100) 0 0); }
 /* A plain count, as the trip card gives its updates, is the set's grey: the
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
@@ -1771,6 +1750,8 @@ button.scheduler-row-head__num::after {
 @keyframes scheduler-road-ping { 0% { transform: scale(1); opacity: .8; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
 .scheduler-road__dot {
   --scheduler-dot: var(--scheduler-mark-success);
+  background: transparent;
+  padding-block: 0;
   flex: none;
   align-self: center;
   display: inline-flex;
@@ -1896,22 +1877,15 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-crew { display: flex; align-items: center; gap: var(--rux-spacing-02); min-inline-size: 0; }
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
-.scheduler-crew--declined .scheduler-crew__name { text-decoration: line-through; }
-/* An empty seat on a leg from today to the end of next week: the words at
-   full strength in the warning text step an update's first week takes, and
-   the mark in the warning colour. The amber bar keeps its own ink, as its
-   update does. */
-.scheduler-crew--due .scheduler-crew__name { color: var(--scheduler-age-week); opacity: 1; }
-.scheduler-crew--due .scheduler-crew__mark { color: var(--scheduler-mark-warning); }
-.scheduler-bar--amber .scheduler-crew--due :is(.scheduler-crew__name, .scheduler-crew__mark) { color: inherit; }
-/* The role glyph alone, in its status colour: the bar's own for still to send,
-   amber sent and waiting, green confirmed, red declined.
-   The disc each sat on is gone, as every block on this bar is -- see the
-   contrast note above, which is the same trade and the same choice.
-   EVERY ICON ON THE BAR IS ONE SIZE, 4px before its words: a driver's
-   status, a relief's arrows, a live seat's duty and the update's warning or
-   clock, so every name and update starts 20px in. */
+/* Driver names retain neutral ink; the icon alone communicates status. */
+.scheduler-crew--due .scheduler-crew__name { opacity: 1; }
+/* Marks use Carbon's dark status set on the neutral footer in every theme. */
 .scheduler-crew__mark {
+  --rux-status-gray: var(--scheduler-driver-neutral);
+  --rux-status-orange: var(--scheduler-driver-major);
+  --rux-status-blue: var(--scheduler-driver-normal);
+  --rux-status-green: var(--scheduler-driver-success);
+  --rux-status-red: var(--scheduler-driver-error);
   display: flex;
   flex: none;
   align-items: center;
@@ -2081,12 +2055,10 @@ button.scheduler-row-head__num::after {
    to its foot, whatever day the rows stand on: it reaches far past both
    sides, and the bar, which clips what it holds, cuts it at its own sides
    and its own lower corners, so the bar is two bands, the trip over the
-   bus. The band is darker than the bar, a screen set into it as a dash's
-   cluster is, so the gauges stand out and the trip's own rows above stay
-   the brighter; a light theme darkens it toward the bar's ink, in
-   theme.css. */
+   bus. Its neutral surface matches the shared status footer. */
 .scheduler-road__card {
   --scheduler-road-tone: var(--scheduler-mark-success);
+  color: var(--scheduler-footer-fg);
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -2108,7 +2080,7 @@ button.scheduler-row-head__num::after {
   position: absolute;
   z-index: -1;
   inset: 4px -100vw calc(-1 * (var(--scheduler-row-h) + var(--scheduler-road-lift)) - 4px);
-  background: var(--scheduler-road-band, rgb(0 0 0 / .22));
+  background: var(--scheduler-footer);
   pointer-events: none;
 }
 /* The drivers row, positioned as every row is to stick, is painted over
@@ -2248,13 +2220,12 @@ button.scheduler-row-head__num::after {
 .scheduler-bar:not(.scheduler-bar--open, .scheduler-bar--back) .scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id] { cursor: grab; }
 .scheduler-crew.scheduler-crew--carried { opacity: .4; }
 .scheduler-crew.scheduler-crew--carried :is(.scheduler-crew__dot, .scheduler-crew__mark svg) { visibility: hidden; }
-.scheduler-crew__mark--success { color: var(--scheduler-mark-success); }
-.scheduler-crew__mark--error { color: var(--scheduler-mark-error); }
+.scheduler-crew__mark--success { color: var(--scheduler-driver-success); }
+.scheduler-crew__mark--error { color: var(--scheduler-driver-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
-/* Not sent takes the done colour, as a met requirement does: nothing has
-   happened to this driver yet, so it holds no colour of its own and reads as
-   the empty first step rather than as a state. */
-.scheduler-crew__mark--off { color: var(--scheduler-mark-done, currentColor); }
+/* Neutral workflow states stay gray; missing assignment takes Caution major. */
+.scheduler-crew__mark--off { color: var(--scheduler-driver-neutral); }
+.scheduler-crew__mark--major { color: var(--scheduler-driver-major); }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning
@@ -2975,20 +2946,9 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   margin-block-end: var(--rux-spacing-05);
 }
-/* The Updates window's list, under the box: each update a
+/* The update prompt's list of earlier updates, under the box: each update a
    tile on the raised layer, its author's face beside its words over its day,
-   the tiles a step apart, as the board's lists hold theirs.
-   A tile is a button that opens it for editing; the one being edited or
-   deleted is a plain tile holding its box or its ask. Add update, when the
-   window stands on its own, ends the box's line, a step under it. */
-.scheduler-update-add { display: flex; justify-content: flex-end; margin-block-start: var(--rux-spacing-03); }
-.scheduler-update-add[hidden] { display: none; }
-/* While an earlier update is open to change or delete, the window on its own
-   hides the new update's box and Add update, so one box shows at a time, and
-   the list moves up to the top of the window. */
-#scheduler-update-modal[data-alone][data-editing] :is(#scheduler-update-box, #scheduler-update-add) { display: none; }
-#scheduler-update-modal[data-alone][data-editing] .scheduler-updates-log { margin-block-start: 0; }
-.scheduler-updates-error { margin-block-start: var(--rux-spacing-03); color: var(--rux-text-error); }
+   the tiles a step apart, as the board's lists hold theirs. */
 .scheduler-updates-log { margin-block-start: var(--rux-spacing-06); }
 .scheduler-updates-log[hidden] { display: none; }
 .scheduler-updates { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--rux-spacing-03); }
@@ -3003,16 +2963,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-updates__face { flex: none; }
 .scheduler-updates__text { flex: 1; min-inline-size: 0; }
-/* An update's Edit box, or the ask before it goes: Delete or the question at
-   the left, the other buttons at the right. */
-.scheduler-updates__actions {
-  display: flex;
-  gap: var(--rux-spacing-03);
-  align-items: center;
-  justify-content: flex-end;
-  margin-block-start: var(--rux-spacing-03);
-}
-.scheduler-updates__ask { margin-inline-end: auto; }
 .scheduler-updates__body { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
 .scheduler-updates__meta { display: block; color: var(--rux-text-secondary); margin-block-start: var(--rux-spacing-01); }
 .scheduler-updates-empty { color: var(--rux-text-secondary); }
@@ -5872,33 +5822,91 @@ html:has(.scheduler-page[data-takeover]) {
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
 
-/* The badges that open a card answer the pointer as Carbon's operational tags
-   do: a lighter fill on hover, and a darker one while their card is open, so no
-   ring is drawn where the bar's edge or its row would cut it. The card follows
-   its bar in the markup, so the open state survives the bar being drawn again.
-   An update with no age to mark takes the update line's own tint. */
+/* Alert buttons brighten on hover; their active state is shared with Live. */
 @media (hover: hover) {
-  .scheduler-bar__msg:is(.scheduler-bar__alert, .scheduler-bar__age)[data-card-opener]:hover { filter: brightness(1.15); }
+  .scheduler-bar__alert[data-card-opener]:hover { filter: brightness(1.15); }
 }
-@media (hover: hover) {
-  .scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none)[data-card-opener]:hover { background: color-mix(in srgb, var(--scheduler-fg) 16%, transparent); filter: none; }
-}
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="needs"]) .scheduler-bar__alert,
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__age,
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="road"]) .scheduler-road__dot {
-  filter: brightness(0.82);
-}
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__age:is(.scheduler-bar__lead--settled, .scheduler-bar__lead--none) {
-  background: color-mix(in srgb, var(--scheduler-fg) 24%, transparent);
-  filter: none;
-}
-.scheduler-bar:has(+ .scheduler-bar-shortcuts[data-card]:not([hidden], [data-docked])[data-section="updates"]) .scheduler-bar__update:not(:has(.scheduler-bar__age)) {
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--scheduler-fg) 14%, transparent);
-}
+.scheduler-bar__alert[data-card-opener]:active { filter: brightness(.8); }
+/* The active entry point stays visible while its card is open. */
+.scheduler-bar [data-card-opener][aria-expanded="true"] { filter: brightness(.88); }
+/* The fill runs 3px past the text, which is the bar's 4px side padding less the 1px ring, so it never reaches the ring. */
+/* Carbon's fills for a row on a surface: hover lightens, the open row holds the selected fill, and a press is the lightest. */
+.scheduler-bar__update[data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--scheduler-footer-selected); background: var(--scheduler-opener-fill); }
+.scheduler-bar__update[data-card-opener]:active { --scheduler-opener-fill: var(--scheduler-footer-active); background: var(--scheduler-opener-fill); }
 
-/* A card of one part, Alerts or Updates, has no head and no frame inside its
-   own: its rows stand on the card's surface, as an overflow menu's do, and it
-   closes on Escape, a press outside, or the same press that opened it. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-section="needs"], [data-section="updates"]) .scheduler-card:has(> .scheduler-card__tile) { padding: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]):is([data-section="needs"], [data-section="updates"]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile { background: transparent; }
+.scheduler-bar__more[data-crew-overflow] { background: transparent; color: inherit; padding: 0; font: inherit; flex: none; }
+.scheduler-bar__more[data-crew-overflow]:hover { text-decoration: underline; }
+.scheduler-bar .scheduler-bar__more--attention { color: var(--scheduler-driver-error); }
+.scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-footer-paint: none; }
+.scheduler-week--no-update.scheduler-week--no-drivers .scheduler-bar { --scheduler-footer-paint: none; }
+.scheduler-bar__msg.scheduler-bar__paid { block-size: 18px; min-inline-size: 18px; line-height: 18px; border-radius: 9px; font-size: var(--rux-label-01-font-size); }
+
+/* AN UPDATE OPEN IN THE CARD is its face beside a box with Delete at the left and Cancel and Save at the right, or beside its words and the
+   question that Delete asks, in the row's own place, so the other updates stay where they are. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update--editing[data-update-id].scheduler-card__update.scheduler-card__update--editing {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  gap: var(--rux-spacing-03);
+  align-items: start;
+  padding: var(--rux-spacing-04) var(--rux-spacing-05);
+}
+.scheduler-card__edit { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.scheduler-card__edit .rux--text-area { inline-size: 100%; }
+.scheduler-card__edit-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--rux-spacing-02); }
+.scheduler-card__edit-actions > :first-child { margin-inline-end: auto; }
+.scheduler-card__edit-ask { color: var(--rux-text-secondary); }
+.scheduler-card__edit-ask { white-space: nowrap; }
+.scheduler-card__edit-actions > .rux--btn { flex: none; inline-size: auto; min-inline-size: 0; max-inline-size: none;  padding-inline: var(--rux-spacing-05); }
+
+/* Each needs row says where a press on it goes at its end, in secondary text, after the day a due reminder names; a need is the neutral
+   dashed circle, so a sign means an alert only. */
+.scheduler-card__needs-list > .scheduler-card__row--need > svg { color: var(--scheduler-driver-neutral); }
+.scheduler-card__go { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-04); color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-body-compact-01-line-height); }
+.scheduler-card__asks-when + .scheduler-card__go { margin-inline-start: 0; }
+
+/* THE FOOTER runs along the card's foot as a Carbon window's does, one hairline over it and its buttons the control height and edge to edge,
+   a button alone the whole width and two sharing it; a new update's box stands in it over Cancel and Save. It stays in view while a
+   card of needs scrolls. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card { overflow-x: hidden; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:not(:has(> .scheduler-card__updates)) { overflow-y: auto; }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__footer {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-block-start: auto;
+  border-block-start: 1px solid var(--card-rule);
+  background: var(--card-surface);
+}
+.scheduler-card__footer > .rux--btn {
+  flex: 1 1 0;
+  margin: 0;
+  align-items: center;
+  block-size: var(--rux-layout-size-height-md);
+  min-block-size: 0;
+  max-inline-size: none;
+  padding-inline: var(--rux-spacing-05);
+  border-radius: 0;
+}
+.scheduler-card__footer > .scheduler-card__quick { flex: 1 1 100%; margin: var(--rux-spacing-04) var(--rux-spacing-05); }
+
+/* A ONE-PART CARD'S HEADING is a Carbon window's: the title in the 20px heading, regular, with its count beside it in small secondary text,
+   and Close the row's height square at the corner, flush to its edges. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(> .scheduler-card__close) {
+  min-block-size: var(--rux-layout-size-height-md);
+}
+.scheduler-card__title:has(> .scheduler-card__close) .scheduler-card__heading {
+  font-size: var(--rux-heading-03-font-size);
+  font-weight: var(--rux-heading-03-font-weight);
+  line-height: var(--rux-heading-03-line-height);
+  letter-spacing: var(--rux-heading-03-letter-spacing);
+}
+.scheduler-card__title:has(> .scheduler-card__close) .scheduler-card__count { font-size: var(--rux-body-compact-01-font-size); }
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > .scheduler-card__close {
+  align-self: stretch;
+  inline-size: var(--rux-layout-size-height-md);
+  block-size: var(--rux-layout-size-height-md);
+  min-block-size: 0;
+  margin: 0;
+  border-radius: 0;
+}

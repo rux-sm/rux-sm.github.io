@@ -2,8 +2,8 @@
    Rux Scheduler — BAR, a trip's bar as the board draws it
    --------------------------------------------------------------------------
    One assignment's bar: the trip's colour, its rows, its crew, the badge that
-   counts its problems at the end of the destination row and the clock that
-   gives its update's age. data.js draws the board's bars with it and
+   counts its problems at the end of the destination row and the plain age
+   beside its newest update. data.js draws the board's bars with it and
    components.html draws its samples with it, so the two cannot differ.
 
    `draw(b, board)` is one bar, `b` the board's `{ trip, leg, assign, place,
@@ -19,13 +19,13 @@
      staffedUntil             the ISO day the office staffs to, exclusive,
                               where an empty seat stops being due.
    It hands back `{ bar, facts }`, `facts` being `{ needs, misfits,
-   overSeated, driverAlerts, tells }`, which the trip's card reads.
+   overSeated, driverAlerts, tells, problems }`, which the trip's card reads.
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
    them, `crewText(c)` and `crewName(c)` the same in words, and `fitCrew`
    gives a crew row's names way when they do not fit. `fitKind(bar)` drops
-   the word from a one-way or split leg's pill when the times would be cut. `hhmm(t, short)`,
+   nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
    and its card say them.
 
@@ -40,7 +40,6 @@
   } = window.SchedulerLegFacts;
   const { tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
   const { waitsOf, updatesOf, asks: asksFollowUp, WORDS: WAIT_WORDS } = window.SchedulerFollowUp;
-  const DAY = 864e5;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -90,9 +89,9 @@
   };
 
   /* The chip a one-way trip and each leg of a split wear after the
-     destination: the arrow the way the bus goes, alone in a small circle of
-     the bar's own ink. The word is its tooltip, so the chip is the same width
-     on every bar and never competes with the destination for room. */
+     destination: the arrow the way the bus goes, in a high-contrast tag.
+     The word is its tooltip, so the chip is the same width on every bar and
+     never competes with the destination for room. */
   const KINDS = {
     'one way': { icon: '#m-arrow_forward', word: 'One way' },
     'drop-off': { icon: '#m-download', word: 'Drop-off' },
@@ -110,26 +109,33 @@
   // The chip is always the icon alone, so there is nothing to fit; data.js still calls this on a card's head.
   const fitKind = () => {};
 
-  /* THE ALERT BADGE, at the end of the destination row: the warning sign and
-     how many problems the trip has, their words on the tooltip. Red for a bus
-     that does not fit, the warning colour for the rest. It stands in the same
+  /* THE ALERT BADGE, at the end of the destination row: the red circle
+     with an exclamation mark for a bus that does not fit and Carbon's Warning triangle for the rest, with
+     how many problems the trip has beside it, their words on the tooltip. It stands in the same
      place on every bar, and a bar with no problem has none. A press on it
      opens the trip's card, so it is one of the bar's card openers. */
   const alertMark = (tone, count, words) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
-    m.append(svgUse('#m-error-fill', '12', '0 0 32 32'), String(count));
+    const m = el('button', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
+    m.type = 'button';
+    m.setAttribute('aria-expanded', 'false');
+    m.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-bar__alert-count', String(count)));
     m.dataset.cardOpener = '';
-    m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', words);
+    m.setAttribute('aria-label', `Alerts: ${words}`);
     m.title = words;
     return m;
   };
-  /* THE AGE, at the start of the update row: a clock and how long ago the
-     newest update was, "20m", "3h", "5d", or the date after a month, in a pill
-     the size and shape of the alert badge, filled in the colour of its age,
-     or grey for a trip that asks nothing more, or "No updates" for one with
-     none. The clock means age and nothing else, and the pill is the only part
-     of the row that opens the card. */
+  /* THE PAID BADGE takes the alert badge's place on a trip that is back and
+     paid in full: the same pill in the success colour, the word alone since
+     it says it. A trip back raises no alert, so the two never stand together,
+     and it opens nothing. */
+  const paidMark = () => {
+    const m = el('span', 'scheduler-bar__msg scheduler-bar__msg--success scheduler-bar__paid');
+    m.append('Paid');
+    m.title = 'Paid in full';
+    return m;
+  };
+  /* The newest update's age is neutral metadata, without a clock or pill.
+     The entire update row is the entry point, including when it has no update. */
   const ageWords = at => {
     const min = (Date.now() - Date.parse(at)) / 60e3;
     if (min < 60) return `${Math.max(1, Math.floor(min))}m`;
@@ -137,14 +143,8 @@
     if (min < 43200) return `${Math.floor(min / 1440)}d`;
     return new Date(at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   };
-  const ageMark = (tone, at, words) => {
-    const m = el('span', `scheduler-bar__msg scheduler-bar__age scheduler-bar__lead--${tone}`);
-    // A trip with no update has no age to give, so its pill says so.
-    if (at) m.append(svgUse('#m-schedule', '12', '0 0 32 32'), ageWords(at));
-    else m.append('No updates');
-    m.dataset.cardOpener = '';
-    m.setAttribute('role', 'img');
-    m.setAttribute('aria-label', words);
+  const ageMark = (at, words) => {
+    const m = el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
     m.title = words;
     return m;
   };
@@ -214,14 +214,13 @@
   }
 
   /* A crew member in words, for the tooltip and the bar's label: the role, the
-     name, and a status other than Not sent with who set it and when. */
+     name, and the status with who set it and when. */
   function crewText(c) {
     if (c.needed) return `${c.label} needed`;
     const parts = [c.label, c.who ? (c.who.name || c.who.short_name) : 'Unknown driver'];
     const { value, label } = c.status;
     // Not sent names itself and stops there: nobody set it, so there is no
-    // who or when to give. It still says its name, because it has a disc of
-    // its own and a reader hovering grey is asking what grey means.
+    // who or when to give.
     if (value === 'off') {
       parts.push(label);
     } else {
@@ -233,78 +232,27 @@
     return parts.join(' · ');
   }
 
-  /* A trip that is back, in the update row's words: when this bus reached
-     its pickup, Spot and the time, in amber when after the Spot, as the
-     on-time pay counts it, then when it got back to the yard, Back and the
-     time, in amber when more than ten minutes past its planned yard-back, a
-     dimmed dot between: two facts, which fit the narrowest bar. With neither
-     time yet, the miles driven once they are in. Then the money: Paid in
-     green once paid in full, or what is still due in amber; a trip with no
-     price says nothing of it. The tooltip says every fact in a sentence. */
-  const money = n => `$${Math.round(n).toLocaleString('en-US')}`;
-  const LATE_BACK_MS = 10 * 60e3;
-  function completeEl(trip, assign, leg) {
-    const Road = window.SchedulerRoad;
-    const { price, paid, remaining } = window.SchedulerBilling.of(trip);
-    const item = el('span', 'scheduler-bar__complete');
-    const parts = [];
-    const said = ['Trip complete'];
-    const time = (label, iso, cls, lateBy, words) => {
-      const at = iso ? Date.parse(iso) : NaN;
-      if (!Number.isFinite(at)) return;
-      const clock = hhmm(Road.clockOf(at), true);
-      const late = lateBy(at);
-      const part = el('span', `scheduler-bar__complete-time${late ? ' scheduler-bar__complete-time--late' : ''} ${cls}`);
-      part.append(`${label} `, clockEl(clock));
-      parts.push(part);
-      said.push(`${words} ${clock}${late ? `, ${late} minutes late` : ''}`);
-    };
-    const spot = leg ? Road.stopsOf(trip, leg.key)[0]?.due ?? null : null;
-    time('Spot', assign?.pickup_at, 'scheduler-bar__complete-spot', at => Road.pickupLate(spot, at) || 0, 'at the pickup');
-    const planned = leg ? window.SchedulerWeek.backAt(leg) : null;
-    time('Back', assign?.actual_yard_return_at, 'scheduler-bar__complete-back',
-      at => (planned != null && at - planned > LATE_BACK_MS ? Math.round((at - planned) / 60e3) : 0), 'back at the yard');
-    const miles = Number(trip.actual_miles) || 0;
-    if (miles > 0) {
-      if (!parts.length) parts.push(el('span', 'scheduler-bar__complete-miles', `${Math.round(miles).toLocaleString('en-US')} mi`));
-      said.push(`${Math.round(miles).toLocaleString('en-US')} miles`);
-    }
-    if (price > 0 && remaining > 0) {
-      parts.push(el('span', 'scheduler-bar__complete-due', `${money(remaining)} due`));
-      said.push(`${money(remaining)} of ${money(price)} still due`);
-    } else if (price > 0 && paid > 0) {
-      parts.push(el('span', 'scheduler-bar__complete-paid', 'Paid'));
-      said.push('paid in full');
-    } else if (price <= 0) said.push('no price yet');
-    parts.forEach((p, k) => item.append(...(k ? [el('span', 'scheduler-bar__complete-sep', '·'), p] : [p])));
-    item.title = said.join(', ');
-    return item;
-  }
-
-  /* One crew member on the drivers row: a mark in the status's tone, then the
-     short name. A driver or co-driver's mark is their status's own shape, the
-     one the editor shows, and a relief driver's the two opposite arrows, so a
-     relief never reads as another driver. The colours are the answer: grey
-     not sent, red to assign, amber sent and waiting, green confirmed, red
-     declined. A role nobody fills has no status, its mark a dashed empty
-     circle and "No driver" dimmed, as "No times" is, and a declined driver's
-     name is struck through as well. An empty seat on a leg that is due takes the warning
-     colour instead, mark and words, because it is the one that needs filling
-     now. */
+  /* Carbon status icons identify each driver; relief retains its role arrows.
+     A trip that is done has no answer left to wait for, so its drivers carry
+     no status icon, only their names, unless one declined. Empty seats become Caution major inside
+     fourteen days of departure. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
-  // A trip that is back: every driver who did not decline wears the
-  // confirmed check, which app.css draws in the bar's own ink.
-  const DONE_ICON = '#m-check_circle-fill';
-  function crewEl(c, due, back) {
-    const tone = c.needed ? 'off' : c.status.tone;
+  function crewEl(c, due, done) {
+    const tone = c.needed ? (due ? 'major' : 'off') : c.status.tone;
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
-    const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
-      c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
-    mark.appendChild(c.needed && dot ? el('span', 'scheduler-crew__dot')
-      : dot ? svgUse(back && c.status.value !== 'declined' ? DONE_ICON : c.status.icon, '16', '0 0 32 32') : svgUse(c.icon, '16', c.box));
-    item.appendChild(mark);
+    if (!(done && dot && !c.needed && c.status?.value !== 'declined')) {
+      const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
+        c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
+      const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt-inverted--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
+        : svgUse(c.icon, '16', c.box);
+      if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-major' : 'rux--icon-indicator--not-started')
+        : c.status.indicator);
+      // Distant empty seats need no status indicator; the neutral label is enough.
+      if (!c.needed || due || !dot) mark.appendChild(glyph);
+      item.appendChild(mark);
+    }
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
     item.title = crewText(c);
@@ -322,23 +270,33 @@
      name short instead, so both drivers stay on it; a third gives way. */
   const fitCrew = crew => {
     const items = [...crew.children].filter(n => n.classList.contains('scheduler-crew'));
-    crew.querySelector(':scope > .scheduler-bar__more')?.remove();
+    const oldMore = crew.querySelector(':scope > .scheduler-bar__more');
+    const hadFocus = oldMore && document.activeElement === oldMore;
+    oldMore?.remove();
     for (const item of items) item.style.removeProperty('display');
     if (items.length <= 2 && items.every(item => item.classList.contains('scheduler-crew--seat'))) return;
     const cut = () => items.some(item => {
       const name = item.style.display ? null : item.querySelector('.scheduler-crew__name');
       return name && name.scrollWidth > name.clientWidth;
     });
-    if (items.length < 2 || !cut()) return;
-    const more = el('span', 'scheduler-bar__more');
+    if (items.length < 2 || !cut()) {
+      if (hadFocus) crew.closest('.scheduler-bar')?.focus();
+      return;
+    }
+    const more = oldMore ?? el('button', 'scheduler-bar__more');
+    more.type = 'button';
+    more.dataset.crewOverflow = '';
     crew.appendChild(more);
     for (let shown = items.length - 1; shown >= 1; shown--) {
       items[shown].style.display = 'none';
       const left = items.slice(shown);
       more.textContent = `+${left.length}`;
       more.title = left.map(item => item.title).join('\n');
+      more.setAttribute('aria-label', `Show crew: ${more.title}`);
+      more.classList.toggle('scheduler-bar__more--attention', left.some(item => item.classList.contains('scheduler-crew--declined')));
       if (!cut()) break;
     }
+    if (hadFocus) more.focus({ preventScroll: true });
   };
   const crewObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
     for (const { target } of entries) {
@@ -387,12 +345,22 @@
     return list;
   }
 
-  /* The day the office staffs to: the end of next week, the Monday two weeks
-     on from this one. A board whose week starts on Sunday hands its own. */
-  const staffedUntilNow = () => {
-    const now = new Date();
-    return iso(addDays(now, 14 - (now.getDay() + 6) % 7));
-  };
+  function problemsOf(trip, facts, leg) {
+    if (window.SchedulerCloseOut.isBack(trip)) return [];
+    const list = alertsOf(trip, facts).filter(isProblem);
+    const today = new Date();
+    if (leg.from >= iso(today) && leg.from <= iso(addDays(today, SOON_DAYS))) {
+      if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed)
+        list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
+      const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
+      if (!trip.itinerary_not_needed && !window.SchedulerTripShape.itineraryFor(trip, firstLeg))
+        list.push({ row: 'scheduler-card__asks', go: 'itinerary', spot: 'itinerary', words: WAIT_WORDS.itinerary });
+    }
+    return list;
+  }
+
+  // A rolling fourteen-day departure window, independent of the week displayed.
+  const staffingDue = (leg, today = new Date()) => leg.to >= iso(today) && leg.from <= iso(addDays(today, 14));
   const NOBODY_NEAR = { trips: [], off: [], oos: [] };
 
   function draw(b, board) {
@@ -411,9 +379,10 @@
     // whether this leg's is booked.
     bar.dataset.needHotel = trip.need_hotel ? 'true' : '';
     bar.dataset.hotelBooked = leg.hotelBooked ? 'true' : '';
-    bar.setAttribute('role', 'button');
+    bar.setAttribute('role', 'group');
+    bar.setAttribute('aria-keyshortcuts', 'Enter Space');
     bar.tabIndex = 0;
-    bar.setAttribute('aria-pressed', 'false');
+    bar.setAttribute('aria-current', 'false');
     bar.dataset.tripId = trip.id;
     // A trip that is back stays where it is on the board; close-out.js says when.
     if (window.SchedulerCloseOut.isBack(trip)) bar.classList.add('scheduler-bar--back');
@@ -441,8 +410,7 @@
        no missing bus; a driver someone has named still shows. */
     const placeholder = window.SchedulerBilling.placeholder(trip);
 
-    /* A leg that leaves the group or fetches it says so in a pill at the time
-       row's end, its arrow pointing the way the bus does: across for a
+    /* A leg that leaves the group or fetches it says so after the destination, its arrow pointing the way the bus does: across for a
        one-way trip, down for a split's drop-off, where the group is set down,
        up for its pickup, every leg after the first. The pill says which leg
        of a split this is, so the reference is only its count. */
@@ -521,30 +489,23 @@
     // `tells` names the drivers to be told, for the bell on the bar menu's Call or text.
     const facts = { leg: leg.key, needs, misfits, overSeated, driverAlerts, tells };
 
-    /* THE WARNING SIGN, at the update row's start, for a trip with a
-       problem, its words on the tooltip: red for a bus that does not fit, a
-       mistake on the board, and the warning colour for the rest. The card
-       still lists every alert. A mark, not a button, because the bar is the
-       button. */
-    const problems = alertsOf(trip, facts).filter(isProblem).map(a => a.words);
-    const today = new Date();
-    if (!window.SchedulerCloseOut.isBack(trip) && !placeholder && leg.from >= iso(today) && leg.from <= iso(addDays(today, SOON_DAYS))) {
-      if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed) problems.push('Trip contact missing');
-      const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
-      if (!trip.itinerary_not_needed && !SHAPE.itineraryFor(trip, firstLeg)) problems.push(WAIT_WORDS.itinerary);
-    }
+    // One structured list feeds the badge and the card's Alerts group.
+    facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
+    const problems = facts.problems;
     const alert = problems.length
-      ? alertMark(misfits.length ? 'error' : 'warning', problems.length, problems.join(' · ')) : null;
-    /* A trip that is back is faded on the board and says what it came to in
-       its update row; a back trip raises no alert. */
+      ? alertMark(misfits.length ? 'error' : 'warning', problems.length, problems.map(a => a.words).join(' · ')) : null;
+    /* A trip that is back raises no alert, and says Paid in the alert's place
+       once it is paid in full. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);
+    const billed = isDone ? window.SchedulerBilling.of(trip) : null;
+    const paidBadge = billed && billed.price > 0 && billed.paid > 0 && billed.remaining <= 0 ? paidMark() : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
     if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
     /* The destination row holds what the trip is on the left, and only what
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
-    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert);
+    addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? paidBadge);
     addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
 
     // The booking contact as the trip records it. The board shows the name
@@ -590,49 +551,19 @@
     else whenDep.append('No times');
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
-    /* The newest update's words on one line, in the bar's ink, the last
-       thing anyone said about the trip, as the card's list starts with it.
-       While the trip has anything open and no problem, a clock leads them
-       in the colour of the update's age, so down a week the eye finds the
-       trips still in play and how lately each was touched: green while the
-       card's age reads in minutes, hours or 1d, amber for the rest of its
-       first week, and red once the card shows a date. Open is anything the
-       card would warn of or the office still waits on: a bus that does not
-       fit, a need still to do, nobody to call on the day, or a
-       confirmation, PO, itinerary or balance not in. A settled trip has no
-       clock, since its age asks for nothing. A trip with none leaves the row
-       empty, so every bar on the board is one height.
-       ONCE THE TRIP IS BACK, which its faded colour says, the row gives its
-       facts instead, since the last update is no longer news: when this bus
-       got back to the yard, the miles driven, once they are in, then Paid in
-       green, or what is still due in amber; a trip with none leaves the row
-       empty. The update stays on
-       the tooltip and the card. */
+    // The update and crew share a footer; only the update row opens Updates.
     const latest = updatesOf(trip)[0] ?? null;
-    const done = isDone;
-    const news = done ? completeEl(trip, assign, leg) : el('span', null, latest?.body || '');
-    let tone = done ? ' scheduler-bar__update--complete' : '';
-    let age = null;
-    if (latest && done) news.title = `${news.title}\n${latest.body}\n${updateStamp(latest)}`;
-    else if (latest) {
-      news.title = `${latest.body}\n${updateStamp(latest)}`;
-      const open = !window.SchedulerCloseOut.isBack(trip) && (waitsOf(trip).length > 0 || misfits.length > 0 || needs.some(n => !n.done)
-          || (!dayOfContact(trip, leg.key) && !trip.contact_not_needed));
-      const days = (Date.now() - Date.parse(latest.created_at)) / DAY;
-      if (open) {
-        const ageTone = days < 2 ? 'new' : days < 7 ? 'week' : 'old';
-        tone = ` scheduler-bar__update--${ageTone}`;
-        age = ageMark(ageTone, latest.created_at, `Latest update ${updateStamp(latest)}`);
-      }
-    }
-    if (!age && !done) {
-      age = latest ? ageMark('settled', latest.created_at, `Latest update ${updateStamp(latest)}`)
-        : ageMark('none', null, 'No updates yet');
-    }
-    // The age leads the update line and opens the card, whose Updates it begins.
-    const updateRow = addRow(bar, `scheduler-bar__update${tone}`, age, news);
-    // The age pill opens the card; a finished trip's row, which gives facts, opens it whole.
-    if (!age) updateRow.dataset.cardOpener = '';
+    const news = el('span', null, latest?.body || '');
+    if (latest) news.title = `${latest.body}\n${updateStamp(latest)}`;
+    const age = ageMark(latest?.created_at, latest ? `Latest update ${updateStamp(latest)}` : 'No updates yet');
+    const updateRow = el('button', 'scheduler-bar__row scheduler-bar__update');
+    updateRow.type = 'button';
+    updateRow.dataset.cardOpener = '';
+    updateRow.setAttribute('aria-expanded', 'false');
+    updateRow.setAttribute('aria-label', `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`);
+    updateRow.appendChild(age);
+    updateRow.appendChild(news);
+    bar.appendChild(updateRow);
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.
@@ -644,7 +575,7 @@
     const crewBox = el('span', 'scheduler-bar__crew', assign || placeholder ? null : 'Needs a bus');
     /* A leg is due from today to the end of the stretch the office staffs:
        it has not finished, and it starts before that stretch ends. */
-    const due = leg.to >= iso(new Date()) && leg.from < (board.staffedUntil ?? staffedUntilNow());
+    const due = staffingDue(leg);
     crewBox.append(...crew.map(c => crewEl(c, due, isDone)));
     // Who drives this bar, for the driver grid to pick out.
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
@@ -670,7 +601,11 @@
     return { bar, facts };
   }
 
+  const cardSectionOf = opener => opener.matches('.scheduler-bar__alert') ? 'needs'
+    : opener.matches('.scheduler-road__dot') ? 'road' : 'updates';
+  const opensSection = (showing, current, requested) => !showing || current !== requested;
+
   window.SchedulerBar = {
-    draw, alertsOf, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp,
+    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp,
   };
 })();

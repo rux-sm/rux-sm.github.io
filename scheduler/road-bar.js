@@ -67,7 +67,8 @@
 
   const HOUR = 3600e3;
   const { DRIVER_STATUSES } = window.SchedulerLegFacts;
-  const CONFIRMED_ICON = DRIVER_STATUSES.find(s => s.value === 'confirmed').icon;
+  const CONFIRMED_STATUS = DRIVER_STATUSES.find(s => s.value === 'confirmed');
+  const CONFIRMED_ICON = CONFIRMED_STATUS.icon;
   const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
   const DUTY = {
     driving: { icon: '#m-search_hands_free-fill', word: 'Driving' },
@@ -144,6 +145,7 @@
     const statusUse = statusMark?.classList.contains('scheduler-crew__mark--dot') ? statusMark.querySelector('use') : null;
     if (statusMark?.dataset.baseClass != null) { statusMark.className = statusMark.dataset.baseClass; delete statusMark.dataset.baseClass; }
     if (statusUse && statusMark.dataset.baseIcon != null) { statusUse.setAttribute('href', statusMark.dataset.baseIcon); delete statusMark.dataset.baseIcon; }
+    if (statusUse && statusMark.dataset.baseIndicator != null) { statusUse.parentElement.setAttribute('class', statusMark.dataset.baseIndicator); delete statusMark.dataset.baseIndicator; }
     item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
     delete item.dataset.baseDeclined;
     if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
@@ -163,10 +165,12 @@
     item.classList.add('scheduler-crew--seat');
     if (statusMark) {
       statusMark.dataset.baseClass = statusMark.className;
-      statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|error|success)\b/, 'scheduler-crew__mark--success');
+      statusMark.className = statusMark.className.replace(/scheduler-crew__mark--(off|warning|major|normal|error|success)\b/, 'scheduler-crew__mark--success');
       if (statusUse) {
         statusMark.dataset.baseIcon = statusUse.getAttribute('href');
         statusUse.setAttribute('href', CONFIRMED_ICON);
+        statusMark.dataset.baseIndicator = statusUse.parentElement.getAttribute('class') || '';
+        statusUse.parentElement.setAttribute('class', CONFIRMED_STATUS.indicator);
       }
     }
     item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
@@ -295,9 +299,10 @@
       return;
     }
     if (!dot) {
-      dot = el('span', 'scheduler-road__dot');
+      dot = el('button', 'scheduler-road__dot');
+      dot.type = 'button';
+      dot.setAttribute('aria-expanded', 'false');
       dot.dataset.cardOpener = '';
-      dot.setAttribute('role', 'img');
       dot.append(el('i', 'scheduler-road__ping'), 'Live');
       row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
     }

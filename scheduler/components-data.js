@@ -144,7 +144,7 @@
       ['A return only', { depart: null, back: '18:00' }],
       ['No times yet', { depart: null, back: null }],
     ].map(([customer, o], i) => row(BUSES[i].number, bar(trip({ customer, buses: [crewed(BUSES[i].id)], ...o }), { span: o.end_date === day(0) ? 1 : 2 })));
-    // Open, so the update takes its age's colour: no one named to call on the day.
+    // Open and settled trips share neutral update ages.
     const aged = [
       ['Today', 3 * HOUR, true], ['This week', 4 * DAY, true], ['Older', 12 * DAY, true], ['Settled', 12 * DAY, false],
     ].map(([customer, ago, open], i) => row(BUSES[i].number, bar(trip({
@@ -162,16 +162,16 @@
         { name: 'A placeholder', note: 'Amber, not a trip yet: no times, no empty seats and no alerts, with a driver someone named still shown.', days: 3,
           rows: [row('104', bar(trip({ trip_bar_color: 'amber', confirmed: false, customer: 'Mesa Robotics Club', destination: 'Houston, TX', depart: null, back: null,
             start_date: day(40), end_date: day(41), buses: [{ bus: 'b104', crew: [['d4', 'driver']], roles: ['driver', 'co-driver'] }] })))] },
-        { name: 'One way', note: 'A One way pill at the time row\'s end.', days: 3,
+        { name: 'One way', note: 'An unboxed one-way arrow after the destination.', days: 3,
           rows: [row('103', bar(trip({ trip_type: 'one_way', customer: 'Harbor Tours', destination: 'Galveston, TX', buses: [crewed('b103')] })))] },
-        { name: 'Drop-off and pickup', note: 'A split trip: a Drop-off pill on the first leg, a Pickup pill on the second.', days: 3,
+        { name: 'Drop-off and pickup', note: 'A split trip: an unboxed drop-off arrow on the first leg, a pickup arrow on the second.', days: 3,
           rows: [row('102', bar(split, { span: 1 }), bar(split, { leg: 'return', start: 2, span: 1 }))] },
         { name: 'More than one bus', note: 'Each bus is a bar, counted after the destination; one still without a bus waits in the No bus row.', days: 3,
           rows: [row('101', bar(three)), row('102', bar(three, { slot: 1 })), row('No bus', bar(three, { slot: 2, assign: null }))] },
         { name: 'Either side of the week', note: 'A trip from last week runs off the start and says the day it left, one into next week runs off the end and says the day it is back.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),
             row('106', bar(trip({ customer: 'Coastal Youth Choir', destination: 'Dallas, TX', buses: [crewed('b106')] }), { start: 1, toNext: true }))] },
-        { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: it is faded, and its update row says when its bus reached the pickup and got back to the yard, each amber when late, or else its miles once they are in, then Paid in green or what is still due in amber.', days: 3,
+        { name: 'Back at the yard', note: 'A trip whose bus is back asks nothing on the board: it keeps its own colour, its regular update row and its driver names without status icons, and says Paid in green where an alert badge would stand once it is paid in full.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Northside Band', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', actual_miles: null,
             buses: [{ bus: 'b102', crew: [['d2', 'driver', 'pending-response', { pay: null }]] }] }))),
             row('103', bar(trip({ customer: 'Harbor Tours', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850, actual_miles: 412,
@@ -181,7 +181,7 @@
             row('105', bar(trip({ customer: 'Coastal Youth Choir', start_date: day(-2), end_date: day(-1), depart: '07:00', back: '17:00', quoted_price: 1850,
               trip_payments: [{ amount: 1850, date: day(-3) }], actual_miles: 388, buses: [{ bus: 'b105', spotAt: [day(-2), '06:52'], backAt: [day(-1), '16:52'], crew: [['d1', 'driver', 'confirmed']] }] })))] },
         { name: 'Times', note: 'Departure and return; +1 for a bus back after midnight; Dep or Ret with one; dimmed with neither.', days: 3, rows: times },
-        { name: 'Update ages', note: "While a trip has anything open and no problem, a clock in the update's age colour leads it; a settled trip has none.", days: 3, rows: aged },
+        { name: 'Update ages', note: "Age is neutral text before the newest update; the entire row opens Updates, including when none exist.", days: 3, rows: aged },
         { name: 'Needs a bus', note: 'A leg with no bus yet, in the No bus row.', days: 3,
           rows: [row('No bus', bar(trip({ customer: 'Mesa Robotics Club', destination: 'Port Aransas, TX' }), { assign: null }))] },
       ],
@@ -196,13 +196,13 @@
     }))));
     const crew = {
       id: 'crew', title: 'The crew',
-      intro: "Each seat in role order, its mark the driver's answer, each its own shape: a grey filled circle not sent, a red disc with a mark to assign, amber dots waiting, a green check confirmed, a red cross declined.",
+      intro: "Each seat in role order, its mark the driver's answer, each its own shape: Carbon's gray Not started for not sent, orange Caution major to assign, gray Pending awaiting response, green Succeeded confirmed, red Failed declined.",
       samples: [
-        { name: 'Each status', note: 'A declined name is struck through, so colour is never the only sign.', days: 3, rows: statusRows },
+        { name: 'Each status', note: 'Each Carbon status has its own symbol; driver names retain their normal text.', days: 3, rows: statusRows },
         { name: 'Co-driver and relief', note: 'A driver wears their answer; a relief driver at either end is two arrows.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ bus: 'b101',
             crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'pending-response'], ['d3', 'relief-start', 'confirmed'], ['d6', 'relief-end']] }] }), { span: 3 }))] },
-        { name: 'Empty seats', note: 'Dimmed; in the warning colour once the leg is due, today to the end of next week.', days: 3,
+        { name: 'Empty seats', note: 'Neutral outside fourteen days; orange Caution major inside the rolling fourteen-day departure window.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Due now', buses: [{ bus: 'b102', crew: [['d4', 'driver', 'confirmed']], roles: ['driver', 'co-driver', 'relief-end'] }] }))),
             row('103', bar(trip({ customer: 'Next month', start_date: day(30), end_date: day(31), buses: [{ bus: 'b103', roles: ['driver', 'co-driver'] }] })))] },
         { name: 'A crew that does not fit', note: 'Names give way from the end, counted as +1, +2.', days: 3,
@@ -221,7 +221,7 @@
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;
     const alerts = {
       id: 'alerts', title: 'Alerts',
-      intro: "A problem puts the warning sign at the update's start: red once a bus does not fit, amber for seats or a driver, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
+      intro: "A problem puts the warning badge at the destination row's end: red once a bus does not fit, amber for seats or a driver, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
       samples: [
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },

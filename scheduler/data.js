@@ -843,8 +843,8 @@
 
   setInterval(askRoad, ROAD_EVERY);
 
-  /* THE CARD OF A TRIP OUT ON THE ROAD has two tabs, On the road and
-     Updates, and opens on On the road; the tab picked stays with the trip
+  /* THE CARD OF A TRIP OUT ON THE ROAD has three tabs: On the road,
+     Needs and Updates, and opens on On the road; the tab picked stays with the trip
      until the page loads again. Design's tabs.js switches them and says so
      with rux:tab-selected, which the card is drawn again from, so it fits
      and places itself for the tab now showing. */
@@ -855,6 +855,7 @@
     const bar = selectedBar();
     if (!which || !bar) return;
     roadTabs.set(barKey(bar), which);
+    cardSection = which;
     placeBarOpen(bar);
     document.querySelector(`#scheduler-bar-shortcuts [data-road-tab="${which}"]`)?.focus();
   });
@@ -1202,7 +1203,7 @@
     // for that trip when this week has one, so focus can go back to it.
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
     if (!target) {
-      if (keepRef) findBar(keepRef)?.setAttribute('aria-pressed', 'true');
+      if (keepRef) findBar(keepRef)?.setAttribute('aria-current', 'true');
       renderedWeek = iso(weekStart);
     }
 
@@ -1282,7 +1283,7 @@
     const ghost = bar.cloneNode(true);
     ghost.classList.remove('scheduler-bar--dragging');
     ghost.classList.add('scheduler-ghost');
-    ghost.removeAttribute('aria-pressed');
+    ghost.removeAttribute('aria-current');
     ghost.removeAttribute('role');
     ghost.removeAttribute('tabindex');
     ghost.setAttribute('aria-hidden', 'true');
@@ -1433,7 +1434,7 @@
   function installDrag(bar) {
     if (!bar.dataset.tripId) return;
     bar.addEventListener('pointerdown', down => {
-      if (down.button !== 0) return;
+      if (down.button !== 0 || down.target.closest('[data-card-opener], [data-crew-overflow]')) return;
       // A press on the driver's name lifts the driver, not the trip.
       if (liftsFrom(down)) return;
       // The trip open in the editor is locked on the board, and so is a trip that is back.
@@ -2650,21 +2651,11 @@
       detail: r.detail, clash: [r.busy, r.lapse, r.near].filter(Boolean).join(' · '),
     }));
 
-  /* A status as Carbon's icon indicator: the shape DRIVER_STATUSES gives it,
-     the one the bar draws, in Carbon's colour, and the yellow one carries its own dark mark, so each reads in
-     every theme without the bar's disc. The field's label already names the
-     role, so the form needs no role icon. Each class is written out whole,
-     for the class sweep. */
-  const STATUS_ICON = {
-    off: 'rux--icon-indicator--not-started',
-    'pending-assignment': 'rux--icon-indicator--caution-major',
-    'pending-response': 'rux--icon-indicator--caution-minor',
-    confirmed: 'rux--icon-indicator--succeeded',
-    declined: 'rux--icon-indicator--failed',
-  };
+  // The editor and bar share Carbon's icon and semantic status class.
   const statusIcon = value => {
-    const svg = svgUse(DRIVER_STATUSES.find(st => st.value === value).icon, '16', '0 0 32 32');
-    svg.setAttribute('class', `${STATUS_ICON[value]} scheduler-status-icon`);
+    const status = DRIVER_STATUSES.find(st => st.value === value);
+    const svg = svgUse(status.icon, '16', '0 0 32 32');
+    svg.setAttribute('class', `${status.indicator} scheduler-status-icon`);
     return svg;
   };
 
@@ -3472,7 +3463,7 @@
     // Closing puts the editor's own trip down; a different trip selected
     // meanwhile stays selected.
     const picked = selectedBar();
-    if (picked && isEditorBar(picked)) picked.setAttribute('aria-pressed', 'false');
+    if (picked && isEditorBar(picked)) picked.setAttribute('aria-current', 'false');
     panelEl.hidden = true;
     if (tripEl) tripEl.hidden = true;
     syncSelection();
@@ -4118,123 +4109,44 @@
     return [when, u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }
 
-  /* The Updates window's list: the trip's updates, newest first, each a tile
-     of its author's face beside its words over its day, the full stamp the
-     day's tooltip. Pressing a tile turns its words into a box with Delete,
-     Cancel and Save; Delete then asks on the tile before it goes. Each writes
-     at once, and the board reads it. It is read fresh each time the window
-     opens, for the trip `logTrip` names. */
-  const logEl = document.getElementById('scheduler-updates-log');
-  const logStatus = document.getElementById('scheduler-updates-status');
-  let logTrip = null;
-  let logRows = [];
-  let logChanging = null;   // { id, mode: 'edit' | 'delete' }
-  const smallBtn = (cls, text) => {
-    const b = el('button', `rux--btn ${cls} rux--btn--sm`, text);
-    b.type = 'button';
-    return b;
-  };
-  /* Changes or deletes one update. The row keeps only what it says now, and
-     a deleted one keeps nothing, so History is told what it said before:
-     `change` is the entry's before and after. */
-  async function changeLogged(u, query, fail, change) {
-    const tripId = logTrip;
-    try {
-      const { data, error: failed } = await withTimeout(query.then(r => r));
-      if (failed) throw new Error(failed.message);
-      recordHistory(tripId, 'updated', [{ field: 'update', label: 'Update', ...change }], null, { source: 'update' });
-      logRows = data ? logRows.map(r => (r.id === u.id ? data : r)) : logRows.filter(r => r.id !== u.id);
-      logChanging = null;
-      drawLog();
-      show();
-    } catch (err) {
-      console.warn(fail, err);
-      toast('error', fail, String(err?.message ?? err));
-      drawLog();
-    }
-  }
   /* A box as tall as its words, two lines at the least, so an update opened
      to change shows whole and the box grows as it is typed in. */
   function fitBox(box) {
     box.style.blockSize = 'auto';
     box.style.blockSize = `${box.scrollHeight + box.offsetHeight - box.clientHeight}px`;
   }
+  /* The save prompt's earlier updates: the trip's updates, newest first, each
+     a tile of its author's face beside its words over its day, the full stamp
+     the day's tooltip, so what was already said is in front of what is about
+     to be. They are read fresh each time the prompt opens, for the trip
+     `logTrip` names, and are changed in the trip's card. */
+  const logEl = document.getElementById('scheduler-updates-log');
+  const logStatus = document.getElementById('scheduler-updates-status');
+  let logTrip = null;
+  let logRows = [];
   function logItem(u) {
     const li = el('li', 'scheduler-updates__item');
     const text = el('span', 'scheduler-updates__text');
-    const mode = logChanging?.id === u.id ? logChanging.mode : null;
-    const tile = el(mode ? 'div' : 'button', mode ? 'rux--tile scheduler-updates__tile' : 'rux--tile rux--tile--clickable scheduler-updates__tile');
+    const tile = el('div', 'rux--tile scheduler-updates__tile');
     const face = updateFace(u, 'md');
     face.classList.add('scheduler-updates__face');
+    const day = el('span', 'rux--type-label-01 scheduler-updates__meta', updateDay(u));
+    day.title = updateStamp(u);
+    text.append(el('span', 'rux--type-body-compact-01 scheduler-updates__body', u.body), day);
     tile.append(face, text);
     li.appendChild(tile);
-    const words = () => {
-      const day = el('span', 'rux--type-label-01 scheduler-updates__meta', updateDay(u));
-      day.title = updateStamp(u);
-      text.append(el('span', 'rux--type-body-compact-01 scheduler-updates__body', u.body), day);
-    };
-    if (mode === 'edit') {
-      const edit = el('textarea', 'rux--text-area');
-      edit.rows = 2;
-      edit.value = u.body;
-      edit.setAttribute('aria-label', 'Update');
-      // The box is a layer up from the tile it sits on, so it reads as a field.
-      const wrapEdit = el('div', 'rux--text-area__wrapper rux--layer-three');
-      wrapEdit.appendChild(edit);
-      const drop = smallBtn('rux--btn--danger--ghost scheduler-updates__ask', 'Delete');
-      const cancel = smallBtn('rux--btn--ghost', 'Cancel');
-      const keep = smallBtn('rux--btn--primary', 'Save');
-      drop.addEventListener('click', () => { logChanging = { id: u.id, mode: 'delete' }; drawLog(); });
-      cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
-      edit.addEventListener('input', () => { keep.disabled = !edit.value.trim() || edit.value.trim() === u.body; fitBox(edit); });
-      keep.disabled = true;
-      keep.addEventListener('click', () => {
-        keep.disabled = true;
-        const body = edit.value.trim();
-        changeLogged(u, client.from('trip_updates').update({ body, edited_at: new Date().toISOString() })
-          .eq('id', u.id).select(UPDATE_COLUMNS).single(), 'The update was not changed.', { before: u.body, after: body });
-      });
-      const actions = el('div', 'scheduler-updates__actions');
-      actions.append(drop, cancel, keep);
-      text.append(wrapEdit, actions);
-      requestAnimationFrame(() => { fitBox(edit); edit.focus(); edit.setSelectionRange(edit.value.length, edit.value.length); });
-      return li;
-    }
-    words();
-    if (mode === 'delete') {
-      const cancel = smallBtn('rux--btn--ghost', 'Cancel');
-      const gone = smallBtn('rux--btn--danger', 'Delete');
-      cancel.addEventListener('click', () => { logChanging = null; drawLog(); });
-      gone.addEventListener('click', () => {
-        gone.disabled = true;
-        changeLogged(u, client.from('trip_updates').delete().eq('id', u.id), 'The update was not deleted.',
-          { before: u.body, after: 'Deleted' });
-      });
-      const actions = el('div', 'scheduler-updates__actions');
-      actions.append(el('span', 'rux--type-body-compact-01 scheduler-updates__ask', 'Delete this update?'), cancel, gone);
-      text.appendChild(actions);
-      requestAnimationFrame(() => cancel.focus());
-      return li;
-    }
-    tile.type = 'button';
-    tile.setAttribute('aria-label', `Edit update: ${u.body}`);
-    tile.addEventListener('click', () => { logChanging = { id: u.id, mode: 'edit' }; drawLog(); });
     return li;
   }
   function drawLog() {
     if (!logEl) return;
-    // The window says while an update is open, so on its own it hides the new box.
-    logEl.closest('.rux--modal')?.toggleAttribute('data-editing', !!logChanging);
     logEl.replaceChildren(...logRows.filter(u => u.kind !== 'nothing').map(logItem));
     logStatus.hidden = logEl.childElementCount > 0;
     logStatus.textContent = 'No updates yet.';
   }
-  // `editId` opens that update straight into its box, as pressing it would.
-  async function loadLog(tripId, editId = null) {
+  async function loadLog(tripId) {
     if (!logEl) return;
     logTrip = tripId;
     logRows = [];
-    logChanging = null;
     logEl.replaceChildren();
     logStatus.hidden = false;
     logStatus.textContent = 'Reading updates…';
@@ -4245,9 +4157,7 @@
       if (failed) throw new Error(failed.message);
       if (logTrip !== tripId) return;
       logRows = data || [];
-      if (editId && logRows.some(r => r.id === editId)) logChanging = { id: editId, mode: 'edit' };
       drawLog();
-      if (logChanging) logEl.querySelector('.rux--text-area')?.scrollIntoView({ block: 'nearest' });
     } catch (err) {
       console.warn('The updates were not read:', err);
       if (logTrip === tripId) logStatus.textContent = 'The updates could not be read.';
@@ -10629,7 +10539,7 @@
      `whenSafe`, which asks before unsaved changes would be lost. A bar is named
      by `barRef` values rather than held, because every render replaces the
      elements. */
-  function selectedBar() { return gridEl.querySelector('.scheduler-bar[aria-pressed="true"]'); }
+  function selectedBar() { return gridEl.querySelector('.scheduler-bar[aria-current="true"]'); }
 
   /* A bar's leg is named by `legKey`, the key week.js gives the leg; `leg`
      is the old word, which the old columns are still read by. */
@@ -10704,11 +10614,21 @@
   /* THE CARD IS THREE CARDS: Alerts, opened from a bar's alert badge, Updates,
      from its update line, and Live, from the pill of a bus out on the road.
      Each draws only its own part, sized to what it holds; Space opens the
-     whole card, as it always was, an out trip's with its two tabs. */
+     whole card; an out trip keeps On the road, Needs and Updates as tabs. */
   let cardSection = '';
+  let cardTrigger = null;
+  function cardOrigin(bar) {
+    if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
+    const selector = cardTrigger?.matches('.scheduler-bar__alert') ? '.scheduler-bar__alert'
+      : cardTrigger?.matches('.scheduler-road__dot') ? '.scheduler-road__dot'
+      : cardTrigger?.matches('.scheduler-bar__update') ? '.scheduler-bar__update' : null;
+    return (selector && bar.querySelector(selector)) || bar;
+  }
   function askCard(bar, open, section = '') {
+    if (open && !section) cardTrigger = bar;
     cardOpenFor = open ? barKey(bar) : null;
     cardSection = open ? section : '';
+    if (open && bar.dataset.road && section) roadTabs.set(barKey(bar), section);
     if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
     placeBarOpen();
   }
@@ -10725,9 +10645,15 @@
     // A board set aside behind a panel in front of it has no trip to point at.
     const none = !bar?.dataset.tripId || menuHidesCard || gridEl.querySelector('.scheduler-bar--dragging')
       || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor
-      || (!docked && (!cardAsked(bar) || isEditorTrip(bar)));
+      || (!docked && !cardAsked(bar));
     barShortcuts.hidden = none;
-    if (cardSection) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
+    for (const trigger of gridEl.querySelectorAll('[data-card-opener]')) {
+      trigger.setAttribute('aria-controls', barShortcuts.id);
+      const owner = trigger.closest('.scheduler-bar');
+      const section = window.SchedulerBar.cardSectionOf(trigger);
+      trigger.setAttribute('aria-expanded', String(!none && owner === bar && (bar.dataset.road ? roadTabOf(bar) === section : cardSection === section)));
+    }
+    if (cardSection && !bar?.dataset.road) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
     // The Contacts window goes with its trip when it is put down.
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
@@ -10738,6 +10664,7 @@
     if (barKey(bar) === poppedFor) barShortcuts.removeAttribute('data-pop');
     if (barKey(bar) !== poppedFor) {
       updatesOpenFor = null;
+      cardEdit = null;
       // The quick update's box stays only with the trip it holds words for.
       if (!(quickDraft.tripId === bar.dataset.tripId && quickDraft.text)) quickOpenFor = null;
     }
@@ -10811,6 +10738,18 @@
        board's room, where its content scrolls inside it. */
     const INSET = 16;
     const days = [...gridEl.querySelectorAll('.scheduler-day')].map(d => d.getBoundingClientRect());
+    /* A bar out on the road stands its rows in today's column, road-bar.js's
+       `--scheduler-today`, so the card goes beside that day instead. */
+    const lit = Number(bar.style.getPropertyValue('--scheduler-today')) || 0;
+    const start = Math.max(0, Math.min(days.length - 1, (Number(bar.dataset.start) || 0) + lit));
+    /* BESIDE THE TRIP, THE CARD IS AS WIDE AS THE TWO DAYS IT STANDS OVER, less
+       the 16px in from each of their edges, and no wider than 20rem or
+       narrower than 16rem, so it hides no more than the two bars next to it. */
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const span = days[start + 2] && days[start + 1] ? days[start + 2].right - days[start + 1].left
+      : days[start - 1] && days[start - 2] ? days[start - 1].right - days[start - 2].left : 0;
+    if (span) barShortcuts.style.setProperty('--scheduler-card-w', `${Math.max(16 * rem, Math.min(20 * rem, span - 2 * INSET))}px`);
+    else barShortcuts.style.removeProperty('--scheduler-card-w');
     const roomH = pane.bottom - ceiling - 2 * TIP_GAP;
     const cardMax = `${Math.min(33 * parseFloat(getComputedStyle(document.documentElement).fontSize), roomH)}px`;
     // A card of one part is as tall as that part, up to the full card's height.
@@ -10834,8 +10773,6 @@
        A bar out on the road stands its rows in today's column, road-bar.js's
        `--scheduler-today`, so the card goes beside that day instead, clear of
        what it says. */
-    const lit = Number(bar.style.getPropertyValue('--scheduler-today')) || 0;
-    const start = Math.max(0, Math.min(days.length - 1, (Number(bar.dataset.start) || 0) + lit));
     const shown = (a, b) => !!days[a] && !!days[b] && days[a].left + INSET >= first && days[b].right - INSET <= pane.right;
     const side = shown(start + 1, start + 2) ? 'right' : shown(start - 2, start - 1) ? 'left' : null;
     if (side && days.length) {
@@ -10845,8 +10782,12 @@
       barShortcuts.dataset.side = side;
       barShortcuts.style.setProperty('--scheduler-open-top', `${y - host.top}px`);
       barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
-      // The arrow at the first day's middle, at least 12px in from a corner.
-      barShortcuts.style.setProperty('--scheduler-open-tip', `${Math.max(12, Math.min(height - 12, middle - y))}px`);
+      /* The arrow at the middle of what was pressed to open the card, the
+         update row or the alert, and at the bar's middle for any other way
+         in, at least 12px in from a corner. */
+      const pressed = bar.querySelector('[data-card-opener][aria-expanded="true"]')?.getBoundingClientRect();
+      const point = pressed ? Math.max(pressed.top, ceiling) / 2 + Math.min(pressed.bottom, pane.bottom) / 2 : middle;
+      barShortcuts.style.setProperty('--scheduler-open-tip', `${Math.max(12, Math.min(height - 12, point - y))}px`);
       fadeUpdates();
       pop();
       return;
@@ -11029,11 +10970,11 @@
     return said.length ? { said, keys, line: said[0] } : null;
   }
 
-  /* THE UPDATES WINDOW: a box for a new update, over the trip's updates so
-     far. Every Save opens it, so each change is told or
-     skipped on purpose, and the Update shortcut opens it on its own.
+  /* THE UPDATE PROMPT: a box for a new update, over the trip's updates so
+     far. Every Save opens it, so each change is told or skipped on purpose.
+     Adding, changing and deleting an update otherwise is the trip's card.
 
-     From Save it is a step Save waits on, and resolves `{ kind, body }`:
+     It is a step Save waits on, and resolves `{ kind, body }`:
      `update` from Save with update; `nothing` from Save, no update after a
      change the customer would ask about, whose row keeps the change's own line
      and is never drawn, so the bar's age still runs from the last real update;
@@ -11041,39 +10982,27 @@
      Closing it resolves null, and Save goes back to the trip unsaved. A new
      trip's box comes filled with Quote not sent, or Quote sent and its price
      once the Billing tab marks it, a customer-facing change's with its own
-     line, and any other's empty.
-
-     On its own it has Add update right under the box and no footer, the
-     close at the top its way out, as Carbon closes a window with nothing in
-     its footer: Add update writes at once and closes it. While an earlier
-     update is open to change or delete, the box and Add update are hidden,
-     so one box shows at a time; from Save the box stays, since Save with
-     update reads it. The main button is one button, moved between the
-     footer and the box, so it keeps one handler. */
+     line, and any other's empty. */
   const updateModal = document.getElementById('scheduler-update-modal');
   const updateText = document.getElementById('scheduler-update-text');
   const updateSave = document.getElementById('scheduler-update-save');
   const updateSkip = document.getElementById('scheduler-update-skip');
   const updateClose = document.getElementById('scheduler-update-close');
   const updateCloseWrap = document.getElementById('scheduler-update-close-wrap');
-  const updateAdd = document.getElementById('scheduler-update-add');
   const updateFooter = document.getElementById('scheduler-update-footer');
-  const updateError = document.getElementById('scheduler-update-error');
   const updateWhat = document.getElementById('scheduler-update-what');
   let updateSettle = null;   // Save's step, while Save opened the window
-  let updateAlone = null;    // the trip, while the window stands on its own
   let updateChange = null;
-  function fillUpdateWindow({ trip, what, line, tripId, editId = null }) {
+  function fillUpdateWindow({ trip, what, line, tripId }) {
     document.getElementById('scheduler-update-trip').textContent = trip;
     updateWhat.textContent = what;
     updateWhat.hidden = !what;
-    updateError.hidden = true;
     updateText.value = line;
     updateSave.disabled = !line;
     requestAnimationFrame(fitUpdateText);
     // A new trip has nothing earlier to list.
     document.getElementById('scheduler-updates-section').hidden = !tripId;
-    if (tripId) loadLog(tripId, editId);
+    if (tripId) loadLog(tripId);
     window.Rux?.modal?.open?.(updateModal);
     updateText.focus();
     updateText.setSelectionRange(updateText.value.length, updateText.value.length);
@@ -11083,7 +11012,6 @@
   function askForUpdate(change, creating, trip, takesOff = null) {
     const skipped = change ? { kind: 'nothing', body: change.line, keys: change.keys } : { kind: 'none' };
     if (!updateModal || !updateText) return Promise.resolve(skipped);
-    updateAlone = null;
     updateChange = change;
     // A save that names no change says nothing above the box, unless a check comes off.
     let what = '';
@@ -11099,9 +11027,7 @@
     updateCloseWrap.hidden = false;
     updateSave.textContent = 'Save with update';
     updateSkip.after(updateSave);
-    updateAdd.hidden = true;
     updateFooter.hidden = false;
-    updateModal.removeAttribute('data-alone');
     updateClose.setAttribute('aria-label', 'Back to the trip, not saved');
     updateClose.title = 'Back to the trip, not saved';
     return new Promise(resolve => {
@@ -11111,23 +11037,6 @@
         tripId: creating ? null : trip?.id,
       });
     });
-  }
-  // The window on its own, for a trip on the board.
-  // With `editId`, that update opens in its box ready to change or delete.
-  function openUpdatesWindow(trip, editId = null) {
-    if (!updateModal || !trip) return;
-    updateSettle = null;
-    updateChange = null;
-    updateAlone = trip;
-    updateCloseWrap.hidden = false;
-    updateClose.setAttribute('aria-label', 'Close');
-    updateClose.title = 'Close';
-    updateSave.textContent = 'Add update';
-    updateAdd.appendChild(updateSave);
-    updateAdd.hidden = false;
-    updateFooter.hidden = true;
-    updateModal.setAttribute('data-alone', '');
-    fillUpdateWindow({ trip: tripName(trip), what: '', line: '', tripId: trip.id, editId });
   }
   const answerUpdate = answer => {
     const settle = updateSettle;
@@ -11145,28 +11054,14 @@
   updateText?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !updateSave.disabled) { e.preventDefault(); updateSave.click(); }
   });
-  updateSave?.addEventListener('click', async () => {
+  updateSave?.addEventListener('click', () => {
     const body = updateText.value.trim();
-    if (!body) return;
-    if (!updateAlone) { answerUpdate({ kind: 'update', body }); return; }
-    const trip = updateAlone;
-    updateSave.disabled = true;
-    updateError.hidden = true;
-    if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) {
-      updateAlone = null;
-      window.Rux?.modal?.close?.(updateModal);
-      await show();
-      toast('success', 'Update added', body);
-    } else {
-      updateError.textContent = 'The update was not added. Try again.';
-      updateError.hidden = false;
-      updateSave.disabled = !updateText.value.trim();
-    }
+    if (body) answerUpdate({ kind: 'update', body });
   });
   updateSkip?.addEventListener('click', () => {
     answerUpdate(updateChange ? { kind: 'nothing', body: updateChange.line } : { kind: 'none' });
   });
-  updateModal?.addEventListener('rux:modal-closed', () => { updateAlone = null; updateSettle?.(null); });
+  updateModal?.addEventListener('rux:modal-closed', () => { updateSettle?.(null); });
 
   /* The prompt's answer, written once the save has landed. A failure is logged
      and reported, and never undoes the save. */
@@ -11259,12 +11154,12 @@
   }
 
   function selectBar(bar) {
-    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) if (b !== bar) b.setAttribute('aria-pressed', 'false');
-    bar.setAttribute('aria-pressed', 'true');
+    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-current="true"]')) if (b !== bar) b.setAttribute('aria-current', 'false');
+    bar.setAttribute('aria-current', 'true');
   }
 
   function clearSelection() {
-    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
+    for (const b of gridEl.querySelectorAll('.scheduler-bar[aria-current="true"]')) b.setAttribute('aria-current', 'false');
   }
 
   // Opens the trip a ref names, finding its bar again after a save's render.
@@ -11336,7 +11231,7 @@
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and
   // only selects that bar, even while a different one is selected.
   gridEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-pressed="true"]')) openSelected();
+    if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-current="true"]')) openSelected();
     /* Space shows the bar's card or puts it away. On a bar not selected yet
        the card is asked for here and app.js's Space then selects the bar,
        which keeps a card asked for it. */
@@ -11353,20 +11248,25 @@
     const opener = e.target.closest('[data-card-opener]');
     const bar = opener?.closest('.scheduler-bar[data-trip-id]');
     if (!bar || e.detail > 1) return;
-    const section = opener.matches('.scheduler-bar__alert') ? 'needs' : opener.matches('.scheduler-road__dot') ? 'road'
-      : opener.closest('.scheduler-bar__update') ? 'updates' : '';
-    askCard(bar, !cardShowing(bar), section);
+    const section = window.SchedulerBar.cardSectionOf(opener);
+    cardTrigger = opener;
+    askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadTabOf(bar) : cardSection, section), section);
+  });
+  gridEl.addEventListener('click', e => {
+    const trigger = e.target.closest('[data-crew-overflow]');
+    const bar = trigger?.closest('.scheduler-bar[data-trip-id]');
+    if (bar && e.detail <= 1) openContactsFrom(bar, trigger);
   });
   // A double-click on a trip opens it, as Enter does; its first click selected it.
   gridEl.addEventListener('dblclick', e => {
     const bar = e.target.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || bar !== selectedBar()) return;
+    if (!bar || bar !== selectedBar() || e.target.closest('[data-card-opener], [data-crew-overflow]')) return;
     window.getSelection?.()?.removeAllRanges();
     openSelected();
   });
 
   // Every selection change, from a click, a key or a script, lands here.
-  new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
+  new MutationObserver(syncSelection).observe(gridEl, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
 
   /* ── Beside the week, two at most, the editor among them ───────────────────
      Every panel has its own place beside the week: Tasks, Departures, Driver
@@ -12439,7 +12339,9 @@
     }
 
     if (item.id === 'scheduler-bar-menu-update') {
-      openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId));
+      // The card's Updates, with Add's box ready.
+      askCard(bar, true, 'updates');
+      openQuick(bar.dataset.tripId);
       return;
     }
 
@@ -14908,6 +14810,70 @@
   let quickDraft = { tripId: null, text: '' };
   // The trip whose card has its quick update's box open.
   let quickOpenFor = null;
+  /* The update a floating card has open in its own row: `mode` is edit while
+     its words are a box with Delete, Cancel and Save, delete while the row
+     asks before it goes, and `draft` what is typed so a redraw keeps it. */
+  let cardEdit = null;   // { tripId, id, mode: 'edit' | 'delete', draft }
+  function startCardEdit(tripId, id) {
+    cardEdit = { tripId, id, mode: 'edit', draft: null };
+    placeBarOpen();
+    const box = barShortcuts.querySelector('.scheduler-card__edit textarea');
+    if (box) { fitBox(box); box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
+  }
+  function endCardEdit(refocus) {
+    const id = cardEdit?.id;
+    cardEdit = null;
+    placeBarOpen();
+    if (refocus && id) barShortcuts.querySelector(`.scheduler-card__update[data-update-id="${CSS.escape(id)}"] .scheduler-card__open`)?.focus();
+  }
+  /* Saves or deletes the open update, as the Updates window does: the row
+     keeps only what it says now, so History is told what it said before. */
+  async function changeCardUpdate(act) {
+    if (!cardEdit) return;
+    const { tripId, id } = cardEdit;
+    const u = (panelIndex.trips.get(tripId)?.trip_updates || []).find(x => x.id === id);
+    if (!u) { endCardEdit(false); return; }
+    const row = act.closest('.scheduler-card__update');
+    const remove = act.dataset.editAct === 'delete';
+    const body = remove ? null : row?.querySelector('textarea')?.value.trim();
+    if (!remove && !body) return;
+    row?.querySelectorAll('button, textarea').forEach(n => { n.disabled = true; });
+    const fail = remove ? 'The update was not deleted.' : 'The update was not changed.';
+    try {
+      const query = remove ? client.from('trip_updates').delete().eq('id', id)
+        : client.from('trip_updates').update({ body, edited_at: new Date().toISOString() }).eq('id', id).select(UPDATE_COLUMNS).single();
+      const { error: failed } = await withTimeout(query.then(r => r));
+      if (failed) throw new Error(failed.message);
+      recordHistory(tripId, 'updated', [{ field: 'update', label: 'Update', before: u.body, after: remove ? 'Deleted' : body }], null, { source: 'update' });
+      cardEdit = null;
+      await show();
+      toast('success', remove ? 'Update deleted' : 'Update changed');
+    } catch (err) {
+      console.warn(fail, err);
+      toast('error', fail, String(err?.message ?? err));
+      placeBarOpen();
+    }
+  }
+  barShortcuts?.addEventListener('input', e => {
+    const box = e.target.closest?.('.scheduler-card__edit textarea');
+    if (!box || !cardEdit) return;
+    cardEdit.draft = box.value;
+    const u = (panelIndex.trips.get(cardEdit.tripId)?.trip_updates || []).find(x => x.id === cardEdit.id);
+    const keep = box.closest('.scheduler-card__edit')?.querySelector('[data-edit-act="save"]');
+    if (keep) keep.disabled = !box.value.trim() || box.value.trim() === u?.body;
+    fitBox(box);
+  });
+  // The box keeps its keys from the board: Escape puts the row back, Cmd or Ctrl with Enter saves.
+  barShortcuts?.addEventListener('keydown', e => {
+    const box = e.target.closest?.('.scheduler-card__edit textarea');
+    if (!box) return;
+    e.stopPropagation();
+    if (e.key === 'Escape') { e.preventDefault(); endCardEdit(true); return; }
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !e.isComposing) {
+      const keep = box.closest('.scheduler-card__edit')?.querySelector('[data-edit-act="save"]');
+      if (keep && !keep.disabled) { e.preventDefault(); changeCardUpdate(keep); }
+    }
+  });
   function openQuick(tripId) {
     if (!tripId) return;
     quickOpenFor = tripId;
@@ -14916,8 +14882,11 @@
   }
   // The box's Save is primary while there are words to save.
   const markSave = (save, ready) => {
+    // In the card's footer a button is solid, Carbon's secondary until there are words to save; elsewhere it is ghost.
+    const off = save.dataset.solid !== undefined ? 'rux--btn--secondary' : 'rux--btn--ghost';
+    save.classList.remove(save.dataset.solid !== undefined ? 'rux--btn--ghost' : 'rux--btn--secondary');
     save.classList.toggle('rux--btn--primary', ready);
-    save.classList.toggle('rux--btn--ghost', !ready);
+    save.classList.toggle(off, !ready);
   };
   const quickSave = input => input.closest('.scheduler-card')?.querySelector('.scheduler-card__action[data-card-action="save"]');
   // Closes the box, handing focus back to Add when the box held it.
@@ -15063,6 +15032,11 @@
     // carries the trip's rows ahead of them.
     if (key === shortcutsDrawn && barShortcuts.querySelectorAll('.scheduler-bar-shortcut').length === slots.length) return;
     shortcutsDrawn = key;
+    const active = barShortcuts.contains(document.activeElement) ? document.activeElement : null;
+    const focusTab = active?.closest('[data-road-tab]')?.dataset.roadTab;
+    const focusUpdate = active?.closest('[data-update-id]')?.dataset.updateId;
+    const focusQuick = active?.matches('.scheduler-card__quick input');
+    const selection = focusQuick ? [active.selectionStart, active.selectionEnd] : null;
     const head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
     barShortcuts.replaceChildren(...(head ? [head] : []), ...slots.map((id, i) => {
       const btn = el('button', 'scheduler-bar-shortcut');
@@ -15079,9 +15053,16 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [...(docked || cardSection === 'needs' || cardSection === 'updates' ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
-      : cardSection === 'road' ? drawLiveCard(trip, bar) : cardSection ? drawCard(trip, bar, cardSection) : drawRoadCard(trip, bar)] : []));
+    }), ...(carded ? [...(docked || (cardSection && !bar.dataset.road) ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
+      : drawRoadCard(trip, bar)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
+    if (focusQuick) {
+      const input = barShortcuts.querySelector('.scheduler-card__quick input');
+      input?.focus({ preventScroll: true });
+      if (input && selection) input.setSelectionRange(...selection);
+    } else if (focusTab) barShortcuts.querySelector(`[data-road-tab="${focusTab}"]`)?.focus({ preventScroll: true });
+    else if (focusUpdate) barShortcuts.querySelector(`[data-update-id="${CSS.escape(focusUpdate)}"] .scheduler-card__open`)?.focus({ preventScroll: true });
+    else if (active?.classList.contains('scheduler-card__close')) barShortcuts.querySelector('.scheduler-card__close')?.focus({ preventScroll: true });
   }
 
   /* Contacts opens a small window of everyone to reach about this bar, in
@@ -15583,7 +15564,7 @@
     return face;
   }
   const cardKey = trip => (trip ? JSON.stringify([pageEl?.getAttribute('data-board'), quickOpenFor === trip.id, asksFollowUp(trip), waitsOf(trip), dayOfContact(trip),
-    !!trip.contact_not_needed, updatesOpenFor === trip.id,
+    !!trip.contact_not_needed, updatesOpenFor === trip.id, cardEdit?.tripId === trip.id ? [cardEdit.id, cardEdit.mode] : null,
     (trip.trip_updates || []).map(u => u.id).sort(), agoShort(quietSince(trip) || Date.now())]) : '');
   /* How long ago an update was written: minutes in the first hour, hours in
      the first day, then days for a week, "45m", "2h", "3d"; an older one
@@ -15602,7 +15583,19 @@
      accessible name. */
   /* THE FLOATING CARD'S HEAD, as the trip panel's is: the trip's
      destination, and Close at its end, since the card stays until it is put
-     away. The docked sheet on a phone heads itself with the trip's rows. */
+     away. A card opened to one part has no head, since its trip is the bar
+     beside it, selected; Escape, a press elsewhere or the same press again
+     puts it away. The docked sheet on a phone heads itself with the trip's rows. */
+  /* Close, at the end of a one-part card's heading as a Carbon window's is. */
+  function cardClose() {
+    const close = el('button', 'rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-card__close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Close card');
+    close.title = 'Close';
+    close.appendChild(svgUse('#m-close', '16', '0 0 32 32'));
+    close.lastChild.setAttribute('class', 'rux--btn__icon');
+    return close;
+  }
   function cardHead(trip) {
     const head = el('div', 'scheduler-card__top');
     const title = el('div', 'scheduler-card__top-title', trip.destination || 'No destination');
@@ -15629,13 +15622,12 @@
   }
 
   /* A part's title, Carbon's way of heading a list: its name in the 14px
-     heading type, its count beside it in a disc of the bar's alert set, in
-     `tone` -- plain grey for a count, the warning or the error colour for
-     what the trip needs -- and the part's button, if it has one, at its end. */
-  function cardTitle(name, count, action, tone = 'plain') {
+     heading type, its count beside it in plain secondary text, and the
+     part's button, if it has one, at its end. */
+  function cardTitle(name, count, action) {
     const title = el('div', 'scheduler-card__title');
     const heading = el('span', 'scheduler-card__heading', name);
-    if (count) heading.appendChild(el('span', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-card__count`, String(count)));
+    if (count) heading.appendChild(el('span', 'scheduler-card__count', String(count)));
     title.appendChild(heading);
     if (action) title.appendChild(action);
     return title;
@@ -15808,7 +15800,7 @@
     list.setAttribute('aria-label', 'Trip card');
     tabs.appendChild(list);
     const alerts = alertsOf(trip, barFacts.get(bar));
-    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['updates', 'Updates', () => drawCard(trip, bar, '')]].map(([id, words, draw]) => {
+    const panels = [['road', 'On the road', () => drawLiveCard(trip, bar)], ['needs', 'Needs', () => drawCard(trip, bar, 'needs')], ['updates', 'Updates', () => drawCard(trip, bar, 'updates')]].map(([id, words, draw]) => {
       const selected = id === on;
       const tab = el('button', `rux--tabs__nav-item rux--tabs__nav-link${selected ? ' rux--tabs__nav-item--selected' : ''}`);
       tab.type = 'button';
@@ -15820,7 +15812,7 @@
       tab.tabIndex = selected ? 0 : -1;
       const label = el('div', 'rux--tabs__nav-item-label-wrapper');
       label.appendChild(el('span', 'rux--tabs__nav-item-label', words));
-      if (id === 'updates' && alerts.length) {
+      if (id === 'needs' && alerts.length) {
         label.appendChild(el('span', `scheduler-bar__msg scheduler-bar__msg--${alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'} scheduler-card__count`,
           String(alerts.length)));
       }
@@ -15861,26 +15853,39 @@
        the count its bar carries, in the bar's colour, so the disc on the bar
        and the list it counts read as one thing, and the list in a box of its
        own under it, apart from the updates. */
-    const alerts = alertsOf(trip, bar ? barFacts.get(bar) : null);
-    // Alerts alone or Updates alone when the press named one; Needs falls back to Updates when there is none.
-    const only = section === 'needs' && !alerts.length ? 'updates' : section;
+    const facts = bar ? barFacts.get(bar) : null;
+    const problems = facts?.problems ?? [];
+    const other = alertsOf(trip, facts).filter(a => !problems.some(p => p.words === a.words && p.go === a.go));
+    const alerts = [...problems, ...other];
+    // A section opens only its content; an empty Needs tab says so.
+    const only = section;
+    if (section === 'needs' && !alerts.length) card.appendChild(el('p', 'scheduler-card__none', 'No needs.'));
     /* Floating, each part is a tile holding its title, its button and its
        rows, as the live card's are; docked on a phone the parts are the
        sheet's own bands. */
     const floating = pageEl?.getAttribute('data-board') !== 'compact';
-    const needsList = el('div', 'scheduler-card__needs-list');
     const part = cls => row(floating ? `${cls} rux--tile scheduler-card__tile` : cls);
+    /* One plain list under one heading: the bar's count heads Alerts, and the
+       broader needs follow in the same list, each its own icon: a mistake on
+       the board is the red circle, an alert the triangle and a need the
+       dashed circle. A trip with needs only is headed Other needs. Each row
+       says where a press on it goes; Open trip is the card's footer. */
+    const needsLists = new Map();
     if (alerts.length) {
+      const list = el('div', 'scheduler-card__needs-list');
       const needs = part('scheduler-card__needs');
-      needs.append(cardTitle('Needs', alerts.length, null,
-        alerts.some(a => a.row === 'scheduler-card__misfit') ? 'error' : 'warning'), needsList);
+      const [name, count] = problems.length ? ['Alerts', problems.length] : ['Other needs', other.length];
+      needs.append(cardTitle(name, count, floating && only === 'needs' && !bar?.dataset?.road ? cardClose() : null), list);
       if (only !== 'updates') card.appendChild(needs);
+      for (const item of alerts) needsLists.set(item, list);
     }
     let reminded = false;
     for (const a of alerts) {
       const band = goes(row(a.row), a.go, a.words);
       if (a.spot) band.dataset.spot = a.spot;
-      band.append(svgUse('#m-error-fill', '16', '0 0 32 32'),
+      const need = other.includes(a);
+      if (need) band.classList.add('scheduler-card__row--need');
+      band.append(svgUse(a.row === 'scheduler-card__misfit' ? '#m-error-fill' : need ? '#i-circle-dash' : '#i-warning--alt--filled', '16', '0 0 32 32'),
         el('strong', null, a.words));
       if (a.row === 'scheduler-card__asks' && !reminded) {
         reminded = true;
@@ -15890,7 +15895,8 @@
             days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`));
         }
       }
-      needsList.appendChild(band);
+      if (WARN_GO[a.go]) band.appendChild(el('span', 'scheduler-card__go', WARN_GO[a.go]));
+      needsLists.get(a).appendChild(band);
     }
     /* THE UPDATES: Updates with their count, "Updates · 5", and Add, over
        the updates, newest first. Floating,
@@ -15911,25 +15917,70 @@
     /* While the quick update's box is open, Add reads Save: it adds what is
        typed, as Enter does, and with nothing typed closes the box. */
     const quickOpen = quickOpenFor === trip.id || (quickDraft.tripId === trip.id && !!quickDraft.text);
-    const add = quickOpen ? cardAction('save', 'Save', 'Save the update') : cardAction('update', 'Add', 'Add an update');
+    const add = quickOpen ? cardAction('save', 'Save', 'Save the update') : cardAction('update', floating ? 'Add update' : 'Add', 'Add an update');
+    /* Floating, the footer's buttons are solid as a Carbon window's are:
+       the main one primary and the other secondary. */
+    const solid = (btn, cls) => {
+      btn.classList.remove('rux--btn--ghost');
+      btn.classList.add(cls);
+      btn.dataset.solid = '';
+      return btn;
+    };
+    if (floating) solid(add, 'rux--btn--primary');
     if (quickOpen) markSave(add, quickDraft.tripId === trip.id && !!quickDraft.text.trim());
     /* An update is its author's 16px avatar, its words, and on its first
        line's end how long ago, always as a number, so every update's age
        stands in one column. The name is the avatar's tooltip and accessible
        name, and the full date the age's tooltip. */
+    const canEdit = floating || open;
+    const editItem = u => {
+      const item = el('li', 'scheduler-card__update scheduler-card__update--editing');
+      item.dataset.updateId = u.id;
+      const face = updateFace(u, 'sm');
+      face.classList.add('scheduler-card__face');
+      const edit = el('div', 'scheduler-card__edit');
+      const actions = el('div', 'scheduler-card__edit-actions');
+      const small = (cls, text, act) => {
+        const b = el('button', `rux--btn ${cls} rux--btn--sm rux--layout--size-sm`, text);
+        b.type = 'button';
+        b.dataset.editAct = act;
+        return b;
+      };
+      if (cardEdit.mode === 'delete') {
+        edit.appendChild(el('span', 'scheduler-card__words', u.body));
+        actions.append(el('span', 'scheduler-card__edit-ask', 'Delete this update?'),
+          small('rux--btn--secondary', 'Cancel', 'cancel'), small('rux--btn--danger', 'Delete', 'delete'));
+      } else {
+        const box = el('textarea', 'rux--text-area');
+        box.rows = 2;
+        box.value = cardEdit.draft ?? u.body;
+        box.setAttribute('aria-label', 'Update');
+        const wrap = el('div', 'rux--text-area__wrapper');
+        wrap.appendChild(box);
+        edit.appendChild(wrap);
+        const keep = small('rux--btn--primary', 'Save', 'save');
+        keep.disabled = !box.value.trim() || box.value.trim() === u.body;
+        actions.append(small('rux--btn--danger--ghost', 'Delete', 'ask-delete'), small('rux--btn--secondary', 'Cancel', 'cancel'), keep);
+      }
+      edit.appendChild(actions);
+      item.append(face, edit);
+      return item;
+    };
     const updateItem = u => {
+      if (canEdit && cardEdit?.tripId === trip.id && cardEdit.id === u.id) return editItem(u);
       const item = el('li', 'scheduler-card__update');
       const face = updateFace(u, 'sm');
       face.classList.add('scheduler-card__face');
       const when = el('span', 'scheduler-card__when', ageShort(u.created_at));
       when.title = updateStamp(u);
-      /* An update is a press that opens it in the Updates window: a button
-         laid over the whole row, so a pointer can press anywhere on it and
-         Tab reaches it. */
+      /* An update is a press that opens it in its own row: a button laid over
+         the whole row, so a pointer can press anywhere on it and Tab reaches
+         it. */
       item.dataset.updateId = u.id;
       const open = el('button', 'scheduler-card__open');
       open.type = 'button';
       open.setAttribute('aria-label', `Edit update: ${u.body}`);
+      open.title = `${updateStamp(u)}`;
       item.append(open, face, el('span', 'scheduler-card__words', u.body), when);
       return item;
     };
@@ -15938,7 +15989,8 @@
        a press anywhere on the section does. */
     /* Floating, the title is Updates whatever there is, and with none a line
        under it in its tile says so, as the Departures panel's empty day does. */
-    const title = cardTitle(all.length || floating ? 'Updates' : 'No updates', all.length, add);
+    const title = cardTitle(all.length || floating ? 'Updates' : 'No updates', all.length,
+      floating ? (only === 'updates' && !bar?.dataset?.road ? cardClose() : null) : add);
     if (all.length && !floating) {
       const toggle = el('button', 'scheduler-card__toggle');
       toggle.type = 'button';
@@ -15952,6 +16004,7 @@
        under the title: Save or Enter adds it to the trip at once, as the
        Updates window's Add update does, and Escape clears it, or with nothing
        typed closes the box. It stays open, with what is typed, across a redraw. */
+    let footerQuick = null;
     if (quickOpen) {
       const quick = el('div', 'rux--text-input__field-wrapper rux--layout--size-sm scheduler-card__quick');
       const quickInput = el('input', 'rux--text-input');
@@ -15961,7 +16014,7 @@
       quickInput.dataset.tripId = trip.id;
       if (quickDraft.tripId === trip.id) quickInput.value = quickDraft.text;
       quick.appendChild(quickInput);
-      updates.appendChild(quick);
+      if (floating) footerQuick = quick; else updates.appendChild(quick);
     }
     if (!all.length && floating) updates.appendChild(el('p', 'scheduler-card__none', 'No updates yet.'));
     if (all.length) {
@@ -15971,6 +16024,28 @@
       updates.appendChild(list);
     }
     if (only !== 'needs') card.appendChild(updates);
+    /* Floating, the card ends in a footer along its foot, as a Carbon window
+       does: Open trip with the needs, Add update with the updates, and while
+       a new update is typed its box over Cancel and Save. */
+    if (floating) {
+      const parts = [];
+      if (footerQuick && only !== 'needs') {
+        parts.push(footerQuick, solid(cardAction('cancel', 'Cancel', 'Cancel the update'), 'rux--btn--secondary'), add);
+      } else {
+        if (only !== 'updates' && alerts.length) {
+          const link = el('button', 'rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm scheduler-card__link');
+          link.type = 'button';
+          link.append('Open trip');
+          parts.push(link);
+        }
+        if (only !== 'needs') parts.push(add);
+      }
+      if (parts.length) {
+        const foot = el('div', 'scheduler-card__footer');
+        foot.append(...parts);
+        card.appendChild(foot);
+      }
+    }
     return card;
   }
 
@@ -16007,25 +16082,37 @@
     if (refocus) barShortcuts.querySelector('.scheduler-card__toggle')?.focus();
   }
 
-  function openUpdatesFromCard(editId = null) {
-    const bar = selectedBar();
-    if (bar) openUpdatesWindow(panelIndex.trips.get(bar.dataset.tripId), editId);
-  }
-
   // A slot acts on the bar it shows, and a disabled one does nothing.
   barShortcuts?.addEventListener('click', e => {
+    // Compact sheets copy the bar's rows; their controls act on the selected bar.
+    const head = e.target.closest('.scheduler-bar-shortcuts__trip');
+    const opener = head && e.target.closest('[data-card-opener]');
+    const overflow = head && e.target.closest('[data-crew-overflow]');
+    if (opener || overflow) {
+      const bar = selectedBar();
+      if (!bar) return;
+      if (overflow) openContactsFrom(bar, overflow);
+      else {
+        cardTrigger = opener;
+        askCard(bar, true, window.SchedulerBar.cardSectionOf(opener));
+      }
+      return;
+    }
     // Close puts the card away and hands focus back to its trip.
     if (e.target.closest('.scheduler-card__close')) {
       const bar = selectedBar();
-      if (bar) { askCard(bar, false); bar.focus(); }
+      if (bar) { askCard(bar, false); cardOrigin(bar).focus(); }
       return;
     }
     // The quick update's box takes its own clicks.
     if (e.target.closest('.scheduler-card__quick')) return;
+    // Open trip opens the trip's editor beside the board.
+    if (e.target.closest('.scheduler-card__link')) { openSelected(); return; }
     // Add opens the quick update's box under the title, and Save adds what
     // it holds, or with nothing typed closes it.
     const action = e.target.closest('.scheduler-card__action');
     if (action) {
+      if (action.dataset.cardAction === 'cancel') { closeQuick(true); return; }
       if (action.dataset.cardAction === 'save') {
         const input = action.closest('.scheduler-card')?.querySelector('.scheduler-card__quick input');
         if (input?.value.trim()) quickAdd(input); else closeQuick(true);
@@ -16037,9 +16124,24 @@
     // A warning goes where it is put right.
     const warning = e.target.closest('.scheduler-card__row[data-go]');
     if (warning) { goToWarning(warning.dataset.go, warning.dataset.spot); return; }
-    // An update opens in the Updates window, ready to change.
+    // The open update's buttons: Delete asks first, Cancel puts the row back.
+    const act = e.target.closest('[data-edit-act]');
+    if (act) {
+      const how = act.dataset.editAct;
+      if (how === 'cancel') endCardEdit(true);
+      else if (how === 'ask-delete') { cardEdit.mode = 'delete'; placeBarOpen(); barShortcuts.querySelector('[data-edit-act="cancel"]')?.focus(); }
+      else changeCardUpdate(act);
+      return;
+    }
+    // An update opens in its own row; docked, only once the section shows them all, the press before that opening it.
     const update = e.target.closest('.scheduler-card__update[data-update-id]');
-    if (update) { openUpdatesFromCard(update.dataset.updateId); return; }
+    if (update) {
+      if (update.classList.contains('scheduler-card__update--editing')) return;
+      if (!barShortcuts.hasAttribute('data-docked') || update.closest('.scheduler-card__updates[data-open]')) {
+        startCardEdit(selectedBar()?.dataset.tripId, update.dataset.updateId);
+        return;
+      }
+    }
     // A press anywhere on updates with more to show opens or closes them, and
     // the toggle keeps focus when a key pressed it.
     const more = e.target.closest('.scheduler-card__updates[data-more]');
@@ -16337,7 +16439,7 @@
       e.preventDefault();
       const inCard = barShortcuts?.contains(document.activeElement);
       askCard(picked, false);
-      if (inCard) picked.focus();
+      if (inCard) cardOrigin(picked).focus();
       return;
     }
     if (!inEditor && picked) { e.preventDefault(); clearSelection(); return; }

@@ -1,7 +1,7 @@
 // Behaviour: selecting a trip bar, and sizing the day columns to whole pixels.
 // No network, no drag and no editing here.
 //
-// A bar is a role=button whose aria-pressed is the selection; no class mirrors
+// A bar is a focusable group whose aria-current is the selection; no class mirrors
 // it. A click toggles it, except on a part of the selected bar marked
 // `data-card-opener`, which data.js takes as "show or put away its card".
 // Space and Enter only select, because data.js takes Space on a selected bar
@@ -13,15 +13,15 @@
   document.addEventListener('click', e => {
     const bar = e.target.closest('.scheduler-bar');
     if (!bar || e.detail > 1) return;
-    const on = bar.getAttribute('aria-pressed') === 'true';
-    if (on && e.target.closest('[data-card-opener]')) return;
-    for (const b of document.querySelectorAll('.scheduler-bar[aria-pressed="true"]')) b.setAttribute('aria-pressed', 'false');
-    bar.setAttribute('aria-pressed', on ? 'false' : 'true');
+    const on = bar.getAttribute('aria-current') === 'true';
+    if (on && e.target.closest('[data-card-opener], [data-crew-overflow]')) return;
+    for (const b of document.querySelectorAll('.scheduler-bar[aria-current="true"]')) b.setAttribute('aria-current', 'false');
+    bar.setAttribute('aria-current', on ? 'false' : 'true');
   });
 
   document.addEventListener('keydown', e => {
     if (!e.target.matches('.scheduler-bar')) return;
-    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-pressed') !== 'true') e.target.click(); }
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-current') !== 'true') e.target.click(); }
   });
 
   /* Whole-pixel day columns. Bars are placed by percentage across a track of

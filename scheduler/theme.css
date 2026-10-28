@@ -1330,19 +1330,32 @@
   --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
 }
 
-/* THE FLOATING CARD STANDS A STEP ABOVE THE BOARD IN EVERY THEME: its surface, hover, hairline and arrow are the raised layer mixed 9% toward
-   white, which on a dark theme is the next layer up and on a light one leaves white white, so it never falls back to the board's own step. A
-   black shadow barely shows on a dark board, so a tight one and a wide one are drawn from the theme's own shadow, and show where the card
-   crosses a trip. */
+/* THE FLOATING CARD IS ON THE MENUS' SURFACE IN EVERY THEME: the surface, hover, rule and shadow of Carbon's menu, so a context menu and the
+   card that opens beside it stand at one height, and a transient surface over the board is one thing wherever it comes from. */
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
-  --card-surface: color-mix(in srgb, var(--rux-layer-02), #fff 9%);
-  --card-hover: color-mix(in srgb, var(--rux-layer-hover-02), #fff 9%);
-  --card-rule: color-mix(in srgb, var(--rux-border-subtle-02), #fff 9%);
+  --card-surface: var(--rux-layer);
+  --card-hover: var(--rux-layer-hover);
+  --card-rule: var(--rux-border-subtle);
   background: var(--card-surface);
-  box-shadow: 0 0 0 1px var(--card-edge),
-    0 4px 12px color-mix(in srgb, var(--rux-shadow) 50%, transparent),
-    0 16px 40px color-mix(in srgb, var(--rux-shadow) 75%, transparent);
+  box-shadow: 0 2px 6px var(--rux-shadow, rgba(0, 0, 0, 0.3));
 }
+/* Where a theme draws its menu otherwise, the card is drawn as it is: Design's own menu rules for the theme, with the ring outside the box, since
+   the card's rows have fills that would cover an inset one. */
+[data-theme="rux-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+  --card-surface: var(--rux-layer-accent-02);
+  --card-hover: var(--rux-layer-accent-hover-02);
+  --card-rule: var(--rux-layer-accent-active-01);
+  box-shadow: 0 0 0 1px var(--rux-layer-accent-active-01), 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
+}
+[data-theme="rux-100"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
+  --card-surface: var(--rux-layer-02);
+  --card-hover: var(--rux-layer-hover-02);
+  --card-rule: var(--rux-border-subtle-02);
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
+}
+[data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02); }
+[data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px rgb(0 0 0 / .16); }
+[data-theme="apple-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px rgb(0 0 0 / .5); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="above"]::after { border-block-start-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }

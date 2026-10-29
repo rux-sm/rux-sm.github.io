@@ -15249,7 +15249,10 @@
     window.Rux?.modal?.close?.(contactsModal);
   }
   contactsModal?.addEventListener('rux:modal-closed', () => { contactsOpen = null; });
-  function openContactsFrom(bar, slot) {
+  /* `seat`, a driver's trip_drivers row, presses that driver's Remind, or
+     Tell in its place, without the window, as a Departures line asks; a
+     driver with neither gets the window. */
+  function openContactsFrom(bar, slot, seat = null) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     if (!contactsModal || !trip) return;
     closeContacts();
@@ -15549,37 +15552,42 @@
         ? driverText.DRIVER_LINK + encodeURIComponent(s.token) : ''), () => '');
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
-       the reminder first to paste. */
+       the reminder first to paste. Each driver's one is kept by them, for a
+       press from Departures. */
+    const sends = new Map();
+    const send = (p, it) => { sends.set(p, it); hand(p, toRemind, it); };
     for (const p of drivers) {
       if (p.news) {
         const text = linkOf(p).then(p.news);
         const asTell = { label: `Tell ${p.name}`, words: 'Tell', icon: '#m-notification_important' };
         if (p.texting && !docked) {
-          hand(p, toRemind, { ...asTell, run: async () => {
+          send(p, { ...asTell, run: async () => {
             if (await copyText(await text)) toast('success', 'Changes copied', `Paste them in ${p.name}'s conversation.`);
             closeContacts();
             window.open(p.texting, '_blank', 'noopener');
             void askTold(p, show);
           } });
         } else if (p.phone) {
-          hand(p, toRemind, { ...asTell, run: async () =>
+          send(p, { ...asTell, run: async () =>
             goTo(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(await text)}`, () => void askTold(p, show))() });
         }
         continue;
       }
       if (!p.reminder) continue;
       if (p.texting && !docked) {
-        hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications', run: async () => {
+        send(p, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications', run: async () => {
           if (await copyText(p.reminder)) toast('success', 'Reminder copied', `Paste it in ${p.name}'s conversation.`);
           closeContacts();
           window.open(p.texting, '_blank', 'noopener');
           void askReminded(p);
         } });
       } else if (p.phone) {
-        hand(p, toRemind, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications',
+        send(p, { label: `Remind ${p.name}`, words: 'Remind', icon: '#m-notifications',
           run: goTo(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`, () => void askReminded(p)) });
       }
     }
+    const asked = seat && sends.get(drivers.find(p => String(p.seat?.id) === String(seat)));
+    if (asked) { asked.run(); return; }
     for (const p of everyone) {
       if (p.phone || (p.texting && !docked)) continue;
       toAdd.push({ label: `Add number for ${p.name}`, run: p.customer
@@ -17737,9 +17745,10 @@
     // A leg by its key, its id, or by the old word an older link names.
     const named = asked.get('leg');
     const leg = ['outbound', 'return'].includes(named) || /^[0-9a-f-]{36}$/i.test(named ?? '') ? named : null;
-    if (asked.get('open') === 'contacts') {
+    if (asked.get('open') === 'contacts' || asked.get('open') === 'remind') {
+      const seat = asked.get('open') === 'remind' ? asked.get('seat') : null;
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
-        .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar); });
+        .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar, undefined, seat); });
     } else if (asked.get('file') === 'itinerary') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => openLegItinerary({ trip: asked.get('trip'), leg,

@@ -525,7 +525,7 @@
     const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
     const [buses, trips, drivers, contacts, customers, locations, oos, timeOff] = await withTimeout(Promise.all([
-      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin').order('sort_order').then(unwrap),
+      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin,inspection_exp').order('sort_order').then(unwrap),
       // A cancelled trip stays in the table but is not on the schedule.
       client.from('trips').select(`${TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
         .lte('start_date', hi).or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })
@@ -683,8 +683,9 @@
      from what Samsara says, and the live card reads the same answer. A bar
      is out from ten minutes before its yard-out to its yard-back whatever the
      engine is doing, and in the two hours either side only while it runs.
-     The samsara-now Edge Function is asked once a minute, and only while
-     such a bar is on the board and the page is in view. */
+     The samsara-now Edge Function is asked once a minute while the page is
+     in view and the board shows the week that holds today, whose bus heads
+     bus-head.js draws live, or such a bar is on it. */
   const ROAD_EVERY = 60e3;
   const Road = window.SchedulerRoad;
   const Live = window.SchedulerLiveTrip;
@@ -698,6 +699,9 @@
   };
 
   let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false, roadLive = null;
+  // Whether the week on the board holds today, which render() says.
+  let roadWeek = false;
+  const BusHead = window.SchedulerBusHead;
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
   const roadEta = Road.arrivals((a, b) => driveBetween(a, b).then(d => d?.min ?? null), () => drawRoad());
 
@@ -719,7 +723,7 @@
   async function askRoad() {
     if (roadStopped || roadBusy || !client || document.hidden) return;
     const out = [...gridEl.querySelectorAll('.scheduler-bar[data-road-from][data-bus-id]')].filter(roadOut);
-    if (!out.length) {
+    if (!out.length && !roadWeek) {
       if (roadAnswer) { roadAnswer = null; drawRoad(); }
       return;
     }
@@ -744,6 +748,12 @@
   }
 
   function drawRoad() {
+    for (const head of gridEl.querySelectorAll('.scheduler-row-head[data-bus-id]')) {
+      const bus = panelIndex.buses.get(head.dataset.busId);
+      if (!bus) continue;
+      const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
+      BusHead.draw(head, bus, live, { week: roadWeek, tip: head.querySelector('.scheduler-bus-tip') });
+    }
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
       const bus = roadBusOf(bar);
       const span = [Number(bar.dataset.roadFrom), Number(bar.dataset.roadTo)];
@@ -1081,9 +1091,13 @@
       const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
       if (r.empty) rowEl.hidden = true;
 
-      // The head is the bus number and an out-of-service flag; the rest of what
-      // the bus knows is in the number's toggletip and the head's title.
+      /* The head is the bus number, its marks and the bus's own state, which
+         bus-head.js draws under them; the rest of what the bus knows is in
+         the number's toggletip and the head's title. */
       const head = el('div', 'scheduler-row-head');
+      const top = el('div', 'scheduler-row-head__top');
+      head.appendChild(top);
+      if (r.bus) head.dataset.busId = r.bus.id;
       // "No bus" wraps in the narrow column, and the head's title carries the sense.
       /* The number is a toggletip trigger, with the structure from
          `carbon-ibm-products-dom.json`; js/popover.js opens it from the markup
@@ -1104,9 +1118,9 @@
         // The caret is the popover's own last child, where Carbon draws it.
         pop.append(content, el('span', 'rux--popover-caret'));
         tip.append(trigger, pop);
-        head.appendChild(tip);
+        top.appendChild(tip);
       } else {
-        head.append(el('div', 'scheduler-row-head__num', 'No\nbus'));
+        top.append(el('div', 'scheduler-row-head__num', 'No\nbus'));
       }
       if (!r.bus) head.title = 'Trips with no bus yet';
       if (r.bus) {
@@ -1120,10 +1134,10 @@
         ].filter(Boolean).join(' · ');
       }
 
-      /* The marks in this column: the lift and sleeper while the view option
-         shows them, and out of service, a state that changes what the row can
-         take this week. The type is the band's and the corner's to say. Each
-         symbol keeps its own viewBox. */
+      /* The marks in this column: the type's drawing, so a head reads on its
+         own when the band has scrolled away, the lift and sleeper while the
+         view option shows them, and out of service, a state that changes what
+         the row can take this week. Each symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -1134,6 +1148,12 @@
         kit.appendChild(span);
       };
 
+      if (r.bus) {
+        const typeIcon = window.SchedulerVehicles?.iconOf(r.bus.type);
+        const typeName = window.SchedulerVehicles?.typeOf(r.bus.type);
+        const typeSaid = typeName ? (typeName.label || typeName.name) : (String(r.bus.type || '').trim() || 'No type');
+        if (typeIcon) flag(typeIcon, '0 0 32 32', typeSaid, 'scheduler-row-head__type');
+      }
       // Drawn on every bus and shown only while the view option is on, so the
       // switch needs no redraw.
       if (r.bus) for (const [href, label] of equipmentOf(r.bus)) flag(href, '0 0 16 16', label, 'scheduler-row-head__equip');
@@ -1143,6 +1163,7 @@
         flag('#m-report-fill', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
       }
       if (kit.childElementCount) head.appendChild(kit);
+      if (r.bus) BusHead.draw(head, r.bus, null, { week: false });
 
       const track = el('div', 'scheduler-track');
       track.style.setProperty('--scheduler-lanes', lanes);
@@ -1238,7 +1259,8 @@
       `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
     else say(null);
 
-    // The new bars take what Samsara last said, and ask again if it is old.
+    // The new bars and heads take what Samsara last said, and ask again if it is old.
+    roadWeek = !!todayCell;
     drawRoad();
     if (Date.now() - roadAsked > ROAD_EVERY) askRoad();
 
@@ -16502,7 +16524,7 @@
     show();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
-  // What the colours mean: the legend of a live bar's dial, in a window of its own.
+  // What the colours mean: the legend of the bus column's gauges, in a window of its own.
   document.getElementById('scheduler-menu-lights')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }

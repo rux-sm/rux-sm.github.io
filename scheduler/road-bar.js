@@ -7,13 +7,12 @@
    day's width on a longer bar, in today's column, every row moving there.
    - A vehicle status pill at the destination row's end says the bus status,
      with a warning sign after it; its icon gently pulses while the trip is out.
-   - The times, in the contact row's place: out and back either end of a
+   - The times, in the time row's place: out and back either end of a
      track filled to now; a problem's words in its colour instead, Late to
      spot among them, the worst of live-trip.js's warnings or No signal.
-   - The instruments, in the time and update rows' place: one row, the
-     speed with five rising bars in the bus's colour, a 1px rule, then the
-     pump, a short tank bar and its percent; the second row's room is air
-     round them and the drivers.
+     Its tooltip says what Samsara says of the bus and its drivers.
+   - The contact and update rows stay, as on any bar. What belongs to the
+     bus, its speed, fuel and DEF, is the bus column's, bus-head.js's.
    - The drivers row, a seat for each driver: the one at the wheel first and
      bold behind the steering wheel, their driving
      hours left at the seat's end over a 2px bar of them, amber under one;
@@ -24,9 +23,8 @@
      joins the end of the row. Two drivers share the row half and half,
      each with an independent availability track and a second track while resting.
    The bar wears no edge, border or light of its own: how the bus is doing
-   is the bars' colour and the words. With a row fewer on the board the
-   times go, with two fewer the air goes too; app.css
-   does that from the view's toggles.
+   is the pill's colour and the words. With the time row off the board the
+   times go too; app.css does that from the view's toggles.
 
    `draw(bar, bus, live)` draws it on a bar bar.js drew, or takes it off
    with no `bus`. `bus` is one bus of samsara-now's answer, and `live` what
@@ -37,7 +35,7 @@
    from the bar's first day, where a longer bar's rows stand while out. data.js draws the board's out bars
    with it, and components.html its samples.
 
-   `HOUR`, `DUTY`, `LOW_FUEL`, `IDLE_MS`, `hours(ms)`, `mark(duty, left)`,
+   `HOUR`, `DUTY`, `IDLE_MS`, `hours(ms)`, `mark(duty, left)`,
    `ago(at)`, `short(name)`, `words(driver)` and `restWords(driver)` are the
    duty marks, clocks and words the live card draws as the bar does.
    ========================================================================== */
@@ -88,11 +86,8 @@
   const share = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 1000) / 10;
   // A passenger carrier's driver may drive ten hours, so a full ring is ten.
   const DRIVE = 10 * HOUR;
-  const LOW_FUEL = 25;
   // Idling this long is worth a look; a normal wait at a pickup is shorter.
   const IDLE_MS = 30 * 60e3;
-  // The speed every bar lit stands for.
-  const TOP_MPH = 80;
   const hours = ms => `${Math.floor(ms / HOUR)}:${String(Math.floor((ms % HOUR) / 60e3)).padStart(2, '0')}`;
   // Rest elapsed comes from the duty logs; remaining availability comes from Samsara's clocks.
   const spell = ms => {
@@ -251,7 +246,7 @@
     const crew = crewBox ? [...crewBox.querySelectorAll(':scope > .scheduler-crew')] : [];
     const named = new Set(crew.map(c => c.dataset.driverId).filter(Boolean));
     const key = bus ? JSON.stringify([bus.engine, bus.engine_at && ago(bus.engine_at), bus.mph, bus.heading, bus.place,
-      bus.fuel, bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
+      bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
       next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase,
       overBy(bar, Date.now()), bus.drivers.some(resting) ? Math.floor(Date.now() / 60e3) : null]) : '';
     // The day the rows stand on, counted from the bar's first: today while out.
@@ -287,8 +282,7 @@
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
     liveDot(bar, bus, worst);
-    times(bar, bus, next, worst);
-    card(bar, bus, next, said, worst, live.at);
+    times(bar, bus, next, said, worst, live.at);
   }
 
   /* A driver at the wheel the bar does not name, a seat at the drivers
@@ -308,10 +302,6 @@
     who.title = `${wheel.name}, not on this trip\nSamsara: ${words(wheel)}`;
     row.appendChild(who);
   }
-
-  // The speed's bars, rising like a phone's signal: one lit for every BAR_MPH, BARS in all.
-  const BARS = 5;
-  const BAR_MPH = TOP_MPH / BARS;
 
   // What the bar says of a problem: the worst warning's name, or No signal and how long.
   const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
@@ -379,13 +369,14 @@
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
      instead, its words in its colour. */
-  function times(bar, bus, next, worst) {
+  function times(bar, bus, next, said, worst, at) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
     if (!bus) { row?.remove(); return; }
     if (!row) {
       row = el('div', 'scheduler-bar__row scheduler-road__times');
-      bar.insertBefore(row, bar.querySelector(':scope > .scheduler-road__card') ?? bar.querySelector(':scope > .scheduler-bar__drivers'));
+      bar.insertBefore(row, bar.querySelector(':scope > .scheduler-bar__update') ?? bar.querySelector(':scope > .scheduler-bar__drivers'));
     }
+    row.title = tipOf(bar, bus, next, said, at);
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
     const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
@@ -413,49 +404,18 @@
   }
 
 
-  /* THE INSTRUMENTS in place of the time and update rows, one 16px row in
-     two whole-pixel halves either side of a 1px rule, with the room the
-     second row leaves as air round them and the drivers. On the left the
-     speed in mph, or a dash without a fresh speed reading, then BARS bars rising like a
-     phone's signal, one lit for every BAR_MPH: green on the road, the worst
-     warning's amber or red. On the right the
-     pump, a short bar filled to the tank's share and the percent, amber
-     under a quarter. With the times row hidden, a problem's words take the
-     speed's half. An engine warning lamp is said on the tooltip and the live
-     card only, since one can stay lit for days; the red stop lamp is a
-     warning. */
-  function card(bar, bus, next, said, worst, at) {
-    let box = bar.querySelector(':scope > .scheduler-road__card');
-    if (!bus) { box?.remove(); return; }
-    if (!box) {
-      box = el('div', 'scheduler-road__card');
-      bar.insertBefore(box, bar.querySelector(':scope > .scheduler-bar__drivers'));
-    }
-    const say = sayOf(bus, worst);
-    const tone = worst?.tone ?? (bus.engine == null ? 'scan' : null);
-    box.className = `scheduler-road__card${tone ? ` scheduler-road__card--${tone}` : ''}${say ? ' scheduler-road__card--says' : ''}`;
-    const moving = bus.mph > 0;
-    const half = el('span', 'scheduler-road__half scheduler-road__half--speed');
-    const speed = el('span', 'scheduler-road__speed');
-    speed.append(el('span', 'scheduler-road__big', bus.mph != null ? String(bus.mph) : '–'),
-      el('span', 'scheduler-road__unit', 'mph'));
-    const bars = el('span', 'scheduler-road__bars');
-    const lit = moving ? Math.min(BARS, Math.round((bus.mph ?? 0) / BAR_MPH)) : 0;
-    for (let i = 0; i < BARS; i++) bars.appendChild(el('i', i < lit ? 'scheduler-road__bar--on' : null));
-    half.append(speed, bars);
-    if (say) half.appendChild(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say));
-    const tank = el('span', 'scheduler-road__half scheduler-road__half--tank');
-    tank.append(...gauge(bus.fuel));
-    box.replaceChildren(half, el('span', 'scheduler-road__rule'), tank);
+  /* The times row's tooltip: every warning in a sentence, the engine lamp
+     with its codes, what the bus is doing and where, the next stop, the
+     leg's times and each driver, and when Samsara said it. An engine lamp
+     is said here and on the live card only, since one can stay lit for days. */
+  function tipOf(bar, bus, next, said, at) {
     const arrives = next?.stop && !next.at && next.arrival != null
       ? `${next.stop.name}: arrives ${hhmm(Road.clockOf(next.arrival), true)}${next.stop.due != null ? `, due ${hhmm(Road.clockOf(next.stop.due), true)}` : ''}${next.late ? `, ${next.late} min late` : ''}` : null;
-    // Every warning heads the tooltip, each in a sentence.
-    const title = [
+    return [
       ...said.warnings.map(w => `${w.title}: ${w.sentence}`),
       bus.fault === 'check' ? ['Engine warning lamp on', ...(bus.faults ?? [])].join(' · ') : null,
       [bus.engine === 'idle' ? 'Idling' : bus.engine === 'off' ? 'Engine off' : bus.engine == null ? 'No engine reading'
         : bus.mph != null ? `${bus.mph} mph` : 'Engine on', bus.place].filter(Boolean).join(' · '),
-      bus.fuel != null ? `Fuel ${bus.fuel}%` : null,
       next?.at ? `At ${next.stop.name}` : arrives,
       bar.dataset.depart || bar.dataset.back ? [bar.dataset.depart && `Out ${bar.dataset.depart}`, bar.dataset.back && `back ${bar.dataset.back}`,
         bar.dataset.roadTo && expectedBack(bar, next) != null ? `now expected back ${hhmm(Road.clockOf(expectedBack(bar, next)), true)}`
@@ -463,21 +423,7 @@
       ...bus.drivers.map(d => `${d.name}: ${words(d)}`),
       at ? `Samsara, ${new Date(at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : null,
     ].filter(Boolean).join('\n');
-    box.title = title;
-    const row = bar.querySelector(':scope > .scheduler-road__times');
-    if (row) row.title = title;
   }
 
-  /* The tank: the pump, a bar filled to the tank's share and the percent,
-     amber under a quarter; empty with no reading. */
-  function gauge(fuel) {
-    const low = fuel != null && fuel < LOW_FUEL;
-    const icon = el('span', `scheduler-road__pump${low ? ' scheduler-road__pump--low' : ''}`);
-    icon.appendChild(svgUse('#m-local_gas_station-fill', '16', '0 0 16 16'));
-    const meter = el('span', `scheduler-road__meter${low ? ' scheduler-road__meter--low' : ''}`);
-    meter.style.setProperty('--scheduler-fuel', `${fuel ?? 0}%`);
-    return [icon, meter, el('span', `scheduler-road__pct${low ? ' scheduler-road__pct--low' : ''}`, fuel != null ? `${fuel}%` : '–')];
-  }
-
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words, restWords };
+  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords };
 })();

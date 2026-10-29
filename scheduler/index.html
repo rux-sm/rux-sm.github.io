@@ -102,7 +102,6 @@
 <symbol id="m-block" viewBox="0 -960 960 960"><path d="M324-111.5Q251-143 197-197t-85.5-127Q80-397 80-480t31.5-156Q143-709 197-763t127-85.5Q397-880 480-880t156 31.5Q709-817 763-763t85.5 127Q880-563 880-480t-31.5 156Q817-251 763-197t-127 85.5Q563-80 480-80t-156-31.5ZM480-140q61.01 0 117.51-20.5Q654-181 699-220L220-699q-38 46-59 102.17T140-480q0 142.37 98.81 241.19Q337.63-140 480-140Zm259-121q37-45 59-101.49 22-56.5 22-117.51 0-142.38-98.81-241.19T480-820q-60.66 0-116.83 21T261-739l478 478ZM480-480Z"/></symbol>
 <symbol id="m-event_busy-fill" viewBox="0 -960 960 960"><path d="m381-218-43-43 100-99-100-99 43-43 99 100 99-100 43 43-100 99 100 99-43 43-99-100-99 100ZM120-80v-740h125v-60h65v60h340v-60h65v60h125v740H120Zm60-60h600v-430H180v430Z"/></symbol>
 <symbol id="m-fit_screen" viewBox="0 -960 960 960"><path d="M820-610v-130H690v-60h190v190h-60Zm-740 0v-190h190v60H140v130H80Zm610 450v-60h130v-130h60v190H690Zm-610 0v-190h60v130h130v60H80Zm120-120v-400h560v400H200Zm60-60h440v-280H260v280Zm0 0v-280 280Z"/></symbol>
-<symbol id="m-local_gas_station-fill" viewBox="0 -960 960 960"><path d="M160-120v-720h389v348h115v320h106v-346q-11 6-23 9t-24 3q-39 0-66.5-27.5T629-600q0-32 18-57t48-33l-95-95 36-35 153 153q14 14 22.5 30.5T820-600v480H614v-322h-65v322H160Zm60-432h269v-228H220v228Zm503-4q18 0 31-13t13-31q0-18-13-31t-31-13q-18 0-31 13t-13 31q0 18 13 31t31 13Z"/></symbol>
 <symbol id="m-medical_services-fill" viewBox="0 -960 960 960"><path d="M80-80v-640h240v-160h320v160h240v640H80Zm300-640h200v-100H380v100Zm70 350v120h60v-120h120v-60H510v-120h-60v120H330v60h120Z"/></symbol>
 <symbol id="m-airline_seat_flat-fill" viewBox="0 -960 960 960"><path d="M360-400v-280h519v280H360ZM80-280v-60h800v60H80Zm35-155q-35-35-35-85t35-85q35-35 85-35t85 35q35 35 35 85t-35 85q-35 35-85 35t-85-35Z"/></symbol>
 <symbol id="m-info-fill" viewBox="0 -960 960 960"><path d="M453-280h60v-240h-60v240Zm50.5-323.2q9.5-9.2 9.5-22.8 0-14.45-9.48-24.22-9.48-9.78-23.5-9.78t-23.52 9.78Q447-640.45 447-626q0 13.6 9.48 22.8 9.48 9.2 23.5 9.2t23.52-9.2ZM480.27-80q-82.74 0-155.5-31.5Q252-143 197.5-197.5t-86-127.34Q80-397.68 80-480.5t31.5-155.66Q143-709 197.5-763t127.34-85.5Q397.68-880 480.5-880t155.66 31.5Q709-817 763-763t85.5 127Q880-563 880-480.27q0 82.74-31.5 155.5Q817-252 763-197.68q-54 54.31-127 86Q563-80 480.27-80Z"/></symbol>
@@ -811,7 +810,7 @@
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- How much a bus out on its trip moves on its bar, kept with the view,
-         and what each colour of its speed bars means; see data.js. -->
+         and what each colour of the bus column's gauges means; see data.js. -->
     <li class="rux--menu-item-group" role="none">
       <ul role="group" aria-label="Motion">
         <li class="rux--menu-item" role="menuitemradio" aria-checked="true" tabindex="0" data-motion="full">
@@ -852,12 +851,12 @@
       </div>
       <div class="rux--modal-content">
         <ul class="scheduler-lights">
-          <li><span class="scheduler-lights__swatch" data-light="run" aria-hidden="true"></span>Green: the bus is on the road; the more bars lit, the faster</li>
-          <li><span class="scheduler-lights__swatch" data-light="warning" aria-hidden="true"></span>Amber: keep an eye on it</li>
-          <li><span class="scheduler-lights__swatch" data-light="error" aria-hidden="true"></span>Red: act now; it blinks for its first minute</li>
-          <li><span class="scheduler-lights__swatch" data-light="scan" aria-hidden="true"></span>Grey: no signal from the bus</li>
+          <li><span class="scheduler-lights__swatch" data-light="normal" aria-hidden="true"></span>White: the bus's fuel or DEF is fine</li>
+          <li><span class="scheduler-lights__swatch" data-light="warning" aria-hidden="true"></span>Amber: low, or keep an eye on it</li>
+          <li><span class="scheduler-lights__swatch" data-light="error" aria-hidden="true"></span>Red: act now; on a trip it blinks for its first minute</li>
+          <li><span class="scheduler-lights__swatch" data-light="scan" aria-hidden="true"></span>Faded: no signal from the bus</li>
         </ul>
-        <p class="scheduler-lights__note">The vehicle pill is green while moving, blue with the engine on or idling, and grey when off or unknown. Each driver has their own solid duty icon: green for Driving and On duty, yellow for Yard move, purple for Sleeper and Personal conveyance, and grey for Off duty or Unknown. The speed's five bars light one for every 16 mph. Each driver has an availability meter; while resting they also have a purple rest meter toward an eight-hour reference, separate from HOS availability. Motion, in this menu, holds the start-up shake and the blinks still.</p>
+        <p class="scheduler-lights__note">Beside each bus number, in the week that holds today, F is its fuel and D its DEF, each emptying downward, with a tick at its low mark: fuel is low at 25% and critical at 10%, DEF at 15% and 5%. A mark beside the number shows no signal, an engine lamp, a speed over 75 mph or idling past 30 minutes. On a trip, the vehicle pill is green while moving, blue with the engine on or idling, and grey when off or unknown. Each driver has their own solid duty icon: green for Driving and On duty, yellow for Yard move, purple for Sleeper and Personal conveyance, and grey for Off duty or Unknown. Each driver has an availability meter; while resting they also have a purple rest meter toward an eight-hour reference, separate from HOS availability. Motion, in this menu, holds the start-up shake and the blinks still.</p>
       </div>
     </div>
   </div>
@@ -1826,6 +1825,7 @@
 <script src="trip-history.js"></script>
 <script src="bar.js"></script>
 <script src="road-bar.js"></script>
+<script src="bus-head.js"></script>
 <script src="data.js"></script>
 <script src="to-do.js"></script>
 <script src="departures.js"></script>

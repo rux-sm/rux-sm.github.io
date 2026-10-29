@@ -196,11 +196,11 @@
   inset-inline-start: 0;
   z-index: 5;
   padding-inline: var(--rux-spacing-02);
-  /* The column's floor, set on both its cells. The track stays `max-content`,
-     so a wider bus number still widens the column; the floor only keeps it from
-     being narrower than the band is tall. app.js measures this cell, so its
-     arithmetic includes the floor. */
-  min-inline-size: 2rem;
+  /* The column's width, set on the corner alone: the heads below are sized
+     by their row and add nothing, so their gauges never widen it. 56px holds
+     a bus number with a mark and two gauges; app.js measures this cell, so
+     its arithmetic includes it. */
+  min-inline-size: 3.5rem;
   justify-content: center;
 }
 /* The type being read, as data.js draws it; 16px, so it never widens the
@@ -234,20 +234,29 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 4px inline keeps a three-digit bus number inside the 2rem floor, so the
-     corner stays square. */
   padding-block: var(--rux-spacing-03);
   padding-inline: var(--rux-spacing-02);
-  min-inline-size: 2rem;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  display: flex;
-  flex-direction: column;
+  /* The number and its marks along the top, the type and equipment down the
+     left, the gauges at the right and the city along the foot. Sized by its
+     row and never the other way, so a row the view makes shorter keeps its
+     height and the gauges shrink to it. */
+  contain: size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "top top" "kit gauges" "foot foot";
   gap: var(--rux-spacing-02);
-  /* Centred, because app.js gives this column the flooring remainder and its
-     width moves by a few pixels with the window. */
+  text-align: start;
+}
+.scheduler-row-head__top {
+  grid-area: top;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  text-align: center;
+  gap: var(--rux-spacing-02);
+  min-inline-size: 0;
 }
 /* On a bus row the number is a toggletip `button`. It drops what a button
    brings (padding, border, background, font) and keeps only the type below,
@@ -328,9 +337,12 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
 }
-/* The out-of-service mark, stacked under the number so the number stays the
-   widest thing in the cell. */
+/* The type, equipment and out-of-service marks, stacked down the left under
+   the number. */
 .scheduler-row-head__kit {
+  grid-area: kit;
+  min-block-size: 0;
+  overflow: hidden;
   /* Above the number's click layer, so the out-of-service mark keeps its
      hover label; every other mark lets a press through to the number, which
      opens the tip that names it. */
@@ -346,6 +358,107 @@ button.scheduler-row-head__num::after {
 /* The lift and sleeper, shown while the tip's switch is on. */
 .scheduler-row-head__equip { display: none; }
 .scheduler-week--equipment .scheduler-row-head__equip { display: inline-flex; }
+/* THE BUS'S STATE, bus-head.js's, under the number's click layer, so a press
+   anywhere on the head opens the tip that words it all. The marks beside the
+   number are 12px and take their tone's colour; a speed over the limit is
+   the figure itself. */
+.scheduler-row-head__marks { display: inline-flex; flex-wrap: wrap; gap: var(--rux-spacing-01); }
+.scheduler-row-head__marks:empty { display: none; }
+.scheduler-row-head__mark { display: inline-flex; align-items: center; font-size: var(--rux-label-01-font-size); line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.scheduler-row-head__mark > svg { inline-size: 12px; block-size: 12px; }
+.scheduler-row-head__mark--error { color: var(--scheduler-head-critical); }
+.scheduler-row-head__mark--warning { color: var(--scheduler-head-low); }
+.scheduler-row-head__mark--quiet { color: var(--rux-text-secondary); }
+/* No signal is the signal drawing struck through. */
+.scheduler-row-head__mark--quiet { position: relative; }
+.scheduler-row-head__mark--quiet::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: -1px;
+  inline-size: 1.5px;
+  block-size: 14px;
+  background: currentColor;
+  box-shadow: 0 0 0 1px var(--rux-layer);
+  transform: translateX(-50%) rotate(-45deg);
+}
+/* The compact board's one dot, drawn only there. */
+.scheduler-row-head__dot { display: none; box-sizing: border-box; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
+.scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
+.scheduler-row-head__dot[data-tone="warning"] { background: var(--scheduler-head-low); }
+.scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
+/* In the week that holds today the body's gauges stand at the right and its
+   city along the foot; in any other week it is the seats and inspection,
+   along the foot. */
+.scheduler-row-head__body { grid-area: foot; display: flex; flex-direction: column; min-inline-size: 0; }
+.scheduler-row-head__body--live { display: contents; }
+.scheduler-row-head__line {
+  grid-area: foot;
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+.scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+.scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
+/* Two tanks side by side, each a 3px gauge at most 50px tall that empties
+   downward, with a tick at its low mark and its letter under it. The
+   rounded ends are these instruments' alone; Carbon's controls stay square. */
+.scheduler-row-head__gauges {
+  grid-area: gauges;
+  display: flex;
+  gap: var(--rux-spacing-01);
+  block-size: 100%;
+  max-block-size: calc(50px + var(--rux-label-01-line-height) * 1em);
+  align-self: end;
+}
+.scheduler-row-head__gauge {
+  --scheduler-tank-ink: var(--scheduler-head-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  inline-size: 10px;
+  min-block-size: 0;
+}
+.scheduler-row-head__gauge[data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
+.scheduler-row-head__gauge[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-head-critical); }
+.scheduler-row-head__tank {
+  position: relative;
+  flex: 1 1 50px;
+  min-block-size: 0;
+  max-block-size: 50px;
+  inline-size: 3px;
+  border-radius: 1.5px;
+  background: linear-gradient(to top, var(--scheduler-tank-ink) 0 var(--scheduler-tank), color-mix(in srgb, var(--scheduler-tank-ink) 28%, transparent) 0);
+}
+/* The low mark: a 7px tick across the gauge. */
+.scheduler-row-head__tank::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: -2px;
+  inset-block-end: var(--scheduler-tank-low);
+  inline-size: 7px;
+  block-size: 1px;
+  background: var(--rux-text-secondary);
+}
+.scheduler-row-head__letter {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-row-head__gauge:not([data-level="normal"]) > .scheduler-row-head__letter { color: var(--scheduler-tank-ink); font-weight: 600; }
+/* With no signal the gauges fade to their last reading. */
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__gauges { opacity: .45; }
+/* The compact board has no room for the gauges: the number and the dot. */
+.scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
+.scheduler-page[data-board="compact"] .scheduler-row-head { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "kit" "foot"; }
+.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges, .scheduler-row-head__line, .scheduler-row-head__marks, .scheduler-row-head__type) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
+
 /* The whole head opens the tip, so the whole head answers the pointer, and
    stays marked while its tip is open. */
 .scheduler-row-head:has(> .rux--popover-container):hover { background: var(--rux-layer-hover); }
@@ -912,20 +1025,19 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
 /* The footer spans the trip while its content keeps the existing sticky rows. */
 .scheduler-bar__update, .scheduler-bar__drivers { background: var(--scheduler-footer); color: var(--scheduler-footer-fg); }
-:is(.scheduler-bar__update, .scheduler-bar__drivers, .scheduler-road__card) {
+.scheduler-bar__update, .scheduler-bar__drivers {
   --scheduler-age-week: var(--scheduler-footer-warning);
   --scheduler-mark-warning: var(--scheduler-footer-warning);
   --scheduler-mark-success: var(--scheduler-driver-success);
   --scheduler-mark-error: var(--scheduler-driver-error);
 }
 .scheduler-bar {
-  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), transparent 0);
+  --scheduler-footer-paint: linear-gradient(to top, var(--scheduler-footer) 0, var(--scheduler-footer) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px)), transparent 0);
   background-image: var(--scheduler-footer-paint);
   background-size: 100% 100%;
   background-position: 0 0;
   background-repeat: no-repeat;
 }
-.scheduler-bar--road { --scheduler-footer-paint: none; }
 .scheduler-week--no-update, .scheduler-week--no-drivers { --scheduler-footer-rows: 1; }
 .scheduler-week--no-update.scheduler-week--no-drivers { --scheduler-footer-rows: 0; }
 .scheduler-bar__age { flex: none; font-size: var(--rux-label-01-font-size); opacity: .85; }
@@ -1889,44 +2001,38 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--empty > .scheduler-crew__dot { box-sizing: border-box; background: none; border: 1.5px dashed currentColor; }
 
 /* ON THE ROAD, from Samsara: while the bus is out, road-bar.js says so in
-   the rows under the customer. The bar wears no edge, border or light of
-   its own, so the only ring a bar has is the selected one, and how the bus
-   is doing is the speed bars' colour. The words take the colours the update's
-   age is written in, which every theme sets to read on its bars.
-   How much moves is the view menu's Motion, `data-motion` on the board: at
-   full, a bar coming on the road shudders as a bus starts, a red warning's
-   bars blink for their first minute and a low tank's gauge blinks; calm and
-   off hold all of it still. */
-/* A tank under a quarter blinks its amber. */
-@keyframes scheduler-road-fuel { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
-.scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low { animation: scheduler-road-fuel 1.2s ease-in-out infinite; }
-/* A red warning's bars blink for the first minute the page has seen it,
+   the times row and the route pill. The bar wears no edge, border or light
+   of its own, so the only ring a bar has is the selected one. The words take
+   the colours the update's age is written in, which every theme sets to read
+   on its bars. How much moves is the view menu's Motion, `data-motion` on
+   the board: at full, a bar coming on the road shudders as a bus starts and
+   a red warning's words blink for their first minute; calm and off hold all
+   of it still. */
+/* A red warning blinks for the first minute the page has seen it,
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
-.scheduler-bar--road[data-alarm] .scheduler-road__card--error .scheduler-road__bars { animation: scheduler-road-alarm 1.4s linear infinite; }
-:is([data-motion="calm"], [data-motion="off"]) :is(
-  .scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low, .scheduler-road__bars, .scheduler-road__dot) { animation: none; }
+.scheduler-bar--road[data-alarm] .scheduler-road__say--error { animation: scheduler-road-alarm 1.4s linear infinite; }
+:is([data-motion="calm"], [data-motion="off"]) :is(.scheduler-road__say--error, .scheduler-road__dot) { animation: none; }
 /* The route icon stays fully visible when motion is reduced or off. */
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-road__route { animation: none; }
 @media (prefers-reduced-motion: reduce) { .scheduler-road__route { animation: none; } }
 
-/* THE LEGEND, the view menu's What the colours mean: the speed's five bars
-   in each colour they take. */
+/* THE LEGEND, the view menu's What the colours mean: a bus head's gauge in
+   each colour it takes. */
 .scheduler-lights { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; list-style: none; }
 .scheduler-lights > li { display: flex; align-items: center; gap: var(--rux-spacing-05); }
 .scheduler-lights__swatch {
-  --scheduler-swatch: var(--scheduler-mark-success);
+  --scheduler-swatch: var(--scheduler-head-normal);
   flex: none;
-  inline-size: 19px;
-  block-size: 12px;
-  margin-inline-start: var(--rux-spacing-04);
-  background: repeating-linear-gradient(to right, var(--scheduler-swatch) 0 3px, transparent 3px 4px);
-  clip-path: polygon(0 66%, 19px 0, 19px 100%, 0 100%);
+  inline-size: 3px;
+  block-size: 16px;
+  margin-inline: var(--rux-spacing-04);
+  border-radius: 1.5px;
+  background: linear-gradient(to top, var(--scheduler-swatch) 0 60%, color-mix(in srgb, var(--scheduler-swatch) 28%, transparent) 0);
 }
-.scheduler-lights__swatch[data-light="rest"] { --scheduler-swatch: var(--scheduler-mark-rest); }
-.scheduler-lights__swatch[data-light="scan"] { --scheduler-swatch: var(--scheduler-road-scan); }
-.scheduler-lights__swatch[data-light="error"] { --scheduler-swatch: var(--scheduler-mark-error); }
-.scheduler-lights__swatch[data-light="warning"] { --scheduler-swatch: var(--scheduler-mark-warning); }
+.scheduler-lights__swatch[data-light="scan"] { opacity: .45; }
+.scheduler-lights__swatch[data-light="error"] { --scheduler-swatch: var(--scheduler-head-critical); }
+.scheduler-lights__swatch[data-light="warning"] { --scheduler-swatch: var(--scheduler-head-low); }
 .scheduler-lights__note { margin-block-start: var(--rux-spacing-06); color: var(--rux-text-secondary); }
 
 /* A BAR COMING ON THE ROAD starts as a bus does, once a page load at full
@@ -1946,18 +2052,16 @@ button.scheduler-row-head__num::after {
 @keyframes scheduler-road-gauges { 0%, 55% { opacity: 0; } 100% { opacity: 1; } }
 @keyframes scheduler-road-lit { from { opacity: 0; } }
 .scheduler-bar.scheduler-bar--starting { animation: scheduler-road-crank 900ms linear; }
-.scheduler-bar--starting > :is(.scheduler-road__times, .scheduler-road__card) { animation: scheduler-road-gauges 1100ms ease-out; }
-.scheduler-bar--lit > :is(.scheduler-road__times, .scheduler-road__card) { animation: scheduler-road-lit 400ms ease-out; }
+.scheduler-bar--starting > .scheduler-road__times { animation: scheduler-road-gauges 1100ms ease-out; }
+.scheduler-bar--lit > .scheduler-road__times { animation: scheduler-road-lit 400ms ease-out; }
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar.scheduler-bar--starting { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar.scheduler-bar--starting { animation: none; }
-  .scheduler-bar--starting > :is(.scheduler-road__times, .scheduler-road__card) { animation: scheduler-road-lit 400ms ease-out; }
+  .scheduler-bar--starting > .scheduler-road__times { animation: scheduler-road-lit 400ms ease-out; }
 }
-/* A LIVE BAR, road-bar.js's: the destination and the customer, then the
-   times in the contact row's place, the instruments in the time and update
-   rows' place, and the drivers row as seats. On the narrowest bar every
-   edge lands on a whole pixel: two 68px halves and a 1px rule. */
-.scheduler-bar--road > :is(.scheduler-bar__contact, .scheduler-bar__time, .scheduler-bar__update) { display: none; }
+/* A LIVE BAR, road-bar.js's: the rows of any bar, with the times in the
+   time row's place and the drivers row as seats. */
+.scheduler-bar--road > .scheduler-bar__time { display: none; }
 /* ON A BAR LONGER THAN A DAY every row keeps to the width a one-day bar
    gives it: one day of this bar, worked out as the bar's own width is, less
    the gap and the two default paddings, with the marks at the destination
@@ -1975,7 +2079,7 @@ button.scheduler-row-head__num::after {
   --scheduler-live-day: calc((100% + 2 * var(--rux-spacing-02) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
 }
-.scheduler-bar > :is(.scheduler-bar__row, .scheduler-road__card) {
+.scheduler-bar > .scheduler-bar__row {
   position: sticky;
   inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--rux-spacing-02));
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
@@ -1989,12 +2093,11 @@ button.scheduler-row-head__num::after {
      the room left, so it is cut there rather than pushed back. */
   max-inline-size: min(100%, var(--scheduler-row-room, 100%));
 }
-.scheduler-bar--road > :is(.scheduler-bar__row, .scheduler-road__card) {
+.scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
 .scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
-.scheduler-page[data-board="compact"] .scheduler-bar > .scheduler-road__card { display: none; }
 
 /* THE TIMES: out, a dimmed arrow and back, then the minutes late in amber;
    or a problem's words. */
@@ -2032,92 +2135,16 @@ button.scheduler-row-head__num::after {
 .scheduler-road__say--warning { color: var(--scheduler-age-week); font-weight: 600; }
 .scheduler-road__say--quiet { opacity: .7; }
 
-/* THE INSTRUMENTS: one 16px row, two halves either side of a 1px rule,
-   in the room of two rows: 8px above it and 5px below it to the drivers
-   row, which takes the 3px more, `--scheduler-road-lift`, so its names stand
-   that far clear of the hours bars under them while the bars keep their
-   place. Their shade is a band across the whole bar from 4px under the times
-   to its foot, whatever day the rows stand on: it reaches far past both
-   sides, and the bar, which clips what it holds, cuts it at its own sides
-   and its own lower corners, so the bar is two bands, the trip over the
-   bus. Its neutral surface matches the shared status footer. */
-.scheduler-road__card {
-  --scheduler-road-tone: var(--scheduler-mark-success);
-  color: var(--scheduler-footer-fg);
-  position: relative;
-  isolation: isolate;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
-  grid-template-rows: var(--scheduler-row-h);
-  column-gap: 4px;
-  align-items: center;
-  block-size: calc(2 * var(--scheduler-row-h) - var(--scheduler-road-lift));
-  padding-block-start: 8px;
-  align-content: start;
-  line-height: var(--scheduler-row-h);
-}
-.scheduler-road__card--warning { --scheduler-road-tone: var(--scheduler-mark-warning); }
-.scheduler-road__card--error { --scheduler-road-tone: var(--scheduler-mark-error); }
-.scheduler-road__card--rest { --scheduler-road-tone: var(--scheduler-mark-rest); }
-.scheduler-road__card::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: 4px -100vw calc(-1 * (var(--scheduler-row-h) + var(--scheduler-road-lift)) - 4px);
-  background: var(--scheduler-footer);
-  pointer-events: none;
-}
-/* The drivers row, positioned as every row is to stick, is painted over
-   the shade, which reaches under it. */
+/* With the time row off, the times go with it. */
+.scheduler-week--no-time .scheduler-road__times { display: none; }
+/* The drivers row of a live bar is 3px taller, `--scheduler-road-lift`, so
+   its names stand clear of the hours bars under them; the times row, whose
+   one line is a 2px track and two times, gives up the 3px, and the footer's
+   fill and rule start that much higher. */
 .scheduler-bar--road { --scheduler-road-lift: 3px; }
+.scheduler-bar--road > .scheduler-road__times { block-size: calc(var(--scheduler-row-h) - var(--scheduler-road-lift)); }
 .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(var(--scheduler-row-h) + var(--scheduler-road-lift)); }
-.scheduler-week--no-drivers .scheduler-road__card::before { inset-block-end: -4px; }
-.scheduler-road__half { display: flex; align-items: center; gap: 4px; min-inline-size: 0; block-size: var(--scheduler-row-h); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.scheduler-road__rule { align-self: stretch; background: color-mix(in srgb, currentColor 18%, transparent); }
-.scheduler-road__half > .scheduler-road__say { display: none; }
-.scheduler-road__speed { display: flex; align-items: baseline; min-inline-size: 0; block-size: var(--scheduler-row-h); }
-.scheduler-road__big { font-size: 16px; line-height: var(--scheduler-row-h); font-weight: 600; }
-.scheduler-road__unit { margin-inline-start: 2px; font-size: 9px; opacity: .75; }
-.scheduler-road__card--scan .scheduler-road__speed { color: var(--scheduler-road-scan); }
-/* Five bars, 3px wide and 1px apart, rising 4px to 12px from the baseline. */
-.scheduler-road__bars { display: flex; align-items: flex-end; gap: 1px; flex: none; block-size: 12px; margin-inline-start: auto; }
-.scheduler-road__bars > i { inline-size: 3px; border-radius: 1px; background: color-mix(in srgb, currentColor 22%, transparent); }
-.scheduler-road__bars > i:nth-child(1) { block-size: 4px; }
-.scheduler-road__bars > i:nth-child(2) { block-size: 6px; }
-.scheduler-road__bars > i:nth-child(3) { block-size: 8px; }
-.scheduler-road__bars > i:nth-child(4) { block-size: 10px; }
-.scheduler-road__bars > i:nth-child(5) { block-size: 12px; }
-.scheduler-road__bars > .scheduler-road__bar--on { background: var(--scheduler-road-tone); }
-.scheduler-road__pump { display: flex; flex: none; }
-.scheduler-road__pump svg { inline-size: 12px; block-size: 12px; }
-.scheduler-road__meter {
-  flex: 1 1 auto;
-  min-inline-size: 8px;
-  block-size: 6px;
-  border-radius: 3px;
-  background:
-    linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-fuel) 100% no-repeat,
-    color-mix(in srgb, currentColor 20%, transparent);
-}
-/* The percent is a fixed 32px, room for 100%, so the tank's bar ends on a whole pixel. */
-.scheduler-road__pct { flex: none; inline-size: 32px; text-align: end; font-weight: 600; }
-.scheduler-road__pump--low, .scheduler-road__meter--low, .scheduler-road__pct--low { color: var(--scheduler-age-week); }
-
-/* FEWER ROWS, as the view's toggles leave among contact, time and update.
-   With two, the times go, and a problem's words take the speed's half.
-   With one, the air goes too: the instruments in one row. With none, no
-   instruments. */
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__times { display: none; }
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__half--speed > :is(.scheduler-road__speed, .scheduler-road__bars) { display: none; }
-:is(.scheduler-week--no-contact, .scheduler-week--no-time, .scheduler-week--no-update) .scheduler-road__card--says > .scheduler-road__half--speed > .scheduler-road__say { display: block; overflow: hidden; text-overflow: ellipsis; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar--road { --scheduler-road-lift: 0px; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card {
-  block-size: var(--scheduler-row-h);
-  padding-block-start: 0;
-}
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -100vw calc(-1 * var(--scheduler-row-h) - 4px); }
-.scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
+:is(.scheduler-week--no-time, .scheduler-week--no-drivers) .scheduler-bar--road { --scheduler-road-lift: 0px; }
 
 /* A single driver keeps icon, name and reading on one line above the tracks.
    Multiple drivers keep only their icons, names and meter tracks. */
@@ -2146,7 +2173,6 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }
 /* Multiple seats omit numeric readings; exact values remain in their tooltips. */
 .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time) { display: none; }
-:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar--road:has(.scheduler-crew--seat) > .scheduler-bar__drivers { block-size: var(--scheduler-row-h); }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar__crew > .scheduler-crew--seat { display: flex; align-items: flex-start; }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { display: none; }
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time, .scheduler-crew__away) { display: none; }

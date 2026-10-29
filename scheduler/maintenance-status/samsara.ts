@@ -12,8 +12,9 @@
 // FUEL is the tank's percent as the engine last reported it. A FAULT is the
 // engine's warning lamp: `stop` when the red stop lamp is on, `check` when an
 // amber warning, emissions or check-engine lamp is, with up to three of the
-// codes Samsara describes in words. A bus whose engine reports neither has
-// them null.
+// codes Samsara describes in words. DEF is the diesel exhaust fluid tank's
+// percent, which Samsara keeps in thousandths of a percent. A bus whose engine
+// reports none of these has them null.
 //
 // A BUS IS THE SAMSARA VEHICLE NAMED WITH ITS NUMBER, as in samsara-miles. A
 // DRIVER IS THE SAMSARA DRIVER WITH THE SAME FIRST AND LAST NAME: middle names,
@@ -53,6 +54,7 @@ export type Stat = {
   engineState?: { time: string; value: string }
   gps?: { time: string; latitude?: number; longitude?: number; headingDegrees?: number; speedMilesPerHour?: number; reverseGeo?: { formattedLocation?: string } }
   fuelPercent?: { time: string; value: number }
+  defLevelMilliPercent?: { time: string; value: number }
   faultCodes?: Faults
   obdOdometerMeters?: { time: string; value: number }
   gpsOdometerMeters?: { time: string; value: number }
@@ -125,6 +127,7 @@ export type LiveBus = {
   path?: [number, number, number][]
   seen: string | null
   fuel: number | null
+  def: number | null
   // Miles on the odometer, the engine's reading where there is one, else the GPS's.
   odometer: number | null
   fault: 'stop' | 'check' | null
@@ -336,6 +339,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         heading: gpsFresh && typeof s!.gps!.headingDegrees === 'number' ? Math.round(s!.gps!.headingDegrees) : null,
         seen: seen.length ? new Date(Math.max(...seen)).toISOString() : null,
         fuel: typeof s?.fuelPercent?.value === 'number' ? Math.round(Math.min(100, Math.max(0, s.fuelPercent.value))) : null,
+        def: typeof s?.defLevelMilliPercent?.value === 'number' ? Math.round(Math.min(100, Math.max(0, s.defLevelMilliPercent.value / 1000))) : null,
         odometer: odometerOf(s),
         ...faultOf(s?.faultCodes),
         drivers: markWheel(inVehicle.get(vehicle) ?? []),

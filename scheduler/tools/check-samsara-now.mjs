@@ -102,7 +102,7 @@ function parts({ buses = BUSES, clocksFail = false, keyed = true, historyFail = 
       vehicles: async () => { calls++; return [{ id: 'v101', name: '101' }, { id: 'v102', name: ' 102 ' }]; },
       stats: async ids => { calls++; return [
         { id: 'v101', engineState: { time: ago(1), value: 'On' }, gps: { time: ago(1), latitude: 26.2, longitude: -97.7, headingDegrees: 271.6, speedMilesPerHour: 64.6, reverseGeo: { formattedLocation: 'Somewhere, TX' } },
-          fuelPercent: { time: ago(5), value: 68.4 },
+          fuelPercent: { time: ago(5), value: 68.4 }, defLevelMilliPercent: { time: ago(5), value: 14_600 },
           obdOdometerMeters: { time: ago(5), value: 470_000_000 }, gpsOdometerMeters: { time: ago(5), value: 1_000 },
           faultCodes: { time: ago(5), j1939: { checkEngineLights: { warningIsOn: true }, diagnosticTroubleCodes: [{ spnDescription: 'Coolant level', fmiDescription: 'Low' }] } } },
         { id: 'v102', engineState: { time: ago(40), value: 'On' }, gps: { time: ago(40), latitude: 26.1, longitude: -98.2, headingDegrees: 90, speedMilesPerHour: 30 } , gpsOdometerMeters: { time: ago(40), value: 160_934.4 } },
@@ -133,8 +133,10 @@ expect('the fuel, and the engine lamp with what its code says',
   [a.buses[0].fuel, a.buses[0].fault, a.buses[0].faults], [68, 'check', ['Coolant level: Low']]);
 expect('the odometer is the engine reading in miles, else the GPS one, else empty',
   [a.buses[0].odometer, a.buses[1].odometer], [292_044, 100]);
-expect('a bus that reports no fuel and no fault has them empty',
-  [a.buses[1].fuel, a.buses[1].fault, a.buses[1].faults], [null, null, []]);
+expect('a bus that reports no fuel, DEF or fault has them empty',
+  [a.buses[1].fuel, a.buses[1].def, a.buses[1].fault, a.buses[1].faults], [null, null, null, []]);
+expect('the DEF level in whole percent, from Samsara\'s thousandths',
+  a.buses[0].def, 15);
 expect('the red stop lamp outranks an amber one',
   faultOf({ j1939: { checkEngineLights: { warningIsOn: true, stopIsOn: true } } }).fault, 'stop');
 expect('an OBD check-engine lamp is a check, named by its short code',

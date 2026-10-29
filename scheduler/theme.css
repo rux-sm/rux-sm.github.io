@@ -97,6 +97,23 @@
   --scheduler-mark-neutral: var(--rux-status-gray);
   --scheduler-status-surface: #161616;
 }
+/* The bus head's readings, bus-head.js's: white on the theme's grey while
+   normal, the status palette's warning when low and its error when critical. */
+:root,
+[data-theme] {
+  --scheduler-head-normal: var(--rux-icon-primary);
+  --scheduler-head-low: var(--scheduler-mark-warning);
+  --scheduler-head-critical: var(--scheduler-mark-error);
+}
+/* On a light pane the status yellow reads 1.6 to 1, so the light themes take
+   Carbon's yellow 60 and red 60, each about 5 to 1 on white, for the gauges
+   and the words alike. */
+[data-theme="white"],
+[data-theme="g10"],
+[data-theme="apple-light"] {
+  --scheduler-head-low: #8e6a00;
+  --scheduler-head-critical: #da1e28;
+}
 [data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
 
 /* Alert badges and card warnings use the same semantic inks as driver status. */
@@ -1108,7 +1125,7 @@
 }
 /* rux-dark squares this app's pills too: a bar's kind and Live labels, an update's hover, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
-[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-road__bars > i, .scheduler-road__meter, .scheduler-crew__left) {
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-crew__left) {
   border-radius: 0;
 }
 
@@ -1328,15 +1345,15 @@
    fill in its own ink, parted from the trip above them by a hairline of
    that ink, so a trip is one shape on the board, not two. The band's footer
    tokens follow the bar, so the update's hover fill is a step off the
-   bar's own colour. A road bar, the compact board and a week with neither
-   row draw no line. */
+   bar's own colour. The compact board and a week with neither row draw no
+   line. */
 [data-theme="rux-100"] .scheduler-bar {
   --scheduler-footer-base: var(--scheduler-bg);
   --scheduler-footer-fg: var(--scheduler-fg);
 }
-[data-theme="rux-100"] .scheduler-bar:not(.scheduler-bar--road) {
+[data-theme="rux-100"] .scheduler-bar {
   --scheduler-footer-rule: color-mix(in srgb, var(--scheduler-fg) 20%, transparent);
-  --scheduler-footer-paint: linear-gradient(to top, transparent calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), var(--scheduler-footer-rule) 0, var(--scheduler-footer-rule) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + 1px), transparent 0);
+  --scheduler-footer-paint: linear-gradient(to top, transparent calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px)), var(--scheduler-footer-rule) 0, var(--scheduler-footer-rule) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px) + 1px), transparent 0);
 }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:

@@ -136,7 +136,7 @@ is how to use it, and section 4 of `docs/database-inventory.md` is what it is.
 Trip documents open through `trip-document-link/`; `samsara-miles/` fills Actual
 miles, and `samsara-now/` shows a bus out on its trip, its warnings, speed, fuel, engine lamp and drivers, on its bar, in its live card and on the Live map, `live.html`.
 
-The schedule grid and the trip bar are this app's own; Carbon has neither. `bar.js` draws the trip bar and `road-bar.js` a bus out on its trip, for the board and for `components.html`, which opens with an Icons and pills index and section links, then shows every state of each, drawn from the invented trips in `components-data.js`.
+The schedule grid and the trip bar are this app's own; Carbon has neither. `bar.js` draws the trip bar, `road-bar.js` a bus out on its trip and `bus-head.js` the head of each bus's row, for the board and for `components.html`, which opens with an Icons and pills index and section links, then shows every state of each, drawn from the invented trips in `components-data.js`.
 Vehicle pills describe movement and engine state; each driver's icon describes their Samsara duty, with solid IBM symbols: arrows for Driving, Yard move and Personal conveyance, a clock for On duty, a moon for Sleeper, a minus-circle for Off duty and a question diamond for Unknown. Duties, assignment statuses and alerts share Design's status colour tokens; availability and continuous rest have separate meters, with an eight-hour rest reference that does not assert a reset of the HOS clocks. With multiple live drivers, the bar shows icons, names and meter tracks without numeric readings; tooltips retain exact values. Everything else is Design's, linked live at `/design/…` with no copy here.
 
 ## Run and check it

@@ -325,14 +325,14 @@
         one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
         one('On its second day', 'A trip longer than a day stands its rows in today\'s column while the bus is out, and on its first day before and after.', live('Coastal Youth Choir', { span: 3, day: 1 })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
-        one('Idling', 'The route pill says Idling; the speed stays 0 mph and the bars stay empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
-        one('Resting', 'The sleeper icon is purple beside that driver; the vehicle pill and instruments describe the bus.', live('Riverbend Seniors', {
+        one('Idling', 'The bus column says Idle and how long; the bar\'s bus icon says it on its tooltip.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
+        one('Resting', 'The sleeper icon is purple beside that driver; the bus column describes the bus.', live('Riverbend Seniors', {
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),
-        one('Idling a long time', 'The vehicle pill uses the informative status colour; its tooltip gives the idle duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
-        one('Engine off', 'The route pill says Engine off; 0 mph stays in the instruments.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
-        one('Stopped', 'Engine on with a fresh zero-speed reading: the vehicle pill says Engine on.', live('Harbor Tours', { bus: { engine: 'on', mph: 0 }, next: atStop() })),
-        one('Running without a speed reading', 'Engine on without a speed reading: the vehicle pill says Engine on and the speed is a dash.', live('Riverbend Seniors', { bus: { engine: 'on', mph: null } })),
+        one('Idling a long time', 'Past 30 minutes the bus column\'s Idle turns amber; the bus icon\'s tooltip gives the idle duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
+        one('Engine off', 'The bus column says Off; the bus icon\'s tooltip says Engine off.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
+        one('Stopped', 'Engine on with a fresh zero-speed reading: the bus icon\'s tooltip says Engine on.', live('Harbor Tours', { bus: { engine: 'on', mph: 0 }, next: atStop() })),
+        one('Running without a speed reading', 'Engine on without a speed reading: the bus icon\'s tooltip says Engine on.', live('Riverbend Seniors', { bus: { engine: 'on', mph: null } })),
         ...Object.entries(window.SchedulerRoadBar.DUTY).map(([duty, { word }]) =>
           one(`${word} icon`, `The ${word.toLowerCase()} icon beside the driver's name, with their remaining driving hours.`, live('Lakeview High School', {
             bus: { engine: duty === 'driving' ? 'on' : 'idle', mph: duty === 'driving' ? 64 : 0,
@@ -361,7 +361,7 @@
     const sample = (section, name) => section.samples.find(s => s.name === name);
     const icons = {
       id: 'icons', title: 'Icons and pills',
-      intro: 'Vehicle pills, driver duty icons, assignment statuses and alerts share Design’s semantic status colours. Each is shown on a real sample bar. Hover a mark for its meaning. Equipment needs belong to the trip card; the bar counts problems in its alert badge.',
+      intro: 'The bus icon, driver duty icons, assignment statuses and alerts, each on a real sample bar; duties, statuses and alerts share Design’s semantic status colours. Hover a mark for its meaning. Equipment needs belong to the trip card; the bar counts problems in its alert badge.',
       samples: [
         sample(tripBar, 'One way'), sample(tripBar, 'Drop-off and pickup'),
         sample(tripBar, 'More than one bus'), sample(tripBar, 'Back at the yard'),

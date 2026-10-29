@@ -94,8 +94,6 @@
   --scheduler-mark-warning: var(--rux-status-yellow);
   --scheduler-mark-info: var(--rux-status-blue);
   --scheduler-mark-rest: var(--rux-status-purple);
-  --scheduler-mark-neutral: var(--rux-status-gray);
-  --scheduler-status-surface: #161616;
 }
 /* The bus head's readings, bus-head.js's: white on the theme's grey while
    normal, the status palette's warning when low and its error when critical,

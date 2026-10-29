@@ -10,9 +10,8 @@
      amber past IDLE_MS, or Off in its middle while the bus stands, and a
      dashed track and a dash with no signal. Under it fuel and DEF as level
      bars, F and D, each with a tick at its low mark; a bus that reports no
-     DEF draws no D bar. Last, one line: Moving, the city a standing bus is
-     in, or with no signal how long since it was seen, the dial and bars
-     faded.
+     DEF draws no D bar. With no signal the dial and bars fade. Where the
+     bus is, and when it was last seen, are the number's toggletip's.
    - In any other week, or for a bus Samsara does not answer for: its seats
      and its inspection expiry, in the warning colour within WARN_DAYS.
    A level is grey while normal, the warning colour when low and the error
@@ -64,31 +63,24 @@
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
     return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
   };
-  // The city of a Samsara address, "625 Gregsons Bend, San Marcos, TX, 78666": the part before the state.
-  const cityOf = place => {
-    const parts = String(place || '').split(',').map(p => p.trim()).filter(Boolean);
-    const state = parts.findIndex(p => /^[A-Z]{2}$/.test(p));
-    return state > 0 ? parts[state - 1] : parts[0] ?? null;
-  };
   const idleFor = live => (live?.engine === 'idle' && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
   const noSignal = live => live && live.engine == null;
   const moving = live => live?.mph > 0;
 
-  // What the bus is doing, as the dial and the line under the bars say it.
+  // What the bus is doing, as the dial says it; the place is the tip's next line.
   function stateOf(live) {
-    if (noSignal(live)) return { dial: '–', line: live.seen ? `Seen ${ago(live.seen)}` : 'No signal', tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
+    if (noSignal(live)) return { dial: '–', tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
     if (moving(live)) {
       const fast = live.mph > SPEEDING;
-      return { dial: String(live.mph), line: 'Moving', tone: fast ? 'warning' : 'moving', words: `Moving, ${live.mph} mph${fast ? `, over ${SPEEDING}` : ''}` };
+      return { dial: String(live.mph), tone: fast ? 'warning' : 'moving', words: `Moving, ${live.mph} mph${fast ? `, over ${SPEEDING}` : ''}` };
     }
-    const city = cityOf(live.place);
     if (live.engine === 'idle' || live.engine === 'on') {
       const long = idleFor(live) > IDLE_MS;
       const span = live.engine_at ? ago(live.engine_at) : null;
-      return { dial: 'Idle', under: span, line: city ?? 'Idle', tone: long ? 'warning' : 'quiet',
-        words: `Idling${span ? ` ${span}` : ''}${long ? `, past ${IDLE_MS / 60e3} minutes` : ''}${city ? `, in ${city}` : ''}` };
+      return { dial: 'Idle', under: span, tone: long ? 'warning' : 'quiet',
+        words: `Idling${span ? ` ${span}` : ''}${long ? `, past ${IDLE_MS / 60e3} minutes` : ''}` };
     }
-    return { dial: 'Off', line: city ?? 'Off', tone: 'quiet', words: `Engine off${city ? `, in ${city}` : ''}` };
+    return { dial: 'Off', tone: 'quiet', words: 'Engine off' };
   }
 
   // The engine's lamp, the one mark the top right takes in place of the type.
@@ -100,6 +92,7 @@
     const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}`);
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', state.words);
+    box.title = state.words;
     const svg = svgEl('svg', { width: DIAL, height: DIAL, viewBox: `0 0 ${DIAL} ${DIAL}`, 'aria-hidden': 'true' });
     const ring = cls => svgEl('circle', { class: cls, cx: DIAL / 2, cy: DIAL / 2, r: R, transform: `rotate(135 ${DIAL / 2} ${DIAL / 2})` });
     const track = ring('scheduler-row-head__track');
@@ -195,9 +188,7 @@
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null) gauges.appendChild(level(shown.def, DEF));
-      const line = el('span', `scheduler-row-head__line scheduler-row-head__state scheduler-row-head__state--${state.tone}`, state.line);
-      line.title = state.words;
-      body.append(gauges, line);
+      body.appendChild(gauges);
     } else {
       if (bus.capacity) body.appendChild(el('span', 'scheduler-row-head__line', `${bus.capacity} pax`));
       const insp = inspection(bus);
@@ -241,5 +232,5 @@
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, cityOf, FUEL, DEF, TOP_MPH, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, TOP_MPH, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

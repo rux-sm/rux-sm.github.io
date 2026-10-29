@@ -239,8 +239,9 @@
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* The number and the type along the top, the dial and the levels under
-     them, one line at the foot. Sized by its row and never the other way, so
-     a row the view makes shorter keeps its height and clips the foot. */
+     them, or in another week a line or two at the foot. Sized by its row and
+     never the other way, so a row the view makes shorter keeps its height
+     and clips the foot. */
   contain: size;
   display: flex;
   flex-direction: column;
@@ -350,8 +351,8 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
 .scheduler-row-head__dot[data-tone="warning"] { background: var(--scheduler-head-low); }
 .scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
-/* In the week that holds today, the dial, the two levels and the state; in
-   any other week, the seats and the inspection at the foot. */
+/* In the week that holds today, the dial and the two levels; in any other
+   week, the seats and the inspection at the foot. */
 /* The body clips, not the head, whose number's tip must reach past it. */
 .scheduler-row-head__body { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; overflow: hidden; }
 .scheduler-row-head__body:not(.scheduler-row-head__body--live) { justify-content: flex-end; }
@@ -365,9 +366,6 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
-.scheduler-row-head__state { margin-block-start: auto; }
-.scheduler-row-head__state--moving { color: var(--scheduler-head-moving); font-weight: 600; }
-.scheduler-row-head__state--warning { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
@@ -1045,8 +1043,8 @@ button.scheduler-row-head__num::after {
    the inks reads on it, so its icon keeps the bar's own. */
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
    anywhere else on the bar only selects it: the update line fills with the
-   footer's hover tone, and an empty one says No updates; the route pill
-   brightens its status ink. A touch screen has no pointer to wait for, so it
+   footer's hover tone, and an empty one says No updates; the bus icon
+   gains a tint of its ink behind it. A touch screen has no pointer to wait for, so it
    shows none of them; a press fills on any screen. */
 @media (hover: hover) {
   .scheduler-bar__update[data-card-opener]:hover {
@@ -1055,7 +1053,7 @@ button.scheduler-row-head__num::after {
     background: var(--scheduler-opener-fill);
   }
   .scheduler-road__dot[data-card-opener]:hover {
-    filter: brightness(1.1);
+    background: color-mix(in srgb, currentColor 20%, transparent);
   }
 }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
@@ -1828,29 +1826,23 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* A dark vehicle pill separates the semantic status ink from the trip colour. */
+/* The bus icon in the bar's own ink, a button no bigger than the icon. */
 @keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
 .scheduler-road__dot {
-  --scheduler-vehicle-tone: var(--scheduler-mark-info);
-  background: var(--scheduler-status-surface);
-  color: var(--scheduler-vehicle-tone);
-  box-shadow: inset 0 0 0 1px var(--scheduler-vehicle-tone);
   flex: none;
   align-self: center;
   display: inline-flex;
   align-items: center;
-  gap: var(--rux-spacing-02);
+  justify-content: center;
+  inline-size: 18px;
   block-size: 18px;
-  padding: 0 var(--rux-spacing-03);
+  padding: 0;
+  border: 0;
   border-radius: 9px;
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 18px;
-  white-space: nowrap;
+  background: none;
+  color: inherit;
+  cursor: pointer;
 }
-.scheduler-road__dot[data-tone="success"] { --scheduler-vehicle-tone: var(--scheduler-mark-success); }
-.scheduler-road__dot[data-tone="neutral"] { --scheduler-vehicle-tone: var(--scheduler-mark-neutral); }
-.scheduler-road__dot[data-state="unknown"] { outline: 1px dashed var(--scheduler-vehicle-tone); outline-offset: -3px; }
 .scheduler-road__route { flex: none; animation: scheduler-road-pulse 3s ease-in-out infinite; }
 .scheduler-road__dot + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }

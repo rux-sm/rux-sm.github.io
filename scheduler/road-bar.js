@@ -5,8 +5,10 @@
    customer, and the rows under them say what Samsara says, laid out for the
    narrowest bar, a one-day trip on the board's 10rem day, and kept to one
    day's width on a longer bar, in today's column, every row moving there.
-   - A vehicle status pill at the destination row's end says the bus status,
-     with a warning sign after it; its icon gently pulses while the trip is out.
+   - The bus icon at the destination row's end marks the trip as out and
+     opens the live card, with a warning sign after it; it gently pulses
+     while the trip is out. What the bus is doing is the bus column's, so
+     the icon says it only on its tooltip.
    - The times, in the time row's place: out and back either end of a
      track filled to now; a problem's words in its colour instead, Late to
      spot among them, the worst of live-trip.js's warnings or No signal.
@@ -23,7 +25,7 @@
      joins the end of the row. Two drivers share the row half and half,
      each with an independent availability track and a second track while resting.
    The bar wears no edge, border or light of its own: how the bus is doing
-   is the pill's colour and the words. With the time row off the board the
+   is the bus column's, and a problem's words in the times row. With the time row off the board the
    times go too; app.css does that from the view's toggles.
 
    `draw(bar, bus, live)` draws it on a bar bar.js drew, or takes it off
@@ -307,19 +309,20 @@
   const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
 
   const VEHICLE_STATES = {
-    moving: { word: 'Moving', tone: 'success' },
-    idle: { word: 'Idling', tone: 'info' },
-    on: { word: 'Engine on', tone: 'info' },
-    off: { word: 'Engine off', tone: 'neutral' },
-    unknown: { word: 'Unknown', tone: 'neutral' },
+    moving: { word: 'Moving' },
+    idle: { word: 'Idling' },
+    on: { word: 'Engine on' },
+    off: { word: 'Engine off' },
+    unknown: { word: 'Unknown' },
   };
   // Movement is the fresh GPS speed, independent of engine and driver duty.
   const vehicleState = bus => bus.mph > 0 ? 'moving' : bus.engine === 'idle' ? 'idle'
     : bus.engine === 'on' ? 'on' : bus.engine === 'off' ? 'off' : 'unknown';
 
-  /* The route pill marks a trip in progress through stops and rest breaks.
-     Its semantic colour and label report vehicle activity; alerts
-     keep their own badge after it. A press opens the live card. */
+  /* The bus icon marks a trip in progress through stops and rest breaks.
+     The bus column shows what the bus is doing, so the icon says it only on
+     its tooltip and label; alerts keep their own badge after it. A press
+     opens the live card. */
   function liveDot(bar, bus, worst) {
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
     let dot = row?.querySelector(':scope > .scheduler-road__dot');
@@ -334,14 +337,11 @@
       dot.dataset.cardOpener = '';
       const icon = svgUse('#m-directions_bus-fill', '16', '0 0 16 16');
       icon.classList.add('scheduler-road__route');
-      dot.append(icon, el('span', 'scheduler-road__status'));
+      dot.appendChild(icon);
       row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
     }
     const state = vehicleState(bus);
-    const { word: status, tone } = VEHICLE_STATES[state];
-    dot.dataset.state = state;
-    dot.dataset.tone = tone;
-    dot.querySelector('.scheduler-road__status').textContent = status;
+    const { word: status } = VEHICLE_STATES[state];
     const duration = (bus.engine === 'idle' || bus.engine === 'off') && bus.engine_at
       ? ` for ${ago(bus.engine_at)}` : '';
     const detail = state === 'unknown' && bus.seen ? ` · Last seen ${ago(bus.seen)} ago` : '';

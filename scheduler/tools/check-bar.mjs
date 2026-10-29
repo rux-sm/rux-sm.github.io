@@ -326,12 +326,12 @@ expect('late back: the expected return in amber in place of the plan, or how lon
   [[false, true], true, false]);
 expect('the bar carries no speed or fuel: those are the bus column\'s',
   ['.scheduler-road__card', '.scheduler-road__big', '.scheduler-road__pct'].map(q => has(lit('At highway speed'), q)), [false, false, false]);
-expect('the route pill marks an active trip while its label follows the bus, including stops and unknown readings',
-  ['At highway speed', 'Idling', 'Engine off', 'Resting', 'No signal'].map(n => {
+expect('the bus icon marks an active trip, wordless, its label following the bus, including stops and unknown readings',
+  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting', 'No signal'].map(n => {
     const pill = lit(n).querySelector('.scheduler-bar__dest > .scheduler-road__dot');
-    return [text(pill, '.scheduler-road__status'), useOf(pill.querySelector('.scheduler-road__route')),
-      pill.getAttribute('aria-label').startsWith('Trip in progress · '), pill.hasAttribute('data-card-opener')];
-  }), ['Moving', 'Idling', 'Engine off', 'Idling', 'Unknown'].map(s => [s, '#m-directions_bus-fill', true, true]));
+    return [pill.textContent.trim(), useOf(pill.querySelector('.scheduler-road__route')),
+      pill.title.split(' · ')[1].split(' for ')[0], pill.getAttribute('aria-label').startsWith(`${pill.title}. `) && pill.hasAttribute('data-card-opener')];
+  }), ['Moving', 'Idling', 'Engine off', 'Engine on', 'Idling', 'Unknown'].map(s => ['', '#m-directions_bus-fill', s, true]));
 expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its name in its colour in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => say(lit(n))), [
@@ -365,11 +365,6 @@ expect('a longer bar out stands its rows in today\'s column, and a one-day one o
   [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);
 expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 
-expect('vehicle pills use the shared semantic tones independently of driver duty',
-  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal'].map(name => {
-    const pill = lit(name).querySelector('.scheduler-road__dot');
-    return [pill.dataset.state, pill.dataset.tone];
-  }), [['moving', 'success'], ['idle', 'info'], ['off', 'neutral'], ['on', 'info'], ['unknown', 'neutral']]);
 expect('rest elapsed does not assert a reset of the HOS clocks',
   RoadBar.restWords({ duty: 'sleeper', rest_since: new Date(Date.now() - 3 * RoadBar.HOUR).toISOString() }), 'Rested 3h 00m');
 expect('movement can be reported without an engine reading', RoadBar.vehicleState({ mph: 20, engine: null }), 'moving');
@@ -423,10 +418,10 @@ expect('every duty icon is visible on its own specimen', Object.entries(RoadBar.
   const [b] = drawn('icons', `${word} icon`);
   return b.querySelector('.scheduler-crew').dataset.duty === duty && has(b, `.scheduler-crew__duty use[href="${href}"]`);
 }), Object.keys(RoadBar.DUTY).map(() => true));
-expect('all route pill labels have specimens',
+expect('every state the bus icon says has a specimen',
   ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal']
-    .map(name => text(drawn('icons', name)[0], '.scheduler-road__status')),
-  ['Moving', 'Idling', 'Engine off', 'Engine on', 'Unknown']);
+    .map(name => RoadBar.vehicleState(data.sections.find(s => s.id === 'icons').samples.find(s => s.name === name).rows[0].bars[0].live.bus)),
+  ['moving', 'idle', 'off', 'on', 'unknown']);
 expect('relief specimens expose the role icon without crew overflow', window.SchedulerLegFacts.ROLES.filter(r => r.role.startsWith('relief-')).map(({ label, icon: href }) => {
   const [b] = drawn('icons', `${label} icon`);
   return has(b, `.scheduler-crew__mark use[href="${href}"]`) && !has(b, '.scheduler-bar__more');
@@ -449,24 +444,24 @@ const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.cl
 const line = h => text(h, '.scheduler-row-head__line');
 const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__arc')];
 const ago = min => new Date(Date.now() - min * 60e3).toISOString();
-expect('moving: the speed in a green dial, the two levels, Moving, no marks',
+expect('moving: the speed in a green dial, the two levels, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), line(h), marks(h)]; })(),
-  [['64', 'moving', true], [['F', 'normal'], ['D', 'normal']], 'Moving', []]);
+  [['64', 'moving', true], [['F', 'normal'], ['D', 'normal']], null, []]);
 expect('fuel is low at 25% and critical at 10%, DEF at 15% and 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' })).map(l => l[1])),
   [['low', 'low'], ['critical', 'critical'], ['normal', 'normal']]);
 expect('a bus that reports no DEF draws no D level', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
 expect('over 75 mph the dial and its arc turn amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79', 'warning', true]);
-expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the city under the bars',
+expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
     .map(([h]) => [...dial(h), line(h)]),
-  [['Idle14m', 'quiet', false, 'Laredo'], ['Idle45m', 'warning', false, 'Laredo'], ['Off', 'quiet', false, 'McAllen']]);
+  [['Idle14m', 'quiet', false, null], ['Idle45m', 'warning', false, null], ['Off', 'quiet', false, null]]);
 expect('the engine lamp takes the type\'s place, red for the stop lamp',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
   [['warning'], ['error'], []]);
-expect('no signal: a dash, the gauges faded and how long since it was seen',
-  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), line(h)]; })(),
-  ['–', true, 'Seen 3h']);
+expect('no signal: a dash and the gauges faded, how long since it was seen on the dial\'s title',
+  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').title]; })(),
+  ['–', true, 'No signal, last seen 3h ago']);
 expect('another week, or no answer for the bus: the seats and the inspection, amber within 45 days',
   [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,
     line(busHead(null, true)),
@@ -480,6 +475,9 @@ expect('the compact board\'s one dot takes the worst tone',
 expect('the tip words what the head shows',
   BusHead.tipOf({}, { engine: 'on', mph: 64, place: 'San Marcos, TX', fuel: 72, def: 60, odometer: 292044, seen: new Date().toISOString(), fault: 'check', faults: ['Coolant level: Low'] }),
   ['Moving, 64 mph', 'San Marcos, TX', 'Fuel 72% · DEF 60%', '292,044 mi', 'Last seen 0m ago', 'Engine warning lamp on · Coolant level: Low']);
+expect('a standing bus\'s tip says its state, then the address, naming the city once',
+  BusHead.tipOf({}, { engine: 'idle', engine_at: ago(12), mph: 0, place: '4015 South Interstate 35, San Marcos, TX, 78666', seen: new Date().toISOString() }).slice(0, 2),
+  ['Idling 12m', '4015 South Interstate 35, San Marcos, TX, 78666']);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

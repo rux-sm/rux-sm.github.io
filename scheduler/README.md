@@ -31,8 +31,8 @@ then its model year, and edits one at `fleet.html?id=`. Its Vehicle types
 dialog edits the office's own list of types, and `vehicles.js` names a unit
 everywhere as its type and number. `buses.html` forwards to it.
 
-`drivers.html` lists every driver, flags a licence or medical card that has
-run out or will within 45 days, and edits one driver at `drivers.html?id=`:
+`drivers.html` lists every driver, each licence and medical card opening its
+paper or upload and flagged within 30 days, and edits one at `drivers.html?id=`:
 details, photo, time off and a Documents tab for uploads. A driver is set
 Inactive, never deleted, and the schedule link is made on `driver-view.html`. A
 trip in a driver's list opens on the board through `./?trip=<id>&date=<day>`.

@@ -8,7 +8,9 @@
    minutes, since the bucket is closed to all but staff.
 
    The list sorts itself rather than through js/data-table.js, because the
-   Licence and medical column sorts by the date it describes, not its text.
+   Licence and Medical card columns sort by the date each describes, not its
+   text. Each cell opens the paper on file, or links to its upload when there
+   is none.
 
    A driver is never deleted here, only set Inactive, so past trips keep the
    driver's name. The schedule link is shown, not made: driver-view.html makes,
@@ -32,8 +34,8 @@
   // The driver's page a link opens, as Driver view sends it.
   const { DRIVER_LINK } = window.SchedulerDriverText;
   const PHOTO_BUCKET = 'driver-photos';
-  // An expiry this close shows as a warning.
-  const WARN_DAYS = 45;
+  // An expiry this close shows as a warning, as it does on the Documents page.
+  const { WARN_DAYS } = window.SchedulerDocumentStatus;
 
   const DRIVER_COLUMNS = [
     'id', 'name', 'short_name', 'phone', 'email', 'date_of_birth', 'texting_url', 'language',
@@ -69,18 +71,14 @@
   };
   const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-  /* Whichever of the licence and the medical card expires first. `rank` sorts
-     the list: the soonest first, and nothing on file last. */
-  function compliance(d) {
-    const dates = [['Licence', d.license_exp], ['Medical card', d.med_card_expiry]]
-      .filter(([, v]) => ISO.test(String(v ?? '').slice(0, 10)))
-      .sort((a, b) => parseISO(a[1]) - parseISO(b[1]));
-    if (!dates.length) return { kind: 'none', text: 'Not on file', rank: Number.MAX_SAFE_INTEGER };
-    const [what, when] = dates[0];
+  /* Where a licence or medical card date stands. `rank` sorts the list: the
+     soonest first, and nothing on file last. */
+  function expiry(when) {
+    if (!ISO.test(String(when ?? '').slice(0, 10))) return { kind: 'none', text: 'Not on file', rank: Number.MAX_SAFE_INTEGER };
     const n = daysUntil(when);
-    if (n < 0) return { kind: 'expired', text: `${what} expired ${plural(-n, 'day')} ago`, rank: n };
-    if (n === 0) return { kind: 'soon', text: `${what} expires today`, rank: n };
-    if (n <= WARN_DAYS) return { kind: 'soon', text: `${what} expires in ${plural(n, 'day')}`, rank: n };
+    if (n < 0) return { kind: 'expired', text: `Expired ${plural(-n, 'day')} ago`, rank: n };
+    if (n === 0) return { kind: 'soon', text: 'Expires today', rank: n };
+    if (n <= WARN_DAYS) return { kind: 'soon', text: `Expires in ${plural(n, 'day')}`, rank: n };
     return { kind: 'ok', text: longDate(when), rank: n };
   }
 
@@ -90,12 +88,21 @@
     soon: { cls: 'rux--icon-indicator--caution-minor', icon: '#m-warning-fill' },
     none: { cls: 'rux--icon-indicator--unknown', icon: '#m-help-fill' },
   };
-  function indicator(c) {
-    if (c.kind === 'ok') return el('span', null, c.text);
+  // The status, its words a link when `href` is given; an expiry far off has
+  // no icon.
+  function indicator(c, href) {
+    const words = href ? el('a', 'rux--link', c.text) : c.text;
+    if (href) { words.href = href; words.target = '_blank'; words.rel = 'noopener'; }
+    if (c.kind === 'ok') return href ? words : el('span', null, c.text);
     const box = el('div', 'rux--icon-indicator');
-    box.append(svgUse(INDICATOR[c.kind].icon, '16', '0 0 32 32', INDICATOR[c.kind].cls), c.text);
+    box.append(svgUse(INDICATOR[c.kind].icon, '16', '0 0 32 32', INDICATOR[c.kind].cls), words);
     return box;
   }
+
+  // An upload for a driver, of one kind or any, that comes back to their
+  // Documents tab.
+  const uploadLink = (id, kindId) => `documents.html?new&driver=${encodeURIComponent(id)}`
+    + (kindId ? `&kind=${encodeURIComponent(kindId)}` : '');
 
   const EMPLOYMENT = { 'full-time': 'Full time', 'part-time': 'Part time', contract: 'Contract', seasonal: 'Seasonal' };
   const EMPLOYMENT_ORDER = ['full-time', 'part-time', 'contract', 'seasonal'];
@@ -144,6 +151,12 @@
 
   /* ══ The list ═══════════════════════════════════════════════════════════ */
   let drivers = [];
+  // The two dated papers, in column order: the driver column each one's
+  // kind sets, which `kinds` maps to that kind's id.
+  const PAPERS = ['license_exp', 'med_card_expiry'];
+  let kinds = new Map();
+  // A driver's id to their current paper of each kind, by the column it sets.
+  let filed = new Map();
   // Read from the Show choice, so the list agrees with the menu it sits under.
   let filter = $('scheduler-drivers-filter')?.value || 'active';
 
@@ -167,8 +180,31 @@
   const SORTS = {
     name: byName,
     employment: (a, b) => byEmployment(a, b) || byPriority(a, b) || byName(a, b),
-    compliance: (a, b) => compliance(a).rank - compliance(b).rank,
+    license: (a, b) => expiry(a.license_exp).rank - expiry(b.license_exp).rank,
+    medical: (a, b) => expiry(a.med_card_expiry).rank - expiry(b.med_card_expiry).rank,
   };
+
+  /* A licence or medical card cell: the date or its warning, a link that
+     opens the paper on file; with no paper, an Upload link under it. */
+  function paperCell(d, column) {
+    const td = el('td');
+    const paper = filed.get(d.id)?.[column];
+    const status = expiry(d[column]);
+    if (paper) {
+      if (status.kind === 'none') status.text = 'No end date';
+      td.appendChild(indicator(status, `documents.html?open=${encodeURIComponent(paper.id)}`));
+      return td;
+    }
+    const lines = el('div', 'scheduler-pair-cell__lines');
+    lines.appendChild(indicator(status));
+    const detail = el('span', 'scheduler-pair-cell__detail', status.kind === 'none' ? '' : 'No copy · ');
+    const up = el('a', 'rux--link rux--link--sm', 'Upload');
+    up.href = uploadLink(d.id, kinds.get(column));
+    detail.appendChild(up);
+    lines.appendChild(detail);
+    td.appendChild(lines);
+    return td;
+  }
 
   function drawList() {
     const { query, sortKey, sortDir } = view;
@@ -201,7 +237,7 @@
     if (!shown.length) {
       const tr = el('tr');
       const td = el('td', null, query ? `No drivers match “${query}”.` : 'No drivers here.');
-      td.colSpan = 4;
+      td.colSpan = 5;
       tr.appendChild(td);
       body.appendChild(tr);
       return;
@@ -226,10 +262,7 @@
       const phone = el('td', null, showPhone(d.phone) || '—');
       const job = el('td', null, [EMPLOYMENT[d.employment_type] || 'Not set', d.priority ? `Priority ${d.priority}` : null]
         .filter(Boolean).join(' · '));
-      const lic = el('td');
-      lic.appendChild(indicator(compliance(d)));
-
-      tr.append(who, phone, job, lic);
+      tr.append(who, phone, job, ...PAPERS.map(column => paperCell(d, column)));
       body.appendChild(tr);
     }
   }
@@ -244,10 +277,26 @@
   });
 
   async function loadList() {
-    const { data, error } = await client.from('drivers')
-      .select('id,name,short_name,phone,license_number,license_exp,med_card_expiry,cdl_class,employment_type,priority,status,photo_path,driver_ref');
+    const [rows, kindRows, docs] = await Promise.all([
+      client.from('drivers')
+        .select('id,name,short_name,phone,license_number,license_exp,med_card_expiry,cdl_class,employment_type,priority,status,photo_path,driver_ref'),
+      client.from('document_kinds').select('id,sets_driver_date').not('sets_driver_date', 'is', null),
+      client.from('company_documents').select('id,kind_id,driver_id')
+        .not('driver_id', 'is', null).is('replaced_at', null),
+    ]);
+    const error = rows.error || kindRows.error || docs.error;
     if (error) throw error;
-    drivers = data || [];
+    drivers = rows.data || [];
+    kinds = new Map((kindRows.data || []).map(k => [k.sets_driver_date, k.id]));
+    const columnOf = new Map((kindRows.data || []).map(k => [k.id, k.sets_driver_date]));
+    filed = new Map();
+    for (const doc of docs.data || []) {
+      const column = columnOf.get(doc.kind_id);
+      if (!column) continue;
+      const mine = filed.get(doc.driver_id) || {};
+      mine[column] = doc;
+      filed.set(doc.driver_id, mine);
+    }
     $('scheduler-drivers-h').hidden = false;
     $('scheduler-drivers-table').hidden = false;
     drawList();
@@ -720,9 +769,7 @@
     dated = new Map((kinds.data || []).filter(k => k.sets_driver_date)
       .map(k => [k.sets_driver_date, papers.find(d => d.kind_id === k.id && d.ends_on) || null]));
   }
-  // An upload for this driver, of one kind or any, that comes back here.
-  const uploadFor = kindId => `documents.html?new&driver=${encodeURIComponent(loaded.id)}`
-    + (kindId ? `&kind=${encodeURIComponent(kindId)}` : '');
+  const uploadFor = kindId => uploadLink(loaded.id, kindId);
   // The current documents as rows, each opening its file and saying whether it
   // is in force as the Documents page does, then each driver kind not on file,
   // linking to its upload.

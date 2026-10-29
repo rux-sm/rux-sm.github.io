@@ -1343,14 +1343,19 @@
 /* RUX 100'S BOARD IS ONE BLACK SHEET, Carbon's table laid out in Geist's
    manner: the toolbar, the day band and its corner, the bus column and the
    tracks all take the page's black, and every region is parted from the next
-   by one 1px line in border-subtle-01, the grey Carbon already draws between
-   the toolbar's buttons, so the board has a single line colour. A trip is a
-   layer-02 tile standing on the black, 1.39 to 1, the brightest thing on it.
+   by one 1px line. That line is Geist's own border grey, #1f1f1f, 1.3 to 1
+   on the black, set as border-subtle-01 on the board and every panel beside
+   it, so the toolbar's dividers, the grid, the region edges and the panels'
+   rules are all that one grey. A trip is a layer-02 tile standing on the
+   black, 1.39 to 1, the brightest thing on it.
    The driver roster beside it is the same black grid with the same lines.
    Unassigned, a darker tint of the board elsewhere, has nothing darker than
    black, so it takes layer-01, and the bar's floating card keeps the raised
    surface. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
+[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
+  --rux-border-subtle-01: #1f1f1f;
+}
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
   --rux-layer: var(--rux-background);
   --scheduler-band-surface: var(--rux-background);

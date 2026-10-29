@@ -858,6 +858,10 @@
 /* No second, lighter rule parts the priority groups, so every line in the
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
+/* A list that stops short of the pane keeps a last rule, in the same two
+   colours as every row above it. */
+[data-theme="rux-100"] .scheduler-week--short .scheduler-avail__row:last-child > .scheduler-avail__name { border-block-end-color: var(--rux-background); }
+[data-theme="rux-100"] .scheduler-week--short .scheduler-avail__row:last-child > .scheduler-avail__cell { border-block-end-color: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: var(--rux-layer-02);
   color: var(--rux-text-primary);

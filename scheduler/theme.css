@@ -1384,11 +1384,14 @@
   --card-rule: var(--rux-layer-accent-active-01);
   box-shadow: 0 0 0 1px var(--rux-layer-accent-active-01), 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
 }
+/* Rux 100's trips are layer-02 tiles, so its card stands a step above them
+   on layer-03, inside a ring of the rule's grey and under rux-dark's deep
+   shadow, and reads as lifted off the board rather than as one more trip. */
 [data-theme="rux-100"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
-  --card-surface: var(--rux-layer-02);
-  --card-hover: var(--rux-layer-hover-02);
-  --card-rule: var(--rux-border-subtle-02);
-  box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
+  --card-surface: var(--rux-layer-03);
+  --card-hover: var(--rux-layer-hover-03);
+  --card-rule: var(--rux-border-subtle-03);
+  box-shadow: 0 0 0 1px var(--rux-border-subtle-03), 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
 }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02); }
 [data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px rgb(0 0 0 / .16); }

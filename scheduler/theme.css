@@ -1351,12 +1351,35 @@
    black, so it takes layer-01, and the bar's floating card keeps the raised
    surface. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
-[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside) {
+[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
   --rux-layer: var(--rux-background);
   --scheduler-band-surface: var(--rux-background);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
   --scheduler-last-rule: 0;
+}
+/* Its panels are the board's black too, the to-do list, the trip editor
+   and the document panel, each inside the same line, and what is raised in
+   them stands as a trip does on the board: a tile is layer-02 and its
+   fields field-03. A row's hover and selection in them are the page's own
+   washes, as on any black. */
+[data-theme="rux-100"] :is(.scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
+  --rux-layer-active: var(--rux-background-active);
+  --rux-layer-hover: var(--rux-background-hover);
+  --rux-layer-selected: var(--rux-background-selected);
+  --rux-layer-selected-hover: var(--rux-background-selected-hover);
+}
+[data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel {
+  --rux-layer: var(--rux-background);
+  --scheduler-band-surface: var(--rux-background);
+  border: 1px solid var(--rux-border-subtle-01);
+}
+/* Carbon paints a side panel's body, head and foot with layer-01 by name
+   rather than through `--rux-layer`, so they are pointed at it here. */
+[data-theme="rux-100"] #scheduler-panel-body .rux--tabs,
+[data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel,
+[data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel :is(.rux--side-panel__header, .rux--side-panel__title, .rux--side-panel__subtitle-text, .rux--side-panel__action-toolbar, .rux--side-panel__actions-container) {
+  background-color: var(--rux-layer);
 }
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }

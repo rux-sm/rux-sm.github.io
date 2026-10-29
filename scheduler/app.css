@@ -960,7 +960,7 @@ button.scheduler-row-head__num::after {
 /* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
    anywhere else on the bar only selects it: the update line fills with the
    footer's hover tone, and an empty one says No updates; the route pill
-   brightens its blue fill. A touch screen has no pointer to wait for, so it
+   brightens its status ink. A touch screen has no pointer to wait for, so it
    shows none of them; a press fills on any screen. */
 @media (hover: hover) {
   .scheduler-bar__update[data-card-opener]:hover {
@@ -1739,12 +1739,13 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* A trip in progress keeps a blue status pill through stops and rest.
-   Only its route icon pulses; the label and fill stay steady. */
+/* A dark vehicle pill separates the semantic status ink from the trip colour. */
 @keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
 .scheduler-road__dot {
-  background: var(--rux-support-info);
-  color: var(--rux-text-inverse);
+  --scheduler-vehicle-tone: var(--scheduler-mark-info);
+  background: var(--scheduler-status-surface);
+  color: var(--scheduler-vehicle-tone);
+  box-shadow: inset 0 0 0 1px var(--scheduler-vehicle-tone);
   flex: none;
   align-self: center;
   display: inline-flex;
@@ -1758,6 +1759,9 @@ button.scheduler-row-head__num::after {
   line-height: 18px;
   white-space: nowrap;
 }
+.scheduler-road__dot[data-tone="success"] { --scheduler-vehicle-tone: var(--scheduler-mark-success); }
+.scheduler-road__dot[data-tone="neutral"] { --scheduler-vehicle-tone: var(--scheduler-mark-neutral); }
+.scheduler-road__dot[data-state="unknown"] { outline: 1px dashed var(--scheduler-vehicle-tone); outline-offset: -3px; }
 .scheduler-road__route { flex: none; animation: scheduler-road-pulse 3s ease-in-out infinite; }
 .scheduler-road__dot + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
 .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
@@ -2112,51 +2116,40 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-road__card::before { inset: 0 -100vw calc(-1 * var(--scheduler-row-h) - 4px); }
 .scheduler-week--no-contact.scheduler-week--no-time.scheduler-week--no-update .scheduler-road__card { display: none; }
 
-/* THE SEATS on a live bar's drivers row: the lead seat first, their hours
-   at the seat's end over a 2px bar of them; anyone else after, with their
-   hours only under one. */
-.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; }
-.scheduler-crew--seat { position: relative; flex: 0 1 auto; align-self: stretch; align-items: flex-start; line-height: calc(var(--scheduler-row-h) - 3px); }
-/* A seat's line is shorter than the type, to leave the hours bar its room,
-   so a name is cut short only along the line and its g or y hangs whole. */
-.scheduler-crew--seat > .scheduler-crew__name { overflow-x: clip; overflow-y: visible; }
-/* The lead seat is the one at the wheel, or with nobody at the wheel, as
-   while the bus stands with its engine off, the first driver: their hours
-   and their bar show whatever their duty, so a parked bus still says how
-   long its driver may drive, and a full bar once their clock resets. */
+/* A single driver keeps icon, name and reading on one line above the tracks.
+   Multiple drivers keep only their icons, names and meter tracks. */
+.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew { gap: var(--rux-spacing-03); flex: 1 1 auto; align-items: stretch; }
+.scheduler-crew--seat { position: relative; flex: 1 1 0; align-self: stretch; display: flex; align-items: flex-start; gap: var(--rux-spacing-02); line-height: calc(var(--scheduler-row-h) - 3px); min-inline-size: 0; }
+.scheduler-crew--seat > .scheduler-crew__name { flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 .scheduler-crew--seat.scheduler-crew--wheel { order: -1; }
-.scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) { flex: 1 1 auto; }
 .scheduler-crew--seat:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
-.scheduler-crew--seat > .scheduler-crew__hours { display: none; margin-inline-start: auto; }
-.scheduler-crew--seat:is(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child) > .scheduler-crew__hours,
-.scheduler-crew--seat > .scheduler-crew__hours--low { display: block; }
-.scheduler-crew__left {
+.scheduler-crew--seat > .scheduler-crew__hours { display: block; margin-inline-start: auto; font-size: var(--rux-label-01-font-size); }
+.scheduler-crew--seat:has(> .scheduler-crew__rest-time) > .scheduler-crew__hours { display: none; }
+.scheduler-crew__rest-time { flex: none; margin-inline-start: auto; font-size: var(--rux-label-01-font-size); white-space: nowrap; }
+.scheduler-crew__left, .scheduler-crew__rest {
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
   block-size: 2px;
   border-radius: 1px;
-  background:
-    linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat,
-    color-mix(in srgb, currentColor 20%, transparent);
+  background: linear-gradient(var(--scheduler-mark-success), var(--scheduler-mark-success)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent);
 }
-.scheduler-crew--seat:not(.scheduler-crew--wheel, .scheduler-bar__crew:not(:has(> .scheduler-crew--wheel)) > .scheduler-crew--seat:first-child, .scheduler-crew--away) > .scheduler-crew__left { display: none; }
-/* Two drivers share the row half and half, each with their own hours bar
-   under them and no hours in words, so both names have room; the hours are
-   on the tooltip. */
-.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat { flex: 1 1 0; }
-.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > .scheduler-crew__hours { display: none; }
-.scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > .scheduler-crew__left { display: block; }
+.scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { inset-block-end: 3px; }
+.scheduler-crew__rest { background: linear-gradient(var(--scheduler-mark-rest), var(--scheduler-mark-rest)) 0 0 / var(--scheduler-rest) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
+.scheduler-crew__rest--unknown { background: repeating-linear-gradient(to right, var(--rux-status-gray) 0 2px, transparent 2px 4px); }
 .scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 .scheduler-crew__left--away { background: var(--scheduler-mark-error); }
-
-/* The hours a driver may still drive, after their name only under one hour. */
-.scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; }
+.scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .scheduler-crew__hours--low { color: var(--scheduler-age-week); }
-/* A driver's duty takes the place of their status mark: the wheel driving,
-   amber under an hour, the clipboard on duty, the moon in the sleeper and the power button off duty,
-   each its own shape so the colour is never the only signal. Ringed, the
-   ring is the hours they may still drive, of ten, amber under one. */
+/* Multiple seats omit numeric readings; exact values remain in their tooltips. */
+.scheduler-bar__crew:has(> .scheduler-crew--seat ~ .scheduler-crew--seat) > .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time) { display: none; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar--road:has(.scheduler-crew--seat) > .scheduler-bar__drivers { block-size: var(--scheduler-row-h); }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-bar__crew > .scheduler-crew--seat { display: flex; align-items: flex-start; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { display: none; }
+:is(.scheduler-week--no-contact.scheduler-week--no-time, .scheduler-week--no-contact.scheduler-week--no-update, .scheduler-week--no-time.scheduler-week--no-update) .scheduler-crew--seat > :is(.scheduler-crew__hours, .scheduler-crew__rest-time, .scheduler-crew__away) { display: none; }
+
+/* Duty replaces the assignment mark with its own icon and semantic colour.
+   A ring, when used, shows driving availability and turns amber under one hour. */
 .scheduler-crew[data-duty]:has(> .scheduler-crew__duty) > .scheduler-crew__mark { display: none; }
 .scheduler-crew__duty { display: flex; flex: none; align-items: center; justify-content: center; inline-size: var(--scheduler-mark-glyph); }
 .scheduler-crew__duty svg { display: block; inline-size: var(--scheduler-mark-glyph); block-size: var(--scheduler-mark-glyph); }
@@ -2170,12 +2163,11 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-crew__duty--ring svg { inline-size: 10px; block-size: 10px; }
 .scheduler-crew__duty--low { --scheduler-ring: var(--scheduler-mark-warning); }
-.scheduler-crew__duty--driving { color: var(--scheduler-mark-success); }
-.scheduler-crew__duty--driving.scheduler-crew__duty--low { color: var(--scheduler-mark-warning); }
-.scheduler-crew__duty--on { color: var(--scheduler-mark-info); }
-.scheduler-crew__duty--sleeper { color: var(--scheduler-mark-rest); }
-.scheduler-crew__duty--off { color: currentColor; }
-.scheduler-crew__duty--off svg { opacity: .7; }
+.scheduler-crew__duty[data-tone="success"] { color: var(--scheduler-mark-success); }
+.scheduler-crew__duty[data-tone="info"] { color: var(--scheduler-mark-info); }
+.scheduler-crew__duty[data-tone="warning"] { color: var(--scheduler-mark-warning); }
+.scheduler-crew__duty[data-tone="rest"] { color: var(--scheduler-mark-rest); }
+.scheduler-crew__duty[data-tone="neutral"] { color: var(--rux-status-gray); }
 .scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
 /* A driver Samsara has in another bus: the red stop sign, the name in red
    and the bus after it. */
@@ -5810,7 +5802,8 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-components__control { display: flex; flex-direction: column; gap: var(--rux-spacing-03); inline-size: 15rem; }
 .scheduler-components__rows { display: flex; flex-wrap: wrap; gap: 0 var(--rux-spacing-05); margin: 0; }
 .scheduler-components__rows > legend { flex-basis: 100%; }
-.scheduler-components__section { display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
+.scheduler-components__nav { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-04) var(--rux-spacing-06); }
+.scheduler-components__section { scroll-margin-block-start: 4rem; display: flex; flex-direction: column; gap: var(--rux-spacing-05); }
 .scheduler-components__samples {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 30rem), 1fr));
@@ -5913,3 +5906,6 @@ html:has(.scheduler-page[data-takeover]) {
   margin: 0;
   border-radius: 0;
 }
+
+.scheduler-card__rest-progress { position: relative; display: grid; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); }
+.scheduler-card__rest-progress > .scheduler-crew__rest { position: relative; inset: auto; inline-size: 100%; block-size: 4px; grid-row: 2; }

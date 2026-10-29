@@ -309,21 +309,34 @@
       samples: [
         one('At highway speed', 'The speed, and a green bar lit for every 16 mph, rising like a phone\'s signal.', live('Lakeview High School')),
         one('One day wide', 'The narrowest a bar gets: the rows are laid out for it.', live('Northside Band', { span: 1 })),
-        one('Two drivers', 'Both drivers in the row half and half, each over their own hours bar, the one at the wheel first.', live('Riverbend Seniors', {
+        one('Two drivers', 'Each driver has their own icon and availability meter; the sleeper also has a purple rest meter. Two drivers omit time labels; tooltips give exact values.', live('Riverbend Seniors', {
           span: 1, crew: [['d2', 'driver', 'confirmed'], ['d3', 'co-driver', 'confirmed']],
-          bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR })] },
+          bus: { drivers: [driver('d2', { left_ms: 48 * MIN }), driver('d3', { duty: 'sleeper', wheel: false, left_ms: 9 * HOUR, rest_since: new Date(now - 3 * HOUR - 15 * MIN).toISOString() })] },
           next: toStop({ arrival: now + 2 * HOUR + 22 * MIN }) })),
+        ...[
+          ['Rest at eight hours', 'The rest meter is full at the eight-hour reference; availability remains the Samsara clock value.', 8 * HOUR],
+          ['Rest beyond eight hours', 'Rest stays full rather than wrapping to zero; the elapsed label continues.', 10 * HOUR],
+          ['Rest duration unknown', 'Missing duty logs show Rest — and a dashed track, never a made-up zero.', null],
+        ].map(([name, note, elapsed]) => one(name, note, live('Coastal Youth Choir', {
+          bus: { engine: 'off', mph: 0, drivers: [driver('d1', { duty: 'off', wheel: false, left_ms: 4 * HOUR,
+            rest_since: elapsed == null ? null : new Date(now - elapsed).toISOString() })] }, next: atStop() }))),
         one('Late back to the yard', 'Heading for the yard and due there more than ten minutes after the plan: when it is now expected, in amber, in place of the planned return.', live('Harbor Tours', {
           span: 1, back: now + 20 * MIN, next: (() => { const stops = liveStops(); return { stops, where: { reached: 1, at: false, next: 2 }, stop: stops[2], at: false, arrival: now + 65 * MIN, late: 0 }; })() })),
         one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),
         one('On its second day', 'A trip longer than a day stands its rows in today\'s column while the bus is out, and on its first day before and after.', live('Coastal Youth Choir', { span: 3, day: 1 })),
         one('At a crawl', 'No bar lit yet.', live('Northside Band', { bus: { mph: 6, place: 'Downtown San Antonio' } })),
         one('Idling', 'The route pill says Idling; the speed stays 0 mph and the bars stay empty.', live('Coastal Youth Choir', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 16 * MIN).toISOString() }, next: atStop() })),
-        one('Resting', 'A driver in the sleeper and none driving: purple bars when the bus moves on.', live('Riverbend Seniors', {
+        one('Resting', 'The sleeper icon is purple beside that driver; the vehicle pill and instruments describe the bus.', live('Riverbend Seniors', {
           bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 40 * MIN).toISOString(), drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 2 * HOUR }), driver('d2', { duty: 'on', wheel: false })] },
           crew: [['d1', 'driver', 'confirmed'], ['d2', 'co-driver', 'confirmed']], next: atStop() })),
-        one('Idling a long time', 'The route pill stays blue through a long idle; its tooltip gives the duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
+        one('Idling a long time', 'The vehicle pill uses the informative status colour; its tooltip gives the idle duration.', live('Mesa Robotics Club', { bus: { engine: 'idle', mph: 0, engine_at: new Date(now - 45 * MIN).toISOString() }, next: atStop() })),
         one('Engine off', 'The route pill says Engine off; 0 mph stays in the instruments.', live('Harbor Tours', { bus: { engine: 'off', mph: 0, engine_at: new Date(now - 70 * MIN).toISOString(), drivers: [driver('d1', { duty: 'off', wheel: false })] }, next: atStop() })),
+        one('Stopped', 'Engine on with a fresh zero-speed reading: the vehicle pill says Engine on.', live('Harbor Tours', { bus: { engine: 'on', mph: 0 }, next: atStop() })),
+        one('Running without a speed reading', 'Engine on without a speed reading: the vehicle pill says Engine on and the speed is a dash.', live('Riverbend Seniors', { bus: { engine: 'on', mph: null } })),
+        ...Object.entries(window.SchedulerRoadBar.DUTY).map(([duty, { word }]) =>
+          one(`${word} icon`, `The ${word.toLowerCase()} icon beside the driver's name, with their remaining driving hours.`, live('Lakeview High School', {
+            bus: { engine: duty === 'driving' ? 'on' : 'idle', mph: duty === 'driving' ? 64 : 0,
+              drivers: [driver('d1', { duty: duty === 'unknown' ? null : duty, wheel: duty === 'driving', rest_since: ['sleeper', 'off'].includes(duty) ? new Date(now - 3 * HOUR - 15 * MIN).toISOString() : null })] }, next: atStop() }))),
         one('No signal', 'Samsara has not heard from the bus: a grey dash, and No signal in place of the times.', live('Mesa Robotics Club', { bus: { engine: null, mph: null, heading: null, fuel: null, seen: new Date(now - 25 * MIN).toISOString(), drivers: [] } })),
         one('Starting', 'Coming on the road, the bar shudders while its engine cranks, once a page load, at Full motion.', live('Lakeview High School'), { replay: true }),
         one('Not rolling', 'Red: the engine still off at the yard from ten minutes before yard-out. A red warning\'s bars blink for their first minute.', live('Northside Band', {
@@ -344,7 +357,32 @@
       ],
     };
 
-    return { busesById, driversById, statuses, sections: [tripBar, crew, alerts, handled, road] };
+    // Reuse the same specimens so the index and the full boards share their facts.
+    const sample = (section, name) => section.samples.find(s => s.name === name);
+    const icons = {
+      id: 'icons', title: 'Icons and pills',
+      intro: 'Vehicle pills, driver duty icons, assignment statuses and alerts share Design’s semantic status colours. Each is shown on a real sample bar. Hover a mark for its meaning. Equipment needs belong to the trip card; the bar counts problems in its alert badge.',
+      samples: [
+        sample(tripBar, 'One way'), sample(tripBar, 'Drop-off and pickup'),
+        sample(tripBar, 'More than one bus'), sample(tripBar, 'Back at the yard'),
+        ...window.SchedulerLegFacts.DRIVER_STATUSES.map(({ label }) => ({
+          name: `${label} icon`, note: `The driver's ${label.toLowerCase()} status mark.`, days: 3,
+          rows: [statusRows.find(r => r.bars[0].trip.customer === label)],
+        })),
+        ...window.SchedulerLegFacts.ROLES.filter(r => r.role.startsWith('relief-')).map(({ role, label }) => ({
+          name: `${label} icon`, note: 'Relief uses the role arrows in place of the driver status symbol.', days: 3,
+          rows: [row('101', bar(trip({ buses: [{ bus: 'b101', roles: [role], crew: [['d3', role, 'confirmed']] }] })))],
+        })),
+        sample(crew, 'Empty seats'), sample(crew, 'A crew that does not fit'),
+        { ...sample(alerts, 'No one to call on the day'), name: 'Amber warning and count' },
+        { ...sample(alerts, 'The wrong type of bus'), name: 'Red error and count' },
+        ...['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal'].map(name => sample(road, name)),
+        ...Object.values(window.SchedulerRoadBar.DUTY).map(({ word }) => sample(road, `${word} icon`)),
+        sample(road, 'Wrong bus'), sample(road, 'Low fuel'), sample(road, 'Short on hours'),
+        ...['Two drivers', 'Rest at eight hours', 'Rest beyond eight hours', 'Rest duration unknown'].map(name => sample(road, name)),
+      ],
+    };
+    return { busesById, driversById, statuses, sections: [icons, tripBar, crew, alerts, handled, road] };
   }
 
   window.SchedulerComponentsData = { build };

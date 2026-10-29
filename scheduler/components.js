@@ -143,7 +143,14 @@
 
   function draw() {
     const data = window.SchedulerComponentsData.build();
-    const out = [];
+    const nav = el('nav', 'scheduler-components__nav');
+    nav.setAttribute('aria-label', 'Component sections');
+    for (const section of data.sections) {
+      const link = el('a', 'rux--link', section.title);
+      link.href = `#scheduler-components-${section.id}`;
+      nav.appendChild(link);
+    }
+    const out = [nav];
     data.sections.forEach((section, s) => {
       const box = el('section', 'scheduler-components__section');
       box.setAttribute('aria-labelledby', `scheduler-components-${section.id}`);

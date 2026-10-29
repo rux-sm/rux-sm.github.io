@@ -59,8 +59,7 @@
 
   function lightOf(bus) {
     const moving = bus.engine === 'on' && bus.mph > 0;
-    const resting = !moving && bus.drivers?.some(d => d.duty === 'sleeper') && !bus.drivers?.some(d => d.duty === 'driving');
-    return bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
+    return bus.engine == null ? 'scan' : moving ? 'run' : bus.engine === 'off' ? 'off' : 'idle';
   }
 
   function drawLeg(map, s) {

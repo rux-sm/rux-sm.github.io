@@ -309,7 +309,7 @@ expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classL
 console.log('\n  Out on the road');
 const lit = n => drawn('road', n)[0];
 expect('each light', ['At highway speed', 'At a crawl', 'Idling', 'Resting', 'Engine off', 'No signal'].map(n => lit(n).dataset.light),
-  ['run', 'run', 'idle', 'rest', 'off', 'scan']);
+  ['run', 'run', 'idle', 'idle', 'off', 'scan']);
 const tone = b => card(b).classes().find(c => /--(error|warning|rest|scan)$/.test(c))?.split('--')[1] ?? null;
 const card = b => b.querySelector('.scheduler-road__card');
 const row = b => b.querySelector('.scheduler-road__times');
@@ -335,7 +335,7 @@ expect('the route pill marks an active trip while its label follows the bus, inc
     const pill = lit(n).querySelector('.scheduler-bar__dest > .scheduler-road__dot');
     return [text(pill, '.scheduler-road__status'), useOf(pill.querySelector('.scheduler-road__route')),
       pill.getAttribute('aria-label').startsWith('Trip in progress · '), pill.hasAttribute('data-card-opener')];
-  }), ['Moving', 'Idling', 'Engine off', 'Idling', 'Unknown'].map(s => [s, '#m-route', true, true]));
+  }), ['Moving', 'Idling', 'Engine off', 'Idling', 'Unknown'].map(s => [s, '#m-directions_bus-fill', true, true]));
 expect('where the bus is goes on the tooltip', card(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its colour on the bars and its name in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => { const b = lit(n); return [tone(b), ...say(b)]; }), [
@@ -348,14 +348,14 @@ expect('a red warning blinks for its first minute', lit('Not rolling').hasAttrib
 const wrong = lit('Wrong bus').querySelector('.scheduler-crew');
 expect('wrong bus: the driver marked red, with the other bus', [wrong.dataset.duty, text(wrong, '.scheduler-crew__away')], ['away', 'in 119']);
 expect('under an hour left, the bar and the hours are amber',
-  [has(lit('Short on hours'), '.scheduler-crew__left--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50']);
+  [has(lit('Short on hours'), '.scheduler-crew__left--low'), text(lit('Short on hours'), '.scheduler-crew__hours--low')], [true, '0:50 left']);
 expect('every driver wears their duty, the one at the wheel the steering wheel',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => useOf(c.querySelector('.scheduler-crew__duty'))),
-  ['#m-search_hands_free-fill', '#m-bedtime-fill']);
+  ['#i-BPMN-link--fill', '#i-asleep--filled']);
 expect('two drivers: both in the row, the one at the wheel bold',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
-expect('resting turns the bars purple, and idling lights none', [tone(lit('Resting')), lit5(lit('Resting'))], ['rest', 0]);
+expect('driver rest does not recolour vehicle instruments, and idling lights none', [tone(lit('Resting')), lit5(lit('Resting'))], [null, 0]);
 expect('no signal: speed stays a dash in mph, with freshness in place of the times',
   [tone(lit('No signal')), text(lit('No signal'), '.scheduler-road__big'), text(lit('No signal'), '.scheduler-road__unit'), say(lit('No signal'))], ['scan', '–', 'mph', ['quiet', 'No signal 25m']]);
 expect('stationary buses keep a numeric speed while the pill carries engine state',
@@ -368,10 +368,79 @@ expect('a driver Samsara has in the bus reads confirmed whatever they answered',
 expect('a live-confirmed driver uses the success style as well as the success icon',
   lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark svg').getAttribute('class'),
   'rux--icon-indicator--succeeded');
-expect('a driver the bar does not name joins the drivers row', text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'), 'Omar D.');
+expect('a driver the bar does not name joins the drivers row with their own duty icon',
+  [text(lit('Someone else at the wheel'), '.scheduler-road__who > .scheduler-crew__name'),
+    has(lit('Someone else at the wheel'), '.scheduler-road__who .scheduler-crew__duty use[href="#i-BPMN-link--fill"]')], ['Omar D.', true]);
 expect('a longer bar out stands its rows in today\'s column, and a one-day one on its own',
   [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);
 expect('a bus no longer out takes its dot, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, '.scheduler-road__dot'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
+
+expect('vehicle pills use the shared semantic tones independently of driver duty',
+  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal'].map(name => {
+    const pill = lit(name).querySelector('.scheduler-road__dot');
+    return [pill.dataset.state, pill.dataset.tone];
+  }), [['moving', 'success'], ['idle', 'info'], ['off', 'neutral'], ['on', 'info'], ['unknown', 'neutral']]);
+expect('rest elapsed does not assert a reset of the HOS clocks',
+  RoadBar.restWords({ duty: 'sleeper', rest_since: new Date(Date.now() - 3 * RoadBar.HOUR).toISOString() }), 'Rested 3h 00m');
+expect('movement can be reported without an engine reading', RoadBar.vehicleState({ mph: 20, engine: null }), 'moving');
+
+const REST_AT = Date.parse('2026-10-28T20:00:00Z');
+const restDriver = elapsed => ({ duty: 'sleeper', rest_since: new Date(REST_AT - elapsed).toISOString() });
+expect('rest fills toward eight hours and stays full beyond the reference',
+  [0, 3.25, 8, 10].map(h => RoadBar.restMeter(restDriver(h * RoadBar.HOUR), REST_AT).style.getPropertyValue('--scheduler-rest')),
+  ['0%', '40.6%', '100%', '100%']);
+expect('missing, invalid, future or non-rest duty has unknown rest, rather than zero',
+  [{ duty: 'sleeper' }, { duty: 'off', rest_since: 'invalid' }, restDriver(-RoadBar.HOUR),
+    { ...restDriver(RoadBar.HOUR), duty: 'on' }].map(d => RoadBar.restElapsed(d, REST_AT)), [null, null, null, null]);
+expect('missing logs never expose a made-up numeric rest value',
+  [has(lit('Rest duration unknown'), '.scheduler-crew__rest--unknown'), text(lit('Rest duration unknown'), '.scheduler-crew__rest-time'),
+    lit('Rest duration unknown').querySelector('.scheduler-crew__rest').getAttribute('aria-valuenow')], [true, 'Rest —', null]);
+expect('two drivers have independently scaled availability and rest tracks',
+  [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.querySelector('.scheduler-crew__left').style.getPropertyValue('--scheduler-left'),
+    c.querySelector('.scheduler-crew__rest')?.style.getPropertyValue('--scheduler-rest') ?? null]), [['8%', null], ['90%', '40.6%']]);
+expect('rest reaching its reference does not change the reported availability',
+  ['Rest at eight hours', 'Rest beyond eight hours'].map(n => [lit(n).querySelector('.scheduler-crew__left').style.getPropertyValue('--scheduler-left'),
+    text(lit(n), '.scheduler-crew__hours'), lit(n).querySelector('.scheduler-crew__rest').style.getPropertyValue('--scheduler-rest')]),
+  [['40%', '4:00 left', '100%'], ['40%', '4:00 left', '100%']]);
+expect('rest progress advances on a new minute even without changed telemetry', (() => {
+  const sample = data.sections.find(s => s.id === 'icons').samples.find(s => s.name === 'Sleeper icon');
+  const spec = sample.rows[0].bars[0];
+  const b = drawn('icons', 'Sleeper icon')[0];
+  const before = text(b, '.scheduler-crew__rest-time');
+  const now = Date.now();
+  const original = Date.now;
+  try {
+    Date.now = () => now + 61e3;
+    RoadBar.draw(b, spec.live.bus, { next: spec.live.look.next, said: { warnings: [], phase: null }, day: 0 });
+    return [before, text(b, '.scheduler-crew__rest-time')];
+  } finally { Date.now = original; }
+})(), ['Rest 3:15', 'Rest 3:16']);
+expect('taking live readings off also removes rest tracks and labels', (() => {
+  const b = lit('Two drivers'); RoadBar.draw(b, null); return [has(b, '.scheduler-crew__rest'), has(b, '.scheduler-crew__rest-time')];
+})(), [false, false]);
+
+expect('the board and components pages embed every duty drawing they render',
+  ['index.html', 'components.html'].map(page => {
+    const html = readFileSync(new URL(`../${page}`, import.meta.url), 'utf8');
+    return [...new Set(Object.values(RoadBar.DUTY).map(d => d.icon.slice(1)))].filter(id => !html.includes(`id="${id}"`));
+  }), [[], []]);
+
+console.log('\n  Icons and pills');
+expect('every status icon has a labeled specimen', window.SchedulerLegFacts.DRIVER_STATUSES.map(({ label, icon: href }) =>
+  drawn('icons', `${label} icon`).some(b => has(b, `.scheduler-crew use[href="${href}"]`))),
+  window.SchedulerLegFacts.DRIVER_STATUSES.map(() => true));
+expect('every duty icon is visible on its own specimen', Object.entries(RoadBar.DUTY).map(([duty, { word, icon: href }]) => {
+  const [b] = drawn('icons', `${word} icon`);
+  return b.querySelector('.scheduler-crew').dataset.duty === duty && has(b, `.scheduler-crew__duty use[href="${href}"]`);
+}), Object.keys(RoadBar.DUTY).map(() => true));
+expect('all route pill labels have specimens',
+  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal']
+    .map(name => text(drawn('icons', name)[0], '.scheduler-road__status')),
+  ['Moving', 'Idling', 'Engine off', 'Engine on', 'Unknown']);
+expect('relief specimens expose the role icon without crew overflow', window.SchedulerLegFacts.ROLES.filter(r => r.role.startsWith('relief-')).map(({ label, icon: href }) => {
+  const [b] = drawn('icons', `${label} icon`);
+  return has(b, `.scheduler-crew__mark use[href="${href}"]`) && !has(b, '.scheduler-bar__more');
+}), [true, true]);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

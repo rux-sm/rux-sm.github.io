@@ -15873,8 +15873,8 @@
       for (const d of [...bus.drivers].sort((a, b) => b.wheel - a.wheel)) {
         const item = el('li', 'scheduler-card__live-driver');
         const who = el('div', `scheduler-card__road-driver${d.wheel ? ' scheduler-card__road-driver--wheel' : ''}`);
-        who.append(d.duty ? roadMark(d.duty) : el('span', 'scheduler-crew__duty'), el('span', 'scheduler-card__road-name', d.name),
-          el('span', 'scheduler-card__road-words', [ROAD_DUTY[d.duty]?.word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')));
+        who.append(roadMark(d.duty ?? 'unknown'), el('span', 'scheduler-card__road-name', d.name),
+          el('span', 'scheduler-card__road-words', [(ROAD_DUTY[d.duty] ?? ROAD_DUTY.unknown).word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')));
         /* The three clocks side by side, each its name and the hours left
            over a meter of them, amber under an hour. */
         const clocks = el('div', 'scheduler-card__live-clocks');
@@ -15892,9 +15892,14 @@
           clocks.appendChild(clock);
         }
         item.appendChild(who);
-        // A resting driver's rest so far and when their hours are full again.
+        // Elapsed rest is separate from Samsara's remaining clocks.
         const rest = roadRest(d);
-        if (rest) item.appendChild(el('span', 'scheduler-card__live-rest', rest));
+        if (['sleeper', 'off'].includes(d.duty)) {
+          const progress = el('div', 'scheduler-card__rest-progress');
+          progress.append(el('span', 'scheduler-card__live-rest', rest ? `${rest} / 8h reference` : 'Continuous rest unknown'),
+            RoadBar.restMeter(d), el('span', 'scheduler-card__road-words', 'Rest progress is separate from HOS availability.'));
+          item.appendChild(progress);
+        }
         if (clocks.children.length) item.appendChild(clocks);
         list.appendChild(item);
       }

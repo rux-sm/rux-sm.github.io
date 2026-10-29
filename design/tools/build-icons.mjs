@@ -88,6 +88,8 @@ const ICONS = [
   'settings',
   // the floating coachmark's drag handle
   'draggable',
+  'task--user', 'shuttle',
+  'BPMN-link--fill', 'time--filled', 'asleep--filled', 'subtract--filled',
 ];
 
 /* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.
@@ -114,7 +116,9 @@ const hooked = body => {
     const nth = n <= 2 ? `--rux-icon-path-${n}` : null;
     const inner = /data-icon-path="inner-path"/.test(attrs);
     if (!inner && !nth) return tag;
-    const fill = !inner ? `var(${nth})`
+    // Keep explicit transparent details transparent when no component overrides them.
+    const originalFill = attrs.match(/\bfill="([^"]+)"/)?.[1];
+    const fill = !inner ? `var(${nth}${originalFill ? `,${originalFill}` : ''})`
       : nth ? `var(${nth},var(--rux-icon-inner,none))` : 'var(--rux-icon-inner,none)';
     return `<path${attrs} style="fill:${fill}${inner ? ';opacity:1' : ''}"${close}>`;
   });

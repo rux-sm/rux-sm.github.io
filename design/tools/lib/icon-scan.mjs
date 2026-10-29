@@ -26,7 +26,7 @@ const SPRITE_BLOCK = /<!-- SPRITE:BEGIN[\s\S]*?<!-- SPRITE:END -->/;
 /* `r-` is here too, and so is the underscore: every Material name has one --
    `account_circle`, `grid_view` -- and a class without it matched `m-account`,
    so the page named a symbol that does not exist and lost the one it meant. */
-const NAME = /#((?:i|m|r)-[a-z0-9_-]+)/g;
+const NAME = /#((?:i|m|r)-[a-zA-Z0-9_-]+)/g;
 
 // The local scripts a page loads, resolved. A root-absolute src is the site's,
 // so it needs the site root; an external one is nobody's to read.

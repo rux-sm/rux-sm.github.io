@@ -87,70 +87,23 @@
   --scheduler-road-scan: var(--rux-text-secondary);
 }
 
-/* THE MARKS ON A TRIP BAR, ONE PALETTE: warning while something is still to be
-   done, error for a problem, success for what is settled, and done for a met
-   requirement or a driver not yet sent. Each is the support colour the theme's
-   notification draws its icon in; a theme that sets no done colour draws it in
-   the bar's own text colour.
-
-   White and g10 draw the warning in Carbon's yellow, which a bare glyph holds
-   at only 1.3 to 1.5 against a light bar's fill; the mark keeps the
-   notification's colour over the contrast. */
-:root,
-[data-theme="white"],
-[data-theme="g10"],
-[data-theme="g90"],
-[data-theme="g100"],
-[data-theme="rux-100"],
-[data-theme="ant-dark"],
-[data-theme="spotify-dark"],
-[data-theme^="apple-"] {
-  --scheduler-mark-warning: var(--rux-support-warning);
-  --scheduler-mark-error: var(--rux-support-error);
-  --scheduler-mark-success: var(--rux-support-success);
-  /* A driver's duty while the bus is out: on duty, and resting in the sleeper. */
-  --scheduler-mark-info: var(--rux-support-info);
+/* Duties, assignments and alerts share Design's status palette. */
+[data-theme] {
+  --scheduler-mark-success: var(--rux-status-green);
+  --scheduler-mark-error: var(--rux-status-red);
+  --scheduler-mark-warning: var(--rux-status-yellow);
+  --scheduler-mark-info: var(--rux-status-blue);
   --scheduler-mark-rest: var(--rux-status-purple);
+  --scheduler-mark-neutral: var(--rux-status-gray);
+  --scheduler-status-surface: #161616;
 }
-/* The figure in a bar's alert count is the dark ink on the warning fill, which
-   is a light colour in every theme. apple-light's is Apple's vivid orange,
-   and Apple's own apps set a white figure on a vivid mark -- Calendar's today,
-   Reminders' list icons -- so this theme does, at 2.3 to 1, less than a dark
-   figure would hold. */
-[data-theme="apple-light"] { --scheduler-mark-on-warning: var(--rux-text-inverse); }
-/* apple-dark's error mark is its red moved 36% toward white: the vivid red
-   makes 2.1 to 1 on the amber bar and this 3.1. */
-[data-theme="apple-dark"] { --scheduler-mark-error: color-mix(in srgb, var(--rux-support-error) 64%, #fff); }
-/* Geist draws a badge's text and icons in the hue's 900 step, and the bars are
-   its subtle badges, so the marks take the 900 steps of amber, red and green,
-   and done takes the primary text. The lowest is red on the red bar, 4.5 to 1. */
-[data-theme="geist-dark"] {
-  --scheduler-mark-warning: oklch(77.21% 0.1991 64.28);
-  --scheduler-mark-error: oklch(69.96% 0.2136 22.03);
-  --scheduler-mark-success: oklch(73.1% 0.2158 148.29);
-  --scheduler-mark-info: oklch(71.5% 0.1563 251.4);
-  --scheduler-mark-rest: oklch(71.2% 0.1953 304.2);
-  --scheduler-mark-done: var(--rux-text-primary);
-}
-/* rux-dark's bars are deep containers, on which an ink at 0.75 holds only 2.7
-   to 1, so its marks take each ink's hover step: 3.7 to 1 at the least, the
-   red on a hovered green bar. */
-[data-theme="rux-dark"] {
-  --scheduler-mark-warning: oklch(0.88 0.121 75);
-  --scheduler-mark-error: oklch(0.82 0.124 25);
-  --scheduler-mark-success: oklch(0.82 0.2 150);
-  --scheduler-mark-info: oklch(0.82 0.093 262);
-  --scheduler-mark-rest: oklch(0.82 0.111 300);
-}
-/* Its alert discs and the toolbar's dots are badges, set with Design's
-   badge indicator, and a filled disc holds 3.3 to 1 on any container at the inks
-   themselves, so they take the palette's inks: the amber and the red that
-   the support colours are. The trip card's bells stand on the card's grey,
-   not a container, and take the same inks, so a bell is its disc's colour. */
-[data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator) { background: var(--rux-support-warning); }
-[data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--rux-support-error); }
-[data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--rux-support-warning); }
-[data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--rux-support-error); }
+[data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
+
+/* Alert badges and card warnings use the same semantic inks as driver status. */
+[data-theme="rux-dark"] :is(.scheduler-bar__msg--warning, .scheduler-toolbar .rux--btn > .rux--badge-indicator) { background: var(--scheduler-mark-warning); }
+[data-theme="rux-dark"] .scheduler-bar__msg--error { background: var(--scheduler-mark-error); }
+[data-theme="rux-dark"] .scheduler-card :is(.scheduler-card__asks, .scheduler-card__warn) > svg { color: var(--scheduler-mark-warning); }
+[data-theme="rux-dark"] .scheduler-card .scheduler-card__misfit > svg { color: var(--scheduler-mark-error); }
 /* rux-dark's standard trip is a raised grey, layer-02, a solid tile on the
    board's page colour with no edge, the fill LN Notes' tiles and the panels'
    tiles take, so a tile is one grey wherever it stands, and colour on its
@@ -1306,12 +1259,12 @@
   --scheduler-footer-base: #393939;
   --scheduler-footer: var(--scheduler-footer-base);
   --scheduler-footer-fg: #f4f4f4;
-  --scheduler-footer-warning: #f1c21b;
-  --scheduler-driver-neutral: #8d8d8d;
-  --scheduler-driver-major: #ff832b;
-  --scheduler-driver-normal: #4589ff;
-  --scheduler-driver-error: #fa4d56;
-  --scheduler-driver-success: #42be65;
+  --scheduler-footer-warning: var(--rux-status-yellow);
+  --scheduler-driver-neutral: var(--rux-status-gray);
+  --scheduler-driver-major: var(--rux-status-orange);
+  --scheduler-driver-normal: var(--rux-status-blue);
+  --scheduler-driver-error: var(--rux-status-red);
+  --scheduler-driver-success: var(--rux-status-green);
 }
 
 /* The footer lightens with the bar under the pointer, as the body does, so the

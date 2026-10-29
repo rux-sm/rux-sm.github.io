@@ -5,7 +5,7 @@
    customer, and the rows under them say what Samsara says, laid out for the
    narrowest bar, a one-day trip on the board's 10rem day, and kept to one
    day's width on a longer bar, in today's column, every row moving there.
-   - A blue route pill at the destination row's end says the bus status,
+   - A vehicle status pill at the destination row's end says the bus status,
      with a warning sign after it; its icon gently pulses while the trip is out.
    - The times, in the contact row's place: out and back either end of a
      track filled to now; a problem's words in its colour instead, Late to
@@ -15,15 +15,14 @@
      pump, a short tank bar and its percent; the second row's room is air
      round them and the drivers.
    - The drivers row, a seat for each driver: the one at the wheel first and
-     bold behind the steering wheel, amber under an hour, their driving
+     bold behind the steering wheel, their driving
      hours left at the seat's end over a 2px bar of them, amber under one;
-     anyone else with their duty's mark, and their hours only under one;
-     with no duty reading, their status mark, Confirmed while Samsara has
-     them in the bus. A
+     every seat with its duty mark and a labeled availability or rest reading;
+     with no duty reading, an Unknown duty question mark. A
      driver Samsara has in another bus is the red stop sign, their name red
      with that bus after it. A driver at the wheel the bar does not name
      joins the end of the row. Two drivers share the row half and half,
-     each over their own bar, the hours in words on the tooltip alone.
+     each with an independent availability track and a second track while resting.
    The bar wears no edge, border or light of its own: how the bus is doing
    is the bars' colour and the words. With a row fewer on the board the
    times go, with two fewer the air goes too; app.css
@@ -71,11 +70,22 @@
   const CONFIRMED_ICON = CONFIRMED_STATUS.icon;
   const NOT_SENT_ICON = DRIVER_STATUSES.find(s => s.value === 'off').icon;
   const DUTY = {
-    driving: { icon: '#m-search_hands_free-fill', word: 'Driving' },
-    on: { icon: '#m-assignment-fill', word: 'On duty' },
-    sleeper: { icon: '#m-bedtime-fill', word: 'Sleeper' },
-    off: { icon: '#m-power_settings_new-fill', word: 'Off duty' },
+    driving: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Driving', tone: 'success' },
+    on: { icon: '#i-time--filled', box: '0 0 32 32', word: 'On duty', tone: 'success' },
+    sleeper: { icon: '#i-asleep--filled', box: '0 0 32 32', word: 'Sleeper', tone: 'rest' },
+    off: { icon: '#i-subtract--filled', box: '0 0 32 32', word: 'Off duty', tone: 'neutral' },
+    yard: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Yard move', tone: 'warning' },
+    personal: { icon: '#i-BPMN-link--fill', box: '0 0 32 32', word: 'Personal conveyance', tone: 'rest' },
+    unknown: { icon: '#i-unknown--filled', box: '0 0 32 32', word: 'Unknown duty', tone: 'neutral' },
   };
+  // Continuous rest is compared with an eight-hour reference, independently of HOS availability.
+  const REST = 8 * HOUR;
+  const resting = d => ['sleeper', 'off'].includes(d?.duty);
+  const restElapsed = (d, at = Date.now()) => {
+    const since = resting(d) && d.rest_since ? Date.parse(d.rest_since) : NaN;
+    return Number.isFinite(since) && since <= at ? at - since : null;
+  };
+  const share = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 1000) / 10;
   // A passenger carrier's driver may drive ten hours, so a full ring is ten.
   const DRIVE = 10 * HOUR;
   const LOW_FUEL = 25;
@@ -84,23 +94,14 @@
   // The speed every bar lit stands for.
   const TOP_MPH = 80;
   const hours = ms => `${Math.floor(ms / HOUR)}:${String(Math.floor((ms % HOUR) / 60e3)).padStart(2, '0')}`;
-  /* A PASSENGER CARRIER'S DRIVER HAS FULL HOURS AGAIN after 8 hours in a row
-     off duty or in the sleeper: the 10 driving and 15 on duty start over.
-     samsara-now says when a resting driver's stretch began; with that, how
-     long they have rested and when the 8 hours are up, or that they are.
-     A split sleeper rest can give full hours sooner, which Samsara's own
-     clocks show, so this time is never later than the truth. */
-  const REST = 8 * HOUR;
+  // Rest elapsed comes from the duty logs; remaining availability comes from Samsara's clocks.
   const spell = ms => {
     const min = Math.floor(ms / 60e3);
     return min < 60 ? `${min}m` : `${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}m`;
   };
   const restWords = d => {
-    const since = (d.duty === 'sleeper' || d.duty === 'off') && d.rest_since ? Date.parse(d.rest_since) : NaN;
-    if (!Number.isFinite(since)) return null;
-    const ms = Math.max(0, Date.now() - since);
-    return ms >= REST ? `Rested ${spell(ms)}, full hours`
-      : `Rested ${spell(ms)}, full hours at ${hhmm(Road.clockOf(since + REST), true)}`;
+    const elapsed = restElapsed(d);
+    return elapsed == null ? null : `Rested ${spell(elapsed)}`;
   };
   const words = d => [DUTY[d.duty]?.word ?? 'Status unknown', restWords(d),
     d.left_ms != null ? `${hours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
@@ -112,7 +113,11 @@
      as a custom property app.css draws. */
   const mark = (duty, left) => {
     const m = el('span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
-    m.appendChild(svgUse(DUTY[duty].icon, '16', '0 0 16 16'));
+    const status = DUTY[duty] ?? DUTY.unknown;
+    m.dataset.tone = status.tone;
+    m.setAttribute('role', 'img');
+    m.setAttribute('aria-label', status.word);
+    m.appendChild(svgUse(status.icon, '16', status.box ?? '0 0 16 16'));
     if (left != null) {
       m.classList.add('scheduler-crew__duty--ring');
       if (left < HOUR) m.classList.add('scheduler-crew__duty--low');
@@ -121,22 +126,21 @@
     return m;
   };
   // The hours a driver may still drive, amber under one.
-  const hoursEl = ms => el('span', `scheduler-crew__hours${ms < HOUR ? ' scheduler-crew__hours--low' : ''}`, hours(ms));
+  const hoursEl = ms => {
+    const label = el('span', `scheduler-crew__hours${ms != null && ms < HOUR ? ' scheduler-crew__hours--low' : ''}`, ms == null ? '— left' : `${hours(ms)} left`);
+    label.title = ms == null ? 'Driving availability unknown' : `${hours(ms)} driving availability from Samsara`;
+    return label;
+  };
   // How long since an instant, "12m", "3h" or "2d".
   const ago = at => {
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
     return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
   };
-  /* One driver's seat on the drivers row: their name, the driving hours they
-     have left and a 2px bar under the seat of them, of ten, amber under one;
-     app.css shows the hours and the bar for the one at the wheel, and the
-     hours for anyone under one. Each wears their duty's mark, the one at the
-     wheel first, bold, behind the steering wheel; with no duty reading,
-     their status mark shows, Confirmed while Samsara has them in the bus,
-     as data.js saves it near yard-out. A driver Samsara has in another bus is the red stop sign and their name in red with that bus
-     after it. With no driver, the name as the bar drew it. */
+  /* Each seat has a solid duty icon, its name and a labeled time. Availability
+     comes from Samsara's clocks; an off-duty or sleeper seat also shows a
+     separate rest track, with a dash when its duty logs cannot be read. */
   function crewOn(item, d, elsewhere) {
-    for (const part of ['duty', 'hours', 'away', 'left']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
+    for (const part of ['duty', 'hours', 'away', 'left', 'rest', 'rest-time']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
     item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
     delete item.dataset.duty;
     // A driver Samsara has in the bus is on the trip: their mark reads
@@ -175,21 +179,51 @@
     }
     item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
     item.classList.remove('scheduler-crew--declined');
-    if (d.duty) item.dataset.duty = d.duty;
-    if (d.duty) {
-      const m = mark(d.duty);
-      m.classList.toggle('scheduler-crew__duty--low', d.duty === 'driving' && d.left_ms != null && d.left_ms < HOUR);
-      item.prepend(m);
-    }
+    item.dataset.duty = d.duty ?? 'unknown';
+    const dutyMark = mark(d.duty ?? 'unknown');
+    item.prepend(dutyMark);
     item.classList.toggle('scheduler-crew--wheel', d.wheel);
-    if (d.left_ms != null) item.append(hoursEl(d.left_ms), leftBar(d.left_ms));
+    item.append(hoursEl(d.left_ms));
+    if (d.left_ms != null) item.appendChild(leftBar(d.left_ms));
+    if (resting(d)) {
+      const elapsed = restElapsed(d);
+      const label = el('span', 'scheduler-crew__rest-time', elapsed == null ? 'Rest —' : `Rest ${hours(elapsed)}`);
+      label.title = elapsed == null ? 'Continuous rest unknown: duty logs unavailable' : `${hours(elapsed)} continuous rest / 8:00 reference; availability comes from Samsara's HOS clocks`;
+      item.append(label, restMeter(d));
+    }
     item.title = `${item.title}\nSamsara: ${words(d)}`;
   }
   // The bar of driving hours left under a seat; red and full for the wrong bus.
   function leftBar(ms, away) {
     const b = el('span', `scheduler-crew__left${away ? ' scheduler-crew__left--away' : ms < HOUR ? ' scheduler-crew__left--low' : ''}`);
-    b.style.setProperty('--scheduler-left', `${away ? 100 : Math.round(Math.min(1, ms / DRIVE) * 100)}%`);
+    b.style.setProperty('--scheduler-left', `${away ? 100 : share(ms, DRIVE)}%`);
+    if (!away) {
+      b.setAttribute('role', 'meter');
+      b.setAttribute('aria-label', 'Driving availability');
+      b.setAttribute('aria-valuemin', '0');
+      b.setAttribute('aria-valuemax', String(DRIVE / HOUR));
+      b.setAttribute('aria-valuenow', String(Math.min(DRIVE, ms) / HOUR));
+      b.setAttribute('aria-valuetext', `${hours(ms)} left, reported by Samsara`);
+      b.title = `${hours(ms)} driving availability`;
+    }
     return b;
+  }
+
+  // A full rest meter is a completed reference period, not a reset of every HOS clock.
+  function restMeter(d, at = Date.now()) {
+    const ms = restElapsed(d, at);
+    const meter = el('span', `scheduler-crew__rest${ms == null ? ' scheduler-crew__rest--unknown' : ''}`);
+    meter.setAttribute('role', ms == null ? 'img' : 'meter');
+    meter.setAttribute('aria-label', ms == null ? 'Rest duration unknown' : 'Continuous rest progress');
+    if (ms != null) {
+      meter.setAttribute('aria-valuemin', '0');
+      meter.setAttribute('aria-valuemax', '8');
+      meter.setAttribute('aria-valuenow', String(Math.min(8, ms / HOUR)));
+      meter.setAttribute('aria-valuetext', `${hours(ms)} continuous rest, eight-hour reference; check HOS clocks for availability`);
+    }
+    meter.style.setProperty('--scheduler-rest', `${ms == null ? 0 : share(ms, REST)}%`);
+    meter.title = ms == null ? 'Rest duration unknown' : `Rest ${hours(ms)} / 8:00 reference`;
+    return meter;
   }
 
   /* A bar coming on the road starts as a bus does: with its engine running it
@@ -219,7 +253,7 @@
     const key = bus ? JSON.stringify([bus.engine, bus.engine_at && ago(bus.engine_at), bus.mph, bus.heading, bus.place,
       bus.fuel, bus.fault, bus.faults, bus.seen && ago(bus.seen), bus.drivers,
       next?.stop?.key, next?.at, next?.arrival, next?.late, said.warnings.map(w => w.detail), said.phase,
-      overBy(bar, Date.now())]) : '';
+      overBy(bar, Date.now()), bus.drivers.some(resting) ? Math.floor(Date.now() / 60e3) : null]) : '';
     // The day the rows stand on, counted from the bar's first: today while out.
     if (bus && live.day > 0) bar.style.setProperty('--scheduler-today', live.day);
     else bar.style.removeProperty('--scheduler-today');
@@ -228,9 +262,8 @@
     bar.classList.toggle('scheduler-bar--road', !!bus);
     const worst = said?.warnings[0] ?? null;
     /* THE BUS'S STATE, `data-light`: run while it moves, idle with the
-       engine running and the bus still, rest while a driver is in the
-       sleeper and none drives, off with the engine off, scan with no signal.
-       The bars take the worst warning's colour, else purple at rest. A red
+       engine running and the bus still, off with the engine off, scan with no signal.
+       The bars take the worst warning's colour; driver rest is shown on each driver. A red
        warning's bars blink for the first minute this page has seen it,
        `data-alarm`. */
     if (bus && !bar.dataset.light) start(bar, bus, live.motion ?? 'full');
@@ -239,8 +272,7 @@
       bar.removeAttribute('data-alarm');
     } else {
       const moving = bus.engine === 'on' && bus.mph > 0;
-      const resting = !moving && bus.drivers.some(d => d.duty === 'sleeper') && !bus.drivers.some(d => d.duty === 'driving');
-      bar.dataset.light = bus.engine == null ? 'scan' : moving ? 'run' : resting ? 'rest' : bus.engine === 'off' ? 'off' : 'idle';
+      bar.dataset.light = bus.engine == null ? 'scan' : moving ? 'run' : bus.engine === 'off' ? 'off' : 'idle';
       const alarm = worst?.tone === 'error' ? `${bar.dataset.tripId}|${bar.dataset.legKey}|${bar.dataset.assignmentId}|${worst.kind}` : null;
       if (alarm && !alarms.has(alarm)) alarms.set(alarm, Date.now());
       const blinkFor = alarm ? alarms.get(alarm) + ALARM_MS - Date.now() : 0;
@@ -272,7 +304,7 @@
     const mark = el('span', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
     mark.appendChild(svgUse(NOT_SENT_ICON, '16', '0 0 32 32'));
     who.append(mark, el('span', 'scheduler-crew__name', short(wheel.name)));
-    if (wheel.left_ms != null) who.append(hoursEl(wheel.left_ms), leftBar(wheel.left_ms));
+    crewOn(who, wheel, null);
     who.title = `${wheel.name}, not on this trip\nSamsara: ${words(wheel)}`;
     row.appendChild(who);
   }
@@ -284,8 +316,19 @@
   // What the bar says of a problem: the worst warning's name, or No signal and how long.
   const sayOf = (bus, worst) => (worst ? worst.title : bus.engine == null ? (bus.seen ? `No signal ${ago(bus.seen)}` : 'No signal') : null);
 
+  const VEHICLE_STATES = {
+    moving: { word: 'Moving', tone: 'success' },
+    idle: { word: 'Idling', tone: 'info' },
+    on: { word: 'Engine on', tone: 'info' },
+    off: { word: 'Engine off', tone: 'neutral' },
+    unknown: { word: 'Unknown', tone: 'neutral' },
+  };
+  // Movement is the fresh GPS speed, independent of engine and driver duty.
+  const vehicleState = bus => bus.mph > 0 ? 'moving' : bus.engine === 'idle' ? 'idle'
+    : bus.engine === 'on' ? 'on' : bus.engine === 'off' ? 'off' : 'unknown';
+
   /* The route pill marks a trip in progress through stops and rest breaks.
-     Its blue stays constant while the label reports the bus activity; alerts
+     Its semantic colour and label report vehicle activity; alerts
      keep their own badge after it. A press opens the live card. */
   function liveDot(bar, bus, worst) {
     const row = bar.querySelector(':scope > .scheduler-bar__dest');
@@ -299,18 +342,19 @@
       dot.type = 'button';
       dot.setAttribute('aria-expanded', 'false');
       dot.dataset.cardOpener = '';
-      const icon = svgUse('#m-route', '16', '0 0 16 16');
+      const icon = svgUse('#m-directions_bus-fill', '16', '0 0 16 16');
       icon.classList.add('scheduler-road__route');
       dot.append(icon, el('span', 'scheduler-road__status'));
       row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
     }
-    const status = bus.mph > 0 ? 'Moving' : bus.engine === 'idle' ? 'Idling'
-      : bus.engine === 'off' ? 'Engine off' : bus.engine === 'on' && bus.mph === 0 ? 'Stopped'
-      : bus.engine === 'on' ? 'Running' : 'Unknown';
+    const state = vehicleState(bus);
+    const { word: status, tone } = VEHICLE_STATES[state];
+    dot.dataset.state = state;
+    dot.dataset.tone = tone;
     dot.querySelector('.scheduler-road__status').textContent = status;
     const duration = (bus.engine === 'idle' || bus.engine === 'off') && bus.engine_at
       ? ` for ${ago(bus.engine_at)}` : '';
-    const detail = status === 'Unknown' && bus.seen ? ` · Last seen ${ago(bus.seen)} ago` : '';
+    const detail = state === 'unknown' && bus.seen ? ` · Last seen ${ago(bus.seen)} ago` : '';
     const label = `Trip in progress · ${status}${duration}${detail}${worst ? ` · ${worst.title}` : ''}`;
     dot.title = label;
     dot.setAttribute('aria-label', `${label}. Open tracking details`);
@@ -374,7 +418,7 @@
      second row leaves as air round them and the drivers. On the left the
      speed in mph, or a dash without a fresh speed reading, then BARS bars rising like a
      phone's signal, one lit for every BAR_MPH: green on the road, the worst
-     warning's amber or red, purple while a driver rests. On the right the
+     warning's amber or red. On the right the
      pump, a short bar filled to the tank's share and the percent, amber
      under a quarter. With the times row hidden, a problem's words take the
      speed's half. An engine warning lamp is said on the tooltip and the live
@@ -388,7 +432,7 @@
       bar.insertBefore(box, bar.querySelector(':scope > .scheduler-bar__drivers'));
     }
     const say = sayOf(bus, worst);
-    const tone = worst?.tone ?? (bus.engine == null ? 'scan' : bar.dataset.light === 'rest' ? 'rest' : null);
+    const tone = worst?.tone ?? (bus.engine == null ? 'scan' : null);
     box.className = `scheduler-road__card${tone ? ` scheduler-road__card--${tone}` : ''}${say ? ' scheduler-road__card--says' : ''}`;
     const moving = bus.mph > 0;
     const half = el('span', 'scheduler-road__half scheduler-road__half--speed');
@@ -435,5 +479,5 @@
     return [icon, meter, el('span', `scheduler-road__pct${low ? ' scheduler-road__pct--low' : ''}`, fuel != null ? `${fuel}%` : '–')];
   }
 
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words, restWords };
+  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, LOW_FUEL, IDLE_MS, hours, mark, ago, short, words, restWords };
 })();

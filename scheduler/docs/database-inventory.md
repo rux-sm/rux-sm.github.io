@@ -287,7 +287,8 @@ three of its codes in words, from a second call because Samsara gives three read
 odometer in whole miles, the engine's reading else the GPS's, from a third; for a bus the
 body's `paths` names, its path since the time given, a point a tenth of a mile, four days back at
 most; and the drivers logged in: each one's duty, the least of their three clocks as hours left, and
-who is at the wheel, with the key's Compliance permission. A Samsara driver is the scheduler's with
+who reports Driving duty, with the key's Compliance permission. Yard move and Personal conveyance
+remain distinct from On duty and Off duty; elapsed rest does not assert a reset of the clocks. A Samsara driver is the scheduler's with
 the same first and last name, unless two share it. It writes nothing, is deployed with Verify JWT
 off as §5 is, and answers the site and the log-in preview.
 `scheduler/tools/check-samsara-now.mjs` runs it against an invented fleet.

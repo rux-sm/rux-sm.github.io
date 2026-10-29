@@ -133,6 +133,14 @@ const listed = [
 ];
 
 const faults = [];
+// A missing fallback makes a transparent detail inherit the surrounding solid fill.
+for (const symbol of sprite.matchAll(/<symbol\b[^>]*id="(i-[^"]+)"[^>]*>([\s\S]*?)<\/symbol>/g)) {
+  for (const path of symbol[2].matchAll(/<path\b[^>]*>/g)) {
+    if (/fill="none"/.test(path[0]) && /style="[^"]*fill:var\(--rux-icon-path-\d\)/.test(path[0])) {
+      faults.push(['opaque detail', symbol[1], 'A transparent path must keep none as its fill fallback.']);
+    }
+  }
+}
 
 for (const name of listed) if (!defined.has(name)) {
   faults.push(['STALE', QUARRY, `${name} is listed but not in the sprite — run \`npm run icons\`` +
@@ -231,7 +239,7 @@ for (const f of (existsSync(JS) ? readdirSync(JS) : []).filter(f => f.endsWith('
   const path = join(JS, f);
   const src = readFileSync(path, 'utf8');
   // Every family, and the underscore Material names carry.
-  for (const m of src.matchAll(/['"`](#(?:i|m|r)-[a-z0-9_-]+)['"`]/g)) {
+  for (const m of src.matchAll(/['"`](#(?:i|m|r)-[a-zA-Z0-9_-]+)['"`]/g)) {
     const id = m[1].slice(1);
     const line = src.slice(0, m.index).split('\n').length;
     used.add(id);

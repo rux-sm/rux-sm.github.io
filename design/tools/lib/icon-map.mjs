@@ -61,6 +61,10 @@ export const FAMILIES = ['carbon', 'material', 'rux'];
 export const PREFIX = { carbon: 'i-', material: 'm-', rux: 'r-' };
 
 export const ICONS = {
+  'BPMN-link--fill': { material: null, rux: null },
+  'asleep--filled': { material: null, rux: null },
+  'subtract--filled': { material: null, rux: null },
+  'time--filled': { material: null, rux: null },
   'accessibility': { material: 'accessible', rux: null },
   'add': { material: 'add', rux: null },
   'add-comment': { material: 'add_comment', rux: null },
@@ -105,7 +109,7 @@ export const ICONS = {
   'currency--dollar': { material: 'attach_money', rux: null },
   'delivery-truck': { material: 'local_shipping', rux: null },
   'diamond-fill': { material: 'diamond-fill', rux: null },  // Material draws the diamond; `square` is low-severity's.
-  'document--tasks': { material: 'assignment', rux: null },  // A driver on duty, not driving.
+  'document--tasks': { material: 'assignment', rux: null },
   'document': { material: 'description', rux: null },
   'download': { material: 'download', rux: null },
   'driver-analysis': { material: 'search_hands_free', rux: null },  // Both draw a steering wheel: a driver at the wheel.
@@ -167,6 +171,7 @@ export const ICONS = {
   'time': { material: 'schedule', rux: null },
   'trash-can': { material: 'delete', rux: null },
   'undefined--filled': { material: 'quiz-fill', rux: null },  // `help` is taken by unknown--filled.
+  'task--user': { material: 'assignment_ind', rux: null },  // The person on duty, with their task clipboard.
   'undo': { material: 'undo', rux: null },
   'unknown--filled': { material: 'help-fill', rux: null },
   'upload': { material: 'upload', rux: null },

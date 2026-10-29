@@ -23,13 +23,10 @@
 // cycle, which is how long the driver may still drive. Without the key's hours
 // permission the buses still come back, with no drivers and `hours` false.
 //
-// REST SINCE is when a driver resting in a bus began the stretch of off duty
-// and sleeper they are in now, from Samsara's duty logs, so the card can say
-// how long they have rested and when the 8 hours a passenger carrier's driver
-// needs are up. The logs are read back REST_LOOK_MS, so a stretch longer than
-// that says no earlier than its first log there, which is rest enough. A
-// driver the logs do not show resting now, or logs the key may not read,
-// leave it null.
+// REST SINCE is the start of the current stretch of off duty, sleeper or personal
+// conveyance in Samsara's duty logs. The REST_LOOK_MS lookback bounds elapsed
+// rest; remaining availability comes separately from the HOS clocks. Logs that
+// do not show the driver resting, or cannot be read, leave it null.
 //
 // A PATH is where a bus has been since a time the caller names, for each bus
 // in the body's `paths`, `{ bus_id: ISO time }`: Samsara's GPS readings since
@@ -40,8 +37,7 @@
 // A reading older than this says nothing about now.
 export const FRESH_MS = 15 * 60_000
 export const PATH_MS = 4 * 24 * 3600_000
-// How far back the duty logs are read for a resting driver: past the 8 hours
-// that give full hours, with room over.
+// The lookback for elapsed rest; availability comes from the HOS clocks.
 export const REST_LOOK_MS = 10 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
@@ -99,7 +95,7 @@ export type Deps = {
   now(): number
 }
 
-export type Duty = 'driving' | 'on' | 'sleeper' | 'off'
+export type Duty = 'driving' | 'on' | 'sleeper' | 'off' | 'yard' | 'personal'
 export type LiveDriver = {
   driver_id: string | null
   name: string
@@ -177,9 +173,9 @@ export function driverIndex(drivers: Driver[]): Map<string, string> {
 
 const DUTY: Record<string, Duty> = {
   driving: 'driving',
-  onDuty: 'on', yardMove: 'on',
+  onDuty: 'on', yardMove: 'yard',
   sleeperBed: 'sleeper', sleeperBerth: 'sleeper',
-  offDuty: 'off', personalConveyance: 'off',
+  offDuty: 'off', personalConveyance: 'personal',
 }
 
 const ms = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.max(0, v) : null)
@@ -218,15 +214,9 @@ export function restSince(logs: HosLogs['hosLogs']): string | null {
   return new Date(rows[i].at).toISOString()
 }
 
-const RANK: Record<string, number> = { driving: 0, on: 1 }
-
-// Who is at the wheel: the driver Samsara has driving, or else the one on
-// duty, and of two on duty the one with the least driving left, who drove
-// last. Nobody, when the drivers are all resting or off.
+// A wheel identifies a reported Driving duty, without inferring one from On duty.
 export function markWheel(drivers: LiveDriver[]): LiveDriver[] {
-  const able = drivers.filter(d => d.duty === 'driving' || d.duty === 'on')
-    .sort((a, b) => RANK[a.duty!] - RANK[b.duty!] || (a.drive_ms ?? Infinity) - (b.drive_ms ?? Infinity))
-  return drivers.map(d => ({ ...d, wheel: d === able[0] }))
+  return drivers.map(d => ({ ...d, wheel: d.duty === 'driving' }))
 }
 
 // ── paths ───────────────────────────────────────────────────────────────────
@@ -304,7 +294,7 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     const v = c.currentVehicle?.id ? String(c.currentVehicle.id) : null
     if (!v) continue
     const d = liveDriver(c, index)
-    if (answered.has(v) && (d.duty === 'sleeper' || d.duty === 'off') && c.driver?.id) resting.set(String(c.driver.id), d)
+    if (answered.has(v) && (['sleeper', 'off', 'personal'].includes(d.duty ?? '')) && c.driver?.id) resting.set(String(c.driver.id), d)
     inVehicle.set(v, [...(inVehicle.get(v) ?? []), d])
   }
   /* One read of the resting drivers' logs; logs that cannot be read leave

@@ -59,8 +59,11 @@ expect('a driver the office does not have keeps the Samsara name, with nothing k
 const wheel = list => markWheel(list.map(([name, status, drive]) => liveDriver(clock(name, status, drive, 14 * H, 60 * H), index)))
   .filter(x => x.wheel).map(x => x.name);
 expect('the driver driving is at the wheel', wheel([['Ana Ruiz', 'onDuty', 2 * H], ['Ben Ortiz', 'driving', 8 * H]]), ['Ben Ortiz']);
-expect('of two on duty, the one who drove last', wheel([['Ana Ruiz', 'onDuty', 7 * H], ['Ben Ortiz', 'onDuty', 3 * H]]), ['Ben Ortiz']);
+expect('on duty does not identify a driver at the wheel', wheel([['Ana Ruiz', 'onDuty', 7 * H], ['Ben Ortiz', 'onDuty', 3 * H]]), []);
 expect('nobody, when both rest', wheel([['Ana Ruiz', 'sleeperBed', 7 * H], ['Ben Ortiz', 'offDuty', 3 * H]]), []);
+
+expect('yard move and personal conveyance retain distinct duties',
+  ['yardMove', 'personalConveyance'].map(status => liveDriver(clock('Ana Ruiz', status, 5 * H, 8 * H, 40 * H), index).duty), ['yard', 'personal']);
 
 // ── rest ────────────────────────────────────────────────────────────────────
 const at = (h) => new Date(Date.parse('2026-10-14T20:00:00Z') - h * H).toISOString();

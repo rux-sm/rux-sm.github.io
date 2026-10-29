@@ -831,7 +831,19 @@
   background: var(--rux-layer-03);
   color: var(--rux-support-warning);
 }
-[data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
+/* A RUX 100 TRIP READS IN TWO LEVELS, as a Geist card does: the destination
+   and the times stay in the bar's own ink, the two things the office scans a
+   week for, and the customer, the contact, the update and the drivers step
+   back to one soft grey, so a busy week is a column of places and times
+   rather than six bright lines a trip. The grey is a shade over Geist's
+   #a1a1a1, which held 4.0 to 1 on the gold placeholder and 4.4 on a trip not
+   yet confirmed; #adadad holds 4.6 on the gold, 5.1 on the red and 8.8 on
+   the raised grey trip. A mark with its own colour inside these lines, a
+   driver away or short on hours, keeps it. */
+[data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
+  opacity: 1;
+  color: #adadad;
+}
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the

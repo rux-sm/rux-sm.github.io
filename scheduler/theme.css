@@ -1353,7 +1353,8 @@
    black, so it takes layer-01, and the bar's floating card keeps the raised
    surface. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
-[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel) {
+[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel),
+[data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: #1f1f1f;
 }
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
@@ -1379,6 +1380,9 @@
   --scheduler-band-surface: var(--rux-background);
   border: 1px solid var(--rux-border-subtle-01);
 }
+/* The Forms list is print.html framed in the document panel, its own page,
+   so it takes the panel's black, and its tiles stand on it as the panel's. */
+[data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print { background: var(--rux-background); }
 /* Carbon paints a side panel's body, head and foot with layer-01 by name
    rather than through `--rux-layer`, so they are pointed at it here. */
 [data-theme="rux-100"] #scheduler-panel-body .rux--tabs,
@@ -1389,26 +1393,60 @@
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
-/* RUX 100'S STANDARD TRIP IS GREY, so colour on its board always means
-   something: a confirmed trip is a layer-02 tile in the primary text, and
-   only a trip not yet confirmed, a placeholder or a colour the office picked
-   is coloured. Grey keeps a red alert mark at 4.5 to 1, where Carbon's blue
-   70 held it at 2.3. */
+/* RUX 100'S STANDARD TRIP IS GEIST'S RAISED SURFACE, so colour on its board
+   always means something: a confirmed trip is #0a0a0a, the one surface Geist
+   raises a card to, inside a 1px edge in the board's line grey, in the
+   primary text, and only a trip on the road, not yet confirmed, a
+   placeholder or a colour the office picked is filled. Its fill is 1.06 to 1
+   on the black, so the edge and its words are what draw it, as a Geist card
+   is drawn; its hover is layer-01, #161616. The edge is four painted strips,
+   so the bar's border and shadow stay free for the week's run-on marks and
+   the selection ring, and an end that runs into another week has none. */
+[data-theme="rux-100"] {
+  --scheduler-raised: #0a0a0a;
+  --scheduler-raised-hover: var(--rux-layer-01);
+}
 [data-theme="rux-100"] .scheduler-bar--blue {
-  --scheduler-bg: var(--rux-layer-02);
+  --scheduler-bg: var(--scheduler-raised);
   --scheduler-fg: var(--rux-text-primary);
-  --scheduler-hover: var(--rux-layer-hover-02);
+  --scheduler-hover: var(--scheduler-raised-hover);
   --scheduler-border: var(--rux-border-subtle-01);
 }
-/* A grey trip on the road stands lighter, #474747, 1.6 to 1 against the
-   other trips and 2.3 on the black board, so the buses out now show at a
-   glance without a colour; white stays the selection's, and its green
-   marks keep 3.9. Its hover is the accent layer's #525252, a step above
-   it, since the grey trips' hover is darker. */
+[data-theme="rux-100"] .scheduler-bar--blue:not(.scheduler-bar--road) {
+  --scheduler-edge: var(--rux-border-subtle-01);
+  background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
+    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
+  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  background-repeat: no-repeat;
+}
+[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
+[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
+/* A grey trip on the road is filled, #474747, 2.1 to 1 against the other
+   trips and 2.3 on the black board, so the buses out now show at a glance
+   without a colour; white stays the selection's, and its green marks keep
+   3.9. Its hover is the accent layer's #525252, a step above it. */
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road {
   --scheduler-bg: var(--rux-layer-hover-03);
   --scheduler-hover: var(--rux-layer-accent-03);
   --scheduler-border: var(--rux-border-strong-01);
+}
+/* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
+   editor or the document panel, and a form in the Forms list, is the raised
+   surface inside the board's line, its hover layer-01, and a field in it is
+   dark as Geist's are, the same surface inside its own ring, which holds 3
+   to 1 where the fill alone would not. Menus keep their own grey and edge,
+   so one that opens over a tile still stands off it. */
+[data-theme="rux-100"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile,
+[data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print .rux--tile {
+  --rux-layer: var(--scheduler-raised);
+  --rux-layer-hover: var(--scheduler-raised-hover);
+  background-color: var(--rux-layer);
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01);
+}
+[data-theme="rux-100"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile .rux--layer-three {
+  --rux-field: var(--scheduler-raised);
+  --rux-field-hover: var(--scheduler-raised-hover);
 }
 /* A RUX 100 BAR IS ONE TONE: its update and drivers stand on the bar's own
    fill in its own ink, with no line parting them from the trip above, so a

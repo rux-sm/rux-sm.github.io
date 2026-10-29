@@ -1287,14 +1287,38 @@
    something: a confirmed trip is a layer-02 tile in the primary text, and
    only a trip not yet confirmed, a placeholder or a colour the office picked
    is coloured. Grey keeps a red alert mark at 4.5 to 1, where Carbon's blue
-   70 held it at 2.3. Its footer is layer-03, a step lighter, because the
-   footer's usual step darker would fall below the board's own grey. */
+   70 held it at 2.3. */
 [data-theme="rux-100"] .scheduler-bar--blue {
   --scheduler-bg: var(--rux-layer-02);
   --scheduler-fg: var(--rux-text-primary);
   --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-border: var(--rux-border-subtle-01);
-  --scheduler-footer-base: var(--rux-layer-03);
+}
+/* A RUX 100 BAR IS ONE TONE: its update and drivers stand on the bar's own
+   fill in its own ink, parted from the trip above them by a hairline of
+   that ink, so a trip is one shape on the board, not two. The band's footer
+   tokens follow the bar, so the update's hover fill is a step off the
+   bar's own colour. A road bar, the compact board and a week with neither
+   row draw no line. */
+[data-theme="rux-100"] .scheduler-bar {
+  --scheduler-footer-base: var(--scheduler-bg);
+  --scheduler-footer-fg: var(--scheduler-fg);
+}
+[data-theme="rux-100"] .scheduler-bar:not(.scheduler-bar--road) {
+  --scheduler-footer-rule: color-mix(in srgb, var(--scheduler-fg) 20%, transparent);
+  --scheduler-footer-paint: linear-gradient(to top, transparent calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), var(--scheduler-footer-rule) 0, var(--scheduler-footer-rule) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + 1px), transparent 0);
+}
+[data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
+/* The placeholder takes Carbon's yellow 70 with yellow 30 words, 6.8 to 1,
+   because on one tone its update and driver marks stand on the fill, and on
+   the bright warning yellow the green and yellow marks vanished. Its hover
+   is a step lighter, so it needs no inner ring. */
+[data-theme="rux-100"] {
+  --scheduler-amber-bg: #483700;
+  --scheduler-amber-fg: #f1c21b;
+  --scheduler-amber-hover: oklch(from #483700 calc(l + 0.04) c h);
+  --scheduler-amber-border: #f1c21b;
+  --scheduler-amber-hover-ring: none;
 }
 /* The coloured bars take Carbon's 80 step, deep enough to sit beside the grey
    without outshining it, with their hover a little lighter in the same hue.

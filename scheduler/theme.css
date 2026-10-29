@@ -834,10 +834,12 @@
 [data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
-/* RUX 100'S ROSTER IS GREY AS ITS BOARD IS: a booked day is a solid layer-03
-   mark in the primary text, a step above the board's trip tiles because a
-   roster mark is small, and a short rest keeps that grey with its hours in
-   the warning yellow, 6.8 to 1, or a shorter one's in the light red, 4.9.
+/* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the days on the board's black,
+   ruled in layer-01, and the names as the bus column's tiles, layer-01
+   parted by black. A booked day is a solid layer-02 mark in the primary
+   text, the board's trip tile, and a short rest keeps that grey with its
+   hours in the warning yellow, 9.0 to 1, or a shorter one's in the light
+   red, 6.3.
    A day off is the board's unconfirmed red, the error at 32% through the
    pane, its reason drawn in the error text red, because a driver away is a
    trip that cannot run as it stands, as an unconfirmed one is.
@@ -845,12 +847,23 @@
    over a grey tint, where it was blue; one free for only part keeps the
    rest tone. */
 [data-theme="rux-100"] { --scheduler-avail-whole: var(--rux-border-strong-02); }
+[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__name {
+  --rux-layer: var(--rux-layer-01);
+  border-block-end-color: var(--rux-background);
+}
+[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__cell {
+  border-block-end-color: var(--rux-layer-01);
+  --scheduler-day-rule: var(--rux-layer-01);
+}
+/* No second, lighter rule parts the priority groups, so every line in the
+   roster is the board's; the priority stays on each name's title. */
+[data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
-  --scheduler-avail-fill: var(--rux-layer-03);
+  --scheduler-avail-fill: var(--rux-layer-02);
   color: var(--rux-text-primary);
 }
 [data-theme="rux-100"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: var(--rux-layer-03);
+  --scheduler-avail-fill: var(--rux-layer-02);
   color: var(--rux-support-warning);
 }
 [data-theme="rux-100"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
@@ -1340,7 +1353,8 @@
    black has no edge, so the toolbar's surface runs round the schedule as a
    1px line, one colour with the toolbar it joins at the top, and a week that
    reaches the frame's foot leaves its last row's brighter rule to that line
-   so the four sides match. The grid inside it is ruled in that same
+   so the four sides match; the driver roster beside it, the same black
+   grid, is framed the same way. The grid inside it is ruled in that same
    surface, the rows and the days alike, so the board is one quiet lattice
    and the trips are the brightest thing on it. The regions are told apart
    by surface, as Carbon's data table is, with no line between them: the
@@ -1358,7 +1372,7 @@
   --rux-layer: var(--rux-layer-01);
   border-color: var(--rux-background);
 }
-[data-theme="rux-100"] .scheduler-frame {
+[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside) {
   --scheduler-region-edge: 1px solid var(--rux-layer);
   --scheduler-last-rule: 0;
 }

@@ -15249,10 +15249,10 @@
     window.Rux?.modal?.close?.(contactsModal);
   }
   contactsModal?.addEventListener('rux:modal-closed', () => { contactsOpen = null; });
-  /* `seat`, a driver's trip_drivers row, presses that driver's Remind, or
-     Tell in its place, without the window, as a Departures line asks; a
-     driver with neither gets the window. */
-  function openContactsFrom(bar, slot, seat = null) {
+  /* `press` presses one button without the window, as a Departures line
+     asks: `driver-info`, or a driver's trip_drivers row for their Remind, or
+     Tell in its place. With no such button the window opens. */
+  function openContactsFrom(bar, slot, press = null) {
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     if (!contactsModal || !trip) return;
     closeContacts();
@@ -15522,7 +15522,11 @@
     if (numbers.length > 1) {
       toAll.push({ label: `Text all drivers (${numbers.length})`, run: goTo(`sms:/open?addresses=${numbers.join(',')}`) });
     }
+    /* What a Departures line can press without the window: the driver
+       details, and each driver's Remind or Tell, by their seat. */
+    const sends = new Map();
     const letter = driverLetter(trip);
+    const thread = barThreadUrl(bar);
     if (letter) {
       const sent = ['Emailed driver details to', letter.to?.name || 'the customer'];
       if (letter.to?.email) {
@@ -15530,12 +15534,17 @@
           `mailto:${letter.to.email}?subject=${encodeURIComponent(letter.subject)}&body=${encodeURIComponent(letter.body)}`,
           async () => { await askInfoSent(sent[1], 'Answer once the email has gone.'); offer(...sent, 'Driver details emailed')(); }) });
       }
-      hand(booker, toLetter, { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
+      /* Driver info copies the details and opens the trip's email thread,
+         where it has one, in the window every thread reuses. */
+      const info = { label: 'Copy driver details', words: 'Driver info', say: 'Copy driver info', icon: '#m-content_copy', run: async () => {
         if (!(await copyText(letter.body))) return;
         closeContacts();
-        await askInfoSent(sent[1], 'The driver details are copied. Paste and send them, then answer.');
+        if (thread) window.open(thread, 'missive', 'noopener');
+        await askInfoSent(sent[1], `The driver details are copied. Paste them${thread ? ' in the thread' : ''} and send them, then answer.`);
         offer(...sent, 'Driver details copied', 'Add to updates once sent?')();
-      } });
+      } };
+      sends.set('driver-info', info);
+      hand(booker, toLetter, info);
     }
     for (const p of people) {
       if (p.email) hand(p, toEmail, { label: `Email ${p.name}`, words: 'Email', icon: '#m-mail', run: goTo(`mailto:${p.email}`, offer('Emailed', p.name)) });
@@ -15552,10 +15561,8 @@
         ? driverText.DRIVER_LINK + encodeURIComponent(s.token) : ''), () => '');
     /* Remind opens a text to the driver with their reminder typed in; to the
        office's Google Messages conversation, which takes no text, it copies
-       the reminder first to paste. Each driver's one is kept by them, for a
-       press from Departures. */
-    const sends = new Map();
-    const send = (p, it) => { sends.set(p, it); hand(p, toRemind, it); };
+       the reminder first to paste. */
+    const send = (p, it) => { if (p.seat?.id) sends.set(String(p.seat.id), it); hand(p, toRemind, it); };
     for (const p of drivers) {
       if (p.news) {
         const text = linkOf(p).then(p.news);
@@ -15586,7 +15593,7 @@
           run: goTo(`sms:${dial(p.phone)}${apple ? '&' : '?'}body=${encodeURIComponent(p.reminder)}`, () => void askReminded(p)) });
       }
     }
-    const asked = seat && sends.get(drivers.find(p => String(p.seat?.id) === String(seat)));
+    const asked = press && sends.get(String(press));
     if (asked) { asked.run(); return; }
     for (const p of everyone) {
       if (p.phone || (p.texting && !docked)) continue;
@@ -17745,10 +17752,9 @@
     // A leg by its key, its id, or by the old word an older link names.
     const named = asked.get('leg');
     const leg = ['outbound', 'return'].includes(named) || /^[0-9a-f-]{36}$/i.test(named ?? '') ? named : null;
-    if (asked.get('open') === 'contacts' || asked.get('open') === 'remind') {
-      const seat = asked.get('open') === 'remind' ? asked.get('seat') : null;
+    if (asked.get('open') === 'contacts') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
-        .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar, undefined, seat); });
+        .then(() => { const bar = selectedBar(); if (bar) openContactsFrom(bar, undefined, asked.get('press')); });
     } else if (asked.get('file') === 'itinerary') {
       goToTrip(asked.get('trip'), asked.get('date'), { open: false, leg })
         .then(() => openLegItinerary({ trip: asked.get('trip'), leg,

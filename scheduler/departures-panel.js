@@ -213,13 +213,13 @@
     }
     // A driver's forms are files, opened from the trip's Forms list.
     if (where === 'trip-forms') return { words: 'Print', href: tripHref(page, '&tab=forms') };
-    /* The word on the Contact list's button the line opens it for. A
-       driver's Remind or Tell names their seat, so the board presses that
-       button for them and the list stays shut. */
+    /* The word on the Contact list's button the line presses, which the
+       link names, Driver info or a driver's Remind or Tell by their seat, so
+       the board presses it and the list stays shut. */
     if (where === 'contacts') {
       const words = line.key === 'reminder' ? 'Remind' : line.key === 'told' ? 'Tell' : 'Send';
-      const seat = words !== 'Send' && member?.seat?.id;
-      return { words, href: tripHref(page, seat ? `&open=remind&seat=${encodeURIComponent(seat)}` : '&open=contacts') };
+      const press = words === 'Send' ? 'driver-info' : member?.seat?.id;
+      return { words, href: tripHref(page, `&open=contacts${press ? `&press=${encodeURIComponent(press)}` : ''}`) };
     }
     if (where === 'billing') return { words: 'Open', href: tripHref(page, '&tab=billing') };
     return null;

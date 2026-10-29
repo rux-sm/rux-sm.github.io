@@ -1365,3 +1365,19 @@
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked]) :is(.scheduler-card__quick .rux--text-input, .scheduler-card__edit .rux--text-area) {
   background: color-mix(in srgb, var(--card-surface), #fff 9%);
 }
+
+/* RUX 100'S TODAY IS A PILL, since its accent is white and white words alone
+   would not part today from the other days: the date on the board's header
+   is set in the inverse ink on a capsule of the primary text, as a
+   calendar marks today, and the roster's letter on a disc of it. */
+[data-theme="rux-100"] .scheduler-day--today { color: var(--rux-text-primary); }
+[data-theme="rux-100"] .scheduler-day--today .scheduler-day__num {
+  padding-inline: var(--rux-spacing-03);
+  border-radius: 999px;
+  background: var(--rux-text-primary);
+  color: var(--rux-text-inverse);
+}
+[data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--today {
+  background: radial-gradient(circle at center, var(--rux-text-primary) 0 9px, transparent 9.5px);
+  color: var(--rux-text-inverse);
+}

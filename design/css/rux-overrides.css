@@ -3708,15 +3708,73 @@
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
 }
 
-/* RUX 100'S FIELDS ARE THEIR FILL ALONE. Carbon underlines every field with
-   the strong border; here a text input, a text area, a search, a select, a
-   date, a number and its steppers, a dropdown and a time each lose the line,
-   and the field reads by its fill, a step off the surface it stands on. The
-   border keeps its width, so nothing moves, and the focus and error rings,
-   which are outlines, are unchanged. */
+/* RUX 100'S FIELDS ARE RINGED. Carbon underlines every field with the strong
+   border; here the line goes all the way round, a 1px ring in border-strong-01
+   on every layer, which holds 3 to 1 against the page, a panel and a tile, and
+   steps to border-strong-02 under the pointer. Carbon's focus and error are
+   2px outlines round the same box, so every state is the ring changing
+   colour. The ring is an inset shadow and the underline keeps its width in
+   transparent, so nothing moves. */
 [data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--number input[type="number"], .rux--number__control-btn, .rux--list-box, .rux--time-picker__input-field) {
   border-block-end-color: transparent;
 }
 /* A number's stepper draws its line under the pointer as an inset shadow,
    not a border, so that goes too. */
 [data-theme="rux-100"] .rux--number__control-btn:hover { box-shadow: none; }
+/* A field that is one box wears the ring itself. A combo box's input is
+   left to the list box it stands in, and a fluid text area's to the wrapper
+   that holds its label. */
+[data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--time-picker__input-field):not(.rux--list-box *, .rux--text-area--fluid *) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
+}
+[data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--time-picker__input-field):not(.rux--list-box *, .rux--text-area--fluid *):hover {
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-02);
+}
+/* A field built of parts, a dropdown or combo box, a number with its
+   steppers and a fluid text area with its label, wears one ring over the
+   whole on a layer above its parts, whose own fills would cover a shadow
+   drawn beneath them. That layer would also cover the focus and error
+   outlines a part draws inside it, so the ring steps aside while either
+   shows. */
+[data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper, .rux--text-area--fluid .rux--text-area__wrapper)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
+  pointer-events: none;
+}
+[data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper, .rux--text-area--fluid .rux--text-area__wrapper):hover::after {
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-02);
+}
+[data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper, .rux--text-area--fluid .rux--text-area__wrapper):is(:focus-within, [data-invalid], :has([data-invalid]))::after {
+  box-shadow: none;
+}
+/* A fluid search draws its underline again beneath the clear button, which
+   would cover it; the ring shows through that button, so the strip goes. */
+[data-theme="rux-100"] .rux--search--fluid .rux--search-input:not(:focus-visible) ~ .rux--search-close:not([disabled])::after {
+  background: transparent;
+}
+/* A fluid time picker's three parts stand edge to edge, so each draws its
+   ring on three sides and the part before it supplies the fourth: one line
+   at every seam, where two rings would make two. The ring's line is the
+   divider, so Carbon's own divider goes. */
+[data-theme="rux-100"] .rux--time-picker--fluid__wrapper > * :is(.rux--text-input, .rux--select-input) {
+  box-shadow: inset 0 1px var(--rux-border-strong-01), inset -1px 0 var(--rux-border-strong-01), inset 0 -1px var(--rux-border-strong-01);
+}
+[data-theme="rux-100"] .rux--time-picker--fluid__wrapper > :first-child :is(.rux--text-input, .rux--select-input) {
+  box-shadow: inset 0 0 0 1px var(--rux-border-strong-01);
+}
+[data-theme="rux-100"] .rux--time-picker--fluid .rux--time-picker--fluid__wrapper > * .rux--select-input__wrapper::before { display: none; }
+/* A disabled field is its fill alone, as Carbon's loses its line. */
+[data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--search-input, .rux--select-input, .rux--date-picker__input, .rux--time-picker__input-field):not(.rux--list-box *):disabled,
+[data-theme="rux-100"] :is(.rux--list-box, .rux--number__input-wrapper):is(.rux--list-box--disabled, .rux--dropdown--disabled, :has(> .rux--list-box__field:disabled, > .rux--list-box__field > input:disabled, > input:disabled))::after {
+  box-shadow: none;
+}
+/* A read-only field keeps a quiet ring in the subtle border, as Carbon's
+   keeps a quiet line: it shows where the value sits without offering it for
+   typing, and the pointer changes nothing. */
+[data-theme="rux-100"] :is(.rux--text-input, .rux--text-area, .rux--date-picker__input):not(.rux--list-box *):is([readonly], [readonly]:hover),
+[data-theme="rux-100"] .rux--select--readonly .rux--select-input:is(*, :hover),
+[data-theme="rux-100"] :is(.rux--dropdown--readonly, .rux--combo-box--readonly, .rux--multi-select--readonly, .rux--number--readonly .rux--number__input-wrapper):is(*, :hover)::after {
+  box-shadow: inset 0 0 0 1px var(--rux-border-subtle);
+}

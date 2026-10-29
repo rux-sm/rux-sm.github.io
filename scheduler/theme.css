@@ -847,7 +847,7 @@
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
-   pane's black, every row and day parted by the board's one line. A booked
+   pane's black, every row parted by the board's one line. A booked
    day is a solid layer-02 mark in the primary text, the board's trip tile,
    and a short rest keeps that grey with its hours in the warning yellow, 9.0
    to 1, or a shorter one's in the light red, 6.3.
@@ -858,10 +858,11 @@
    over a grey tint, where it was blue; one free for only part keeps the
    rest tone. */
 [data-theme="rux-100"] { --scheduler-avail-whole: var(--rux-border-strong-02); }
-/* The days are ruled at the line's whole strength, as the rows are, where
-   the other themes halve it, so the board has one line colour. */
+/* No rule runs between the days, on the board or in the roster: each bus
+   and each driver keeps the line under its row, the day band names the
+   columns, and the trips and marks themselves show where a day starts. */
 [data-theme="rux-100"] :is(.scheduler-week .scheduler-track, .scheduler-week--avail .scheduler-avail__cell) {
-  --scheduler-day-rule: var(--rux-border-subtle-01);
+  --scheduler-day-rule: transparent;
 }
 /* No second, lighter rule parts the priority groups, so every line in the
    roster is the board's; the priority stays on each name's title. */
@@ -1357,7 +1358,7 @@
    tracks all take the page's black, and every region is parted from the next
    by one 1px line. That line is Geist's own border grey, #1f1f1f, 1.3 to 1
    on the black, set as border-subtle-01 on the board and every panel beside
-   it, so the toolbar's dividers, the grid, the region edges and the panels'
+   it, so the toolbar's dividers, the rows, the region edges and the panels'
    rules are all that one grey. A trip is a layer-02 tile standing on the
    black, 1.39 to 1, the brightest thing on it.
    The driver roster beside it is the same black grid with the same lines.

@@ -5675,6 +5675,13 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-documents-error { margin: 0; color: var(--rux-text-error); }
 /* Several chosen files scroll in a box of their own, so Save stays in reach. */
 .scheduler-documents-files { max-block-size: 22.5rem; overflow-y: auto; }
+
+/* The QuickBooks page: a card's lines and past invoices as plain lines, the
+   quiet text under its title and under each trip, and Save and Skip 8px apart. */
+.scheduler-quickbooks-lines { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--rux-spacing-02); }
+.scheduler-quickbooks-quiet { margin: 0; color: var(--rux-text-secondary); }
+.scheduler-quickbooks-actions { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-03); }
+.scheduler-quickbooks-why { display: block; color: var(--rux-text-secondary); }
 /* A kind's name, then whether it is kept once for each driver. */
 .scheduler-kinds-row {
   display: grid;

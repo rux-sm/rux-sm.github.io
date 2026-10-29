@@ -837,11 +837,14 @@
   --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
   color: var(--rux-text-error);
 }
-/* A booked mark carries no bus: the grey bar already says booked, and a bus
-   on the first day of every leg filled the roster with icons. A day off
-   keeps its reason's drawing, the one thing its red does not say, and the
-   cell's words still name the trip. */
-[data-theme="rux-100"] .scheduler-avail__cell--busy:not(.scheduler-avail__cell--off) > .scheduler-avail__glyph { display: none; }
+/* A roster mark carries no drawing: the grey bar already says booked and
+   the red one away, and a drawing on the first day of every bar filled the
+   roster with icons. Each cell's words still name its trip or the reason
+   for the time off. The rule that parts the two weeks in the day band goes
+   too, kept at its width so the letters do not move: the letters repeat, M
+   after S, and say where the week turns. */
+[data-theme="rux-100"] .scheduler-avail__glyph { display: none; }
+[data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--week { border-inline-start-color: transparent; }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

@@ -191,7 +191,8 @@
         body.appendChild(line);
       }
     }
-    if (body.childElementCount) head.appendChild(body);
+    // Above the equipment at the foot, which data.js draws once.
+    if (body.childElementCount) head.insertBefore(body, head.querySelector(':scope > .scheduler-row-head__equip'));
 
     if (opts.tip) {
       const lines = tipOf(bus, shown);

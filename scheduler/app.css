@@ -370,6 +370,18 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
+/* The bus's equipment under the body, two even slots, the sleeper's and the
+   lift's, each icon centred in its half. Presses go through to the number,
+   whose tip and title name them. */
+.scheduler-row-head__equip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  flex: none;
+  pointer-events: none;
+  color: var(--rux-text-secondary);
+}
+.scheduler-row-head__equip svg { display: block; }
 /* The dial: a 270° arc, 2.6px with round ends, the rounded ends these
    instruments' alone while Carbon's controls stay square. */
 .scheduler-row-head__dial { position: relative; align-self: center; inline-size: 38px; block-size: 38px; }
@@ -429,7 +441,7 @@ button.scheduler-row-head__num::after {
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
-.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__type) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__type, .scheduler-row-head__equip) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and

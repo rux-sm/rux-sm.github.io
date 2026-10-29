@@ -191,9 +191,8 @@
   /* What a bus number's toggletip says, laid out as the trip card is: a head
      with the bus in its own colour, a disc wearing its type's drawing beside
      its name and make, then a ruled row each for its equipment, VIN and any
-     status but active, and last the switch that shows every bus's equipment
-     under its number. Every value with textContent: a bus's details are data,
-     never markup. */
+     status but active. Every value with textContent: a bus's details are
+     data, never markup. */
   // The equipment each bus has, as the icon and word the tip and the bus
   // column both draw.
   const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
@@ -1056,7 +1055,7 @@
       /* The marks at the top right: the type's drawing, so a head reads on
          its own when the band has scrolled away, and out of service, a state
          that changes what the row can take this week. The lift and sleeper
-         are the tip's to say. Each symbol keeps its own viewBox. */
+         are at the head's foot. Each symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -1080,6 +1079,23 @@
       }
       if (kit.childElementCount) top.appendChild(kit);
       if (r.bus) BusHead.draw(head, r.bus, null, { week: false });
+
+      /* The bus's equipment at the head's foot, a slot each, the sleeper on
+         the left and the lift on the right, so a lift stands in the same
+         place down the column whether or not its bus has a sleeper. */
+      if (r.bus?.sleeper || r.bus?.ada_lift) {
+        const equip = el('div', 'scheduler-row-head__equip');
+        for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
+          const slot = el('span');
+          if (on) {
+            slot.setAttribute('role', 'img');
+            slot.setAttribute('aria-label', label);
+            slot.appendChild(svgUse(href, '16', '0 0 32 32'));
+          }
+          equip.appendChild(slot);
+        }
+        head.appendChild(equip);
+      }
 
       const track = el('div', 'scheduler-track');
       track.style.setProperty('--scheduler-lanes', lanes);
@@ -11459,9 +11475,8 @@
   });
 
   /* ── View options ─────────────────────────────────────────────────────────
-     Start on Sunday, two weeks at a time, equipment under the bus numbers,
-     which a bus's tip switches too, time at the yard between trips, and the
-     bar-row toggles. Turning a row off removes it
+     Start on Sunday, two weeks at a time, time at the yard between trips,
+     and the bar-row toggles. Turning a row off removes it
      rather than blanking it: `--scheduler-bar-rows` is the count, so the bar
      shrinks and more buses fit. Saved in `localStorage` and read with a
      try-catch, so a browser that refuses storage gets the defaults. */

@@ -456,9 +456,9 @@ expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
     .map(([h]) => [...dial(h), line(h)]),
   [['Idle14m', 'quiet', false, null], ['Idle45m', 'warning', false, null], ['Off', 'quiet', false, null]]);
-expect('the engine lamp takes the type\'s place, red for the stop lamp',
+expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
-  [['warning'], ['error'], []]);
+  [[], [], []]);
 expect('no signal: a dash and the gauges faded, how long since it was seen on the dial\'s title',
   (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').title]; })(),
   ['–', true, 'No signal, last seen 3h ago']);

@@ -198,22 +198,6 @@
   // column both draw.
   const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
     bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
-  /* The board's corner: the type's drawing, or its initial where it has
-     none, named for a screen reader and on hover. */
-  function paintCorner(corner, type) {
-    corner.dataset.type = type;
-    const known = window.SchedulerVehicles?.typeOf(type);
-    const name = known ? (known.label || known.name) : (type || 'Vehicle');
-    const icon = window.SchedulerVehicles?.iconOf(type);
-    const mark = el('span', 'scheduler-corner__type', icon ? null : name.charAt(0).toUpperCase());
-    mark.setAttribute('role', 'img');
-    mark.setAttribute('aria-label', `Bus number, ${name}`);
-    if (icon) mark.appendChild(svgUse(icon, '16', '0 0 32 32'));
-    corner.title = `Bus number · ${name}`;
-    corner.replaceChildren(mark);
-  }
-  // Set by render for the week on screen, and called as the board scrolls.
-  let nameBoardCorner = () => {};
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-bus-tip');
     const head = el('div', 'scheduler-bus-tip__head');
@@ -957,8 +941,8 @@
     const used = new Set([...tracks.keys()]);
     /* Grouped by type in the order of the office's vehicle-types list, fleet
        order kept within a type, so a van never reads as the next coach down.
-       The first type on the list is the primary one and heads no band; a type
-       the list lacks follows every listed one. */
+       Each bus's head draws its type's icon, so no band parts the groups; a
+       type the list lacks follows every listed one. */
     const typeList = window.SchedulerVehicles?.types ?? [];
     const typeKey = b => String(b.type || '').trim().toLowerCase();
     const typeRank = b => {
@@ -969,19 +953,14 @@
       .filter(b => b.status === 'active' || used.has(b.id))
       .map(b => ({ id: b.id, bus: b }))
       .sort((a, b) => typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
-    const primaryType = typeList[0]?.name.toLowerCase() ?? '';
     // Always present, hidden when empty. A drag has to be able to drop the
     // week's first unassigned trip somewhere, and a row that is not in the
     // document has no rectangle to aim at.
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
 
     into.replaceChildren();
-    /* The corner heads the column of bus numbers with the drawing of the type
-       being read: the primary type's at the top, then each band's as it
-       reaches the day band, so the first group needs no band of its own. */
-    const corner = el('div', 'scheduler-corner');
-    paintCorner(corner, typeList[0]?.name ?? '');
-    into.appendChild(corner);
+    // The corner over the bus numbers is empty: each head draws its own type.
+    into.appendChild(el('div', 'scheduler-corner'));
 
     // Today is marked on its header cell only.
     const today = iso(new Date());
@@ -1025,28 +1004,7 @@
     const oosByBus = new Map();
     for (const w of oos) { if (!oosByBus.has(w.bus_id)) oosByBus.set(w.bus_id, []); oosByBus.get(w.bus_id).push(w); }
 
-    let bandType = primaryType;
     for (const r of rows) {
-      /* A band where the type changes, drawn as the type's icon alone, the
-         same the corner takes up once the band passes under it. Its name, as
-         the vehicle-types list writes it, is for hover and a screen reader; a
-         type with no drawing shows its initial, as the corner does. The No bus
-         row has its own tint and draws none. */
-      if (r.bus && typeKey(r.bus) !== bandType) {
-        bandType = typeKey(r.bus);
-        const name = window.SchedulerVehicles?.typeOf(r.bus.type);
-        const band = el('div', 'scheduler-type-band');
-        band.dataset.type = r.bus.type || '';
-        const said = name ? (name.label || name.name) : (String(r.bus.type || '').trim() || 'No type');
-        const icon = window.SchedulerVehicles?.iconOf(r.bus.type);
-        const label = el('span', null, icon ? null : said.charAt(0).toUpperCase());
-        label.setAttribute('role', 'img');
-        label.setAttribute('aria-label', said);
-        band.title = said;
-        if (icon) label.appendChild(svgUse(icon, '16', '0 0 32 32'));
-        band.appendChild(label);
-        into.appendChild(band);
-      }
       const bars = tracks.get(r.id) ?? [];
       const lanes = bars.length ? assignLanes(bars) : 1;
       const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
@@ -1163,21 +1121,6 @@
     // A spare grid is drawn and nothing else: what follows belongs to the week
     // the board is actually reading.
     if (target) return;
-
-    // The corner hands over to each band as it passes under the day band.
-    const bands = [...into.querySelectorAll('.scheduler-type-band')];
-    nameBoardCorner = () => {
-      const edge = corner.getBoundingClientRect().bottom;
-      // A hidden board measures zero; it is named again when it is drawn.
-      if (!edge) return;
-      let type = typeList[0]?.name ?? '';
-      for (const b of bands) {
-        if (b.getBoundingClientRect().top >= edge) break;
-        type = b.dataset.type;
-      }
-      if (corner.dataset.type !== type) paintCorner(corner, type);
-    };
-    nameBoardCorner();
 
     // The editor keeps its trip across a render. Its opener becomes the new bar
     // for that trip when this week has one, so focus can go back to it.
@@ -11209,7 +11152,6 @@
   let stuckRowsAsked = false;
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
-    nameBoardCorner();
     if (!stuckRowsAsked) {
       stuckRowsAsked = true;
       requestAnimationFrame(() => { stuckRowsAsked = false; fitStuckRows(); });

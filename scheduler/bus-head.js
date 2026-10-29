@@ -2,8 +2,9 @@
    Rux Scheduler — BUS HEAD, what the bus column says of each bus
    --------------------------------------------------------------------------
    The head of a bus's row on the board keeps its number top left and, at
-   the top right, the type's drawing, or an engine lamp in its place while
-   one is on. Under them it draws what belongs to the bus rather than a trip:
+   the top right, the type's drawing. An engine lamp is the number's
+   toggletip's alone, its line led by the lamp. Under them the head draws
+   what belongs to the bus rather than a trip:
    - In the week that holds today, for a bus Samsara answers for: a 38px
      speed dial, a 270° arc filling from 0 to TOP_MPH with the speed in its
      middle, green while moving and amber over SPEEDING; Idle over how long,
@@ -83,7 +84,7 @@
     return { dial: 'Off', tone: 'quiet', words: 'Engine off' };
   }
 
-  // The engine's lamp, the one mark the top right takes in place of the type.
+  // The engine's lamp, which leads its line in the number's toggletip.
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
@@ -153,17 +154,7 @@
     head.toggleAttribute('data-signal-lost', !!noSignal(shown));
     const top = head.querySelector('.scheduler-row-head__top');
 
-    // The lamp, at the top right in the type's place.
-    top?.querySelector('.scheduler-row-head__mark')?.remove();
     const lamp = lampOf(shown);
-    if (lamp && top) {
-      const s = el('span', `scheduler-row-head__mark scheduler-row-head__mark--${lamp.tone}`);
-      s.setAttribute('role', 'img');
-      s.setAttribute('aria-label', lamp.word);
-      s.title = lamp.word;
-      s.appendChild(svgUse(lamp.icon, '16', '0 0 32 32'));
-      top.appendChild(s);
-    }
 
     const state = shown ? stateOf(shown) : null;
     const levels = shown ? [levelOf(shown.fuel, FUEL), levelOf(shown.def, DEF)] : [];
@@ -212,6 +203,12 @@
           opts.tip.querySelector('.scheduler-bus-tip__head')?.after(box);
         }
         box.replaceChildren(...lines.map(l => el('div', null, l)));
+        // The lamp's line is the last, and leads with the lamp in its tone.
+        if (lamp) {
+          const said = box.lastElementChild;
+          said.className = `scheduler-bus-tip__lamp scheduler-bus-tip__lamp--${lamp.tone}`;
+          said.prepend(svgUse(lamp.icon, '16', '0 0 32 32'));
+        }
       }
     }
   }

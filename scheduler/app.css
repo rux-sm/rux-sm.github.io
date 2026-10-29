@@ -203,10 +203,6 @@
   min-inline-size: 3.5rem;
   justify-content: center;
 }
-/* The type being read, as data.js draws it; 16px, so it never widens the
-   column past its bus numbers. */
-.scheduler-corner__type { display: inline-flex; }
-.scheduler-corner__type svg { display: block; }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
 /* A weekend is quieter by weight rather than colour: the weekdays' secondary
    text is the faintest that still reads at 4.5 to 1 on this band in every
@@ -317,6 +313,18 @@ button.scheduler-row-head__num::after {
 .scheduler-bus-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
 .scheduler-bus-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
 .scheduler-bus-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
+/* An engine lamp that is on: the lamp before its words, in Carbon's support
+   colour for an inverse surface, its inner mark filled as Carbon fills it so
+   the yellow reads on the light tip. */
+.scheduler-bus-tip__lamp {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rux-spacing-02);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+}
+.scheduler-bus-tip__lamp > svg { flex: none; }
+.scheduler-bus-tip__lamp--warning > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
+.scheduler-bus-tip__lamp--error > svg { color: var(--rux-support-error-inverse); --rux-icon-inner: var(--rux-text-on-color); }
 .scheduler-row-head__num {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
@@ -325,8 +333,8 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
 }
-/* The type's drawing and the out-of-service mark at the top right; an
-   engine lamp takes the type's place while it is on. */
+/* The type's drawing and the out-of-service mark at the top right. An
+   engine lamp is not drawn here: it leads its line in the number's tip. */
 .scheduler-row-head__kit {
   /* Above the number's click layer, so the out-of-service mark keeps its
      hover label; the type lets a press through to the number, which opens
@@ -339,13 +347,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__kit svg { display: block; }
 .scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; pointer-events: auto; }
-.scheduler-row-head__top:has(> .scheduler-row-head__mark) .scheduler-row-head__type { display: none; }
-/* THE BUS'S STATE, bus-head.js's, under the number's click layer, so a press
-   anywhere on the head opens the tip that words it all. */
-.scheduler-row-head__mark { display: inline-flex; }
-.scheduler-row-head__mark > svg { display: block; }
-.scheduler-row-head__mark--error { color: var(--scheduler-head-critical); }
-.scheduler-row-head__mark--warning { color: var(--scheduler-head-low); }
 /* The compact board's one dot, drawn only there. */
 .scheduler-row-head__dot { display: none; box-sizing: border-box; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
@@ -428,7 +429,7 @@ button.scheduler-row-head__num::after {
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
-.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__mark, .scheduler-row-head__type) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__type) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and
@@ -436,37 +437,6 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
 .scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
 
-/* The heading over each vehicle type after the primary one, which is the day
-   band again, lower down: the same surface, rule and ink, so a van's section
-   reads as a section of the board. */
-.scheduler-type-band {
-  grid-column: 1 / -1;
-  block-size: 2rem;
-  line-height: 2rem;
-  background: var(--scheduler-band-surface);
-  border-block-end: var(--scheduler-band-rule);
-  color: var(--rux-text-secondary);
-  font-size: var(--rux-heading-compact-01-font-size);
-  font-weight: var(--rux-heading-compact-01-font-weight);
-  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
-}
-/* The drawing rides the left edge, so a wide week scrolled sideways keeps it
-   in view, where the bus column is. */
-.scheduler-type-band > span {
-  position: sticky;
-  inset-inline-start: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--rux-spacing-03);
-  block-size: 100%;
-  padding-inline: var(--rux-spacing-03);
-}
-.scheduler-type-band svg { flex: none; }
-/* The row over a band takes the band's rule for its own, as the day band
-   meets the first row. */
-.scheduler-row:has(+ .scheduler-type-band) > * {
-  border-block-end: var(--scheduler-band-rule);
-}
 /* THE UNASSIGNED ROW SITS LOWER THAN THE BUS ROWS: its head and track are the
    pane's surface mixed 25% toward black, in every theme, so a trip bar on it
    stands off it by its fill's lightness and not by its hue alone. A grey a
@@ -3699,8 +3669,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-grid--spare .scheduler-corner,
 .scheduler-grid--spare .scheduler-day,
-.scheduler-grid--spare .scheduler-row-head,
-.scheduler-grid--spare .scheduler-type-band { visibility: hidden; }
+.scheduler-grid--spare .scheduler-row-head { visibility: hidden; }
 .scheduler-week--sliding > .scheduler-grid--next .scheduler-track {
   transform: translateX(calc(var(--scheduler-slide, 0px) + var(--scheduler-slide-w, 100%)));
 }

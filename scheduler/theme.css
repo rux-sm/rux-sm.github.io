@@ -1331,6 +1331,31 @@
   --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
 }
 
+/* RUX 100'S BOARD IS THE PAGE'S BLACK, so an empty day is the base and a
+   trip a tile standing on it: the layer-02 bar holds 1.39 to 1 on black,
+   where it held 1.20 on layer-01. The toolbar and the filled day band keep
+   their surfaces, a table's header over its rows. Unassigned, a darker tint
+   of the board elsewhere, has nothing darker than black, so it takes
+   layer-01, and the bar's floating card keeps the raised surface. Black on
+   black has no edge, so the toolbar's surface runs round the schedule as a
+   1px line, one colour with the toolbar it joins at the top, and a week that
+   reaches the frame's foot leaves its last row's brighter rule to that line
+   so the four sides match. The grid inside it is ruled in that same
+   surface, the rows, the days and the bus column's edge alike, so the
+   board is one quiet lattice and the trips are the brightest thing on it.
+   The filled panels beside it are parted by their fill and draw none. */
+[data-theme="rux-100"] .scheduler-week { --rux-layer: var(--rux-background); }
+[data-theme="rux-100"] .scheduler-week :is(.scheduler-track, .scheduler-row-head) {
+  border-color: var(--rux-layer-01);
+  --scheduler-day-rule: var(--rux-layer-01);
+}
+[data-theme="rux-100"] .scheduler-frame {
+  --scheduler-region-edge: 1px solid var(--rux-layer);
+  --scheduler-last-rule: 0;
+}
+[data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
+[data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
+
 /* RUX 100'S STANDARD TRIP IS GREY, so colour on its board always means
    something: a confirmed trip is a layer-02 tile in the primary text, and
    only a trip not yet confirmed, a placeholder or a colour the office picked
@@ -1358,12 +1383,12 @@
 }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:
-   the status colour mixed into the board's own surface, written in that
+   the status colour mixed into layer-01, written in that
    status's own words colour. A placeholder is the warning at 24%, about
    #4b3f17, in the warning yellow, 6.2 to 1; a trip not yet confirmed is the
    error at 32%, about #5f282a, in the error text red, 4.9 to 1. Red takes
    more because yellow is the brighter hue, so the two stand off the board
-   alike, 1.7 and 1.6 to 1, and on either the update's and drivers' marks
+   alike, 2.0 and 1.8 to 1, and on either the update's and drivers' marks
    still read. Each hovers six points stronger, so the placeholder needs no
    inner ring. */
 [data-theme="rux-100"] {

@@ -15,12 +15,25 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 - **QuickBooks Desktop for Mac has no way in but a file.** It has no API and
   no Web Connector, and every QuickBooks connector is for QuickBooks Online,
   so the scheduler reads QuickBooks' own report export and writes an IIF file.
-- **An invoice posts to Accounts Receivable, each line to Gross Trucking
-  Income, and a Sales Tax line at zero to Sales Tax Payable,** as QuickBooks'
-  own invoices do; an estimate posts to Estimates.
+- **An invoice posts to Accounts Receivable; a Bus Rental, Addt'l Driver or
+  Hotel line to Gross Trucking Income; a Deductions line to Escamilla Tour
+  Buses, LLC; and a Sales Tax line at zero,** as the office's own invoices
+  do: 85 of its 87 discount lines in 2025 post to that account. An estimate
+  posts to Estimates.
+- **QuickBooks names a customer its own way,** UTRGV for UTRGV Edinburg and
+  Mercedes Independent School District for Mercedes High School, and an IIF
+  name it does not hold adds a new customer. So Export writes each trip under
+  the name QuickBooks has, learned from that customer's matched invoices, and
+  holds back a trip whose customer has none until rux names it.
+- **Export writes a Bus Rental line from the quoted price where a trip has no
+  quote lines,** one per leg on a split trip, as the printed quote does,
+  because only 5 of the 312 trips that have run with no invoice have lines.
+  Its description is the quote's, on one line, since an IIF field holds no
+  line break.
 - **What QuickBooks holds is matched first, before anything is exported.**
   Most trips that have run have no invoice recorded, so an export before matching would make duplicates of invoices
-  QuickBooks already has.
+  QuickBooks already has: an IIF import only adds, and never finds or changes
+  a transaction QuickBooks holds.
 - **QuickBooks' list comes in as one report,** the Transaction Detail report
   of every estimate and invoice, saved as Excel or CSV, with Trans #, Type,
   Date, Num, Name, P.O. #, Memo, Item, Account and Amount. It is read in the
@@ -63,19 +76,22 @@ file the office imports, so no invoice is typed by hand and none is made twice.
 
 ## Questions
 
-- Is Gross Trucking Income the account behind every item, Addt'l Driver,
-  Deductions and Hotel as well as Bus Rental? It is the one QuickBooks' own
-  invoice lines post to, beside a Sales Tax line at zero.
 - Should the export number the invoices from the next number QuickBooks will
-  use, or leave Num empty for QuickBooks to fill?
+  use, or leave Num empty for QuickBooks to fill? The office's numbers run one
+  after another, 15729 the latest recorded.
+- Where does a customer's QuickBooks name live: a `qb_name` column on
+  `customers`, a migration rux applies, filled from the matched invoices?
 
 ## Tasks
 
 - [ ] Pick the matches the scores left with rux on `scheduler/quickbooks.html`;
       the sure ones are saved, marked `QuickBooks match` in their history.
-- [ ] Write a one-invoice IIF from a trip that has run, for rux to import into
-      a backup company file, and settle the IIF columns and the Bus # and
-      REQ # fields from what QuickBooks makes of it.
+- [ ] Import the one-invoice IIF of trip 100991, numbered TEST1, into a backup
+      company file, and settle from what QuickBooks makes of it the item and
+      account of each line, the customer, the P.O. #, the description and its
+      ñ, and the Bus # and REQ # fields.
+- [ ] Record each customer's QuickBooks name from its matched invoices, once
+      its home is settled.
 - [ ] Build Export and Mark imported on the same page, with the page in
       `switcher.json`'s scheduler links if it needs one, and the inventories.
 - [ ] Write `scheduler/docs/quickbooks.md`, the how-to for the weekly import:

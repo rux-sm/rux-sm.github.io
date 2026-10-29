@@ -3778,3 +3778,24 @@
 [data-theme="rux-100"] :is(.rux--dropdown--readonly, .rux--combo-box--readonly, .rux--multi-select--readonly, .rux--number--readonly .rux--number__input-wrapper):is(*, :hover)::after {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle);
 }
+
+/* RUX 100'S ACCENT IS WHITE, so what Carbon writes in on-colour white over
+   the accent is written in the inverse ink instead: the primary button,
+   the batch bar and a picked day. The tokens are set on the part itself, so
+   every rule Carbon writes for it, its icon's included, reads the dark
+   ink, and a disabled primary keeps its own disabled ink. */
+[data-theme="rux-100"] :is(.rux--btn--primary, .rux--batch-actions, .rux--batch-summary, .flatpickr-day.selected) {
+  --rux-text-on-color: var(--rux-text-inverse);
+  --rux-icon-on-color: var(--rux-icon-inverse);
+}
+/* No hue marks a link here, so a standalone link keeps the underline Carbon
+   shows only under the pointer, in the strong border's grey, and takes its
+   own white under the pointer. */
+[data-theme="rux-100"] .rux--link:not(.rux--link--disabled) {
+  text-decoration: underline;
+  text-decoration-color: var(--rux-border-strong-02);
+  text-underline-offset: 3px;
+}
+@media (any-hover: hover) {
+  [data-theme="rux-100"] .rux--link:not(.rux--link--disabled):hover { text-decoration-color: currentColor; }
+}

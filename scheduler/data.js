@@ -16237,14 +16237,15 @@
     if (only !== 'needs') card.appendChild(updates);
     /* Floating, the card ends in a footer along its foot, as a Carbon window
        does: Open trip with the needs, Add update with the updates, and while
-       a new update is typed its box over Cancel and Save. */
+       a new update is typed its box over Cancel and Save. The main button is
+       primary, so Open trip is primary alone and secondary beside Add update. */
     if (floating) {
       const parts = [];
       if (footerQuick && only !== 'needs') {
         parts.push(footerQuick, solid(cardAction('cancel', 'Cancel', 'Cancel the update'), 'rux--btn--secondary'), add);
       } else {
         if (only !== 'updates' && alerts.length) {
-          const link = el('button', 'rux--btn rux--btn--secondary rux--btn--sm rux--layout--size-sm scheduler-card__link');
+          const link = el('button', `rux--btn ${only === 'needs' ? 'rux--btn--primary' : 'rux--btn--secondary'} rux--btn--sm rux--layout--size-sm scheduler-card__link`);
           link.type = 'button';
           link.append('Open trip');
           parts.push(link);

@@ -254,14 +254,13 @@ expect('same section toggles closed, another switches, and closed cards open',
   [false, true, true]);
 expect('trip groups do not swallow their child button semantics',
   [holder.getAttribute('role'), holder.getAttribute('aria-current')], ['group', 'false']);
-expect('the badge count and its tooltip come from the exact problem list',
+expect('the badge is the icon alone, its tooltip the exact problem list',
   alerts.map(n => {
-    const b = drawn('alerts', n)[0], problems = factsByBar.get(b).problems;
-    const badge = b.querySelector('.scheduler-bar__alert');
-    return badge ? [Number(badge.textContent), badge.title] : [0, ''];
+    const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
+    return badge ? [badge.textContent, badge.title] : ['', ''];
   }), alerts.map(n => {
-    const b = drawn('alerts', n)[0], problems = factsByBar.get(b).problems;
-    return [problems.length, problems.map(a=>a.words).join(' · ')];
+    const problems = factsByBar.get(drawn('alerts', n)[0]).problems;
+    return ['', problems.map(a=>a.words).join(' · ')];
   }));
 
 // Exercise the actual card builder with specimen trips and a minimal page.

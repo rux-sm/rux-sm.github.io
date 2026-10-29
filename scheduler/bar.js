@@ -110,15 +110,15 @@
   const fitKind = () => {};
 
   /* THE ALERT BADGE, at the end of the destination row: the red circle
-     with an exclamation mark for a bus that does not fit and Carbon's Warning triangle for the rest, with
-     how many problems the trip has beside it, their words on the tooltip. It stands in the same
+     with an exclamation mark for a bus that does not fit and Carbon's Warning triangle for the rest,
+     alone, the problems' words on the tooltip and their count in the card's Alerts. It stands in the same
      place on every bar, and a bar with no problem has none. A press on it
      opens the trip's card, so it is one of the bar's card openers. */
-  const alertMark = (tone, count, words) => {
+  const alertMark = (tone, words) => {
     const m = el('button', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
     m.type = 'button';
     m.setAttribute('aria-expanded', 'false');
-    m.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-bar__alert-count', String(count)));
+    m.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'));
     m.dataset.cardOpener = '';
     m.setAttribute('aria-label', `Alerts: ${words}`);
     m.title = words;
@@ -493,7 +493,7 @@
     facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
     const problems = facts.problems;
     const alert = problems.length
-      ? alertMark(misfits.length ? 'error' : 'warning', problems.length, problems.map(a => a.words).join(' · ')) : null;
+      ? alertMark(misfits.length ? 'error' : 'warning', problems.map(a => a.words).join(' · ')) : null;
     /* A trip that is back raises no alert, and says Paid in the alert's place
        once it is paid in full. */
     const isDone = window.SchedulerCloseOut.isBack(trip) && !window.SchedulerBilling.placeholder(trip);

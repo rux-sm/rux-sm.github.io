@@ -1047,7 +1047,7 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update, [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
 .scheduler-bar__alert:focus-visible { outline-offset: 2px; }
-/* THE ALERT IS A STATUS ICON AND ITS COUNT, with no pill: the error in the driver status red and the warning in the footer's yellow, and the count in the bar's own ink. */
+/* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
 .scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
   display: inline-flex;
   align-items: center;

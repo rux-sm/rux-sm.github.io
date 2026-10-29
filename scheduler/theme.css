@@ -834,34 +834,26 @@
 [data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
-/* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the days on the board's black,
-   ruled in layer-01, and the names as the bus column's tiles, layer-01
-   parted by black. A booked day is a solid layer-02 mark in the primary
-   text, the board's trip tile, and a short rest keeps that grey with its
-   hours in the warning yellow, 9.0 to 1, or a shorter one's in the light
-   red, 6.3.
-   A day off is the board's unconfirmed red, the error at 32% through the
-   pane, its reason drawn in the error text red, because a driver away is a
-   trip that cannot run as it stands, as an unconfirmed one is.
+/* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
+   pane's black, every row and day parted by the board's one line. A booked
+   day is a solid layer-02 mark in the primary text, the board's trip tile,
+   and a short rest keeps that grey with its hours in the warning yellow, 9.0
+   to 1, or a shorter one's in the light red, 6.3.
+   A day off is the board's unconfirmed red, the error at 32% through
+   layer-01, its reason drawn in the error text red, because a driver away is
+   a trip that cannot run as it stands, as an unconfirmed one is.
    A day free for the whole of the picked trip is outlined in a light grey
    over a grey tint, where it was blue; one free for only part keeps the
    rest tone. */
 [data-theme="rux-100"] { --scheduler-avail-whole: var(--rux-border-strong-02); }
-[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__name {
-  --rux-layer: var(--rux-layer-01);
-  border-block-end-color: var(--rux-background);
-}
-[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__cell {
-  border-block-end-color: var(--rux-layer-01);
-  --scheduler-day-rule: var(--rux-layer-01);
+/* The days are ruled at the line's whole strength, as the rows are, where
+   the other themes halve it, so the board has one line colour. */
+[data-theme="rux-100"] :is(.scheduler-week .scheduler-track, .scheduler-week--avail .scheduler-avail__cell) {
+  --scheduler-day-rule: var(--rux-border-subtle-01);
 }
 /* No second, lighter rule parts the priority groups, so every line in the
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
-/* A list that stops short of the pane keeps a last rule, in the same two
-   colours as every row above it. */
-[data-theme="rux-100"] .scheduler-week--short .scheduler-avail__row:last-child > .scheduler-avail__name { border-block-end-color: var(--rux-background); }
-[data-theme="rux-100"] .scheduler-week--short .scheduler-avail__row:last-child > .scheduler-avail__cell { border-block-end-color: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
   --scheduler-avail-fill: var(--rux-layer-02);
   color: var(--rux-text-primary);
@@ -1348,36 +1340,22 @@
   --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
 }
 
-/* RUX 100'S BOARD IS THE PAGE'S BLACK, so an empty day is the base and a
-   trip a tile standing on it: the layer-02 bar holds 1.39 to 1 on black,
-   where it held 1.20 on layer-01. The toolbar and the filled day band keep
-   their surfaces, a table's header over its rows. Unassigned, a darker tint
-   of the board elsewhere, has nothing darker than black, so it takes
-   layer-01, and the bar's floating card keeps the raised surface. Black on
-   black has no edge, so the toolbar's surface runs round the schedule as a
-   1px line, one colour with the toolbar it joins at the top, and a week that
-   reaches the frame's foot leaves its last row's brighter rule to that line
-   so the four sides match; the driver roster beside it, the same black
-   grid, is framed the same way. The grid inside it is ruled in that same
-   surface, the rows and the days alike, so the board is one quiet lattice
-   and the trips are the brightest thing on it. The regions are told apart
-   by surface, as Carbon's data table is, with no line between them: the
-   toolbar on layer-01, the day band and its corner a step up on
-   layer-accent-01, the table's header row, and the body on black. The bus
-   column is the rows' own header, on the toolbar's layer-01, each bus a
-   tile parted from the next by the board's black, as each trip is. The
-   filled panels beside it are parted by their fill and draw none. */
-[data-theme="rux-100"] .scheduler-week { --rux-layer: var(--rux-background); }
-[data-theme="rux-100"] .scheduler-week .scheduler-track {
-  border-color: var(--rux-layer-01);
-  --scheduler-day-rule: var(--rux-layer-01);
-}
-[data-theme="rux-100"] .scheduler-week .scheduler-row-head {
-  --rux-layer: var(--rux-layer-01);
-  border-color: var(--rux-background);
-}
+/* RUX 100'S BOARD IS ONE BLACK SHEET, Carbon's table laid out in Geist's
+   manner: the toolbar, the day band and its corner, the bus column and the
+   tracks all take the page's black, and every region is parted from the next
+   by one 1px line in border-subtle-01, the grey Carbon already draws between
+   the toolbar's buttons, so the board has a single line colour. A trip is a
+   layer-02 tile standing on the black, 1.39 to 1, the brightest thing on it.
+   The driver roster beside it is the same black grid with the same lines.
+   Unassigned, a darker tint of the board elsewhere, has nothing darker than
+   black, so it takes layer-01, and the bar's floating card keeps the raised
+   surface. A week that reaches the frame's foot leaves its last row's rule
+   to the frame's own line, so the four sides match. */
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside) {
-  --scheduler-region-edge: 1px solid var(--rux-layer);
+  --rux-layer: var(--rux-background);
+  --scheduler-band-surface: var(--rux-background);
+  --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
+  --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
   --scheduler-last-rule: 0;
 }
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }

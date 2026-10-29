@@ -837,7 +837,7 @@
    back to one soft grey, so a busy week is a column of places and times
    rather than six bright lines a trip. The grey is a shade over Geist's
    #a1a1a1, which held 4.0 to 1 on the gold placeholder and 4.4 on a trip not
-   yet confirmed; #adadad holds 4.6 on the gold, 5.1 on the red and 8.8 on
+   yet confirmed; #adadad holds 4.6 on the gold, 5.1 on the red and 8.4 on
    the raised grey trip. A mark with its own colour inside these lines, a
    driver away or short on hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
@@ -1405,18 +1405,18 @@
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
-/* RUX 100'S STANDARD TRIP IS GEIST'S RAISED SURFACE, so colour on its board
-   always means something: a confirmed trip is #0a0a0a, the one surface Geist
-   raises a card to, inside a 1px edge in the board's line grey, in the
-   primary text, and only a trip on the road, not yet confirmed, a
-   placeholder or a colour the office picked is filled. Its fill is 1.06 to 1
-   on the black, so the edge and its words are what draw it, as a Geist card
-   is drawn; its hover is layer-01, #161616. The edge is four painted strips,
+/* RUX 100'S STANDARD TRIP IS ONE RAISED SURFACE, so colour on its board
+   always means something: a confirmed trip is #121212, a single step off the
+   black as Geist raises a card, inside a 1px edge in the board's line grey,
+   in the primary text, and only a trip on the road, not yet confirmed, a
+   placeholder or a colour the office picked is brighter. Its fill is 1.12 to
+   1 on the black, enough to read as a tile before its edge does, and its
+   hover is #1c1c1c, a clear step above it. The edge is four painted strips,
    so the bar's border and shadow stay free for the week's run-on marks and
    the selection ring, and an end that runs into another week has none. */
 [data-theme="rux-100"] {
-  --scheduler-raised: #0a0a0a;
-  --scheduler-raised-hover: var(--rux-layer-01);
+  --scheduler-raised: #121212;
+  --scheduler-raised-hover: #1c1c1c;
 }
 [data-theme="rux-100"] .scheduler-bar--blue {
   --scheduler-bg: var(--scheduler-raised);
@@ -1434,7 +1434,7 @@
 }
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
-/* A grey trip on the road is filled, #474747, 2.1 to 1 against the other
+/* A grey trip on the road is filled, #474747, 2.0 to 1 against the other
    trips and 2.3 on the black board, so the buses out now show at a glance
    without a colour; white stays the selection's, and its green marks keep
    3.9. Its hover is the accent layer's #525252, a step above it. */
@@ -1445,7 +1445,7 @@
 }
 /* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
    editor or the document panel, and a form in the Forms list, is the raised
-   surface inside the board's line, its hover layer-01, and a field in it is
+   surface inside the board's line with the same hover, and a field in it is
    dark as Geist's are, the same surface inside its own ring, which holds 3
    to 1 where the fill alone would not. Menus keep their own grey and edge,
    so one that opens over a tile still stands off it. */

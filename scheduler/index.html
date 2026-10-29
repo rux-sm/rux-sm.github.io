@@ -1070,6 +1070,14 @@
       <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-apartment"/></svg></div>
       <div class="rux--menu-item__label">Mark hotel booked</div>
     </li>
+    <!-- Whether the trip is in QuickBooks, checked by data.js: the estimate,
+         which a press marks or unmarks, or once the Billing tab records an
+         invoice, that invoice, which nothing here takes off. -->
+    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="-1" id="scheduler-bar-menu-quickbooks" hidden>
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-description"/></svg></div>
+      <div class="rux--menu-item__label">Estimate in QuickBooks</div>
+    </li>
     <!-- The trip's colour: one Color item whose submenu is Carbon's menu radio
          group, so the menu stays short. A pick saves at once. data.js
          paints the item's chip with the bar's colour, checks the trip's colour,

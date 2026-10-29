@@ -343,8 +343,9 @@
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
     'trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
-    // The driver details sent to the booking contact, or not, which the Contact list says and marks.
-    'trip_prep(driver_info_sent,driver_info_sent_at)',
+    // The driver details sent to the booking contact, or not, which the Contact list says and marks,
+    // and the QuickBooks estimate, which the bar menu marks.
+    'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
     // The trip's documents: the itinerary shortcut, the bar's mark, the Files tab
     // and the itinerary panel, which frames the file at its path.
     'trip_documents(id,label,created_at,file_name,file_path,file_size,leg,leg_id)',
@@ -12362,6 +12363,11 @@
       return;
     }
 
+    if (item.id === 'scheduler-bar-menu-quickbooks') {
+      markEstimate(bar);
+      return;
+    }
+
     if (item.dataset.assignDriver) {
       await assignDriver(bar, item.dataset.assignDriver);
       return;
@@ -12455,6 +12461,7 @@
     hotelItem.hidden = !bar.dataset.needHotel || locked;
     hotelItem.querySelector('.rux--menu-item__label').textContent =
       bar.dataset.hotelBooked ? 'Mark hotel not booked' : 'Mark hotel booked';
+    drawQuickBooksItem(bar);
     // Call or text rings the card's Needs bell while a driver on this bus is to be told of a change.
     const tells = barFacts.get(bar)?.tells ?? [];
     const due = document.getElementById('scheduler-bar-menu-contacts-due');
@@ -12607,6 +12614,50 @@
       toast('success', booked ? 'The hotel is booked.' : 'The hotel is not booked.');
     } catch (err) {
       toast('error', `The hotel was not marked. ${err.message}`);
+    }
+  }
+
+  /* ── In QuickBooks ──
+     QuickBooks for Mac has no way for the scheduler to look, so the office
+     says what is there: a trip is invoiced once the Billing tab records an
+     invoice, and before that its estimate is marked from the bar menu. The
+     mark is on `trip_prep`, so a press never moves `updated_at` under an open
+     editor. A placeholder is not a trip yet and has neither. */
+  const prepOf = trip => (Array.isArray(trip?.trip_prep) ? trip.trip_prep[0] ?? null : trip?.trip_prep ?? null);
+  // The trip's invoice as the menu names it: its first number, or the old column's.
+  function qbInvoiceOf(trip) {
+    const number = (trip?.trip_invoices || []).find(i => i.number)?.number || trip?.invoice_number;
+    if (number) return `Invoice ${number} in QuickBooks`;
+    return trip?.invoiced || trip?.trip_invoices?.length ? 'Invoiced in QuickBooks' : null;
+  }
+  function drawQuickBooksItem(bar) {
+    const item = document.getElementById('scheduler-bar-menu-quickbooks');
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    item.hidden = !client || !trip || window.SchedulerBilling.placeholder(trip);
+    if (item.hidden) return;
+    const invoice = qbInvoiceOf(trip);
+    const on = !!invoice || !!prepOf(trip)?.qb_estimate;
+    item.setAttribute('aria-checked', String(on));
+    item.classList.toggle('rux--menu-item--disabled', !!invoice);
+    if (invoice) item.setAttribute('aria-disabled', 'true'); else item.removeAttribute('aria-disabled');
+    item.querySelector('.rux--menu-item__label').textContent = invoice || 'Estimate in QuickBooks';
+    item.querySelector('.rux--menu-item__selection-icon')
+      .replaceChildren(...(on ? [svgUse('#m-check', '16', '0 0 20 20')] : []));
+  }
+  async function markEstimate(bar) {
+    const trip = panelIndex.trips.get(bar.dataset.tripId);
+    if (!trip || qbInvoiceOf(trip)) return;
+    const was = !!prepOf(trip)?.qb_estimate;
+    toast('working', was ? 'Unmarking the QuickBooks estimate…' : 'Marking the estimate in QuickBooks…');
+    try {
+      const { error } = await withTimeout(client.from('trip_prep')
+        .upsert({ trip_id: trip.id, qb_estimate: !was }, { onConflict: 'trip_id' }).then(r => r));
+      if (error) throw new Error(error.message);
+      recordFieldChange(trip.id, 'qb_estimate', was, !was);
+      await show();
+      toast('success', was ? 'The estimate is not marked in QuickBooks.' : 'The estimate is in QuickBooks.');
+    } catch (err) {
+      toast('error', `The estimate was not marked. ${err.message}`);
     }
   }
 

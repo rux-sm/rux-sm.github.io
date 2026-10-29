@@ -1367,6 +1367,16 @@
   --scheduler-hover: var(--rux-layer-hover-02);
   --scheduler-border: var(--rux-border-subtle-01);
 }
+/* A grey trip on the road stands lighter, #474747, 1.6 to 1 against the
+   other trips and 2.3 on the black board, so the buses out now show at a
+   glance without a colour; white stays the selection's, and its green
+   marks keep 3.9. Its hover is the accent layer's #525252, a step above
+   it, since the grey trips' hover is darker. */
+[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road {
+  --scheduler-bg: var(--rux-layer-hover-03);
+  --scheduler-hover: var(--rux-layer-accent-03);
+  --scheduler-border: var(--rux-border-strong-01);
+}
 /* A RUX 100 BAR IS ONE TONE: its update and drivers stand on the bar's own
    fill in its own ink, parted from the trip above them by a hairline of
    that ink, so a trip is one shape on the board, not two. The band's footer

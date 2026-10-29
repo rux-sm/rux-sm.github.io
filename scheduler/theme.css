@@ -1405,19 +1405,14 @@
   --scheduler-border: var(--rux-border-strong-01);
 }
 /* A RUX 100 BAR IS ONE TONE: its update and drivers stand on the bar's own
-   fill in its own ink, parted from the trip above them by a hairline of
-   that ink, so a trip is one shape on the board, not two. The band's footer
-   tokens follow the bar, so the update's hover fill is a step off the
-   bar's own colour. The compact board and a week with neither row draw no
-   line. */
+   fill in its own ink, with no line parting them from the trip above, so a
+   trip is one shape on the board, not two. The band's footer tokens follow
+   the bar, so the update's hover fill is a step off the bar's own colour. */
 [data-theme="rux-100"] .scheduler-bar {
   --scheduler-footer-base: var(--scheduler-bg);
   --scheduler-footer-fg: var(--scheduler-fg);
 }
-[data-theme="rux-100"] .scheduler-bar {
-  --scheduler-footer-rule: color-mix(in srgb, var(--scheduler-fg) 20%, transparent);
-  --scheduler-footer-paint: linear-gradient(to top, transparent calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px)), var(--scheduler-footer-rule) 0, var(--scheduler-footer-rule) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + var(--scheduler-road-lift, 0px) + 1px), transparent 0);
-}
+[data-theme="rux-100"] .scheduler-bar { --scheduler-footer-paint: none; }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:
    the status colour mixed into layer-01, written in that

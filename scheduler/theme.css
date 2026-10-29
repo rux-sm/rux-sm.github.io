@@ -805,8 +805,7 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* In rux-100 a short rest stays grey with its hours in the warning yellow,
-   and time off is a hatched grey so red means only a problem. */
+/* In rux-100 a short rest stays grey with its hours in the warning yellow. */
 [data-theme="rux-100"] .scheduler-yard--short {
   background: var(--rux-layer-03);
   color: var(--rux-support-warning);
@@ -814,9 +813,29 @@
 [data-theme="rux-100"] .scheduler-bar__contact { opacity: 1; color: color-mix(in oklab, var(--scheduler-fg) 88%, transparent); }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
+/* RUX 100'S ROSTER IS GREY AS ITS BOARD IS: a booked day is a solid layer-03
+   mark in the primary text, a step above the board's trip tiles because a
+   roster mark is small, and a short rest keeps that grey with its hours in
+   the warning yellow, 6.8 to 1, or a shorter one's in the light red, 4.9.
+   A day off is the board's unconfirmed red, the error at 32% through the
+   pane, its reason drawn in the error text red, because a driver away is a
+   trip that cannot run as it stands, as an unconfirmed one is.
+   A day free for the whole of the picked trip is outlined in a light grey
+   over a grey tint, where it was blue; one free for only part keeps the
+   rest tone. */
+[data-theme="rux-100"] { --scheduler-avail-whole: var(--rux-border-strong-02); }
+[data-theme="rux-100"] .scheduler-avail__cell--busy {
+  --scheduler-avail-fill: var(--rux-layer-03);
+  color: var(--rux-text-primary);
+}
+[data-theme="rux-100"] .scheduler-avail__cell--tight {
+  --scheduler-avail-fill: var(--rux-layer-03);
+  color: var(--rux-support-warning);
+}
+[data-theme="rux-100"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
-  --scheduler-avail-fill: repeating-linear-gradient(135deg, var(--rux-layer-02) 0 6px, var(--rux-layer-03) 6px 12px);
-  color: var(--rux-text-secondary);
+  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
+  color: var(--rux-text-error);
 }
 
 /* The roster's column header and its priority headings are one band drawn
@@ -1309,21 +1328,31 @@
   --scheduler-footer-paint: linear-gradient(to top, transparent calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02)), var(--scheduler-footer-rule) 0, var(--scheduler-footer-rule) calc(var(--scheduler-footer-rows, 2) * var(--scheduler-row-h) + var(--rux-spacing-02) + 1px), transparent 0);
 }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
-/* The placeholder takes Carbon's yellow 70 with yellow 30 words, 6.8 to 1,
-   because on one tone its update and driver marks stand on the fill, and on
-   the bright warning yellow the green and yellow marks vanished. Its hover
-   is a step lighter, so it needs no inner ring. */
+/* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:
+   the status colour mixed into the board's own surface, written in that
+   status's own words colour. A placeholder is the warning at 24%, about
+   #4b3f17, in the warning yellow, 6.2 to 1; a trip not yet confirmed is the
+   error at 32%, about #5f282a, in the error text red, 4.9 to 1. Red takes
+   more because yellow is the brighter hue, so the two stand off the board
+   alike, 1.7 and 1.6 to 1, and on either the update's and drivers' marks
+   still read. Each hovers six points stronger, so the placeholder needs no
+   inner ring. */
 [data-theme="rux-100"] {
-  --scheduler-amber-bg: #483700;
-  --scheduler-amber-fg: #f1c21b;
-  --scheduler-amber-hover: oklch(from #483700 calc(l + 0.04) c h);
-  --scheduler-amber-border: #f1c21b;
+  --scheduler-amber-bg: color-mix(in srgb, var(--rux-support-warning) 24%, var(--rux-layer-01));
+  --scheduler-amber-fg: var(--rux-support-warning);
+  --scheduler-amber-hover: color-mix(in srgb, var(--rux-support-warning) 30%, var(--rux-layer-01));
+  --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
-/* The coloured bars take Carbon's 80 step, deep enough to sit beside the grey
-   without outshining it, with their hover a little lighter in the same hue.
-   Red at 80 holds a red alert mark at 3.4 to 1, where 70 held it at 2.3. */
-[data-theme="rux-100"] .scheduler-bar--red { --scheduler-bg: #750e13; --scheduler-hover: oklch(from #750e13 calc(l + 0.04) c h); }
+[data-theme="rux-100"] .scheduler-bar--red {
+  --scheduler-bg: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
+  --scheduler-fg: var(--rux-text-error);
+  --scheduler-hover: color-mix(in srgb, var(--rux-support-error) 38%, var(--rux-layer-01));
+  --scheduler-border: var(--rux-support-error);
+}
+/* The colours the office picks take Carbon's 80 step, deep enough to sit
+   beside the grey without outshining it, with their hover a little lighter
+   in the same hue. */
 [data-theme="rux-100"] .scheduler-bar--magenta { --scheduler-bg: #740937; --scheduler-hover: oklch(from #740937 calc(l + 0.04) c h); }
 [data-theme="rux-100"] .scheduler-bar--purple { --scheduler-bg: #491d8b; --scheduler-hover: oklch(from #491d8b calc(l + 0.04) c h); }
 [data-theme="rux-100"] .scheduler-bar--green { --scheduler-bg: #044317; --scheduler-hover: oklch(from #044317 calc(l + 0.04) c h); }
@@ -1378,6 +1407,16 @@
   color: var(--rux-text-inverse);
 }
 [data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--today {
-  background: radial-gradient(circle at center, var(--rux-text-primary) 0 9px, transparent 9.5px);
+  display: grid;
+  place-items: center;
   color: var(--rux-text-inverse);
+}
+[data-theme="rux-100"] .scheduler-avail__day--today .scheduler-avail__letter {
+  display: grid;
+  place-items: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: 50%;
+  background: var(--rux-text-primary);
+  line-height: 1;
 }

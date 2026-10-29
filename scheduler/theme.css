@@ -1341,14 +1341,24 @@
    1px line, one colour with the toolbar it joins at the top, and a week that
    reaches the frame's foot leaves its last row's brighter rule to that line
    so the four sides match. The grid inside it is ruled in that same
-   surface, the rows, the days and the bus column's edge alike, so the
-   board is one quiet lattice and the trips are the brightest thing on it.
-   The filled panels beside it are parted by their fill and draw none. */
+   surface, the rows and the days alike, so the board is one quiet lattice
+   and the trips are the brightest thing on it. The day band and the bus
+   column are the table's headers, so they take that surface too: the
+   toolbar and the days read as one two-row header, and each bus is a tile
+   parted from the next by the board's black, as each trip is. The four
+   greys each mean one thing: black empty, #161616 headers and lines,
+   #262626 a trip, #474747 a trip on the road. The filled panels beside it
+   are parted by their fill and draw none. */
 [data-theme="rux-100"] .scheduler-week { --rux-layer: var(--rux-background); }
-[data-theme="rux-100"] .scheduler-week :is(.scheduler-track, .scheduler-row-head) {
+[data-theme="rux-100"] .scheduler-week .scheduler-track {
   border-color: var(--rux-layer-01);
   --scheduler-day-rule: var(--rux-layer-01);
 }
+[data-theme="rux-100"] .scheduler-week .scheduler-row-head {
+  --rux-layer: var(--rux-layer-01);
+  border-color: var(--rux-background);
+}
+[data-theme="rux-100"] .scheduler-week :is(.scheduler-corner, .scheduler-day) { --scheduler-band-surface: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-frame {
   --scheduler-region-edge: 1px solid var(--rux-layer);
   --scheduler-last-rule: 0;

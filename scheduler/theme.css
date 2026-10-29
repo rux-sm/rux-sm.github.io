@@ -678,6 +678,9 @@
    16px under the tabs, which the 12px does not reach. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card.scheduler-card--live { padding: var(--rux-spacing-05) var(--rux-spacing-02) 0; }
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:has(> .scheduler-card--live) { margin-block-end: var(--rux-spacing-02); }
+/* Standing alone in the card, the live card's tiles take the 4px past that
+   12px on every side. */
+:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card.scheduler-card--live { padding: var(--rux-spacing-02); }
 /* Its top and foot stand on that edge too, so the card's 12px is the margin
    all round. Add, first in a card with no warnings, is 32px on the title's
    18px line, so the line stands 7px in and Add's box 12px from the top, as

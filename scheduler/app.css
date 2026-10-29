@@ -1417,11 +1417,14 @@ button.scheduler-row-head__num::after {
    the map with where the bus is, the stops, the drivers and the engine
    lamp, a step apart. As the Departures panel's and the trip editor's tiles,
    each is 16px from the card's sides and holds its words 16px in; the tabs
-   are 16px over the first, and the panel scrolls under a 16px foot, so the
-   edge is the one 16px all round. A theme that already holds the card 12px
+   on a docked sheet are 16px over the first, and the panel scrolls under a
+   16px foot, so the edge is the one 16px all round. A theme that already holds the card 12px
    from its edge gives the 4px more in theme.css. */
 .scheduler-card.scheduler-card--live { display: flex; flex-direction: column; gap: var(--rux-spacing-03); margin: 0; padding: var(--rux-spacing-05) var(--rux-spacing-05) 0; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel:has(> .scheduler-card--live) { margin-block-end: var(--rux-spacing-05); }
+/* Floating, the live card stands alone in the card with no tabs over it, so
+   it scrolls itself, its foot the same 16px. */
+.scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card.scheduler-card--live { overflow-y: auto; padding-block-end: var(--rux-spacing-05); }
 /* Its tab panel adds no padding of its own, Carbon's 16px, so the tiles
    stand 8px in, in line with the tabs over them. */
 .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card--live) { padding: 0; }

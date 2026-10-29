@@ -750,9 +750,9 @@
       const out = !!bar.dataset.roadFrom && (Road.isOut(bus, span) || Live.watching(bus, span));
       roadBar(bar, out ? bus : null);
     }
-    // A card on its On the road tab follows its bus with each answer.
+    // A card showing the live card follows its bus with each answer.
     const shown = selectedBar();
-    if (shown?.dataset.road && roadTabOf(shown) === 'road') placeBarOpen(shown);
+    if (shown?.dataset.road && roadPartOf(shown) === 'road') placeBarOpen(shown);
   }
 
   // The drivers a bar names, by id.
@@ -844,9 +844,9 @@
 
   setInterval(askRoad, ROAD_EVERY);
 
-  /* THE CARD OF A TRIP OUT ON THE ROAD has three tabs: On the road,
-     Needs and Updates, and opens on On the road; the tab picked stays with the trip
-     until the page loads again. Design's tabs.js switches them and says so
+  /* THE DOCKED SHEET OF A TRIP OUT ON THE ROAD has three tabs: On the
+     road, Needs and Updates, and opens on On the road; the tab picked stays
+     with the trip until the page loads again. Design's tabs.js switches them and says so
      with rux:tab-selected, which the card is drawn again from, so it fits
      and places itself for the tab now showing. */
   const roadTabs = new Map();
@@ -10615,8 +10615,12 @@
   /* THE CARD IS THREE CARDS: Alerts, opened from a bar's alert badge, Updates,
      from its update line, and Live, from the pill of a bus out on the road.
      Each draws only its own part, sized to what it holds; Space opens the
-     whole card; an out trip keeps On the road, Needs and Updates as tabs. */
+     whole card, and on an out trip the live card, which has no head, since
+     its trip is the bar beside it. The docked sheet keeps an out trip's parts
+     as tabs. */
   let cardSection = '';
+  // The part an out trip's card shows: floating, the one asked for; docked, its tab.
+  const roadPartOf = bar => floatingCard() ? cardSection || 'road' : roadTabOf(bar);
   let cardTrigger = null;
   function cardOrigin(bar) {
     if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
@@ -10627,6 +10631,7 @@
   }
   function askCard(bar, open, section = '') {
     if (open && !section) cardTrigger = bar;
+    if (open && !section && bar.dataset.road && floatingCard()) section = 'road';
     cardOpenFor = open ? barKey(bar) : null;
     cardSection = open ? section : '';
     if (open && bar.dataset.road && section) roadTabs.set(barKey(bar), section);
@@ -10652,9 +10657,9 @@
       trigger.setAttribute('aria-controls', barShortcuts.id);
       const owner = trigger.closest('.scheduler-bar');
       const section = window.SchedulerBar.cardSectionOf(trigger);
-      trigger.setAttribute('aria-expanded', String(!none && owner === bar && (bar.dataset.road ? roadTabOf(bar) === section : cardSection === section)));
+      trigger.setAttribute('aria-expanded', String(!none && owner === bar && (bar.dataset.road ? roadPartOf(bar) : cardSection) === section));
     }
-    if (cardSection && !bar?.dataset.road) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
+    if (cardSection && !(docked && bar?.dataset.road)) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
     // The Contacts window goes with its trip when it is put down.
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
@@ -10670,6 +10675,8 @@
       if (!(quickDraft.tripId === bar.dataset.tripId && quickDraft.text)) quickOpenFor = null;
     }
     drawShortcuts(bar);
+    // A live card that comes to a trip afresh starts at its top.
+    if (barKey(bar) !== poppedFor) barShortcuts.querySelector(':scope > .scheduler-card--live')?.scrollTo(0, 0);
     /* The card pops each time it comes to a trip, and not while it follows
        the same one through a scroll or a redraw. It starts once the bar is
        placed, because the pop's scale would shrink what the placing measures. */
@@ -11251,7 +11258,7 @@
     if (!bar || e.detail > 1) return;
     const section = window.SchedulerBar.cardSectionOf(opener);
     cardTrigger = opener;
-    askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadTabOf(bar) : cardSection, section), section);
+    askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadPartOf(bar) : cardSection, section), section);
   });
   gridEl.addEventListener('click', e => {
     const trigger = e.target.closest('[data-crew-overflow]');
@@ -15204,7 +15211,7 @@
     const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
       bar.dataset.assignmentId, bar.dataset.busId, isEditorBar(bar), bar.dataset.needHotel,
       bar.dataset.hotelBooked, slots.join(), cardKey(trip), cardSection,
-      JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadTabOf(bar)} ${roadTabOf(bar) === 'road' ? bar.dataset.road : ''}` : ''].join('|');
+      JSON.stringify(barFacts.get(bar) ?? null), bar.dataset.road ? `${roadPartOf(bar)} ${roadPartOf(bar) === 'road' ? bar.dataset.road : ''}` : ''].join('|');
     // The same slots on the same bar are left alone, so a focused slot keeps focus.
     // The slots are counted rather than every child, because the docked bar
     // carries the trip's rows ahead of them.
@@ -15231,8 +15238,8 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [...(docked || (cardSection && !bar.dataset.road) ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
-      : drawRoadCard(trip, bar)] : []));
+    }), ...(carded ? [...(docked || cardSection || bar.dataset.road ? [] : [cardHead(trip)]), !bar.dataset.road ? drawCard(trip, bar, cardSection)
+      : docked ? drawRoadCard(trip, bar) : roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
     if (focusQuick) {
       const input = barShortcuts.querySelector('.scheduler-card__quick input');
@@ -15971,7 +15978,7 @@
     return card;
   }
 
-  /* The tabs over an out trip's card, as Design draws a tablist, each tab's
+  /* The tabs over an out trip's docked sheet, as Design draws a tablist, each tab's
      panel its card: On the road the live card, Updates the trip card, with
      its Needs counted on its tab in their colour. */
   function drawRoadCard(trip, bar) {

@@ -444,28 +444,31 @@ const busHead = (live, week = true, bus = { id: 'b1', capacity: 52 }) => {
   BusHead.draw(head, bus, live && { bus_id: 'b1', drivers: [], fault: null, faults: [], seen: new Date().toISOString(), ...live }, { week });
   return head;
 };
-const levels = h => h.querySelectorAll('.scheduler-row-head__gauge').map(g => [text(g, '.scheduler-row-head__letter'), g.dataset.level]);
+const levels = h => h.querySelectorAll('.scheduler-row-head__level').map(g => [text(g, '.scheduler-row-head__letter'), g.dataset.level]);
 const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.classes().find(c => /__mark--/.test(c)).split('--')[1]);
 const line = h => text(h, '.scheduler-row-head__line');
-expect('normal readings: both gauges grey, the city under them, no marks',
-  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [levels(h), line(h), marks(h)]; })(),
-  [[['F', 'normal'], ['D', 'normal']], 'San Marcos', []]);
+const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__arc')];
+const ago = min => new Date(Date.now() - min * 60e3).toISOString();
+expect('moving: the speed in a green dial, the two levels, Moving, no marks',
+  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), line(h), marks(h)]; })(),
+  [['64', 'moving', true], [['F', 'normal'], ['D', 'normal']], 'Moving', []]);
 expect('fuel is low at 25% and critical at 10%, DEF at 15% and 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' })).map(l => l[1])),
   [['low', 'low'], ['critical', 'critical'], ['normal', 'normal']]);
-expect('a bus that reports no DEF draws no D gauge', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
-expect('the marks, worst first: stop lamp, no signal, engine lamp, speeding, a long idle',
-  [marks(busHead({ engine: 'on', mph: 79, fuel: 50, fault: 'check' })),
-    marks(busHead({ engine: 'idle', engine_at: new Date(Date.now() - 45 * 60e3).toISOString(), mph: 0, fuel: 50, fault: 'stop' })),
-    marks(busHead({ engine: 'idle', engine_at: new Date(Date.now() - 10 * 60e3).toISOString(), mph: 0, fuel: 50 })),
-    marks(busHead({ engine: 'on', mph: 75, fuel: 50 }))],
-  [['warning', 'warning'], ['error', 'warning'], [], []]);
-expect('speeding is the speed itself beside the number', text(busHead({ engine: 'on', mph: 79, fuel: 50 }), '.scheduler-row-head__mark'), '79');
-expect('no signal: the struck mark, the gauges faded and how long since in place of the city',
-  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: new Date(Date.now() - 3 * 3600e3).toISOString() }); return [marks(h), h.hasAttribute('data-signal-lost'), line(h)]; })(),
-  [['quiet'], true, '3h']);
+expect('a bus that reports no DEF draws no D level', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
+expect('over 75 mph the dial and its arc turn amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79', 'warning', true]);
+expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the city under the bars',
+  [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
+    .map(([h]) => [...dial(h), line(h)]),
+  [['Idle14m', 'quiet', false, 'Laredo'], ['Idle45m', 'warning', false, 'Laredo'], ['Off', 'quiet', false, 'McAllen']]);
+expect('the engine lamp takes the type\'s place, red for the stop lamp',
+  [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
+  [['warning'], ['error'], []]);
+expect('no signal: a dash, the gauges faded and how long since it was seen',
+  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), line(h)]; })(),
+  ['–', true, 'Seen 3h']);
 expect('another week, or no answer for the bus: the seats and the inspection, amber within 45 days',
-  [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__gauge').length,
+  [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,
     line(busHead(null, true)),
     has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 20 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon'),
     has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 90 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon')],
@@ -476,7 +479,7 @@ expect('the compact board\'s one dot takes the worst tone',
   ['normal', 'warning', 'error', 'quiet']);
 expect('the tip words what the head shows',
   BusHead.tipOf({}, { engine: 'on', mph: 64, place: 'San Marcos, TX', fuel: 72, def: 60, odometer: 292044, seen: new Date().toISOString(), fault: 'check', faults: ['Coolant level: Low'] }),
-  ['64 mph', 'San Marcos, TX', 'Fuel 72% · DEF 60%', '292,044 mi', 'Last seen 0m ago', 'Engine warning lamp on · Coolant level: Low']);
+  ['Moving, 64 mph', 'San Marcos, TX', 'Fuel 72% · DEF 60%', '292,044 mi', 'Last seen 0m ago', 'Engine warning lamp on · Coolant level: Low']);
 
 console.log(failed ? `\n  ${failed} fault(s) in the bar` : '\n  bar: every case passed');
 process.exit(failed ? 1 : 0);

@@ -214,11 +214,6 @@
   }
   // Set by render for the week on screen, and called as the board scrolls.
   let nameBoardCorner = () => {};
-  // The board's view option for that switch; applyView keeps it.
-  let showEquipment = false;
-  // Each tip's switch needs an id its label can name, and a spare week draws
-  // the same buses again, so the bus id alone would repeat.
-  let equipSwitchSeq = 0;
   function busTip(bus) {
     const tip = el('div', 'rux--toggletip-content scheduler-bus-tip');
     const head = el('div', 'scheduler-bus-tip__head');
@@ -251,40 +246,6 @@
     if (bus.status && bus.status !== 'active') {
       tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', bus.status.charAt(0).toUpperCase() + bus.status.slice(1)));
     }
-
-    /* Carbon's small toggle, from `sink/toggle.html`, its words to the left
-       and a label for the switch, so either flips it. `js/form-controls.js`
-       binds it and fires `rux:toggle`, which applyView answers for every bus. */
-    const id = `scheduler-equip-switch-${++equipSwitchSeq}`;
-    const row = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__switch');
-    const words = el('label', 'scheduler-bus-tip__switch-label', 'Equipment under bus numbers');
-    words.htmlFor = id;
-    words.id = `${id}-label`;
-    const box = el('div', 'rux--toggle');
-    const btn = el('button', 'rux--toggle__button');
-    btn.type = 'button';
-    btn.id = id;
-    btn.setAttribute('role', 'switch');
-    btn.setAttribute('aria-checked', String(showEquipment));
-    btn.setAttribute('aria-labelledby', words.id);
-    const lab = el('label', 'rux--toggle__label');
-    lab.htmlFor = id;
-    const appearance = el('div', 'rux--toggle__appearance rux--toggle__appearance--sm');
-    const sw = el('div', 'rux--toggle__switch');
-    if (showEquipment) sw.classList.add('rux--toggle__switch--checked');
-    const check = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    check.setAttribute('class', 'rux--toggle__check');
-    check.setAttribute('width', '6px'); check.setAttribute('height', '5px');
-    check.setAttribute('viewBox', '0 0 6 5');
-    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    tick.setAttribute('d', 'M2.2 2.7L5 0 6 1 2.2 5 0 2.7 1 1.5z');
-    check.appendChild(tick);
-    sw.appendChild(check);
-    appearance.appendChild(sw);
-    lab.appendChild(appearance);
-    box.append(btn, lab);
-    row.append(words, box);
-    tip.appendChild(row);
     return tip;
   }
 
@@ -1134,10 +1095,10 @@
         ].filter(Boolean).join(' · ');
       }
 
-      /* The marks in this column: the type's drawing, so a head reads on its
-         own when the band has scrolled away, the lift and sleeper while the
-         view option shows them, and out of service, a state that changes what
-         the row can take this week. Each symbol keeps its own viewBox. */
+      /* The marks at the top right: the type's drawing, so a head reads on
+         its own when the band has scrolled away, and out of service, a state
+         that changes what the row can take this week. The lift and sleeper
+         are the tip's to say. Each symbol keeps its own viewBox. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -1154,15 +1115,12 @@
         const typeSaid = typeName ? (typeName.label || typeName.name) : (String(r.bus.type || '').trim() || 'No type');
         if (typeIcon) flag(typeIcon, '0 0 32 32', typeSaid, 'scheduler-row-head__type');
       }
-      // Drawn on every bus and shown only while the view option is on, so the
-      // switch needs no redraw.
-      if (r.bus) for (const [href, label] of equipmentOf(r.bus)) flag(href, '0 0 16 16', label, 'scheduler-row-head__equip');
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {
         flag('#m-report-fill', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
       }
-      if (kit.childElementCount) head.appendChild(kit);
+      if (kit.childElementCount) top.appendChild(kit);
       if (r.bus) BusHead.draw(head, r.bus, null, { week: false });
 
       const track = el('div', 'scheduler-track');
@@ -11578,13 +11536,13 @@
      calm, every light held still, or off, the edge alone. It starts calm
      for a computer set to reduce motion. */
   const MOTIONS = ['full', 'calm', 'off'];
-  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, equipment: false, twoWeeks: false, yard: false, fill: false,
+  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, twoWeeks: false, yard: false, fill: false,
     motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday', 'equipment', 'twoWeeks', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'sunday', 'twoWeeks', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason Sunday is: it sizes the range.
@@ -11610,19 +11568,11 @@
     twoWeeks = view.twoWeeks;
     dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
-    // Equipment under the bus numbers, and every open or closed tip's switch
-    // saying so.
-    showEquipment = view.equipment;
-    schEl.classList.toggle('scheduler-week--equipment', showEquipment);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
     // Fill the window: the days share the whole pane rather than stopping at
     // their cap, which app.css and app.js read from this class.
     schEl.classList.toggle('scheduler-week--fill', view.fill);
-    for (const btn of schEl.querySelectorAll('.scheduler-bus-tip__switch .rux--toggle__button')) {
-      btn.setAttribute('aria-checked', String(showEquipment));
-      btn.parentElement.querySelector('.rux--toggle__switch')?.classList.toggle('rux--toggle__switch--checked', showEquipment);
-    }
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     // The bars change height and lane, which the scroll pane may not report as
@@ -11685,14 +11635,6 @@
 
   // Crossing md changes how many days two weeks shows, so the board redraws.
   phoneQuery.addEventListener('change', () => { if (twoWeeks) show(); });
-
-  // A bus tip's switch. Design's `setToggle` fires on the `.rux--toggle` box,
-  // which bubbles to the pane.
-  schEl.addEventListener('rux:toggle', e => {
-    if (!e.target.closest?.('.scheduler-bus-tip__switch')) return;
-    view.equipment = !!e.detail?.on;
-    applyView();
-  });
 
   // Once at start, so the saved rows are off before the first week is drawn
   // rather than blinking off after it.

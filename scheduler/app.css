@@ -238,23 +238,19 @@
   padding-inline: var(--rux-spacing-02);
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  /* The number and its marks along the top, the type and equipment down the
-     left, the gauges at the right and the city along the foot. Sized by its
-     row and never the other way, so a row the view makes shorter keeps its
-     height and the gauges shrink to it. */
+  /* The number and the type along the top, the dial and the levels under
+     them, one line at the foot. Sized by its row and never the other way, so
+     a row the view makes shorter keeps its height and clips the foot. */
   contain: size;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  grid-template-areas: "top top" "kit gauges" "foot foot";
+  display: flex;
+  flex-direction: column;
   gap: var(--rux-spacing-02);
   text-align: start;
 }
 .scheduler-row-head__top {
-  grid-area: top;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: var(--rux-spacing-02);
   min-inline-size: 0;
 }
@@ -320,15 +316,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bus-tip__mark > svg { flex: none; color: var(--rux-icon-inverse); }
 .scheduler-bus-tip__vin { opacity: .75; font-variant-numeric: tabular-nums; }
 .scheduler-bus-tip__status { font-weight: var(--rux-heading-compact-01-font-weight); }
-/* The view option's switch: its words at the start, the switch at the end. */
-.scheduler-bus-tip__switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--rux-spacing-04);
-  padding-block: var(--rux-spacing-03);
-}
-.scheduler-bus-tip__switch-label { cursor: pointer; }
 .scheduler-row-head__num {
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
@@ -337,63 +324,38 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
 }
-/* The type, equipment and out-of-service marks, stacked down the left under
-   the number. */
+/* The type's drawing and the out-of-service mark at the top right; an
+   engine lamp takes the type's place while it is on. */
 .scheduler-row-head__kit {
-  grid-area: kit;
-  min-block-size: 0;
-  overflow: hidden;
   /* Above the number's click layer, so the out-of-service mark keeps its
-     hover label; every other mark lets a press through to the number, which
-     opens the tip that names it. */
+     hover label; the type lets a press through to the number, which opens
+     the tip that names it. */
   position: relative;
   pointer-events: none;
   display: flex;
-  flex-direction: column;
-  gap: var(--rux-spacing-02);
+  gap: var(--rux-spacing-01);
   color: var(--rux-text-secondary);
 }
 .scheduler-row-head__kit svg { display: block; }
 .scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; pointer-events: auto; }
-/* The lift and sleeper, shown while the tip's switch is on. */
-.scheduler-row-head__equip { display: none; }
-.scheduler-week--equipment .scheduler-row-head__equip { display: inline-flex; }
+.scheduler-row-head__top:has(> .scheduler-row-head__mark) .scheduler-row-head__type { display: none; }
 /* THE BUS'S STATE, bus-head.js's, under the number's click layer, so a press
-   anywhere on the head opens the tip that words it all. The marks beside the
-   number are 12px and take their tone's colour; a speed over the limit is
-   the figure itself. */
-.scheduler-row-head__marks { display: inline-flex; flex-wrap: wrap; gap: var(--rux-spacing-01); }
-.scheduler-row-head__marks:empty { display: none; }
-.scheduler-row-head__mark { display: inline-flex; align-items: center; font-size: var(--rux-label-01-font-size); line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
-.scheduler-row-head__mark > svg { inline-size: 12px; block-size: 12px; }
+   anywhere on the head opens the tip that words it all. */
+.scheduler-row-head__mark { display: inline-flex; }
+.scheduler-row-head__mark > svg { display: block; }
 .scheduler-row-head__mark--error { color: var(--scheduler-head-critical); }
 .scheduler-row-head__mark--warning { color: var(--scheduler-head-low); }
-.scheduler-row-head__mark--quiet { color: var(--rux-text-secondary); }
-/* No signal is the signal drawing struck through. */
-.scheduler-row-head__mark--quiet { position: relative; }
-.scheduler-row-head__mark--quiet::after {
-  content: '';
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: -1px;
-  inline-size: 1.5px;
-  block-size: 14px;
-  background: currentColor;
-  box-shadow: 0 0 0 1px var(--rux-layer);
-  transform: translateX(-50%) rotate(-45deg);
-}
 /* The compact board's one dot, drawn only there. */
 .scheduler-row-head__dot { display: none; box-sizing: border-box; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
 .scheduler-row-head__dot[data-tone="warning"] { background: var(--scheduler-head-low); }
 .scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
-/* In the week that holds today the body's gauges stand at the right and its
-   city along the foot; in any other week it is the seats and inspection,
-   along the foot. */
-.scheduler-row-head__body { grid-area: foot; display: flex; flex-direction: column; min-inline-size: 0; }
-.scheduler-row-head__body--live { display: contents; }
+/* In the week that holds today, the dial, the two levels and the state; in
+   any other week, the seats and the inspection at the foot. */
+/* The body clips, not the head, whose number's tip must reach past it. */
+.scheduler-row-head__body { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; overflow: hidden; }
+.scheduler-row-head__body:not(.scheduler-row-head__body--live) { justify-content: flex-end; }
 .scheduler-row-head__line {
-  grid-area: foot;
   min-inline-size: 0;
   overflow: hidden;
   white-space: nowrap;
@@ -403,66 +365,78 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
+.scheduler-row-head__state { margin-block-start: auto; }
+.scheduler-row-head__state--moving { color: var(--scheduler-head-moving); font-weight: 600; }
+.scheduler-row-head__state--warning { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
-/* Two tanks side by side, each a 3px gauge at most 50px tall that empties
-   downward, with a tick at its low mark and its letter under it. The
-   rounded ends are these instruments' alone; Carbon's controls stay square. */
-.scheduler-row-head__gauges {
-  grid-area: gauges;
+.scheduler-row-head__gauges { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
+/* The dial: a 270° arc, 2.6px with round ends, the rounded ends these
+   instruments' alone while Carbon's controls stay square. */
+.scheduler-row-head__dial { position: relative; align-self: center; inline-size: 38px; block-size: 38px; }
+.scheduler-row-head__dial svg { position: absolute; inset: 0; fill: none; stroke-width: 2.6; stroke-linecap: round; }
+.scheduler-row-head__track { stroke: var(--rux-border-subtle-01); }
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__track { stroke: var(--scheduler-road-scan); }
+.scheduler-row-head__arc { stroke: var(--scheduler-head-moving); }
+.scheduler-row-head__dial--warning .scheduler-row-head__arc { stroke: var(--scheduler-head-low); }
+.scheduler-row-head__speed {
+  position: absolute;
+  inset: 0;
   display: flex;
-  gap: var(--rux-spacing-01);
-  block-size: 100%;
-  max-block-size: calc(50px + var(--rux-label-01-line-height) * 1em);
-  align-self: end;
+  align-items: center;
+  justify-content: center;
+  padding-block-start: 2px;
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--rux-text-primary);
 }
-.scheduler-row-head__gauge {
+.scheduler-row-head__speed--word { font-size: 10px; font-weight: 400; color: var(--rux-text-secondary); }
+.scheduler-row-head__speed--word { flex-direction: column; line-height: 10px; }
+.scheduler-row-head__under { font-size: 9px; }
+.scheduler-row-head__dial--warning .scheduler-row-head__speed { color: var(--scheduler-head-low); }
+/* Fuel and DEF: the letter, then a 3px bar filled to the tank's share, with
+   a tick at the low mark. */
+.scheduler-row-head__level {
   --scheduler-tank-ink: var(--scheduler-head-normal);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  inline-size: 10px;
-  min-block-size: 0;
+  gap: var(--rux-spacing-02);
+  font-size: 10px;
+  line-height: 11px;
 }
-.scheduler-row-head__gauge[data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
-.scheduler-row-head__gauge[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-head-critical); }
+.scheduler-row-head__level[data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
+.scheduler-row-head__level[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-head-critical); }
+.scheduler-row-head__letter { flex: none; inline-size: 7px; color: var(--rux-text-secondary); }
+.scheduler-row-head__level:not([data-level="normal"]) > .scheduler-row-head__letter { color: var(--scheduler-tank-ink); font-weight: 600; }
 .scheduler-row-head__tank {
   position: relative;
-  flex: 1 1 50px;
-  min-block-size: 0;
-  max-block-size: 50px;
-  inline-size: 3px;
+  flex: 1 1 auto;
+  block-size: 3px;
   border-radius: 1.5px;
-  background: linear-gradient(to top, var(--scheduler-tank-ink) 0 var(--scheduler-tank), color-mix(in srgb, var(--scheduler-tank-ink) 28%, transparent) 0);
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), color-mix(in srgb, var(--scheduler-tank-ink) 28%, transparent) 0);
 }
-/* The low mark: a 7px tick across the gauge. */
 .scheduler-row-head__tank::after {
   content: '';
   position: absolute;
-  inset-inline-start: -2px;
-  inset-block-end: var(--scheduler-tank-low);
-  inline-size: 7px;
-  block-size: 1px;
+  inset-block-start: -2px;
+  inset-inline-start: var(--scheduler-tank-low);
+  inline-size: 1px;
+  block-size: 7px;
   background: var(--rux-text-secondary);
 }
-.scheduler-row-head__letter {
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  color: var(--rux-text-secondary);
-}
-.scheduler-row-head__gauge:not([data-level="normal"]) > .scheduler-row-head__letter { color: var(--scheduler-tank-ink); font-weight: 600; }
-/* With no signal the gauges fade to their last reading. */
+/* With no signal the dial and levels fade to their last reading. */
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__gauges { opacity: .45; }
-/* The compact board has no room for the gauges: the number and the dot. */
+/* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
-.scheduler-page[data-board="compact"] .scheduler-row-head { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "kit" "foot"; }
-.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__gauges, .scheduler-row-head__line, .scheduler-row-head__marks, .scheduler-row-head__type) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
+.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__mark, .scheduler-row-head__type) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and
    stays marked while its tip is open. */
-.scheduler-row-head:has(> .rux--popover-container):hover { background: var(--rux-layer-hover); }
-.scheduler-row-head:has(> .rux--popover--open) { background: var(--rux-layer-selected); }
+.scheduler-row-head:has(.rux--popover-container):hover { background: var(--rux-layer-hover); }
+.scheduler-row-head:has(.rux--popover--open) { background: var(--rux-layer-selected); }
 
 /* The heading over each vehicle type after the primary one, which is the day
    band again, lower down: the same surface, rule and ink, so a van's section
@@ -2017,18 +1991,18 @@ button.scheduler-row-head__num::after {
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-road__route { animation: none; }
 @media (prefers-reduced-motion: reduce) { .scheduler-road__route { animation: none; } }
 
-/* THE LEGEND, the view menu's What the colours mean: a bus head's gauge in
-   each colour it takes. */
+/* THE LEGEND, the view menu's What the colours mean: a bus head's level bar
+   in each colour it takes. */
 .scheduler-lights { display: grid; gap: var(--rux-spacing-04); margin: 0; padding: 0; list-style: none; }
 .scheduler-lights > li { display: flex; align-items: center; gap: var(--rux-spacing-05); }
 .scheduler-lights__swatch {
   --scheduler-swatch: var(--scheduler-head-normal);
   flex: none;
-  inline-size: 3px;
-  block-size: 16px;
-  margin-inline: var(--rux-spacing-04);
+  inline-size: 19px;
+  block-size: 3px;
+  margin-inline-start: var(--rux-spacing-04);
   border-radius: 1.5px;
-  background: linear-gradient(to top, var(--scheduler-swatch) 0 60%, color-mix(in srgb, var(--scheduler-swatch) 28%, transparent) 0);
+  background: linear-gradient(to right, var(--scheduler-swatch) 0 60%, color-mix(in srgb, var(--scheduler-swatch) 28%, transparent) 0);
 }
 .scheduler-lights__swatch[data-light="scan"] { opacity: .45; }
 .scheduler-lights__swatch[data-light="error"] { --scheduler-swatch: var(--scheduler-head-critical); }

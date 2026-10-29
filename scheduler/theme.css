@@ -98,21 +98,24 @@
   --scheduler-status-surface: #161616;
 }
 /* The bus head's readings, bus-head.js's: white on the theme's grey while
-   normal, the status palette's warning when low and its error when critical. */
+   normal, the status palette's warning when low and its error when critical,
+   and its green while the bus moves. */
 :root,
 [data-theme] {
   --scheduler-head-normal: var(--rux-icon-primary);
   --scheduler-head-low: var(--scheduler-mark-warning);
   --scheduler-head-critical: var(--scheduler-mark-error);
+  --scheduler-head-moving: var(--scheduler-mark-success);
 }
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
-   Carbon's yellow 60 and red 60, each about 5 to 1 on white, for the gauges
-   and the words alike. */
+   Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
+   the gauges and the words alike. */
 [data-theme="white"],
 [data-theme="g10"],
 [data-theme="apple-light"] {
   --scheduler-head-low: #8e6a00;
   --scheduler-head-critical: #da1e28;
+  --scheduler-head-moving: #198038;
 }
 [data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
 

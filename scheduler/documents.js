@@ -829,6 +829,12 @@
         await window.SchedulerPair.saveRecord(client, 'company_documents',
           { id, creating: false, row, columns: COLUMNS });
       }
+      // A new paper uploaded from a driver's page goes back to their documents.
+      const from = drivers.get(params.get('driver'));
+      if (!loaded && from && row.driver_id === from.id) {
+        guard.leave(`drivers.html?id=${encodeURIComponent(from.id)}#documents`);
+        return true;
+      }
       history.replaceState(null, '', `documents.html?id=${encodeURIComponent(id)}`);
       currentId = id;
       await reload(id);

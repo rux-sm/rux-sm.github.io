@@ -533,6 +533,7 @@
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-lexp">Licence expires</label>
                       <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-lexp" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="mm/dd/yyyy"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button></span></div>
+                      <div class="rux--form__helper-text" id="scheduler-d-lexp-from" hidden></div>
                       <div class="rux--form-requirement scheduler-driver-expiry" id="scheduler-d-lexp-expiry" data-expiry-for="scheduler-d-lexp" hidden></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
@@ -543,6 +544,7 @@
                     <div class="rux--date-picker-container rux--date-picker-container--single">
                       <label class="rux--label" for="scheduler-d-medexp">Medical card expires</label>
                       <div class="rux--date-picker-input__wrapper"><span><input id="scheduler-d-medexp" class="rux--date-picker__input" type="text" autocomplete="off" placeholder="mm/dd/yyyy"><button type="button" class="rux--date-picker__icon" aria-label="Open calendar" tabindex="-1"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button></span></div>
+                      <div class="rux--form__helper-text" id="scheduler-d-medexp-from" hidden></div>
                       <div class="rux--form-requirement scheduler-driver-expiry" id="scheduler-d-medexp-expiry" data-expiry-for="scheduler-d-medexp" hidden></div>
                     </div>
                     <div class="rux--date-picker__calendar-container rux--layer-two" hidden><div class="rux--date-picker__calendar" role="grid" aria-label="Calendar" tabindex="0"><div class="rux--date-picker__month"><button type="button" class="rux--date-picker__month-nav" aria-label="Previous month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_left"/></svg></button><div class="rux--date-picker__current-month"></div><button type="button" class="rux--date-picker__month-nav" aria-label="Next month"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_right"/></svg></button></div><div class="rux--date-picker__weekdays"><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div><div class="rux--date-picker__weekday"></div></div><div class="rux--date-picker__days"></div></div></div>
@@ -693,7 +695,9 @@
         </div>
 
         <!-- Read only here: a document is uploaded and edited on the
-             Documents page, which these links open for this driver. -->
+             Documents page, which these links open for this driver, and
+             each kind kept for every driver that is not on file links to
+             its upload. -->
         <div class="rux--tab-content" role="tabpanel" id="scheduler-driver-panel-documents" aria-labelledby="scheduler-driver-tab-documents" tabindex="0" hidden>
           <section class="rux--stack-vertical rux--stack-scale-4 scheduler-pair-group" aria-labelledby="scheduler-driver-documents-h">
             <h2 class="rux--type-heading-compact-02" id="scheduler-driver-documents-h">Documents for this driver</h2>

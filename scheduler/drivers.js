@@ -703,44 +703,78 @@
   }
 
   // ── documents, read only ──
-  let papers = [];  // the driver's current documents, each with its kind's name
+  let papers = [];   // the driver's current documents, each with its kind's name
+  let missing = [];  // the kinds kept for each driver that this driver has none of
+  let dated = new Map();  // a driver date's column to the kind whose paper sets it
   async function readPapers(id) {
     const [kinds, docs] = await Promise.all([
-      client.from('document_kinds').select('id,name'),
+      client.from('document_kinds').select('id,name,per_driver,sets_driver_date').order('name'),
       client.from('company_documents').select('id,kind_id,holder,ends_on,parts,note')
         .eq('driver_id', id).is('replaced_at', null).order('created_at', { ascending: false }),
     ]);
     if (kinds.error || docs.error) throw kinds.error || docs.error;
     const names = new Map((kinds.data || []).map(k => [k.id, k.name]));
     papers = (docs.data || []).map(d => ({ ...d, kind: names.get(d.kind_id) || 'Document' }));
+    const held = new Set(papers.map(d => d.kind_id));
+    missing = (kinds.data || []).filter(k => k.per_driver && !held.has(k.id));
+    dated = new Map((kinds.data || []).filter(k => k.sets_driver_date)
+      .map(k => [k.sets_driver_date, papers.find(d => d.kind_id === k.id && d.ends_on) || null]));
   }
+  // An upload for this driver, of one kind or any, that comes back here.
+  const uploadFor = kindId => `documents.html?new&driver=${encodeURIComponent(loaded.id)}`
+    + (kindId ? `&kind=${encodeURIComponent(kindId)}` : '');
   // The current documents as rows, each opening its file and saying whether it
-  // is in force as the Documents page does.
+  // is in force as the Documents page does, then each driver kind not on file,
+  // linking to its upload.
   function drawDocuments() {
-    const here = encodeURIComponent(loaded.id);
-    $('scheduler-driver-documents-upload').href = `documents.html?new&driver=${here}`;
-    $('scheduler-driver-documents-all').href = `documents.html?driver=${here}`;
+    $('scheduler-driver-documents-upload').href = uploadFor();
+    $('scheduler-driver-documents-all').href = `documents.html?driver=${encodeURIComponent(loaded.id)}`;
     const list = $('scheduler-driver-documents');
     list.replaceChildren();
-    if (!papers.length) {
-      const li = el('li', 'rux--contained-list-item');
-      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No documents yet.'));
-      list.appendChild(li);
-      return;
-    }
-    for (const d of papers) {
+    const row = (href, main, detail, away) => {
       const li = el('li', 'rux--contained-list-item rux--contained-list-item--clickable');
       const a = el('a', 'rux--contained-list-item__content scheduler-pair-trip');
-      a.href = `documents.html?open=${encodeURIComponent(d.id)}`;
-      a.target = '_blank';
-      a.rel = 'noopener';
+      a.href = href;
+      if (away) { a.target = '_blank'; a.rel = 'noopener'; }
       const lines = el('span', 'scheduler-pair-item');
-      lines.appendChild(el('span', 'scheduler-pair-item__main', d.kind));
-      lines.appendChild(el('span', 'scheduler-pair-item__detail',
-        [window.SchedulerDocumentStatus.of(d).text, d.note].filter(Boolean).join(' · ')));
+      lines.appendChild(el('span', 'scheduler-pair-item__main', main));
+      lines.appendChild(el('span', 'scheduler-pair-item__detail', detail));
       a.appendChild(lines);
       li.appendChild(a);
       list.appendChild(li);
+    };
+    for (const d of papers) {
+      row(`documents.html?open=${encodeURIComponent(d.id)}`, d.kind,
+        [window.SchedulerDocumentStatus.of(d).text, d.note].filter(Boolean).join(' · '), true);
+    }
+    for (const k of missing) row(uploadFor(k.id), k.name, 'None on file · Upload', false);
+    if (!list.children.length) {
+      const li = el('li', 'rux--contained-list-item');
+      li.appendChild(el('div', 'rux--contained-list-item__content scheduler-pair-note', 'No documents yet.'));
+      list.appendChild(li);
+    }
+    drawDated();
+  }
+  /* The licence and medical card dates come from the paper on file, which
+     the database copies onto the driver, so while there is one the date is
+     not typed here and says which paper it is from. */
+  const DATED = { license_exp: 'lexp', med_card_expiry: 'medexp' };
+  function drawDated() {
+    for (const [column, key] of Object.entries(DATED)) {
+      const input = field(key);
+      const paper = dated.get(column) || null;
+      input.disabled = !!paper;
+      input.closest('.rux--date-picker-input__wrapper').querySelector('.rux--date-picker__icon').disabled = !!paper;
+      const help = $(`scheduler-d-${key}-from`);
+      help.hidden = !paper;
+      help.replaceChildren();
+      if (!paper) continue;
+      help.append('From the ');
+      const a = el('a', 'rux--link', paper.kind.toLowerCase());
+      a.href = `documents.html?open=${encodeURIComponent(paper.id)}`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      help.append(a, ' on file');
     }
   }
   const loadPapers = id => readPapers(id).then(drawDocuments)
@@ -772,6 +806,12 @@
     $('scheduler-driver').hidden = false;
     legs = null;
     if (loaded) { drawLink(); readTrips().then(drawTrips); loadPapers(loaded.id); }
+    // A paper uploaded from here comes back to the Documents tab.
+    if (loaded && location.hash === '#documents') {
+      const tab = $('scheduler-driver-tab-documents');
+      window.Rux?.tabs?.select?.(tab.closest('[role="tablist"]'), tab);
+      history.replaceState(null, '', location.pathname + location.search);
+    }
     return true;
   }
 

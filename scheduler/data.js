@@ -15335,11 +15335,10 @@
     const docked = barShortcuts.hasAttribute('data-docked');
 
     /* The bar's leg by its key, week.js's, which is its id on a trip read
-       with its legs. `word` is the old word it mirrors, which the writers
-       still send. */
+       with its legs and the old word on one that is not; the writers send
+       it, because a leg beyond the outbound and return has no word. */
     const on = legByKey(trip, bar.dataset.legKey || bar.dataset.leg || 'outbound');
     const leg = on?.key ?? (bar.dataset.leg || 'outbound');
-    const word = on ? on.leg : (bar.dataset.leg || 'outbound');
     const saved = window.SchedulerTripShape.legOf(trip, leg);
 
     /* The customer's side, one tile per person: the booking contact, then
@@ -15458,7 +15457,7 @@
       const view = window.SchedulerDriverJob.viewNow(trip, leg, p.driverId,
         { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel });
       const { data, error } = await client.rpc('mark_driver_told',
-        { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: word, p_role: p.seatRole, p_view: view });
+        { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
       if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
       await again();
       toast('success', `${firstName(p.name)} is marked as told`);

@@ -1435,6 +1435,12 @@
 }
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
+/* Under the pointer the trip lifts as a Geist card does: its fill steps to
+   the hover and its edge brightens to Geist's hover border, #454545, so the
+   trip in hand shows on a busy week. A selected trip keeps its white ring. */
+@media (hover: hover) {
+  [data-theme="rux-100"] .scheduler-bar--blue:not(.scheduler-bar--road):hover:not([aria-current="true"]) { --scheduler-edge: #454545; }
+}
 /* A grey trip on the road is filled, #474747, 2.0 to 1 against the other
    trips and 2.3 on the black board, so the buses out now show at a glance
    without a colour; white stays the selection's, and its green marks keep

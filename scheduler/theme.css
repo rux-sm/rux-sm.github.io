@@ -837,6 +837,11 @@
   --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
   color: var(--rux-text-error);
 }
+/* A booked mark carries no bus: the grey bar already says booked, and a bus
+   on the first day of every leg filled the roster with icons. A day off
+   keeps its reason's drawing, the one thing its red does not say, and the
+   cell's words still name the trip. */
+[data-theme="rux-100"] .scheduler-avail__cell--busy:not(.scheduler-avail__cell--off) > .scheduler-avail__glyph { display: none; }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

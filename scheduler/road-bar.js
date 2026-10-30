@@ -4,7 +4,8 @@
    While a bus is out on its trip, its bar keeps its destination and
    customer, and the rows under them say what Samsara says, laid out for the
    narrowest bar, a one-day trip on the board's 10rem day, and kept to one
-   day's width on a longer bar, in today's column, every row moving there.
+   day's width on a longer bar, in today's column, every row moving there
+   but the times, whose track runs the bar's whole length.
    - The bus icon at the destination row's end marks the trip as out and
      opens the live card, with a warning sign after it; it gently pulses
      while the trip is out. What the bus is doing is the bus column's, so

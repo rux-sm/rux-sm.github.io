@@ -2092,6 +2092,14 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
+/* A live bar's times run its whole length, out at its start and back at its
+   end, so the track between them crosses every day the trip takes; the
+   rows above and below stay in today's column. Cut, as the customer's is,
+   where the bar's start is under the bus column. */
+.scheduler-bar--road > .scheduler-road__times {
+  margin-inline-start: 0;
+  max-inline-size: min(100%, var(--scheduler-row-room, 100%));
+}
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
 .scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
 
@@ -2112,6 +2120,8 @@ button.scheduler-row-head__num::after {
   block-size: 2px;
   margin-inline: var(--rux-spacing-02);
   border-radius: 1px;
+  /* Its dot stands 2px past it either side, which a row's parts would clip. */
+  overflow: visible;
   background:
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     color-mix(in srgb, currentColor 22%, transparent);

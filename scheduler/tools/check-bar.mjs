@@ -178,7 +178,7 @@ expect('a split\'s drop-off points down and its pickup up; a round trip wears no
   [['#m-download', 'Drop-off'], ['#m-upload', 'Pickup'], null]);
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
-  [['×3', 'Marco'], ['×3', 'Lena'], ['×3', 'Needs a bus']]);
+  [['3', 'Marco'], ['3', 'Lena'], ['3', 'Needs a bus']]);
 expect('the first of them carries the update, the others say which bus they are with no age',
   drawn('trip-bar', 'More than one bus').map(b => [has(b, '.scheduler-bar__age'), /^Bus /.test(text(b, '.scheduler-bar__update')) ? text(b, '.scheduler-bar__update') : 'update']),
   [[true, 'update'], [false, 'Bus 2 of 3'], [false, 'Bus 3 of 3']]);

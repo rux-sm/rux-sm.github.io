@@ -904,6 +904,9 @@
 [data-theme="rux-100"] .scheduler-bar .scheduler-crew:not(.scheduler-crew--away) > .scheduler-crew__name { color: #ededed; }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
+/* The count of a leg's buses is Geist's gray 900 on every trip, a figure
+   beside the destination rather than part of its name. */
+[data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: #a1a1a1; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
    pane's sheet, every row parted by the board's one line. A booked
    day is the board's confirmed blue, Geist's blue 100, with its hours of

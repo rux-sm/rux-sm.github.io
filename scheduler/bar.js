@@ -438,7 +438,7 @@
     const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
       : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
     /* How many buses the leg takes, written after the destination on a leg of
-       more than one: `×3`. The board numbers them down its rows, as `nth`, and
+       more than one, as the figure alone: `3`. The board numbers them down its rows, as `nth`, and
        every bus after the first says which it is in place of the update, so
        the trip's news is read once. */
     const count = leg.count || 1;
@@ -527,7 +527,7 @@
     const paidBadge = billed && billed.price > 0 && billed.paid > 0 && billed.remaining <= 0 ? paidMark() : null;
     const destName = el('span', null, placeName(trip.destination) || 'No destination');
     const dest = count > 1 ? el('span', 'scheduler-bar__multi') : destName;
-    if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', `×${count}`));
+    if (count > 1) dest.append(destName, el('span', 'scheduler-bar__count', String(count)));
     /* The destination row holds what the trip is on the left, and only what
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */

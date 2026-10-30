@@ -101,23 +101,33 @@
 }
 /* The bus head's readings, bus-head.js's: white on the theme's grey while
    normal, the status palette's warning when low and its error when critical,
-   and its green while the bus moves. */
+   its green while the bus moves and its blue while it idles, so a bus with
+   its engine on is always a colour. */
 :root,
 [data-theme] {
   --scheduler-head-normal: var(--rux-icon-primary);
   --scheduler-head-low: var(--scheduler-mark-warning);
   --scheduler-head-critical: var(--scheduler-mark-error);
   --scheduler-head-moving: var(--scheduler-mark-success);
+  --scheduler-head-idle: var(--scheduler-mark-info);
 }
 /* On a light pane the status yellow reads 1.6 to 1, so the light themes take
-   Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, for
-   the gauges and the words alike. */
+   Carbon's yellow 60, red 60 and green 60, each about 5 to 1 on white, and its
+   blue 70, for the gauges and the words alike. */
 [data-theme="white"],
 [data-theme="g10"],
 [data-theme="apple-light"] {
   --scheduler-head-low: #8e6a00;
   --scheduler-head-critical: #da1e28;
   --scheduler-head-moving: #198038;
+  --scheduler-head-idle: #0043ce;
+}
+/* On Carbon's dark panes the status blue 50 read 2.8 to 1 on the head's
+   grey, so idling takes its blue 40, the link blue there, which stands as the
+   moving green does, 3.8 to 1 on g90 and 4.9 on g100. */
+[data-theme="g90"],
+[data-theme="g100"] {
+  --scheduler-head-idle: #78a9ff;
 }
 /* On a light pane the fuel's amber and orange bands take Carbon's yellow 60
    and orange 60, which hold 3 to 1 as a bar where the status colours do not. */
@@ -846,13 +856,12 @@
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
 /* Rux 100's state display takes Geist's own pairs, each 100 fill under its
-   900 ink: green moving, amber when speeding or idling too long, and gray
-   idling, whose gray 900 also writes Off and no signal. */
+   900 ink: green moving, blue idling, amber when speeding or idling too
+   long; its gray 900 writes Off and no signal. */
 [data-theme="rux-100"] .scheduler-row-head {
   --scheduler-head-moving-fill: oklch(23.09% 0.0716 149.68);
   --scheduler-head-low-fill: var(--scheduler-amber-bg);
-  --scheduler-head-idle-fill: #1a1a1a;
-  --scheduler-head-idle-ink: #a1a1a1;
+  --scheduler-head-idle-fill: oklch(22.17% 0.069 259.89);
   --scheduler-head-quiet-ink: #a1a1a1;
   /* The fuel's bands: Geist's green 900, its amber 700 at half, its amber
      900 when low and its red 900 when critical. */

@@ -389,7 +389,7 @@ button.scheduler-row-head__num::after {
 /* The state's display, 38px tall and the head's width, so the fuel under
    it stands at one height down the column. While the engine runs it is
    filled in the state's tone and its words are written in it: moving
-   green, idling grey, amber when speeding or idling too long. With the
+   green, idling blue, amber when speeding or idling too long. With the
    engine off it is the word alone in the secondary ink, with no fill or
    edge; with no signal, a dash over how long in a dashed edge. The fills
    are tints of each tone over the head's own surface, which a theme may
@@ -397,9 +397,9 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head {
   --scheduler-head-moving-fill: color-mix(in oklab, var(--scheduler-head-moving) 16%, var(--rux-layer));
   --scheduler-head-low-fill: color-mix(in oklab, var(--scheduler-head-low) 16%, var(--rux-layer));
-  --scheduler-head-idle-fill: var(--rux-layer-hover);
-  /* The idling word, and the quiet ink of how long, Off and no signal. */
-  --scheduler-head-idle-ink: var(--rux-text-primary);
+  --scheduler-head-idle-fill: color-mix(in oklab, var(--scheduler-head-idle) 16%, var(--rux-layer));
+  /* The idling word and how long, and the quiet ink of Off and no signal. */
+  --scheduler-head-idle-ink: var(--scheduler-head-idle);
   --scheduler-head-quiet-ink: var(--rux-text-secondary);
 }
 .scheduler-row-head__dial { position: relative; display: flex; block-size: 38px; color: var(--scheduler-head-quiet-ink); }
@@ -421,8 +421,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__speed:not(.scheduler-row-head__speed--word) { font-size: 20px; line-height: 20px; }
 .scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; }
-.scheduler-row-head__dial:not(.scheduler-row-head__dial--running) .scheduler-row-head__under,
-.scheduler-row-head__dial--running.scheduler-row-head__dial--quiet .scheduler-row-head__under { color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__dial:not(.scheduler-row-head__dial--running) .scheduler-row-head__under { color: var(--scheduler-head-quiet-ink); }
 /* Fuel: a pump and its figure, over a square 4px bar filled to the tank's
    share, a neutral grey while normal. DEF, shown only while low, is a tag alone. */
 .scheduler-row-head__level {

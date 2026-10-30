@@ -860,11 +860,16 @@
   --scheduler-head-quiet-ink: #a1a1a1;
 }
 /* Rux 100's state display is a 40px square, Carbon's md control height,
-   the size of the board's buttons, centred over the fuel, which keeps the
-   head's full width for its percent. The head's padding is 4px on every
-   side and the fuel sits 4px under the display. A low DEF's tag moves down
-   with the display's foot. */
-[data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-02); }
+   the size of the board's buttons, with 8px either side of it: the column
+   is 57px, the display, 8px each side and the head's 1px rule. The head's
+   padding is 4px at the sides, so the fuel keeps 48px for its percent, and
+   8px at the top and foot, with 4px between the number, the display, the
+   fuel and the equipment, which fills the 123px row to the pixel; the fuel's
+   percent sits 2px over its bar for it. A low DEF's tag moves down with the
+   display's foot. */
+[data-theme="rux-100"] .scheduler-corner { min-inline-size: calc(var(--rux-layout-size-height-md, 2.5rem) + 2 * var(--rux-spacing-03) + 1px); }
+[data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-03); }
+[data-theme="rux-100"] .scheduler-row-head__level { gap: 2px; }
 [data-theme="rux-100"] .scheduler-row-head__dial {
   align-self: center;
   inline-size: var(--rux-layout-size-height-md, 2.5rem);

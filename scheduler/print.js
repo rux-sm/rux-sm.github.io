@@ -747,8 +747,9 @@
 
   /* One copy per filled seat, told apart as the envelope's are: the bus, the
      leg where it is the way back, the seat and the driver's full name. The
-     board's panel heads the copy on screen by the driver's name alone, which
-     fits its head; its list of copies keeps the rest. */
+     board's panel heads the copy on screen by the driver's short name alone,
+     the board's, so the pick fits its toolbar at the panel's standard width
+     beside the layout and Print; its list of copies keeps the rest. */
   const seatDriverName = subject => String(subject.seat?.drivers?.name || nameOf(subject.seat)).trim() || null;
   const seatCopyName = subject => [
     subject.assignment?.buses?.number != null ? String(subject.assignment.buses.number) : null,
@@ -756,7 +757,7 @@
     roleName(subject.seat?.role),
     seatDriverName(subject),
   ].filter(Boolean).join(' · ');
-  const seatCopyHead = subject => seatDriverName(subject) ?? seatCopyName(subject);
+  const seatCopyHead = subject => nameOf(subject.seat) || seatCopyName(subject);
 
   /* ── The driver itinerary ─────────────────────────────────────────────────
      The office's clean copy of the plan for the day: where the bus goes, when,
@@ -3384,7 +3385,8 @@
     cell.setAttribute('aria-expanded', 'false');
     cell.setAttribute('aria-label', `${label}: ${names[chosen] ?? ''}`);
     cell.title = names[chosen] ?? '';
-    cell.append(face ?? '', sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
+    // The choice in a span of its own, so a name longer than the cell ends in an ellipsis.
+    cell.append(make('span', 'scheduler-print__value', face ?? ''), sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
     return [menu, cell];
   }
 

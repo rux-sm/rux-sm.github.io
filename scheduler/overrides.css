@@ -997,6 +997,23 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
 
+/* The choice ends in an ellipsis where its cell is narrower than its name. */
+.scheduler-print__value {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A PICK'S MENU IS AS WIDE AS ITS LONGEST NAME, past the panel's edge where it
+   has to, so a driver's copy is never cut short: hung from the toolbar, a
+   menu with no width of its own stops at the toolbar's end. It keeps clear
+   of the window's edge. */
+.scheduler-viewer__toolbar > .scheduler-print__menu {
+  inline-size: max-content;
+  max-inline-size: calc(100vw - 2 * var(--rux-spacing-05));
+}
+
 /* Over the cell's trailing room, and deaf to the pointer so a press there
    lands on the cell under it. */
 .scheduler-print__cell-arrow {

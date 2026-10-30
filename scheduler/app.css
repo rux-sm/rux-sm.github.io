@@ -2583,6 +2583,17 @@ button.scheduler-row-head__num::after {
    row's own buttons butt against one another, each the band's height; a gap
    between the form's put them in a strip of their own inside the row. */
 .scheduler-viewer__toolbar > [data-viewer-form] { flex: none; }
+/* THE PICKS SHARE THE ROW EVENLY, Print keeping its square: each is the same
+   width whatever it names, so changing the layout or the driver moves no
+   edge, and a name longer than its half ends in an ellipsis. A form's line of
+   text says nothing, so it gives its room up to them. */
+.scheduler-viewer__toolbar > [data-viewer-form].scheduler-print__pick { flex: 1 1 0; min-inline-size: 0; }
+.scheduler-viewer__toolbar:has(> .scheduler-print__pick) > .scheduler-viewer__uploaded:empty { display: none; }
+/* A pick's menu may run past the panel onto the board, so while one is open
+   the panel stands over the board's own layers, its sticky days and bus
+   column up to 5, where Carbon's moving panel would otherwise hold the menu
+   under them. */
+.scheduler-viewer:has(.scheduler-print__menu.rux--menu--open) { z-index: 6; }
 .scheduler-viewer__toolbar > .rux--select { inline-size: 14rem; }
 
 /* WHICH DOCUMENT AT ONE END, WHAT TO DO WITH IT AT THE OTHER, the way the

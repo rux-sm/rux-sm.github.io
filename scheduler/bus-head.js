@@ -70,18 +70,18 @@
 
   // What the bus is doing, as the dial says it; the place is the tip's next line.
   function stateOf(live) {
-    if (noSignal(live)) return { dial: '–', tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
+    if (noSignal(live)) return { engine: 'none', dial: '–', tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
     if (moving(live)) {
       const fast = live.mph > SPEEDING;
-      return { dial: String(live.mph), tone: fast ? 'warning' : 'moving', words: `Moving, ${live.mph} mph${fast ? `, over ${SPEEDING}` : ''}` };
+      return { engine: 'moving', dial: String(live.mph), tone: fast ? 'warning' : 'moving', words: `Moving, ${live.mph} mph${fast ? `, over ${SPEEDING}` : ''}` };
     }
     if (live.engine === 'idle' || live.engine === 'on') {
       const long = idleFor(live) > IDLE_MS;
       const span = live.engine_at ? ago(live.engine_at) : null;
-      return { dial: 'Idle', under: span, tone: long ? 'warning' : 'quiet',
+      return { engine: 'idle', dial: 'Idle', under: span, tone: long ? 'warning' : 'quiet',
         words: `Idling${span ? ` ${span}` : ''}${long ? `, past ${IDLE_MS / 60e3} minutes` : ''}` };
     }
-    return { dial: 'Off', tone: 'quiet', words: 'Engine off' };
+    return { engine: 'off', dial: 'Off', tone: 'quiet', words: 'Engine off' };
   }
 
   // The engine's lamp, which leads its line in the number's toggletip.
@@ -157,6 +157,8 @@
     const lamp = lampOf(shown);
 
     const state = shown ? stateOf(shown) : null;
+    // What the engine is doing, for a theme that quiets a bus at rest.
+    if (state) head.dataset.engine = state.engine; else delete head.dataset.engine;
     const levels = shown ? [levelOf(shown.fuel, FUEL), levelOf(shown.def, DEF)] : [];
 
     // The one state dot the compact board draws: the worst tone the head shows.

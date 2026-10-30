@@ -90,8 +90,8 @@
 /* RUX 100'S STATUS COLOURS ARE GEIST'S 900 STEPS, the hue Geist keeps for
    coloured text and icons on its dark pages, read from its Colors page in
    OKLCH, so every alert, tick, gauge and mark the scheduler draws in a
-   status colour takes it. Geist has no yellow: its amber 900 is both the
-   warning and the caution. */
+   status colour takes it, a driver not yet sent or told in its gray 900.
+   Geist has no yellow: its amber 900 is both the warning and the caution. */
 [data-theme="rux-100"] {
   --rux-status-red: oklch(69.96% 0.2136 22.03);
   --rux-status-orange: oklch(77.21% 0.1991 64.28);
@@ -101,6 +101,7 @@
   --rux-status-green: oklch(73.1% 0.2158 148.29);
   --rux-status-blue: oklch(71.7% 0.1648 250.794);
   --rux-status-purple: oklch(69.87% 0.2037 309.51);
+  --rux-status-gray: #a1a1a1;
   --rux-support-error: oklch(69.96% 0.2136 22.03);
   --rux-support-warning: oklch(77.21% 0.1991 64.28);
   --rux-support-caution-major: oklch(77.21% 0.1991 64.28);
@@ -848,6 +849,13 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
+/* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
+   dims its icon, dial, levels and kit to 35%, so the buses running are the
+   bright heads in the column. Its number stays at full strength, since it
+   names the row. */
+[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__body) {
+  opacity: .35;
+}
 /* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the
    update and the drivers with the destination and times, is written in the
    trip's own Geist 900 on its 100, so a trip reads as one shape. The

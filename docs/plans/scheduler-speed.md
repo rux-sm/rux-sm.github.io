@@ -38,8 +38,11 @@ changes is how often it reads, how much it reads and how much it draws again.
   other change to a row the board does not hold reads nothing. A save's burst
   of changes still settles into one read, now one per trip it touched. A
   change to buses, drivers, time off, days out or settings reads that one
-  list. A full read is kept for a week no read covers, coming back to the tab
-  and a change whose trip cannot be told.
+  list.
+- **A full read is kept** for a week no read covers, coming back to the tab,
+  the board's channel joining again after it dropped, and a change whose trip
+  cannot be told, because a change missed while the channel was down reaches
+  the board no other way once each change reads only its own trip.
 - **The lists that seldom change are read once, never with each week:**
   contacts, customers, locations, buses, drivers and settings. Buses, drivers
   and settings are read again on their own live change; contacts, customers
@@ -91,42 +94,15 @@ changes is how often it reads, how much it reads and how much it draws again.
   board use: `quote.js`, `quote-text.js`, `quote-lines.js`,
   `route-figures.js`, `draft-fields.js`, `trip-history.js` and `file-names.js`.
 
-### Rux UI's leftovers
+### What is not this plan's
 
-- **Leg words and the five contact slots are `scheduler-trip-shapes.md`'s,**
-  whose tasks move every reader to legs and the contact list and then drop
-  the columns; this plan does not touch them.
-- **The old needs columns go.** `req_sleeper`, `req_ada`, `req_56pax`,
-  `need_hotel` and `need_fuel_card` are written beside `trip_reqs` on every
-  save; every reader, the connector's included, reads `trip_reqs`, trips
-  without it are filled from the old columns, and the columns are dropped.
-- **A column is dropped in a later session than the push that stops its
-  use,** once the office's tabs have been reloaded, because nothing tells an
-  open tab a newer Scheduler is out, and an old tab's save fails on a column
-  that is gone.
-- **Old colour names are rewritten in the rows,** yellow to amber and cyan to
-  teal, so `RETIRED_COLORS` goes and the connector's `get_trip` stops naming
-  the old ones.
-- **`LEGACY_STATUS` goes with no rewrite,** since no `active_roles` entry
-  holds a tone name.
-- **Columns no page needs are dropped once nothing selects them:**
-  `trips.notes` with its `trips_note_update` trigger, after the two trips
-  whose note is in none of their updates have it imported as one;
-  `driving_hours` and `on_duty_hours`, which the connector's `get_trip`
-  selects; the `itinerary_printed_*` and `hos_form_printed_*` columns on
-  `trips`, which `print.js`'s trip read for the print hub selects; and
-  `platform.profiles.scheduler_shortcuts`.
-- **The connector and its generated `rules.ts` change before any column
-  goes.**
+- **Rux UI's leftover columns and colours are
+  `scheduler-old-columns.md`'s,** because dropping them makes nothing faster
+  and waits on the office's tabs being reloaded.
 
 ## Questions
 
-- The archived `rux-ui` repository still serves forwards for old driver,
-  maintenance and document links. Keep them for links still sitting in
-  drivers' texts, or take them down?
-- `trip_driver_confirmations` is listed as legacy, yet a driver's Accept and
-  Decline still write it beside `trip_driver_statuses`. Is anything of yours
-  still reading it, or can it stop being written and go?
+None open.
 
 ## Tasks
 
@@ -141,7 +117,8 @@ changes is how often it reads, how much it reads and how much it draws again.
 - [ ] Read the seldom-changing lists once in `data.js`, and on a live change
       read only the changed trip or list into the held weeks, finding a
       deleted or crew row's trip in what the board holds, and keeping the
-      full read for the cases the decisions name.
+      full read for the cases the decisions name, the channel's rejoin
+      among them.
 - [ ] Make `to-do-rows.js` and `departures-panel.js` read from the board's
       data and share its channel on the board page, reading for themselves
       only past the board's days, and add the five tables the board's channel
@@ -151,29 +128,15 @@ changes is how often it reads, how much it reads and how much it draws again.
       card or the editor opens.
 - [ ] Keep legs, back times and standing per trip for a draw, index the
       read's legs by day for standing, and make every date formatter once,
-      in `data.js`, `trip-shape.js`, `week.js`, `clashes.js`, `bar.js`,
-      `road.js`, `road-bar.js`, `follow-up.js`, `driver-job.js` and
-      `departures.js`.
+      in `data.js`, `week.js`, `clashes.js`, `bar.js`, `road.js`,
+      `road-bar.js`, `follow-up.js`, `driver-job.js` and `departures.js`.
 - [ ] Measure before writing in `spareFor`, `fitLanesInView`,
       `fitStuckRows` and `fitCrew`; draw a swipe's spare weeks when idle; and
       skip `fillTracks` while the page is hidden.
 - [ ] If the first timing says it pays, split the editor and its panels out
       of `data.js` into its own script loaded when the board is idle, or at
       once for a `?trip=` or `?draft=` link, with the editor-only scripts
-      beside it, and keep `npm run check` loading every page's scripts.
-- [ ] Switch every reader of the old needs columns to `trip_reqs` and stop
-      writing them, stop selecting the unread columns in `print.js` and the
-      connector, remove `LEGACY_STATUS`, and stop writing
-      `trip_driver_confirmations` if nothing else reads it.
-- [ ] In a later session, once the office's tabs have been reloaded, write
-      the SQL that imports the two trips' unrecorded notes as updates, fills
-      `trip_reqs` where it is empty, rewrites yellow and cyan, and drops the
-      needs columns, the unread columns and, if it goes,
-      `trip_driver_confirmations`; show it to rux, and apply it on his yes;
-      then remove `RETIRED_COLORS` and its history labels and the old colour
-      names from `get_trip`'s words.
-- [ ] Take down the archived `rux-ui` repository's forwards, if they go.
-- [ ] Update the scheduler's `README.md` and its database inventory for the
-      split script and the dropped columns.
+      beside it, keep `npm run check` loading every page's scripts, and
+      update the scheduler's `README.md` in the same commit.
 - [ ] Time the same steps as the first task again and compare them with its
       figures.

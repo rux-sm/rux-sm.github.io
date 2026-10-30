@@ -859,14 +859,19 @@
   --scheduler-head-idle-ink: #a1a1a1;
   --scheduler-head-quiet-ink: #a1a1a1;
 }
-/* Rux 100's state display is square, the head's full 47px both ways. The
-   56px column already gives it the most a 123px row can hold: the head's
-   padding is 4px on every side and the fuel sits 4px under the display, so
-   nothing is clipped. A low DEF's tag moves down with the display's foot. */
+/* Rux 100's state display is a 40px square, Carbon's md control height,
+   the size of the board's buttons, centred over the fuel, which keeps the
+   head's full width for its percent. The head's padding is 4px on every
+   side and the fuel sits 4px under the display. A low DEF's tag moves down
+   with the display's foot. */
 [data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-02); }
-[data-theme="rux-100"] .scheduler-row-head__dial { block-size: auto; aspect-ratio: 1; }
+[data-theme="rux-100"] .scheduler-row-head__dial {
+  align-self: center;
+  inline-size: var(--rux-layout-size-height-md, 2.5rem);
+  block-size: var(--rux-layout-size-height-md, 2.5rem);
+}
 [data-theme="rux-100"] .scheduler-row-head__gauges { gap: var(--rux-spacing-02); }
-[data-theme="rux-100"] .scheduler-row-head__level[data-tank="D"] { inset-block-start: 40px; }
+[data-theme="rux-100"] .scheduler-row-head__level[data-tank="D"] { inset-block-start: calc(var(--rux-layout-size-height-md, 2.5rem) - 7px); }
 /* A Rux 100 bus head whose tip is open is back at the board's own sheet,
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */

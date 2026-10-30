@@ -87,6 +87,28 @@
   --scheduler-road-scan: var(--rux-text-secondary);
 }
 
+/* RUX 100'S STATUS COLOURS ARE GEIST'S 900 STEPS, the hue Geist keeps for
+   coloured text and icons on its dark pages, read from its Colors page in
+   OKLCH, so every alert, tick, gauge and mark the scheduler draws in a
+   status colour takes it. Geist has no yellow: its amber 900 is both the
+   warning and the caution. */
+[data-theme="rux-100"] {
+  --rux-status-red: oklch(69.96% 0.2136 22.03);
+  --rux-status-orange: oklch(77.21% 0.1991 64.28);
+  --rux-status-orange-outline: oklch(77.21% 0.1991 64.28);
+  --rux-status-yellow: oklch(77.21% 0.1991 64.28);
+  --rux-status-yellow-outline: oklch(77.21% 0.1991 64.28);
+  --rux-status-green: oklch(73.1% 0.2158 148.29);
+  --rux-status-blue: oklch(71.7% 0.1648 250.794);
+  --rux-status-purple: oklch(69.87% 0.2037 309.51);
+  --rux-support-error: oklch(69.96% 0.2136 22.03);
+  --rux-support-warning: oklch(77.21% 0.1991 64.28);
+  --rux-support-caution-major: oklch(77.21% 0.1991 64.28);
+  --rux-support-caution-minor: oklch(77.21% 0.1991 64.28);
+  --rux-support-success: oklch(73.1% 0.2158 148.29);
+  --rux-support-info: oklch(71.7% 0.1648 250.794);
+  --rux-text-error: oklch(69.96% 0.2136 22.03);
+}
 /* Duties, assignments and alerts share Design's status palette. */
 [data-theme] {
   --scheduler-mark-success: var(--rux-status-green);
@@ -1488,11 +1510,10 @@
 /* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:
    the status colour mixed into layer-01, written in that
    status's own words colour. A placeholder is the warning at 24%, about
-   #4b3f17, in the warning yellow, 6.2 to 1; a trip not yet confirmed is the
+   #503403, in Geist's amber 900, 5.1 to 1; a trip not yet confirmed is the
    error at 32%, about #5f282a, in the error text red, 4.9 to 1. Red takes
-   more because yellow is the brighter hue, so the two stand off the board
-   alike, 2.0 and 1.8 to 1, and on either the update's and drivers' marks
-   still read. Each hovers six points stronger, so the placeholder needs no
+   more because amber is the brighter hue, so the two stand off the board
+   alike, and on either the update's and drivers' marks still read. Each hovers six points stronger, so the placeholder needs no
    inner ring. */
 [data-theme="rux-100"] {
   --scheduler-amber-bg: color-mix(in srgb, var(--rux-support-warning) 24%, var(--rux-layer-01));
@@ -1501,11 +1522,14 @@
   --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
+/* A trip not yet confirmed keeps Carbon's red 50 and red 40 text, not
+   Geist's red 900: that 900 reads only 3.5 to 1 on this fill, under the 4.5
+   its words need. */
 [data-theme="rux-100"] .scheduler-bar--red {
-  --scheduler-bg: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
-  --scheduler-fg: var(--rux-text-error);
-  --scheduler-hover: color-mix(in srgb, var(--rux-support-error) 38%, var(--rux-layer-01));
-  --scheduler-border: var(--rux-support-error);
+  --scheduler-bg: color-mix(in srgb, #fa4d56 32%, var(--rux-layer-01));
+  --scheduler-fg: #ff8389;
+  --scheduler-hover: color-mix(in srgb, #fa4d56 38%, var(--rux-layer-01));
+  --scheduler-border: #fa4d56;
 }
 /* The colours the office picks take Carbon's 80 step, deep enough to sit
    beside the grey without outshining it, with their hover a little lighter

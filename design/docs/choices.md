@@ -79,19 +79,24 @@ the DEFAULT, on `<html>`. Suggestion: `white` or `g10` for a page read at
 length, `g10` when cards should stand off the page, `g90` or `g100` for a
 dark tool.
 
-## Grid width — capped or full
+## Page width — narrow or wide
 
-A capped page's content sits in a frame, 76.25rem (1220px) centred in the
-window as Geist's pages are. An app's header stays on the window's edges;
-a page whose side nav stands open, read as documentation, frames its header
-and nav with the content, as Geist's documentation does: a reading width, right for prose and forms,
-and the default on every template. Carbon's own `--full-width` modifier on
-the page's outer grid takes the frame off, so the page keeps the window's
-whole width; it is the choice for a page that is worked in rather than
-read, such as a board or a wide table, and the scheduler's board takes it.
-Attested by `elements-grid--full-width` and `sink/grid.html`. Suggestion:
-`capped` unless the page's main thing is wider than a paragraph. It is one
-class on the page's outer grid.
+Every page stands in one frame: its content, its header's contents, its side
+nav and the header's panels line up with the same two edges, in every theme,
+and CSS draws it, so the first paint is the final layout. A narrow page's
+frame is 76.25rem (1220px) centred in the window, as Geist's pages are, or the
+window where it is narrower: a reading width, right for prose and forms, and
+the default on every template. Carbon's own `--full-width` modifier on the
+page's outer grid makes the page wide: its frame is that grid at 99rem
+(1584px), Carbon's `max` breakpoint, centred in the window, or the window
+less a 16px margin either side where it is narrower. It keeps that width
+whatever opens in it, so a panel takes its width from the work beside it and
+no edge of the page moves. It is the choice for a page that is worked in
+rather than read, such as a board or a wide table, and the scheduler's board
+takes it; a wide page that should fill the window sets `--frame-wide` to
+`100vw`. Attested by `elements-grid--full-width` and `sink/grid.html`.
+Suggestion: narrow unless the page's main thing is wider than a paragraph.
+It is one class on the page's outer grid.
 
 ## Fields — regular or fluid
 

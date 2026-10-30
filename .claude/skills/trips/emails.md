@@ -20,6 +20,7 @@ the new text and replace this file with it.
 - Professional, friendly, short: two or three sentences and under 50 words by default, four paragraphs at most.
 - Simple words and contractions. No em dashes, bullet points or bold.
 - Leave out what the customer already knows or has on the quote: dates, terms, requirements, the driver hotel policy.
+- Never ask the customer for a headcount, even when the itinerary gives none, because rux leaves it out of his emails.
 - Good: "Thanks for reaching out." "I've attached the updated quote." "Please take a look and let me know if you have any questions." "We'd be happy to work with you again."
 - Never: "I hope this email finds you well", "do not hesitate", "kindly", "I wanted to reach out", "Just a friendly reminder", sales pressure, more than one exclamation point, thanking twice, repeating their email back.
 

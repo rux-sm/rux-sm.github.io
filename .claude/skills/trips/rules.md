@@ -78,5 +78,5 @@ in its section above, and its question is deleted.
 
 - Does every quoted trip get a bus assigned to hold it, or only when rux says so?
 - Is a bus held for a trip The Charter Bus offers before Hector has chosen it?
-- When an itinerary gives no headcount, is the customer asked, or does the last count they gave stand?
+- When an itinerary gives no headcount, does the last count the customer gave stand, or does Passengers stay blank? Asking the customer is ruled out (`emails.md`).
 - When a save offers to add new contact details to the lists, which are added? Until rux says, the answer is Not now.

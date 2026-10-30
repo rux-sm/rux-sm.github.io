@@ -1437,24 +1437,20 @@
   --scheduler-hover: oklch(25.45% 0.0811 255.8);
   --scheduler-border: oklch(71.7% 0.1648 250.794);
 }
-/* A CONFIRMED TRIP ON THE ROAD IS INVERTED, Geist's near-white #ededed in
-   near-black words, so the buses out now are the brightest things on the
-   board. Its other lines take Geist's light secondary grey,
-   #666666, 4.9 to 1 on the white; its hover is white itself. Its tick takes
-   Carbon's light-theme green 60, 4.3 to 1 on the white where the dark
-   theme's green held 2.0. A white ring would vanish on it, so a selected
-   trip on the road is ringed in the inverse focus blue, #0f62fe, 4.3 to 1
-   on the white and 4.2 on the black. */
-[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road {
-  --scheduler-bg: #ededed;
-  --scheduler-hover: #ffffff;
-  --scheduler-fg: #0a0a0a;
-  --scheduler-border: #ededed;
-  --scheduler-driver-success: #198038;
-  --rux-layer-selected-inverse: var(--rux-focus-inverse);
+/* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its bus icon flashes in
+   Geist's green 900, 7.9 to 1 on the blue, on the beat the board's red road
+   warning blinks to, so the buses out now show by the one thing moving. The
+   flash holds still where Motion is calm or off, and where the computer asks
+   for less motion. */
+[data-theme="rux-100"] .scheduler-bar--road .scheduler-road__dot {
+  color: var(--rux-status-green);
+  animation: scheduler-road-alarm 1.4s linear infinite;
 }
-[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
-  color: #666666;
+[data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-road__dot {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="rux-100"] .scheduler-bar--road .scheduler-road__dot { animation: none; }
 }
 /* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
    editor or the document panel, and a form in the Forms list, is the raised

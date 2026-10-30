@@ -1093,16 +1093,27 @@ button.scheduler-row-head__num::after {
 /* There the track ends in Carbon's solid triangle at its 16px size,
    `triangle--right--solid` or `triangle--left--solid`: a 16px box filled as
    the track is, masked to its 2px line and the triangle in the box at the
-   cut end, so the caret is
-   the line's own colour, faint ahead of the trip and full once that part has
-   gone. The line stops at the triangle's base. It points the way the trip
-   goes on, back to the week before at a bar that came in from it. */
+   cut end. The line stops at the triangle's base and keeps showing how far
+   the trip has gone; the triangle is the trip's full ink whatever that is,
+   a layer of the ink masked to the triangle alone, since it says the trip
+   goes on rather than how far. It points the way the trip goes on, back to
+   the week before at a bar that came in from it. */
 .scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
   --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 16px 16px no-repeat;
   --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 16px 16px no-repeat;
+  position: relative;
   block-size: 16px;
   border-radius: 0;
 }
+.scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+}
+.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track::after { mask: var(--scheduler-arrow-on); }
+.scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track::after { mask: var(--scheduler-arrow-back); }
+.scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track::after { mask: var(--scheduler-arrow-back), var(--scheduler-arrow-on); }
 .scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
   margin-inline-end: 0;
   mask: linear-gradient(#000 0 0) left center / calc(100% - 14px) 2px no-repeat, var(--scheduler-arrow-on);

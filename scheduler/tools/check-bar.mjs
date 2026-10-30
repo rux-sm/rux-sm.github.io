@@ -383,6 +383,9 @@ expect('missing logs never expose a made-up numeric rest value',
 expect('two drivers have independently scaled availability and rest tracks',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.querySelector('.scheduler-crew__left').style.getPropertyValue('--scheduler-left'),
     c.querySelector('.scheduler-crew__rest')?.style.getPropertyValue('--scheduler-rest') ?? null]), [['8%', null], ['90%', '40.6%']]);
+expect('each seat\'s meter fills to its hours left, its rest while resting, and full in the wrong bus',
+  [...[...lit('Two drivers').querySelectorAll('.scheduler-crew')], lit('Wrong bus').querySelector('.scheduler-crew'), lit('Rest duration unknown').querySelector('.scheduler-crew')]
+    .map(c => c.style.getPropertyValue('--scheduler-seat-fill')), ['8%', '40.6%', '100%', '0%']);
 expect('rest reaching its reference does not change the reported availability',
   ['Rest at eight hours', 'Rest beyond eight hours'].map(n => [lit(n).querySelector('.scheduler-crew__left').style.getPropertyValue('--scheduler-left'),
     text(lit(n), '.scheduler-crew__hours'), lit(n).querySelector('.scheduler-crew__rest').style.getPropertyValue('--scheduler-rest')]),
@@ -444,9 +447,9 @@ const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.cl
 const line = h => text(h, '.scheduler-row-head__line');
 const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__dial--running')];
 const ago = min => new Date(Date.now() - min * 60e3).toISOString();
-expect('moving: the speed over mph in a filled green display, the fuel alone while DEF is normal, no line under them, no marks',
+expect('moving: the speed over mph in a filled green display, the fuel\'s figure with no sign, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__pct'), line(h), marks(h)]; })(),
-  [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);
+  [['64mph', 'moving', true], [['F', 'normal']], '72', null, []]);
 expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);

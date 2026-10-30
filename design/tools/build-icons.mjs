@@ -90,6 +90,8 @@ const ICONS = [
   'draggable',
   'task--user', 'shuttle',
   'BPMN-link--fill', 'time--filled', 'asleep--filled', 'subtract--filled',
+  // A BUS'S FUEL in the scheduler's bus column, at Carbon's 16px.
+  'gas-station',
 ];
 
 /* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.

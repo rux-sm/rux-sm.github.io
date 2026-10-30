@@ -13,17 +13,18 @@
      track filled to now; a problem's words in its colour instead, Late to
      spot among them, the worst of live-trip.js's warnings or No signal.
      Its tooltip says what Samsara says of the bus and its drivers.
-   - The contact and update rows stay, as on any bar. What belongs to the
-     bus, its speed, fuel and DEF, is the bus column's, bus-head.js's.
-   - The drivers row, a seat for each driver: the one at the wheel first and
-     bold behind the steering wheel, their driving
-     hours left at the seat's end over a 2px bar of them, amber under one;
-     every seat with its duty mark and a labeled availability or rest reading;
-     with no duty reading, an Unknown duty question mark. A
-     driver Samsara has in another bus is the red stop sign, their name red
-     with that bus after it. A driver at the wheel the bar does not name
-     joins the end of the row. Two drivers share the row half and half,
-     each with an independent availability track and a second track while resting.
+   - The contact row stays, as on any bar. What belongs to the bus, its
+     speed, fuel and DEF, is the bus column's, bus-head.js's.
+   - The drivers, in the update row's place too, a seat for each driver:
+     the one at the wheel first and bold behind the steering wheel; every
+     seat with its duty mark, with no duty reading an Unknown duty question
+     mark, and under it a meter of the driving hours left, amber under one,
+     or while resting of the rest so far, its reading inside. A driver
+     Samsara has in another bus is the red stop sign, their name red and a
+     full red meter with that bus. A driver at the wheel the bar does not
+     name joins the end of the row. Two drivers split the rows half and
+     half. app.css lays the seats out, and keeps them to one row where the
+     view has turned the update row off.
    The bar wears no edge, border or light of its own: how the bus is doing
    is the bus column's, and a problem's words in the times row. With the time row off the board the
    times go too; app.css does that from the view's toggles.
@@ -139,6 +140,7 @@
   function crewOn(item, d, elsewhere) {
     for (const part of ['duty', 'hours', 'away', 'left', 'rest', 'rest-time']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
     item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
+    item.style.removeProperty('--scheduler-seat-fill');
     delete item.dataset.duty;
     // A driver Samsara has in the bus is on the trip: their mark reads
     // confirmed while the bus is out, whatever they answered.
@@ -158,6 +160,7 @@
       item.dataset.duty = 'away';
       item.classList.add('scheduler-crew--away', 'scheduler-crew--seat');
       item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`), leftBar(null, true));
+      item.style.setProperty('--scheduler-seat-fill', '100%');
       item.title = `${item.title}\nSamsara: ${elsewhere.sentence}`;
       return;
     }
@@ -188,6 +191,12 @@
       label.title = elapsed == null ? 'Continuous rest unknown: duty logs unavailable' : `${hours(elapsed)} continuous rest / 8:00 reference; availability comes from Samsara's HOS clocks`;
       item.append(label, restMeter(d));
     }
+    // How far the seat's meter is filled, where app.css turns its reading
+    // from dark to the row's ink: the rest so far while resting, else the
+    // hours left.
+    const elapsed = resting(d) ? restElapsed(d) : null;
+    item.style.setProperty('--scheduler-seat-fill', `${resting(d) ? (elapsed == null ? 0 : share(elapsed, REST))
+      : d.left_ms != null ? share(d.left_ms, DRIVE) : 0}%`);
     item.title = `${item.title}\nSamsara: ${words(d)}`;
   }
   // The bar of driving hours left under a seat; red and full for the wrong bus.

@@ -13,7 +13,8 @@
      engine off it is the word alone, Off, with no fill or edge, and with no
      signal a dash over how long since the bus was seen, in a dashed edge.
      Under it
-     the fuel: a pump and its percent over a bar filled to it. DEF is drawn only
+     the fuel: Carbon's 16px pump and its percent as a 12px figure with no
+     sign, over a bar filled to it. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
      moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
@@ -108,7 +109,7 @@
     return box;
   }
 
-  // One tank. Fuel: a pump and its percent, over a bar filled to its share.
+  // One tank. Fuel: a pump and its figure, over a bar filled to its share.
   // DEF, drawn only while low: its name and percent as a tag, no bar.
   function level(pct, tank) {
     const lv = levelOf(pct, tank);
@@ -120,9 +121,12 @@
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
     const reading = el('span', 'scheduler-row-head__reading');
-    if (tank === FUEL) reading.appendChild(svgUse('#m-local_gas_station-fill', '12', '0 0 32 32'));
+    if (tank === FUEL) reading.appendChild(svgUse('#i-gas-station', '16', '0 0 32 32'));
     else reading.appendChild(el('span', null, tank.word));
-    reading.appendChild(el('span', 'scheduler-row-head__pct', `${pct}%`));
+    // Fuel's figure stands beside its pump with no sign, the bar and the
+    // pump saying what it counts, which leaves Carbon's 16px pump and 12px
+    // figure room in the display's 40px; DEF's tag keeps its sign.
+    reading.appendChild(el('span', 'scheduler-row-head__pct', tank === FUEL ? String(pct) : `${pct}%`));
     g.appendChild(reading);
     if (tank === FUEL) g.appendChild(el('span', 'scheduler-row-head__tank'));
     return g;

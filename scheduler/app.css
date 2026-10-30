@@ -2256,8 +2256,9 @@ button.scheduler-row-head__num::after {
    in the duty's colour, its reading written inside. A driver on duty or
    driving has the hours left of ten, amber under one; one resting has the
    rest so far of eight; one in another bus is red and full, with that bus.
-   The reading is dark over the fill and the row's ink past it, from
-   road-bar.js's `--scheduler-seat-fill`. Two seats split the row. */
+   The reading is dark over the fill, in the footer's colour or a theme's
+   `--scheduler-seat-ink`, and the row's ink past it, from road-bar.js's
+   `--scheduler-seat-fill`. Two seats split the row. */
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__update { display: none; }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(2 * var(--scheduler-row-h)); }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-road__who { align-self: flex-start; block-size: var(--scheduler-row-h); }
@@ -2300,7 +2301,7 @@ button.scheduler-row-head__num::after {
   text-overflow: ellipsis;
   font-size: var(--rux-label-01-font-size);
   line-height: 16px;
-  background: linear-gradient(to right, var(--scheduler-footer) var(--scheduler-seat-fill, 0%), var(--scheduler-footer-fg) var(--scheduler-seat-fill, 0%));
+  background: linear-gradient(to right, var(--scheduler-seat-ink, var(--scheduler-footer)) var(--scheduler-seat-fill, 0%), var(--scheduler-footer-fg) var(--scheduler-seat-fill, 0%));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

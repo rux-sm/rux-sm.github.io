@@ -127,6 +127,13 @@
   --scheduler-fuel-half: #8e6a00;
   --scheduler-fuel-low: #ba4e00;
 }
+/* On a light pane a live seat's reading over its meter is the primary text,
+   5.4 to 1 on the green, where the footer's slate held 3.5. */
+[data-theme="white"],
+[data-theme="g10"],
+[data-theme="apple-light"] {
+  --scheduler-seat-ink: var(--rux-text-primary);
+}
 [data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
 
 /* Alert badges and card warnings use the same semantic inks as driver status. */

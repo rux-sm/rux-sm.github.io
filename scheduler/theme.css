@@ -1031,58 +1031,6 @@
   --scheduler-roster-two-w: 36rem;
   --scheduler-viewer-sm-w: 22rem;
 }
-/* RUX-DARK'S DAYS ARE 167px AT EVERY WIDTH, so a one-day trip bar is 160px
-   once the gap and its clear space come off, and a wider window adds no
-   width to a day. app.js holds the week to its seven or fourteen days, and
-   sets `--scheduler-shell-max` to the week and the panels open beside it;
-   Fill the window takes the fixed width off, and the days fill again. The
-   shell is framed to that width, as LN Notes frames its own: the board
-   stands centred in a wider window, and the header and its panels stand
-   over it rather than on the window's edges, so the header's line ends
-   where the board does. */
-[data-theme="rux-dark"] .scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-fixed: 167px; }
-[data-theme="rux-dark"] .scheduler-week--fill { --scheduler-day-max: none; }
-:root[data-theme="rux-dark"] {
-  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max, 100%)) / 2));
-}
-[data-theme="rux-dark"] .scheduler-board {
-  max-inline-size: var(--scheduler-shell-max, 100%);
-  inline-size: 100%;
-  margin-inline: auto;
-}
-/* The frame's sides run up through the header as the board's edges do below
-   it: two 1px shadows just outside the header, which fall off the window
-   where the header reaches its edges. */
-:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--header {
-  inset-inline: var(--scheduler-shell-inset);
-  box-shadow: -1px 0 0 var(--rux-border-subtle-01), 1px 0 0 var(--rux-border-subtle-01);
-}
-:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--header-panel { inset-inline-end: var(--scheduler-shell-inset); }
-:root[data-theme="rux-dark"]:has(.scheduler-page) .rux--side-nav { inset-inline-start: var(--scheduler-shell-inset); }
-/* RUX 100'S HEADER STANDS OVER THE BOARD, as LN Notes frames its own: where
-   the days stop at their width and the board stands centred, app.js sets
-   `--scheduler-shell-max` to the board and the panels open beside it, and
-   the header's contents and its panels end at the board's edges, while the
-   header itself and its line run the window's width. It draws no sides of
-   its own, since every region below carries its own line and the page shows
-   between them and the header. */
-:root[data-theme="rux-100"] {
-  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max, 100%)) / 2));
-}
-:root[data-theme="rux-100"]:has(.scheduler-page) .rux--header { padding-inline: var(--scheduler-shell-inset); }
-:root[data-theme="rux-100"]:has(.scheduler-page) .rux--header-panel { inset-inline-end: var(--scheduler-shell-inset); }
-:root[data-theme="rux-100"]:has(.scheduler-page) .rux--side-nav { inset-inline-start: var(--scheduler-shell-inset); }
-/* Held in from the window's edges, an open header button and its panel
-   keep Design's line on their outer side too, where it would otherwise
-   only thicken the window's edge: the menu and the nav on the left, the
-   account and its panel on the right. Only while app.js has the shell
-   framed, so a window the board fills keeps Design's single line. */
-:root[data-theme="rux-100"][style*="--scheduler-shell-max"]:has(.scheduler-page) .rux--header__action--active {
-  background-image: linear-gradient(var(--rux-border-subtle) 0 0), linear-gradient(var(--rux-border-subtle) 0 0);
-  background-position: left, right;
-}
-:root[data-theme="rux-100"][style*="--scheduler-shell-max"]:has(.scheduler-page) .rux--side-nav--hidden.rux--side-nav--expanded { border-inline-start: 1px solid var(--rux-border-subtle); }
-:root[data-theme="rux-100"][style*="--scheduler-shell-max"]:has(.scheduler-page) .rux--header-panel--expanded { border-inline-end: 1px solid var(--rux-border-subtle); }
 /* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in
    from every side of the pane, level with the Tasks cards and the editor's
    tiles, inside one line and on the pane's own colour. The box holds the list
@@ -1535,10 +1483,10 @@
    menu does: its layer, its hover and its one grey line, round the panel,
    its open button and the rules inside it. */
 [data-theme="rux-100"] .rux--header {
+  --rux-background: var(--scheduler-region);
   --rux-border-subtle: var(--rux-border-subtle-01);
   --rux-layer: var(--scheduler-region);
   --rux-layer-hover: var(--scheduler-region-hover);
-  background-color: var(--scheduler-region);
 }
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
   --rux-layer: var(--scheduler-region);

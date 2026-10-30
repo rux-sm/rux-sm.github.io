@@ -660,8 +660,9 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 
 /* A phone in landscape has its camera cutout beside the page, so the header
-   keeps clear of it too. */
-.rux--header {
+   keeps clear of it too. Design's frame, where it holds the header in, keeps
+   clear of the cutout itself, so this stands under it. */
+:where(.rux--header) {
   padding-inline: var(--scheduler-safe-left) var(--scheduler-safe-right);
 }
 

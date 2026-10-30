@@ -136,22 +136,6 @@
     pane.classList.toggle('scheduler-week--short', pane.clientHeight - grid.offsetHeight > radius);
   }
 
-  /* Holds the frame to the width it is to be, and publishes the shell, the
-     frame and the panels open beside it, as `--scheduler-shell-max`, which
-     theme.css centres the board and the header in. The panels are measured
-     as they stand and the frame as it is to be, so a pass that finds the
-     frame squeezed asks for its room back. */
-  function holdShell(frame, want) {
-    if (!frame) return;
-    frame.style.maxInlineSize = `${want}px`;
-    const board = frame.parentElement;
-    if (!board) return;
-    const rects = [...board.children].filter(c => c.getClientRects().length).map(c => c.getBoundingClientRect());
-    const extent = Math.max(...rects.map(r => r.right)) - Math.min(...rects.map(r => r.left));
-    const shell = Math.ceil(extent - frame.getBoundingClientRect().width + want);
-    document.documentElement.style.setProperty('--scheduler-shell-max', `${shell}px`);
-  }
-
   function fitColumns(sch) {
     // Cleared first so the pane and the corner are measured at their
     // stylesheet sizes, not at the sizes the last pass pinned.
@@ -161,17 +145,11 @@
     sch.style.removeProperty('--scheduler-day-track');
     sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
-    document.documentElement.style.removeProperty('--scheduler-shell-max');
     // The bus column is `max-content`, so its width is measured from the
     // corner cell, which is that column.
     const corner = sch.querySelector('.scheduler-corner');
     const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
     const dayMin = px(sch, '--scheduler-day-min');
-    // Unset where the days may fill the pane, which reads as NaN.
-    const dayMax = px(sch, '--scheduler-day-max');
-    // A theme that sets one day's width for every window, which reads as NaN
-    // where unset.
-    const dayFixed = px(sch, '--scheduler-day-fixed');
     // A strip of days that scrolls is sized for the week in view, seven days.
     const strip = sch.classList.contains('scheduler-week--scroll');
     const days = strip ? 7 : parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
@@ -181,41 +159,24 @@
     const available = pane - headBase;
     let day = Math.floor(available / days);
     let head = headBase;
-    const fixed = Number.isFinite(dayFixed);
-    const crowded = fixed ? day < Math.floor(dayFixed) : day < dayMin;
-    if (fixed) {
-      /* Every day is the theme's width whatever the window: the frame is
-         held to the week, and the shell to the week and the panels open
-         beside it. A window narrower than that holds the shell to itself,
-         and the week scrolls. */
-      day = Math.floor(dayFixed);
-      holdShell(frame, frame ? frame.offsetWidth - pane + head + day * days : 0);
-    } else if (crowded) {
+    const crowded = day < dayMin;
+    if (crowded) {
       // The floor binds and the grid is wider than the pane: it scrolls, there
       // is no remainder to place, and the head stays at its content width.
       day = Math.floor(dayMin);
-    } else if (Number.isFinite(dayMax) && day > dayMax) {
-      // The cap binds: the days keep its width, the head its content width,
-      // and the frame is held to their sum plus its own edges and scroll bar,
-      // so the toolbar ends where the week does. Measured again from the
-      // frame's free width on every pass, since the max was cleared above.
-      // The week then stands centred in spare width, so the shell is held
-      // to it too, for a theme that frames its header to the board.
-      day = Math.floor(dayMax);
-      holdShell(frame, frame ? frame.offsetWidth - pane + head + day * days : 0);
     } else {
-      // Each day takes a whole share of what the head leaves, and the head
-      // keeps its content width, so its contents never shift as the window
-      // moves. The frame gives back the few pixels the days could not share,
-      // as it does under the cap.
-      if (frame) frame.style.maxInlineSize = `${frame.offsetWidth - pane + head + day * days}px`;
+      // Each day takes a whole share of the frame, Design's wide frame, which
+      // keeps its width whatever opens beside the week, and the bus column
+      // takes the few pixels the days could not share, so the week fills the
+      // frame and its edges stay on the header's.
+      head = pane - day * days;
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // Bars, stripes and day rules are placed from this rather than from a
     // percentage of the track, so every edge lands on a whole pixel.
     sch.style.setProperty('--scheduler-day-w', `${day}px`);
-    // The head is pinned to its content width, measured once with the corner
-    // above, so the columns sum to the frame the passes above held.
+    // The head is pinned to its width, measured once with the corner above
+    // and given the days' remainder, so the columns sum to the frame.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
 
     /* Where the days fit there is no sideways scrolling to do, so the

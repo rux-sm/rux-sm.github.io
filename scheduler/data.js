@@ -11685,9 +11685,12 @@
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
-    // Fill the window: the days share the whole pane rather than stopping at
-    // their cap, which app.css and app.js read from this class.
-    schEl.classList.toggle('scheduler-week--fill', view.fill);
+    // Fill the window and Two weeks, set on the root as view.js sets them
+    // before the first paint: the frame widens to the window, and the loading
+    // week counts the days the drawn one will, which app.css reads from there.
+    document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
+    if (daysShown() === 14) document.documentElement.dataset.schedulerDays = '14';
+    else delete document.documentElement.dataset.schedulerDays;
     // One for the destination, which never goes, plus whatever is left on.
     schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
     // The bars change height and lane, which the scroll pane may not report as

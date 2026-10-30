@@ -122,16 +122,17 @@
 @supports (block-size: round(1px, 1px)) {
   .scheduler-week { --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px); }
 }
-/* The widest a day column gets on the board, so a wide window does not
-   stretch every bar past what it says. 187px makes a one-day bar 180px,
-   the day less its 4px gap and 3px clear, which keeps the bar's rows whole,
-   and on a 1920px screen leaves the week and one 24rem panel beside it with
-   room to spare, so opening the roster or a list does not squeeze the week. app.js holds the days to it and the board's frame to their sum, so the
-   toolbar ends where the week does, and the board's row is centred in the
-   spare width (see `.scheduler-board`).
-   Fill the window, in the view menu, takes the cap off and the days share
-   the whole pane as before; Maintenance's static grid has no cap. */
-.scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-max: 187px; }
+/* The board is Design's wide frame, 99rem, and the days share it down to
+   their minimum, so a panel opening beside the week takes its width from the
+   days and no edge of the page moves; past the minimum the week scrolls.
+   Fill the window, in the view menu, widens the frame to the window, and
+   Maintenance's two weeks always fill it. */
+:root[data-scheduler-fill],
+:root:has(.scheduler-week--static) { --frame-wide: 100vw; }
+/* Two weeks, set on the root by view.js before the first paint, so the
+   loading week counts the fourteen days the drawn one will; render() in
+   data.js sets the drawn week's own count. */
+:root[data-scheduler-days="14"] .scheduler-week:not(.scheduler-week--static) { --scheduler-days: 14; }
 /* Scroll continuously: the board is a strip of days wider than the pane, sized
    by app.js for seven in view, and a scroll comes to rest on a day's edge,
    clear of the sticky bus column. */
@@ -151,11 +152,11 @@
   /* The day track is a variable so app.js can set it to a whole number of
      pixels; without the script this fluid default renders. */
   grid-template-columns: var(--scheduler-head-w) repeat(var(--scheduler-days), var(--scheduler-day-track));
-  /* As wide as its columns and never narrower than the pane. A sticky cell is
-     held inside its grid's box, so a grid narrower than its columns would let
-     the bus column scroll away once the week overflows. */
-  inline-size: max-content;
-  min-inline-size: 100%;
+  /* As wide as the pane and never narrower than its columns' least, so the
+     days share the pane down to their minimum and the week scrolls past it.
+     A sticky cell is held inside its grid's box, so a grid narrower than its
+     columns would let the bus column scroll away once the week overflows. */
+  min-inline-size: min-content;
 }
 .scheduler-row { display: contents; }
 /* `display: contents` beats the UA's own [hidden] rule, so an empty

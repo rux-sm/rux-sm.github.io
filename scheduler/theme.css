@@ -1564,21 +1564,21 @@
   background: var(--rux-text-primary);
   box-shadow: 0 0 0 2px var(--scheduler-bg);
 }
-/* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and the Driving arrow of a
-   driver at the wheel flashes on the beat the board's red road warning
-   blinks to, so the buses moving now show by the one thing moving. It dims
-   to 60% and no further, so the driver's duty is always in sight. The
-   flash holds still where Motion is calm or off, and where the computer
-   asks for less motion. */
+/* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its drivers' duty marks
+   flash on the beat the board's red road warning blinks to, so the buses
+   out now show by the one thing moving, at the wheel, resting or parked.
+   It dims to 60% and no further, so the driver's duty is always in sight.
+   The flash holds still where Motion is calm or off, and where the
+   computer asks for less motion. */
 @keyframes scheduler-road-beacon { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .6; } }
-[data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty {
+[data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty {
   animation: scheduler-road-beacon 1.4s linear infinite;
 }
-[data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty {
+[data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty {
   animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  [data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: none; }
+  [data-theme="rux-100"] .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
 }
 /* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
    editor or the document panel, and a form in the Forms list, is the raised

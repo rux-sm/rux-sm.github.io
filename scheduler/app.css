@@ -1928,10 +1928,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__drivers[data-card-opener] { cursor: pointer; box-shadow: -3px 0 0 var(--scheduler-opener-fill, transparent), 3px 0 0 var(--scheduler-opener-fill, transparent); }
 .scheduler-bar__drivers[data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--scheduler-footer-selected); background: var(--scheduler-opener-fill); }
 .scheduler-bar__drivers[data-card-opener]:active { --scheduler-opener-fill: var(--scheduler-footer-active); background: var(--scheduler-opener-fill); }
-/* A driver at the wheel of a bus that is moving: their Driving arrow
-   pulses gently, the one thing moving on the bars that are out. */
+/* Every driver's duty mark on a live bar pulses gently, whatever the duty,
+   the one thing moving on the bars that are out; a driver Samsara has in
+   another bus keeps their red stop sign still. */
 @keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
-.scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: scheduler-road-pulse 3s ease-in-out infinite; }
+.scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: scheduler-road-pulse 3s ease-in-out infinite; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
    tab's name while it holds. */
@@ -2063,11 +2064,11 @@ button.scheduler-row-head__num::after {
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
 .scheduler-bar--road[data-alarm] .scheduler-road__say--error { animation: scheduler-road-alarm 1.4s linear infinite; }
-/* The Driving arrow holds still, fully visible, when Motion is calm or off
-   or the computer asks for less motion. */
+/* The duty marks hold still, fully visible, when Motion is calm or off or
+   the computer asks for less motion. */
 :is([data-motion="calm"], [data-motion="off"]) .scheduler-road__say--error,
-:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: none; }
-@media (prefers-reduced-motion: reduce) { .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: none; } }
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; }
+@media (prefers-reduced-motion: reduce) { .scheduler-bar--road .scheduler-crew[data-duty]:not([data-duty="away"]) > .scheduler-crew__duty { animation: none; } }
 
 /* THE LEGEND, the view menu's What the colours mean: a bus head's level bar
    in each colour it takes. */

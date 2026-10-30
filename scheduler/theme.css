@@ -848,17 +848,18 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* A RUX 100 TRIP READS IN TWO LEVELS, as a Geist card does: the destination
-   and the times stay in the bar's own ink, the two things the office scans a
-   week for, and the customer, the contact, the update and the drivers step
-   back to one soft grey, so a busy week is a column of places and times
-   rather than six bright lines a trip. The grey is #adadad, a shade over
-   Geist's #a1a1a1, about 7.7 to 1 on the blue, red and amber trips alike. A
-   mark with its own colour inside these lines, a driver away or short on
-   hours, keeps it. */
+/* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the
+   update and the drivers with the destination and times, is written in the
+   trip's own Geist 900 on its 100, so a trip reads as one shape. The
+   destination stays bold. A trip with no status colour, a grey or a picked
+   one, keeps Geist's grey 900 for these lines. A mark with its own colour
+   inside them, a driver away or short on hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   opacity: 1;
   color: #adadad;
+}
+[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--cyan) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
+  color: var(--scheduler-fg);
 }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }

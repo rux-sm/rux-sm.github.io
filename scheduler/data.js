@@ -11713,8 +11713,10 @@
      shadow where the two meet. Where it had to open elsewhere it floats. */
   viewTrigger?.addEventListener('click', () => {
     if (!viewMenu) return;
+    // A second press closes it, as every overflow button's does.
+    if (window.Rux?.menu?.isOpen?.(viewMenu)) { window.Rux.menu.close(viewMenu); return; }
     const r = viewTrigger.getBoundingClientRect();
-    popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom }, viewTrigger);
+    popMenuAt(viewMenu, { clientX: r.left, clientY: r.bottom }, viewTrigger, { end: true });
     viewTrigger.setAttribute('aria-expanded', 'true');
     const m = viewMenu.getBoundingClientRect();
     if (Math.abs(m.top - r.bottom) < 1) {
@@ -12272,9 +12274,13 @@
      was pressed. A menu dropped from a button, `from`, hangs under it lined
      up with one of its edges, as Carbon's menu button's does: its start edge
      where the menu fits, else its end edge, so near the window's right side
-     it sits under the button rather than beside it. */
+     it sits under the button rather than beside it. A button at the end of
+     its bar, `end`, lines the menu up with its end edge first, as Carbon's
+     flipped overflow menu does, so it opens back over what the bar holds. The
+     button is the menu's anchor, so a press on it is not a press outside, and
+     its own handler closes the menu on a second press. */
   const MENU_SPACING = 8;
-  function popMenuAt(menu, e, from) {
+  function popMenuAt(menu, e, from, { end = false } = {}) {
     const page = pageEl?.getBoundingClientRect() ?? { top: 0, left: 0 };
     menu.hidden = false;
     menu.style.position = 'absolute';
@@ -12296,12 +12302,14 @@
     if (from) {
       const r = from.getBoundingClientRect();
       const gap = window.Rux?.floatGap?.(menu) ?? 0;
-      x = r.left + width <= vw - MENU_SPACING ? r.left : Math.max(0, r.right - width);
+      const fitsStart = r.left + width <= vw - MENU_SPACING;
+      x = end && r.right - width >= 0 ? r.right - width
+        : fitsStart ? r.left : Math.max(0, r.right - width);
       y = r.bottom + gap + height <= vh - MENU_SPACING ? r.bottom + gap : Math.max(0, r.top - gap - height);
     }
     menu.style.insetInlineStart = `${x - page.left}px`;
     menu.style.insetBlockStart = `${y - page.top}px`;
-    window.Rux?.menu?.open?.(menu, null);
+    window.Rux?.menu?.open?.(menu, from ?? null);
   }
 
   // The empty cell's track under a press, or null for a bar, its shortcuts or
@@ -13855,6 +13863,7 @@
 
   viewerTitle?.addEventListener('click', () => {
     if (viewerPick.length < 2) return;
+    if (window.Rux?.menu?.isOpen?.(viewerCopies)) { window.Rux.menu.close(viewerCopies); return; }
     drawCopies();
     const r = viewerTitle.getBoundingClientRect();
     popMenuAt(viewerCopies, { clientX: r.left, clientY: r.bottom }, viewerTitle);

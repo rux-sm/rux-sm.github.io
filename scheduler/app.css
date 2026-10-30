@@ -546,7 +546,15 @@ button.scheduler-row-head__num::after {
    arrives without anything moving. The grey and the shimmer are Carbon's
    skeleton classes; these rules only size and place them. */
 .scheduler-skeleton-label { inline-size: 2.5rem; block-size: 1rem; }
-.scheduler-row-head .scheduler-skeleton-label { inline-size: 1.5rem; }
+/* A bus head's skeleton stands in the head's own classes, which size and
+   place it; these give each grey block the height of what it stands for:
+   the number's line, and the fuel's reading over its bar. The display takes
+   the head's width, or the square a theme sets it to. */
+.scheduler-row-head .rux--skeleton__text { margin-block-end: 0; }
+.scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; }
+.scheduler-skeleton-dial { inline-size: auto; }
+.scheduler-skeleton-reading { block-size: 12px; }
+.scheduler-skeleton-tank { block-size: 4px; }
 /* The six day rules data.js writes on a real track. */
 .scheduler-track--skeleton {
   --scheduler-day-rules:

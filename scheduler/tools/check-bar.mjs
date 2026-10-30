@@ -126,13 +126,15 @@ const data = window.SchedulerComponentsData.build();
 
 // Each sample's bars drawn as components.js draws them.
 const factsByBar = new WeakMap();
-function drawn(sectionId, name) {
+// `later` draws each as the second of two buses on its leg.
+function drawn(sectionId, name, later = false) {
   const sample = data.sections.find(s => s.id === sectionId)?.samples.find(s => s.name === name);
   if (!sample) throw new Error(`no sample ${sectionId} / ${name}`);
   return sample.rows.flatMap(r => r.bars).map(spec => {
-    const leg = Week.legsOf(spec.trip).find(l => l.leg === spec.leg);
+    const found = Week.legsOf(spec.trip).find(l => l.leg === spec.leg);
+    const leg = later ? { ...found, count: 2 } : found;
     const assigns = spec.trip.trip_assignments.filter(a => (a.leg || 'outbound') === spec.leg);
-    const b = { trip: spec.trip, leg, slot: spec.slot, lane: 0, assign: 'assign' in spec ? spec.assign : assigns[spec.slot] ?? null,
+    const b = { trip: spec.trip, leg, slot: spec.slot, nth: later ? 2 : (spec.slot ?? 0) + 1, lane: 0, assign: 'assign' in spec ? spec.assign : assigns[spec.slot] ?? null,
       place: { start: spec.start, span: spec.span, fromPrev: !!spec.fromPrev, toNext: !!spec.toNext } };
     const { bar, facts } = Bar.draw(b, { ...data, saving: () => !!spec.state?.saving });
     factsByBar.set(bar, facts);
@@ -177,6 +179,9 @@ expect('a split\'s drop-off points down and its pickup up; a round trip wears no
 expect('three buses: counted, and the third needs a bus',
   drawn('trip-bar', 'More than one bus').map(b => [text(b, '.scheduler-bar__count'), text(b, '.scheduler-bar__crew')]),
   [['×3', 'Marco'], ['×3', 'Lena'], ['×3', 'Needs a bus']]);
+expect('the first of them carries the update, the others say which bus they are with no age',
+  drawn('trip-bar', 'More than one bus').map(b => [has(b, '.scheduler-bar__age'), /^Bus /.test(text(b, '.scheduler-bar__update')) ? text(b, '.scheduler-bar__update') : 'update']),
+  [[true, 'update'], [false, 'Bus 2 of 3'], [false, 'Bus 3 of 3']]);
 // The samples are dated from today, so the weekdays are whichever they fall on.
 expect('a leg crossing the week\'s edge shows only its time inside the week, its track running out the other way, and names both days on its tooltip, with no +1',
   drawn('trip-bar', 'Either side of the week').map(b => [[...b.querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => w.textContent),
@@ -238,6 +243,9 @@ expect('a problem wears the alert badge in its colour, a contact missing near th
   null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
   'red Sleeper needed · Trip contact missing']);
+expect('a later bus of a leg wears only its own problems: a misfit or a driver, not the trip\'s',
+  alerts.map(n => mark(drawn('alerts', n, true)[0])), [
+  null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed']);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('every update row is a button, including a settled trip, and the age has no clock',

@@ -166,7 +166,7 @@
           rows: [row('103', bar(trip({ trip_type: 'one_way', customer: 'Harbor Tours', destination: 'Galveston, TX', buses: [crewed('b103')] })))] },
         { name: 'Drop-off and pickup', note: 'A split trip: an unboxed drop-off arrow on the first leg, a pickup arrow on the second.', days: 3,
           rows: [row('102', bar(split, { span: 1 }), bar(split, { leg: 'return', start: 2, span: 1 }))] },
-        { name: 'More than one bus', note: 'Each bus is a bar, counted after the destination; one still without a bus waits in the No bus row.', days: 3,
+        { name: 'More than one bus', note: 'Each bus is a bar, counted after the destination. The first bus down the board carries the trip\'s update and alerts, every other says which bus it is in their place, with only its own alerts; one still without a bus waits in the No bus row.', days: 3,
           rows: [row('101', bar(three)), row('102', bar(three, { slot: 1 })), row('No bus', bar(three, { slot: 2, assign: null }))] },
         { name: 'Either side of the week', note: 'A trip from last week runs off the start and says the day it left, one into next week runs off the end and says the day it is back.', days: 3,
           rows: [row('105', bar(trip({ customer: 'Riverbend Seniors', destination: 'Laredo, TX', buses: [crewed('b105')] }), { fromPrev: true })),

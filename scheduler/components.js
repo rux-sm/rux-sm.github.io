@@ -74,7 +74,8 @@
     const assigns = (spec.trip.trip_assignments || []).filter(a => (a.leg || 'outbound') === spec.leg)
       .sort((x, y) => (x.position ?? 0) - (y.position ?? 0));
     return {
-      spec, trip: spec.trip, leg, slot: spec.slot,
+      // A sample's rows run in slot order, so its slot counts its buses down the board.
+      spec, trip: spec.trip, leg, slot: spec.slot, nth: (spec.slot ?? 0) + 1,
       assign: 'assign' in spec ? spec.assign : assigns[spec.slot] ?? null,
       place: { start: spec.start, span: spec.span, fromPrev: !!spec.fromPrev, toNext: !!spec.toNext },
     };

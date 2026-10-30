@@ -958,6 +958,15 @@
     // week's first unassigned trip somewhere, and a row that is not in the
     // document has no rectangle to aim at.
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
+    /* Which of its leg's buses a bar is, counted down the board, so the
+       topmost is the leg's first bus and bar.js tells the rest apart. */
+    const nth = new Map();
+    for (const r of rows) for (const b of tracks.get(r.id) ?? []) {
+      if ((b.leg.count || 1) < 2) continue;
+      const k = `${b.trip.id}|${b.leg.key}`;
+      nth.set(k, (nth.get(k) ?? 0) + 1);
+      b.nth = nth.get(k);
+    }
 
     into.replaceChildren();
     // The corner over the bus numbers is empty: each head draws its own type.

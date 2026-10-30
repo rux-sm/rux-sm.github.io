@@ -438,9 +438,11 @@
     const kind = SHAPE.isSplit(trip) ? (SHAPE.isPickup(trip, leg.key) ? 'pickup' : 'drop-off')
       : SHAPE.legOf(trip, leg.key)?.kind === 'one_way' ? 'one way' : null;
     /* How many buses the leg takes, written after the destination on a leg of
-       more than one: `×3`. Which of them a bar is goes unsaid, because its row
-       is the bus. */
+       more than one: `×3`. The board numbers them down its rows, as `nth`, and
+       every bus after the first says which it is in place of the update, so
+       the trip's news is read once. */
     const count = leg.count || 1;
+    const later = count > 1 && b.nth > 1;
 
     /* WHETHER THIS BUS FITS THIS TRIP, and what the trip needs. The bar draws
        no mark for a need: the needs are read on the trip's card, which the
@@ -511,7 +513,11 @@
 
     // One structured list feeds the badge and the card's Alerts group.
     facts.problems = placeholder ? [] : problemsOf(trip, facts, leg);
-    const problems = facts.problems;
+    /* A later bus wears only its own problems, a bus that does not fit or a
+       driver to tell; the trip's are on its first bus, and every bus's card
+       lists them all. */
+    const problems = later ? facts.problems.filter(a => a.row === 'scheduler-card__misfit' || a.spot === 'driver')
+      : facts.problems;
     const alert = problems.length
       ? alertMark(misfits.length ? 'error' : 'warning', problems.map(a => a.words).join(' · ')) : null;
     /* A trip that is back raises no alert, and says Paid in the alert's place
@@ -593,15 +599,17 @@
 
     // The update and crew share a footer; only the update row opens Updates.
     const latest = updatesOf(trip)[0] ?? null;
-    const news = el('span', null, latest?.body || '');
-    if (latest) news.title = `${latest.body}\n${updateStamp(latest)}`;
-    const age = ageMark(latest?.created_at, latest ? `Latest update ${updateStamp(latest)}` : 'No updates yet');
+    const nthWords = later ? `Bus ${b.nth} of ${count}` : null;
+    const news = el('span', null, nthWords ?? latest?.body ?? '');
+    if (latest && !later) news.title = `${latest.body}\n${updateStamp(latest)}`;
+    const age = later ? null : ageMark(latest?.created_at, latest ? `Latest update ${updateStamp(latest)}` : 'No updates yet');
     const updateRow = el('button', 'scheduler-bar__row scheduler-bar__update');
     updateRow.type = 'button';
     updateRow.dataset.cardOpener = '';
     updateRow.setAttribute('aria-expanded', 'false');
-    updateRow.setAttribute('aria-label', `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`);
-    updateRow.appendChild(age);
+    updateRow.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
+      .filter(Boolean).join('. '));
+    if (age) updateRow.appendChild(age);
     updateRow.appendChild(news);
     bar.appendChild(updateRow);
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;

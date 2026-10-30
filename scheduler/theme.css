@@ -1379,6 +1379,14 @@
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
+/* A form's open pick cell does the same with its menu, in the menu's own
+   surface and line, #0a0a0a and #2e2e2e, which Design gives every Rux 100
+   menu, on the form's page and in the board's panel alike. */
+[data-theme="rux-100"] .scheduler-print__pick[data-attached] {
+  --rux-layer: #0a0a0a;
+  --rux-layer-hover: #1a1a1a;
+  box-shadow: 0 0 0 1px #2e2e2e, 0 2px 6px var(--rux-shadow);
+}
 /* The week's calendar hangs from the week's name as the ⋮'s menu does from
    the ⋮: the name takes the calendar's outline and shadow up its sides and
    over its top, stopping at its foot, and the calendar's outline and shadow

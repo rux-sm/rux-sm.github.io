@@ -3319,7 +3319,7 @@
       return n;
     };
     const id = `scheduler-print-${label.toLowerCase()}`;
-    const menu = make('ul', 'rux--menu rux--menu--sm rux--menu--with-selectable-items');
+    const menu = make('ul', 'rux--menu rux--menu--sm rux--menu--with-selectable-items scheduler-print__menu');
     menu.id = id;
     menu.setAttribute('role', 'menu');
     menu.setAttribute('aria-label', label);
@@ -3340,7 +3340,22 @@
       const row = e.target.closest('[data-pick]');
       if (row) picked = Number(row.dataset.pick);
     });
+    /* Hung flush under the cell, the two are one surface, as the board's ⋮
+       and its menu are: both are marked, and the menu is told where the cell
+       stands over it, unrounded, for the strip that covers its edge there.
+       Where the menu has to open elsewhere it floats. */
+    menu.addEventListener('rux:menu-opened', () => {
+      const c = cell.getBoundingClientRect();
+      const m = menu.getBoundingClientRect();
+      if (Math.abs(m.top - c.bottom) >= 1) return;
+      menu.style.setProperty('--scheduler-attach-x', `${c.left - m.left}px`);
+      menu.style.setProperty('--scheduler-attach-w', `${c.width}px`);
+      menu.dataset.attached = '';
+      cell.dataset.attached = '';
+    });
     menu.addEventListener('rux:menu-closed', () => {
+      delete menu.dataset.attached;
+      delete cell.dataset.attached;
       if (picked == null || picked === chosen) return;
       choose(picked);
       doc.querySelector(`[data-rux-open="${id}"]`)?.focus();

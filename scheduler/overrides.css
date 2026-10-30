@@ -902,16 +902,49 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   font: inherit;
 }
 
-/* NO RULES IN THE PANEL'S TOOLBAR. On the page these cells ARE the band, and
-   the rule down each leading edge is what makes the row read as one divided
-   thing rather than controls standing in a strip. Framed in the board's panel
-   they are guests in a row of Carbon's ghost buttons, which carry no rules and
-   stand apart by a gap. One vertical line among them divided nothing: it boxed
-   the step arrows, which are not a box, and where a trip has a single copy to
-   print it landed on the panel's own edge. The hover below says how far a cell
-   reaches, which is what the buttons beside it do. */
+/* NO LEADING RULES IN THE PANEL'S TOOLBAR. On the page these cells ARE the
+   band, and the rule down each leading edge is what makes the row read as one
+   divided thing rather than controls standing in a strip. Framed in the
+   board's panel they are guests in a row of Carbon's ghost buttons, which
+   carry no rules and stand apart by a gap, and a leading line landed on the
+   panel's own edge. The pick cell, first in the row, keeps a rule down its
+   trailing edge instead, as the board's toolbar parts its first control from
+   the rest, so the choice reads as a control and not as a heading. */
 .scheduler-viewer__toolbar > .scheduler-print__cell {
   border-inline-start: 0;
+}
+.scheduler-viewer__toolbar > .scheduler-print__pick {
+  border-inline-end: 1px solid var(--rux-border-subtle-01);
+}
+
+/* A PICK CELL AND ITS MENU ARE ONE SURFACE while the menu hangs under it, as
+   the board's ⋮ and its menu are, in Carbon's overflow menu's open
+   treatment: the cell takes the menu's layer and shadow, clipped at its foot,
+   and a strip the cell's width in the menu's layer covers the menu's shadow
+   along the cell's foot, 5px, past the shadow's reach above the menu.
+   print.js marks the two and sets where the strip sits. The cell's rule comes
+   off while it is open, as Carbon's open trigger has no line down its side. */
+.scheduler-print__pick[data-attached] {
+  background-color: var(--rux-layer);
+  box-shadow: 0 2px 6px var(--rux-shadow);
+  clip-path: inset(-6px -6px 0 -6px);
+  border-inline-end-color: transparent;
+}
+.scheduler-print__menu[data-attached]::before {
+  position: absolute;
+  content: "";
+  inset-block-start: -5px;
+  inset-inline-start: var(--scheduler-attach-x);
+  inline-size: var(--scheduler-attach-w);
+  block-size: 5px;
+  background-color: var(--rux-layer);
+}
+/* Under the pointer the open cell takes the menu's own hover, and the strip
+   at its foot takes it with it. */
+@media (hover: hover) {
+  .scheduler-print__pick[data-attached]:hover,
+  .scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer-hover); }
+  :has(> .scheduler-print__pick[data-attached]:hover) > .scheduler-print__menu[data-attached]::before { background-color: var(--rux-layer-hover); }
 }
 
 /* One that does something on a press is a button, so it takes a pointer, a

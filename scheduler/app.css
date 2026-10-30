@@ -395,9 +395,12 @@ button.scheduler-row-head__num::after {
   --scheduler-head-moving-fill: color-mix(in oklab, var(--scheduler-head-moving) 16%, var(--rux-layer));
   --scheduler-head-low-fill: color-mix(in oklab, var(--scheduler-head-low) 16%, var(--rux-layer));
   --scheduler-head-idle-fill: var(--rux-layer-hover);
+  /* The idling word, and the quiet ink of how long, Off and no signal. */
+  --scheduler-head-idle-ink: var(--rux-text-primary);
+  --scheduler-head-quiet-ink: var(--rux-text-secondary);
 }
-.scheduler-row-head__dial { position: relative; display: flex; block-size: 38px; color: var(--rux-text-secondary); }
-.scheduler-row-head__dial--running { background: var(--scheduler-head-idle-fill); color: var(--rux-text-primary); }
+.scheduler-row-head__dial { position: relative; display: flex; block-size: 38px; color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__dial--running { background: var(--scheduler-head-idle-fill); color: var(--scheduler-head-idle-ink); }
 .scheduler-row-head__dial--running.scheduler-row-head__dial--moving { background: var(--scheduler-head-moving-fill); color: var(--scheduler-head-moving); }
 .scheduler-row-head__dial--running.scheduler-row-head__dial--warning { background: var(--scheduler-head-low-fill); color: var(--scheduler-head-low); }
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__dial { outline: 1px dashed var(--rux-border-strong-01); outline-offset: -1px; }
@@ -416,7 +419,7 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__speed:not(.scheduler-row-head__speed--word) { font-size: 20px; line-height: 20px; }
 .scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; }
 .scheduler-row-head__dial:not(.scheduler-row-head__dial--running) .scheduler-row-head__under,
-.scheduler-row-head__dial--running.scheduler-row-head__dial--quiet .scheduler-row-head__under { color: var(--rux-text-secondary); }
+.scheduler-row-head__dial--running.scheduler-row-head__dial--quiet .scheduler-row-head__under { color: var(--scheduler-head-quiet-ink); }
 /* Fuel: a pump and its percent, over a 4px bar filled to the tank's share,
    a neutral grey while normal. DEF, shown only while low, is a tag alone. */
 .scheduler-row-head__level {

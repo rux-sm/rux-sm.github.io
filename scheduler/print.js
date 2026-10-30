@@ -2498,10 +2498,13 @@
         unless: (trip, leg) => !!trip && !!legItinerary(trip, leg) },
       /* SIMPLE IS THE DRIVER'S SHEET AND DETAILED THE OFFICE'S, which adds the
          yard at both ends, each wait and the leg's miles and hours from the
-         Route tab. Detailed needs a trip's route, so a blank form is Simple. */
+         Route tab. Detailed needs a trip's route, so a blank form is Simple.
+         Detailed opens first, since the office opens the form from the
+         trip; a driver's way in, Departures or the driver's line, asks for
+         Simple by name. */
       layouts: [
         { id: 'simple', name: 'Simple' },
-        { id: 'detailed', name: 'Detailed', trip: true },
+        { id: 'detailed', name: 'Detailed', trip: true, first: true },
       ],
       // The Detailed layout's price: the Billing tab's lines as saved, and
       // the estimated miles a typed price's calculator figure falls back on
@@ -3676,8 +3679,12 @@
   // The layouts a form offers: one that needs a trip is left off a blank form.
   const layoutsOf = (form, blank) => (form.layouts || []).filter(l => !(blank && l.trip));
   // The layout the address asks for, where the form draws more than one.
-  const layoutWanted = (form, blank) => (layoutsOf(form, blank).some(l => l.id === params.get('layout'))
-    ? params.get('layout') : layoutsOf(form, blank)[0]?.id);
+  // The layout the address asks for, else the one the form opens on, else its first.
+  const layoutWanted = (form, blank) => {
+    const layouts = layoutsOf(form, blank);
+    return layouts.some(l => l.id === params.get('layout'))
+      ? params.get('layout') : (layouts.find(l => l.first) ?? layouts[0])?.id;
+  };
 
   const notConnected = () => say('warning', 'Not connected.',
     'This page reads the schedule through the account script, which a local preview leaves off. The cloud preview is http://localhost:8641/.');

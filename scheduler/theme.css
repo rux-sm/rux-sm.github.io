@@ -960,10 +960,16 @@
    the red one away, and a drawing on the first day of every bar filled the
    roster with icons. Each cell's words still name its trip or the reason
    for the time off. The rule that parts the two weeks in the day band goes
-   too, kept at its width so the letters do not move: the letters repeat, M
-   after S, and say where the week turns. */
+   too, its width kept as padding so the letters do not move: the letters
+   repeat, M after S, and say where the week turns. */
 [data-theme="rux-100"] .scheduler-avail__glyph { display: none; }
-[data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--week { border-inline-start-color: transparent; }
+[data-theme="rux-100"] .scheduler-avail__days > .scheduler-avail__day--week { border-inline-start: 0; padding-inline-start: 1px; }
+/* The days draw no rule at all, rather than a clear one: a clear 1px rule
+   still takes its corner of the row's line under it, which left a notch in
+   the line at every day. The names stand behind their own rule, as the bus
+   column's numbers do, from the day band down. */
+[data-theme="rux-100"] .scheduler-week--avail .scheduler-avail__cell { border-inline-start: 0; }
+[data-theme="rux-100"] .scheduler-week--avail :is(.scheduler-avail__name, .scheduler-avail__days > .scheduler-avail__day--head) { border-inline-end: 1px solid var(--rux-border-subtle-01); }
 
 /* The roster's column header and its priority headings are one band drawn
    twice. Carbon separates a header from its rows with a change of surface, so

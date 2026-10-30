@@ -2602,9 +2602,10 @@ button.scheduler-row-head__num::after {
    document gets end the row.
    What parts the two is the row's line of text, which takes all the room
    between them whether or not it says anything: a stored file's date, or a
-   word a form has to say, is written against the buttons in room that was
-   already its own, so no button moves when it speaks, and a line too long
-   for the room is cut short. */
+   word a form has to say, starts where that room does, under the panel's
+   title when nothing comes before it, in room that was already its own, so
+   no button moves when it speaks, and a line too long for the room is cut
+   short. */
 /* A button's own display beats the browser's `[hidden]`, so the buttons
    data.js hides for a form are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }
@@ -2618,7 +2619,6 @@ button.scheduler-row-head__num::after {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
-  text-align: end;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

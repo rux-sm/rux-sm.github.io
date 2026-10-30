@@ -1213,8 +1213,11 @@
 [data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-print__pick:hover {
   background-color: var(--rux-button-secondary-hover);
 }
-/* The line of text ends on the gap, having no edge to stand off. */
-[data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-viewer__uploaded { padding-inline: var(--rux-spacing-03) 0; }
+/* The line of text starts under the panel's title, which stands further in
+   than the row's inset, and ends on the gap, having no edge to stand off. */
+[data-theme^="apple-"] .scheduler-viewer__toolbar > .scheduler-viewer__uploaded {
+  padding-inline: calc(var(--rux-spacing-05) - var(--scheduler-head-inset)) 0;
+}
 /* A button that fills its bar edge to edge is that bar's edge, so it stays
    square under Design's capsule rule: on a phone the toolbar and the roster's
    head, which overrides.css squares for every theme but which Design's rule

@@ -203,7 +203,7 @@ const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
 expect('each driver state uses its Carbon icon and tone',
   drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
   [['off', '#i-circle-dash', false], ['major', '#i-warning--alt-inverted--filled', false], ['off', '#i-pending--filled', false],
-    ['success', '#i-checkmark--filled', false], ['success', '#i-checkmark--filled', false], ['error', '#i-error--filled', true]]);
+    ['success', '#i-checkmark--outline', false], ['success', '#i-checkmark--outline', false], ['error', '#i-error--filled', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',
   [...relief.querySelectorAll('.scheduler-crew')].map(c => [c.dataset.seat, icon(c) === '#m-swap_horiz-fill']),
@@ -354,7 +354,7 @@ expect('driver rest is no problem of the bus\'s', say(lit('Resting')), null);
 expect('no signal: how long since in place of the times', say(lit('No signal')), ['quiet', 'No signal 25m']);
 expect('a driver Samsara has in the bus reads confirmed whatever they answered',
   [lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark').classes().find(c => /--(off|warning|error|success)$/.test(c)), icon(lit('In the bus, not yet confirmed').querySelector('.scheduler-crew'))],
-  ['scheduler-crew__mark--success', '#i-checkmark--filled']);
+  ['scheduler-crew__mark--success', '#i-checkmark--outline']);
 expect('a live-confirmed driver uses the success style as well as the success icon',
   lit('In the bus, not yet confirmed').querySelector('.scheduler-crew__mark svg').getAttribute('class'),
   'rux--icon-indicator--succeeded');

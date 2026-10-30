@@ -201,7 +201,7 @@ const window = {};
     { value: 'off', label: 'Not sent', tone: 'off', icon: '#i-circle-dash', indicator: 'rux--icon-indicator--not-started' },
     { value: 'pending-assignment', label: 'Pending assignment', tone: 'major', icon: '#i-warning--alt-inverted--filled', indicator: 'rux--icon-indicator--caution-major' },
     { value: 'pending-response', label: 'Pending response', tone: 'off', icon: '#i-pending--filled', indicator: 'rux--icon-indicator--pending' },
-    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--filled', indicator: 'rux--icon-indicator--succeeded' },
+    { value: 'confirmed', label: 'Confirmed', tone: 'success', icon: '#i-checkmark--outline', indicator: 'rux--icon-indicator--succeeded' },
     { value: 'declined', label: 'Declined', tone: 'error', icon: '#i-error--filled', indicator: 'rux--icon-indicator--failed' },
   ];
   /* A status row's identity: trip, driver, leg and role, the leg by the key

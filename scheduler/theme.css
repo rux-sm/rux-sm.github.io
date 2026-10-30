@@ -1507,12 +1507,14 @@
 }
 /* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its bus icon flashes in
    Geist's green 900, 7.9 to 1 on the blue, on the beat the board's red road
-   warning blinks to, so the buses out now show by the one thing moving. The
-   flash holds still where Motion is calm or off, and where the computer asks
-   for less motion. */
+   warning blinks to, so the buses out now show by the one thing moving. It
+   dims to 60% and no further, so the button that opens the live card is
+   always in sight. The flash holds still where Motion is calm or off, and
+   where the computer asks for less motion. */
+@keyframes scheduler-road-beacon { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .6; } }
 [data-theme="rux-100"] .scheduler-bar--road .scheduler-road__dot {
   color: var(--rux-status-green);
-  animation: scheduler-road-alarm 1.4s linear infinite;
+  animation: scheduler-road-beacon 1.4s linear infinite;
 }
 [data-theme="rux-100"] :is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-road__dot {
   animation: none;

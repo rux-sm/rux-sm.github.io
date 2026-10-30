@@ -2192,9 +2192,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__drivers > .scheduler-road__who { flex: 1 1 0; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-02); }
 
 /* A LIVE BAR'S DRIVERS TAKE THE UPDATE ROW'S PLACE, whose updates the live
-   card keeps under its Updates tab, so each seat has two lines: its duty's icon on a tile of its own
-   colour and the name, then a 16px meter of what the driver has, filled in
-   the duty's colour, its reading written inside. A driver on duty or
+   card keeps under its Updates tab, so each seat has two lines: its duty's
+   16px icon and the name, then a 16px meter of what the driver has, filled
+   in the duty's colour, its reading written inside. A driver on duty or
    driving has the hours left of ten, amber under one; one resting has the
    rest so far of eight; one in another bus is red and full, with that bus.
    The reading is dark over the fill and the row's ink past it, from
@@ -2218,12 +2218,6 @@ button.scheduler-row-head__num::after {
   background: color-mix(in srgb, currentColor 15%, transparent);
 }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > :is(.scheduler-crew__duty, .scheduler-crew__name) { grid-row: 1; }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > .scheduler-crew__duty {
-  inline-size: 16px;
-  block-size: 16px;
-  background: color-mix(in srgb, currentColor 18%, transparent);
-}
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > .scheduler-crew__duty svg { inline-size: 12px; block-size: 12px; }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat > :is(.scheduler-crew__left, .scheduler-crew__rest) {
   position: static;
   grid-column: 1 / -1;

@@ -7112,7 +7112,7 @@
     }
     const { stops, buses } = await savedRowsOfLeg(leg);
     if (buses.some(a => (a.trip_drivers || []).some(d => d.driver_id))) { wait('Take its drivers off on the Buses tab and save, so they are told.'); return; }
-    // Its own rows, read now, since the board holds a trip's quote lines only once its Billing tab has loaded.
+    // Its own rows, read now, so a file, line or contact saved since the board's read still counts.
     const [docs, lines, contacts] = await Promise.all(['trip_documents', 'trip_quote_lines', 'trip_contacts']
       .map(table => withTimeout(client.from(table).select(table === 'trip_contacts' ? 'leg_id' : 'leg,leg_id').eq('trip_id', trip.id).then(unwrap))));
     const own = rows => rows.some(r => r.leg_id === leg.id || (leg.word && r.leg === leg.word && !r.leg_id));

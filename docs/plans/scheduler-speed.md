@@ -44,11 +44,9 @@ in, writes recorded and none sent. The last task times the same steps again.
   list and Departures, which hear it on the board's one channel; `data.js`'s
   live section says how. A week change still reads its trips, because
   `show()` is how a save in this tab reads back.
-- **The board's read carries what the board draws.** A trip's update texts and
-  its quote lines are read when its card or editor opens, not with every trip
-  of nine weeks; the bar's follow-up mark needs only the day of the newest
-  update that is not a skipped prompt, kind `nothing`, as `follow-up.js`'s
-  `quietSince` reads it, and the board's read keeps that one.
+- **Update texts and quote lines stay in the board's read,** because taking
+  them out saves about 15% of a read that now runs only on a week change or
+  a return to the tab, and opening a trip would then wait on its own read.
 
 ### Drawing
 
@@ -82,9 +80,6 @@ None open.
 
 ## Tasks
 
-- [ ] Take update texts and quote lines out of the board's read, keeping each
-      trip's newest update that is not kind `nothing`, and read them when a
-      card or the editor opens.
 - [ ] Keep legs, back times and standing per trip for a draw, index the
       read's legs by day for standing, and make every date formatter once,
       in `data.js`, `week.js`, `clashes.js`, `bar.js`, `road.js`,

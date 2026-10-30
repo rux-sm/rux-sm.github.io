@@ -3300,31 +3300,72 @@
      one; stripping those off it would be a local rule on a Carbon class, which
      this repository does not do. The element is a bare `select` the cell
      styles instead. */
+  /* A CHOICE IS A CELL THAT OPENS DESIGN'S MENU, the one every other list in
+     the app opens, so its choices are drawn as theirs are in every theme,
+     where a select's list was the computer's own. The menu is the cell's
+     sibling, and the two go together wherever the controls are put, the
+     page's own row or the board's panel; design/js/menu.js opens it from the
+     cell's `data-rux-open` and closes it when a choice is pressed. The choice
+     is made once it has closed, since making it draws the row again.
+     In the panel both are made in the board's document, not this frame's:
+     menu.js reads a press through `instanceof Element`, which a node this
+     frame made fails in the board's window even once the panel adopts it. */
   function pickCell(label, names, chosen, choose) {
-    const cell = el('div', 'scheduler-print__cell scheduler-print__pick');
-    const select = el('select', 'scheduler-print__cell-select');
-    select.setAttribute('aria-label', label);
-    names.forEach((text, i) => {
-      const option = el('option', null, text);
-      option.value = String(i);
-      select.appendChild(option);
+    const doc = host ? window.frameElement?.ownerDocument ?? window.parent.document : document;
+    const make = (tag, cls, text) => {
+      const n = doc.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    };
+    const id = `scheduler-print-${label.toLowerCase()}`;
+    const menu = make('ul', 'rux--menu rux--menu--sm rux--menu--with-selectable-items');
+    menu.id = id;
+    menu.setAttribute('role', 'menu');
+    menu.setAttribute('aria-label', label);
+    menu.tabIndex = -1;
+    menu.append(...names.map((text, i) => {
+      const row = make('li', 'rux--menu-item');
+      row.setAttribute('role', 'menuitemradio');
+      row.setAttribute('aria-checked', String(i === chosen));
+      row.tabIndex = -1;
+      row.dataset.pick = String(i);
+      const check = make('div', 'rux--menu-item__selection-icon');
+      if (i === chosen) check.appendChild(sprite('#m-check', '', doc));
+      row.append(check, make('div', 'rux--menu-item__label', text));
+      return row;
+    }));
+    let picked = null;
+    menu.addEventListener('click', e => {
+      const row = e.target.closest('[data-pick]');
+      if (row) picked = Number(row.dataset.pick);
     });
-    select.value = String(chosen);
-    select.addEventListener('change', e => choose(Number(e.target.value) || 0));
-    cell.append(select, sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow'));
-    return cell;
+    menu.addEventListener('rux:menu-closed', () => {
+      if (picked == null || picked === chosen) return;
+      choose(picked);
+      doc.querySelector(`[data-rux-open="${id}"]`)?.focus();
+    });
+
+    const cell = make('button', 'scheduler-print__cell scheduler-print__pick');
+    cell.type = 'button';
+    cell.dataset.ruxOpen = id;
+    cell.setAttribute('aria-haspopup', 'menu');
+    cell.setAttribute('aria-expanded', 'false');
+    cell.setAttribute('aria-label', `${label}: ${names[chosen] ?? ''}`);
+    cell.append(names[chosen] ?? '', sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
+    return [menu, cell];
   }
 
   // One of the sprite's drawings, at the size a cell wants it.
-  function sprite(href, cls) {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  function sprite(href, cls, doc = document) {
+    const svg = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', cls);
     svg.setAttribute('width', '16');
     svg.setAttribute('height', '16');
     svg.setAttribute('viewBox', '0 0 32 32');
     svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('aria-hidden', 'true');
-    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    const use = doc.createElementNS('http://www.w3.org/2000/svg', 'use');
     use.setAttribute('href', href);
     svg.appendChild(use);
     return svg;
@@ -3339,16 +3380,15 @@
 
     const chooseLayout = id => { current.layout = id; buildControls(); draw(); };
 
-    /* WHICH LAYOUT, AND IT IS A SELECT IN BOTH PLACES. It was a content
-       switcher on the page and two radio items in the panel's overflow, so one
-       choice looked like two different things depending on where the form was
-       opened. And Carbon gives the switcher a radius and an outline of its
+    /* WHICH LAYOUT, AND IT IS ONE PICK CELL IN BOTH PLACES, the page's row
+       and the panel's, so one choice looks like one thing wherever the form is
+       opened. Carbon's content switcher has a radius and an outline of its
        own -- almost nothing else square in the system has either -- so it read
-       as a different family beside a row of square controls. The copy beside it
-       is already a select; this row makes its choices one way. */
+       as a different family beside a row of square controls. The copy beside
+       it is a pick cell too; this row makes its choices one way. */
     const layouts = layoutsOf(form, current.blank);
     if (layouts.length > 1) {
-      nodes.push(pickCell(
+      nodes.push(...pickCell(
         'Layout',
         layouts.map(option => option.name),
         layouts.findIndex(option => option.id === layout),
@@ -3385,11 +3425,11 @@
         })) : [],
       );
     } else if (every.length > 1) {
-      nodes.push(pickCell(
+      nodes.push(...pickCell(
         'Copy',
         every.map(labelOf),
         current.chosen,
-        i => { current.chosen = i; draw(); },
+        i => { current.chosen = i; buildControls(); draw(); },
       ));
     }
 

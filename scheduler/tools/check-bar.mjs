@@ -442,29 +442,29 @@ const busHead = (live, week = true, bus = { id: 'b1', capacity: 52 }) => {
 const levels = h => h.querySelectorAll('.scheduler-row-head__level').map(g => [g.dataset.tank, g.dataset.level]);
 const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.classes().find(c => /__mark--/.test(c)).split('--')[1]);
 const line = h => text(h, '.scheduler-row-head__line');
-const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__arc')];
+const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__dial--running')];
 const ago = min => new Date(Date.now() - min * 60e3).toISOString();
-expect('moving: the speed over mph in a green dial, the fuel alone while DEF is normal, no line under them, no marks',
+expect('moving: the speed over mph in a filled green display, the fuel alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__pct'), line(h), marks(h)]; })(),
   [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);
 expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
 expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
-expect('over 75 mph the dial and its arc turn amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
-expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the place left to the tip',
+expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
+expect('standing: Idle over how long in a filled display, amber past 30 minutes, or Off unfilled; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
     .map(([h]) => [...dial(h), line(h)]),
-  [['Idle14m', 'quiet', false, null], ['Idle45m', 'warning', false, null], ['Off', 'quiet', false, null]]);
+  [['Idle14m', 'quiet', true, null], ['Idle45m', 'warning', true, null], ['Off', 'quiet', false, null]]);
 expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
   [[], [], []]);
 expect('no signal: a dash over how long since it was seen, the gauges faded, and that said on the title',
   (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').title]; })(),
   ['–3h', true, 'No signal, last seen 3h ago']);
-expect('a bus with its engine running draws the dial\'s ring, moving or idling; one off, or with no signal, is its words alone',
+expect('a bus with its engine running fills the display, moving or idling; one off, or with no signal, is its words alone',
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]
-    .map(l => has(busHead(l), '.scheduler-row-head__track')),
+    .map(l => has(busHead(l), '.scheduler-row-head__dial--running')),
   [true, true, false, false]);
 expect('another week, or no answer for the bus: the seats and the inspection, amber within 45 days',
   [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,

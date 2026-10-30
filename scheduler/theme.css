@@ -849,6 +849,13 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
+/* Rux 100's state display takes Geist's own fills: green 100 moving, amber
+   100 when speeding or idling too long, and gray 100 idling. */
+[data-theme="rux-100"] .scheduler-row-head {
+  --scheduler-head-moving-fill: oklch(23.09% 0.0716 149.68);
+  --scheduler-head-low-fill: var(--scheduler-amber-bg);
+  --scheduler-head-idle-fill: #1a1a1a;
+}
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
    dims its icon, dial, fuel and kit to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it

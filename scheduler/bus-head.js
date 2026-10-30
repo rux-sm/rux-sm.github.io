@@ -6,13 +6,13 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - In the week that holds today, for a bus Samsara answers for, its
-     state in a 38px block under the number, so the fuel under it stands
-     at one height down the column: while the engine runs, an open dial,
-     moving a 270° arc filling from 0 to TOP_MPH with the speed over mph in
-     its middle, green and amber over SPEEDING, idling its empty track with
-     Idle over how long in its middle, amber past IDLE_MS; with the engine
-     off, words alone, Off, and with no signal a dash over how long since
-     the bus was seen. Under it
+     state in a 38px display under the number, so the fuel under it stands
+     at one height down the column. While the engine runs the display is
+     filled: moving, the speed over mph on green, amber over SPEEDING;
+     idling, Idle over how long on grey, amber past IDLE_MS. With the
+     engine off it is the word alone, Off, with no fill or edge, and with no
+     signal a dash over how long since the bus was seen, in a dashed edge.
+     Under it
      the fuel: a pump and its percent over a bar filled to it. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
@@ -54,16 +54,12 @@
   // Each tank's low and critical marks, in percent.
   const FUEL = { low: 25, critical: 10, letter: 'F', word: 'Fuel' };
   const DEF = { low: 15, critical: 5, letter: 'D', word: 'DEF' };
-  // The dial's full arc, and the speed past which it turns amber.
-  const TOP_MPH = 85;
+  // The speed past which a moving bus turns amber.
   const SPEEDING = 75;
   const IDLE_MS = 30 * 60e3;
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
   const DAY = 864e5;
-  // The dial: 38px across, its arc 2.6px, three quarters of a turn.
-  const DIAL = 38, STROKE = 2.6, R = DIAL / 2 - STROKE / 2 - 0.5, TURN = 0.75;
-  const ARC = 2 * Math.PI * R * TURN;
 
   const levelOf = (pct, tank) => (pct == null ? null : pct <= tank.critical ? 'critical' : pct <= tank.low ? 'low' : 'normal');
   const ago = at => {
@@ -73,7 +69,7 @@
   const idleFor = live => (live?.engine === 'idle' && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
   const noSignal = live => live && live.engine == null;
   const moving = live => live?.mph > 0;
-  // The engine running, moving or not: what the dial's ring stands for.
+  // The engine running, moving or not: what fills the state's display.
   const running = live => moving(live) || live?.engine === 'idle' || live?.engine === 'on';
 
   // What the bus is doing, as the dial says it; the place is the tip's next line.
@@ -96,27 +92,13 @@
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The state's block: while the engine runs the dial, its track, and while
-  // moving the arc filled to the speed's share; the reading in its middle.
-  // With the engine off, or no signal, the words alone.
+  // The state's display: filled while the engine runs, in the state's tone,
+  // the reading over its unit or how long; the word alone with it off.
   function dial(live, state) {
-    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? '' : ' scheduler-row-head__dial--still'}`);
+    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? ' scheduler-row-head__dial--running' : ''}`);
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', state.words);
     box.title = state.words;
-    if (running(live)) {
-      const svg = svgEl('svg', { width: DIAL, height: DIAL, viewBox: `0 0 ${DIAL} ${DIAL}`, 'aria-hidden': 'true' });
-      const ring = cls => svgEl('circle', { class: cls, cx: DIAL / 2, cy: DIAL / 2, r: R, transform: `rotate(135 ${DIAL / 2} ${DIAL / 2})` });
-      const track = ring('scheduler-row-head__track');
-      track.setAttribute('stroke-dasharray', `${ARC} 999`);
-      svg.appendChild(track);
-      if (moving(live)) {
-        const fill = ring('scheduler-row-head__arc');
-        fill.setAttribute('stroke-dasharray', `${ARC * Math.min(1, live.mph / TOP_MPH)} 999`);
-        svg.appendChild(fill);
-      }
-      box.appendChild(svg);
-    }
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
@@ -252,5 +234,5 @@
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, TOP_MPH, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
 })();

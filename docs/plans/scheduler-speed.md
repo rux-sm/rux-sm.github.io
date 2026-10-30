@@ -13,6 +13,26 @@ changes is how often it reads, how much it reads and how much it draws again.
 
 ## Decisions
 
+### The first timing
+
+Taken in Chrome on :8641 on a Mac, with the database on Micro and the indexes
+in, writes recorded and none sent. The last task times the same steps again.
+
+- **A load** reaches an interactive page in 173 ms and draws the board at
+  about 1.5 s. Before it, 50 requests go out, 10 of them trip reads: the
+  board's, which takes 716 ms in the browser where the database spends about
+  40 ms on it, to-do's two, Departures' three and four of `clashes.js`'s
+  `readNearby`, which to-do and Departures each call. The board's draw is one
+  long frame of 310 ms.
+- **A week change** inside the held weeks slides in about 830 ms with no read;
+  every second one reads again, 13 requests, the board's read taking 470 to
+  605 ms, then settles at 0.9 to 1.6 s with a long frame of 120 to 410 ms.
+- **Another tab's save,** played by the tab-return event that sets off the
+  same three readers, makes 38 requests and 10 trip reads in every open tab,
+  the board's 610 to 670 ms, and settles at 2.2 to 3.6 s.
+- **A swipe's first move** on the phone-width board takes 64 to 72 ms, drawing
+  the spare week in that one frame.
+
 ### The database
 
 - **The trip-read indexes are in,** as migration `trip_read_indexes`, and
@@ -43,8 +63,10 @@ changes is how often it reads, how much it reads and how much it draws again.
   `departures-panel.js` read from what `data.js` holds and are told when it
   changes, where each now reads trips and opens a channel of its own; a pane
   reads for itself only the days the board's read does not reach, such as
-  the to-do follow-ups' 90 days back. `to-do.js` and `departures.js` keep
-  their reads as they are, because the connector runs them through
+  the to-do follow-ups' 90 days back. `clashes.js`'s `readNearby`, which
+  to-do and Departures each call now, is read once for the page and handed
+  to both. `to-do.js` and `departures.js` keep their own reads for when
+  nothing is handed to them, because the connector runs them through
   `rules.ts` and `trips.html` runs `to-do-rows.js` without `data.js`.
 - **The board's channel hears every table it reads,** adding `trip_documents`,
   `trip_prep`, `trip_legs`, `trip_routes` and `trip_contacts`, which broadcast
@@ -73,17 +95,8 @@ changes is how often it reads, how much it reads and how much it draws again.
 
 ### Loading
 
-- **The editor loads on its own, if the first timing says it pays.**
-  `data.js` is one closure the board and the editor share, so the split is
-  this plan's riskiest change and is built only if evaluating the scripts is
-  a real part of a cold load. Built, `data.js` is split into the board, which
-  draws the first screen, and the editor with its panels, the document
-  viewer, the calculator glue, trip history and Claude drafts, loaded once the
-  board is drawn and the page is idle. A `?trip=` or `?draft=` link opens the
-  editor on load, so the board loads the editor at once for one.
-- **Scripts only the editor uses move with it,** each checked first for a
-  board use: `quote.js`, `quote-text.js`, `quote-lines.js`,
-  `route-figures.js`, `draft-fields.js`, `trip-history.js` and `file-names.js`.
+- **The editor stays in `data.js`,** because its scripts take under 170 ms of
+  a 1.5 s load and the reads take most of the rest.
 
 ### What is not this plan's
 
@@ -97,10 +110,6 @@ None open.
 
 ## Tasks
 
-- [ ] Before any other task, time a cold load, a week change, a swipe and
-      another tab's save in Chrome on :8641, with the page's writes recorded
-      and not sent, and how much of the cold load is evaluating scripts; put
-      the figures under Decisions for the last task.
 - [ ] Read the seldom-changing lists once in `data.js`, and on a live change
       read only the changed trip or list into the held weeks, finding a
       deleted or crew row's trip in what the board holds, and keeping the
@@ -120,10 +129,5 @@ None open.
 - [ ] Measure before writing in `spareFor`, `fitLanesInView`,
       `fitStuckRows` and `fitCrew`; draw a swipe's spare weeks when idle; and
       skip `fillTracks` while the page is hidden.
-- [ ] If the first timing says it pays, split the editor and its panels out
-      of `data.js` into its own script loaded when the board is idle, or at
-      once for a `?trip=` or `?draft=` link, with the editor-only scripts
-      beside it, keep `npm run check` loading every page's scripts, and
-      update the scheduler's `README.md` in the same commit.
-- [ ] Time the same steps as the first task again and compare them with its
-      figures.
+- [ ] Time the same steps as the first timing again and compare them with
+      its figures.

@@ -313,8 +313,13 @@
       }
       const who = line.state === 'done' ? staff.get(line.by) : null;
       if (who) {
-        const f = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-departures__face');
-        account.drawAvatar?.(f, { id: who.id, name: who.display_name, photoPath: who.photo_path, colour: who.avatar_color }, 'sm');
+        /* A face drawn shows initials until its photo loads, so one already
+           showing this person's photo is copied, photo and all. */
+        const shown = [...list.querySelectorAll('.scheduler-departures__face')]
+          .find(n => n.dataset.who === String(who.id) && n.querySelector('img'));
+        const f = shown ? shown.cloneNode(true) : el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-departures__face');
+        if (!shown) account.drawAvatar?.(f, { id: who.id, name: who.display_name, photoPath: who.photo_path, colour: who.avatar_color }, 'sm');
+        f.dataset.who = String(who.id);
         f.title = who.display_name || '';
         f.setAttribute('role', 'img');
         f.setAttribute('aria-label', `by ${who.display_name || 'someone'}`);
@@ -493,6 +498,7 @@
     const rows = el('ul', 'rux--accordion rux--accordion--end');
     rows.appendChild(li);
     const tile = el('li', 'rux--tile scheduler-to-do__tile');
+    tile.dataset.leg = key;
     tile.appendChild(rows);
     return tile;
   }
@@ -518,25 +524,64 @@
   const listed = () => days.flatMap(d => pages.filter(p => p.day === d));
   const stepLeg = id => String(id ?? '').split('|')[0];
 
+  /* A node brought to what `to` draws, in place: what differs changes and
+     the rest stays, so a tick swaps its mark and its words and the tile
+     around it neither flashes nor shifts. A face of the same person is kept
+     as it is. Design's accordion keeps its state in a class and an
+     attribute, which are the drawn ones, so an open leg stays open. */
+  function morph(from, to) {
+    if (from.nodeType !== to.nodeType || from.nodeName !== to.nodeName) { from.replaceWith(to); return; }
+    if (from.nodeType !== Node.ELEMENT_NODE) {
+      if (from.nodeValue !== to.nodeValue) from.nodeValue = to.nodeValue;
+      return;
+    }
+    if (from.classList.contains('scheduler-departures__face') && from.dataset.who && from.dataset.who === to.dataset.who) return;
+    for (const { name } of [...from.attributes]) if (!to.hasAttribute(name)) from.removeAttribute(name);
+    for (const { name, value } of [...to.attributes]) if (from.getAttribute(name) !== value) from.setAttribute(name, value);
+    const want = [...to.childNodes];
+    want.forEach((node, i) => {
+      const have = from.childNodes[i];
+      if (have) morph(have, node); else from.appendChild(node);
+    });
+    while (from.childNodes.length > want.length) from.lastChild.remove();
+  }
+  /* The list's tiles brought to `fresh` by their legs: a leg still listed is
+     patched where it stands and moved to its turn, a new one goes in and a
+     gone one comes out. */
+  function patchTiles(current, fresh) {
+    const old = new Map([...current.children].map(t => [t.dataset.leg, t]));
+    [...fresh.children].forEach((tile, i) => {
+      const was = old.get(tile.dataset.leg);
+      if (was) { old.delete(tile.dataset.leg); morph(was, tile); }
+      const node = was ?? tile;
+      if (current.children[i] !== node) current.insertBefore(node, current.children[i] ?? null);
+    });
+    for (const gone of old.values()) gone.remove();
+  }
+
   function draw() {
     const wrong = failure || refusal;
     error.textContent = wrong;
     error.hidden = !wrong;
-    // The list is built again, so a heading that had the focus is given it back.
+    // A control that had the focus is given it back where the list built it again.
     const held = list.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     steps.clear();
     /* One list, the days' legs in order with no heading between, since each
        leg says its day; with nothing leaving a tile says so, and while the
        read fails the error above stands alone. */
     const legs = listed();
-    list.replaceChildren(legs.length ? legList(legs) : failure ? '' : nothing(days.length === 1));
+    const fresh = legs.length ? legList(legs) : null;
+    const current = list.querySelector(':scope > .scheduler-to-do__tiles');
+    if (fresh && current) patchTiles(current, fresh);
+    else list.replaceChildren(fresh ?? (failure ? '' : nothing(days.length === 1)));
     drawn = new Map(legs.map(p => [keyOf(p), printOf(p)]));
     if (asking && !steps.has(asking)) asking = null;
     if (held) focusHeld(held);
   }
 
-  /* One leg built again in its place, as a press or a read changes it; the
-     open leg stays open and a control that had the focus is given it back. */
+  /* One leg brought up to date in its place, as a press or a read changes
+     it; the open leg stays open and a control that had the focus keeps it,
+     or is given it back where it was built again. */
   function drawLeg(key) {
     const page = pages.find(p => keyOf(p) === key);
     const old = [...list.querySelectorAll('.scheduler-departures__leg')]
@@ -544,7 +589,7 @@
     if (!page || !old) { draw(); return; }
     const held = old.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
     for (const id of [...steps.keys()]) if (stepLeg(id) === key) steps.delete(id);
-    old.replaceWith(legItem(page));
+    morph(old, legItem(page));
     drawn.set(key, printOf(page));
     if (asking && !steps.has(asking)) asking = null;
     if (held) focusHeld(held);

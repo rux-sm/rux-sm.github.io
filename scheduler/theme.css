@@ -1059,6 +1059,19 @@
 }
 :root[data-theme="rux-dark"]:has(.scheduler-page) .rux--header-panel { inset-inline-end: var(--scheduler-shell-inset); }
 :root[data-theme="rux-dark"]:has(.scheduler-page) .rux--side-nav { inset-inline-start: var(--scheduler-shell-inset); }
+/* RUX 100'S HEADER STANDS OVER THE BOARD, as LN Notes frames its own: where
+   the days stop at their width and the board stands centred, app.js sets
+   `--scheduler-shell-max` to the board and the panels open beside it, and
+   the header's contents and its panels end at the board's edges, while the
+   header itself and its line run the window's width. It draws no sides of
+   its own, since every region below carries its own line and the page shows
+   between them and the header. */
+:root[data-theme="rux-100"] {
+  --scheduler-shell-inset: max(0px, calc((100% - var(--scheduler-shell-max, 100%)) / 2));
+}
+:root[data-theme="rux-100"]:has(.scheduler-page) .rux--header { padding-inline: var(--scheduler-shell-inset); }
+:root[data-theme="rux-100"]:has(.scheduler-page) .rux--header-panel { inset-inline-end: var(--scheduler-shell-inset); }
+:root[data-theme="rux-100"]:has(.scheduler-page) .rux--side-nav { inset-inline-start: var(--scheduler-shell-inset); }
 /* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in
    from every side of the pane, level with the Tasks cards and the editor's
    tiles, inside one line and on the pane's own colour. The box holds the list
@@ -1493,15 +1506,20 @@
    on the board, every panel and the ⋮'s menu, which opens outside the
    board, so the toolbar's dividers, the rows, the region edges and the
    panels' rules are all that one grey.
-   The driver roster beside it is the same sheet with the same lines.
+   The driver roster beside it is the same sheet with the same lines, and
+   so is the header over them.
    Unassigned, a darker tint of the board elsewhere, is the same sheet, its
    italic No bus saying what the row is. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
-[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
+[data-theme="rux-100"] :is(.rux--header, .scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: #2e2e2e;
   --scheduler-region: #0a0a0a;
   --scheduler-region-hover: #1a1a1a;
+}
+[data-theme="rux-100"] .rux--header {
+  background-color: var(--scheduler-region);
+  border-block-end-color: var(--rux-border-subtle-01);
 }
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
   --rux-layer: var(--scheduler-region);

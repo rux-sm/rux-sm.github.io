@@ -139,7 +139,7 @@ Three homes, and one rule for choosing.
   Today, each week then starting on today's weekday, and the bar-row toggles are there; time-aligned and two weeks join when the grid can draw them, then Scroll
   continuously, off until turned on, kept by the browser and from md up only, for a week in view that scrolls through the weeks either side of it with the arrows scrolling a week, then Fill the window, off
   until turned on and kept by the browser, for days that share the whole window rather than
-  stopping at 187px each, a one-day bar 180px, with the week and its open panels centred in the spare width; in rux-dark every day
+  stopping at 187px each, a one-day bar 180px, with the week and its open panels centred in the spare width, and in rux-100 the header framed to them; in rux-dark every day
   is 167px at any width, a one-day bar 160px, and the board is the week and its open panels centred in the window, scrolling
   where the window is narrower, the header framed to the same width over it as LN Notes frames its own, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to

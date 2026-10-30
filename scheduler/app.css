@@ -1087,20 +1087,9 @@ button.scheduler-row-head__num::after {
     color-mix(in srgb, currentColor 22%, transparent);
 }
 /* A leg that runs off the week has no time on that side: its track runs on
-   to the bar's cut edge, out through the bar's padding, ending in an
-   arrowhead there, so it reads as going on into the other week; the edge
-   itself wears no shade. A track run in from the previous week does not stick at the bus
-   column, which would lift it off the edge it comes in at. */
-.scheduler-bar--to-next > .scheduler-bar__time:has(> .scheduler-bar__span) {
-  margin-inline-end: calc(-1 * var(--scheduler-pad-end));
-  max-inline-size: calc(min(100%, var(--scheduler-times-room, 100%)) + var(--scheduler-pad-end));
-}
-.scheduler-bar--from-prev > .scheduler-bar__time:has(> .scheduler-bar__span) {
-  position: relative;
-  inset-inline-start: auto;
-  margin-inline-start: calc(-1 * var(--scheduler-pad-start));
-  max-inline-size: none;
-}
+   to the bar's padding at the cut end, where the other rows' words end,
+   ending in an arrowhead there, so it reads as going on into the other
+   week; the edge itself wears no shade. */
 /* There the track is a long arrow: an 8px box filled as the track is,
    masked to its 2px line and a chevron at the cut end, so the head is the
    line's own colour, faint ahead of the trip and full once that part has

@@ -2233,6 +2233,17 @@ button.scheduler-row-head__num::after {
 .scheduler-crew--seat:has(> .scheduler-crew__rest) > .scheduler-crew__left { inset-block-end: 3px; }
 .scheduler-crew__rest { background: linear-gradient(var(--scheduler-mark-rest), var(--scheduler-mark-rest)) 0 0 / var(--scheduler-rest) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 .scheduler-crew__rest--unknown { background: repeating-linear-gradient(to right, var(--rux-status-gray) 0 2px, transparent 2px 4px); }
+/* A SPLIT REST IS ONE FILL IN TWO PARTS: the earlier sleeper period and this
+   one in the same colour, parted by a 1px gap in what the meter stands on,
+   the seat's footer or, below, the card's surface, where the earlier one
+   ends. road-bar.js marks a split and says where. */
+.scheduler-crew__rest[data-split] {
+  --scheduler-rest-gap: var(--scheduler-footer);
+  background:
+    linear-gradient(var(--scheduler-rest-gap), var(--scheduler-rest-gap)) var(--scheduler-rest-split) 0 / 1px 100% no-repeat,
+    linear-gradient(var(--scheduler-mark-rest), var(--scheduler-mark-rest)) 0 0 / var(--scheduler-rest) 100% no-repeat,
+    color-mix(in srgb, currentColor 20%, transparent);
+}
 .scheduler-crew__left--low { background: linear-gradient(var(--scheduler-mark-warning), var(--scheduler-mark-warning)) 0 0 / var(--scheduler-left) 100% no-repeat, color-mix(in srgb, currentColor 20%, transparent); }
 .scheduler-crew__left--away { background: var(--scheduler-mark-error); }
 .scheduler-crew__hours { flex: none; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -6074,3 +6085,4 @@ html:has(.scheduler-page[data-takeover]) {
 
 .scheduler-card__rest-progress { position: relative; display: grid; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); }
 .scheduler-card__rest-progress > .scheduler-crew__rest { position: relative; inset: auto; inline-size: 100%; block-size: 4px; grid-row: 2; }
+.scheduler-card__rest-progress > .scheduler-crew__rest[data-split] { --scheduler-rest-gap: var(--card-surface, var(--rux-layer)); }

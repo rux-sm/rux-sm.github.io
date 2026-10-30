@@ -91,14 +91,15 @@
   /* HOW FAR A RESTING DRIVER IS TOWARD THE EIGHT HOURS: the continuous rest,
      or, for one in the sleeper whom samsara-now finds part way through a
      split, the earlier sleeper period and this one together where they come
-     to more, as `{ ms, earlier, now }`. A split's second period counts once
-     it reaches two hours, `SPLIT_MIN`, which the words say until it does. */
+     to more, as `{ ms, earlier, now }`. A split's second period counts only
+     once it reaches two hours, `SPLIT_MIN`, so until then the rest is shown
+     as it stands. */
   const SPLIT_MIN = 2 * HOUR;
   const restProgress = (d, at = Date.now()) => {
     const ms = restElapsed(d, at);
     const since = d?.duty === 'sleeper' && d.berth_since ? Date.parse(d.berth_since) : NaN;
     const now = Number.isFinite(since) && since <= at ? at - since : null;
-    if (now != null && d.split_ms > 0 && d.split_ms + now > (ms ?? 0)) return { ms: d.split_ms + now, earlier: d.split_ms, now };
+    if (now != null && now >= SPLIT_MIN && d.split_ms > 0 && d.split_ms + now > (ms ?? 0)) return { ms: d.split_ms + now, earlier: d.split_ms, now };
     return { ms, earlier: null, now: null };
   };
   const share = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 1000) / 10;
@@ -119,7 +120,7 @@
   // A rest's tooltip: what it is made of, against the eight hours.
   const restTitle = ({ ms, earlier, now }) => (earlier == null
     ? `${hours(ms)} continuous rest / 8:00 reference`
-    : `${hours(earlier)} earlier in the sleeper + ${hours(now)} now, ${hours(ms)} of a split rest / 8:00 reference${now < SPLIT_MIN ? '; this period counts once it reaches 2:00' : ''}`);
+    : `${hours(earlier)} earlier in the sleeper + ${hours(now)} now, ${hours(ms)} of a split rest / 8:00 reference`);
   const words = d => [DUTY[d.duty]?.word ?? 'Status unknown', restWords(d),
     d.left_ms != null ? `${hours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
   const short = name => {
@@ -248,6 +249,11 @@
       meter.setAttribute('aria-valuetext', `${restTitle(rest)}; check HOS clocks for availability`);
     }
     meter.style.setProperty('--scheduler-rest', `${ms == null ? 0 : share(ms, REST)}%`);
+    // Where a split's earlier period ends, for app.css's 1px gap between the two.
+    if (rest.earlier != null) {
+      meter.dataset.split = '';
+      meter.style.setProperty('--scheduler-rest-split', `${share(rest.earlier, REST)}%`);
+    }
     meter.title = ms == null ? 'Rest duration unknown' : restTitle(rest);
     return meter;
   }

@@ -159,6 +159,13 @@ p = parts({ historyFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps, { b1: ago(60) });
 expect('a path Samsara refuses is an empty one, and the bus still comes back',
   [a.buses[0].path, a.buses[0].engine], [[], 'on']);
+const parked = parts();
+parked.deps.vehicles = async () => [{ id: 'v104', name: '104' }];
+parked.deps.stats = async () => [{ id: 'v104', engineState: { time: ago(300), value: 'Off' }, gps: { time: ago(40), latitude: 26.3, longitude: -98.1, speedMilesPerHour: 0 } }];
+const quiet = await liveFor([{ id: 'b5', number: '104' }], DRIVERS, parked.deps);
+expect('an engine last seen off stays off when its tracker goes quiet, with no speed, place or heading',
+  [quiet.buses[0].engine, quiet.buses[0].engine_at, quiet.buses[0].mph, quiet.buses[0].place, quiet.buses[0].seen],
+  ['off', new Date(NOW - 300 * 60_000).toISOString(), null, null, new Date(NOW - 40 * 60_000).toISOString()]);
 const long = parts();
 long.deps.vehicles = async () => [{ id: 'v103', name: '103' }];
 const onLong = await liveFor([{ id: 'b4', number: '103' }], DRIVERS, long.deps);

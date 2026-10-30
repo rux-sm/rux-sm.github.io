@@ -263,6 +263,11 @@ export function faultOf(f: Faults | undefined): { fault: 'stop' | 'check' | null
 }
 
 const ENGINE: Record<string, 'on' | 'idle' | 'off'> = { On: 'on', Idle: 'idle', Off: 'off' }
+// The engine's state, while a reading is fresh, or off however old.
+const engineOf = (s: Stat | undefined, fresh: boolean) => {
+  const state = s?.engineState ? ENGINE[s.engineState.value] ?? null : null
+  return state && (fresh || state === 'off') ? state : null
+}
 const nameOf = (v: string | null | undefined) => String(v ?? '').trim().toLowerCase()
 
 export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths: Record<string, string> = {}): Promise<Answer> {
@@ -325,9 +330,12 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
         bus_id: bus.id,
         // Samsara stamps the engine's state when it changes, so an engine on
         // for an hour has an hour-old stamp; the state holds while the GPS is
-        // still reporting.
-        engine: s?.engineState && (engineFresh || gpsFresh) ? ENGINE[s.engineState.value] ?? null : null,
-        engine_at: s?.engineState && (engineFresh || gpsFresh) && Number.isFinite(engineAt) ? new Date(engineAt).toISOString() : null,
+        // still reporting. An engine last seen off stays off however old the
+        // readings: some trackers stop reporting while their bus is parked and
+        // wake with the ignition, so a quiet bus that was off is parked. Only
+        // an engine last seen running goes unknown when both readings are old.
+        engine: engineOf(s, engineFresh || gpsFresh),
+        engine_at: engineOf(s, engineFresh || gpsFresh) && Number.isFinite(engineAt) ? new Date(engineAt).toISOString() : null,
         mph: gpsFresh && typeof s!.gps!.speedMilesPerHour === 'number' ? Math.round(s!.gps!.speedMilesPerHour) : null,
         place: gpsFresh ? s!.gps!.reverseGeo?.formattedLocation ?? null : null,
         // Where the bus is, however old, so a bus parked for days still has a place on the map.

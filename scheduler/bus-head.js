@@ -5,18 +5,19 @@
    the top right, the type's drawing. An engine lamp is the number's
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
-   - In the week that holds today, for a bus Samsara answers for: a 38px
-     speed dial, a 270° arc filling from 0 to TOP_MPH with the speed in its
-     middle, green while moving and amber over SPEEDING; Idle over how long,
-     amber past IDLE_MS, or Off in its middle while the bus stands, and a
-     dashed track and a dash with no signal. Under it fuel and DEF as level
-     bars, F and D, each with a tick at its low mark; a bus that reports no
-     DEF draws no D bar. With no signal the dial and bars fade. Where the
-     bus is, and when it was last seen, are the number's toggletip's.
+   - In the week that holds today, for a bus Samsara answers for: a 40px
+     open dial, a 270° arc filling from 0 to TOP_MPH with the speed and mph
+     in its middle, green while moving and amber over SPEEDING; Idle over
+     how long, amber past IDLE_MS, or Off in its middle while the bus
+     stands, and a dashed track and a dash with no signal. Under it the
+     fuel: a pump and its percent over a bar filled to it. DEF is drawn only
+     while it is low, since a normal DEF needs nothing of the office, as a
+     tag in the dial's open foot, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
+     is, and when it was last seen, are the number's toggletip's.
    - In any other week, or for a bus Samsara does not answer for: its seats
      and its inspection expiry, in the warning colour within WARN_DAYS.
-   A level is grey while normal, the warning colour when low and the error
-   colour when critical, and its letter, length and title say it too.
+   The fuel bar is green while normal, the warning colour when low and the
+   error colour when critical, and its percent and title say it too.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
    is the bus's row, `live` its bus of samsara-now's answer or null, and
@@ -55,8 +56,8 @@
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
   const DAY = 864e5;
-  // The dial: 38px across, its arc 2.6px, three quarters of a turn.
-  const DIAL = 38, STROKE = 2.6, R = DIAL / 2 - STROKE / 2 - 0.5, TURN = 0.75;
+  // The dial: 40px across, its arc 2.6px, three quarters of a turn.
+  const DIAL = 40, STROKE = 2.6, R = DIAL / 2 - STROKE / 2 - 0.5, TURN = 0.75;
   const ARC = 2 * Math.PI * R * TURN;
 
   const levelOf = (pct, tank) => (pct == null ? null : pct <= tank.critical ? 'critical' : pct <= tank.low ? 'low' : 'normal');
@@ -107,23 +108,30 @@
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
-    if (state.under) speed.appendChild(el('span', 'scheduler-row-head__under', state.under));
+    const under = figure ? 'mph' : state.under;
+    if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
     box.append(svg, speed);
     return box;
   }
 
-  // One tank: its letter, then a 3px bar filled to its share with a tick at its low mark.
+  // One tank. Fuel: a pump and its percent, over a bar filled to its share.
+  // DEF, drawn only while low: its name and percent as a tag, no bar.
   function level(pct, tank) {
     const lv = levelOf(pct, tank);
     const g = el('span', 'scheduler-row-head__level');
     g.dataset.level = lv;
+    g.dataset.tank = tank.letter;
     g.style.setProperty('--scheduler-tank', `${pct}%`);
-    g.style.setProperty('--scheduler-tank-low', `${tank.low}%`);
     const words = `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
     g.title = words;
-    g.append(el('span', 'scheduler-row-head__letter', tank.letter), el('span', 'scheduler-row-head__tank'));
+    const reading = el('span', 'scheduler-row-head__reading');
+    if (tank === FUEL) reading.appendChild(svgUse('#m-local_gas_station-fill', '12', '0 0 32 32'));
+    else reading.appendChild(el('span', null, tank.word));
+    reading.appendChild(el('span', 'scheduler-row-head__pct', `${pct}%`));
+    g.appendChild(reading);
+    if (tank === FUEL) g.appendChild(el('span', 'scheduler-row-head__tank'));
     return g;
   }
 
@@ -180,7 +188,7 @@
       const gauges = el('div', 'scheduler-row-head__gauges');
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null) gauges.appendChild(level(shown.fuel, FUEL));
-      if (shown.def != null) gauges.appendChild(level(shown.def, DEF));
+      if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
       body.appendChild(gauges);
     } else {
       if (bus.capacity) body.appendChild(el('span', 'scheduler-row-head__line', `${bus.capacity} pax`));

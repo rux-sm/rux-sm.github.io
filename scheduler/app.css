@@ -369,7 +369,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
-.scheduler-row-head__gauges { display: flex; flex-direction: column; gap: var(--rux-spacing-02); }
+.scheduler-row-head__gauges { display: flex; flex-direction: column; gap: 6px; }
 /* The bus's equipment under the body, two even slots, the sleeper's and the
    lift's, each icon centred in its half. Presses go through to the number,
    whose tip and title name them. */
@@ -383,8 +383,10 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__equip svg { display: block; }
 /* The dial: a 270° arc, 2.6px with round ends, the rounded ends these
-   instruments' alone while Carbon's controls stay square. */
-.scheduler-row-head__dial { position: relative; align-self: center; inline-size: 38px; block-size: 38px; }
+   instruments' alone while Carbon's controls stay square. Its middle holds
+   the reading in bold over its unit or how long, so it reads as a gauge's
+   face. */
+.scheduler-row-head__dial { position: relative; align-self: center; inline-size: 40px; block-size: 40px; }
 .scheduler-row-head__dial svg { position: absolute; inset: 0; fill: none; stroke-width: 2.6; stroke-linecap: round; }
 .scheduler-row-head__track { stroke: var(--rux-border-subtle-01); }
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__track { stroke: var(--scheduler-road-scan); }
@@ -394,50 +396,59 @@ button.scheduler-row-head__num::after {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding-block-start: 2px;
   font-size: var(--rux-heading-compact-01-font-size);
   font-weight: 600;
+  line-height: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--rux-text-primary);
 }
-.scheduler-row-head__speed--word { font-size: 10px; font-weight: 400; color: var(--rux-text-secondary); }
-.scheduler-row-head__speed--word { flex-direction: column; line-height: 10px; }
-.scheduler-row-head__under { font-size: 9px; }
-.scheduler-row-head__dial--warning .scheduler-row-head__speed { color: var(--scheduler-head-low); }
-/* Fuel and DEF: the letter, then a 3px bar filled to the tank's share, with
-   a tick at the low mark. */
+.scheduler-row-head__speed--word { font-size: 12px; line-height: 12px; }
+.scheduler-row-head__under { font-size: 9px; font-weight: 400; line-height: 10px; color: var(--rux-text-secondary); }
+.scheduler-row-head__dial--warning :is(.scheduler-row-head__speed, .scheduler-row-head__under) { color: var(--scheduler-head-low); }
+.scheduler-row-head__dial--quiet .scheduler-row-head__speed--word:not(:has(.scheduler-row-head__under)) { color: var(--rux-text-secondary); }
+/* Fuel: a pump and its percent, over a 4px bar filled to the tank's share,
+   green while normal. DEF, shown only while low, is its line alone. */
 .scheduler-row-head__level {
-  --scheduler-tank-ink: var(--scheduler-head-normal);
+  --scheduler-tank-ink: var(--scheduler-head-moving);
   display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-02);
-  font-size: 10px;
-  line-height: 11px;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  line-height: 12px;
 }
 .scheduler-row-head__level[data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
 .scheduler-row-head__level[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-head-critical); }
-.scheduler-row-head__letter { flex: none; inline-size: 7px; color: var(--rux-text-secondary); }
-.scheduler-row-head__level:not([data-level="normal"]) > .scheduler-row-head__letter { color: var(--scheduler-tank-ink); font-weight: 600; }
-.scheduler-row-head__tank {
-  position: relative;
-  flex: 1 1 auto;
-  block-size: 3px;
-  border-radius: 1.5px;
-  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), color-mix(in srgb, var(--scheduler-tank-ink) 28%, transparent) 0);
-}
-.scheduler-row-head__tank::after {
-  content: '';
+.scheduler-row-head__reading { display: flex; align-items: center; gap: 3px; color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
+.scheduler-row-head__reading svg { flex: none; color: var(--rux-text-secondary); }
+.scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: 600; }
+/* A low DEF is a tag across the dial's open foot, under the reading's unit
+   and over the gap before the fuel, on the head's own surface so the arc's
+   ends stop at its edges, and takes no height of its own. */
+.scheduler-row-head__gauges { position: relative; }
+.scheduler-row-head__level[data-tank="D"] {
   position: absolute;
-  inset-block-start: -2px;
-  inset-inline-start: var(--scheduler-tank-low);
-  inline-size: 1px;
-  block-size: 7px;
-  background: var(--rux-text-secondary);
+  inset-block-start: 34px;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  padding-inline: 2px;
+  background: var(--rux-layer);
+  font-size: 9px;
+  line-height: 11px;
+  white-space: nowrap;
 }
-/* With no signal the dial and levels fade to their last reading. */
-.scheduler-row-head[data-signal-lost] .scheduler-row-head__gauges { opacity: .45; }
+.scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
+.scheduler-row-head__tank {
+  block-size: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
+}
+/* With no signal the dial and fuel fade to their last reading. */
+/* A low tank keeps its strength, since the office still has to act on it. */
+.scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }

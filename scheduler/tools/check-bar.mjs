@@ -439,19 +439,19 @@ const busHead = (live, week = true, bus = { id: 'b1', capacity: 52 }) => {
   BusHead.draw(head, bus, live && { bus_id: 'b1', drivers: [], fault: null, faults: [], seen: new Date().toISOString(), ...live }, { week });
   return head;
 };
-const levels = h => h.querySelectorAll('.scheduler-row-head__level').map(g => [text(g, '.scheduler-row-head__letter'), g.dataset.level]);
+const levels = h => h.querySelectorAll('.scheduler-row-head__level').map(g => [g.dataset.tank, g.dataset.level]);
 const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.classes().find(c => /__mark--/.test(c)).split('--')[1]);
 const line = h => text(h, '.scheduler-row-head__line');
 const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__arc')];
 const ago = min => new Date(Date.now() - min * 60e3).toISOString();
-expect('moving: the speed in a green dial, the two levels, no line under them, no marks',
-  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), line(h), marks(h)]; })(),
-  [['64', 'moving', true], [['F', 'normal'], ['D', 'normal']], null, []]);
-expect('fuel is low at 25% and critical at 10%, DEF at 15% and 5%',
-  [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' })).map(l => l[1])),
-  [['low', 'low'], ['critical', 'critical'], ['normal', 'normal']]);
-expect('a bus that reports no DEF draws no D level', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
-expect('over 75 mph the dial and its arc turn amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79', 'warning', true]);
+expect('moving: the speed over mph in a green dial, the fuel alone while DEF is normal, no line under them, no marks',
+  (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__pct'), line(h), marks(h)]; })(),
+  [['64mph', 'moving', true], [['F', 'normal']], '72%', null, []]);
+expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
+  [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
+  [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
+expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
+expect('over 75 mph the dial and its arc turn amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
 expect('standing: Idle over how long, amber past 30 minutes, or Off; no arc; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
     .map(([h]) => [...dial(h), line(h)]),

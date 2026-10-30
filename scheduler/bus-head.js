@@ -1,17 +1,18 @@
 /* ==========================================================================
    Rux Scheduler — BUS HEAD, what the bus column says of each bus
    --------------------------------------------------------------------------
-   The head of a bus's row on the board keeps its number top left and, at
-   the top right, the type's drawing. An engine lamp is the number's
+   The head of a bus's row on the board keeps its number centred at its
+   top; the type is the number's toggletip's to show. An engine lamp is the number's
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - In the week that holds today, for a bus Samsara answers for, its
      state in a 38px block under the number, so the fuel under it stands
-     at one height down the column: while moving, an open dial, a 270° arc
-     filling from 0 to TOP_MPH with the speed over mph in its middle, green
-     and amber over SPEEDING; while standing, words alone, Idle over how
-     long, amber past IDLE_MS, or Off, and with no signal a dash over how
-     long since the bus was seen. Under it
+     at one height down the column: while the engine runs, an open dial,
+     moving a 270° arc filling from 0 to TOP_MPH with the speed over mph in
+     its middle, green and amber over SPEEDING, idling its empty track with
+     Idle over how long in its middle, amber past IDLE_MS; with the engine
+     off, words alone, Off, and with no signal a dash over how long since
+     the bus was seen. Under it
      the fuel: a pump and its percent over a bar filled to it. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
@@ -72,6 +73,8 @@
   const idleFor = live => (live?.engine === 'idle' && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
   const noSignal = live => live && live.engine == null;
   const moving = live => live?.mph > 0;
+  // The engine running, moving or not: what the dial's ring stands for.
+  const running = live => moving(live) || live?.engine === 'idle' || live?.engine === 'on';
 
   // What the bus is doing, as the dial says it; the place is the tip's next line.
   function stateOf(live) {
@@ -93,21 +96,25 @@
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The state's block: while moving the dial, its track, the arc filled to
-  // the speed's share and the speed in its middle; standing, the words alone.
+  // The state's block: while the engine runs the dial, its track, and while
+  // moving the arc filled to the speed's share; the reading in its middle.
+  // With the engine off, or no signal, the words alone.
   function dial(live, state) {
-    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${moving(live) ? '' : ' scheduler-row-head__dial--still'}`);
+    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? '' : ' scheduler-row-head__dial--still'}`);
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', state.words);
     box.title = state.words;
-    if (moving(live)) {
+    if (running(live)) {
       const svg = svgEl('svg', { width: DIAL, height: DIAL, viewBox: `0 0 ${DIAL} ${DIAL}`, 'aria-hidden': 'true' });
       const ring = cls => svgEl('circle', { class: cls, cx: DIAL / 2, cy: DIAL / 2, r: R, transform: `rotate(135 ${DIAL / 2} ${DIAL / 2})` });
       const track = ring('scheduler-row-head__track');
       track.setAttribute('stroke-dasharray', `${ARC} 999`);
-      const fill = ring('scheduler-row-head__arc');
-      fill.setAttribute('stroke-dasharray', `${ARC * Math.min(1, live.mph / TOP_MPH)} 999`);
-      svg.append(track, fill);
+      svg.appendChild(track);
+      if (moving(live)) {
+        const fill = ring('scheduler-row-head__arc');
+        fill.setAttribute('stroke-dasharray', `${ARC * Math.min(1, live.mph / TOP_MPH)} 999`);
+        svg.appendChild(fill);
+      }
       box.appendChild(svg);
     }
     const figure = /^\d+$/.test(state.dial);

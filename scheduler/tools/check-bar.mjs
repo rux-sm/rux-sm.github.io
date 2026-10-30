@@ -462,10 +462,10 @@ expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
 expect('no signal: a dash over how long since it was seen, the gauges faded, and that said on the title',
   (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').title]; })(),
   ['–3h', true, 'No signal, last seen 3h ago']);
-expect('only a moving bus draws the dial\'s ring; a standing one, or one with no signal, is its words alone',
+expect('a bus with its engine running draws the dial\'s ring, moving or idling; one off, or with no signal, is its words alone',
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]
     .map(l => has(busHead(l), '.scheduler-row-head__track')),
-  [true, false, false, false]);
+  [true, true, false, false]);
 expect('another week, or no answer for the bus: the seats and the inspection, amber within 45 days',
   [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,
     line(busHead(null, true)),

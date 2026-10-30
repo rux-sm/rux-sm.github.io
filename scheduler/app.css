@@ -247,7 +247,7 @@
 .scheduler-row-head__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--rux-spacing-02);
   min-inline-size: 0;
 }
@@ -337,8 +337,7 @@ button.scheduler-row-head__num::after {
    engine lamp is not drawn here: it leads its line in the number's tip. */
 .scheduler-row-head__kit {
   /* Above the number's click layer, so the out-of-service mark keeps its
-     hover label; the type lets a press through to the number, which opens
-     the tip that names it. */
+     hover label. */
   position: relative;
   pointer-events: none;
   display: flex;
@@ -385,9 +384,11 @@ button.scheduler-row-head__num::after {
 /* The state's block, 38px tall so the fuel under it stands at one height
    down the column. While moving it is the dial: a 270° arc, 2.6px with
    round ends, the rounded ends these instruments' alone while Carbon's
-   controls stay square, the speed in bold over mph in its middle. Standing,
-   it is the words alone at its top, the state in bold over how long. */
-.scheduler-row-head__dial { position: relative; align-self: flex-start; inline-size: 38px; block-size: 38px; }
+   controls stay square, the reading in bold over mph or how long in its
+   middle; it is drawn while the engine runs, moving or idling. With the
+   engine off, or no signal, it is the words alone at its top. Both stand
+   centred under the centred number. */
+.scheduler-row-head__dial { position: relative; align-self: center; inline-size: 38px; block-size: 38px; }
 .scheduler-row-head__dial svg { position: absolute; inset: 0; fill: none; stroke-width: 2.6; stroke-linecap: round; }
 .scheduler-row-head__track { stroke: var(--rux-border-subtle-01); }
 .scheduler-row-head__arc { stroke: var(--scheduler-head-moving); }
@@ -408,7 +409,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; color: var(--rux-text-secondary); }
 .scheduler-row-head__dial--still { inline-size: 100%; }
-.scheduler-row-head__dial--still .scheduler-row-head__speed { align-items: flex-start; justify-content: flex-start; padding-block-start: 0; line-height: 16px; }
+.scheduler-row-head__dial--still .scheduler-row-head__speed { justify-content: flex-start; padding-block-start: 0; line-height: 16px; }
 /* Off and no signal are quiet; an idle bus is in the primary ink, and in
    the warning colour once it has idled too long or the bus is speeding. */
 .scheduler-row-head__dial--still.scheduler-row-head__dial--quiet .scheduler-row-head__speed:not(:has(.scheduler-row-head__under)) { color: var(--rux-text-secondary); }
@@ -430,16 +431,16 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__reading svg { flex: none; color: var(--rux-text-secondary); }
 .scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: 600; }
 /* A low DEF is a tag at the foot of the state's block, on the head's own
-   surface, and takes no height of its own: under the words while the bus
-   stands, and across the dial's open foot while it moves, where the arc's
+   surface, and takes no height of its own: under the words while the
+   engine is off, and across the dial's open foot while it runs, where the arc's
    ends stop at its edges. */
 .scheduler-row-head__gauges { position: relative; }
 .scheduler-row-head__level[data-tank="D"] {
   position: absolute;
   inset-block-start: 28px;
-  inset-inline-start: 0;
+  inset-inline-start: 50%;
+  translate: -50% 0;
   padding-inline: 2px;
-  margin-inline-start: -2px;
   background: var(--rux-layer);
   font-size: 9px;
   line-height: 11px;
@@ -447,9 +448,6 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__dial:not(.scheduler-row-head__dial--still) ~ .scheduler-row-head__level[data-tank="D"] {
   inset-block-start: 33px;
-  inset-inline-start: 19px;
-  margin-inline-start: 0;
-  translate: -50% 0;
 }
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
 .scheduler-row-head__tank {
@@ -465,7 +463,7 @@ button.scheduler-row-head__num::after {
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
 /* Its 2rem column holds a number at the label size, not the full board's 16px. */
 .scheduler-page[data-board="compact"] .scheduler-row-head__num { font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); }
-.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__type, .scheduler-row-head__equip) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__equip) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and

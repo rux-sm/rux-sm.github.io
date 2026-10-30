@@ -1052,10 +1052,9 @@
         ].filter(Boolean).join(' · ');
       }
 
-      /* The marks at the top right: the type's drawing, so a head reads on
-         its own when the band has scrolled away, and out of service, a state
-         that changes what the row can take this week. The lift and sleeper
-         are at the head's foot. Each symbol keeps its own viewBox. */
+      /* The mark beside the number: out of service, a state that changes
+         what the row can take this week. The type is the number's tip's to
+         show, and the lift and sleeper are at the head's foot. */
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
@@ -1065,13 +1064,6 @@
         span.appendChild(svgUse(href, '16', box));
         kit.appendChild(span);
       };
-
-      if (r.bus) {
-        const typeIcon = window.SchedulerVehicles?.iconOf(r.bus.type);
-        const typeName = window.SchedulerVehicles?.typeOf(r.bus.type);
-        const typeSaid = typeName ? (typeName.label || typeName.name) : (String(r.bus.type || '').trim() || 'No type');
-        if (typeIcon) flag(typeIcon, '0 0 32 32', typeSaid, 'scheduler-row-head__type');
-      }
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {

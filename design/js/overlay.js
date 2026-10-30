@@ -238,6 +238,25 @@
       record => record.dismissOn?.outside !== false);
   }, true);
 
+  // A PRESS IN A FRAME IS A PRESS OUTSIDE TOO. A frame on the page -- a form,
+  // a stored file or a tool shown in a side panel -- is a document of its own,
+  // so its presses never reach the listener above. What does reach this page
+  // is the focus leaving for it: the window blurs and the frame becomes the
+  // active element, read here once the move has settled. That is dismissed
+  // as a press on the frame would be. Focus leaving for another window or tab
+  // leaves no frame active, so a surface stays open across a switch away.
+  window.addEventListener('blur', () => {
+    if (!stack.length) return;
+    setTimeout(() => {
+      const frame = document.activeElement;
+      if (!frame?.matches?.('iframe, frame, object, embed')) return;
+      dismissAbove(
+        topmostContaining(frame),
+        { restoreFocus: false },
+        record => record.dismissOn?.outside !== false);
+    });
+  });
+
   // One Escape policy for everything: dismiss the topmost surface, consume the
   // key, go no further. Without the stack this is where components fight.
   document.addEventListener('keydown', event => {

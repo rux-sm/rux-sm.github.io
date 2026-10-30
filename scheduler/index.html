@@ -814,10 +814,26 @@
       <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">Time at the yard</div>
     </li>
-    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="sunday">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"></div>
-      <div class="rux--menu-item__label">Start week on Sunday</div>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <!-- The week's first day; Today starts each week on today's weekday. -->
+    <li class="rux--menu-item-group" role="none">
+      <ul role="group" aria-label="Week starts">
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="true" tabindex="0" data-week-start="monday">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Week starts: Monday</div>
+        </li>
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="0" data-week-start="sunday">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Week starts: Sunday</div>
+        </li>
+        <li class="rux--menu-item" role="menuitemradio" aria-checked="false" tabindex="0" data-week-start="today">
+          <div class="rux--menu-item__selection-icon"></div>
+          <div class="rux--menu-item__icon"></div>
+          <div class="rux--menu-item__label">Week starts: Today</div>
+        </li>
+      </ul>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
     <!-- How much a bus out on its trip moves on its bar, kept with the view,

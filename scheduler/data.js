@@ -128,10 +128,15 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-  // `mondayOf` returns the week's first day: Monday, or Sunday when
-  // `weekStartsSunday` is set. `getDay()` is 0 for Sunday.
-  let weekStartsSunday = false;
-  const mondayOf = d => addDays(d, -(weekStartsSunday ? d.getDay() : (d.getDay() + 6) % 7));
+  /* `firstDayOf` returns the first day of the week a date falls in, as
+     `weekStart` sets it: Monday, Sunday, or `today`, a week that starts on
+     today's weekday, so the board opens with today in its first column and
+     every week from it starts on the same weekday. `getDay()` is 0 for Sunday. */
+  let weekStart = 'monday';
+  const WEEK_STARTS = ['monday', 'sunday', 'today'];
+  const firstDayOf = d => addDays(d, -(weekStart === 'sunday' ? d.getDay()
+    : weekStart === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
+      : (d.getDay() + 6) % 7));
   /* How many days the board shows from its first: two weeks when the view
      option asks for them, on a screen md or wider, and one week below md,
      where fourteen days cannot fit and the swipe needs a week to move by. The
@@ -885,7 +890,7 @@
       standing: (trip, key) => standingFor(trip, key, driversById, busesById),
       saving: id => !!heldMoves.get(String(id))?.saving,
       itineraryOf: legItinerary,
-      staffedUntil: iso(addDays(mondayOf(new Date()), 14)),
+      staffedUntil: iso(addDays(firstDayOf(new Date()), 14)),
     });
     barFacts.set(bar, facts);
     return bar;
@@ -6742,7 +6747,7 @@
   let createBusId = null;
 
   function openCreate(opts = {}) {
-    const start = opts.startDate || iso(shown && cursor ? cursor : mondayOf(new Date()));
+    const start = opts.startDate || iso(shown && cursor ? cursor : firstDayOf(new Date()));
     createBusId = opts.busId || null;
     // Nothing on the board is the new trip, so no other trip stays picked
     // with its card floating beside the editor.
@@ -11111,7 +11116,7 @@
     const { ref, trip } = panelArgs || {};
     if (!ref || !trip) return;
     const from = legByKey(trip, refLegKey(ref))?.from ?? trip.start_date;
-    if (from) cursor = mondayOf(parseISO(from));
+    if (from) cursor = firstDayOf(parseISO(from));
     await show();
     const bar = findBar(ref);
     if (bar) { selectBar(bar); openPanel(bar); }
@@ -11511,35 +11516,41 @@
      calm, every light held still, or off, the edge alone. It starts calm
      for a computer set to reduce motion. */
   const MOTIONS = ['full', 'calm', 'off'];
-  const view = { client: true, contact: true, time: true, update: true, drivers: true, sunday: false, twoWeeks: false, yard: false, fill: false,
-    motion: reducedMotion.matches ? 'calm' : 'full' };
+  /* `weekStart` is the week's first day, one of WEEK_STARTS. `sunday` is the
+     key it replaced, still written beside it so a tab running the older
+     script reads a Sunday start, and read when `weekStart` was never saved. */
+  const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
+    twoWeeks: false, yard: false, fill: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'sunday', 'twoWeeks', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'twoWeeks', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
+    view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
-  // Set before the first read for the reason Sunday is: it sizes the range.
+  // Set before the first read for the reason the week start is: it sizes the range.
   twoWeeks = view.twoWeeks;
-  // Set before `cursor` is first computed below, because `mondayOf` reads it
-  // and the first week drawn must honour a saved Sunday start.
-  weekStartsSunday = view.sunday;
+  // Set before `cursor` is first computed below, because `firstDayOf` reads it
+  // and the first week drawn must honour a saved start.
+  weekStart = view.weekStart;
 
   const viewMenu = document.getElementById('scheduler-view-menu');
   const viewTrigger = document.getElementById('scheduler-view-trigger');
 
-  // The week picker starts its weeks where the board does and marks the
-  // days the board shows, one week or two, from the week's first day.
+  /* The week picker starts its calendar's rows on Sunday for a Sunday start
+     and on Monday otherwise, and marks the days the board shows, one week or
+     two, from the week's first day, which on a Today start runs across rows. */
   function dressWeekPicker() {
     const picker = document.getElementById('scheduler-week-picker');
     if (!picker) return;
-    picker.dataset.ruxFirstDay = weekStartsSunday ? '0' : '1';
+    picker.dataset.ruxFirstDay = weekStart === 'sunday' ? '0' : '1';
     picker.dataset.ruxSpan = twoWeeks ? '14' : '7';
   }
 
   function applyView() {
-    weekStartsSunday = view.sunday;
+    weekStart = view.weekStart;
+    view.sunday = weekStart === 'sunday';
     twoWeeks = view.twoWeeks;
     dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
@@ -11555,9 +11566,10 @@
     placeBarOpen();
     markTripBars();
     schEl.dataset.motion = view.motion;
-    for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"][data-motion]') || []) {
+    for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"]') || []) {
       const key = item.dataset.row || item.dataset.view;
-      const on = item.dataset.motion ? view.motion === item.dataset.motion : !!view[key];
+      const on = item.dataset.motion ? view.motion === item.dataset.motion
+        : item.dataset.weekStart ? view.weekStart === item.dataset.weekStart : !!view[key];
       item.setAttribute('aria-checked', String(on));
       const slot = item.querySelector('.rux--menu-item__selection-icon');
       if (slot) { if (on) slot.replaceChildren(svgUse('#m-check', '16', '0 0 20 20')); else slot.replaceChildren(); }
@@ -11588,15 +11600,27 @@
   viewMenu?.addEventListener('click', e => {
     const motion = e.target.closest('[role="menuitemradio"][data-motion]');
     if (motion) { view.motion = motion.dataset.motion; applyView(); return; }
+    /* Changing the first day re-asks the server for a different range. The
+       week that held today keeps it, so Today lands on today rather than on
+       the start of the week before; any other week keeps its first day. */
+    const start = e.target.closest('[role="menuitemradio"][data-week-start]');
+    if (start) {
+      if (start.dataset.weekStart === view.weekStart) return;
+      const now = new Date();
+      const hadToday = iso(cursor) <= iso(now) && iso(now) <= iso(lastShown(cursor));
+      view.weekStart = start.dataset.weekStart;
+      applyView();
+      cursor = firstDayOf(hadToday ? now : cursor);
+      show();
+      return;
+    }
     const item = e.target.closest('[role="menuitemcheckbox"]');
     if (!item) return;
     const key = item.dataset.row || item.dataset.view;
     if (!(key in view)) return;
     view[key] = !view[key];
     applyView();
-    // Changing the first day re-asks the server for a different range; the
-    // row toggles are drawing only and need no fetch.
-    if (key === 'sunday') { cursor = mondayOf(cursor); show(); }
+    // The row toggles are drawing only and need no fetch.
     // Two weeks reads a longer range from the same first day, and asks the
     // board for more room, which may close a panel.
     if (key === 'twoWeeks') { show(); placeRoom(); }
@@ -16452,7 +16476,7 @@
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
     toast(null);
-    cursor = mondayOf(new Date());
+    cursor = firstDayOf(new Date());
     show();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
@@ -16910,7 +16934,7 @@
   });
 
   // -- the week, and moving between them ------------------------------------
-  let cursor = mondayOf(new Date());
+  let cursor = firstDayOf(new Date());
   let shown = null;   // the week actually on screen, which is not `cursor` mid-fetch
   // The read in flight, and whether anything asked for another while it ran.
   let reading = null;
@@ -17341,14 +17365,14 @@
     dressWeekPicker();
     rangeEl.setAttribute('data-rux-open', root.id);
 
-    // A pick moves to the week containing the picked day, which `mondayOf`
-    // finds with the Sunday-start preference applied.
+    // A pick moves to the week containing the picked day, which `firstDayOf`
+    // finds from the week-start preference.
     weekInput.addEventListener('change', () => {
       if (valueSetBySelf) return;
       const day = isoOrNull(weekInput.value);
       if (!day) return;
       const picked = parseISO(day);
-      const next = mondayOf(picked);
+      const next = firstDayOf(picked);
       if (shown && iso(next) === iso(shown)) return;   // same week, nothing to redraw
       toast(null);
       cursor = next;
@@ -17742,7 +17766,7 @@
      the trip's first bar on the week. */
   async function goToTrip(id, day, { open = true, leg = null } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
-    cursor = mondayOf(parseISO(day));
+    cursor = firstDayOf(parseISO(day));
     await show();
     const bars = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
     const bar = (leg && bars.find(b => barOnLeg(b, leg))) || bars[0];
@@ -17807,7 +17831,7 @@
   // A step is everything on the board, so two weeks shown move on to the two after them.
   stepPrev?.addEventListener('click', () => go(-daysShown()));
   stepNext?.addEventListener('click', () => go(daysShown()));
-  document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = mondayOf(new Date()); show(); });
+  document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); cursor = firstDayOf(new Date()); show(); });
 
   /* The toolbar's row of controls scrolls sideways where it has no room for
      them. A mouse has no swipe, so a wheel turned over the row moves it

@@ -1373,15 +1373,18 @@
      that reach the days on screen, a part day included. A drag sets the lanes
      of the row it is over, so nothing here runs under a bar in hand. A bar
      off screen in a lane below that is marked `data-folded`, which app.css
-     stands in the first lane, so the board ends at its last row. */
-  function fitLanesInView() {
+     stands in the first lane, so the board ends at its last row. While a
+     scroll runs, `grow` keeps every row at least as tall as it is, so a tall
+     row leaving the screen does not pull the board up mid-swipe; the rows
+     shrink once it stops, in `settleRows`. */
+  function fitLanesInView({ grow = false } = {}) {
     const w = dayWidth();
     if (!stripStart || !w || barsInHand) return;
     const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
     const first = schEl.scrollLeft / w;
     const last = (schEl.scrollLeft + schEl.clientWidth - head) / w;
     for (const track of gridEl.querySelectorAll('.scheduler-track')) {
-      let lanes = 1;
+      let lanes = grow ? Number(track.style.getPropertyValue('--scheduler-lanes')) || 1 : 1;
       const items = [...track.querySelectorAll(':scope > .scheduler-bar, :scope > .scheduler-yard')].map(item => {
         // A yard card stands on the day a bar starts, with no span of its own.
         const yard = item.classList.contains('scheduler-yard');
@@ -18017,7 +18020,7 @@
   function followScroll() {
     const w = dayWidth();
     if (!w || !stripStart) return;
-    fitLanesInView();
+    fitLanesInView({ grow: true });
     const day = addDays(stripStart, Math.max(0, Math.min(STRIP_DAYS - 7, Math.round(schEl.scrollLeft / w))));
     if (iso(day) === iso(cursor)) return;
     cursor = day;
@@ -18039,8 +18042,49 @@
     endStripHold();
     setRange(cursor, lastShown(cursor));
     drawRoster();
-    if (!stripRoomy()) show();
-    else if (liveHeld) liveRefresh();
+    const roomy = stripRoomy();
+    settleRows(() => { if (roomy) fitLanesInView(); else return show(); });
+    if (roomy && liveHeld) liveRefresh();
+  }
+  /* Fits the rows to the trips in view once a scroll stops. The board is held
+     at its height while `fit` shrinks the rows or draws the strip again, which
+     waits on a read where the held week does not cover it, so the browser does
+     not jump it up to the new foot; it glides there instead, where it was
+     scrolled past it, and is let go once it arrives. */
+  let settling = 0;
+  async function settleRows(fit) {
+    const turn = ++settling;
+    const held = gridEl.offsetHeight;
+    // Held, its rows stay at the top rather than stretching to the height held.
+    gridEl.style.minBlockSize = `${held}px`;
+    gridEl.style.alignContent = 'start';
+    // Only the latest hold is let go, so an earlier glide's end never drops a later one.
+    const release = () => {
+      if (turn !== settling) return;
+      gridEl.style.removeProperty('min-block-size');
+      gridEl.style.removeProperty('align-content');
+    };
+    const footOf = () => {
+      const top = gridEl.getBoundingClientRect().top;
+      return Math.max(0, ...[...gridEl.querySelectorAll('.scheduler-track')].map(t => t.getBoundingClientRect().bottom - top));
+    };
+    // A draw from what is held happens at once; only a board left as it was waits for the read's.
+    const pending = fit();
+    let foot = footOf();
+    if (pending && foot >= held) {
+      try { await pending; } catch { /* the read says so itself; the board is let go below */ }
+      if (turn !== settling) return;
+      foot = footOf();
+    }
+    const end = Math.max(0, schEl.scrollHeight - Math.max(0, held - foot) - schEl.clientHeight);
+    if (!foot || schEl.scrollTop <= end) { release(); return; }
+    /* Let go once the glide arrives, and not at the end of the sideways scroll
+       still queued; a browser with no `scrollend`, or a glide a person's own
+       scroll took over, lets go once it has had its time. */
+    const arrived = () => { if (Math.abs(schEl.scrollTop - end) < 1) { schEl.removeEventListener('scrollend', arrived); release(); } };
+    schEl.addEventListener('scrollend', arrived);
+    setTimeout(() => { schEl.removeEventListener('scrollend', arrived); release(); }, 1000);
+    schEl.scrollTo({ top: end, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }
   /* A press that moves the week while a strip is scrolling stops the scroll
      where it is first, or the scroll would carry the week in view on past the

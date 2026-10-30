@@ -79,7 +79,7 @@ different phone or email, and a pickup or drop-off no location holds. Nothing
 is added to a list unless ticked, and the trip is saved either way.
 
 On the compact board a swipe slides one week of trip cells under fixed date and bus headers; a week not yet loaded shows a loading mark after 200 ms, slides in when it lands, and a failed load keeps the current week and offers a retry.
-From md up, the View menu's Scroll continuously makes the board a strip of five weeks that scrolls sideways and comes to rest on a day's edge, the week in view at its left, each row as tall as its trips stack in view; once a scroll stops within a week of either end, `drawBoard` in `data.js` draws the strip again around that week from what the last read holds.
+From md up, the View menu's Scroll continuously makes the board a strip of five weeks that scrolls sideways and comes to rest on a day's edge, the week in view at its left, each row as tall as its trips stack in view, growing while a scroll runs and shrinking once it stops, with the board gliding up to its new foot; once a scroll stops within a week of either end, `drawBoard` in `data.js` draws the strip again around that week from what the last read holds.
 
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates, and the rules the formulas follow such as

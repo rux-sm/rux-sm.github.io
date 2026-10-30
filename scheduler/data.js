@@ -17307,7 +17307,20 @@
      often than it is edited and it is the table of customers' own details. */
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
-    'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses'];
+    'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses',
+    'trip_documents', 'trip_prep', 'trip_legs', 'trip_routes', 'trip_contacts'];
+
+  /* The to-do list and Departures hear their changes on this channel too,
+     rather than each opening one of its own: every change is handed to them
+     as it arrives, and `{ full: true }` says the channel joined again and may
+     have missed some. */
+  const liveListeners = [];
+  window.SchedulerBoardLive = { listen: fn => { liveListeners.push(fn); } };
+  function tellListeners(change) {
+    for (const fn of liveListeners) {
+      try { fn(change); } catch (e) { console.error(e); }
+    }
+  }
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;
   // What live changes have asked for: a full read, the trips to read again,
@@ -17317,7 +17330,8 @@
   const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
   const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings' };
   // The tables embedded in a trip whose rows carry `trip_id`.
-  const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines'];
+  const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines',
+    'trip_documents', 'trip_contacts', 'trip_legs'];
 
   /* Which held trip each embedded row and crew row belongs to, by the row's
      id, and each assignment's trip, built once for each payload. */
@@ -17329,6 +17343,7 @@
       const id = String(trip.id);
       trips.add(id);
       for (const table of TRIP_ROWS) for (const row of trip[table] || []) rows.set(`${table}:${row.id}`, id);
+      for (const leg of trip.trip_legs || []) for (const route of leg.trip_routes || []) rows.set(`trip_routes:${route.id}`, id);
       for (const a of trip.trip_assignments || []) {
         assignments.set(String(a.id), id);
         for (const crew of a.trip_drivers || []) rows.set(`trip_drivers:${crew.id}`, id);
@@ -17341,15 +17356,17 @@
   /* The trip a change is to: its id; null for a row of a trip the board does
      not hold, which reads nothing; undefined when the change cannot say. A
      delete carries the row's id alone, so its trip is looked up in what the
-     board holds, and a crew row names its assignment. A trip row is always
-     read, since a trip moved into the weeks comes in that way. */
+     board holds, and a crew row names its assignment; `trip_prep` is keyed by
+     its trip, so its delete names it. A trip row is always read, since a
+     trip moved into the weeks comes in that way. */
   function tripOfChange(table, row, old) {
     const held = heldRowsOf(cached.data);
     if (table === 'trips') {
       const id = row?.id ?? old?.id;
       return id == null ? undefined : String(id);
     }
-    if (row?.trip_id != null) return held.trips.has(String(row.trip_id)) ? String(row.trip_id) : null;
+    const tripId = row?.trip_id ?? old?.trip_id;
+    if (tripId != null) return held.trips.has(String(tripId)) ? String(tripId) : null;
     if (table === 'trip_drivers' && row?.assignment_id != null) return held.assignments.get(String(row.assignment_id)) ?? null;
     const id = row?.id ?? old?.id;
     if (id == null || table === 'trip_driver_statuses') return undefined;
@@ -17576,7 +17593,7 @@
   const boardStatus = status => {
     // A channel joining again, or a new one in a dead one's place, missed
     // whatever changed while it was down.
-    if (status === 'SUBSCRIBED' && boardJoins++) { liveFull = true; liveSoon(); }
+    if (status === 'SUBSCRIBED' && boardJoins++) { liveFull = true; liveSoon(); tellListeners({ full: true }); }
     // Only a failure is worth a line; a healthy channel says nothing, as it did.
     if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       console.info(`scheduler: the live board is ${status.toLowerCase()}; coming back to this tab opens it again.`);
@@ -17585,7 +17602,7 @@
   function openBoard() {
     boardCh = client.channel('scheduler-board');
     for (const table of LIVE_TABLES) {
-      boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, liveSoon);
+      boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, change => { tellListeners(change); liveSoon(change); });
     }
     boardCh.subscribe(boardStatus);
   }

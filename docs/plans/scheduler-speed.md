@@ -40,23 +40,10 @@ in, writes recorded and none sent. The last task times the same steps again.
 
 ### Reading
 
-- **A live change reads only what it touched,** and the lists that seldom
-  change are read once; `data.js`'s live section says how. A week change
-  still reads its trips, because `show()` is how a save in this tab reads
-  back.
-- **One reader and one channel for the board page.** `to-do-rows.js` and
-  `departures-panel.js` read from what `data.js` holds and are told when it
-  changes, where each now reads trips and opens a channel of its own; a pane
-  reads for itself only the days the board's read does not reach, such as
-  the to-do follow-ups' 90 days back. `clashes.js`'s `readNearby`, which
-  to-do and Departures each call now, is read once for the page and handed
-  to both. `to-do.js` and `departures.js` keep their own reads for when
-  nothing is handed to them, because the connector runs them through
-  `rules.ts` and `trips.html` runs `to-do-rows.js` without `data.js`.
-- **The board's channel hears every table it reads,** adding `trip_documents`,
-  `trip_prep`, `trip_legs`, `trip_routes` and `trip_contacts`, which broadcast
-  and which it does not listen to now, so Departures still moves on an upload
-  or a prep mark once it shares the channel.
+- **A live change reads only what it touched,** on the board, the to-do
+  list and Departures, which hear it on the board's one channel; `data.js`'s
+  live section says how. A week change still reads its trips, because
+  `show()` is how a save in this tab reads back.
 - **The board's read carries what the board draws.** A trip's update texts and
   its quote lines are read when its card or editor opens, not with every trip
   of nine weeks; the bar's follow-up mark needs only the day of the newest
@@ -95,10 +82,6 @@ None open.
 
 ## Tasks
 
-- [ ] Make `to-do-rows.js` and `departures-panel.js` read from the board's
-      data and share its channel on the board page, reading for themselves
-      only past the board's days, and add the five tables the board's channel
-      lacks.
 - [ ] Take update texts and quote lines out of the board's read, keeping each
       trip's newest update that is not kind `nothing`, and read them when a
       card or the editor opens.

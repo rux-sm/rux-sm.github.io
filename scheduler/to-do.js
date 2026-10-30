@@ -210,31 +210,55 @@
     contactOf: t => window.SchedulerTripShape.contactsFor(t, Week().legsOf(t)[0]?.key).length > 0,
   });
 
+  const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+  const soonOn = col => `and(${col}.gte.${FollowUp.today()},${col}.lte.${dayFrom(SHORT_DAYS)})`;
+  // A trip that left a season ago can still owe a balance; older than that is History's.
+  const lightOf = client => client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90));
+  // A trip with a leg that starts or ends in the window, by `soon`, an embed that returns nothing.
+  const heavyOf = client => client.from('trips').select(`${HEAVY},soon:trip_legs!inner()`).is('cancelled_at', null)
+    .or([soonOn('start_date'), soonOn('end_date')].join(','), { referencedTable: 'soon' });
+  // What is around the trips leaving within 30 days, for the Clash rows.
+  const nearbyOf = client => window.SchedulerClashes?.readNearby(client, FollowUp.today(), dayFrom(SHORT_DAYS + 30)) ?? null;
+  // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
+  const statusesOf = (client, heavy) => (heavy.length
+    ? client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : []);
+  const merged = (light, heavy) => {
+    const more = new Map(heavy.map(t => [t.id, t]));
+    return light.map(t => ({ ...t, ...more.get(t.id) }));
+  };
+  // The rows and the trips, with what they were worked out from, which `readAgain` starts from.
+  const finish = (trips, basics, nearby, statuses) =>
+    ({ rows: rows([...trips.values()], handed({ ...basics, nearby, statuses })), trips, basics, nearby, statuses });
+
   /* Every row the trips give now, and the trips by id. */
   async function read(client) {
-    const Facts = window.SchedulerLegFacts;
-    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
-    const today = FollowUp.today();
-    const far = dayFrom(SHORT_DAYS);
-    const soonOn = col => `and(${col}.gte.${today},${col}.lte.${far})`;
     const [light, heavy, basics, nearby] = await Promise.all([
-      // A trip that left a season ago can still owe a balance; older than that is History's.
-      client.from('trips').select(LIGHT).is('cancelled_at', null).gte('start_date', dayFrom(-90)).order('start_date').limit(5000).then(unwrap),
-      // A trip with a leg that starts or ends in the window, by `soon`, an embed that returns nothing.
-      client.from('trips').select(`${HEAVY},soon:trip_legs!inner()`).is('cancelled_at', null)
-        .or([soonOn('start_date'), soonOn('end_date')].join(','), { referencedTable: 'soon' }).then(unwrap),
-      Facts.readBasics(client),
-      // What is around the trips leaving within 30 days, for the Clash rows.
-      window.SchedulerClashes?.readNearby(client, today, dayFrom(SHORT_DAYS + 30)) ?? null,
+      lightOf(client).order('start_date').limit(5000).then(unwrap),
+      heavyOf(client).then(unwrap),
+      window.SchedulerLegFacts.readBasics(client),
+      nearbyOf(client),
     ]);
-    const more = new Map(heavy.map(t => [t.id, t]));
-    const all = light.map(t => ({ ...t, ...more.get(t.id) }));
-    // Each answer of the trips leaving within 30 days, for a decline or a change to tell.
-    const statusRows = heavy.length
-      ? await client.rpc('get_trip_driver_statuses', { p_trip_ids: heavy.map(t => t.id) }).then(unwrap) : [];
-    const statuses = Facts.statusMap(statusRows);
-    return { rows: rows(all, handed({ ...basics, nearby, statuses })), trips: new Map(all.map(t => [t.id, t])) };
+    const statuses = window.SchedulerLegFacts.statusMap(await statusesOf(client, heavy));
+    return finish(new Map(merged(light, heavy).map(t => [t.id, t])), basics, nearby, statuses);
   }
 
-  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, TRIP_LEGS, rows, handed, read, legDay, legName, hasTimes };
+  /* What `read` returned, with the trips `ids` read again by the same tests:
+     one that no longer passes them is taken out. Their driver answers are
+     read again, and what is around, which any of them may change. */
+  async function readAgain(client, held, ids) {
+    const [light, heavy, nearby] = await Promise.all([
+      lightOf(client).in('id', ids).then(unwrap),
+      heavyOf(client).in('id', ids).then(unwrap),
+      nearbyOf(client),
+    ]);
+    const fresh = window.SchedulerLegFacts.statusMap(await statusesOf(client, heavy));
+    const gone = new Set(ids.map(String));
+    const statuses = new Map([...held.statuses].filter(([key]) => !gone.has(key.split(':')[0])));
+    for (const [key, row] of fresh) statuses.set(key, row);
+    const trips = [...held.trips.values()].filter(t => !gone.has(String(t.id))).concat(merged(light, heavy))
+      .sort((a, b) => String(a.start_date).localeCompare(String(b.start_date)));
+    return finish(new Map(trips.map(t => [t.id, t])), held.basics, nearby, statuses);
+  }
+
+  window.SchedulerToDo = { KINDS, SOON_DAYS, SHORT_DAYS, TIMES_DAYS, LIGHT, HEAVY, TRIP_LEGS, rows, handed, read, readAgain, legDay, legName, hasTimes };
 })();

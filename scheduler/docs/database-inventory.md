@@ -151,10 +151,11 @@ ten-minute signed links, and the link pages reach a trip document through
 
 ### Realtime
 
-This app subscribes twice: the board's `scheduler-board`
-channel to the tables it draws from, and its `scheduler-to-do` channel to
-`to_dos`. The board and the Trips page each hold `scheduler-to-do-rows`, a
-channel to the trip tables the gaps on Departures are worked out from.
+The board subscribes twice: its `scheduler-board` channel to the tables
+it, the to-do list and Departures draw from, which hands each change to
+all three, and its `scheduler-to-do` channel to `to_dos`. The Trips page,
+which has no board, holds `scheduler-to-do-rows` to the trip tables the
+to-do list reads.
 
 ## 3. Table to screen
 

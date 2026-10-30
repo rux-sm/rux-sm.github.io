@@ -218,11 +218,49 @@
     own.splice(i, 1);
     return true;
   }
+  /* The trip a change is to: its id; null for a row of a trip on none of
+     the days held, which reads nothing; undefined when the change cannot
+     say, as a delete of a row whose id this list never read cannot. A trip
+     row and a leg are always read, since a trip that moves onto one of the
+     days comes in that way. */
+  const CHILD_ROWS = ['trip_documents', 'trip_contacts', 'trip_legs', 'trip_assignments'];
+  function tripOf({ table, new: row = {}, old = {} }) {
+    if (table === 'trips') return row.id ?? old.id;
+    const trips = [...new Map(pages.map(p => [String(p.trip.id), p.trip])).values()];
+    const id = row.trip_id ?? old.trip_id;
+    if (id != null) return (table === 'trip_legs' || trips.some(t => String(t.id) === String(id))) ? id : null;
+    const own = row.id ?? old.id;
+    if (table === 'trip_drivers') {
+      const seat = trips.find(t => (t.trip_assignments || []).some(a => (row.assignment_id != null
+        ? a.id === row.assignment_id : (a.trip_drivers || []).some(d => d.id === own))));
+      return seat ? seat.id : null;
+    }
+    if (own == null || !CHILD_ROWS.includes(table)) return undefined;
+    return trips.find(t => (t[table] || []).some(r => r.id === own))?.id ?? null;
+  }
+  const owedTrips = new Set();
+  let owedAll = false;
   let soon = null;
   const refresh = change => {
     if (change && isOwn(change)) return;
+    const id = change && !change.full ? tripOf(change) : undefined;
+    if (id === null) return;
+    if (id === undefined) owedAll = true;
+    else owedTrips.add(id);
     clearTimeout(soon);
-    soon = setTimeout(() => { if (shown) load(); if (!shown || !prepping()) count(); }, 1500);
+    soon = setTimeout(() => {
+      const ids = [...owedTrips];
+      owedTrips.clear();
+      if (owedAll) {
+        owedAll = false;
+        if (shown) load();
+        if (!shown || !prepping()) count();
+        return;
+      }
+      for (const tripId of ids) loadTrip(tripId);
+      // A trip read again changes the days listed; the count is of the days to prep for.
+      if (shown && !prepping()) count();
+    }, 1500);
   };
 
   // -- the frame ------------------------------------------------------------
@@ -757,17 +795,23 @@
     fold.closest('.scheduler-departures__block').querySelector('.scheduler-departures__lines').hidden = !open;
   });
 
+  /* The changes come on the board's channel, which carries these tables
+     too; without the board, on a channel of this list's own. */
+  const TABLES = ['trip_drivers', 'trip_prep', 'trip_assignments', 'trips', 'trip_documents', 'trip_stops', 'trip_payments', 'trip_driver_statuses',
+    'trip_legs', 'trip_routes', 'trip_contacts'];
+  const board = window.SchedulerBoardLive;
   let channel = null;
+  let listening = false;
   function listen() {
+    listening = true;
+    if (board) { board.listen(change => { if (change.full || TABLES.includes(change.table)) refresh(change); }); return; }
     channel = client.channel('scheduler-departures');
-    for (const table of ['trip_drivers', 'trip_prep', 'trip_assignments', 'trips', 'trip_documents', 'trip_stops', 'trip_payments', 'trip_driver_statuses']) {
-      channel.on('postgres_changes', { event: '*', schema: 'public', table }, refresh);
-    }
+    for (const table of TABLES) channel.on('postgres_changes', { event: '*', schema: 'public', table }, refresh);
     channel.subscribe();
   }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible' || !channel) return;
-    if (channel.state !== 'joined' && channel.state !== 'joining') { client.removeChannel(channel); listen(); }
+    if (document.visibilityState !== 'visible' || !listening) return;
+    if (channel && channel.state !== 'joined' && channel.state !== 'joining') { client.removeChannel(channel); listen(); }
     refresh();
   });
 

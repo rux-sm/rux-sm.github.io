@@ -2605,8 +2605,8 @@ button.scheduler-row-head__num::after {
    word a form has to say, is written against the buttons in room that was
    already its own, so no button moves when it speaks, and a line too long
    for the room is cut short. */
-/* A button's own display beats the browser's `[hidden]`, so the zoom buttons
-   data.js hides in Safari are hidden here. */
+/* A button's own display beats the browser's `[hidden]`, so the buttons
+   data.js hides for a form are hidden here. */
 .scheduler-viewer__toolbar > [hidden] { display: none; }
 .scheduler-viewer__uploaded {
   flex: 1 1 0;

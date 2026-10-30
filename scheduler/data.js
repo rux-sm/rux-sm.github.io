@@ -13642,20 +13642,8 @@
   const viewerClose = byId('close');
   const viewerHead = byId('head');
   const viewerBack = byId('back');
-  const viewerZooms = [...(viewerEl?.querySelectorAll('[data-viewer-zoom]') ?? [])];
-  /* Safari's PDF view, which every browser on an iPad uses too, ignores the
-     zoom an address asks for and draws its own zoom controls over the page, so
-     there the panel's zoom buttons are hidden rather than left doing nothing.
-     No feature tells which PDF viewer a frame gets; the vendor string does. */
-  const noZoom = navigator.vendor === 'Apple Computer, Inc.';
-  if (noZoom) for (const btn of viewerZooms) btn.hidden = true;
-
-
-  // The zooms Zoom in and Zoom out step through, in percent.
-  const ZOOM_STEPS = [50, 75, 100, 125, 150, 200, 300];
   let viewerOpener = null;
-  // The file showing: its document id, its blob address, and its zoom, where
-  // null is fit to width.
+  // The file showing: its document id, its blob address and its download name.
   let viewerShown = null;
   // Counts opens, so a slow fetch that a later open overtook is dropped.
   let viewerSeq = 0;
@@ -13670,9 +13658,9 @@
   let viewerType = null;
 
 
-  /* Each load gets a new frame: a PDF viewer does not read a changed fragment
-     again, and navigating a frame that has loaded adds to the tab's history,
-     so Back would step through zooms. */
+  /* Each load gets a new frame, because navigating a frame that has loaded
+     adds to the tab's history, so Back would step through the documents the
+     panel has shown. */
   function swapFrame(src) {
     const frame = viewerFrame.cloneNode(false);
     frame.schedulerHost = host;
@@ -13686,34 +13674,16 @@
     viewerFrame = frame;
   }
 
-  // Frames the file at its zoom, and disables the zoom that has nowhere to go.
+  // Frames the file fit to the panel's width, with the PDF viewer's own toolbar off.
   function frameShown() {
-    const { blob, zoom } = viewerShown;
-    swapFrame(`${blob}#toolbar=0&navpanes=0&${zoom == null ? 'view=FitH' : `zoom=${zoom}`}`);
-    for (const btn of viewerZooms) {
-      const step = btn.dataset.viewerZoom;
-      btn.disabled = step === 'fit' ? zoom == null
-        : step === 'in' ? zoom === ZOOM_STEPS.at(-1)
-        : zoom === ZOOM_STEPS[0];
-    }
-  }
-
-  // A fit-to-width page reads as about 90%, so the first step from it is 100%
-  // in or 75% out.
-  function zoomViewer(step) {
-    if (!viewerShown) return;
-    const now = viewerShown.zoom;
-    if (step === 'fit') viewerShown.zoom = null;
-    else if (step === 'in') viewerShown.zoom = ZOOM_STEPS.find(z => z > (now ?? 90)) ?? ZOOM_STEPS.at(-1);
-    else viewerShown.zoom = ZOOM_STEPS.findLast(z => z < (now ?? 90)) ?? ZOOM_STEPS[0];
-    if (viewerShown.zoom !== now) frameShown();
+    swapFrame(`${viewerShown.blob}#toolbar=0&navpanes=0&view=FitH`);
   }
 
   /* The actions that need the fetched file wait for it; Open in new tab does
      not. Download is a link, which has no `disabled`, so it takes Carbon's
      disabled class and leaves the tab order with its address. */
   function setViewerReady(ready) {
-    for (const btn of [...viewerZooms, viewerPrint]) btn.disabled = !ready;
+    viewerPrint.disabled = !ready;
     viewerDownload.classList.toggle('rux--btn--disabled', !ready);
     if (ready) viewerDownload.removeAttribute('aria-disabled');
     else {
@@ -13751,10 +13721,9 @@
   }
 
   /* A stored file and a form this app draws are both documents, and the panel
-     frames either; what differs is only what the toolbar can offer. The zooms
-     send `#zoom=` to a PDF viewer, which an HTML page ignores, and the page is
-     fluid instead; there is no file to download, and the print dialog saves a
-     PDF. Print stands for both, and a form adds its own controls ahead of it.
+     frames either; what differs is only what the toolbar can offer. A form has
+     no file to download, and the print dialog saves a PDF. Print stands for
+     both, and a form adds its own controls ahead of it.
      The expand button is a stored file's too: a form, the forms list and the
      calculator lay themselves out to the panel, so they have no button.
 
@@ -13766,7 +13735,6 @@
     viewerMark = null;
     setToolbarShown(true);
     setViewerBack(null);
-    for (const btn of viewerZooms) btn.hidden = form || noZoom;
     viewerDownload.hidden = form;
     viewerNewTab.hidden = form;
     if (!form) setFormControls([]);
@@ -13786,8 +13754,7 @@
       const here = document.adoptNode(node);
       /* What the toolbar's own rules size and hold in place, and what a later
          hand-over takes back out again. The last one is named, because it is
-         the one that parts these from the buttons every document gets, and
-         the zoom buttons hidden between them are no use as a landmark. */
+         the one that parts these from the buttons every document gets. */
       here.setAttribute('data-viewer-form', i === nodes.length - 1 ? 'last' : '');
       return here;
     });
@@ -14171,7 +14138,7 @@
     setTrip(trip?.id ?? doc.trip_id ?? null);
     showViewer(opener);
     viewerClose?.focus();
-    // The file showing, or downloading, is not fetched again, so its zoom stays.
+    // The file showing, or downloading, is not fetched again.
     if (viewerShown?.id === doc.id || viewerLoading?.id === doc.id) return;
     const seq = ++viewerSeq;
     dropShown();
@@ -14193,7 +14160,7 @@
       const blob = URL.createObjectURL(file);
       const fileName = trip ? window.SchedulerFileNames.forUpload(trip, doc.label)
         : doc.file_name || `${docSlug(kind, 'document')}.pdf`;
-      viewerShown = { id: doc.id, blob, zoom: null, fileName };
+      viewerShown = { id: doc.id, blob, fileName };
       viewerFrame.title = kind;
       viewerDownload.href = blob;
       viewerDownload.download = fileName;
@@ -14210,13 +14177,6 @@
     }
   }
 
-  for (const btn of viewerZooms) {
-    btn.addEventListener('click', () => {
-      zoomViewer(btn.dataset.viewerZoom);
-      // A zoom that has nowhere further to go is disabled, and would drop focus.
-      if (btn.disabled) viewerZooms.find(b => !b.disabled)?.focus();
-    });
-  }
   /* The frame is a blob of this page's origin, so the page may print it. A
      browser that refuses gets the file in a new tab, where its viewer prints.
      Chrome's Save as PDF names the file after this page's title, so a stored

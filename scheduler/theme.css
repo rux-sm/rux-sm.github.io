@@ -867,6 +867,10 @@
 [data-theme="rux-100"] .scheduler-row-head__dial { block-size: auto; aspect-ratio: 1; }
 [data-theme="rux-100"] .scheduler-row-head__gauges { gap: var(--rux-spacing-02); }
 [data-theme="rux-100"] .scheduler-row-head__level[data-tank="D"] { inset-block-start: 40px; }
+/* A Rux 100 bus head whose tip is open is back at the board's own sheet,
+   pointer or not: the open tip is the mark, as an open menu marks Geist's
+   trigger without a fill. */
+[data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); }
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
    dims its icon, dial, fuel and kit to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it
@@ -1336,12 +1340,12 @@
 /* Rux 100's two toolbar dropdowns, the ⋮'s menu and the week's calendar,
    are the board's own sheet in its outline, as Geist's popovers are its
    page's surface ringed in its border, and not Design's raised grey. The
-   open ⋮ and the open week's name join them in it. Hover and selection take
-   the first layer's steps over the sheet, and the menu's dividers the
-   board's line. */
+   open ⋮ and the open week's name join them in it. Hover is the board's,
+   selection takes the first layer's steps over the sheet, and the menu's
+   dividers are the board's line. */
 [data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], #scheduler-view-menu, #scheduler-week-picker .rux--date-picker__calendar-container) {
   --rux-layer: var(--scheduler-region);
-  --rux-layer-hover: var(--rux-layer-hover-01);
+  --rux-layer-hover: var(--scheduler-region-hover);
   --rux-layer-active: var(--rux-layer-active-01);
   --rux-layer-selected: var(--rux-layer-selected-01);
   --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
@@ -1349,7 +1353,7 @@
 }
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
 @media (hover: hover) {
-  [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--rux-layer-hover-01); }
+  [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--scheduler-region-hover); }
 }
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two. */
@@ -1413,7 +1417,9 @@
    Geist's greys: the page is black, and every region on it, the toolbar,
    the day band and its corner, the bus column, the tracks and each panel
    beside them, is Geist's Background 1, #0a0a0a, a sheet 1.06 to 1 off the
-   page. Every region is parted from the next by one 1px line in Geist's
+   page, and anything on it under the pointer takes Geist's gray 100,
+   #1a1a1a, the hover Geist gives a component on Background 1. Every
+   region is parted from the next by one 1px line in Geist's
    default border, #2e2e2e, 1.46 to 1 on the sheet, set as border-subtle-01
    on the board, every panel and the ⋮'s menu, which opens outside the
    board, so the toolbar's dividers, the rows, the region edges and the
@@ -1426,9 +1432,11 @@
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: #2e2e2e;
   --scheduler-region: #0a0a0a;
+  --scheduler-region-hover: #1a1a1a;
 }
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane) {
   --rux-layer: var(--scheduler-region);
+  --rux-layer-hover: var(--scheduler-region-hover);
   --scheduler-band-surface: var(--scheduler-region);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);

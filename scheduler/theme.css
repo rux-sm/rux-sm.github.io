@@ -1365,19 +1365,12 @@
   background: var(--rux-text-primary);
   line-height: 1;
 }
-/* Rux 100's two toolbar dropdowns, the ⋮'s menu and the week's calendar,
-   are the board's own sheet in its outline, as Geist's popovers are its
-   page's surface ringed in its border, and not Design's raised grey. The
-   open ⋮ and the open week's name join them in it. Hover is the board's,
-   selection takes the first layer's steps over the sheet, and the menu's
-   dividers are the board's line. */
-[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], #scheduler-view-menu, #scheduler-week-picker .rux--date-picker__calendar-container) {
+/* Rux 100's menus and calendars are Geist's menu material, the board's own
+   sheet in its line, from Design. The open ⋮ and the open week's name join
+   the menu and the calendar they open in it. */
+[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] {
   --rux-layer: var(--scheduler-region);
   --rux-layer-hover: var(--scheduler-region-hover);
-  --rux-layer-active: var(--rux-layer-active-01);
-  --rux-layer-selected: var(--rux-layer-selected-01);
-  --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
-  --rux-border-subtle: var(--rux-border-subtle-01);
 }
 [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
 @media (hover: hover) {
@@ -1390,8 +1383,7 @@
    the ⋮: the name takes the calendar's outline and shadow up its sides and
    over its top, stopping at its foot, and the calendar's outline and shadow
    stop at its top, where the name stands on it, so one line goes round the
-   two. The calendar is set here and not with the menus in Design because it
-   stands inside the board's second layer, which those rules leave alone. */
+   two. */
 /* Rux Dark's calendar floats clear of the week's name, as its menus float
    clear of the ⋮, so the open name keeps the toolbar's own look, as the open
    ⋮ does there, rather than the joined surface. */
@@ -1634,14 +1626,14 @@
   --card-rule: var(--rux-layer-accent-active-01);
   box-shadow: 0 0 0 1px var(--rux-layer-accent-active-01), 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
 }
-/* Rux 100's trips are layer-02 tiles, so its card stands a step above them
-   on layer-03, inside a ring of the rule's grey and under rux-dark's deep
-   shadow, and reads as lifted off the board rather than as one more trip. */
+/* Rux 100's card is Geist's menu material, as its context menu is: the
+   board's sheet, #0a0a0a, inside its line, #2e2e2e, which also parts the
+   card's rows, with Geist's Color 1 on hover, under rux-dark's deep shadow. */
 [data-theme="rux-100"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
-  --card-surface: var(--rux-layer-03);
-  --card-hover: var(--rux-layer-hover-03);
-  --card-rule: var(--rux-border-subtle-03);
-  box-shadow: 0 0 0 1px var(--rux-border-subtle-03), 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
+  --card-surface: #0a0a0a;
+  --card-hover: #1a1a1a;
+  --card-rule: #2e2e2e;
+  box-shadow: 0 0 0 1px #2e2e2e, 0 2px 6px rgb(0 0 0 / .5), 0 12px 32px -4px rgb(0 0 0 / .7);
 }
 [data-theme="geist-dark"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02); }
 [data-theme="apple-light"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) { box-shadow: 0 0 0 1px var(--rux-border-subtle-02), 0 8px 24px rgb(0 0 0 / .16); }

@@ -466,12 +466,12 @@ expect('a bus with its engine running fills the display, moving or idling; one o
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]
     .map(l => has(busHead(l), '.scheduler-row-head__dial--running')),
   [true, true, false, false]);
-expect('another week, or no answer for the bus: the seats and the inspection, amber within 45 days',
+expect('another week, or no answer for the bus: the inspection alone, amber within 45 days, and no seats',
   [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,
     line(busHead(null, true)),
     has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 20 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon'),
     has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 90 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon')],
-  [0, '52 pax', true, false]);
+  [0, null, true, false]);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

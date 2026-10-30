@@ -369,10 +369,12 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: flex; flex-direction: column; gap: 5px; }
-/* The bus's equipment under the body, two even slots, the sleeper's and the
-   lift's, each icon centred in its half. Presses go through to the number,
-   whose tip and title name them. */
+/* The bus's equipment at the head's foot, under the body or, where a week
+   draws none, in its place, two even slots, the sleeper's and the lift's,
+   each icon centred in its half. Presses go through to the number, whose
+   tip and title name them. */
 .scheduler-row-head__equip {
+  margin-block-start: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   /* A rule between the two slots, drawn only where the bus has equipment. */

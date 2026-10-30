@@ -18,8 +18,9 @@
      tag at the foot of the state's block, across the dial's open foot while
      moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
      is, and when it was last seen, are the number's toggletip's.
-   - In any other week, or for a bus Samsara does not answer for: its seats
-     and its inspection expiry, in the warning colour within WARN_DAYS.
+   - In any other week, or for a bus Samsara does not answer for: its
+     inspection expiry, in the warning colour within WARN_DAYS. Its seats
+     are the number's toggletip's.
    The fuel bar is a neutral grey while normal, so colour on the head is
    only ever a state: the warning colour when low and the error colour when
    critical, its percent and title saying it too.
@@ -150,7 +151,7 @@
   function draw(head, bus, live, opts = {}) {
     const shown = opts.week && live ? live : null;
     const key = JSON.stringify(shown ? [shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
-      shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.capacity, bus.inspection_exp]);
+      shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp]);
     if (head.dataset.live === key) return;
     head.dataset.live = key;
     head.toggleAttribute('data-signal-lost', !!noSignal(shown));
@@ -185,7 +186,6 @@
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
       body.appendChild(gauges);
     } else {
-      if (bus.capacity) body.appendChild(el('span', 'scheduler-row-head__line', `${bus.capacity} pax`));
       const insp = inspection(bus);
       if (insp) {
         const line = el('span', `scheduler-row-head__line scheduler-row-head__insp${insp.soon ? ' scheduler-row-head__insp--soon' : ''}`);

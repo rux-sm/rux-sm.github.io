@@ -196,16 +196,18 @@
       day = Math.floor(dayMax);
       if (frame) frame.style.maxInlineSize = `${frame.offsetWidth - pane + head + day * days}px`;
     } else {
-      // Everything the day columns did not take; never less than headBase,
-      // since `day` was floored from the same figure.
-      head = pane - day * days;
+      // Each day takes a whole share of what the head leaves, and the head
+      // keeps its content width, so its contents never shift as the window
+      // moves. The frame gives back the few pixels the days could not share,
+      // as it does under the cap.
+      if (frame) frame.style.maxInlineSize = `${frame.offsetWidth - pane + head + day * days}px`;
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // Bars, stripes and day rules are placed from this rather than from a
     // percentage of the track, so every edge lands on a whole pixel.
     sch.style.setProperty('--scheduler-day-w', `${day}px`);
-    // The head is pinned to a whole width that carries the remainder, so the
-    // columns sum to the pane exactly.
+    // The head is pinned to its content width, measured once with the corner
+    // above, so the columns sum to the frame the passes above held.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
 
     /* Where the days fit there is no sideways scrolling to do, so the

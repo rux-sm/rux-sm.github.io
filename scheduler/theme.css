@@ -925,9 +925,9 @@
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
    pane's sheet, every row parted by the board's one line. A booked
-   day is a solid layer-02 mark in the primary text, the board's trip tile,
-   and a short rest keeps that grey with its hours in Geist's amber 900, or a
-   shorter one's in its red 900, 4.9 to 1 on the grey.
+   day is the board's confirmed blue, Geist's blue 100, with its hours of
+   rest in gray 900 at the regular weight a trip's driver names take; a
+   short rest's hours are amber 900, a shorter one's red 900.
    A day off is the board's unconfirmed red, Geist's red 100 with its reason
    in red 900, because a driver away is a trip that cannot run as it stands,
    as an unconfirmed one is.
@@ -943,13 +943,14 @@
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
-  --scheduler-avail-fill: var(--rux-layer-02);
-  color: var(--rux-text-primary);
+  --scheduler-avail-fill: oklch(22.17% 0.069 259.89);
+  color: #a1a1a1;
 }
 [data-theme="rux-100"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: var(--rux-layer-02);
+  --scheduler-avail-fill: oklch(22.17% 0.069 259.89);
   color: var(--rux-support-warning);
 }
+[data-theme="rux-100"] .scheduler-avail__cell--rest > span { font-weight: 400; }
 [data-theme="rux-100"] .scheduler-avail__cell--short { color: var(--rux-text-error); }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
   --scheduler-avail-fill: oklch(22.1% 0.0657 15.11);

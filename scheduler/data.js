@@ -13591,10 +13591,9 @@
   /* WHAT A GENERATED FORM PUTS IN THIS TOOLBAR. print.html builds its own
      controls and hands the nodes up; this adopts them, so the listeners it
      registered keep working and there is one builder rather than two. It hands
-     them over again on every rebuild -- a copy chosen from the head -- so the
-     slot is replaced whole each time. The head's list is the way to another
-     copy, and the panel keeps no overflow: the form's page carries Print
-     all. */
+     them over again on every rebuild -- a layout or a copy chosen -- so the
+     slot is replaced whole each time. The panel keeps no overflow: the form's
+     page carries Print all. */
   let formNodes = [];
   function setFormControls(nodes) {
     if (!viewerToolbar) return;

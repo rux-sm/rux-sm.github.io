@@ -193,6 +193,9 @@ Three homes, and one rule for choosing.
   differ, as Billing shows it, each second driver, relief, hotel and discount line and the total,
   the two tables kept together and moved to the next sheet rather than cut;
   Detailed is not asked about after a print and is never offered on a blank form.
+  A form with more than one copy lists them in the toolbar beside its Layout,
+  the itinerary's legs by their days and the envelope's seats by bus and
+  driver, and the document panel's head names the form.
 
 ### The driver availability grid
 

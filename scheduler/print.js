@@ -780,6 +780,19 @@
   const LEGS = ['outbound', 'return'];
   const legName = (trip, leg) => (isReturn(trip, leg) ? 'Return' : 'Outbound');
 
+  /* A leg by its days, "Mon, Nov 2" or "Fri, Nov 20 – Sun, Nov 22", which is
+     how the list of copies tells legs apart: a trip of many legs has many
+     outbound ones. A blank form's leg has no day and keeps its word. */
+  const legDays = (trip, leg) => {
+    const from = legStart(trip, leg);
+    const to = legEnd(trip, leg);
+    const a = partsOf(from);
+    if (!a) return legName(trip, leg);
+    const b = to && to !== from ? partsOf(to) : null;
+    const day = p => `${p.weekday}, ${p.month} ${p.day}`;
+    return b ? `${day(a)} – ${day(b)}` : day(a);
+  };
+
   /* The legs a trip has, by their keys, which is the list of copies. It
      reads the stops rather than the buses because the stops are what this
      form prints: a leg with a bus and no route has nothing to fill in. A
@@ -2528,7 +2541,7 @@
         // line is blank for the pen.
         assignment: subject.assignment && onLeg(subject.trip, leg, subject.assignment) ? subject.assignment : null,
       })),
-      copyName: subject => legName(subject.trip, subject.leg),
+      copyName: subject => legDays(subject.trip, subject.leg),
       typed: { always: true, fields: ITINERARY_FIELDS },
       render: itinerary,
       fileName: itineraryFileName,
@@ -3285,8 +3298,8 @@
   markModal?.addEventListener('rux:modal-closed', () => { asking = null; });
 
   /* WHAT GOES IN THE ROW. Standing alone the page's bar holds the layout, the
-     copy, Print and Print all. In the board's panel, 30rem wide, the
-     head holds the copy and the panel holds Print, so the row is the layout. */
+     copy, Print and Print all. In the board's panel, 30rem wide, the panel
+     holds Print, so the row is the layout and the copy. */
   /* A CELL OF THE BAND. Carbon ships no text toolbar -- the pattern is a page
      of guidance and a drawing, and the only toolbar classes it compiles are
      the table's -- so the cells that make one are this app's own, under its
@@ -3310,7 +3323,10 @@
      In the panel both are made in the board's document, not this frame's:
      menu.js reads a press through `instanceof Element`, which a node this
      frame made fails in the board's window even once the panel adopts it. */
-  function pickCell(label, names, chosen, choose) {
+  /* The cell may show the choice by a shorter name than its row in the menu,
+     as a seat's is its driver alone, so the row stays one line in the
+     envelope's narrow panel; the whole name is its label. */
+  function pickCell(label, names, chosen, choose, face = names[chosen]) {
     const doc = host ? window.frameElement?.ownerDocument ?? window.parent.document : document;
     const make = (tag, cls, text) => {
       const n = doc.createElement(tag);
@@ -3367,7 +3383,8 @@
     cell.setAttribute('aria-haspopup', 'menu');
     cell.setAttribute('aria-expanded', 'false');
     cell.setAttribute('aria-label', `${label}: ${names[chosen] ?? ''}`);
-    cell.append(names[chosen] ?? '', sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
+    cell.title = names[chosen] ?? '';
+    cell.append(face ?? '', sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
     return [menu, cell];
   }
 
@@ -3416,35 +3433,30 @@
        back to the board to reach the next one. It starts as this bus's and
        grows when the trip's other buses answer.
 
-       IN THE PANEL THE LIST IS THE HEAD'S, not the toolbar's: the head is
-       already saying which envelope this is, so it is the thing to press to
-       say which other one, the way the board's week label opens its date
-       picker. That leaves the toolbar to the actions. */
-    /* THE PANEL KEEPS TO THE LAYOUT AND PRINT. Print all is this page's own,
-       where the Forms page is open on its own; the board's panel is for
-       looking and printing one copy. */
+       IN THE PANEL TOO THE LIST IS THE TOOLBAR'S, beside the layout, so
+       which sheet is on screen is chosen in one row wherever the form is
+       opened, and the panel's head names the form by its short name, the
+       hub's, which fits beside the trip's number. */
+    /* THE PANEL KEEPS TO THE LAYOUT, THE COPY AND PRINT. Print all is this
+       page's own, where the Forms page is open on its own; the board's panel
+       is for looking and printing one copy. */
     /* A form with one copy to a subject, like the quote, names no copy, and
        the head names the form. A copy's head may be shorter than its name in
-       the list, as a seat's is its driver alone. */
+       the list, as a seat's is its driver alone, and in the panel the pick
+       cell shows it. */
     const labelOf = copy => form.copyName?.(copy) ?? form.name;
     const headOf = copy => form.copyHead?.(copy) ?? labelOf(copy);
     if (host) {
-      const chosen = every[current.chosen];
-      host.setViewerHead(
-        current.blank ? `${form.name} — blank` : headOf(chosen),
-        every.length > 1 ? every.map((copy, i) => ({
-          label: labelOf(copy),
-          head: headOf(copy),
-          checked: i === current.chosen,
-          choose: () => { current.chosen = i; buildControls(); draw(); },
-        })) : [],
-      );
-    } else if (every.length > 1) {
+      host.setViewerHead(current.blank ? `${form.name} — blank`
+        : every.length > 1 ? form.short ?? form.name : headOf(every[current.chosen]));
+    }
+    if (every.length > 1) {
       nodes.push(...pickCell(
         'Copy',
         every.map(labelOf),
         current.chosen,
         i => { current.chosen = i; buildControls(); draw(); },
+        host ? headOf(every[current.chosen]) : undefined,
       ));
     }
 

@@ -15,17 +15,11 @@ changes is how often it reads, how much it reads and how much it draws again.
 
 ### The database
 
-- **Three indexes first,** on `trip_assignments.trip_id`,
-  `trip_stops.trip_id` and `trip_drivers.assignment_id`, because the board's
-  read embeds all three by those columns and each embed reads its whole table
-  once per trip without them.
-- **The unindexed foreign keys a page reads by are indexed with them:**
-  `trip_assignments.bus_id` for a bus's trips, and `trip_drivers.driver_id`
-  and `driver_time_off.driver_id` for a driver's. The advisor's other trip
-  keys point at profiles or legs and are walked only when one is deleted, so
-  an index on them would sit unused.
-- **The migration is its own step,** SQL shown to rux and applied on his yes,
-  before any code that leans on it.
+- **The trip-read indexes are in,** as migration `trip_read_indexes`. Before
+  them, the Scheduler's trip reads, those whose statement starts by naming
+  `trips.id`, stood at 125,727 calls and 16,313,001 ms in
+  `pg_stat_statements`, 130 ms each, with no temporary files written; the
+  read that spilled to disk was the retired Rux UI's read of every trip.
 
 ### Reading
 
@@ -110,10 +104,10 @@ None open.
       another tab's save in Chrome on :8641, with the page's writes recorded
       and not sent, and how much of the cold load is evaluating scripts; put
       the figures under Decisions for the last task.
-- [ ] Write the index migration for the three embeds and the three keys a
-      page reads by, show it to rux, apply it on his yes, and compare the
-      board read's time in `pg_stat_statements` from snapshots of its calls
-      and total time before and after, not a reset.
+- [ ] Once the office has used the board a day, work out the trip reads'
+      time per call since the indexes from their calls and total time less
+      the figures above, compare it with 130 ms, and check
+      `pg_stat_user_indexes` shows the new indexes scanned.
 - [ ] Read the seldom-changing lists once in `data.js`, and on a live change
       read only the changed trip or list into the held weeks, finding a
       deleted or crew row's trip in what the board holds, and keeping the

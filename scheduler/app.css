@@ -2095,10 +2095,11 @@ button.scheduler-row-head__num::after {
 /* A live bar's times run its whole length, out at its start and back at its
    end, so the track between them crosses every day the trip takes; the
    rows above and below stay in today's column. Cut, as the customer's is,
-   where the bar's start is under the bus column. */
+   where the bar's start is under the bus column, by data.js's
+   `--scheduler-times-room`. */
 .scheduler-bar--road > .scheduler-road__times {
   margin-inline-start: 0;
-  max-inline-size: min(100%, var(--scheduler-row-room, 100%));
+  max-inline-size: min(100%, var(--scheduler-times-room, 100%));
 }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
 .scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }

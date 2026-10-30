@@ -10779,7 +10779,10 @@
      the bus column, those two rows are held to the room between the edge and
      the bar's end, `--scheduler-row-room`, which app.css reads, and their
      words are cut there instead. The edge is where the destination row
-     stands, read rather than worked out. */
+     stands, read rather than worked out. A live bar's times run from the
+     bar's start rather than today's column, so they are held to the room
+     from where they stick, the week's edge and their own sticky inset,
+     `--scheduler-times-room`. */
   function fitStuckRows() {
     for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
       if (!(Number(bar.dataset.span) > 1)) continue;
@@ -10787,10 +10790,16 @@
       if (!dest) continue;
       const box = bar.getBoundingClientRect();
       const cs = getComputedStyle(bar);
+      const start = box.left + parseFloat(cs.paddingLeft) + 0.5;
+      const room = from => `${Math.max(0, box.right - parseFloat(cs.paddingRight) - from)}px`;
       const at = dest.getBoundingClientRect().left;
-      if (at > box.left + parseFloat(cs.paddingLeft) + 0.5) {
-        bar.style.setProperty('--scheduler-row-room', `${Math.max(0, box.right - parseFloat(cs.paddingRight) - at)}px`);
-      } else bar.style.removeProperty('--scheduler-row-room');
+      if (at > start) bar.style.setProperty('--scheduler-row-room', room(at));
+      else bar.style.removeProperty('--scheduler-row-room');
+      const times = bar.querySelector(':scope > .scheduler-road__times');
+      const week = bar.closest('.scheduler-week');
+      const edge = times && week ? week.getBoundingClientRect().left + week.clientLeft + (parseFloat(getComputedStyle(times).insetInlineStart) || 0) : -Infinity;
+      if (edge > start) bar.style.setProperty('--scheduler-times-room', room(edge));
+      else bar.style.removeProperty('--scheduler-times-room');
     }
   }
 

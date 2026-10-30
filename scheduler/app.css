@@ -920,24 +920,6 @@ button.scheduler-row-head__num::after {
   border-end-end-radius: 0;
 }
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
-/* The cut edge sinks under the week's edge: a 2px line of the shade at the
-   edge, then a 20px fade into the bar, which still shows on the brightest
-   bars. It is drawn over the bar's fill and under its rows, so nothing moves
-   and no word is covered, and it leaves the bar's shadow to the selection
-   ring. */
-.scheduler-bar:is(.scheduler-bar--from-prev, .scheduler-bar--to-next)::before {
-  --scheduler-run-fade: color-mix(in srgb, var(--scheduler-run-shade) 50%, transparent);
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to right, var(--scheduler-run-shade) 0 2px, var(--scheduler-run-fade) 6px, transparent 20px) no-repeat,
-    linear-gradient(to left, var(--scheduler-run-shade) 0 2px, var(--scheduler-run-fade) 6px, transparent 20px) no-repeat;
-  background-size: var(--scheduler-run-start, 0px) 100%, var(--scheduler-run-end, 0px) 100%;
-  background-position: left, right;
-}
-.scheduler-bar--from-prev { --scheduler-run-start: 20px; }
-.scheduler-bar--to-next { --scheduler-run-end: 20px; }
 
 /* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a chip after its
    destination: the arrow alone in a high-contrast tag, the inverse surface
@@ -1106,8 +1088,8 @@ button.scheduler-row-head__num::after {
 }
 /* A leg that runs off the week has no time on that side: its track runs on
    to the bar's cut edge, out through the bar's padding, and fades over its
-   last 20px as the bar's edge does, so it reads as going on into the other
-   week. A track run in from the previous week does not stick at the bus
+   last 20px, so it reads as going on into the other week; the edge itself
+   wears no shade. A track run in from the previous week does not stick at the bus
    column, which would lift it off the edge it comes in at. */
 .scheduler-bar--to-next > .scheduler-bar__time:has(> .scheduler-bar__span) {
   margin-inline-end: calc(-1 * var(--scheduler-pad-end));

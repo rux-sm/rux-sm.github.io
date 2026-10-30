@@ -453,6 +453,9 @@ expect('moving: the speed over mph in a filled green display, the fuel\'s figure
 expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 15%, and critical at 5%',
   [[25, 15], [10, 5], [26, 16]].map(([fuel, def]) => levels(busHead({ engine: 'off', mph: 0, fuel, def, place: 'McAllen, TX, 78504' }))),
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
+expect('fuel\'s band: full past half, half at 50 or under, then low and critical',
+  [80, 50, 25, 10].map(fuel => busHead({ engine: 'on', mph: 40, fuel }).querySelector('.scheduler-row-head__level').dataset.band),
+  ['full', 'half', 'low', 'critical']);
 expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
 expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
 expect('standing: Idle over how long in a filled display, amber past 30 minutes, or Off unfilled; the place left to the tip',

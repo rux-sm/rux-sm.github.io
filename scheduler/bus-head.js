@@ -22,9 +22,10 @@
    - In any other week, or for a bus Samsara does not answer for: its
      inspection expiry, in the warning colour within WARN_DAYS. Its seats
      are the number's toggletip's.
-   The fuel bar is a neutral grey while normal, so colour on the head is
-   only ever a state: the warning colour when low and the error colour when
-   critical, its percent and title saying it too.
+   While the engine runs the fuel bar is coloured by its band: green past
+   half, amber at HALF or under, orange when low and red when critical.
+   With the engine off it is a neutral grey until low or critical, so a
+   bus at rest asks nothing unless its tank does.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
    is the bus's row, `live` its bus of samsara-now's answer or null, and
@@ -56,6 +57,8 @@
   // Each tank's low and critical marks, in percent.
   const FUEL = { low: 25, critical: 10, letter: 'F', word: 'Fuel' };
   const DEF = { low: 15, critical: 5, letter: 'D', word: 'DEF' };
+  // Half a tank, below which a running bus's fuel turns from green to amber.
+  const HALF = 50;
   // The speed past which a moving bus turns amber.
   const SPEEDING = 75;
   const IDLE_MS = 30 * 60e3;
@@ -115,6 +118,9 @@
     const lv = levelOf(pct, tank);
     const g = el('span', 'scheduler-row-head__level');
     g.dataset.level = lv;
+    // Fuel's band of four, which a running bus's bar is coloured by: full
+    // past half, half, low and critical.
+    if (tank === FUEL) g.dataset.band = lv !== 'normal' ? lv : pct <= HALF ? 'half' : 'full';
     g.dataset.tank = tank.letter;
     g.style.setProperty('--scheduler-tank', `${pct}%`);
     const words = `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;

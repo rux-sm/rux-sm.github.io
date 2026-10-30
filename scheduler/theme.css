@@ -138,6 +138,14 @@
   --scheduler-head-critical: #da1e28;
   --scheduler-head-moving: #198038;
 }
+/* On a light pane the fuel's amber and orange bands take Carbon's yellow 60
+   and orange 60, which hold 3 to 1 as a bar where the status colours do not. */
+[data-theme="white"] .scheduler-row-head,
+[data-theme="g10"] .scheduler-row-head,
+[data-theme="apple-light"] .scheduler-row-head {
+  --scheduler-fuel-half: #8e6a00;
+  --scheduler-fuel-low: #ba4e00;
+}
 [data-theme="geist-dark"] { --scheduler-mark-done: var(--rux-text-primary); }
 
 /* Alert badges and card warnings use the same semantic inks as driver status. */
@@ -858,6 +866,9 @@
   --scheduler-head-idle-fill: #1a1a1a;
   --scheduler-head-idle-ink: #a1a1a1;
   --scheduler-head-quiet-ink: #a1a1a1;
+  /* The fuel's bands: Geist's green 900, its amber 700 at half, its amber
+     900 when low and its red 900 when critical. */
+  --scheduler-fuel-half: oklch(81.87% 0.1969 76.46);
 }
 /* Rux 100's state display is a 40px square, Carbon's md control height,
    the size of the board's buttons, with 8px either side of it: the column

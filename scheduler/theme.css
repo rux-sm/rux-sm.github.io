@@ -1441,14 +1441,24 @@
 @media (hover: hover) {
   [data-theme="rux-100"] .scheduler-bar--blue:not(.scheduler-bar--road):hover:not([aria-current="true"]) { --scheduler-edge: #454545; }
 }
-/* A grey trip on the road is filled, #474747, 2.0 to 1 against the other
-   trips and 2.3 on the black board, so the buses out now show at a glance
-   without a colour; white stays the selection's, and its green marks keep
-   3.9. Its hover is the accent layer's #525252, a step above it. */
+/* A GREY TRIP ON THE ROAD IS INVERTED, Geist's near-white #ededed in
+   near-black words, so the buses out now are the brightest things on the
+   board without a colour. Its other lines take Geist's light secondary grey,
+   #666666, 4.9 to 1 on the white; its hover is white itself. Its tick takes
+   Carbon's light-theme green 60, 4.3 to 1 on the white where the dark
+   theme's green held 2.0. A white ring would vanish on it, so a selected
+   trip on the road is ringed in the inverse focus blue, #0f62fe, 4.3 to 1
+   on the white and 4.2 on the black. */
 [data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road {
-  --scheduler-bg: var(--rux-layer-hover-03);
-  --scheduler-hover: var(--rux-layer-accent-03);
-  --scheduler-border: var(--rux-border-strong-01);
+  --scheduler-bg: #ededed;
+  --scheduler-hover: #ffffff;
+  --scheduler-fg: #0a0a0a;
+  --scheduler-border: #ededed;
+  --scheduler-driver-success: #198038;
+  --rux-layer-selected-inverse: var(--rux-focus-inverse);
+}
+[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--road :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
+  color: #666666;
 }
 /* A PANEL'S TILES ARE THE SAME CARD: a tile in the to-do list, the trip
    editor or the document panel, and a form in the Forms list, is the raised

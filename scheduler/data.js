@@ -13587,6 +13587,11 @@
   }
   const isMarked = mark => mark.rows.every(seat => seat.itinerary_printed);
 
+  /* A step marked on the board says so to Departures, which ticks its line
+     at once and reads that trip alone, rather than waiting for the change to
+     come back on its channel and reading every leg. */
+  const stepMarked = detail => document.dispatchEvent(new CustomEvent('scheduler:step-marked', { detail }));
+
   // The seats in hand follow the write, so a second print of the same file does not ask again.
   async function markItinerary(mark) {
     const { error } = client
@@ -13594,6 +13599,7 @@
       : { error: { message: 'Not connected.' } };
     if (error) { toast('error', 'The itinerary was not marked.', error.message); return; }
     mark.rows.forEach(seat => { seat.itinerary_printed = true; });
+    stepMarked({ table: 'trip_drivers', column: 'itinerary_printed', seats: mark.rows.map(seat => seat.id) });
     toast('success', 'Itinerary marked printed');
   }
 
@@ -15526,11 +15532,13 @@
     const setReminded = async (p, want) => {
       const { error } = await client.from('trip_drivers').update({ trip_reminder_sent: want }).eq('id', p.seat.id);
       if (error) { toast('error', 'The reminder was not marked.', error.message); return false; }
+      stepMarked({ trip: trip.id, table: 'trip_drivers', column: 'trip_reminder_sent', seats: [p.seat.id], done: want });
       return true;
     };
     const setInfoSent = async want => {
       const { error } = await client.from('trip_prep').upsert({ trip_id: trip.id, driver_info_sent: want }, { onConflict: 'trip_id' });
       if (error) { toast('error', 'The driver info was not marked.', error.message); return false; }
+      stepMarked({ trip: trip.id, table: 'trip_prep', column: 'driver_info_sent', done: want });
       return true;
     };
     const askReminded = async p => {
@@ -15550,6 +15558,7 @@
       const { data, error } = await client.rpc('mark_driver_told',
         { p_trip_id: trip.id, p_driver_id: p.driverId, p_leg: leg, p_role: p.seatRole, p_view: view });
       if (error || !data) { toast('error', 'The driver was not marked as told.', error?.message ?? 'Their answer is no longer Confirmed.'); return; }
+      stepMarked({ trip: trip.id, table: 'trip_driver_statuses', column: 'told', drivers: [p.driverId], leg });
       await again();
       toast('success', `${firstName(p.name)} is marked as told`);
     };

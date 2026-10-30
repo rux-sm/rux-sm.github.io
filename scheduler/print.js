@@ -3220,6 +3220,13 @@
     if (!client) return fail('Not connected, so the tick was not saved.');
     const { error } = await client.from(table).update({ [column]: want }).in('id', rows.map(row => row.id));
     if (error) return fail(`The tick did not save. ${error.message}`);
+    // Framed in the board, its Departures ticks the line at once and reads that trip alone.
+    try {
+      if (window.parent !== window) {
+        window.parent.document.dispatchEvent(new window.parent.CustomEvent('scheduler:step-marked',
+          { detail: { table, column, seats: rows.map(row => row.id), done: want } }));
+      }
+    } catch { /* a page of another origin framed this one */ }
     flash(want ? 'Marked printed.' : 'No longer marked printed.');
   }
 

@@ -170,23 +170,24 @@
     loading = null;
     if (again) { again = false; return load(); }
   }
-  /* One trip read again, for a step marked here: its legs leaving on the
-     days listed take the place of the ones held. A read of every leg under
-     way is let finish first, since it may have started before the write. */
+  /* One trip read again, for a step marked here or on the board: its legs
+     leaving on the days listed take the place of the ones held. A read of
+     every leg under way is let finish first, since it may have started
+     before the write. */
   async function loadTrip(tripId) {
     if (loading) await loading;
     let read;
     try {
       read = await Departures.readTrip(client, tripId, await readBasics());
     } catch {
-      await load();
+      if (shown) await load(); else await count();
       return;
     }
     const fresh = (read?.pages ?? []).filter(p => days.includes(p.day));
     pages = [...pages.filter(p => String(p.trip.id) !== String(tripId)), ...fresh]
       .sort((a, b) => String(a.day).localeCompare(String(b.day)) || soonest(a).localeCompare(soonest(b)));
     if (prepping()) said(countOf(pages));
-    redraw();
+    if (shown) redraw();
   }
   /* The count for the days to prep for, for the button while the list is
      shut or on another day. While it is shut, what the count read is kept as
@@ -195,16 +196,16 @@
     try {
       const read = await readDays(prepDays());
       said(countOf(read));
-      if (!shown) pages = read;
+      if (!shown) { days = prepDays(); pages = read; }
     } catch { /* the button keeps what it last said */ }
   }
   function said(now) {
     ahead = { ...now, known: true };
     document.dispatchEvent(new CustomEvent('scheduler:departures-summary'));
   }
-  /* A write made here is read again by `loadTrip`, so the change it sends
-     back on the channel is let pass, once: a seat's by the seat's id, the
-     trip's prep row by its trip. */
+  /* A write made here or on the board is read again by `loadTrip`, so the
+     change it sends back on the channel is let pass, once: a seat's by the
+     seat's id, any other row by its trip. */
   const own = [];
   const ownChange = mark => { const o = { ...mark, until: Date.now() + 10_000 }; own.push(o); return o; };
   function isOwn(change) {
@@ -596,6 +597,12 @@
      at once, and what is left goes down by one, as a read would draw them;
      the trip is then read again for the rest, and a refused write takes the
      line back. */
+  // A line marked done in hand, as a read would draw it, and what is left one less.
+  const markLine = (page, line, bus, me) => {
+    Object.assign(line, { state: 'done', at: new Date().toISOString(), by: me?.id ?? null });
+    page.left -= 1;
+    if (bus) bus.left -= 1; else page.tripLeft -= 1;
+  };
   async function markDone(id) {
     const step = steps.get(id);
     if (!step) return;
@@ -604,9 +611,7 @@
     const me = await account.person().catch(() => null);
     const bus = member ? page.buses.find(b => b.crew.includes(member)) : null;
     const was = { line: { state: line.state, at: line.at, by: line.by }, left: page.left, tripLeft: page.tripLeft, busLeft: bus?.left };
-    Object.assign(line, { state: 'done', at: new Date().toISOString(), by: me?.id ?? null });
-    page.left -= 1;
-    if (bus) bus.left -= 1; else page.tripLeft -= 1;
+    markLine(page, line, bus, me);
     asking = null;
     // A refusal said before goes as the next step is marked.
     if (refusal) { refusal = ''; draw(); } else drawLeg(key);
@@ -631,6 +636,54 @@
     }
     await loadTrip(page.trip.id);
   }
+  /* A STEP MARKED ON THE BOARD, by Remind, Tell or the driver details, or a
+     print the board or a form asked about, is said in `scheduler:step-marked`
+     as `{ trip, table, column, seats, drivers, leg, done }`. Its lines take
+     their tick at once, as a step marked here does, the trip alone is read
+     again, and the change the write sends back on the channel is let pass.
+     `column` is the step's column, or `told` for drivers marked as told,
+     whose line goes; `seats` names a crew step's seats, which find the trip
+     where `trip` is not given. */
+  document.addEventListener('scheduler:step-marked', async e => {
+    const m = e.detail ?? {};
+    const seats = (m.seats ?? []).map(String);
+    const drivers = (m.drivers ?? []).map(String);
+    const seated = p => p.buses.some(b => b.crew.some(c => seats.includes(String(c.seat?.id))));
+    const tripId = m.trip ?? pages.find(seated)?.trip.id;
+    const held = pages.filter(p => String(p.trip.id) === String(tripId));
+    if (!held.length) return;
+    if (m.table === 'trip_drivers') for (const id of seats) ownChange({ table: m.table, id });
+    else ownChange({ table: m.table, trip: tripId });
+    if (m.done !== false) {
+      const me = await account.person().catch(() => null);
+      for (const page of held) {
+        let changed = false;
+        if (m.column === 'told') {
+          const onLeg = !m.leg || window.SchedulerWeek.legByKey(page.trip, m.leg)?.key === page.leg;
+          for (const bus of onLeg ? page.buses : []) {
+            for (const c of bus.crew.filter(x => drivers.includes(String(x.driverId)))) {
+              const told = c.lines.filter(l => l.key === 'told');
+              c.lines = c.lines.filter(l => l.key !== 'told');
+              page.left -= told.length;
+              bus.left -= told.length;
+              changed ||= told.length > 0;
+            }
+          }
+        } else if (seats.length) {
+          for (const bus of page.buses) {
+            for (const c of bus.crew.filter(x => seats.includes(String(x.seat?.id)))) {
+              for (const l of c.lines) if (l.mark === m.column && l.state !== 'done') { markLine(page, l, bus, me); changed = true; }
+            }
+          }
+        } else {
+          for (const l of page.lines) if (l.mark === m.column && l.state !== 'done') { markLine(page, l, null, me); changed = true; }
+        }
+        if (changed && shown) drawLeg(keyOf(page));
+      }
+      if (prepping()) said(countOf(pages));
+    }
+    await loadTrip(tripId);
+  });
   const unask = () => { const id = asking; asking = null; drawLeg(stepLeg(id)); focusHeld(`tick:${id}`); };
   list.addEventListener('click', e => {
     const tick = e.target.closest('.scheduler-departures__tick');

@@ -3483,38 +3483,19 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-/* A FREE DAY OF THE SELECTED TRIP is an open mark, the size and corners of a
-   booked one but outlined and tinted rather than solid, so it reads as room
-   and a booked day as taken: blue where the driver is free every day of the
-   trip, the warning tone where only some, and joined into one bar across free
-   days in a row, as a trip's days are. A booked or day-off cell keeps its own
-   mark instead. A theme can name either tone, how far its outline is lightened
-   and how strong its tint is. */
+/* A FREE DAY OF THE SELECTED TRIP carries an icon and no mark, so the only
+   bars in the roster are the days that are taken: a check in the success
+   tone where the driver is free every day of the trip, and a caution in the
+   warning tone where only some. Centred in the cell, as a mark's drawing is.
+   A booked or day-off cell keeps its own mark instead. */
 .scheduler-avail__cell--on-day { position: relative; }
-.scheduler-avail__cell--open::before {
-  content: '';
+.scheduler-avail__free {
   position: absolute;
-  inset: 2px;
-  box-sizing: border-box;
-  border: 1px solid color-mix(in oklab, var(--scheduler-open-tone) calc(100% - var(--scheduler-open-lift, 0%)), #fff);
-  border-radius: var(--scheduler-mark-radius, 0);
-  background: color-mix(in srgb, var(--scheduler-open-tone) var(--scheduler-open-tint, 18%), transparent);
-  --scheduler-open-tone: var(--scheduler-avail-part, var(--rux-support-warning));
+  inset: 0;
+  margin: auto;
+  color: var(--scheduler-free-part, var(--rux-support-warning));
 }
-.scheduler-avail__cell--whole::before { --scheduler-open-tone: var(--scheduler-avail-whole, var(--rux-support-info)); }
-.scheduler-avail__cell--open-prev { overflow: visible; }
-.scheduler-avail__cell--open-next::before {
-  inset-inline-end: 0;
-  border-inline-end-width: 0;
-  border-start-end-radius: 0;
-  border-end-end-radius: 0;
-}
-.scheduler-avail__cell--open-prev::before {
-  inset-inline-start: -1px;
-  border-inline-start-width: 0;
-  border-start-start-radius: 0;
-  border-end-start-radius: 0;
-}
+.scheduler-avail__cell--whole > .scheduler-avail__free { color: var(--scheduler-free-whole, var(--rux-support-success)); }
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
   position: relative;

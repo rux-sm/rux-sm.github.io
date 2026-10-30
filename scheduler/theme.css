@@ -312,6 +312,13 @@
 :is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) .scheduler-bar--green {
   --scheduler-bg: var(--rux-notification-background-success); --scheduler-hover: var(--rux-tag-background-green);
 }
+/* The roster's free-day check and caution are drawn on white here, where
+   the success and warning tones alone fall under 3 to 1, so each is mixed
+   toward black until it holds 3. */
+:is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) {
+  --scheduler-free-whole: color-mix(in oklab, var(--rux-support-success) 80%, #000);
+  --scheduler-free-part: color-mix(in oklab, var(--rux-support-warning) 60%, #000);
+}
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--teal {
   --scheduler-bg: #d9fbfb; --scheduler-hover: var(--rux-tag-background-teal);
 }
@@ -832,22 +839,16 @@
 [data-theme="g90"] .scheduler-avail__cell--tight {
   --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-warning) 32%, transparent);
 }
-/* The roster's marks in rux-dark and rux-100 are the blue and red containers,
-   as their bars are, with no edge, so a run of days reads as one stretch and
-   the grid stays quiet; a short rest is the same blue with its hours in the warning
+/* The roster's marks in rux-dark are the blue and red containers, as its
+   bars are, with no edge, so a run of days reads as one stretch and the grid
+   stays quiet; a short rest is the same blue with its hours in the warning
    yellow, and a shorter one the same blue with them in a light red, the error
-   red lifted enough to read on the blue. */
+   red lifted enough to read on the blue. Rux 100 draws its own marks below. */
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) {
   --scheduler-rest-tone: #d2a106;
-  /* A free day is the booked blue and a partly free one the short rest's
-     amber, outlined in a lighter step of the same colour over a tint of it. */
-  --scheduler-avail-whole: var(--rux-tag-background-blue);
-  --scheduler-avail-part: var(--scheduler-rest-tone);
-  --scheduler-open-lift: 50%;
-  --scheduler-open-tint: 45%;
 }
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--rux-tag-background-blue); color: var(--rux-support-warning); }
-:is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
+[data-theme="rux-dark"] .scheduler-avail__cell--tight { --scheduler-avail-fill: var(--rux-tag-background-blue); color: var(--rux-support-warning); }
+[data-theme="rux-dark"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
 /* The time at the yard is drawn as the roster's marks are: a solid tile with
    no edge, grey for a normal gap and the short rest's yellow, in dark text,
    for a short one. */
@@ -930,15 +931,15 @@
    beside the destination rather than part of its name. */
 [data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: #a1a1a1; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
-   pane's sheet, every row parted by the board's one line. A booked
-   day is the board's confirmed blue, Geist's blue 100, with its hours of
-   rest in gray 900 at the regular weight a trip's driver names take; a
-   short rest's hours are amber 900, a shorter one's red 900.
-   A day off is the board's unconfirmed red, Geist's red 100 with its reason
-   in red 900, because a driver away is a trip that cannot run as it stands,
-   as an unconfirmed one is.
-   A day free for the picked trip is drawn below, grey for the whole of it
-   and amber for only part. */
+   pane's sheet, every row parted by the board's one line. A mark carries
+   no words but a rest's hours, so its fill is all that says it is there,
+   and each is a solid Geist 900, the step the board's bars write in, 6.4
+   to 1 or more on the sheet, where the bars' 100 was 1.1. There are two:
+   a booked day is blue 900 and a day off red 900, the driver away, and a
+   rest only writes its hours on the blue, in the sheet's near-black at the
+   regular weight a trip's driver names take, so no colour means two things.
+   A day free for the picked trip carries the shared check or caution, in
+   Geist's green 900 and amber 900, the theme's success and warning. */
 /* No rule runs between the days, on the board or in the roster: each bus
    and each driver keeps the line under its row, the day band names the
    columns, and the trips and marks themselves show where a day starts. */
@@ -949,20 +950,15 @@
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
-  --scheduler-avail-fill: oklch(22.17% 0.069 259.89);
-  color: #a1a1a1;
-}
-[data-theme="rux-100"] .scheduler-avail__cell--tight {
-  --scheduler-avail-fill: oklch(22.17% 0.069 259.89);
-  color: var(--rux-support-warning);
+  --scheduler-avail-fill: oklch(71.7% 0.1648 250.794);
+  color: var(--scheduler-region, #0a0a0a);
 }
 [data-theme="rux-100"] .scheduler-avail__cell--rest > span { font-weight: 400; }
-[data-theme="rux-100"] .scheduler-avail__cell--short { color: var(--rux-text-error); }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
-  --scheduler-avail-fill: oklch(22.1% 0.0657 15.11);
-  color: var(--rux-text-error);
+  --scheduler-avail-fill: oklch(69.96% 0.2136 22.03);
+  color: var(--scheduler-region, #0a0a0a);
 }
-/* A roster mark carries no drawing: the grey bar already says booked and
+/* A roster mark carries no drawing: the blue mark already says booked and
    the red one away, and a drawing on the first day of every bar filled the
    roster with icons. Each cell's words still name its trip or the reason
    for the time off. The rule that parts the two weeks in the day band goes
@@ -1584,8 +1580,8 @@
 }
 /* RUX 100'S AMBER IS DRAWN AS GEIST DRAWS A WARNING: its amber 100 for the
    surface and its amber 900 for the words and marks, 7.7 to 1, hovering to
-   its amber 200, where the 900 holds 7.2. The placeholder trip, a short rest
-   at the yard and a day free for only part of the picked trip all take it. */
+   its amber 200, where the 900 holds 7.2. The placeholder trip and a short
+   rest at the yard take it. */
 [data-theme="rux-100"] {
   --scheduler-amber-bg: oklch(22.46% 0.0538 76.04);
   --scheduler-amber-fg: oklch(77.21% 0.1991 64.28);
@@ -1596,16 +1592,6 @@
 [data-theme="rux-100"] .scheduler-yard--short {
   background: var(--scheduler-amber-bg);
   color: var(--scheduler-amber-fg);
-}
-[data-theme="rux-100"] .scheduler-avail__cell--open:not(.scheduler-avail__cell--whole)::before {
-  border-color: var(--scheduler-amber-fg);
-  background: var(--scheduler-amber-bg);
-}
-/* A day free for the whole of the picked trip takes the same pattern in
-   Geist's grey: its gray 100, #1a1a1a, inside its gray 900 edge, #a1a1a1. */
-[data-theme="rux-100"] .scheduler-avail__cell--whole::before {
-  border-color: #a1a1a1;
-  background: #1a1a1a;
 }
 /* A trip not yet confirmed is drawn as Geist draws danger: its red 100 for
    the surface and its red 900 for the words, 5.7 to 1, hovering to its red

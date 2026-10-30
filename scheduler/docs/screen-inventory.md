@@ -215,8 +215,8 @@ The grid is a table edge to edge in the pane, its day band right under the
 pane's head and level with the board's, with the drivers in priority order:
 a rule parts one priority from the next, and a name's title says its
 priority. With a trip selected, its days are shaded in the header, and each
-driver free on one of them has a mark there: a blue outlined, tinted bar when free every day,
-and a warning-coloured one when free only some.
+driver free on one of them has an icon there and no mark: a check in the success tone when free
+every day, and a caution in the warning tone when free only some.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in
@@ -229,7 +229,7 @@ Pick out trips, or Show every trip while they are picked, is the name's own
 press. A busy day selects its
 trip, the next one each click on a day of two. A busy day after a trip the day
 before shows the hours off between them, from the earlier trip's return to the
-yard to the later one's departure: "15h", in the warning tone under 10 hours and the danger tone under 8,
+yard to the later one's departure: "15h", in the warning tone under 10 hours and the danger tone under 8, except in Rux 100, whose solid marks write every rest in one colour,
 "!" where the two overlap, and "?" until both trips have times.
 
 With two weeks on the board the grid shows both, its day columns the same 32px

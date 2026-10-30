@@ -10580,13 +10580,20 @@
   }
 
   /* Marks the selected trip's days down the roster, so "who is free then"
-     needs no counting; null clears it. Each free cell on those days is an open
-     mark, joined to an open neighbour, and a driver free on every day shown is
-     whole, green rather than grey. */
+     needs no counting; null clears it. Each free cell on those days carries
+     an icon rather than a mark, so the roster's only bars stay the days that
+     are taken: a check where the driver is free on every day shown, whole,
+     and a caution where only on some. */
   const OPEN = ['scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day', 'scheduler-avail__cell--open',
-    'scheduler-avail__cell--whole', 'scheduler-avail__cell--open-prev', 'scheduler-avail__cell--open-next'];
+    'scheduler-avail__cell--whole'];
+  const FREE_GLYPH = '#m-check_circle-fill';
+  const PART_GLYPH = '#m-warning-fill';
   function markAvailDays(start, span) {
-    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) c.classList.remove(...OPEN);
+    for (const c of availGrid.querySelectorAll('.scheduler-avail__cell--on-day, .scheduler-avail__day--on-day')) {
+      if (c.classList.contains('scheduler-avail__cell--open')) c.removeAttribute('title');
+      c.classList.remove(...OPEN);
+    }
+    for (const icon of availGrid.querySelectorAll('.scheduler-avail__free')) icon.remove();
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -10607,11 +10614,10 @@
       for (const c of open) {
         c.classList.add('scheduler-avail__cell--open');
         if (all) c.classList.add('scheduler-avail__cell--whole');
-        const prev = c.previousElementSibling;
-        if (open.includes(prev)) {
-          c.classList.add('scheduler-avail__cell--open-prev');
-          prev.classList.add('scheduler-avail__cell--open-next');
-        }
+        const icon = svgUse(all ? FREE_GLYPH : PART_GLYPH, '16', '0 0 32 32');
+        icon.classList.add('scheduler-avail__free');
+        c.appendChild(icon);
+        c.title = all ? 'Free for the whole trip' : 'Free for part of the trip';
       }
     }
   }

@@ -445,13 +445,13 @@ expect('relief specimens expose the role icon without crew overflow', window.Sch
 console.log('\n  The bus column');
 /* A head as data.js makes one, its number in the top row, drawn with a bus
    of samsara-now's answer. */
-const busHead = (live, week = true, bus = { id: 'b1', capacity: 52 }) => {
+const busHead = (live, bus = { id: 'b1', capacity: 52 }) => {
   const head = document.createElement('div');
   head.className = 'scheduler-row-head';
   const top = document.createElement('div');
   top.className = 'scheduler-row-head__top';
   head.appendChild(top);
-  BusHead.draw(head, bus, live && { bus_id: 'b1', drivers: [], fault: null, faults: [], seen: new Date().toISOString(), ...live }, { week });
+  BusHead.draw(head, bus, live && { bus_id: 'b1', drivers: [], fault: null, faults: [], seen: new Date().toISOString(), ...live });
   return head;
 };
 const levels = h => h.querySelectorAll('.scheduler-row-head__level').map(g => [g.dataset.tank, g.dataset.level]);
@@ -484,12 +484,14 @@ expect('a bus with its engine running fills the display, moving or idling; one o
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]
     .map(l => has(busHead(l), '.scheduler-row-head__dial--running')),
   [true, true, false, false]);
-expect('another week, or no answer for the bus: the inspection alone, amber within 45 days, and no seats',
-  [busHead({ engine: 'on', mph: 64, fuel: 72 }, false).querySelectorAll('.scheduler-row-head__dial').length,
-    line(busHead(null, true)),
-    has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 20 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon'),
-    has(busHead(null, false, { capacity: 56, inspection_exp: new Date(Date.now() + 90 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon')],
-  [0, null, true, false]);
+expect('no answer for the bus: the inspection alone, amber within 45 days, and no seats',
+  [line(busHead(null)),
+    has(busHead(null, { capacity: 56, inspection_exp: new Date(Date.now() + 20 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon'),
+    has(busHead(null, { capacity: 56, inspection_exp: new Date(Date.now() + 90 * 864e5).toISOString().slice(0, 10) }), '.scheduler-row-head__insp--soon')],
+  [null, true, false]);
+expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
+  BusHead.tipOf({ inspection_exp: new Date(Date.now() + 20 * 864e5).toISOString().slice(0, 10) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
+  ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

@@ -252,6 +252,15 @@
   gap: var(--rux-spacing-02);
   text-align: start;
 }
+/* Below the last row the board's own sheet carries that rule on to its foot,
+   on the head's own pixel, drawn in the pane's background so it stays put as
+   the board scrolls and the heads cover it where there are rows. */
+.scheduler-frame > .scheduler-week:not(.scheduler-week--static) {
+  background-image: linear-gradient(var(--rux-border-subtle-01), var(--rux-border-subtle-01));
+  background-size: 1px 100%;
+  background-position: calc(var(--scheduler-head-w) - 1px) 0;
+  background-repeat: no-repeat;
+}
 .scheduler-row-head__top {
   display: flex;
   align-items: center;
@@ -357,8 +366,8 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
 .scheduler-row-head__dot[data-tone="warning"] { background: var(--scheduler-head-low); }
 .scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
-/* In the week that holds today, the dial and the two levels; in any other
-   week, the seats and the inspection at the foot. */
+/* For a bus Samsara answers for, the dial and the fuel in every week; for
+   any other, the inspection at the foot. */
 /* The body clips, not the head, whose number's tip must reach past it.
    Its display and fuel stand above the number's click layer, so presses
    go through them to it: the whole head is one button, and the tip says

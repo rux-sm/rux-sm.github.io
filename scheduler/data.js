@@ -659,8 +659,8 @@
      is out from ten minutes before its yard-out to its yard-back whatever the
      engine is doing, and in the two hours either side only while it runs.
      The samsara-now Edge Function is asked once a minute while the page is
-     in view and the board shows the week that holds today, whose bus heads
-     bus-head.js draws live, or such a bar is on it. */
+     in view, for the bus heads bus-head.js draws live in every week and the
+     bars out on the road. */
   const ROAD_EVERY = 60e3;
   const Road = window.SchedulerRoad;
   const Live = window.SchedulerLiveTrip;
@@ -674,8 +674,6 @@
   };
 
   let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false, roadLive = null;
-  // Whether the week on the board holds today, which render() says.
-  let roadWeek = false;
   const BusHead = window.SchedulerBusHead;
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
   const roadEta = Road.arrivals((a, b) => driveBetween(a, b).then(d => d?.min ?? null), () => drawRoad());
@@ -698,10 +696,6 @@
   async function askRoad() {
     if (roadStopped || roadBusy || !client || document.hidden) return;
     const out = [...gridEl.querySelectorAll('.scheduler-bar[data-road-from][data-bus-id]')].filter(roadOut);
-    if (!out.length && !roadWeek) {
-      if (roadAnswer) { roadAnswer = null; drawRoad(); }
-      return;
-    }
     // Each bus's path from two hours before its leg leaves the yard; of two
     // legs out on one bus, the later.
     const since = {};
@@ -727,7 +721,7 @@
       const bus = panelIndex.buses.get(head.dataset.busId);
       if (!bus) continue;
       const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
-      BusHead.draw(head, bus, live, { week: roadWeek, tip: head.querySelector('.scheduler-bus-tip') });
+      BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-bus-tip') });
     }
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
       const bus = roadBusOf(bar);
@@ -1116,7 +1110,7 @@
         head.querySelector('.scheduler-bus-tip')?.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', words));
       }
       if (kit.childElementCount) top.appendChild(kit);
-      if (r.bus) BusHead.draw(head, r.bus, null, { week: false });
+      if (r.bus) BusHead.draw(head, r.bus, null);
 
       /* The bus's equipment at the head's foot, a slot each, the sleeper on
          the left and the lift on the right, so a lift stands in the same
@@ -1220,7 +1214,6 @@
     else say(null);
 
     // The new bars and heads take what Samsara last said, and ask again if it is old.
-    roadWeek = strip ? todayInView() : !!todayCell;
     drawRoad();
     if (Date.now() - roadAsked > ROAD_EVERY) askRoad();
 
@@ -18041,7 +18034,6 @@
     endStripHold();
     setRange(cursor, lastShown(cursor));
     drawRoster();
-    roadFollow();
     if (!stripRoomy()) show();
     else if (liveHeld) liveRefresh();
   }
@@ -18053,18 +18045,6 @@
     schEl.scrollTo({ left: schEl.scrollLeft, behavior: 'instant' });
     placedLeft = schEl.scrollLeft;
     endStripHold();
-  }
-  // Whether today is in the week in view, which a strip's bus heads and Samsara's asking follow.
-  function todayInView() {
-    const today = iso(new Date());
-    return iso(cursor) <= today && today <= iso(lastShown(cursor));
-  }
-  function roadFollow() {
-    const was = roadWeek;
-    roadWeek = todayInView();
-    if (roadWeek === was) return;
-    drawRoad();
-    if (roadWeek && Date.now() - roadAsked > ROAD_EVERY) askRoad();
   }
   schEl?.addEventListener('scroll', () => {
     if (!scrolling() || !stripStart) return;

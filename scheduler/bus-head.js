@@ -5,7 +5,7 @@
    top; the type is the number's toggletip's to show. An engine lamp is the number's
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
-   - In the week that holds today, for a bus Samsara answers for, its
+   - For a bus Samsara answers for, in whatever week is shown, its
      state in a 38px display under the number, so the fuel under it stands
      at one height down the column. While the engine runs the display is
      filled: moving, the speed over mph on green, amber over SPEEDING;
@@ -18,18 +18,19 @@
      while it is low, since a normal DEF needs nothing of the office, as a
      tag at the foot of the state's block, across the dial's open foot while
      moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
-     is, and when it was last seen, are the number's toggletip's.
-   - In any other week, or for a bus Samsara does not answer for: its
-     inspection expiry, in the warning colour within WARN_DAYS. Its seats
-     are the number's toggletip's.
+     is, when it was last seen and its inspection are the number's
+     toggletip's.
+   - For a bus Samsara does not answer for: its inspection expiry, in the
+     warning colour within WARN_DAYS. Its seats are the number's
+     toggletip's.
    While the engine runs the fuel bar is coloured by its band: green past
    half, amber at HALF or under, orange when low and red when critical.
    With the engine off it is a neutral grey until low or critical, so a
    bus at rest asks nothing unless its tank does.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
-   is the bus's row, `live` its bus of samsara-now's answer or null, and
-   `opts.week` true while the shown week holds today. `tipOf(bus, live)` is
+   is the bus's row and `live` its bus of samsara-now's answer or null; what
+   the bus is doing now stands in every week. `tipOf(bus, live)` is
    the lines the number's toggletip adds. data.js draws every head with it,
    and tools/check-bar.mjs checks each state.
    ========================================================================== */
@@ -157,7 +158,7 @@
   }
 
   function draw(head, bus, live, opts = {}) {
-    const shown = opts.week && live ? live : null;
+    const shown = live;
     const key = JSON.stringify(shown ? [shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
       shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp]);
     if (head.dataset.live === key) return;
@@ -237,6 +238,7 @@
       [live.fuel != null ? `Fuel ${live.fuel}%` : null, live.def != null ? `DEF ${live.def}%` : null].filter(Boolean).join(' · ') || null,
       live.odometer != null ? `${live.odometer.toLocaleString()} mi` : null,
       live.seen ? `Last seen ${ago(live.seen)} ago` : null,
+      inspection(bus)?.words,
       live.fault ? [lampOf(live).word, ...(live.faults ?? [])].join(' · ') : null,
     ].filter(Boolean);
   }

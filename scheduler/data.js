@@ -14293,10 +14293,15 @@
       const trip = panelIndex.trips.get(id) ?? (String(editing?.id) === id ? editing.trip : null);
       const dest = trip?.destination || 'this trip';
       const asks = async (viewer, what) => !viewer.dirty || ask(`Show ${what} for ${dest}?`, 'What was typed in the panel is not kept.');
+      /* Each panel is looked at again after its ask, since a link such as a
+         Departures line's may have opened it on this trip in the meantime,
+         and what the link asked for stays. */
       const forms = viewers.forms;
-      if (forms?.el && !forms.el.hidden && forms.trip !== id && await asks(forms, 'the forms')) openForms(null, id, null);
+      const formsAway = () => forms?.el && !forms.el.hidden && forms.trip !== id;
+      if (formsAway() && await asks(forms, 'the forms') && formsAway()) openForms(null, id, null);
       const doc = viewers.doc;
-      if (doc?.el && !doc.el.hidden && doc.trip !== id && doc.docType && trip && await asks(doc, 'the file')) {
+      const docAway = () => doc?.el && !doc.el.hidden && doc.trip !== id && doc.docType;
+      if (docAway() && trip && await asks(doc, 'the file') && docAway()) {
         const same = documentsOf(trip).find(d => String(d.label || '').toLowerCase() === doc.docType);
         if (same) openDocument(same, null, trip);
         else doc.showNoFile(FILE_NAMES[doc.docType] ?? doc.docType, id);
@@ -17908,14 +17913,28 @@
      trip unless `open` is false, as a pick from Search trips asks. A link
      that names a leg takes that leg's bar, so a pickup's line in Departures
      never opens the drop-off; one that names none takes
-     the trip's first bar on the week. */
+     the trip's first bar on the week.
+     A bar already drawn is taken where it is, and the week stays put. Any
+     other moves the week to the trip's, drawn from what is held where the
+     last read covers it, so the trip opens without waiting on the network;
+     only a week no read covers, or a trip the held read draws no bar of,
+     waits for the read. A leg with no bus has no bar, and another read
+     would not draw one. The live channel is what keeps what is held current. */
   async function goToTrip(id, day, { open = true, leg = null } = {}) {
     if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) { show(); return; }
     stopStripScroll();
-    cursor = firstDayOf(parseISO(day));
-    await show();
-    const bars = [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
-    const bar = (leg && bars.find(b => barOnLeg(b, leg))) || bars[0];
+    const bars = () => [...gridEl.querySelectorAll(`.scheduler-bar[data-trip-id="${CSS.escape(id)}"]`)];
+    const legBar = () => (leg ? bars().find(b => barOnLeg(b, leg)) : bars()[0]);
+    let bar = legBar();
+    if (!bar) {
+      cursor = firstDayOf(parseISO(day));
+      const held = holds(cursor);
+      const read = show();
+      // A week held is drawn at once, unless a bar in hand or a swipe holds the drawing back.
+      const drawn = held && (scrolling() || (shown && iso(shown) === iso(cursor)));
+      if (!drawn || !bars().length) await read;
+      bar = legBar() || bars()[0];
+    }
     if (!bar) {
       // A cancelled trip has no bar, so its link opens the cancelled dialog.
       const { data: trip } = await withTimeout(client.from('trips')

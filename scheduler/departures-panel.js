@@ -31,10 +31,14 @@
    is marked by hand here: the mark of a step still to do is a button, which
    asks in the line and writes on a yes.
 
-   The days' trips are read fresh when the list opens, when the day changes
+   The list opens on the days' trips as the button's count last read them
+   and reads them again behind, and reads them again when the day changes
    and when a step, a seat or a trip changes, on the `scheduler-departures`
-   channel. The count on the Departures button is the legs not ready on the days to
-   prep for, said in `scheduler:departures-summary`.
+   channel. A read draws again only the legs it changed. A step marked here
+   takes its tick at once and reads its trip alone, and the change it sends
+   back on the channel is not read again. The count on the Departures button
+   is the legs not ready on the days to prep for, said in
+   `scheduler:departures-summary`.
 
    Needs billing.js, follow-up.js, checklist.js, requirements.js,
    leg-facts.js and departures.js loaded first, and /account.js.
@@ -103,7 +107,8 @@
   const unfolded = new Set(); // the legs whose finished trip lines are shown
   const steps = new Map();    // the steps drawn that can be marked by hand, by their line's id
   let asking = null;          // the step whose line asks whether to mark it done, by that id
-  let failure = '';
+  let failure = '';         // why the days' legs did not load
+  let refusal = '';         // why the last step marked here was not, until the next mark or read
   let shown = false;
   let reading = false;        // whether the days' legs are being read, for the word an empty day says
   let ahead = { legs: 0, ready: 0, known: false };   // the count for the days to prep for
@@ -153,29 +158,68 @@
       try {
         pages = await readDays(days);
         failure = '';
+        refusal = '';
       } catch (e) {
         failure = `Departures did not load. ${e?.message || e}`;
       }
       reading = false;
       if (prepping()) said(countOf(pages));
-      draw();
+      redraw();
     })();
     await loading;
     loading = null;
     if (again) { again = false; return load(); }
   }
-  // The count alone for the days to prep for, for the button while the list is shut or on another day.
+  /* One trip read again, for a step marked here: its legs leaving on the
+     days listed take the place of the ones held. A read of every leg under
+     way is let finish first, since it may have started before the write. */
+  async function loadTrip(tripId) {
+    if (loading) await loading;
+    let read;
+    try {
+      read = await Departures.readTrip(client, tripId, await readBasics());
+    } catch {
+      await load();
+      return;
+    }
+    const fresh = (read?.pages ?? []).filter(p => days.includes(p.day));
+    pages = [...pages.filter(p => String(p.trip.id) !== String(tripId)), ...fresh]
+      .sort((a, b) => String(a.day).localeCompare(String(b.day)) || soonest(a).localeCompare(soonest(b)));
+    if (prepping()) said(countOf(pages));
+    redraw();
+  }
+  /* The count for the days to prep for, for the button while the list is
+     shut or on another day. While it is shut, what the count read is kept as
+     the list too, so opening it draws at once. */
   async function count() {
     try {
-      said(countOf(await readDays(prepDays())));
+      const read = await readDays(prepDays());
+      said(countOf(read));
+      if (!shown) pages = read;
     } catch { /* the button keeps what it last said */ }
   }
   function said(now) {
     ahead = { ...now, known: true };
     document.dispatchEvent(new CustomEvent('scheduler:departures-summary'));
   }
+  /* A write made here is read again by `loadTrip`, so the change it sends
+     back on the channel is let pass, once: a seat's by the seat's id, the
+     trip's prep row by its trip. */
+  const own = [];
+  const ownChange = mark => { const o = { ...mark, until: Date.now() + 10_000 }; own.push(o); return o; };
+  function isOwn(change) {
+    const now = Date.now();
+    for (let i = own.length - 1; i >= 0; i--) if (own[i].until < now) own.splice(i, 1);
+    const row = change?.new ?? {};
+    const i = own.findIndex(o => o.table === change?.table
+      && (o.table === 'trip_drivers' ? String(row.id) === String(o.id) : String(row.trip_id) === String(o.trip)));
+    if (i < 0) return false;
+    own.splice(i, 1);
+    return true;
+  }
   let soon = null;
-  const refresh = () => {
+  const refresh = change => {
+    if (change && isOwn(change)) return;
     clearTimeout(soon);
     soon = setTimeout(() => { if (shown) load(); if (!shown || !prepping()) count(); }, 1500);
   };
@@ -465,8 +509,16 @@
   const none = words => el('p', 'rux--tile scheduler-to-do__none', words);
   const nothing = alone => none(reading ? 'Loading…' : alone ? 'No trips leaving tomorrow.' : 'No trips leaving this weekend or Monday.');
 
+  /* What each leg on screen was drawn from, by its key in list order, so a
+     read that changed nothing draws nothing and one that changed a leg draws
+     that leg alone. The day is in it, since a leg says Today or Tomorrow. */
+  let drawn = new Map();
+  const printOf = page => `${dayFrom(0)}|${JSON.stringify(page)}`;
+  const listed = () => days.flatMap(d => pages.filter(p => p.day === d));
+  const stepLeg = id => String(id ?? '').split('|')[0];
+
   function draw() {
-    const wrong = failure;
+    const wrong = failure || refusal;
     error.textContent = wrong;
     error.hidden = !wrong;
     // The list is built again, so a heading that had the focus is given it back.
@@ -475,10 +527,36 @@
     /* One list, the days' legs in order with no heading between, since each
        leg says its day; with nothing leaving a tile says so, and while the
        read fails the error above stands alone. */
-    const legs = days.flatMap(d => pages.filter(p => p.day === d));
+    const legs = listed();
     list.replaceChildren(legs.length ? legList(legs) : failure ? '' : nothing(days.length === 1));
+    drawn = new Map(legs.map(p => [keyOf(p), printOf(p)]));
     if (asking && !steps.has(asking)) asking = null;
     if (held) focusHeld(held);
+  }
+
+  /* One leg built again in its place, as a press or a read changes it; the
+     open leg stays open and a control that had the focus is given it back. */
+  function drawLeg(key) {
+    const page = pages.find(p => keyOf(p) === key);
+    const old = [...list.querySelectorAll('.scheduler-departures__leg')]
+      .find(n => n.dataset.key === key)?.closest('.scheduler-to-do__tile');
+    if (!page || !old) { draw(); return; }
+    const held = old.contains(document.activeElement) ? document.activeElement.dataset?.hold : null;
+    for (const id of [...steps.keys()]) if (stepLeg(id) === key) steps.delete(id);
+    old.replaceWith(legItem(page));
+    drawn.set(key, printOf(page));
+    if (asking && !steps.has(asking)) asking = null;
+    if (held) focusHeld(held);
+  }
+
+  // After a read: the legs it changed, or the whole list where the legs or the error did.
+  function redraw() {
+    const legs = listed();
+    const keys = [...drawn.keys()];
+    const same = legs.length && !failure && !refusal && error.hidden && legs.length === keys.length
+      && legs.every((p, i) => keyOf(p) === keys[i]);
+    if (!same) { draw(); return; }
+    for (const p of legs) if (drawn.get(keyOf(p)) !== printOf(p)) drawLeg(keyOf(p));
   }
 
   // -- behaviour ------------------------------------------------------------
@@ -514,25 +592,55 @@
   /* A step marked done by hand. Its mark asks in the line; Yes writes what
      the place the step is done writes, on the driver's seat or on the trip's
      prep row, and the database keeps when and whose it was. No, and Escape,
-     write nothing. */
+     write nothing. The line takes its tick, the time and this person's face
+     at once, and what is left goes down by one, as a read would draw them;
+     the trip is then read again for the rest, and a refused write takes the
+     line back. */
   async function markDone(id) {
     const step = steps.get(id);
     if (!step) return;
     const { line, page, member } = step;
+    const key = keyOf(page);
+    const me = await account.person().catch(() => null);
+    const bus = member ? page.buses.find(b => b.crew.includes(member)) : null;
+    const was = { line: { state: line.state, at: line.at, by: line.by }, left: page.left, tripLeft: page.tripLeft, busLeft: bus?.left };
+    Object.assign(line, { state: 'done', at: new Date().toISOString(), by: me?.id ?? null });
+    page.left -= 1;
+    if (bus) bus.left -= 1; else page.tripLeft -= 1;
+    asking = null;
+    // A refusal said before goes as the next step is marked.
+    if (refusal) { refusal = ''; draw(); } else drawLeg(key);
+    focusHeld(`leg:${key}`);
+    if (prepping()) said(countOf(pages));
+    const echo = ownChange(member ? { table: 'trip_drivers', id: member.seat.id } : { table: 'trip_prep', trip: page.trip.id });
     let refused = null;
     try {
       ({ error: refused } = member
         ? await client.from('trip_drivers').update({ [line.mark]: true }).eq('id', member.seat.id)
         : await client.from('trip_prep').upsert({ trip_id: page.trip.id, [line.mark]: true }, { onConflict: 'trip_id' }));
     } catch (e) { refused = e; }
-    asking = null;
-    if (refused) { failure = `${line.label} was not marked. ${refused.message || refused}`; draw(); return; }
-    await load();
+    if (refused) {
+      Object.assign(line, was.line);
+      Object.assign(page, { left: was.left, tripLeft: was.tripLeft });
+      if (bus) bus.left = was.busLeft;
+      if (own.includes(echo)) own.splice(own.indexOf(echo), 1);
+      refusal = `${line.label} was not marked. ${refused.message || refused}`;
+      if (prepping()) said(countOf(pages));
+      draw();
+      return;
+    }
+    await loadTrip(page.trip.id);
   }
-  const unask = () => { const id = asking; asking = null; draw(); focusHeld(`tick:${id}`); };
+  const unask = () => { const id = asking; asking = null; drawLeg(stepLeg(id)); focusHeld(`tick:${id}`); };
   list.addEventListener('click', e => {
     const tick = e.target.closest('.scheduler-departures__tick');
-    if (tick) { asking = tick.dataset.step; draw(); focusHeld(`yes:${asking}`); return; }
+    if (tick) {
+      const was = asking;
+      asking = tick.dataset.step;
+      for (const key of new Set([stepLeg(was), stepLeg(asking)])) if (key) drawLeg(key);
+      focusHeld(`yes:${asking}`);
+      return;
+    }
     const answer = e.target.closest('[data-answer]');
     if (!answer || !asking) return;
     if (answer.dataset.answer !== 'yes') { unask(); return; }

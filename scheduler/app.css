@@ -2113,7 +2113,7 @@ button.scheduler-row-head__num::after {
   margin-inline: var(--rux-spacing-02);
   border-radius: 1px;
   background:
-    linear-gradient(color-mix(in srgb, currentColor 60%, transparent), color-mix(in srgb, currentColor 60%, transparent)) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
+    linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     color-mix(in srgb, currentColor 22%, transparent);
 }
 .scheduler-road__track::after {
@@ -2193,7 +2193,6 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__duty[data-tone="warning"] { color: var(--scheduler-mark-warning); }
 .scheduler-crew__duty[data-tone="rest"] { color: var(--scheduler-mark-rest); }
 .scheduler-crew__duty[data-tone="neutral"] { color: var(--rux-status-gray); }
-.scheduler-crew--wheel > .scheduler-crew__name { font-weight: 600; }
 /* A driver Samsara has in another bus: the red stop sign, the name in red
    and the bus after it. */
 .scheduler-crew__duty--away { color: var(--scheduler-mark-error); }

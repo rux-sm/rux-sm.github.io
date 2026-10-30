@@ -905,7 +905,8 @@
 }
 /* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the
    update and the drivers with the destination and times, is written in the
-   trip's own Geist 900 on its 100, so a trip reads as one shape. The
+   trip's own Geist 900 on its 100, so a trip reads as one shape; only the
+   drivers' names are white, below. The
    destination stays bold. A trip with no status colour, a grey or a picked
    one, keeps Geist's grey 900 for these lines. A mark with its own colour
    inside them, a driver away or short on hours, keeps it. */
@@ -916,6 +917,10 @@
 [data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--cyan) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   color: var(--scheduler-fg);
 }
+/* Its drivers' names are Geist's white, its gray 1000, as every other
+   theme writes them near-white on its footer, so who drives reads first
+   down the bars. A driver in another bus keeps the red. */
+[data-theme="rux-100"] .scheduler-bar .scheduler-crew:not(.scheduler-crew--away) > .scheduler-crew__name { color: #ededed; }
 [data-theme="rux-100"] .scheduler-bar__ampm { opacity: .9; }
 [data-theme="rux-100"] .scheduler-bar__none { opacity: .75; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the

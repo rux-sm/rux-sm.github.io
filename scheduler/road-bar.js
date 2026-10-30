@@ -16,7 +16,7 @@
    - The contact row stays, as on any bar. What belongs to the bus, its
      speed, fuel and DEF, is the bus column's, bus-head.js's.
    - The drivers, in the update row's place too, a seat for each driver:
-     the one at the wheel first and bold behind the steering wheel; every
+     the one at the wheel first, behind the steering wheel; every
      seat with its duty mark, with no duty reading an Unknown duty question
      mark, and under it a meter of the driving hours left, amber under one,
      or while resting of the rest so far, its reading inside. A driver

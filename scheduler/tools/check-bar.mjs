@@ -347,7 +347,7 @@ expect('under an hour left, the bar and the hours are amber',
 expect('every driver wears their duty, the one at the wheel the steering wheel',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => useOf(c.querySelector('.scheduler-crew__duty'))),
   ['#i-BPMN-link--fill', '#i-asleep--filled']);
-expect('two drivers: both in the row, the one at the wheel bold',
+expect('two drivers: both in the row, the one at the wheel first',
   [...lit('Two drivers').querySelectorAll('.scheduler-crew')].map(c => [c.dataset.duty, c.classList.contains('scheduler-crew--wheel')]),
   [['driving', true], ['sleeper', false]]);
 expect('driver rest is no problem of the bus\'s', say(lit('Resting')), null);

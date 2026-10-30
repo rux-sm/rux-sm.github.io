@@ -650,7 +650,7 @@
   }
 
   const cardSectionOf = opener => opener.matches('.scheduler-bar__alert') ? 'needs'
-    : opener.matches('.scheduler-road__dot') ? 'road' : 'updates';
+    : opener.matches('.scheduler-bar__drivers') ? 'road' : 'updates';
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {

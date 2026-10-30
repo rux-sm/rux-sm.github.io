@@ -293,7 +293,7 @@
     }
     wheelOn(bar, bus, named);
     if (crewBox) fitCrew(crewBox);
-    liveDot(bar, bus, worst);
+    liveOpener(bar, bus);
     times(bar, bus, next, said, worst, live.at);
   }
 
@@ -329,35 +329,15 @@
   const vehicleState = bus => bus.mph > 0 ? 'moving' : bus.engine === 'idle' ? 'idle'
     : bus.engine === 'on' ? 'on' : bus.engine === 'off' ? 'off' : 'unknown';
 
-  /* The bus icon marks a trip in progress through stops and rest breaks.
-     The bus column shows what the bus is doing, so the icon says it only on
-     its tooltip and label; alerts keep their own badge after it. A press
-     opens the live card. */
-  function liveDot(bar, bus, worst) {
-    const row = bar.querySelector(':scope > .scheduler-bar__dest');
-    let dot = row?.querySelector(':scope > .scheduler-road__dot');
-    if (!bus || !row) {
-      dot?.remove();
-      return;
-    }
-    if (!dot) {
-      dot = el('button', 'scheduler-road__dot');
-      dot.type = 'button';
-      dot.setAttribute('aria-expanded', 'false');
-      dot.dataset.cardOpener = '';
-      const icon = svgUse('#m-directions_bus-fill', '16', '0 0 16 16');
-      icon.classList.add('scheduler-road__route');
-      dot.appendChild(icon);
-      row.insertBefore(dot, row.querySelector(':scope > .scheduler-bar__alert'));
-    }
-    const state = vehicleState(bus);
-    const { word: status } = VEHICLE_STATES[state];
-    const duration = (bus.engine === 'idle' || bus.engine === 'off') && bus.engine_at
-      ? ` for ${ago(bus.engine_at)}` : '';
-    const detail = state === 'unknown' && bus.seen ? ` · Last seen ${ago(bus.seen)} ago` : '';
-    const label = `Trip in progress · ${status}${duration}${detail}${worst ? ` · ${worst.title}` : ''}`;
-    dot.title = label;
-    dot.setAttribute('aria-label', `${label}. Open tracking details`);
+  /* A trip in progress opens its live card from its drivers' rows, the
+     seats and their meters, with no mark of its own: the driving duty's
+     arrow flashes, app.css's, and what the bus is doing is the bus
+     column's. Space on the bar opens the card from the keyboard. */
+  function liveOpener(bar, bus) {
+    const row = bar.querySelector(':scope > .scheduler-bar__drivers');
+    if (!row) return;
+    row.toggleAttribute('data-card-opener', !!bus);
+    if (!bus) for (const k of ['aria-expanded', 'aria-controls']) row.removeAttribute(k);
   }
 
   // When the leg is due back at the yard, as an instant.

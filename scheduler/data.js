@@ -10666,7 +10666,7 @@
      since a click is also how a trip is double-clicked open, dragged or
      picked to move by key. The card opens from a part of the bar marked
      `data-card-opener`, its alert count, its update line or a live bar's
-     Live pill, or from Space on the bar, and the same press, Space or Escape
+     drivers, or from Space on the bar, and the same press, Space or Escape
      puts it away, as selecting another trip does. It never stands beside the
      trip's own editor, and opening the editor forgets it was asked for. */
   let cardOpenFor = null;
@@ -10688,7 +10688,7 @@
   function cardOrigin(bar) {
     if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
     const selector = cardTrigger?.matches('.scheduler-bar__alert') ? '.scheduler-bar__alert'
-      : cardTrigger?.matches('.scheduler-road__dot') ? '.scheduler-road__dot'
+      : cardTrigger?.matches('.scheduler-bar__drivers') ? ':scope > .scheduler-bar__drivers'
       : cardTrigger?.matches('.scheduler-bar__update') ? '.scheduler-bar__update' : null;
     return (selector && bar.querySelector(selector)) || bar;
   }
@@ -11340,7 +11340,8 @@
   gridEl.addEventListener('click', e => {
     const opener = e.target.closest('[data-card-opener]');
     const bar = opener?.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || e.detail > 1) return;
+    // A crew's +1 inside a live bar's drivers opens Contacts, not the card.
+    if (!bar || e.detail > 1 || e.target.closest('[data-crew-overflow]')) return;
     const section = window.SchedulerBar.cardSectionOf(opener);
     cardTrigger = opener;
     askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadPartOf(bar) : cardSection, section), section);
@@ -16404,8 +16405,8 @@
   barShortcuts?.addEventListener('click', e => {
     // Compact sheets copy the bar's rows; their controls act on the selected bar.
     const head = e.target.closest('.scheduler-bar-shortcuts__trip');
-    const opener = head && e.target.closest('[data-card-opener]');
     const overflow = head && e.target.closest('[data-crew-overflow]');
+    const opener = head && !overflow && e.target.closest('[data-card-opener]');
     if (opener || overflow) {
       const bar = selectedBar();
       if (!bar) return;
@@ -17342,7 +17343,7 @@
         box.appendChild(face);
       }
       if (here.length > shown) box.appendChild(el('span', 'scheduler-presence__more', `+${here.length - shown}`));
-      row.insertBefore(box, row.querySelector(':scope > :is(.scheduler-road__dot, .scheduler-bar__alert)'));
+      row.insertBefore(box, row.querySelector(':scope > .scheduler-bar__alert'));
     }
   }
 

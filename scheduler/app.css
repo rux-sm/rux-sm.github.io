@@ -1093,8 +1093,9 @@ button.scheduler-row-head__num::after {
     border-radius: 0;
     background: var(--scheduler-opener-fill);
   }
-  .scheduler-road__dot[data-card-opener]:hover {
-    background: color-mix(in srgb, currentColor 20%, transparent);
+  .scheduler-bar__drivers[data-card-opener]:hover {
+    --scheduler-opener-fill: var(--scheduler-footer-hover);
+    background: var(--scheduler-opener-fill);
   }
 }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
@@ -1917,32 +1918,20 @@ button.scheduler-row-head__num::after {
    theme's secondary icon colour under its inverse text. */
 .scheduler-bar__msg--plain { background: var(--rux-icon-secondary); color: var(--rux-text-inverse); }
 /* The name, and the trip's pill after it, take the row's spare room, so
-   the faces and Live sit at the end. */
+   the faces and the alert sit at the end. */
 .scheduler-bar__dest { justify-content: flex-start; }
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* The bus icon in the bar's own ink, a button no bigger than the icon. */
+/* A live bar's drivers, their seats and meters, open its live card, lit
+   as the update line is, its fill running 3px past the row either side. */
+.scheduler-bar__drivers[data-card-opener] { cursor: pointer; box-shadow: -3px 0 0 var(--scheduler-opener-fill, transparent), 3px 0 0 var(--scheduler-opener-fill, transparent); }
+.scheduler-bar__drivers[data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--scheduler-footer-selected); background: var(--scheduler-opener-fill); }
+.scheduler-bar__drivers[data-card-opener]:active { --scheduler-opener-fill: var(--scheduler-footer-active); background: var(--scheduler-opener-fill); }
+/* A driver at the wheel of a bus that is moving: their Driving arrow
+   pulses gently, the one thing moving on the bars that are out. */
 @keyframes scheduler-road-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .8; } }
-.scheduler-road__dot {
-  flex: none;
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 18px;
-  block-size: 18px;
-  padding: 0;
-  border: 0;
-  border-radius: 9px;
-  background: none;
-  color: inherit;
-  cursor: pointer;
-}
-.scheduler-road__route { flex: none; animation: scheduler-road-pulse 3s ease-in-out infinite; }
-.scheduler-road__dot + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
-.scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: var(--scheduler-day-one-end); }
-.scheduler-page[data-board="compact"] .scheduler-road__dot { display: none; }
+.scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: scheduler-road-pulse 3s ease-in-out infinite; }
 
 /* DONE at the foot of the Route, Buses and Billing tabs, and the check on a
    tab's name while it holds. */
@@ -1977,7 +1966,7 @@ button.scheduler-row-head__num::after {
   gap: var(--rux-spacing-01);
   pointer-events: none;
 }
-.scheduler-presence + :is(.scheduler-road__dot, .scheduler-bar__lead) { margin-inline-start: var(--rux-spacing-02); }
+.scheduler-presence + .scheduler-bar__lead { margin-inline-start: var(--rux-spacing-02); }
 /* OPEN IS MORE, NOT DIFFERENT. A trip somebody has merely selected wears
    their face alone; one they have open wears the face and this rule round
    the whole bar, in the selection ring's own colour, so the state that
@@ -2074,10 +2063,11 @@ button.scheduler-row-head__num::after {
    road-bar.js's `data-alarm`. */
 @keyframes scheduler-road-alarm { 0%, 45%, 100% { opacity: 1; } 55%, 90% { opacity: .25; } }
 .scheduler-bar--road[data-alarm] .scheduler-road__say--error { animation: scheduler-road-alarm 1.4s linear infinite; }
-:is([data-motion="calm"], [data-motion="off"]) :is(.scheduler-road__say--error, .scheduler-road__dot) { animation: none; }
-/* The route icon stays fully visible when motion is reduced or off. */
-:is([data-motion="calm"], [data-motion="off"]) .scheduler-road__route { animation: none; }
-@media (prefers-reduced-motion: reduce) { .scheduler-road__route { animation: none; } }
+/* The Driving arrow holds still, fully visible, when Motion is calm or off
+   or the computer asks for less motion. */
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-road__say--error,
+:is([data-motion="calm"], [data-motion="off"]) .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: none; }
+@media (prefers-reduced-motion: reduce) { .scheduler-bar--road .scheduler-crew[data-duty="driving"] > .scheduler-crew__duty { animation: none; } }
 
 /* THE LEGEND, the view menu's What the colours mean: a bus head's level bar
    in each colour it takes. */
@@ -2170,8 +2160,7 @@ button.scheduler-row-head__num::after {
   max-inline-size: min(100%, var(--scheduler-times-room, 100%));
 }
 .scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
-.scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
-.scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
+.scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 
 /* THE TIMES: out, a dimmed arrow and back, then the minutes late in amber;
    or a problem's words. */

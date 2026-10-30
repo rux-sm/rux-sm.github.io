@@ -909,14 +909,15 @@
    update and the drivers with the destination and times, is written in the
    trip's own Geist 900 on its 100, so a trip reads as one shape; only the
    drivers' names are white, below. The
-   destination stays bold. A trip with no status colour, a grey or a picked
-   one, keeps Geist's grey 900 for these lines. A mark with its own colour
-   inside them, a driver away or short on hours, keeps it. */
+   destination stays bold. A trip the office colours does the same in its
+   own Geist pair; one with no colour, a grey, keeps Geist's grey 900 for
+   these lines. A mark with its own colour inside them, a driver away or
+   short on hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   opacity: 1;
   color: #adadad;
 }
-[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--cyan) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
+[data-theme="rux-100"] .scheduler-bar:is(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   color: var(--scheduler-fg);
 }
 /* Its drivers' names are Geist's white, its gray 1000, as every other
@@ -1631,20 +1632,33 @@
   --scheduler-hover: oklch(25.93% 0.0834 19.02);
   --scheduler-border: oklch(69.96% 0.2136 22.03);
 }
-/* The colours the office picks take Carbon's 80 step, deep enough to sit
-   beside the grey without outshining it, with their hover a little lighter
-   in the same hue. */
-[data-theme="rux-100"] .scheduler-bar--magenta { --scheduler-bg: #740937; --scheduler-hover: oklch(from #740937 calc(l + 0.04) c h); }
-[data-theme="rux-100"] .scheduler-bar--purple { --scheduler-bg: #491d8b; --scheduler-hover: oklch(from #491d8b calc(l + 0.04) c h); }
-[data-theme="rux-100"] .scheduler-bar--green { --scheduler-bg: #044317; --scheduler-hover: oklch(from #044317 calc(l + 0.04) c h); }
-[data-theme="rux-100"] .scheduler-bar--teal { --scheduler-bg: #004144; --scheduler-hover: oklch(from #004144 calc(l + 0.04) c h); }
-/* Cyan sat beside the confirmed blue, so a trip the office colours cyan
-   takes Geist's teal pairing instead: teal 100 for the surface, teal 900 for
-   the destination and times, 8.4 to 1, and teal 200 on hover. */
-[data-theme="rux-100"] .scheduler-bar--cyan {
+/* THE COLOURS THE OFFICE PICKS ARE GEIST'S OWN PAIRS, as the status
+   colours are: each hue's 100 for the surface, its 900 for the words and
+   marks, and its 200 on hover. Magenta takes Geist's pink, its nearest hue. A
+   trip stored as cyan paints as teal, week.js's retired name. */
+[data-theme="rux-100"] .scheduler-bar--magenta {
+  --scheduler-bg: oklch(22.67% 0.0628 354.73);
+  --scheduler-fg: oklch(69.36% 0.2223 3.91);
+  --scheduler-hover: oklch(26.2% 0.0859 356.68);
+  --scheduler-border: oklch(69.36% 0.2223 3.91);
+}
+[data-theme="rux-100"] .scheduler-bar--purple {
+  --scheduler-bg: oklch(22.34% 0.0779 316.87);
+  --scheduler-fg: oklch(69.87% 0.2037 309.51);
+  --scheduler-hover: oklch(25.91% 0.0921 314.41);
+  --scheduler-border: oklch(69.87% 0.2037 309.51);
+}
+[data-theme="rux-100"] .scheduler-bar--green {
+  --scheduler-bg: oklch(23.09% 0.0716 149.68);
+  --scheduler-fg: oklch(73.1% 0.2158 148.29);
+  --scheduler-hover: oklch(27.12% 0.0895 150.09);
+  --scheduler-border: oklch(73.1% 0.2158 148.29);
+}
+[data-theme="rux-100"] .scheduler-bar--teal {
   --scheduler-bg: oklch(22.1% 0.0544 178.74);
   --scheduler-fg: oklch(74.56% 0.1765 182.8);
   --scheduler-hover: oklch(25.06% 0.062 178.76);
+  --scheduler-border: oklch(74.56% 0.1765 182.8);
 }
 
 /* THE FLOATING CARD IS ON THE MENUS' SURFACE IN EVERY THEME: the surface, hover, rule and shadow of Carbon's menu, so a context menu and the

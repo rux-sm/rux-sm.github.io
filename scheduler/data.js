@@ -3214,7 +3214,7 @@
   /* ── The Files tab ──
      Its list is every file the trip holds, newest first, in the tiles payments
      use: the type as the name, the upload day and size under it, and the file
-     name on hover. An itinerary that is not the trip's newest is tagged
+     name on hover. An itinerary no leg is handed any more is tagged
      Previous. A tile opens its file in the document panel, and its menu holds
      Replace and Delete. The list is drawn again on its own after a file
      changes, so the form's unsaved edits stay. */
@@ -3240,13 +3240,36 @@
     return known ? known[0] : name;
   };
   const PREVIOUS_TAG = { code: 'Previous', tone: 'rux--tag--gray', title: 'An earlier itinerary' };
-  // A split trip's itinerary names the leg whose drivers are handed it.
-  const LEG_TAGS = {
-    outbound: { code: 'Drop-off', tone: 'rux--tag--blue', title: 'The drop-off day\'s itinerary, which the pickup is handed too until it has its own' },
-    return: { code: 'Pickup', tone: 'rux--tag--purple', title: 'The pickup day\'s itinerary' },
+  // A split's drop-off and pickup each wear their own tone; any other leg is named by its day.
+  const SPLIT_TAGS = {
+    first: { code: 'Drop-off', tone: 'rux--tag--blue', title: 'The drop-off day\'s itinerary, which the pickup is handed too until it has its own' },
+    later: { code: 'Pickup', tone: 'rux--tag--purple', title: 'The pickup day\'s itinerary' },
   };
-  // The word a file's own row names, which a move writes over.
-  const docLeg = doc => (doc.leg === 'return' ? 'return' : 'outbound');
+
+  /* AN ITINERARY IS A LEG'S, on a trip of more than one: the leg trip-shape.js
+     hands it to, its own by `leg_id`, or the first leg's when it names none
+     the trip has. The first leg's is handed to every leg without its own. A
+     split of two legs names them Drop-off and Pickup, and any other trip each
+     leg by its first day. */
+  const docLegOf = (trip, doc) => (SHAPE.legOf(trip, doc.leg_id) ?? SHAPE.firstLeg(trip))?.id ?? null;
+  const twoWaySplit = trip => SHAPE.isSplit(trip) && SHAPE.legsOf(trip).length === 2;
+  const fileLegName = (trip, legId) => (twoWaySplit(trip)
+    ? (SHAPE.isPickup(trip, legId) ? 'Pickup' : 'Drop-off')
+    : legDay(SHAPE.legOf(trip, legId)?.start) || 'A leg with no day');
+  // The same in a sentence: the pickup, or Mon, Nov 2.
+  const fileLegPhrase = (trip, legId) => (twoWaySplit(trip) ? `the ${fileLegName(trip, legId).toLowerCase()}` : fileLegName(trip, legId));
+  function legTag(trip, legId) {
+    const first = legId === SHAPE.firstLeg(trip)?.id;
+    if (twoWaySplit(trip)) return first ? SPLIT_TAGS.first : SPLIT_TAGS.later;
+    const day = fileLegName(trip, legId);
+    return { code: day, tone: 'rux--tag--blue',
+      title: first ? `${day}'s itinerary, which a day without its own is handed too` : `${day}'s itinerary` };
+  }
+  /* A split's itineraries always say their leg. Any other trip's say it once
+     a later leg has one of its own, since until then the one itinerary is
+     every day's. */
+  const legsTagged = trip => SHAPE.legsOf(trip).length > 1 && (SHAPE.isSplit(trip)
+    || SHAPE.allItineraries(trip).some(d => docLegOf(trip, d) !== SHAPE.firstLeg(trip)?.id));
 
   const fileSize = n => {
     const bytes = Number(n);
@@ -3254,17 +3277,22 @@
     return bytes < 1048576 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1048576).toFixed(1)} MB`;
   };
 
-  /* A split trip's itinerary also names its leg, the one trip-shape.js
-     hands it to, and its menu moves it to the other one. */
-  const fileRow = (trip, doc, previous) => {
+  /* On a trip of more than one leg an itinerary's menu moves it to any other
+     leg, an earlier version's too, and its tag names its leg while
+     `tagged`. */
+  const fileRow = (trip, doc, previous, tagged) => {
     const name = doc.file_name || doc.label || 'File';
     const when = uploadedOn(doc.created_at);
-    const legged = SHAPE.isSplit(trip) && SHAPE.isItinerary(doc);
-    const on = wordOfRow(trip, doc) === 'return' ? 'return' : 'outbound';
-    const other = on === 'return' ? 'outbound' : 'return';
+    const legged = SHAPE.legsOf(trip).length > 1 && SHAPE.isItinerary(doc);
+    const on = legged ? docLegOf(trip, doc) : null;
+    const moves = legged ? SHAPE.legsOf(trip).filter(l => l.id !== on).map(l => ({
+      label: `Move to ${twoWaySplit(trip) ? fileLegName(trip, l.id).toLowerCase() : fileLegName(trip, l.id)}`,
+      run: () => moveFrom(trip, doc, l.id),
+    })) : [];
     const li = listRow({
       name: docTypeName(doc),
-      tag: previous ? PREVIOUS_TAG : legged ? LEG_TAGS[on] : null,
+      tag: previous ? (legged ? { ...PREVIOUS_TAG, title: `An earlier itinerary for ${fileLegPhrase(trip, on)}` } : PREVIOUS_TAG)
+        : legged && tagged ? legTag(trip, on) : null,
       meta: [when, fileSize(doc.file_size)].filter(Boolean).join(' · '),
       title: name,
       openLabel: `Open ${name}${when ? `, uploaded ${when}` : ''}`,
@@ -3273,7 +3301,7 @@
       removeText: 'Delete', removeLabel: `Delete ${name}`, remove: () => openDeleteFile(trip.id, doc),
       items: legged ? [
         { label: 'Replace', run: () => replaceFrom(trip.id, doc) },
-        { label: other === 'return' ? 'Move to pickup' : 'Move to drop-off', run: () => moveFrom(trip.id, doc, other) },
+        ...moves,
         { label: 'Delete', danger: true, run: () => openDeleteFile(trip.id, doc) },
       ] : null,
     });
@@ -3285,21 +3313,23 @@
   let filesBody = null;
   let filesNote = null;
   let filesAdd = null;
-  // The trip whose earlier itineraries are open under its newest, kept so a redraw keeps them open.
+  // The trip whose earlier itineraries are open, kept so a redraw keeps them open.
   let earlierOpenFor = null;
   /* Newest first, with a trip's earlier itineraries, those no leg is handed
-     any more, folded under its newest behind one line that opens them, and
-     Add file last, which is also the empty state. */
+     any more, folded behind one line that opens them under the last of the
+     ones its legs are handed, so those stay together, and Add file last,
+     which is also the empty state. */
   function drawFiles(trip) {
     if (!filesBody || !trip) return;
     const earlier = SHAPE.earlierItineraries(trip);
-    const newest = itinerariesOf(trip).find(d => !earlier.includes(d)) ?? null;
+    const lastHanded = itinerariesOf(trip).filter(d => !earlier.includes(d)).at(-1) ?? null;
     const open = earlierOpenFor === trip.id;
+    const tagged = legsTagged(trip);
     const rows = [];
     for (const doc of documentsOf(trip)) {
       if (earlier.includes(doc)) continue;
-      rows.push(fileRow(trip, doc, false));
-      if (doc !== newest || !earlier.length) continue;
+      rows.push(fileRow(trip, doc, false, tagged));
+      if (doc !== lastHanded || !earlier.length) continue;
       const li = el('li', 'scheduler-files-earlier');
       const btn = el('button', 'rux--link rux--link--sm', open ? 'Hide earlier versions'
         : `${earlier.length} earlier ${earlier.length === 1 ? 'version' : 'versions'}`);
@@ -3312,7 +3342,7 @@
       });
       li.appendChild(btn);
       rows.push(li);
-      if (open) rows.push(...earlier.map(d => fileRow(trip, d, true)));
+      if (open) rows.push(...earlier.map(d => fileRow(trip, d, true, tagged)));
     }
     filesBody.replaceChildren(...rows, filesAdd.li);
     drawItineraryNote(trip);
@@ -3471,7 +3501,7 @@
       }
       askFileType(file.name, async label => {
         add.btn.disabled = true;
-        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name), viewWord()); }
+        try { await uploadFrom(tripId, label, file, fileItem(progress, file.name), legOnScreen()); }
         finally { add.btn.disabled = false; }
       });
     };
@@ -14791,18 +14821,22 @@
   const recordFileHistory = (tripId, action, before, after, metadata) =>
     recordHistory(tripId, action, [{ field: 'document', label: 'Document', before, after }], null, metadata);
 
-  /* A file's leg by its id, from the old word a page still hands: the
-     pickup's for a split trip's pickup itinerary, or none for the trip's. */
-  function docPlace(tripId, word) {
-    if (!word) return { leg: null };
-    const trip = [panelArgs?.trip, panelIndex.trips.get(tripId)].find(t => t?.id === tripId && shaped(t));
-    const legId = trip ? SHAPE.legOfWord(trip, word)?.id : null;
-    return legId ? { leg_id: legId } : { leg: word };
+  // The trip as read with its legs, the open editor's or the board's.
+  const shapedTrip = tripId => [panelArgs?.trip, panelIndex.trips.get(tripId)].find(t => t?.id === tripId && shaped(t)) ?? null;
+  /* The leg an itinerary is filed on, by its id. `key` names one of the
+     trip's saved legs by its id, as the editor and a bar hold it, or by its
+     old word. A trip of one leg, or a leg not saved yet, files it as the
+     trip's, which is the first leg's. */
+  function docLegId(tripId, key) {
+    const trip = key ? shapedTrip(tripId) : null;
+    if (!trip || SHAPE.legsOf(trip).length < 2) return null;
+    return (SHAPE.legOf(trip, key) ?? (['outbound', 'return'].includes(key) ? SHAPE.legOfWord(trip, key) : null))?.id ?? null;
   }
 
   // Stores the file and adds its row. A row that fails takes the stored file
-  // back out, so nothing is left behind. `leg` is a split trip's pickup's, or null.
-  async function storeDocument(tripId, label, file, leg = null) {
+  // back out, so nothing is left behind. `legId` is the leg an itinerary is
+  // for, or null for the trip's.
+  async function storeDocument(tripId, label, file, legId = null) {
     const fileName = await documentName(tripId, label);
     const path = `${tripId}/${Date.now()}/${fileName}`;
     const bucket = client.storage.from(DOC_BUCKET);
@@ -14810,7 +14844,8 @@
     if (upErr) throw new Error(upErr.message);
     try {
       const { data, error } = await withTimeout(client.from('trip_documents')
-        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size, ...docPlace(tripId, leg) })
+        .insert({ trip_id: tripId, label, file_name: fileName, file_path: path, file_size: file.size,
+          ...(legId ? { leg_id: legId } : { leg: null }) })
         .select('id,label,created_at,file_name,file_path,file_size,leg,leg_id').single().then(r => r));
       if (error) throw new Error(error.message);
       return data;
@@ -14834,8 +14869,8 @@
     }
   }
 
-  async function uploadDocument(tripId, label, file, leg = null) {
-    const doc = await storeDocument(tripId, label, file, leg);
+  async function uploadDocument(tripId, label, file, legId = null) {
+    const doc = await storeDocument(tripId, label, file, legId);
     await recordFileHistory(tripId, 'document_uploaded', null, `${label} uploaded`,
       { documentId: doc.id, fileName: doc.file_name });
     return doc;
@@ -14875,28 +14910,27 @@
     return doc;
   }
 
-  // The leg a bar's upload goes to: its own on a split trip.
-  const barLeg = bar => (panelIndex.trips.get(bar.dataset.tripId)?.trip_type === SPLIT ? bar.dataset.leg || 'outbound' : null);
+  // The leg a bar's upload goes to: its own, which docLegId keeps only on a trip of more than one.
+  const barLeg = bar => bar.dataset.legKey || bar.dataset.leg || null;
 
-  // A split trip's itinerary moved to the other leg, at once, as a replace is.
-  const LEG_WORDS = { outbound: 'Drop-off', return: 'Pickup' };
-  async function moveDocument(tripId, doc, leg) {
-    const { error } = await withTimeout(client.from('trip_documents').update(docPlace(tripId, leg)).eq('id', doc.id).then(r => r));
+  // An itinerary moved to another of its trip's legs, at once, as a replace is.
+  async function moveDocument(trip, doc, legId) {
+    const { error } = await withTimeout(client.from('trip_documents').update({ leg_id: legId }).eq('id', doc.id).then(r => r));
     if (error) throw new Error(error.message);
-    await recordHistory(tripId, 'updated',
-      [{ field: 'document_leg', label: 'Itinerary day', before: LEG_WORDS[docLeg(doc)], after: LEG_WORDS[leg] }],
+    await recordHistory(trip.id, 'updated',
+      [{ field: 'document_leg', label: 'Itinerary day', before: fileLegName(trip, docLegOf(trip, doc)), after: fileLegName(trip, legId) }],
       null, { documentId: doc.id, fileName: doc.file_name });
   }
-  async function moveFrom(tripId, doc, leg) {
+  async function moveFrom(trip, doc, legId) {
     toast('working', 'Moving the itinerary…');
     try {
-      await moveDocument(tripId, doc, leg);
+      await moveDocument(trip, doc, legId);
     } catch (err) {
       toast('error', `The itinerary was not moved. ${err.message}`);
       return;
     }
-    await refreshDocuments(tripId);
-    toast('success', `The itinerary is the ${leg === 'return' ? 'pickup' : 'drop-off'}'s now.`);
+    await refreshDocuments(trip.id);
+    toast('success', `The itinerary is for ${fileLegPhrase(trip, legId)} now.`);
   }
 
   async function deleteDocument(tripId, doc) {
@@ -14944,11 +14978,10 @@
   /* An upload from any entry point. `item` is the Files tab's Carbon file item
      when the upload started there; elsewhere the toasts say how it went. A PO
      turns the Billing tab's PO received switch on in the open editor, which
-     Save then writes. An itinerary goes to `leg`, the leg on
-     screen or the bar's: the pickup's is kept as its own, and any other is
-     the drop-off's. */
+     Save then writes. An itinerary goes to `leg`, the leg on screen or the
+     bar's, on a trip of more than one; the toast says which. */
   async function uploadFrom(tripId, label, file, item, leg = null) {
-    const pickup = label === 'Itinerary' && leg === 'return';
+    const legId = label === 'Itinerary' ? docLegId(tripId, leg) : null;
     if (!(await isPdf(file))) {
       if (item) item.fail('Only PDF files can be added', 'Export the file as a PDF, then add it again.');
       else toast('error', 'Only PDF files can be added. Export it as a PDF first.');
@@ -14956,7 +14989,7 @@
     }
     if (!item) toast('working', `Uploading ${label === 'PO' ? 'the purchase order' : `the ${label.toLowerCase()}`}…`);
     try {
-      await uploadDocument(tripId, label, file, pickup ? 'return' : null);
+      await uploadDocument(tripId, label, file, legId);
     } catch (err) {
       if (item) item.fail('The file was not added', `${err.message} Try again.`);
       else toast('error', `The file was not added. ${err.message}`);
@@ -14969,7 +15002,8 @@
       refreshDirty();
     }
     await refreshDocuments(tripId);
-    toast('success', `${file.name} was added to the ${pickup ? 'pickup' : 'trip'}.`);
+    const trip = legId ? shapedTrip(tripId) : null;
+    toast('success', `${file.name} was added ${trip ? `for ${fileLegPhrase(trip, legId)}` : 'to the trip'}.`);
     return true;
   }
 

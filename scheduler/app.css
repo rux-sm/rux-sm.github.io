@@ -423,8 +423,8 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; }
 .scheduler-row-head__dial:not(.scheduler-row-head__dial--running) .scheduler-row-head__under,
 .scheduler-row-head__dial--running.scheduler-row-head__dial--quiet .scheduler-row-head__under { color: var(--scheduler-head-quiet-ink); }
-/* Fuel: a pump and its percent, over a 4px bar filled to the tank's share,
-   a neutral grey while normal. DEF, shown only while low, is a tag alone. */
+/* Fuel: a pump and its percent, over a square 4px bar filled to the tank's
+   share, a neutral grey while normal. DEF, shown only while low, is a tag alone. */
 .scheduler-row-head__level {
   --scheduler-tank-ink: var(--rux-icon-secondary);
   display: flex;
@@ -456,7 +456,6 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
 .scheduler-row-head__tank {
   block-size: 4px;
-  border-radius: 2px;
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
 }
 /* With no signal the display's reading and a normal fuel fade to their last reading. */

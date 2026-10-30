@@ -862,7 +862,8 @@
 /* Rux 100's state display is a 40px square, Carbon's md control height,
    the size of the board's buttons, with 8px either side of it: the column
    is 57px, the display, 8px each side and the head's 1px rule. The head's
-   padding is 4px at the sides, so the fuel keeps 48px for its percent, and
+   padding is 4px at the sides, and the fuel takes 4px more to stand in the
+   display's inset, 40px for its percent and bar, and
    8px at the top and foot, with 4px between the number, the display, the
    fuel and the equipment, which fills the 123px row to the pixel; the fuel's
    percent sits 2px over its bar for it. A low DEF's tag moves down with the
@@ -870,6 +871,12 @@
 [data-theme="rux-100"] .scheduler-corner { min-inline-size: calc(var(--rux-layout-size-height-md, 2.5rem) + 2 * var(--rux-spacing-03) + 1px); }
 [data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-03); }
 [data-theme="rux-100"] .scheduler-row-head__level { gap: 2px; }
+/* The fuel stands in the display's own 8px inset, so its percent and bar line
+   up with the display's edges. */
+[data-theme="rux-100"] .scheduler-row-head__level[data-tank="F"] { margin-inline: var(--rux-spacing-02); }
+/* A full tank's 100% fits those 40px with a 10px pump 1.5px from it. */
+[data-theme="rux-100"] .scheduler-row-head__level[data-tank="F"] .scheduler-row-head__reading { gap: 1.5px; letter-spacing: -0.4px; }
+[data-theme="rux-100"] .scheduler-row-head__level[data-tank="F"] .scheduler-row-head__reading svg { inline-size: 10px; block-size: 10px; }
 [data-theme="rux-100"] .scheduler-row-head__dial {
   align-self: center;
   inline-size: var(--rux-layout-size-height-md, 2.5rem);

@@ -137,6 +137,11 @@
   --scheduler-fuel-half: #8e6a00;
   --scheduler-fuel-low: #ba4e00;
 }
+/* A live seat's reading over its meter is dark, the inverse text, since the
+   bar's own fill under the rest of it is no longer a dark footer. */
+[data-theme] {
+  --scheduler-seat-ink: var(--rux-text-inverse);
+}
 /* On a light pane a live seat's reading over its meter is the primary text,
    5.4 to 1 on the green, where the footer's slate held 3.5. */
 [data-theme="white"],
@@ -1417,11 +1422,11 @@
   clip-path: inset(0 -6px -6px -6px);
 }
 
-/* Standard Carbon dark status colours sit on a footer in the hue the bar's
-   body shows, however its theme paints that body, a step darker and never
-   lighter than 0.34 in lightness, which holds the icons' 3:1 on every hue.
-   The same state fills lighten the footer in its own hue, as Carbon's layer
-   hover, selected and active tokens lighten Gray 80. */
+/* The footer's grey and ink outside a bar, and the status colours a
+   driver's marks take; a bar sets its footer to its own fill below, and a
+   theme steps a mark there where the fill needs it. The state fills lighten
+   the footer in its own hue, as Carbon's layer hover, selected and active
+   tokens lighten Gray 80. */
 [data-theme] {
   --scheduler-footer-base: #393939;
   --scheduler-footer: var(--scheduler-footer-base);
@@ -1434,11 +1439,37 @@
   --scheduler-driver-success: var(--rux-status-green);
 }
 
-/* The footer lightens with the bar under the pointer, as the body does, so the
-   two never part; a selected bar, which keeps its colour, keeps its footer. */
+/* A BAR IS ONE TONE IN EVERY THEME: its update and drivers stand on the
+   bar's own fill in its own ink, with no darker band under them, so a trip
+   is one shape on the board, not two. The footer's tokens follow the bar,
+   so the update's hover fill is a step off the bar's own colour, and the
+   footer lightens with the bar under the pointer, as the body does. */
 [data-theme] .scheduler-bar {
-  --scheduler-footer-base: oklch(from var(--scheduler-bg) min(calc(l - 0.09), 0.34) c h);
+  --scheduler-footer-base: var(--scheduler-bg);
   --scheduler-footer: var(--scheduler-footer-base);
+  --scheduler-footer-fg: var(--scheduler-fg);
+  --scheduler-footer-paint: none;
+}
+[data-theme] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
+/* On the bar's own fill the marks the darker footer held at 3 to 1 need a
+   step more where the fill is mid-tone: a pending or off-duty mark takes
+   Carbon's gray 30 on the dark themes' blue 70, 4.7 to 1 where gray 50 held
+   2.4; ant-dark's and pixel-dark's blue 6 takes Ant's gray 4 and green 4; and
+   apple-light's pale blue takes Apple's dark green, 3.9 where its green held
+   2.0. */
+:is([data-theme="g90"], [data-theme="g100"], [data-theme="spotify-dark"]) .scheduler-bar {
+  --rux-status-gray: #c6c6c6;
+  --scheduler-driver-neutral: #c6c6c6;
+}
+:is([data-theme="ant-dark"], [data-theme="pixel-dark"]) .scheduler-bar {
+  --rux-status-gray: #d9d9d9;
+  --scheduler-driver-neutral: #d9d9d9;
+  --rux-status-green: #95de64;
+  --scheduler-driver-success: #95de64;
+}
+[data-theme="apple-light"] .scheduler-bar {
+  --rux-status-green: #248a3d;
+  --scheduler-driver-success: #248a3d;
 }
 @media (hover: hover) {
   [data-theme] .scheduler-bar:hover:not([aria-current="true"]) { --scheduler-footer: oklch(from var(--scheduler-footer-base) calc(l + 0.06) c h); }
@@ -1566,16 +1597,6 @@
   --rux-field: var(--scheduler-raised);
   --rux-field-hover: var(--scheduler-raised-hover);
 }
-/* A RUX 100 BAR IS ONE TONE: its update and drivers stand on the bar's own
-   fill in its own ink, with no line parting them from the trip above, so a
-   trip is one shape on the board, not two. The band's footer tokens follow
-   the bar, so the update's hover fill is a step off the bar's own colour. */
-[data-theme="rux-100"] .scheduler-bar {
-  --scheduler-footer-base: var(--scheduler-bg);
-  --scheduler-footer-fg: var(--scheduler-fg);
-}
-[data-theme="rux-100"] .scheduler-bar { --scheduler-footer-paint: none; }
-[data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
 /* RUX 100'S AMBER IS DRAWN AS GEIST DRAWS A WARNING: its amber 100 for the
    surface and its amber 900 for the words and marks, 7.7 to 1, hovering to
    its amber 200, where the 900 holds 7.2. The placeholder trip, a short rest

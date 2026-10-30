@@ -2016,7 +2016,7 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__name { overflow: hidden; text-overflow: ellipsis; }
 /* Driver names retain neutral ink; the icon alone communicates status. */
 .scheduler-crew--due .scheduler-crew__name { opacity: 1; }
-/* Marks use Carbon's dark status set on the neutral footer in every theme. */
+/* Marks use the driver status set, which a theme steps for its bars' fills. */
 .scheduler-crew__mark {
   --rux-status-gray: var(--scheduler-driver-neutral);
   --rux-status-orange: var(--scheduler-driver-major);

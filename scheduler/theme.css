@@ -871,10 +871,8 @@
    A day off is the board's unconfirmed red, Geist's red 100 with its reason
    in red 900, because a driver away is a trip that cannot run as it stands,
    as an unconfirmed one is.
-   A day free for the whole of the picked trip is outlined in a light grey
-   over a grey tint, where it was blue; one free for only part keeps the
-   rest tone. */
-[data-theme="rux-100"] { --scheduler-avail-whole: var(--rux-border-strong-02); }
+   A day free for the picked trip is drawn below, grey for the whole of it
+   and amber for only part. */
 /* No rule runs between the days, on the board or in the roster: each bus
    and each driver keeps the line under its row, the day band names the
    columns, and the trips and marks themselves show where a day starts. */
@@ -1520,6 +1518,12 @@
 [data-theme="rux-100"] .scheduler-avail__cell--open:not(.scheduler-avail__cell--whole)::before {
   border-color: var(--scheduler-amber-fg);
   background: var(--scheduler-amber-bg);
+}
+/* A day free for the whole of the picked trip takes the same pattern in
+   Geist's grey: its gray 100, #1a1a1a, inside its gray 900 edge, #a1a1a1. */
+[data-theme="rux-100"] .scheduler-avail__cell--whole::before {
+  border-color: #a1a1a1;
+  background: #1a1a1a;
 }
 /* A trip not yet confirmed is drawn as Geist draws danger: its red 100 for
    the surface and its red 900 for the words, 5.7 to 1, hovering to its red

@@ -866,8 +866,8 @@
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
    pane's sheet, every row parted by the board's one line. A booked
    day is a solid layer-02 mark in the primary text, the board's trip tile,
-   and a short rest keeps that grey with its hours in the warning yellow, 9.0
-   to 1, or a shorter one's in a light red.
+   and a short rest keeps that grey with its hours in Geist's amber 900, or a
+   shorter one's in its red 900, 4.9 to 1 on the grey.
    A day off is the board's unconfirmed red, Geist's red 100 with its reason
    in red 900, because a driver away is a trip that cannot run as it stands,
    as an unconfirmed one is.
@@ -890,7 +890,7 @@
   --scheduler-avail-fill: var(--rux-layer-02);
   color: var(--rux-support-warning);
 }
-[data-theme="rux-100"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
+[data-theme="rux-100"] .scheduler-avail__cell--short { color: var(--rux-text-error); }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
   --scheduler-avail-fill: oklch(22.1% 0.0657 15.11);
   color: var(--rux-text-error);

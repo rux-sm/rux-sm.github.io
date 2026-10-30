@@ -156,7 +156,9 @@
     // A theme that sets one day's width for every window, which reads as NaN
     // where unset.
     const dayFixed = px(sch, '--scheduler-day-fixed');
-    const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
+    // A strip of days that scrolls is sized for the week in view, seven days.
+    const strip = sch.classList.contains('scheduler-week--scroll');
+    const days = strip ? 7 : parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
 
@@ -217,9 +219,9 @@
        pan, and cancels the pointer -- which is every swipe with a little drift
        in it. `touch-action` is read when a gesture begins, so it has to be
        standing before the finger lands, which is why it is set here and not
-       when the swipe is read. Where the grid does scroll, the finger scrolls
-       it and nothing is claimed from the browser. */
-    sch.style.touchAction = crowded ? '' : 'pan-y';
+       when the swipe is read. Where the grid does scroll, as a strip always
+       does, the finger scrolls it and nothing is claimed from the browser. */
+    sch.style.touchAction = crowded || strip ? '' : 'pan-y';
   }
 
   const sch = document.getElementById('scheduler-week');

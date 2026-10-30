@@ -132,6 +132,14 @@
    Fill the window, in the view menu, takes the cap off and the days share
    the whole pane as before; Maintenance's static grid has no cap. */
 .scheduler-week:not(.scheduler-week--static, .scheduler-week--fill) { --scheduler-day-max: 187px; }
+/* Scroll continuously: the board is a strip of days wider than the pane, sized
+   by app.js for seven in view, and a scroll comes to rest on a day's edge,
+   clear of the sticky bus column. */
+.scheduler-week--scroll {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline-start: var(--scheduler-head-w);
+}
+.scheduler-week--scroll .scheduler-day { scroll-snap-align: start; }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and

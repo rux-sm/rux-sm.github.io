@@ -2470,7 +2470,8 @@ const window = {};
       for (const f of forms.filter(x => !x.ok)) lines.push(line(`form:${f.kindId}`, 'warn', `No current ${f.kind}`));
       if (forms.length && forms.every(f => f.ok)) lines.push(step('driver-forms', 'Driver forms', seat, 'driver_forms_printed', 'trip-forms'));
       for (const x of mine.filter(m => m.driverId === c.driverId)) lines.push(line(`clash:${x.what}`, 'warn', x.what));
-      const changed = window.SchedulerDriverJob?.changesSince(trip, assign.leg || 'outbound', c.driverId, c.row,
+      // By the bus's leg key, its id on a trip read with its legs, so a later leg with no old word is not weighed against the first.
+      const changed = window.SchedulerDriverJob?.changesSince(trip, Week.legKeyOfVehicle(trip, assign), c.driverId, c.row,
         { busesById, driversById, nameOf: Facts.requirementLabel }) ?? [];
       if (changed.length) lines.push(line('told', 'todo', 'Tell of changes', { value: changed.join(', '), action: 'contacts' }));
       crew.push({ key: seat?.id ?? `${assign.id}:${c.role}:${c.driverId}`, name: c.who ? (c.who.short_name || c.who.name) : 'Unknown driver',

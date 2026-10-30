@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
 const window = {};
-for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'trip-shape.js', 'past-midnight.js', 'week.js', 'clashes.js', 'to-do.js', 'departures.js']) {
+for (const file of ['billing.js', 'follow-up.js', 'checklist.js', 'requirements.js', 'leg-facts.js', 'trip-shape.js', 'past-midnight.js', 'week.js', 'share/driver-words.js', 'driver-job.js', 'clashes.js', 'to-do.js', 'departures.js']) {
   runInNewContext(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'), { window, Intl, Date });
 }
 const D = window.SchedulerDepartures;
@@ -144,6 +144,26 @@ const back = page(split, 'return', read);
 expect('a split trip\'s later leg is its own page on its own day, with the trip\'s lines already done',
   [legsOn([split], day(1)).map(l => l.leg), legsOn([split], day(3)).map(l => l.leg), back.legName, said(back.lines).at(-1), said(back.buses[0].crew[0].lines).slice(1)],
   [['l1'], ['l2'], 'Pickup', 'done Driver info [Sent]', ['todo Itinerary -> forms:itinerary', 'todo Envelope -> forms:envelope', 'todo Reminder -> contacts']]);
+
+/* A driver on two legs of a trip whose later legs have no old word, as a
+   trip of one leg a day has: what they accepted on a leg is weighed against
+   that leg, and against the first only where it is the first. */
+const daily = { ...trip, id: 'w', trip_contacts: [],
+  trip_legs: [
+    { id: 'm1', leg: 'outbound', kind: 'round_trip', start_date: day(1), end_date: day(1), bus_count: 1, trip_routes: [{ id: 'q1', position: 1 }] },
+    { id: 'm2', leg: null, kind: 'round_trip', start_date: day(2), end_date: day(2), bus_count: 1, trip_routes: [{ id: 'q2', position: 1 }] }],
+  trip_stops: [
+    { position: 0, leg: 'outbound', route_id: 'q1', type: 'pickup', name: 'Hotel', spot: '15:30', spot_date: day(1) },
+    { position: 1, leg: null, route_id: 'q2', type: 'pickup', name: 'Hotel', spot: '12:45', spot_date: day(2) }],
+  trip_assignments: [bus('w1', 1, [seat('ws1', 'd1', 'driver', done)], { route_id: 'q1' }),
+    bus('w2', 1, [seat('ws2', 'd1', 'driver', done)], { leg: null, route_id: 'q2' })] };
+const acceptedOn = (t, leg) => ({ ...read, statuses: new Map([[statusKey('w', 'd1', leg, 'driver'),
+  { status: 'confirmed', acceptedAt: 'a1', acceptedView: window.SchedulerDriverJob.viewNow(t, leg, 'd1', read) }]]) });
+const moved = { ...daily, trip_stops: daily.trip_stops.map(x => (x.route_id === 'q2' ? { ...x, spot: '13:15' } : x)) };
+expect('a driver told of a later leg has nothing to be told, and a change to that leg asks to tell them',
+  [said(D.page(daily, 'm2', acceptedOn(daily, 'm2')).buses[0].crew[0].lines).filter(l => /Tell/.test(l)),
+    said(D.page(moved, 'm2', acceptedOn(daily, 'm2')).buses[0].crew[0].lines).filter(l => /Tell/.test(l))],
+  [[], ['todo Tell of changes [Spot time changed] -> contacts']]);
 
 expect('a working day preps for tomorrow, and a Friday, a Saturday and a Sunday for every day until the office is open again',
   [prepDays('2026-10-07'), prepDays('2026-10-09'), prepDays('2026-10-10'), prepDays('2026-10-11'), prepDays('2026-10-30')],

@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-now/handler.ts', import.meta.url
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-now-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf, restSince } = await import(pathToFileURL(file).href);
+const { handle, nameKey, driverIndex, liveDriver, markWheel, liveFor, faultOf, restSince, splitOf } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -78,6 +78,31 @@ expect('logs that end on duty, lagging the clocks, say no rest',
   restSince([log(5, 'offDuty'), log(1, 'onDuty')]), null);
 expect('a rest that fills the logs starts at their first log', restSince([log(11, 'offDuty')]), at(11));
 expect('no logs, no rest', restSince([]), null);
+
+// ── a split ─────────────────────────────────────────────────────────────────
+const END = Date.parse('2026-10-14T20:00:00Z');
+const split = list => splitOf(list, END);
+expect('a sleeper run after driving pairs with the sleeper period of two hours or more before the drive',
+  split([log(14, 'driving'), log(13, 'sleeperBed'), log(10, 'driving'), log(2, 'sleeperBed')]),
+  { berth_since: at(2), split_ms: 3 * H });
+expect('a sleeper period under two hours is passed over for the one before it',
+  split([log(16, 'sleeperBed'), log(13, 'driving'), log(8, 'sleeperBed'), log(7, 'onDuty'), log(1, 'sleeperBed')]),
+  { berth_since: at(1), split_ms: 3 * H });
+expect('off duty is no half of a split, though it is rest',
+  split([log(12, 'offDuty'), log(8, 'driving'), log(2, 'sleeperBed')]),
+  { berth_since: at(2), split_ms: null });
+expect('a full eight hours of rest ends the search, so nothing before it pairs',
+  split([log(23, 'sleeperBed'), log(20, 'driving'), log(19, 'offDuty'), log(10, 'driving'), log(2, 'sleeperBed')]),
+  { berth_since: at(2), split_ms: null });
+expect('only the sleeper part of a mixed stretch is a period',
+  split([log(9, 'offDuty'), log(8, 'sleeperBed'), log(5, 'onDuty'), log(1, 'sleeperBed')]),
+  { berth_since: at(1), split_ms: 3 * H });
+expect('a log that says where it ends ends there',
+  split([{ logStartTime: at(9), logEndTime: at(6.5), hosStatusType: 'sleeperBed' }, log(6, 'onDuty'), log(1, 'sleeperBed')]),
+  { berth_since: at(1), split_ms: 2.5 * H });
+expect('a driver not in the sleeper is part way through no split',
+  split([log(9, 'sleeperBed'), log(5, 'driving'), log(1, 'offDuty')]), { berth_since: null, split_ms: null });
+expect('no earlier period, only the run now', split([log(3, 'driving'), log(1, 'sleeperBed')]), { berth_since: at(1), split_ms: null });
 
 // ── the fleet ───────────────────────────────────────────────────────────────
 const NOW = Date.parse('2026-10-14T20:00:00Z');
@@ -176,10 +201,12 @@ expect('the drivers logged into the bus, who is at the wheel, and their hours',
   [['d1', 'driving', true, 9 * H + 3 * 60_000], ['d2', 'sleeper', false, 4 * H]]);
 p = parts();
 a = await liveFor(BUSES, DRIVERS, p.deps);
-expect('the logs are asked for the drivers resting in a bus, ten hours back',
-  [p.logsAsked[0], (NOW - p.logsAsked[1]) / H], [['s-Ben Ortiz'], 10]);
+expect('the logs are asked for the drivers resting in a bus, a day back',
+  [p.logsAsked[0], (NOW - p.logsAsked[1]) / H], [['s-Ben Ortiz'], 24]);
 expect('a driver resting has when the rest began, and one driving has none',
   a.buses[0].drivers.map(x => [x.name, x.rest_since]), [['Ana Ruiz', null], ['Ben Ortiz', ago(5 * 60)]]);
+expect('a driver in the sleeper has when that run began, and no split without an earlier period',
+  a.buses[0].drivers.map(x => [x.name, x.berth_since, x.split_ms]), [['Ana Ruiz', null, null], ['Ben Ortiz', ago(3 * 60), null]]);
 p = parts({ logsFail: true });
 a = await liveFor(BUSES, DRIVERS, p.deps);
 expect('logs the key may not read leave the rest unknown, and the drivers still come back',

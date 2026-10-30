@@ -29,6 +29,12 @@
 // rest; remaining availability comes separately from the HOS clocks. Logs that
 // do not show the driver resting, or cannot be read, leave it null.
 //
+// A SPLIT is the passenger carrier's sleeper berth rule: two periods in the
+// sleeper, neither under two hours, count as the eight hours off. For a
+// driver in the sleeper, BERTH SINCE is when that run of sleeper logs began
+// and SPLIT MS how long the earlier period it pairs with lasted, so the board
+// can show how far the split has come; the clocks still say what is left.
+//
 // A PATH is where a bus has been since a time the caller names, for each bus
 // in the body's `paths`, `{ bus_id: ISO time }`: Samsara's GPS readings since
 // then, thinned to one every tenth of a mile, so the board can tell which of
@@ -38,8 +44,12 @@
 // A reading older than this says nothing about now.
 export const FRESH_MS = 15 * 60_000
 export const PATH_MS = 4 * 24 * 3600_000
-// The lookback for elapsed rest; availability comes from the HOS clocks.
-export const REST_LOOK_MS = 10 * 3600_000
+// The lookback for elapsed rest and a split's earlier period: a day, room for
+// a two-hour period and the fifteen hours on duty a split allows after it.
+export const REST_LOOK_MS = 24 * 3600_000
+// A full rest, and the least either period of a split may be.
+export const REST_FULL_MS = 8 * 3600_000
+export const SPLIT_MIN_MS = 2 * 3600_000
 // Two readings closer than this are one point on a path.
 export const PATH_STEP_MILES = 0.1
 
@@ -108,6 +118,10 @@ export type LiveDriver = {
   cycle_ms: number | null
   // When the stretch of rest a resting driver is in began, or null.
   rest_since: string | null
+  // When a driver in the sleeper went into it, and how long the earlier
+  // sleeper period that run pairs with as a split lasted, or null.
+  berth_since: string | null
+  split_ms: number | null
   wheel: boolean
 }
 export type LiveBus = {
@@ -196,6 +210,8 @@ export function liveDriver(c: Clock, index: Map<string, string>): LiveDriver {
     left_ms: known.length ? Math.min(...known) : null,
     drive_ms: drive, shift_ms: shift, cycle_ms: cycle,
     rest_since: null,
+    berth_since: null,
+    split_ms: null,
     wheel: false,
   }
 }
@@ -215,6 +231,44 @@ export function restSince(logs: HosLogs['hosLogs']): string | null {
   let i = rows.length - 1
   while (i > 0 && RESTING.has(rows[i - 1].status)) i--
   return new Date(rows[i].at).toISOString()
+}
+
+// The sleeper's statuses, the only rest a split is made of.
+const BERTH = new Set(['sleeperBed', 'sleeperBerth'])
+
+/* THE SPLIT A DRIVER IN THE SLEEPER IS PART WAY THROUGH (49 CFR 395.1(g)(3)):
+   when the logs end in the sleeper, when that run of sleeper logs began, and
+   the length of the latest earlier sleeper run of two hours or more, looked
+   for back to the last stretch of rest of eight hours or more, a full rest
+   no earlier period pairs across. A log ends where it says, else where the
+   next begins, else now. A run that reaches back past the window counts only
+   what is inside it, so a split is never shown further on than it is. The
+   driving between the two periods is the clocks' to weigh, not this. */
+export function splitOf(logs: HosLogs['hosLogs'], now: number): { berth_since: string | null; split_ms: number | null } {
+  const rows = (logs ?? []).map(l => ({ at: Date.parse(l.logStartTime ?? ''), stop: Date.parse(l.logEndTime ?? ''), status: l.hosStatusType ?? '' }))
+    .filter(l => Number.isFinite(l.at)).sort((a, b) => a.at - b.at)
+    .map((l, i, all) => ({ ...l, end: Math.min(now, Number.isFinite(l.stop) ? l.stop : all[i + 1]?.at ?? now) }))
+  if (!rows.length || !BERTH.has(rows.at(-1)!.status)) return { berth_since: null, split_ms: null }
+  let i = rows.length - 1
+  while (i > 0 && BERTH.has(rows[i - 1].status)) i--
+  const berth_since = new Date(rows[i].at).toISOString()
+  // Each earlier stretch of rest, newest first, and the sleeper runs in it.
+  let j = i - 1
+  while (j >= 0) {
+    if (!RESTING.has(rows[j].status)) { j--; continue }
+    let k = j
+    while (k > 0 && RESTING.has(rows[k - 1].status)) k--
+    if (rows[j].end - rows[k].at >= REST_FULL_MS) break
+    for (let m = j; m >= k; m--) {
+      if (!BERTH.has(rows[m].status)) continue
+      let n = m
+      while (n > k && BERTH.has(rows[n - 1].status)) n--
+      if (rows[m].end - rows[n].at >= SPLIT_MIN_MS) return { berth_since, split_ms: rows[m].end - rows[n].at }
+      m = n
+    }
+    j = k - 1
+  }
+  return { berth_since, split_ms: null }
 }
 
 // A wheel identifies a reported Driving duty, without inferring one from On duty.
@@ -312,7 +366,9 @@ export async function liveFor(buses: Bus[], drivers: Driver[], deps: Deps, paths
     const logs = await deps.logs([...resting.keys()], from, now).catch(() => [] as HosLogs[])
     for (const l of logs) {
       const d = l.driver?.id ? resting.get(String(l.driver.id)) : null
-      if (d) d.rest_since = restSince(l.hosLogs)
+      if (!d) continue
+      d.rest_since = restSince(l.hosLogs)
+      Object.assign(d, splitOf(l.hosLogs, now))
     }
   }
 

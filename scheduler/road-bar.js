@@ -40,8 +40,9 @@
    with it, and components.html its samples.
 
    `HOUR`, `DUTY`, `IDLE_MS`, `hours(ms)`, `mark(duty, left)`,
-   `ago(at)`, `short(name)`, `words(driver)` and `restWords(driver)` are the
-   duty marks, clocks and words the live card draws as the bar does.
+   `ago(at)`, `short(name)`, `words(driver)`, `restWords(driver)` and
+   `restProgress(driver)` are the duty marks, clocks and words the live card
+   draws as the bar does.
    ========================================================================== */
 (() => {
   'use strict';
@@ -87,6 +88,19 @@
     const since = resting(d) && d.rest_since ? Date.parse(d.rest_since) : NaN;
     return Number.isFinite(since) && since <= at ? at - since : null;
   };
+  /* HOW FAR A RESTING DRIVER IS TOWARD THE EIGHT HOURS: the continuous rest,
+     or, for one in the sleeper whom samsara-now finds part way through a
+     split, the earlier sleeper period and this one together where they come
+     to more, as `{ ms, earlier, now }`. A split's second period counts once
+     it reaches two hours, `SPLIT_MIN`, which the words say until it does. */
+  const SPLIT_MIN = 2 * HOUR;
+  const restProgress = (d, at = Date.now()) => {
+    const ms = restElapsed(d, at);
+    const since = d?.duty === 'sleeper' && d.berth_since ? Date.parse(d.berth_since) : NaN;
+    const now = Number.isFinite(since) && since <= at ? at - since : null;
+    if (now != null && d.split_ms > 0 && d.split_ms + now > (ms ?? 0)) return { ms: d.split_ms + now, earlier: d.split_ms, now };
+    return { ms, earlier: null, now: null };
+  };
   const share = (ms, total) => Math.round(Math.min(1, Math.max(0, ms / total)) * 1000) / 10;
   // A passenger carrier's driver may drive ten hours, so a full ring is ten.
   const DRIVE = 10 * HOUR;
@@ -99,9 +113,13 @@
     return min < 60 ? `${min}m` : `${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}m`;
   };
   const restWords = d => {
-    const elapsed = restElapsed(d);
-    return elapsed == null ? null : `Rested ${spell(elapsed)}`;
+    const { ms, earlier, now } = restProgress(d);
+    return ms == null ? null : earlier != null ? `Split rest ${spell(earlier)} + ${spell(now)}` : `Rested ${spell(ms)}`;
   };
+  // A rest's tooltip: what it is made of, against the eight hours.
+  const restTitle = ({ ms, earlier, now }) => (earlier == null
+    ? `${hours(ms)} continuous rest / 8:00 reference`
+    : `${hours(earlier)} earlier in the sleeper + ${hours(now)} now, ${hours(ms)} of a split rest / 8:00 reference${now < SPLIT_MIN ? '; this period counts once it reaches 2:00' : ''}`);
   const words = d => [DUTY[d.duty]?.word ?? 'Status unknown', restWords(d),
     d.left_ms != null ? `${hours(d.left_ms)} driving left` : null, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ');
   const short = name => {
@@ -187,15 +205,15 @@
     item.append(hoursEl(d.left_ms));
     if (d.left_ms != null) item.appendChild(leftBar(d.left_ms));
     if (resting(d)) {
-      const elapsed = restElapsed(d);
-      const label = el('span', 'scheduler-crew__rest-time', elapsed == null ? 'Rest —' : `Rest ${hours(elapsed)}`);
-      label.title = elapsed == null ? 'Continuous rest unknown: duty logs unavailable' : `${hours(elapsed)} continuous rest / 8:00 reference; availability comes from Samsara's HOS clocks`;
+      const rest = restProgress(d);
+      const label = el('span', 'scheduler-crew__rest-time', rest.ms == null ? 'Rest —' : `${rest.earlier == null ? 'Rest' : 'Split'} ${hours(rest.ms)}`);
+      label.title = rest.ms == null ? 'Continuous rest unknown: duty logs unavailable' : `${restTitle(rest)}; availability comes from Samsara's HOS clocks`;
       item.append(label, restMeter(d));
     }
     // How far the seat's meter is filled, where app.css turns its reading
     // from dark to the row's ink: the rest so far while resting, else the
     // hours left.
-    const elapsed = resting(d) ? restElapsed(d) : null;
+    const elapsed = resting(d) ? restProgress(d).ms : null;
     item.style.setProperty('--scheduler-seat-fill', `${resting(d) ? (elapsed == null ? 0 : share(elapsed, REST))
       : d.left_ms != null ? share(d.left_ms, DRIVE) : 0}%`);
     item.title = `${item.title}\nSamsara: ${words(d)}`;
@@ -218,18 +236,19 @@
 
   // A full rest meter is a completed reference period, not a reset of every HOS clock.
   function restMeter(d, at = Date.now()) {
-    const ms = restElapsed(d, at);
+    const rest = restProgress(d, at);
+    const { ms } = rest;
     const meter = el('span', `scheduler-crew__rest${ms == null ? ' scheduler-crew__rest--unknown' : ''}`);
     meter.setAttribute('role', ms == null ? 'img' : 'meter');
-    meter.setAttribute('aria-label', ms == null ? 'Rest duration unknown' : 'Continuous rest progress');
+    meter.setAttribute('aria-label', ms == null ? 'Rest duration unknown' : rest.earlier == null ? 'Continuous rest progress' : 'Split rest progress');
     if (ms != null) {
       meter.setAttribute('aria-valuemin', '0');
       meter.setAttribute('aria-valuemax', '8');
       meter.setAttribute('aria-valuenow', String(Math.min(8, ms / HOUR)));
-      meter.setAttribute('aria-valuetext', `${hours(ms)} continuous rest, eight-hour reference; check HOS clocks for availability`);
+      meter.setAttribute('aria-valuetext', `${restTitle(rest)}; check HOS clocks for availability`);
     }
     meter.style.setProperty('--scheduler-rest', `${ms == null ? 0 : share(ms, REST)}%`);
-    meter.title = ms == null ? 'Rest duration unknown' : `Rest ${hours(ms)} / 8:00 reference`;
+    meter.title = ms == null ? 'Rest duration unknown' : restTitle(rest);
     return meter;
   }
 
@@ -434,5 +453,5 @@
     ].filter(Boolean).join('\n');
   }
 
-  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords };
+  window.SchedulerRoadBar = { draw, HOUR, DUTY, REST, restElapsed, restMeter, VEHICLE_STATES, vehicleState, IDLE_MS, hours, mark, ago, short, words, restWords, restProgress };
 })();

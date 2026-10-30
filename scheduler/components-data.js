@@ -320,6 +320,12 @@
         ].map(([name, note, elapsed]) => one(name, note, live('Coastal Youth Choir', {
           bus: { engine: 'off', mph: 0, drivers: [driver('d1', { duty: 'off', wheel: false, left_ms: 4 * HOUR,
             rest_since: elapsed == null ? null : new Date(now - elapsed).toISOString() })] }, next: atStop() }))),
+        ...[
+          ['Split rest', 'Back in the sleeper after a drive, with an earlier sleeper period of two hours or more: the two count together toward the eight hours, and the seat says Split.', 3 * HOUR, 2 * HOUR + 40 * MIN],
+          ['Split rest, second period short', 'The second period counts once it reaches two hours; until then the tooltip says so, and the meter still shows the two together.', 5 * HOUR, 25 * MIN],
+        ].map(([name, note, earlier, berth]) => one(name, note, live('Coastal Youth Choir', {
+          bus: { engine: 'off', mph: 0, drivers: [driver('d1', { duty: 'sleeper', wheel: false, left_ms: 6 * HOUR,
+            rest_since: new Date(now - berth).toISOString(), berth_since: new Date(now - berth).toISOString(), split_ms: earlier })] }, next: atStop() }))),
         one('Late back to the yard', 'Heading for the yard and due there more than ten minutes after the plan: when it is now expected, in amber, in place of the planned return.', live('Harbor Tours', {
           span: 1, back: now + 20 * MIN, next: (() => { const stops = liveStops(); return { stops, where: { reached: 1, at: false, next: 2 }, stop: stops[2], at: false, arrival: now + 65 * MIN, late: 0 }; })() })),
         one('Past its return', 'Still out after the planned return: the track full, and how long over in amber.', live('Mesa Robotics Club', { span: 1, yardOut: now - 9 * HOUR, back: now - 45 * MIN })),

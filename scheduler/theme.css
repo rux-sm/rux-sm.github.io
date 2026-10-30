@@ -1230,7 +1230,7 @@
 }
 /* rux-dark squares this app's pills too: a bar's kind and Live labels, an update's hover, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
-[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-crew__left) {
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-road__dot, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-bar__track, .scheduler-crew__left) {
   border-radius: 0;
 }
 

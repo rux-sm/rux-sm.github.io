@@ -1088,6 +1088,22 @@ button.scheduler-row-head__num::after {
 }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+/* Out and back either end of a track, as a live bar's times are: 2px, the
+   trip's ink as far as its time has gone and a fifth of it after, the dash
+   inside it unseen. It gives way to nothing between two long times. */
+.scheduler-bar__time > .scheduler-bar__span { flex: 1 1 auto; display: flex; align-items: center; min-inline-size: 0; }
+.scheduler-bar__when { flex: none; }
+.scheduler-bar__track {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 2px;
+  margin-inline: var(--rux-spacing-02);
+  border-radius: 1px;
+  font-size: 0;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
+    color-mix(in srgb, currentColor 22%, transparent);
+}
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who
    drives it -- and dim is who it is for. */
@@ -2092,15 +2108,15 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
-/* A live bar's times run its whole length, out at its start and back at its
-   end, so the track between them crosses every day the trip takes; the
-   rows above and below stay in today's column. Cut, as the customer's is,
-   where the bar's start is under the bus column, by data.js's
-   `--scheduler-times-room`. */
-.scheduler-bar--road > .scheduler-road__times {
-  margin-inline-start: 0;
+/* A bar's times run its whole length, out at its start and back at its
+   end, so the track between them crosses every day the trip takes; on a
+   live bar the rows above and below stay in today's column. Cut, as the
+   customer's is, where the bar's start is under the bus column, by
+   data.js's `--scheduler-times-room`. */
+.scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) {
   max-inline-size: min(100%, var(--scheduler-times-room, 100%));
 }
+.scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child,
 .scheduler-bar > .scheduler-bar__dest > .scheduler-road__dot:last-child { margin-inline-end: 0; }
 

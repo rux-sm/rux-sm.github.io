@@ -165,6 +165,10 @@ const [holder] = drawn('trip-bar', 'A placeholder');
 expect('a placeholder: no times, the named driver, no empty seat, no alert',
   [text(holder, '.scheduler-bar__time > span'), [...holder.querySelectorAll('.scheduler-crew__name')].map(n => n.textContent), mark(holder)],
   ['No times', ['Ben'], null]);
+expect('a bar\'s track is empty before the trip leaves, filled as its time goes, and full once it is back, the next day\'s return counted',
+  [['2026-10-29T07:00'], ['2026-10-29T09:52:30'], ['2026-10-29T13:00'], ['2026-10-30T01:00']].map(([at]) => Bar.tripDone({ from: '2026-10-29', to: '2026-10-29', depart: '07:45:00', back: '12:00:00', backDays: 0 }, Date.parse(at)))
+    .concat(Bar.tripDone({ from: '2026-10-29', to: '2026-10-29', depart: '22:00:00', back: '02:00:00', backDays: 1 }, Date.parse('2026-10-30T00:00'))),
+  [0, 50, 100, 100, 50]);
 const kindOf = b => { const k = b.querySelector('.scheduler-bar__dest > .scheduler-bar__kind'); return k ? [k.querySelector('use')?.getAttribute('href') ?? null, text(k, '.scheduler-bar__kind-word')] : null; };
 expect('one way wears its arrow after the destination', drawn('trip-bar', 'One way').map(kindOf), [['#m-arrow_forward', 'One way']]);
 expect('a split\'s drop-off points down and its pickup up; a round trip wears none',

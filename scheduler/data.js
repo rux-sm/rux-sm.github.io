@@ -797,6 +797,8 @@
   }
 
   setInterval(askRoad, ROAD_EVERY);
+  // Each bar's times track keeps up with the clock between redraws.
+  setInterval(() => window.SchedulerBar.fillTracks(gridEl), 60e3);
 
   /* THE DOCKED SHEET OF A TRIP OUT ON THE ROAD has three tabs: On the
      road, Needs and Updates, and opens on On the road; the tab picked stays
@@ -10779,10 +10781,10 @@
      the bus column, those two rows are held to the room between the edge and
      the bar's end, `--scheduler-row-room`, which app.css reads, and their
      words are cut there instead. The edge is where the destination row
-     stands, read rather than worked out. A live bar's times run from the
-     bar's start rather than today's column, so they are held to the room
-     from where they stick, the week's edge and their own sticky inset,
-     `--scheduler-times-room`. */
+     stands, read rather than worked out. A bar's times run its whole length,
+     and a live bar's from its start rather than today's column, so they are
+     held to the room from where they stick, the week's edge and their own
+     sticky inset, `--scheduler-times-room`. */
   function fitStuckRows() {
     for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
       if (!(Number(bar.dataset.span) > 1)) continue;
@@ -10795,7 +10797,7 @@
       const at = dest.getBoundingClientRect().left;
       if (at > start) bar.style.setProperty('--scheduler-row-room', room(at));
       else bar.style.removeProperty('--scheduler-row-room');
-      const times = bar.querySelector(':scope > .scheduler-road__times');
+      const times = bar.querySelector(':scope > .scheduler-road__times') ?? bar.querySelector(':scope > .scheduler-bar__time');
       const week = bar.closest('.scheduler-week');
       const edge = times && week ? week.getBoundingClientRect().left + week.clientLeft + (parseFloat(getComputedStyle(times).insetInlineStart) || 0) : -Infinity;
       if (edge > start) bar.style.setProperty('--scheduler-times-room', room(edge));

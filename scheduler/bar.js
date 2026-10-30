@@ -27,7 +27,9 @@
    gives a crew row's names way when they do not fit. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
-   and its card say them.
+   and its card say them, `tripDone(leg, now)` how much of a leg's time has
+   gone, which its times' track is filled to, and `fillTracks(root)` fills
+   every track under `root` again to the clock.
 
    Every value from the database is written with textContent.
    ========================================================================== */
@@ -68,6 +70,24 @@
   // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
   // return +1.
   const daysBack = leg => leg.backDays ?? 0;
+  // How much of a leg's time has gone, out to back on this computer's clock,
+  // as a percent to one place: 0 before it leaves and 100 once it is back.
+  const clockAt = (day, t) => {
+    const [h, m] = String(t).split(':').map(Number);
+    const d = parseDay(day);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m).getTime();
+  };
+  const legSpan = leg => [clockAt(leg.from, leg.depart), clockAt(iso(addDays(parseDay(leg.to), daysBack(leg))), leg.back)];
+  const doneOf = (out, back, now) => (!(back > out) ? (now >= back ? 100 : 0)
+    : Math.round(Math.min(1, Math.max(0, (now - out) / (back - out))) * 1000) / 10);
+  const tripDone = (leg, now = Date.now()) => doneOf(...legSpan(leg), now);
+  // Every track under `root` filled again to the clock, for the board's
+  // minute tick, since a bar is drawn again only when its trip changes.
+  const fillTracks = (root, now = Date.now()) => {
+    for (const t of root.querySelectorAll('.scheduler-bar__track[data-out]')) {
+      t.style.setProperty('--scheduler-done', `${doneOf(Number(t.dataset.out), Number(t.dataset.back), now)}%`);
+    }
+  };
 
   /* The three letters a compact block carries in place of a destination that
      will not fit in a day column. Initials where the place is more than one
@@ -530,16 +550,29 @@
     const crosses = place.fromPrev || place.toNext;
     const depart = (crosses ? [`${weekday(leg.from)} `] : []).concat(dep ? [clockEl(dep)] : []);
     const ret = (crosses ? [`${weekday(addDays(parseDay(leg.to), daysBack(leg)))} `] : []).concat(back ? [clockEl(back)] : []);
-    // Thin spaces either side of the dash, so the two times read as two.
+    /* With both, a track between them, as a live bar's times have, filled
+       in the trip's ink as far as the time between them has gone: full once
+       it is back, empty before it leaves. The dash stays inside it, unseen,
+       so the row still reads and copies as "7:45a – 12:00a". */
     const when = el('span', none ? 'scheduler-bar__none' : null);
-    if (dep && back) when.append(...depart, '\u2009\u2013\u2009', ...ret);
+    const backAt = el('span', 'scheduler-bar__when');
+    backAt.append(...ret);
+    if (dep && back) {
+      when.className = 'scheduler-bar__span';
+      const out = el('span', 'scheduler-bar__when');
+      out.append(...depart);
+      const track = el('span', 'scheduler-bar__track', '\u2009\u2013\u2009');
+      [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
+      track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
+      when.append(out, track, backAt);
+    }
     else if (dep) when.append('Dep ', ...depart);
-    else if (back) when.append('Ret ', ...ret);
+    else if (back) when.append('Ret ', backAt);
     else when.append('No times');
     if (daysBack(leg) && !(crosses && back)) {
       const mark = el('sup', 'scheduler-bar__next-day', `+${daysBack(leg)}`);
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
-      when.appendChild(mark);
+      (back ? backAt : when).appendChild(mark);
     }
     /* A second form, for the compact board: one line has room for one time, and
        the one worth reading at a glance is when the bus leaves. A leg with only
@@ -606,6 +639,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp,
+    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

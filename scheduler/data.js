@@ -476,89 +476,163 @@
     if (bar) bar.dataset.assignmentId = made.id;
   }
 
-  async function read(weekStart) {
-    const mine = ++readsBegun;
-    const weekEnd = lastShown(weekStart);
-    /* Four weeks either side come with the week asked for, so a run of swipes
-       draws from what is in hand rather than stopping at the second one to wait
-       on the network. It costs one widened window and no second query. The
-       exact overlap is decided per leg in `render`, not by this filter, which
-       is what lets one payload draw nine weeks.
+  const rowsOf = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
 
-       A TRIP IS READ BY ITS LEGS' DAYS: one that starts by the last day drawn
-       and has a leg ending within ENDED_DAYS of the first, a leg with no end
-       by its start. So a trip that started long before and still runs into
-       the weeks is read, a split trip by its pickup too, and one long over is
-       not. `ends` is that test, an embed that returns nothing. */
+  /* The days one read covers, around the week starting `weekStart`. Four weeks
+     either side come with the week asked for, so a run of swipes draws from
+     what is in hand rather than stopping at the second one to wait on the
+     network. It costs one widened window and no second query. The exact
+     overlap is decided per leg in `render`, not by this filter, which is what
+     lets one payload draw nine weeks. A driver's time off reaches 90 days
+     further back, for their days lately. */
+  function windowOf(weekStart, weekEnd = lastShown(weekStart)) {
     const from = addDays(weekStart, -NEAR_DAYS);
-    const to = addDays(weekEnd, NEAR_DAYS);
-    const lo = iso(addDays(from, -90));
-    const hi = iso(to);
-    const ended = iso(addDays(from, -ENDED_DAYS));
-    const unwrap = r => { if (r.error) throw new Error(r.error.message); return r.data ?? []; };
+    return { weekEnd, from, hi: iso(addDays(weekEnd, NEAR_DAYS)), lo: iso(addDays(from, -90)), ended: iso(addDays(from, -ENDED_DAYS)) };
+  }
 
-    const [buses, trips, drivers, contacts, customers, locations, oos, timeOff] = await withTimeout(Promise.all([
-      client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin,inspection_exp').order('sort_order').then(unwrap),
-      // A cancelled trip stays in the table but is not on the schedule.
-      client.from('trips').select(`${TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
-        .lte('start_date', hi).or(`end_date.gte.${ended},start_date.gte.${ended}`, { referencedTable: 'ends' })
-        .order('start_date').then(unwrap),
-      // `status`, so the Buses tab offers active drivers; `priority`, so the
-      // roster lists them in the order they are called on; `employment_type`,
-      // because a part-time driver needs an hours-of-service record; the
-      // licence and medical card dates, so the bar menu flags an expired one.
-      client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language').then(unwrap),
-      // Every contact, read once with the week for the contact search rather
-      // than on each keystroke.
-      client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(unwrap),
-      // The customers and the saved places, for the Customer field, the fill
-      // it makes into an empty pickup, and the Route tab's address search.
-      client.from('customers').select('id,name,usual_location_id,notes,usual_reqs,usual_vehicle_type').order('name').then(unwrap),
-      client.from('locations').select('id,name,address,lat,lng,mapbox_id').order('name').then(unwrap),
-      client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', iso(from)).then(unwrap),
-      // Overlap, not containment: a driver away across the whole fortnight has
-      // neither date inside this week and is still away every day of it.
-      client.from('driver_time_off').select('driver_id,start_date,end_date,reason').lte('start_date', hi).gte('end_date', lo).then(unwrap),
-      /* The office's settings this app follows: the billing workflow, the yard and
-         the Geoapify key the Route tab finds places and drives with. A
-         refused read keeps what was there. */
-      client.from('settings').select('key,value')
-        .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
-          'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1', 'late-return-v1'])
-        .then(r => {
-          if (r.error) return;
-          const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
-          setBillingWorkflow(byKey.get('billing-workflow-v1'));
-          const yard = byKey.get('yard-location-v1');
-          if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
-          window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
-          setRouteTimes(byKey.get('route-times-v1'));
-          setFuelLimits(byKey.get('fuel-card-v1'));
-          window.SchedulerWeek.setLateReturn(byKey.get('late-return-v1'));
-          rateCalendar = byKey.get('rate-calendar-v1')?.months ?? {};
-          deadMilesLimit = Number(byKey.get('dead-miles-v1')?.miles) > 0 ? Number(byKey.get('dead-miles-v1').miles) : null;
-          setRequirementList(byKey.get('requirements-v1'));
-          window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
-          setFollowUp(byKey.get('follow-up-v1'));
-        }),
-      // The driver forms customers ask for, which the checklist reads. A
-      // refused read keeps what was there.
-      window.SchedulerLegFacts.readDriverForms(client).catch(() => false),
-    ]));
-    // The fleet is never empty, so an empty one is a read the database refused,
-    // which is what an ended log-in or removed access looks like; a reload
-    // sends the account where it can go.
-    if (!buses.length) throw new Error('The schedule came back empty. Reload the page.');
-    // Each driver's status on these trips, from the table the editor and the driver
-    // page write, keyed as `statusKey` builds it.
-    const statusRows = trips.length ? await withTimeout(
-      client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(unwrap)) : [];
-    const statuses = statusMap(statusRows);
-    const data = { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd };
+  /* A TRIP IS READ BY ITS LEGS' DAYS: one that starts by the last day drawn
+     and has a leg ending within ENDED_DAYS of the first, a leg with no end by
+     its start. So a trip that started long before and still runs into the
+     weeks is read, a split trip by its pickup too, and one long over is not.
+     `ends` is that test, an embed that returns nothing. A cancelled trip
+     stays in the table but is not on the schedule. */
+  const tripsIn = win => client.from('trips').select(`${TRIP_COLUMNS},ends:trip_legs!inner()`).is('cancelled_at', null)
+    .lte('start_date', win.hi).or(`end_date.gte.${win.ended},start_date.gte.${win.ended}`, { referencedTable: 'ends' });
+  const outOfServiceIn = win => client.from('bus_out_of_service').select('bus_id,start_date,end_date,reason')
+    .lte('start_date', win.hi).gte('end_date', iso(win.from)).then(rowsOf);
+  // Overlap, not containment: a driver away across the whole fortnight has
+  // neither date inside this week and is still away every day of it.
+  const timeOffIn = win => client.from('driver_time_off').select('driver_id,start_date,end_date,reason')
+    .lte('start_date', win.hi).gte('end_date', win.lo).then(rowsOf);
+  // Each driver's status on these trips, from the table the editor and the
+  // driver page write, keyed as `statusKey` builds it.
+  const statusesOf = trips => trips.length
+    ? withTimeout(client.rpc('get_trip_driver_statuses', { p_trip_ids: trips.map(t => t.id) }).then(rowsOf)) : [];
+
+  /* ── The lists that seldom change ──
+     The fleet, the drivers, the contacts, the customers, the saved places,
+     the office's settings and the driver forms customers ask for are read
+     once, not with every week: `listsOwed` names the ones a read still owes.
+     Buses, drivers and settings are owed again on their own live change. The
+     others broadcast nothing, so they are owed again on coming back to the
+     tab, on the channel joining again, and when a change cannot be told. */
+  const LIST_READS = {
+    buses: () => client.from('buses').select('id,number,capacity,type,status,sort_order,ada_lift,sleeper,equipment,year,make,model,color,vin,inspection_exp').order('sort_order').then(rowsOf),
+    // `status`, so the Buses tab offers active drivers; `priority`, so the
+    // roster lists them in the order they are called on; `employment_type`,
+    // because a part-time driver needs an hours-of-service record; the
+    // licence and medical card dates, so the bar menu flags an expired one.
+    drivers: () => client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language').then(rowsOf),
+    // Every contact, for the contact search rather than a read on each keystroke.
+    contacts: () => client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(rowsOf),
+    // The customers and the saved places, for the Customer field, the fill
+    // it makes into an empty pickup, and the Route tab's address search.
+    customers: () => client.from('customers').select('id,name,usual_location_id,notes,usual_reqs,usual_vehicle_type').order('name').then(rowsOf),
+    locations: () => client.from('locations').select('id,name,address,lat,lng,mapbox_id').order('name').then(rowsOf),
+    /* The office's settings this app follows: the billing workflow, the yard and
+       the Geoapify key the Route tab finds places and drives with. A
+       refused read keeps what was there. */
+    settings: () => client.from('settings').select('key,value')
+      .in('key', ['billing-workflow-v1', 'yard-location-v1', 'geoapify-key-v1', 'route-times-v1', 'requirements-v1', 'vehicle-types-v1',
+        'follow-up-v1', 'fuel-card-v1', 'rate-calendar-v1', 'dead-miles-v1', 'late-return-v1'])
+      .then(r => {
+        if (r.error) return;
+        const byKey = new Map((r.data || []).map(row => [row.key, row.value]));
+        setBillingWorkflow(byKey.get('billing-workflow-v1'));
+        const yard = byKey.get('yard-location-v1');
+        if (yard?.lat != null && yard?.lng != null) yardPlace = yard;
+        window.SchedulerPlaces.use(byKey.get('geoapify-key-v1'), yardPlace);
+        setRouteTimes(byKey.get('route-times-v1'));
+        setFuelLimits(byKey.get('fuel-card-v1'));
+        window.SchedulerWeek.setLateReturn(byKey.get('late-return-v1'));
+        rateCalendar = byKey.get('rate-calendar-v1')?.months ?? {};
+        deadMilesLimit = Number(byKey.get('dead-miles-v1')?.miles) > 0 ? Number(byKey.get('dead-miles-v1').miles) : null;
+        setRequirementList(byKey.get('requirements-v1'));
+        window.SchedulerVehicles?.set(byKey.get('vehicle-types-v1'));
+        setFollowUp(byKey.get('follow-up-v1'));
+      }),
+    // The driver forms customers ask for, which the checklist reads. A
+    // refused read keeps what was there.
+    forms: () => window.SchedulerLegFacts.readDriverForms(client).catch(() => false),
+  };
+  const LISTS = ['buses', 'drivers', 'contacts', 'customers', 'locations'];
+  let lists = Object.fromEntries(LISTS.map(name => [name, []]));
+  const listsOwed = new Set(Object.keys(LIST_READS));
+  const oweEveryList = () => { for (const name of Object.keys(LIST_READS)) listsOwed.add(name); };
+
+  /* Reads the lists named, and puts back any a failed read leaves owed. The
+     fleet is never empty, so an empty one is a read the database refused,
+     which is what an ended log-in or removed access looks like; a reload
+     sends the account where it can go. */
+  async function readLists(names) {
+    for (const name of names) listsOwed.delete(name);
+    try {
+      const read = await Promise.all(names.map(name => LIST_READS[name]()));
+      if (names.includes('buses') && !read[names.indexOf('buses')].length) throw new Error('The schedule came back empty. Reload the page.');
+      const fresh = { ...lists };
+      names.forEach((name, i) => { if (LISTS.includes(name)) fresh[name] = read[i]; });
+      lists = fresh;
+    } catch (e) {
+      for (const name of names) listsOwed.add(name);
+      throw e;
+    }
+  }
+
+  // A row the editor added to a list, kept where the next draw finds it.
+  function keepInList(name, row) {
+    lists = { ...lists, [name]: [...lists[name], row] };
+    panelIndex[name] = [...(panelIndex[name] || []), row];
+  }
+
+  // Writes the moves still held into a payload, and lets go of each one a read
+  // that began after the database took it already carries.
+  function carryMoves(data, mine, tripIds = null) {
     for (const [id, move] of heldMoves) {
+      if (tripIds && !tripIds.has(String(move.tripId))) continue;
       if (!move.saving && mine > move.since) heldMoves.delete(id);
       else moveInto(data, id, move);
     }
+  }
+
+  async function read(weekStart) {
+    const mine = ++readsBegun;
+    const win = windowOf(weekStart);
+    const [, trips, oos, timeOff] = await withTimeout(Promise.all([
+      readLists([...listsOwed]),
+      tripsIn(win).order('start_date').then(rowsOf),
+      outOfServiceIn(win),
+      timeOffIn(win),
+    ]));
+    const statuses = statusMap(await statusesOf(trips));
+    const data = { ...lists, trips, oos, timeOff, statuses, weekStart, weekEnd: win.weekEnd };
+    carryMoves(data, mine);
+    return data;
+  }
+
+  /* Reads again only what live changes touched, into the payload held: each
+     trip by its id with the same test the week read uses, so one that has
+     left the weeks or been cancelled comes back as nothing and is taken out;
+     its driver statuses; the time off and out-of-service days; and the lists
+     owed. Returns the new payload, or null with nothing to read. */
+  async function readChanges(base, tripIds, windows) {
+    const names = [...listsOwed];
+    if (!tripIds.size && !windows && !names.length) return null;
+    const mine = ++readsBegun;
+    const ids = [...tripIds];
+    const win = windowOf(base.weekStart, base.weekEnd);
+    const [, rows, oos, timeOff] = await withTimeout(Promise.all([
+      readLists(names),
+      ids.length ? tripsIn(win).in('id', ids).then(rowsOf) : [],
+      windows ? outOfServiceIn(win) : base.oos,
+      windows ? timeOffIn(win) : base.timeOff,
+    ]));
+    const fresh = statusMap(await statusesOf(rows));
+    const statuses = new Map([...base.statuses].filter(([key]) => !tripIds.has(key.split(':')[0])));
+    for (const [key, row] of fresh) statuses.set(key, row);
+    const trips = base.trips.filter(t => !tripIds.has(String(t.id))).concat(rows)
+      .sort((x, y) => String(x.start_date).localeCompare(String(y.start_date)));
+    const data = { ...base, ...lists, trips, oos, timeOff, statuses };
+    carryMoves(data, mine, tripIds);
     return data;
   }
 
@@ -926,7 +1000,7 @@
      its card stays open; moving to another week starts with nothing picked. */
   let renderedWeek = null;
   function render(data, target) {
-    const { buses, trips, drivers, contacts, customers, locations, oos, timeOff, statuses, weekStart, weekEnd } = data;
+    const { buses, trips, drivers, oos, timeOff, statuses, weekStart, weekEnd } = data;
     boardNearby = { trips, off: timeOff, oos };
     standingOf.clear();
     // A strip is drawn again around the week scrolled to, which is the same board, so its selection stays.
@@ -947,7 +1021,7 @@
     const busesById = new Map(buses.map(b => [b.id, b]));
     const into = target || gridEl;
     if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
-                                contacts: contacts || [], customers: customers || [], locations: locations || [] };
+                                contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
 
     const tracks = new Map();
     const push = (key, bar) => { if (!tracks.has(key)) tracks.set(key, []); tracks.get(key).push(bar); };
@@ -4701,7 +4775,7 @@
             customer_id: job.customerId ?? null, client: customerName };
           const add = await withTimeout(client.from('contacts').insert(person).then(r => r));
           if (add.error) throw new Error(add.error.message);
-          panelIndex.contacts = [...(panelIndex.contacts || []), person];
+          keepInList('contacts', person);
           // Every slot the person was typed in links to the one new contact.
           const link = await withTimeout(client.from('trips')
             .update(Object.fromEntries(o.slots.map(s => [s.idKey, person.id]))).eq('id', job.tripId).then(r => r));
@@ -4721,7 +4795,7 @@
             lat: o.place.lat, lng: o.place.lng, mapbox_id: o.place.mapbox_id ?? null };
           const add = await withTimeout(client.from('locations').insert(place).select('id,name,address,lat,lng,mapbox_id').single().then(r => r));
           if (add.error) throw new Error(add.error.message);
-          panelIndex.locations = [...(panelIndex.locations || []), add.data];
+          keepInList('locations', add.data);
         }
         done++;
       } catch {
@@ -4755,7 +4829,7 @@
       .select(cols).single().then(r => r));
     if (!error) {
       pendingCustomerIds.delete(key);
-      panelIndex.customers = [...(panelIndex.customers || []), data];
+      keepInList('customers', data);
       return data.id;
     }
     // The first insert landed after all.
@@ -4763,7 +4837,7 @@
     // Someone made a customer of that name since the week was read.
     if (error.code === '23505') {
       const hit = await withTimeout(client.from('customers').select(cols).ilike('name', likeExact(name)).limit(1).then(r => r));
-      if (hit.data?.[0]) { panelIndex.customers = [...(panelIndex.customers || []), hit.data[0]]; return hit.data[0].id; }
+      if (hit.data?.[0]) { keepInList('customers', hit.data[0]); return hit.data[0].id; }
     }
     throw new Error(error.message);
   }
@@ -17194,10 +17268,23 @@
       if (barsInHand) drawOwed = true;
       else drawBoard(cached.data);
     }
-    if (reading) { readAgain = true; return reading; }
+    weekOwed = true;
+    return readInTurn();
+  }
+
+  /* The reads, one at a time: the week `show` asks for, and between those the
+     live changes waiting. A live change never sets `readAgain`, which is a
+     newer ask for the week and what lets a failed week read stay quiet. */
+  let weekOwed = false;
+  function readInTurn() {
+    if (reading) { if (weekOwed) readAgain = true; return reading; }
     reading = (async () => {
       try {
-        do { readAgain = false; await readWeek(); } while (readAgain);
+        do {
+          readAgain = false;
+          if (weekOwed) { weekOwed = false; await readWeek(); }
+          else await readLive();
+        } while (readAgain || weekOwed || livePending());
       } finally {
         reading = null;
       }
@@ -17206,24 +17293,109 @@
   }
 
   /* ── The week as it is now ─────────────────────────────────────────────────
-     The board is drawn from seven tables, and the old trips app writes the same
-     ones, so a schedule left open goes stale without saying so. A change to any
-     of them means the same thing here -- read the week again -- so one
-     subscription carries them all and `show` does the drawing, which is why a
-     live board and a reloaded board cannot come to differ.
+     The board is drawn from these tables, and other tabs and the driver page
+     write them, so one subscription carries them all. A change reads again
+     only what it touched: the trip a trip row is on, read with the week's own
+     test, so it comes in, changes or goes; the one list a bus, driver or
+     setting change is in; or the time off and out-of-service days. Every
+     change in a save's burst settles into one read.
 
-     Patching one bar instead was not an option even in principle: a delete
-     arrives as the row's id and nothing else, so a bar that vanished could not
-     be found without reading the week anyway.
-
-     All thirteen the week is drawn from broadcast their changes; `contacts` is
-     the one left out, because a booking contact is read far more often than it
-     is edited and it is the table of customers' own details. */
+     A week is read in full when a change cannot be told, on coming back to
+     the tab and when the channel joins again, because a change missed while
+     the channel was down reaches the board no other way. `contacts` is left
+     out of the subscription, because a booking contact is read far more
+     often than it is edited and it is the table of customers' own details. */
   const LIVE_TABLES = ['trips', 'trip_assignments', 'trip_drivers', 'trip_stops', 'trip_updates',
     'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines', 'buses', 'drivers',
     'driver_time_off', 'bus_out_of_service', 'settings', 'trip_driver_statuses'];
   const LIVE_SETTLE = 400;
   let liveTimer = null, liveHeld = false;
+  // What live changes have asked for: a full read, the trips to read again,
+  // the time off and out-of-service days, and a list owed.
+  let liveFull = false, liveWindows = false, liveListsAsked = false;
+  const liveTrips = new Set();
+  const livePending = () => liveTrips.size > 0 || liveWindows || liveListsAsked;
+  const LIVE_LISTS = { buses: 'buses', drivers: 'drivers', settings: 'settings' };
+  // The tables embedded in a trip whose rows carry `trip_id`.
+  const TRIP_ROWS = ['trip_assignments', 'trip_stops', 'trip_updates', 'trip_payments', 'trip_pos', 'trip_invoices', 'trip_quote_lines'];
+
+  /* Which held trip each embedded row and crew row belongs to, by the row's
+     id, and each assignment's trip, built once for each payload. */
+  let heldRows = null;
+  function heldRowsOf(data) {
+    if (heldRows?.data === data) return heldRows;
+    const rows = new Map(), assignments = new Map(), trips = new Set();
+    for (const trip of data.trips) {
+      const id = String(trip.id);
+      trips.add(id);
+      for (const table of TRIP_ROWS) for (const row of trip[table] || []) rows.set(`${table}:${row.id}`, id);
+      for (const a of trip.trip_assignments || []) {
+        assignments.set(String(a.id), id);
+        for (const crew of a.trip_drivers || []) rows.set(`trip_drivers:${crew.id}`, id);
+      }
+    }
+    heldRows = { data, rows, assignments, trips };
+    return heldRows;
+  }
+
+  /* The trip a change is to: its id; null for a row of a trip the board does
+     not hold, which reads nothing; undefined when the change cannot say. A
+     delete carries the row's id alone, so its trip is looked up in what the
+     board holds, and a crew row names its assignment. A trip row is always
+     read, since a trip moved into the weeks comes in that way. */
+  function tripOfChange(table, row, old) {
+    const held = heldRowsOf(cached.data);
+    if (table === 'trips') {
+      const id = row?.id ?? old?.id;
+      return id == null ? undefined : String(id);
+    }
+    if (row?.trip_id != null) return held.trips.has(String(row.trip_id)) ? String(row.trip_id) : null;
+    if (table === 'trip_drivers' && row?.assignment_id != null) return held.assignments.get(String(row.assignment_id)) ?? null;
+    const id = row?.id ?? old?.id;
+    if (id == null || table === 'trip_driver_statuses') return undefined;
+    return held.rows.get(`${table}:${id}`) ?? null;
+  }
+
+  function noteChange({ table, new: row, old }) {
+    if (table in LIVE_LISTS) { listsOwed.add(LIVE_LISTS[table]); liveListsAsked = true; return; }
+    if (table === 'driver_time_off' || table === 'bus_out_of_service') { liveWindows = true; return; }
+    if (!cached) { liveFull = true; return; }
+    const id = tripOfChange(table, row, old);
+    if (id === undefined) liveFull = true;
+    else if (id !== null) liveTrips.add(id);
+  }
+
+  /* Reads what the live changes waiting asked for into the payload held, and
+     draws the board again only if the week on screen reads differently. A
+     read that fails is made good by a full read on the next change. */
+  async function readLive() {
+    const tripIds = new Set(liveTrips);
+    liveTrips.clear();
+    const windows = liveWindows;
+    liveWindows = liveListsAsked = false;
+    if (!cached) return;
+    if (weekMotion) await weekMotion;
+    const before = cached.data;
+    let data;
+    try {
+      data = await readChanges(before, tripIds, windows);
+    } catch (e) {
+      liveFull = true;
+      console.info(`scheduler: a live change could not be read (${String(e?.message ?? e)}); the next change reads the week.`);
+      return;
+    }
+    if (!data) return;
+    cached = { data, centre: data.weekStart };
+    if (!holds(cursor)) return;
+    if (scrolling()) {
+      if (stripRoomy() && stripData) {
+        const strip = [stripStart, addDays(stripStart, STRIP_DAYS - 1)];
+        if (weekPrint(data, ...strip) === weekPrint(stripData, ...strip)) { stripData = data; return; }
+      }
+    } else if (weekPrint(data, cursor) === weekPrint(before, cursor)) return;
+    if (barsInHand) { drawOwed = true; return; }
+    drawBoard(data);
+  }
 
   /* Nothing is redrawn under someone's hands. A week or a bar being dragged, an open
      editor with unsaved work in it and a tab nobody is looking at all hold the
@@ -17236,12 +17408,14 @@
     const carrying = gridEl.querySelector('.scheduler-bar--dragging');
     if (document.hidden || weekMotion || busyEditing || carrying) { liveHeld = true; return; }
     liveHeld = false;
-    show();
+    if (liveFull) { liveFull = false; oweEveryList(); show(); }
+    else if (livePending()) readInTurn();
   }
 
   // Saving a trip writes several of these tables, so a burst settles into one
   // read rather than one each.
-  function liveSoon() {
+  function liveSoon(change) {
+    if (change?.table) noteChange(change);
     clearTimeout(liveTimer);
     liveTimer = setTimeout(liveRefresh, LIVE_SETTLE);
   }
@@ -17398,7 +17572,11 @@
   }
 
   let boardCh = null;
+  let boardJoins = 0;
   const boardStatus = status => {
+    // A channel joining again, or a new one in a dead one's place, missed
+    // whatever changed while it was down.
+    if (status === 'SUBSCRIBED' && boardJoins++) { liveFull = true; liveSoon(); }
     // Only a failure is worth a line; a healthy channel says nothing, as it did.
     if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       console.info(`scheduler: the live board is ${status.toLowerCase()}; coming back to this tab opens it again.`);
@@ -17428,7 +17606,7 @@
   /* Coming back re-reads the week and revives the board's channel; people.js
      revives the presence channel and asks this tab to say itself again. */
   function liveWake() {
-    if (!document.hidden) liveRefresh();
+    if (!document.hidden) { liveFull = true; liveRefresh(); }
     if (!client?.channel) return;
     wake(boardCh, openBoard);
   }
@@ -17490,6 +17668,9 @@
     if (shown && !held) gridEl.classList.add('scheduler-grid--busy');
 
     try {
+      // This read covers the live changes waiting.
+      liveTrips.clear();
+      liveWindows = liveListsAsked = false;
       const data = await read(asked);
       if (weekMotion) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.

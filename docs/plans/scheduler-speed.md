@@ -40,25 +40,10 @@ in, writes recorded and none sent. The last task times the same steps again.
 
 ### Reading
 
-- **A change reads only its trip.** The board finds a change's trip by its
-  `trip_id`, or by looking the row's id or a crew row's `assignment_id` up in
-  what it holds, because a delete arrives with the row's id alone and a crew
-  row names its assignment. It reads that trip again with the board's columns
-  and puts it in the held weeks, or takes it out once its days leave them; a
-  `trips` change whose days fall in the held weeks reads its trip in, and any
-  other change to a row the board does not hold reads nothing. A save's burst
-  of changes still settles into one read, now one per trip it touched. A
-  change to buses, drivers, time off, days out or settings reads that one
-  list.
-- **A full read is kept** for a week no read covers, coming back to the tab,
-  the board's channel joining again after it dropped, and a change whose trip
-  cannot be told, because a change missed while the channel was down reaches
-  the board no other way once each change reads only its own trip.
-- **The lists that seldom change are read once, never with each week:**
-  contacts, customers, locations, buses, drivers and settings. Buses, drivers
-  and settings are read again on their own live change; contacts, customers
-  and locations are not in the realtime publication, contacts on purpose, so
-  they are read again on coming back to the tab and with a full read.
+- **A live change reads only what it touched,** and the lists that seldom
+  change are read once; `data.js`'s live section says how. A week change
+  still reads its trips, because `show()` is how a save in this tab reads
+  back.
 - **One reader and one channel for the board page.** `to-do-rows.js` and
   `departures-panel.js` read from what `data.js` holds and are told when it
   changes, where each now reads trips and opens a channel of its own; a pane
@@ -110,11 +95,6 @@ None open.
 
 ## Tasks
 
-- [ ] Read the seldom-changing lists once in `data.js`, and on a live change
-      read only the changed trip or list into the held weeks, finding a
-      deleted or crew row's trip in what the board holds, and keeping the
-      full read for the cases the decisions name, the channel's rejoin
-      among them.
 - [ ] Make `to-do-rows.js` and `departures-panel.js` read from the board's
       data and share its channel on the board page, reading for themselves
       only past the board's days, and add the five tables the board's channel

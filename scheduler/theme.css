@@ -848,11 +848,6 @@
   color: #161616;
 }
 :is([data-theme="rux-dark"], [data-theme="rux-100"]) .scheduler-yard--short .scheduler-yard__hours { color: inherit; }
-/* In rux-100 a short rest stays grey with its hours in the warning yellow. */
-[data-theme="rux-100"] .scheduler-yard--short {
-  background: var(--rux-layer-03);
-  color: var(--rux-support-warning);
-}
 /* A RUX 100 TRIP READS IN TWO LEVELS, as a Geist card does: the destination
    and the times stay in the bar's own ink, the two things the office scans a
    week for, and the customer, the contact, the update and the drivers step
@@ -1507,16 +1502,24 @@
 }
 [data-theme="rux-100"] .scheduler-bar { --scheduler-footer-paint: none; }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
-/* A RUX 100 PLACEHOLDER IS ITS STATUS SEEN THROUGH THE BOARD: the warning
-   mixed into layer-01 at 24%, about #503403, written in Geist's amber 900,
-   5.1 to 1, and on it the update's and drivers' marks still read. It hovers
-   six points stronger, so it needs no inner ring. */
+/* RUX 100'S AMBER IS DRAWN AS GEIST DRAWS A WARNING: its amber 100 for the
+   surface and its amber 900 for the words and marks, 7.7 to 1, hovering to
+   its amber 200, where the 900 holds 7.2. The placeholder trip, a short rest
+   at the yard and a day free for only part of the picked trip all take it. */
 [data-theme="rux-100"] {
-  --scheduler-amber-bg: color-mix(in srgb, var(--rux-support-warning) 24%, var(--rux-layer-01));
-  --scheduler-amber-fg: var(--rux-support-warning);
-  --scheduler-amber-hover: color-mix(in srgb, var(--rux-support-warning) 30%, var(--rux-layer-01));
-  --scheduler-amber-border: var(--rux-support-warning);
+  --scheduler-amber-bg: oklch(22.46% 0.0538 76.04);
+  --scheduler-amber-fg: oklch(77.21% 0.1991 64.28);
+  --scheduler-amber-hover: oklch(24.95% 0.0642 64.78);
+  --scheduler-amber-border: oklch(77.21% 0.1991 64.28);
   --scheduler-amber-hover-ring: none;
+}
+[data-theme="rux-100"] .scheduler-yard--short {
+  background: var(--scheduler-amber-bg);
+  color: var(--scheduler-amber-fg);
+}
+[data-theme="rux-100"] .scheduler-avail__cell--open:not(.scheduler-avail__cell--whole)::before {
+  border-color: var(--scheduler-amber-fg);
+  background: var(--scheduler-amber-bg);
 }
 /* A trip not yet confirmed is drawn as Geist draws danger: its red 100 for
    the surface and its red 900 for the words, 5.7 to 1, hovering to its red

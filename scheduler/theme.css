@@ -1524,7 +1524,14 @@
 [data-theme="rux-100"] .scheduler-bar--purple { --scheduler-bg: #491d8b; --scheduler-hover: oklch(from #491d8b calc(l + 0.04) c h); }
 [data-theme="rux-100"] .scheduler-bar--green { --scheduler-bg: #044317; --scheduler-hover: oklch(from #044317 calc(l + 0.04) c h); }
 [data-theme="rux-100"] .scheduler-bar--teal { --scheduler-bg: #004144; --scheduler-hover: oklch(from #004144 calc(l + 0.04) c h); }
-[data-theme="rux-100"] .scheduler-bar--cyan { --scheduler-bg: #003a6d; --scheduler-hover: oklch(from #003a6d calc(l + 0.04) c h); }
+/* Cyan sat beside the confirmed blue, so a trip the office colours cyan
+   takes Geist's teal pairing instead: teal 100 for the surface, teal 900 for
+   the destination and times, 8.4 to 1, and teal 200 on hover. */
+[data-theme="rux-100"] .scheduler-bar--cyan {
+  --scheduler-bg: oklch(22.1% 0.0544 178.74);
+  --scheduler-fg: oklch(74.56% 0.1765 182.8);
+  --scheduler-hover: oklch(25.06% 0.062 178.76);
+}
 
 /* THE FLOATING CARD IS ON THE MENUS' SURFACE IN EVERY THEME: the surface, hover, rule and shadow of Carbon's menu, so a context menu and the
    card that opens beside it stand at one height, and a transient surface over the board is one thing wherever it comes from. */

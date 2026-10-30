@@ -1087,9 +1087,9 @@ button.scheduler-row-head__num::after {
     color-mix(in srgb, currentColor 22%, transparent);
 }
 /* A leg that runs off the week has no time on that side: its track runs on
-   to the bar's cut edge, out through the bar's padding, and fades over its
-   last 20px, so it reads as going on into the other week; the edge itself
-   wears no shade. A track run in from the previous week does not stick at the bus
+   to the bar's cut edge, out through the bar's padding, ending in an
+   arrowhead there, so it reads as going on into the other week; the edge
+   itself wears no shade. A track run in from the previous week does not stick at the bus
    column, which would lift it off the edge it comes in at. */
 .scheduler-bar--to-next > .scheduler-bar__time:has(> .scheduler-bar__span) {
   margin-inline-end: calc(-1 * var(--scheduler-pad-end));
@@ -1101,18 +1101,28 @@ button.scheduler-row-head__num::after {
   margin-inline-start: calc(-1 * var(--scheduler-pad-start));
   max-inline-size: none;
 }
+/* There the track is a long arrow: an 8px box filled as the track is,
+   masked to its 2px line and a chevron at the cut end, so the head is the
+   line's own colour, faint ahead of the trip and full once that part has
+   gone. It points the way the trip goes on, back to the week before at a
+   bar that came in from it. */
+.scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
+  --scheduler-arrow-line: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
+  --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8'%3E%3Cpath d='M1.5 1 5 4 1.5 7' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E") right center / 6px 8px no-repeat;
+  --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 8'%3E%3Cpath d='M4.5 1 1 4 4.5 7' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E") left center / 6px 8px no-repeat;
+  block-size: 8px;
+  border-radius: 0;
+}
 .scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
   margin-inline-end: 0;
-  border-radius: 0;
-  mask-image: linear-gradient(to left, transparent, #000 20px);
+  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-on);
 }
 .scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track {
   margin-inline-start: 0;
-  border-radius: 0;
-  mask-image: linear-gradient(to right, transparent, #000 20px);
+  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-back);
 }
 .scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
-  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-back), var(--scheduler-arrow-on);
 }
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who

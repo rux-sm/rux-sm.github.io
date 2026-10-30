@@ -5803,6 +5803,11 @@ html:has(.scheduler-page[data-takeover]) {
 .scheduler-components__again { margin-inline-start: auto; }
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
+/* A sample has no day band, so no corner sets its bus column, and the heads
+   size to nothing: the column takes the corner's own floor instead, 3.5rem,
+   or the compact board's 2rem. */
+.scheduler-components__board { --scheduler-head-w: 3.5rem; }
+.scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
 
 /* Alert buttons brighten on hover; their active state is shared with Live. */
 @media (hover: hover) {

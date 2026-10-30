@@ -67,7 +67,7 @@
     return CONFIRMED_BY[rung] ?? null;
   }
   // What the customer still owes, as a short name.
-  const OWED = { po: 'PO or payment', balance: 'Balance' };
+  const OWED = { po: 'PO, deposit or payment', balance: 'Balance' };
 
   /* The days `today` preps for, each as `YYYY-MM-DD`: tomorrow, and every
      day after it until the office is open again, because nobody is in on a

@@ -169,13 +169,25 @@
     return m;
   };
   /* WHAT IS A PROBLEM ON THE BOARD: a bus that does not fit, more passengers
-     than seats, and a driver who said no or must be told of a change. The
-     paperwork the office works through on every trip -- a confirmation, PO,
-     itinerary or balance waited on, the trip contact, a hotel or an HOS form
-     -- is the card's to list and the Tasks list's to ask for, and marks
-     nothing here, or every bar would carry a warning. */
+     than seats, a driver who said no or must be told of a change, and a
+     confirmed trip with nothing paid, no PO, deposit or payment, which is
+     `unpaid`. The rest of the paperwork the office works through on every
+     trip -- a confirmation, itinerary or balance waited on, the trip
+     contact, a hotel or an HOS form -- is the card's to list and the Tasks
+     list's to ask for, and marks nothing here, or every bar would carry a
+     warning. */
   const PROBLEM_SPOTS = new Set(['seats', 'driver']);
-  const isProblem = a => a.row === 'scheduler-card__misfit' || PROBLEM_SPOTS.has(a.spot);
+  const isProblem = a => a.row === 'scheduler-card__misfit' || PROBLEM_SPOTS.has(a.spot) || a.unpaid;
+  /* A confirmed trip with a price and nothing in hand: no PO, no deposit and
+     no payment, as billing.js reads it. A placeholder and a cancelled trip
+     are owed nothing. */
+  const nothingPaid = trip => {
+    if (trip.confirmed === false || trip.cancelled_at || window.SchedulerBilling.placeholder(trip)) return false;
+    const { price, rung } = window.SchedulerBilling.of(trip);
+    return price > 0 && (rung === 'pending' || rung === 'contract_signed');
+  };
+  // The waits that are money: the PO, deposit or payment before the trip leaves, the balance after.
+  const MONEY = new Set(['po', 'balance']);
   /* BUT THE TRIP CONTACT AND THE ITINERARY BECOME A PROBLEM as the leg
      comes near: still missing from today to SOON_DAYS days before the leg
      leaves, they put up the warning sign too. The Tasks list has asked for
@@ -339,7 +351,9 @@
      A bus that does not fit this trip leads: it is a mistake on the board,
      and it goes when the bus is changed. Then the follow-up reminder, one for
      each thing waited on, which stays while it is true, until the missing
-     thing arrives or an update is written. Then nobody named to call on the
+     thing arrives or an update is written; on a confirmed trip with nothing
+     paid, the reminder for its money stays until a PO, a deposit or a
+     payment is in, whatever was written. Then nobody named to call on the
      day, on a trip not marked as needing no one. Last, a need that is still a
      job, the hotel to book or the hours-of-service form to print; a need the
      bus falls short of is already a misfit, and one that is met is no alert. */
@@ -348,10 +362,12 @@
        lacks is the editor's Billing tab's Closed list and the Trips page's. */
     if (window.SchedulerCloseOut.isBack(trip)) return [];
     const list = (facts?.misfits ?? []).map(words => ({ row: 'scheduler-card__misfit', go: 'fleet', words }));
-    if (asksFollowUp(trip)) {
-      for (const w of waitsOf(trip)) {
-        list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w] });
-      }
+    const asks = asksFollowUp(trip);
+    const unpaid = nothingPaid(trip);
+    for (const w of waitsOf(trip)) {
+      const money = unpaid && MONEY.has(w);
+      if (!asks && !money) continue;
+      list.push({ row: 'scheduler-card__asks', go: w === 'itinerary' ? 'itinerary' : 'billing', spot: w, words: WAIT_WORDS[w], unpaid: money });
     }
     if (!dayOfContact(trip, facts?.leg) && !trip.contact_not_needed) {
       list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });

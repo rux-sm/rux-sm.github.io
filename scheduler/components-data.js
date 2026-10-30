@@ -221,7 +221,7 @@
       { busesById, driversById, nameOf: window.SchedulerLegFacts.requirementLabel }) ?? null;
     const alerts = {
       id: 'alerts', title: 'Alerts',
-      intro: "A problem puts the warning badge at the destination row's end: red once a bus does not fit, amber for seats or a driver, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
+      intro: "A problem puts the warning badge at the destination row's end: red once a bus does not fit, amber for seats or a driver, for a confirmed trip with nothing paid, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
       samples: [
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
           rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },
@@ -240,6 +240,9 @@
           rows: [row('102', bar(trip({ customer: 'Coastal Youth Choir', destination: 'El Paso, TX', buses: [{ ...crewed('b102'), needs: { sleeper: true } }] })))] },
         { name: 'Both', note: 'A trip with a mistake and a job shows red for the mistake; the card lists both.', days: 3,
           rows: [row('103', bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [{ ...crewed('b103'), needs: { sleeper: true } }] })))] },
+        { name: 'Nothing paid', note: 'Confirmed by a signed contract, with no PO, deposit or payment: a reminder to follow up until one is in.', days: 3,
+          rows: [row('101', bar(trip({ customer: 'Riverbend Seniors', start_date: day(1), end_date: day(2), quoted_price: 4885, contract_status: 'Signed', buses: [crewed('b101')],
+            trip_updates: [{ id: `u${++ids}`, created_at: new Date(now).toISOString(), kind: 'update', body: 'Quote signed' }] })))] },
       ],
     };
 

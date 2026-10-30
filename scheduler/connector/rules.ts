@@ -577,7 +577,7 @@ const window = {};
   // How the card and the list name what a trip waits on.
   /* Each wait as the card, the bar's bell and the trip list name it: the
      thing first, then its state, in the words every alert uses. */
-  const WORDS = { confirmation: 'Trip unconfirmed', po: 'PO/payment pending', itinerary: 'Itinerary missing', balance: 'Balance due' };
+  const WORDS = { confirmation: 'Trip unconfirmed', po: 'PO, deposit or payment pending', itinerary: 'Itinerary missing', balance: 'Balance due' };
   let setting = { ...DEFAULT };
 
   const num = (v, d) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : d);
@@ -2354,7 +2354,7 @@ const window = {};
     return CONFIRMED_BY[rung] ?? null;
   }
   // What the customer still owes, as a short name.
-  const OWED = { po: 'PO or payment', balance: 'Balance' };
+  const OWED = { po: 'PO, deposit or payment', balance: 'Balance' };
 
   /* The days `today` preps for, each as `YYYY-MM-DD`: tomorrow, and every
      day after it until the office is open again, because nobody is in on a

@@ -93,7 +93,7 @@ expect('a step still to do names the column it is kept in, and the hotel, booked
   ['driver_info_sent', [null, 'itinerary_printed', 'envelope_printed', 'trip_reminder_sent'], null]);
 
 expect('a confirmed trip that still owes says so, with the figure',
-  said(page({ ...trip, date_paid: null, deposit_amount: 200 }, 'outbound', read).lines).filter(l => /Balance|PO or payment/.test(l)),
+  said(page({ ...trip, date_paid: null, deposit_amount: 200 }, 'outbound', read).lines).filter(l => /Balance|PO, deposit or payment/.test(l)),
   ['warn Balance [$800 due]']);
 
 expect('not needed leaves the contact out and keeps the itinerary, done',

@@ -237,15 +237,15 @@ expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDrive
 
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
-  'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both'];
+  'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both', 'Nothing paid'];
 // The samples leave today, so a missing trip contact is near enough to warn of.
 expect('a problem wears the alert badge in its colour, a contact missing near the day too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
   null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
-  'red Sleeper needed · Trip contact missing']);
+  'red Sleeper needed · Trip contact missing', 'amber PO, deposit or payment pending']);
 expect('a later bus of a leg wears only its own problems: a misfit or a driver, not the trip\'s',
   alerts.map(n => mark(drawn('alerts', n, true)[0])), [
-  null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed']);
+  null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
 expect('every update row is a button, including a settled trip, and the age has no clock',
@@ -260,7 +260,17 @@ expect('alert buttons expose their purpose and expansion state',
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => {
     const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
     return [badge.tagName, badge.getAttribute('aria-label').startsWith('Alerts:'), badge.getAttribute('aria-expanded')];
-  }), Array.from({ length: 7 }, () => ['BUTTON', true, 'false']));
+  }), Array.from({ length: 8 }, () => ['BUTTON', true, 'false']));
+// Four months off, with an update written today: the follow-up does not ask, and the money still does.
+const far = new Date(Date.now() + 120 * 864e5).toISOString().slice(0, 10);
+const unpaidTrip = (more = {}) => ({ id: 'np', confirmed: true, quoted_price: 4885, contract_status: 'Signed', start_date: far, end_date: far,
+  trip_updates: [{ id: 'nu', created_at: new Date().toISOString(), kind: 'update', body: 'Quote signed' }],
+  trip_contacts: [{ position: 1, name: 'Coach Ortiz', leg_id: null }], itinerary_not_needed: true, trip_assignments: [], trip_stops: [], ...more });
+const money = t => Bar.alertsOf(t, {}).filter(a => a.unpaid).map(a => a.words);
+expect('a confirmed trip with nothing paid is a problem however far off it leaves, until a PO, deposit or payment is in',
+  [money(unpaidTrip()), money(unpaidTrip({ deposit_amount: 500, trip_payments: [{ amount: 500, date: far }] })),
+    money(unpaidTrip({ po_received: true, po_amount: 4885 })), money(unpaidTrip({ confirmed: false })), money(unpaidTrip({ quoted_price: 0 }))],
+  [['PO, deposit or payment pending'], [], [], [], []]);
 expect('same section toggles closed, another switches, and closed cards open',
   [Bar.opensSection(true, 'needs', 'needs'), Bar.opensSection(true, 'needs', 'updates'), Bar.opensSection(false, 'updates', 'updates')],
   [false, true, true]);

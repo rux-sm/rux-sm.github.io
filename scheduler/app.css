@@ -1104,6 +1104,34 @@ button.scheduler-row-head__num::after {
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     color-mix(in srgb, currentColor 22%, transparent);
 }
+/* A leg that runs off the week has no time on that side: its track runs on
+   to the bar's cut edge, out through the bar's padding, and fades over its
+   last 20px as the bar's edge does, so it reads as going on into the other
+   week. A track run in from the previous week does not stick at the bus
+   column, which would lift it off the edge it comes in at. */
+.scheduler-bar--to-next > .scheduler-bar__time:has(> .scheduler-bar__span) {
+  margin-inline-end: calc(-1 * var(--scheduler-pad-end));
+  max-inline-size: calc(min(100%, var(--scheduler-times-room, 100%)) + var(--scheduler-pad-end));
+}
+.scheduler-bar--from-prev > .scheduler-bar__time:has(> .scheduler-bar__span) {
+  position: relative;
+  inset-inline-start: auto;
+  margin-inline-start: calc(-1 * var(--scheduler-pad-start));
+  max-inline-size: none;
+}
+.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
+  margin-inline-end: 0;
+  border-radius: 0;
+  mask-image: linear-gradient(to left, transparent, #000 20px);
+}
+.scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track {
+  margin-inline-start: 0;
+  border-radius: 0;
+  mask-image: linear-gradient(to right, transparent, #000 20px);
+}
+.scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
+  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+}
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who
    drives it -- and dim is who it is for. */

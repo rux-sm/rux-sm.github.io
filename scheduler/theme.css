@@ -1333,9 +1333,24 @@
   background: var(--rux-text-primary);
   line-height: 1;
 }
-/* Rux 100's menus stand on Carbon's second layer, as Design sets them, so
-   the board's ⋮ joins its menu in that grey. */
-[data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { --rux-layer: var(--rux-layer-02); --rux-layer-hover: var(--rux-layer-hover-02); }
+/* Rux 100's two toolbar dropdowns, the ⋮'s menu and the week's calendar,
+   are the board's own sheet in its outline, as Geist's popovers are its
+   page's surface ringed in its border, and not Design's raised grey. The
+   open ⋮ and the open week's name join them in it. Hover and selection take
+   the first layer's steps over the sheet, and the menu's dividers the
+   board's line. */
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], #scheduler-view-menu, #scheduler-week-picker .rux--date-picker__calendar-container) {
+  --rux-layer: var(--scheduler-region);
+  --rux-layer-hover: var(--rux-layer-hover-01);
+  --rux-layer-active: var(--rux-layer-active-01);
+  --rux-layer-selected: var(--rux-layer-selected-01);
+  --rux-layer-selected-hover: var(--rux-layer-selected-hover-01);
+  --rux-border-subtle: var(--rux-border-subtle-01);
+}
+[data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"] { background: var(--scheduler-region); }
+@media (hover: hover) {
+  [data-theme="rux-100"] .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--rux-layer-hover-01); }
+}
 /* Its outline runs up the ⋮'s sides and over its top, and the menu's strip
    covers the menu's outline under the ⋮, so one line goes round the two. */
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] { box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow); }
@@ -1400,13 +1415,14 @@
    beside them, is Geist's Background 1, #0a0a0a, a sheet 1.06 to 1 off the
    page. Every region is parted from the next by one 1px line in Geist's
    default border, #2e2e2e, 1.46 to 1 on the sheet, set as border-subtle-01
-   on the board and every panel, so the toolbar's dividers, the rows, the
-   region edges and the panels' rules are all that one grey.
+   on the board, every panel and the ⋮'s menu, which opens outside the
+   board, so the toolbar's dividers, the rows, the region edges and the
+   panels' rules are all that one grey.
    The driver roster beside it is the same sheet with the same lines.
    Unassigned, a darker tint of the board elsewhere, takes layer-01, and the
    bar's floating card keeps the raised surface. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
-[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel),
+[data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: #2e2e2e;
   --scheduler-region: #0a0a0a;

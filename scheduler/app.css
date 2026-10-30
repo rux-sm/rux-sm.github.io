@@ -2148,8 +2148,11 @@ button.scheduler-row-head__num::after {
    end, so the track between them crosses every day the trip takes; on a
    live bar the rows above and below stay in today's column. Cut, as the
    customer's is, where the bar's start is under the bus column, by
-   data.js's `--scheduler-times-room`. */
+   data.js's `--scheduler-times-room`, but never narrower than a day, so on
+   the bar's last day the times stop shrinking and slide out under the bus
+   column with the other rows. */
 .scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) {
+  min-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
   max-inline-size: min(100%, var(--scheduler-times-room, 100%));
 }
 .scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }

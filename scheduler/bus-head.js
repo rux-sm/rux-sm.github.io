@@ -5,19 +5,23 @@
    the top right, the type's drawing. An engine lamp is the number's
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
-   - In the week that holds today, for a bus Samsara answers for: a 40px
-     open dial, a 270° arc filling from 0 to TOP_MPH with the speed and mph
-     in its middle, green while moving and amber over SPEEDING; Idle over
-     how long, amber past IDLE_MS, or Off in its middle while the bus
-     stands, and a dashed track and a dash with no signal. Under it the
-     fuel: a pump and its percent over a bar filled to it. DEF is drawn only
+   - In the week that holds today, for a bus Samsara answers for, its
+     state in a 38px block under the number, so the fuel under it stands
+     at one height down the column: while moving, an open dial, a 270° arc
+     filling from 0 to TOP_MPH with the speed over mph in its middle, green
+     and amber over SPEEDING; while standing, words alone, Idle over how
+     long, amber past IDLE_MS, or Off, and with no signal a dash over how
+     long since the bus was seen. Under it
+     the fuel: a pump and its percent over a bar filled to it. DEF is drawn only
      while it is low, since a normal DEF needs nothing of the office, as a
-     tag in the dial's open foot, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
+     tag at the foot of the state's block, across the dial's open foot while
+     moving, where it takes no height of its own. With no signal the dial and fuel fade. Where the bus
      is, and when it was last seen, are the number's toggletip's.
    - In any other week, or for a bus Samsara does not answer for: its seats
      and its inspection expiry, in the warning colour within WARN_DAYS.
-   The fuel bar is green while normal, the warning colour when low and the
-   error colour when critical, and its percent and title say it too.
+   The fuel bar is a neutral grey while normal, so colour on the head is
+   only ever a state: the warning colour when low and the error colour when
+   critical, its percent and title saying it too.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
    is the bus's row, `live` its bus of samsara-now's answer or null, and
@@ -56,8 +60,8 @@
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
   const DAY = 864e5;
-  // The dial: 40px across, its arc 2.6px, three quarters of a turn.
-  const DIAL = 40, STROKE = 2.6, R = DIAL / 2 - STROKE / 2 - 0.5, TURN = 0.75;
+  // The dial: 38px across, its arc 2.6px, three quarters of a turn.
+  const DIAL = 38, STROKE = 2.6, R = DIAL / 2 - STROKE / 2 - 0.5, TURN = 0.75;
   const ARC = 2 * Math.PI * R * TURN;
 
   const levelOf = (pct, tank) => (pct == null ? null : pct <= tank.critical ? 'critical' : pct <= tank.low ? 'low' : 'normal');
@@ -71,7 +75,7 @@
 
   // What the bus is doing, as the dial says it; the place is the tip's next line.
   function stateOf(live) {
-    if (noSignal(live)) return { engine: 'none', dial: '–', tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
+    if (noSignal(live)) return { engine: 'none', dial: '–', under: live.seen ? ago(live.seen) : null, tone: 'quiet', words: live.seen ? `No signal, last seen ${ago(live.seen)} ago` : 'No signal' };
     if (moving(live)) {
       const fast = live.mph > SPEEDING;
       return { engine: 'moving', dial: String(live.mph), tone: fast ? 'warning' : 'moving', words: `Moving, ${live.mph} mph${fast ? `, over ${SPEEDING}` : ''}` };
@@ -89,28 +93,29 @@
   const lampOf = live => (live?.fault === 'stop' ? { tone: 'error', icon: '#i-error--filled', word: 'Engine stop lamp on' }
     : live?.fault === 'check' ? { tone: 'warning', icon: '#i-warning--alt--filled', word: 'Engine warning lamp on' } : null);
 
-  // The dial: the track, the arc filled to the speed's share, the word in its middle.
+  // The state's block: while moving the dial, its track, the arc filled to
+  // the speed's share and the speed in its middle; standing, the words alone.
   function dial(live, state) {
-    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}`);
+    const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${moving(live) ? '' : ' scheduler-row-head__dial--still'}`);
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', state.words);
     box.title = state.words;
-    const svg = svgEl('svg', { width: DIAL, height: DIAL, viewBox: `0 0 ${DIAL} ${DIAL}`, 'aria-hidden': 'true' });
-    const ring = cls => svgEl('circle', { class: cls, cx: DIAL / 2, cy: DIAL / 2, r: R, transform: `rotate(135 ${DIAL / 2} ${DIAL / 2})` });
-    const track = ring('scheduler-row-head__track');
-    track.setAttribute('stroke-dasharray', noSignal(live) ? '1.5 2.5' : `${ARC} 999`);
-    svg.appendChild(track);
     if (moving(live)) {
+      const svg = svgEl('svg', { width: DIAL, height: DIAL, viewBox: `0 0 ${DIAL} ${DIAL}`, 'aria-hidden': 'true' });
+      const ring = cls => svgEl('circle', { class: cls, cx: DIAL / 2, cy: DIAL / 2, r: R, transform: `rotate(135 ${DIAL / 2} ${DIAL / 2})` });
+      const track = ring('scheduler-row-head__track');
+      track.setAttribute('stroke-dasharray', `${ARC} 999`);
       const fill = ring('scheduler-row-head__arc');
       fill.setAttribute('stroke-dasharray', `${ARC * Math.min(1, live.mph / TOP_MPH)} 999`);
-      svg.appendChild(fill);
+      svg.append(track, fill);
+      box.appendChild(svg);
     }
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
     const under = figure ? 'mph' : state.under;
     if (under) speed.appendChild(el('span', 'scheduler-row-head__under', under));
-    box.append(svg, speed);
+    box.appendChild(speed);
     return box;
   }
 

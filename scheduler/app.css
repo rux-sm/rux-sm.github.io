@@ -326,9 +326,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bus-tip__lamp--warning > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
 .scheduler-bus-tip__lamp--error > svg { color: var(--rux-support-error-inverse); --rux-icon-inner: var(--rux-text-on-color); }
 .scheduler-row-head__num {
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
+  font-size: var(--rux-heading-compact-02-font-size);
+  line-height: 18px;
+  letter-spacing: 0;
   font-weight: 600;
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
@@ -382,14 +382,14 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-secondary);
 }
 .scheduler-row-head__equip svg { display: block; }
-/* The dial: a 270° arc, 2.6px with round ends, the rounded ends these
-   instruments' alone while Carbon's controls stay square. Its middle holds
-   the reading in bold over its unit or how long, so it reads as a gauge's
-   face. */
-.scheduler-row-head__dial { position: relative; align-self: center; inline-size: 40px; block-size: 40px; }
+/* The state's block, 38px tall so the fuel under it stands at one height
+   down the column. While moving it is the dial: a 270° arc, 2.6px with
+   round ends, the rounded ends these instruments' alone while Carbon's
+   controls stay square, the speed in bold over mph in its middle. Standing,
+   it is the words alone at its top, the state in bold over how long. */
+.scheduler-row-head__dial { position: relative; align-self: flex-start; inline-size: 38px; block-size: 38px; }
 .scheduler-row-head__dial svg { position: absolute; inset: 0; fill: none; stroke-width: 2.6; stroke-linecap: round; }
 .scheduler-row-head__track { stroke: var(--rux-border-subtle-01); }
-.scheduler-row-head[data-signal-lost] .scheduler-row-head__track { stroke: var(--scheduler-road-scan); }
 .scheduler-row-head__arc { stroke: var(--scheduler-head-moving); }
 .scheduler-row-head__dial--warning .scheduler-row-head__arc { stroke: var(--scheduler-head-low); }
 .scheduler-row-head__speed {
@@ -406,14 +406,18 @@ button.scheduler-row-head__num::after {
   font-variant-numeric: tabular-nums;
   color: var(--rux-text-primary);
 }
-.scheduler-row-head__speed--word { font-size: 12px; line-height: 12px; }
-.scheduler-row-head__under { font-size: 9px; font-weight: 400; line-height: 10px; color: var(--rux-text-secondary); }
-.scheduler-row-head__dial--warning :is(.scheduler-row-head__speed, .scheduler-row-head__under) { color: var(--scheduler-head-low); }
-.scheduler-row-head__dial--quiet .scheduler-row-head__speed--word:not(:has(.scheduler-row-head__under)) { color: var(--rux-text-secondary); }
+.scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; color: var(--rux-text-secondary); }
+.scheduler-row-head__dial--still { inline-size: 100%; }
+.scheduler-row-head__dial--still .scheduler-row-head__speed { align-items: flex-start; justify-content: flex-start; padding-block-start: 0; line-height: 16px; }
+/* Off and no signal are quiet; an idle bus is in the primary ink, and in
+   the warning colour once it has idled too long or the bus is speeding. */
+.scheduler-row-head__dial--still.scheduler-row-head__dial--quiet .scheduler-row-head__speed:not(:has(.scheduler-row-head__under)) { color: var(--rux-text-secondary); }
+.scheduler-row-head__dial--warning .scheduler-row-head__speed > :first-child { color: var(--scheduler-head-low); }
+.scheduler-row-head__dial--warning:not(.scheduler-row-head__dial--still) .scheduler-row-head__under { color: var(--scheduler-head-low); }
 /* Fuel: a pump and its percent, over a 4px bar filled to the tank's share,
-   green while normal. DEF, shown only while low, is its line alone. */
+   a neutral grey while normal. DEF, shown only while low, is a tag alone. */
 .scheduler-row-head__level {
-  --scheduler-tank-ink: var(--scheduler-head-moving);
+  --scheduler-tank-ink: var(--rux-icon-secondary);
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -425,20 +429,27 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__reading { display: flex; align-items: center; gap: 3px; color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
 .scheduler-row-head__reading svg { flex: none; color: var(--rux-text-secondary); }
 .scheduler-row-head__level:not([data-level="normal"]) .scheduler-row-head__reading { color: var(--scheduler-tank-ink); font-weight: 600; }
-/* A low DEF is a tag across the dial's open foot, under the reading's unit
-   and over the gap before the fuel, on the head's own surface so the arc's
-   ends stop at its edges, and takes no height of its own. */
+/* A low DEF is a tag at the foot of the state's block, on the head's own
+   surface, and takes no height of its own: under the words while the bus
+   stands, and across the dial's open foot while it moves, where the arc's
+   ends stop at its edges. */
 .scheduler-row-head__gauges { position: relative; }
 .scheduler-row-head__level[data-tank="D"] {
   position: absolute;
-  inset-block-start: 34px;
-  inset-inline-start: 50%;
-  translate: -50% 0;
+  inset-block-start: 28px;
+  inset-inline-start: 0;
   padding-inline: 2px;
+  margin-inline-start: -2px;
   background: var(--rux-layer);
   font-size: 9px;
   line-height: 11px;
   white-space: nowrap;
+}
+.scheduler-row-head__dial:not(.scheduler-row-head__dial--still) ~ .scheduler-row-head__level[data-tank="D"] {
+  inset-block-start: 33px;
+  inset-inline-start: 19px;
+  margin-inline-start: 0;
+  translate: -50% 0;
 }
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
 .scheduler-row-head__tank {
@@ -452,6 +463,8 @@ button.scheduler-row-head__num::after {
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
+/* Its 2rem column holds a number at the label size, not the full board's 16px. */
+.scheduler-page[data-board="compact"] .scheduler-row-head__num { font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); }
 .scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__type, .scheduler-row-head__equip) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 

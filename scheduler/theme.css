@@ -1507,14 +1507,10 @@
 }
 [data-theme="rux-100"] .scheduler-bar { --scheduler-footer-paint: none; }
 [data-theme="rux-100"] :is(.scheduler-bar__update, .scheduler-bar__drivers) { background: transparent; }
-/* A RUX 100 BAR THAT NEEDS THE OFFICE IS ITS STATUS SEEN THROUGH THE BOARD:
-   the status colour mixed into layer-01, written in that
-   status's own words colour. A placeholder is the warning at 24%, about
-   #503403, in Geist's amber 900, 5.1 to 1; a trip not yet confirmed is the
-   error at 32%, about #5f282a, in the error text red, 4.9 to 1. Red takes
-   more because amber is the brighter hue, so the two stand off the board
-   alike, and on either the update's and drivers' marks still read. Each hovers six points stronger, so the placeholder needs no
-   inner ring. */
+/* A RUX 100 PLACEHOLDER IS ITS STATUS SEEN THROUGH THE BOARD: the warning
+   mixed into layer-01 at 24%, about #503403, written in Geist's amber 900,
+   5.1 to 1, and on it the update's and drivers' marks still read. It hovers
+   six points stronger, so it needs no inner ring. */
 [data-theme="rux-100"] {
   --scheduler-amber-bg: color-mix(in srgb, var(--rux-support-warning) 24%, var(--rux-layer-01));
   --scheduler-amber-fg: var(--rux-support-warning);
@@ -1522,14 +1518,14 @@
   --scheduler-amber-border: var(--rux-support-warning);
   --scheduler-amber-hover-ring: none;
 }
-/* A trip not yet confirmed keeps Carbon's red 50 and red 40 text, not
-   Geist's red 900: that 900 reads only 3.5 to 1 on this fill, under the 4.5
-   its words need. */
+/* A trip not yet confirmed is drawn as Geist draws danger: its red 100 for
+   the surface and its red 900 for the words, 5.7 to 1, hovering to its red
+   200, where the 900 holds 5.1. */
 [data-theme="rux-100"] .scheduler-bar--red {
-  --scheduler-bg: color-mix(in srgb, #fa4d56 32%, var(--rux-layer-01));
-  --scheduler-fg: #ff8389;
-  --scheduler-hover: color-mix(in srgb, #fa4d56 38%, var(--rux-layer-01));
-  --scheduler-border: #fa4d56;
+  --scheduler-bg: oklch(22.1% 0.0657 15.11);
+  --scheduler-fg: oklch(69.96% 0.2136 22.03);
+  --scheduler-hover: oklch(25.93% 0.0834 19.02);
+  --scheduler-border: oklch(69.96% 0.2136 22.03);
 }
 /* The colours the office picks take Carbon's 80 step, deep enough to sit
    beside the grey without outshining it, with their hover a little lighter

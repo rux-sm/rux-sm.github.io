@@ -872,10 +872,10 @@
    pane's sheet, every row parted by the board's one line. A booked
    day is a solid layer-02 mark in the primary text, the board's trip tile,
    and a short rest keeps that grey with its hours in the warning yellow, 9.0
-   to 1, or a shorter one's in the light red, 6.3.
-   A day off is the board's unconfirmed red, the error at 32% through
-   layer-01, its reason drawn in the error text red, because a driver away is
-   a trip that cannot run as it stands, as an unconfirmed one is.
+   to 1, or a shorter one's in a light red.
+   A day off is the board's unconfirmed red, Geist's red 100 with its reason
+   in red 900, because a driver away is a trip that cannot run as it stands,
+   as an unconfirmed one is.
    A day free for the whole of the picked trip is outlined in a light grey
    over a grey tint, where it was blue; one free for only part keeps the
    rest tone. */
@@ -899,7 +899,7 @@
 }
 [data-theme="rux-100"] .scheduler-avail__cell--short { color: color-mix(in srgb, var(--rux-support-error) 70%, #fff); }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
-  --scheduler-avail-fill: color-mix(in srgb, var(--rux-support-error) 32%, var(--rux-layer-01));
+  --scheduler-avail-fill: oklch(22.1% 0.0657 15.11);
   color: var(--rux-text-error);
 }
 /* A roster mark carries no drawing: the grey bar already says booked and

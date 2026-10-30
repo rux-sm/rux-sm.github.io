@@ -1090,29 +1090,28 @@ button.scheduler-row-head__num::after {
    to the bar's padding at the cut end, where the other rows' words end,
    ending in an arrowhead there, so it reads as going on into the other
    week; the edge itself wears no shade. */
-/* There the track is a long arrow: an 8px box filled as the track is,
-   masked to its 2px line and, at the cut end, the board's 16px chevron,
-   `keyboard_arrow_right` cropped to its 4.7 by 8px drawing, so the head is
+/* There the track ends in Carbon's caret at its 16px size, `caret--right`
+   or `caret--left`: a 16px box filled as the track is, masked to its 2px
+   line and the caret's triangle in the box at the cut end, so the caret is
    the line's own colour, faint ahead of the trip and full once that part has
-   gone. It points the way the trip goes on, back to the week before at a
-   bar that came in from it. */
+   gone. The line stops at the triangle's base. It points the way the trip
+   goes on, back to the week before at a bar that came in from it. */
 .scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
-  --scheduler-arrow-line: linear-gradient(#000 0 0) center / 100% 2px no-repeat;
-  --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='332 -722 284 482'%3E%3Cpath d='M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z'/%3E%3C/svg%3E") right center / auto 8px no-repeat;
-  --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-616 -722 284 482'%3E%3Cpath transform='scale(-1 1)' d='M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z'/%3E%3C/svg%3E") left center / auto 8px no-repeat;
-  block-size: 8px;
+  --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M12 8 22 16 12 24z'/%3E%3C/svg%3E") right center / 16px 16px no-repeat;
+  --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M20 24 10 16 20 8z'/%3E%3C/svg%3E") left center / 16px 16px no-repeat;
+  block-size: 16px;
   border-radius: 0;
 }
 .scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
   margin-inline-end: 0;
-  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-on);
+  mask: linear-gradient(#000 0 0) left center / calc(100% - 10px) 2px no-repeat, var(--scheduler-arrow-on);
 }
 .scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track {
   margin-inline-start: 0;
-  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-back);
+  mask: linear-gradient(#000 0 0) right center / calc(100% - 10px) 2px no-repeat, var(--scheduler-arrow-back);
 }
 .scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
-  mask: var(--scheduler-arrow-line), var(--scheduler-arrow-back), var(--scheduler-arrow-on);
+  mask: linear-gradient(#000 0 0) center / calc(100% - 20px) 2px no-repeat, var(--scheduler-arrow-back), var(--scheduler-arrow-on);
 }
 /* Two levels of brightness, and the split is what the row is for: bright is
    what the trip does -- where it goes, when, what to know on the day and who

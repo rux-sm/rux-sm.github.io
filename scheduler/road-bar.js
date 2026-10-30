@@ -371,10 +371,26 @@
      else null. */
   const expectedBack = (bar, next) => (next?.stop?.type === 'return' && !next.at && next.arrival != null
     && next.arrival - plannedBack(bar) > Road.LATE_MIN * 60e3 ? next.arrival : null);
+  // The office's calendar day of an instant, and the midnights from one to another.
+  const dayOf = ms => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date(ms));
+  const midnights = (from, to) => Math.round((Date.parse(dayOf(to)) - Date.parse(dayOf(from))) / 864e5);
+  /* The return's next-day mark, bar.js's on the bar's own times row, one day
+     further for each midnight between the planned return and `expected`
+     when the bus is now due back later; none on a bar cut at the week's end,
+     as bar.js draws none there. */
+  function nextDay(bar, expected) {
+    if (bar.classList.contains('scheduler-bar--to-next')) return null;
+    const planned = bar.querySelector(':scope > .scheduler-bar__time .scheduler-bar__next-day');
+    const days = (planned ? Number(planned.textContent.slice(1)) : 0) + (expected == null ? 0 : midnights(plannedBack(bar), expected));
+    if (!(days > 0)) return null;
+    const mark = el('sup', 'scheduler-bar__next-day', `+${days}`);
+    mark.title = days > 1 ? `Returns ${days} days later` : 'Returns the next day';
+    return mark;
+  }
 
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
-     and when it is due back, at either end of a track filled as far as the
-     time between them has gone, with a dot at now. A bus running late back
+     and when it is due back, with its next-day mark, at either end of a
+     track filled as far as the time between them has gone, with a dot at now. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
@@ -405,9 +421,12 @@
     if (expected != null) {
       const when = clock(hhmm(Road.clockOf(expected), true), 'scheduler-road__when scheduler-road__when--late');
       when.title = bar.dataset.back ? `Expected back ${hhmm(Road.clockOf(expected), true)}, planned ${bar.dataset.back}` : '';
+      when.append(...[nextDay(bar, expected)].filter(Boolean));
       parts.push(when);
     } else if (bar.dataset.back) {
-      parts.push(clock(bar.dataset.back));
+      const when = clock(bar.dataset.back);
+      when.append(...[nextDay(bar, null)].filter(Boolean));
+      parts.push(when);
       if (over > 0) parts.push(el('span', 'scheduler-road__over', overWords(over)));
     }
     row.replaceChildren(...parts);

@@ -9493,7 +9493,8 @@
   /* PICKING A DRIVER OUT: a press on a name dims every bar but that driver's,
      in any seat, and sets their name in bold on their own bars, so their week
      reads straight off the board. The same name again, Escape in the roster,
-     or hiding the roster puts the board back. Kept by id, because every
+     a click on empty board space or an empty day, or hiding the roster puts
+     the board back. Kept by id, because every
      render replaces the bars and the names. */
   let focusDriver = null;
   // The trips each busy day is made of, which a click on the day selects.
@@ -9547,7 +9548,10 @@
       return;
     }
     const cell = e.target.closest('.scheduler-avail__cell');
-    if (cell) selectDayTrip(cell);
+    if (!cell) return;
+    // An empty day puts a picked driver down, as empty board space does.
+    if (!availRefs.get(cell)?.length && focusDriver != null) pickDriver(null);
+    else selectDayTrip(cell);
   });
   availGrid?.addEventListener('keydown', e => {
     const name = e.target.closest?.('.scheduler-avail__name[data-driver-id]');
@@ -16888,10 +16892,12 @@
       else window.Rux?.modal?.open(searchModal, searchOpen);
     }
   });
-  // A click on empty board space puts the selection down. A click on a bar is
-  // app.js's toggle and opens nothing; a click on a bar's button is the button's.
+  // A click on empty board space puts the selection down, and a picked
+  // driver with it. A click on a bar is app.js's toggle and opens nothing; a
+  // click on a bar's button is the button's.
   gridEl.addEventListener('click', e => {
     if (e.target.closest('.scheduler-bar, .scheduler-bar-shortcuts') || !e.target.closest('.scheduler-track')) return;
+    if (focusDriver != null) pickDriver(null);
     clearSelection();
   });
 

@@ -859,6 +859,14 @@
   --scheduler-head-idle-ink: #a1a1a1;
   --scheduler-head-quiet-ink: #a1a1a1;
 }
+/* Rux 100's state display is square, the head's full 47px both ways. The
+   56px column already gives it the most a 123px row can hold: the head's
+   padding is 4px on every side and the fuel sits 4px under the display, so
+   nothing is clipped. A low DEF's tag moves down with the display's foot. */
+[data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-02); }
+[data-theme="rux-100"] .scheduler-row-head__dial { block-size: auto; aspect-ratio: 1; }
+[data-theme="rux-100"] .scheduler-row-head__gauges { gap: var(--rux-spacing-02); }
+[data-theme="rux-100"] .scheduler-row-head__level[data-tank="D"] { inset-block-start: 40px; }
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
    dims its icon, dial, fuel and kit to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it

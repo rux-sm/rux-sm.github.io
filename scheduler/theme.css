@@ -1493,8 +1493,8 @@
    board, so the toolbar's dividers, the rows, the region edges and the
    panels' rules are all that one grey.
    The driver roster beside it is the same sheet with the same lines.
-   Unassigned, a darker tint of the board elsewhere, takes layer-01, and the
-   bar's floating card keeps the raised surface. A week that reaches the frame's foot leaves its last row's rule
+   Unassigned, a darker tint of the board elsewhere, is the same sheet, its
+   italic No bus saying what the row is. A week that reaches the frame's foot leaves its last row's rule
    to the frame's own line, so the four sides match. */
 [data-theme="rux-100"] :is(.scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
@@ -1535,7 +1535,7 @@
 [data-theme="rux-100"] :is(.scheduler-trip, .scheduler-viewer) .rux--side-panel :is(.rux--side-panel__header, .rux--side-panel__title, .rux--side-panel__subtitle-text, .rux--side-panel__action-toolbar, .rux--side-panel__actions-container) {
   background-color: var(--rux-layer);
 }
-[data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
+[data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
 /* The raised surface a panel's tiles and fields take: Geist's Colour 1,

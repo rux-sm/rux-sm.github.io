@@ -852,11 +852,10 @@
    and the times stay in the bar's own ink, the two things the office scans a
    week for, and the customer, the contact, the update and the drivers step
    back to one soft grey, so a busy week is a column of places and times
-   rather than six bright lines a trip. The grey is a shade over Geist's
-   #a1a1a1, which held 4.0 to 1 on the gold placeholder and 4.4 on a trip not
-   yet confirmed; #adadad holds 4.6 on the gold, 5.1 on the red and 7.8 on
-   the raised grey trip. A mark with its own colour inside these lines, a
-   driver away or short on hours, keeps it. */
+   rather than six bright lines a trip. The grey is #adadad, a shade over
+   Geist's #a1a1a1, about 7.7 to 1 on the blue, red and amber trips alike. A
+   mark with its own colour inside these lines, a driver away or short on
+   hours, keeps it. */
 [data-theme="rux-100"] .scheduler-bar :is(.scheduler-bar__client, .scheduler-bar__contact, .scheduler-bar__update, .scheduler-bar__drivers) {
   opacity: 1;
   color: #adadad;
@@ -1420,43 +1419,27 @@
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--rux-layer-01); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
-/* RUX 100'S STANDARD TRIP IS GEIST'S COMPONENT FILL, so colour on its board
-   always means something: a confirmed trip is Colour 1, #1a1a1a, 1.14 to 1
-   on the board's sheet, inside a 1px edge in the board's line grey, in the
-   primary text, and only a trip on the road, not yet confirmed, a
-   placeholder or a colour the office picked is brighter. Its hover is
-   Geist's Colour 2, #1f1f1f. The edge is four painted strips,
-   so the bar's border and shadow stay free for the week's run-on marks and
-   the selection ring, and an end that runs into another week has none. */
+/* The raised surface a panel's tiles and fields take: Geist's Colour 1,
+   #1a1a1a, 1.14 to 1 on the board's sheet, and its Colour 2, #1f1f1f, on
+   hover. */
 [data-theme="rux-100"] {
   --scheduler-raised: #1a1a1a;
   --scheduler-raised-hover: #1f1f1f;
 }
+/* RUX 100'S CONFIRMED TRIP IS BLUE, drawn as Geist draws its blue: blue 100
+   for the surface, blue 900 for the destination and times, 6.9 to 1, and
+   blue 200 on hover. Like the red and amber trips it has no edge, so each
+   status reads as one filled colour: blue confirmed, red not yet, amber a
+   placeholder and white on the road. */
 [data-theme="rux-100"] .scheduler-bar--blue {
-  --scheduler-bg: var(--scheduler-raised);
-  --scheduler-fg: var(--rux-text-primary);
-  --scheduler-hover: var(--scheduler-raised-hover);
-  --scheduler-border: var(--rux-border-subtle-01);
+  --scheduler-bg: oklch(22.17% 0.069 259.89);
+  --scheduler-fg: oklch(71.7% 0.1648 250.794);
+  --scheduler-hover: oklch(25.45% 0.0811 255.8);
+  --scheduler-border: oklch(71.7% 0.1648 250.794);
 }
-[data-theme="rux-100"] .scheduler-bar--blue:not(.scheduler-bar--road) {
-  --scheduler-edge: var(--rux-border-subtle-01);
-  background-image: linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge)),
-    linear-gradient(var(--scheduler-edge), var(--scheduler-edge)), linear-gradient(var(--scheduler-edge), var(--scheduler-edge));
-  background-size: 100% 1px, 100% 1px, var(--scheduler-edge-start, 1px) 100%, var(--scheduler-edge-end, 1px) 100%;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
-  background-repeat: no-repeat;
-}
-[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--from-prev { --scheduler-edge-start: 0px; }
-[data-theme="rux-100"] .scheduler-bar--blue.scheduler-bar--to-next { --scheduler-edge-end: 0px; }
-/* Under the pointer the trip lifts as a Geist card does: its fill steps to
-   the hover and its edge brightens to Geist's hover border, #454545, so the
-   trip in hand shows on a busy week. A selected trip keeps its white ring. */
-@media (hover: hover) {
-  [data-theme="rux-100"] .scheduler-bar--blue:not(.scheduler-bar--road):hover:not([aria-current="true"]) { --scheduler-edge: #454545; }
-}
-/* A GREY TRIP ON THE ROAD IS INVERTED, Geist's near-white #ededed in
+/* A CONFIRMED TRIP ON THE ROAD IS INVERTED, Geist's near-white #ededed in
    near-black words, so the buses out now are the brightest things on the
-   board without a colour. Its other lines take Geist's light secondary grey,
+   board. Its other lines take Geist's light secondary grey,
    #666666, 4.9 to 1 on the white; its hover is white itself. Its tick takes
    Carbon's light-theme green 60, 4.3 to 1 on the white where the dark
    theme's green held 2.0. A white ring would vanish on it, so a selected

@@ -336,8 +336,6 @@ button.scheduler-row-head__num::after {
 /* The type's drawing and the out-of-service mark at the top right. An
    engine lamp is not drawn here: it leads its line in the number's tip. */
 .scheduler-row-head__kit {
-  /* Above the number's click layer, so the out-of-service mark keeps its
-     hover label. */
   position: relative;
   pointer-events: none;
   display: flex;
@@ -345,7 +343,7 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-secondary);
 }
 .scheduler-row-head__kit svg { display: block; }
-.scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; pointer-events: auto; }
+.scheduler-row-head__oos { color: var(--rux-support-warning); display: inline-flex; }
 /* The compact board's one dot, drawn only there. */
 .scheduler-row-head__dot { display: none; box-sizing: border-box; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--rux-icon-secondary); }
 .scheduler-row-head__dot[data-tone="quiet"] { background: none; border: 1px dashed var(--scheduler-road-scan); }
@@ -353,8 +351,11 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
 /* In the week that holds today, the dial and the two levels; in any other
    week, the seats and the inspection at the foot. */
-/* The body clips, not the head, whose number's tip must reach past it. */
-.scheduler-row-head__body { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; overflow: hidden; }
+/* The body clips, not the head, whose number's tip must reach past it.
+   Its display and fuel stand above the number's click layer, so presses
+   go through them to it: the whole head is one button, and the tip says
+   what each part does. */
+.scheduler-row-head__body { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; overflow: hidden; pointer-events: none; }
 .scheduler-row-head__body:not(.scheduler-row-head__body--live) { justify-content: flex-end; }
 .scheduler-row-head__line {
   min-inline-size: 0;

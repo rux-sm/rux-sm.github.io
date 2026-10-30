@@ -459,8 +459,8 @@ expect('standing: Idle over how long in a filled display, amber past 30 minutes,
 expect('the engine lamp is the tip\'s alone: the head draws no mark for it',
   [marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'check' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50, fault: 'stop' })), marks(busHead({ engine: 'on', mph: 40, fuel: 50 }))],
   [[], [], []]);
-expect('no signal: a dash over how long since it was seen, the gauges faded, and that said on the title',
-  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').title]; })(),
+expect('no signal: a dash over how long since it was seen, the gauges faded, and that said on its label',
+  (() => { const h = busHead({ engine: null, mph: null, fuel: 55, place: null, seen: ago(180) }); return [text(h, '.scheduler-row-head__speed'), h.hasAttribute('data-signal-lost'), h.querySelector('.scheduler-row-head__dial').getAttribute('aria-label')]; })(),
   ['–3h', true, 'No signal, last seen 3h ago']);
 expect('a bus with its engine running fills the display, moving or idling; one off, or with no signal, is its words alone',
   [{ engine: 'on', mph: 40, fuel: 50 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 50 }, { engine: 'off', mph: 0, fuel: 50 }, { engine: null, mph: null, fuel: 50 }]

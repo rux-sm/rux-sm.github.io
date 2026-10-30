@@ -1058,7 +1058,6 @@
       const kit = el('div', 'scheduler-row-head__kit');
       const flag = (href, box, label, cls) => {
         const span = el('span', cls || null);
-        span.title = label;
         span.setAttribute('role', 'img');
         span.setAttribute('aria-label', label);
         span.appendChild(svgUse(href, '16', box));
@@ -1067,7 +1066,10 @@
 
       const windows = (oosByBus.get(r.id) ?? []).filter(w => clip(w.start_date, w.end_date, weekStart, weekEnd));
       if (windows.length) {
-        flag('#m-report-fill', '0 0 16 16', `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`, 'scheduler-row-head__oos');
+        const words = `Out of service: ${windows.map(w => w.reason || 'no reason given').join('; ')}`;
+        flag('#m-report-fill', '0 0 16 16', words, 'scheduler-row-head__oos');
+        // The mark takes no press of its own, so the tip says why.
+        head.querySelector('.scheduler-bus-tip')?.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', words));
       }
       if (kit.childElementCount) top.appendChild(kit);
       if (r.bus) BusHead.draw(head, r.bus, null, { week: false });

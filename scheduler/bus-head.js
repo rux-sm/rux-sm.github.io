@@ -99,7 +99,6 @@
     const box = el('span', `scheduler-row-head__dial scheduler-row-head__dial--${state.tone}${running(live) ? ' scheduler-row-head__dial--running' : ''}`);
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', state.words);
-    box.title = state.words;
     const figure = /^\d+$/.test(state.dial);
     const speed = el('span', figure ? 'scheduler-row-head__speed' : 'scheduler-row-head__speed scheduler-row-head__speed--word');
     speed.append(el('span', null, state.dial));
@@ -120,7 +119,6 @@
     const words = `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
-    g.title = words;
     const reading = el('span', 'scheduler-row-head__reading');
     if (tank === FUEL) reading.appendChild(svgUse('#m-local_gas_station-fill', '12', '0 0 32 32'));
     else reading.appendChild(el('span', null, tank.word));
@@ -190,7 +188,6 @@
       if (insp) {
         const line = el('span', `scheduler-row-head__line scheduler-row-head__insp${insp.soon ? ' scheduler-row-head__insp--soon' : ''}`);
         line.append(el('span', null, 'Insp'), el('span', null, insp.short));
-        line.title = insp.words;
         line.setAttribute('aria-label', insp.words);
         body.appendChild(line);
       }

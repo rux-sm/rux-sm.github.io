@@ -713,6 +713,11 @@ button.scheduler-row-head__num::after {
   line-height: var(--scheduler-row-h);
   z-index: 1;
 }
+/* On a strip, a bar or yard card off screen in a lane deeper than its row is
+   drawn stands in the first lane until a scroll brings it in, data.js's
+   `data-folded`, so it never hangs below the board and lets it scroll past
+   its last row, taking the day band with it. */
+.scheduler-track > :is(.scheduler-bar, .scheduler-yard)[data-folded] { inset-block-start: var(--scheduler-gap-clear); }
 .scheduler-yard__icon { display: inline-flex; }
 .scheduler-yard__hours {
   color: var(--rux-text-primary);

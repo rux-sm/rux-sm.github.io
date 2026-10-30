@@ -1371,7 +1371,9 @@
      week's do. Lanes are given across the whole strip, so a bar keeps its lane
      as it scrolls, and each track is as tall as the most lanes among its bars
      that reach the days on screen, a part day included. A drag sets the lanes
-     of the row it is over, so nothing here runs under a bar in hand. */
+     of the row it is over, so nothing here runs under a bar in hand. A bar
+     off screen in a lane below that is marked `data-folded`, which app.css
+     stands in the first lane, so the board ends at its last row. */
   function fitLanesInView() {
     const w = dayWidth();
     if (!stripStart || !w || barsInHand) return;
@@ -1380,16 +1382,19 @@
     const last = (schEl.scrollLeft + schEl.clientWidth - head) / w;
     for (const track of gridEl.querySelectorAll('.scheduler-track')) {
       let lanes = 1;
-      // A yard card stands on the day a bar starts, with no span of its own.
-      for (const item of track.querySelectorAll(':scope > .scheduler-bar, :scope > .scheduler-yard')) {
+      const items = [...track.querySelectorAll(':scope > .scheduler-bar, :scope > .scheduler-yard')].map(item => {
+        // A yard card stands on the day a bar starts, with no span of its own.
         const yard = item.classList.contains('scheduler-yard');
         const start = Number(yard ? item.style.getPropertyValue('--scheduler-start') : item.dataset.start) || 0;
         const span = yard ? 0 : Number(item.dataset.span) || 1;
-        if (start <= last && start + span >= first) {
-          lanes = Math.max(lanes, (Number(item.style.getPropertyValue('--scheduler-lane')) || 0) + 1);
-        }
-      }
+        const lane = Number(item.style.getPropertyValue('--scheduler-lane')) || 0;
+        if (start <= last && start + span >= first) lanes = Math.max(lanes, lane + 1);
+        return { item, lane };
+      });
       if (track.style.getPropertyValue('--scheduler-lanes') !== String(lanes)) track.style.setProperty('--scheduler-lanes', lanes);
+      for (const { item, lane } of items) {
+        if (item.hasAttribute('data-folded') !== lane >= lanes) item.toggleAttribute('data-folded', lane >= lanes);
+      }
     }
   }
 

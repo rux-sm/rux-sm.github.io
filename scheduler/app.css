@@ -870,6 +870,11 @@ button.scheduler-row-head__num::after {
 }
 
 /* ── Trip bar ─────────────────────────────────────────────────────────── */
+/* Registered as its own, not inherited, so a change to where a bar starts,
+   as data.js moves the strip along under a scroll, has the browser work out
+   the bar's style again and not every element inside it. Nothing reads it
+   from a parent. */
+@property --scheduler-start { syntax: '<number>'; inherits: false; initial-value: 0; }
 .scheduler-bar {
   --scheduler-bg: var(--rux-tag-background-gray);
   --scheduler-fg: var(--rux-tag-color-gray);

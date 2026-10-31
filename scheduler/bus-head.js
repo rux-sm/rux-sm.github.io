@@ -74,7 +74,9 @@
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(at)) / 60e3));
     return min < 60 ? `${min}m` : min < 48 * 60 ? `${Math.floor(min / 60)}h` : `${Math.floor(min / 1440)}d`;
   };
-  const idleFor = live => (live?.engine === 'idle' && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
+  // How long a standing bus has run its engine, whether Samsara calls the
+  // state idle or on: the head shows the span either way, so it judges it either way.
+  const idleFor = live => ((live?.engine === 'idle' || live?.engine === 'on') && live.engine_at ? Date.now() - Date.parse(live.engine_at) : 0);
   const noSignal = live => live && live.engine == null;
   const moving = live => live?.mph > 0;
   // The engine running, moving or not: what fills the state's display.

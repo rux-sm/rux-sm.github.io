@@ -487,6 +487,9 @@ expect('fuel is low at 25% and critical at 10%; DEF is drawn only while low, at 
   [[['F', 'low'], ['D', 'low']], [['F', 'critical'], ['D', 'critical']], [['F', 'normal']]]);
 expect('a bus that reports no DEF draws the fuel alone', levels(busHead({ engine: 'off', mph: 0, fuel: 50, def: null })), [['F', 'normal']]);
 expect('over 75 mph the display turns amber', dial(busHead({ engine: 'on', mph: 79, fuel: 50 })), ['79mph', 'warning', true]);
+expect('a bus standing with its engine on past 30 minutes is as long idle as one Samsara calls idle',
+  [busHead({ engine: 'on', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'idle', mph: 0, engine_at: ago(45), fuel: 50 }), busHead({ engine: 'on', mph: 0, engine_at: ago(10), fuel: 50 })].map(dial),
+  [['Idle45m', 'warning', true], ['Idle45m', 'warning', true], ['Idle10m', 'quiet', true]]);
 expect('standing: Idle over how long in a filled display, amber past 30 minutes, or Off unfilled; the place left to the tip',
   [[busHead({ engine: 'idle', engine_at: ago(14), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'idle', engine_at: ago(45), mph: 0, fuel: 50, place: 'Laredo, TX' })], [busHead({ engine: 'off', mph: 0, fuel: 50, place: 'McAllen, TX, 78504' })]]
     .map(([h]) => [...dial(h), line(h)]),

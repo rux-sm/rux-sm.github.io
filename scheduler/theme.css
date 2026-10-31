@@ -922,13 +922,11 @@
    beside the destination rather than part of its name. */
 [data-theme="rux-100"] .scheduler-bar__count { opacity: 1; color: #a1a1a1; }
 /* RUX 100'S ROSTER IS DRAWN AS ITS BOARD IS: the names and the days on the
-   pane's sheet, every row parted by the board's one line. A mark carries
-   no words but a rest's hours, so its fill is all that says it is there,
-   and each is a solid Geist 900, the step the board's bars write in, 6.4
-   to 1 or more on the sheet, where the bars' 100 was 1.1. There are two:
-   a booked day is blue 900 and a day off red 900, the driver away, and a
-   rest only writes its hours on the blue, in the sheet's near-black at the
-   regular weight a trip's driver names take, so no colour means two things.
+   pane's sheet, every row parted by the board's one line. A mark is small
+   and carries no words but a rest's hours, so it is Geist's solid badge,
+   its 700 and 800 fills, the steps Geist keeps for a high-contrast mark: a
+   booked day is blue 800 and a day off red 800, each with white words, and
+   a rest under 10 hours amber 700 with black, as Geist's badges pair them.
    A day free for the picked trip carries the shared check or caution, in
    Geist's green 900 and amber 900, the theme's success and warning. */
 /* No rule runs between the days, on the board or in the roster: each bus
@@ -941,13 +939,17 @@
    roster is the board's; the priority stays on each name's title. */
 [data-theme="rux-100"] .scheduler-avail__row--break > * { border-block-start: 0; }
 [data-theme="rux-100"] .scheduler-avail__cell--busy {
-  --scheduler-avail-fill: oklch(71.7% 0.1648 250.794);
-  color: var(--scheduler-region, #0a0a0a);
+  --scheduler-avail-fill: oklch(51.51% 0.2307 257.85);
+  color: #fff;
 }
 [data-theme="rux-100"] .scheduler-avail__cell--rest > span { font-weight: 400; }
 [data-theme="rux-100"] .scheduler-avail__cell--off {
-  --scheduler-avail-fill: oklch(69.96% 0.2136 22.03);
-  color: var(--scheduler-region, #0a0a0a);
+  --scheduler-avail-fill: oklch(58.01% 0.227 25.12);
+  color: #fff;
+}
+[data-theme="rux-100"] .scheduler-avail__cell--busy.scheduler-avail__cell--tight {
+  --scheduler-avail-fill: oklch(81.87% 0.1969 76.46);
+  color: #000;
 }
 /* A roster mark carries no drawing: the blue mark already says booked and
    the red one away, and a drawing on the first day of every bar filled the

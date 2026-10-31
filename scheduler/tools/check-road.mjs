@@ -50,6 +50,11 @@ expect('a leg read with its legs has the same stops by its id or its word, and a
   [stopsOf(shaped, 'l1').map(x => [x.name, x.due]), stopsOf(shaped, 'outbound').length, stopsOf(shaped, 'l9')],
   [stops.map(x => [x.name, x.due]), 5, []]);
 expect('a stop with no place has no point', stops.map(s => !!s.point), [true, true, false, true, true]);
+// An older row dates a time past midnight a day early: the drop-off at 1:40 and the yard at 3:07 saved on the day the trip left.
+const dayEarly = { ...day, trip_stops: day.trip_stops.map(x => (x.id === 's3' ? { ...x, arrive: '01:40', arrive_date: '2026-10-15' }
+  : x.id === 'y' ? { ...x, depart_prev: '01:40', arrive: '03:07', arrive_date: '2026-10-15' } : x)) };
+expect('a stop dated before the one before it is due the next day',
+  stopsOf(dayEarly, 'outbound').slice(3).map(s => s.due), [T('2026-10-16', '01:40'), T('2026-10-16', '03:07')]);
 
 // Paths: the bus waits at the yard, drives on a mile a minute.
 const path = (from, legs) => {

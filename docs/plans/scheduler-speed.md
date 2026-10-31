@@ -83,9 +83,9 @@ None open.
 - [ ] Keep legs, back times and standing per trip for a draw, index the
       read's legs by day for standing, and make every date formatter once,
       in `data.js`, `week.js`, `clashes.js`, `bar.js`, `road.js`,
-      `road-bar.js`, `follow-up.js`, `driver-job.js` and `departures.js`.
-- [ ] Measure before writing in `spareFor`, `fitLanesInView`,
-      `fitStuckRows` and `fitCrew`; draw a swipe's spare weeks when idle; and
+      `road-bar.js`, `driver-job.js` and `departures.js`.
+- [ ] Measure before writing in `spareFor`, `fitLanesInView` and
+      `fitStuckRows`; draw a swipe's spare weeks when idle; and
       skip `fillTracks` while the page is hidden.
 - [ ] Time the same steps as the first timing again and compare them with
       its figures.

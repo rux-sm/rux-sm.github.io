@@ -56,7 +56,9 @@
 
   /* Today on the office's calendar, YYYY-MM-DD, whatever clock the code runs
      on: the browser's in the office, or the connector's, which keeps UTC. */
-  const today = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date());
+  // Made once: a draw asks for today about two thousand times.
+  const OFFICE_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' });
+  const today = () => OFFICE_DAY.format(new Date());
   const parseISO = s => { const [y, m, d] = String(s).slice(0, 10).split('-').map(Number); return new Date(y, m - 1, d); };
   const placeholder = trip => window.SchedulerBilling.placeholder(trip);
   // Whole days until the trip leaves, 0 on the day, or null with no date.

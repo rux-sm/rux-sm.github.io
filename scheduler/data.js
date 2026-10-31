@@ -1403,7 +1403,10 @@
   let stripStart = null;
   let stripData = null;
   let placedLeft = null;
-  const dayWidth = () => gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().width || 0;
+  /* A day's width, as app.js last set it, which costs no layout; measured
+     only before app.js has set one. */
+  const dayWidth = () => parseFloat(schEl.style.getPropertyValue('--scheduler-day-w'))
+    || gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().width || 0;
   // Where the week in view sits in the strip, in days from its first.
   const stripAt = () => (stripStart ? daysBetween(stripStart, cursor) : -1);
   // Whether the week in view is far enough from both ends that the strip need not be drawn again.

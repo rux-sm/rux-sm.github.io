@@ -37,8 +37,10 @@
      The browser is asked instead: a hidden box inside the element takes the
      value as its width, and its measured width is the answer in pixels. One
      box is kept and reused, so a pass costs no more than the measure. */
+  /* A hidden box `name` wide, put into `el` to be measured. The caller takes
+     it out after its last read, since taking it out is a write. */
   let ruler = null;
-  const px = (el, name) => {
+  const rulerIn = (el, name) => {
     if (!ruler) {
       ruler = document.createElement('div');
       ruler.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0';
@@ -46,9 +48,7 @@
     }
     ruler.style.inlineSize = `var(${name})`;
     el.appendChild(ruler);
-    const width = ruler.getBoundingClientRect().width;
-    ruler.remove();
-    return width > 0 ? width : NaN;
+    return ruler;
   };
 
   /* The pane's height is measured from its own top rather than capped at the
@@ -145,15 +145,21 @@
     sch.style.removeProperty('--scheduler-day-track');
     sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
-    // The bus column is `max-content`, so its width is measured from the
-    // corner cell, which is that column.
+    /* Every width is read in one layout: the ruler goes in before the first
+       read and comes out after the last, because a write between two reads
+       has the browser lay the board out again. The bus column is
+       `max-content`, so its width is measured from the corner cell, which is
+       that column. */
     const corner = sch.querySelector('.scheduler-corner');
+    const ruled = rulerIn(sch, '--scheduler-day-min');
     const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
-    const dayMin = px(sch, '--scheduler-day-min');
+    const ruledWidth = ruled.getBoundingClientRect().width;
+    const dayMin = ruledWidth > 0 ? ruledWidth : NaN;
     // A strip of days that scrolls is sized for the week in view, seven days.
     const strip = sch.classList.contains('scheduler-week--scroll');
     const days = strip ? 7 : parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
+    ruled.remove();
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
 
     const available = pane - headBase;

@@ -454,7 +454,9 @@ const window = {};
    at their Arrives. `whereOn(stops, path, bus)` follows the path through
    them: a stop is reached when the bus comes within a quarter mile of it, in
    order, and no sooner than two hours before it is due, so a bus driving
-   past a later stop on its way has not reached it. A pickup is also reached
+   past a later stop on its way has not reached it; a bus that stands ten
+   minutes within that quarter mile is at the stop however early, the
+   stops before it skipped, but for the yard return. A pickup is also reached
    by a bus that stands still for two minutes within half a mile of it, since
    a pin on a campus or a stadium is rarely where the bus loads, and passed
    by one that stood still five minutes within a mile and a half of it and is
@@ -498,6 +500,10 @@ const window = {};
   const AREA_MILES = 1.5;
   const LOADED_MS = 5 * 60e3;
   const GONE_MILES = 2.5;
+  /* A bus that stands this long within a quarter mile of a stop is there
+     however early it is, and the stops before it were skipped: long enough
+     that a light or a slow pass by it does not count. */
+  const SKIP_MS = 10 * 60e3;
 
   // The miles between two points as the crow flies; each is [lat, lng].
   const miles = (a, b) => {
@@ -557,7 +563,10 @@ const window = {};
      at a pickup it comes back to at the end has not come back yet. The path
      starts where the bus waited before it left, the yard, and nothing is
      reached until the bus has left there, so a short trip's yard return is
-     not reached as the bus pulls out. A path begins at most twelve hours
+     not reached as the bus pulls out. A bus that has stood SKIP_MS within
+     a quarter mile of a later stop has reached it, however early, and
+     skipped the stops between; the yard return waits for its time, since a
+     bus may stop at the yard before it is done. A path begins at most twelve hours
      back, so a stop due before it begins is taken as reached. A pickup is
      also reached by a bus that has stood still within half a mile of it,
      and left behind once the bus is half a mile off; and it is passed, the
@@ -593,8 +602,12 @@ const window = {};
       if (waited > reached && miles(stops[waited].point, p) > GONE_MILES) { reached = waited; continue; }
       for (let j = reached + 1; j < stops.length; j++) {
         const s = stops[j];
-        if (!s.point || (s.due != null && p[2] < s.due - EARLY_MS)) continue;
+        if (!s.point) continue;
         const d = miles(s.point, p);
+        if (s.due != null && p[2] < s.due - EARLY_MS) {
+          if (s.type !== 'return' && stood >= SKIP_MS && d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
+          continue;
+        }
         if (d <= NEAR_MILES) { reached = j; inside = true; reach = NEAR_MILES; break; }
         if (s.type !== 'pickup') continue;
         if (stood >= PARKED_MS && d <= PARKED_MILES) { reached = j; inside = true; reach = PARKED_MILES; break; }

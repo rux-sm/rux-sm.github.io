@@ -90,6 +90,14 @@ const pastEarly = path(T('2026-10-15', '14:40'), [[0, 12]]);
 expect('a stop passed more than two hours before it is due is not reached',
   [whereOn(earlyStops, pastEarly).reached, whereOn(earlyStops, pastEarly).next], [0, 1]);
 
+// A bus that skips the pickup and parks at the arena hours early: there once it has stood ten minutes.
+const skipTo = path(T('2026-10-15', '12:00'), [[0, 20]]);
+const parkedAtArena = n => [...skipTo, ...Array.from({ length: n }, (_, i) => [...at(20), skipTo.at(-1)[2] + (i + 1) * 60e3])];
+expect('a bus parked ten minutes at a later stop, however early, is at it, the stops before it skipped',
+  [where(parkedAtArena(10)), where(parkedAtArena(5))], [[1, true, 3], [-1, false, 0]]);
+expect('a bus that stops at the yard early has not come back',
+  where([...path(T('2026-10-15', '12:00'), [[0, 3], [3, 0]]), ...Array.from({ length: 20 }, (_, i) => [...at(0), T('2026-10-15', '12:07') + i * 60e3])]), [-1, false, 0]);
+
 // A short trip whose yard return is due soon after it leaves.
 const short = { start_date: '2026-10-15', end_date: '2026-10-15', trip_type: 'one_way', trip_stops: [
   { id: 'p', leg: 'outbound', position: 0, type: 'pickup', name: 'Church', ...place(3), depart_prev: '16:49', spot: '17:15', spot_date: '2026-10-15' },

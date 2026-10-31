@@ -45,10 +45,10 @@ None open.
 ## Tasks
 
 - [ ] In a later session, once the office's tabs have been reloaded, write
-      the SQL that imports the two trips' unrecorded notes as updates, fills
-      `trip_reqs` where it is empty, rewrites yellow and cyan, and drops the
-      needs columns and the unread columns; show it to rux, and apply it on
-      his yes;
+      the SQL that imports the two trips' unrecorded notes as updates,
+      rewrites yellow and cyan, takes the needs columns out of
+      `get_driver_share_trips`, and drops the needs columns and the unread
+      columns; show it to rux, and apply it on his yes;
       then remove `RETIRED_COLORS` and its history labels and the old colour
       names from `get_trip`'s words, and update the scheduler's database
       inventory in the same commit.

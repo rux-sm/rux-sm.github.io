@@ -6,12 +6,12 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - For a bus Samsara answers for, in whatever week is shown, its
-     state and fuel in a split ring under the number on five and six rows:
-     the top arc fills with the speed to MAX_MPH, the bottom arc with the
-     fuel, and inside it the speed, or Idle, Off or a dash, over F and the
-     fuel's percent. On fewer rows, its
-     state in a display under the number, on the rows app.css gives it, so
-     the fuel under it stands at one height down the column. While the engine runs the display is
+     state under the number as a speedometer on five and six rows: a half
+     ring that fills with the speed to MAX_MPH, the speed, or Idle, Off or
+     a dash, inside it at its foot, and mph or how long under it. On fewer
+     rows, its state in a display under the number, on the rows app.css
+     gives it, so the fuel under it stands at one height down the column.
+     While the engine runs the display is
      filled: moving, the speed over mph on green, amber over SPEEDING;
      idling, Idle over how long on grey, amber past IDLE_MS. With the
      engine off it is the word alone, Off, with no fill or edge, and with no
@@ -60,7 +60,7 @@
   // Each tank's low and critical marks, in percent.
   const FUEL = { low: 25, critical: 10, letter: 'F', word: 'Fuel' };
   const DEF = { low: 15, critical: 5, letter: 'D', word: 'DEF' };
-  // The speed past which a moving bus turns amber, and the speed that fills the ring's top arc.
+  // The speed past which a moving bus turns amber, and the speed that fills the speedometer's arc.
   const SPEEDING = 75;
   const MAX_MPH = 80;
   const IDLE_MS = 30 * 60e3;
@@ -137,41 +137,28 @@
     return g;
   }
 
-  // The ring's two halves, split at 9 and 3 o'clock, each drawn from left
-  // to right: 48px across, Carbon's 4px stroke, a 12° gap at either side.
-  const RING = (() => {
-    const c = 24, r = 22, gap = 12;
-    const at = deg => [c + r * Math.cos(deg * Math.PI / 180), c + r * Math.sin(deg * Math.PI / 180)].map(n => n.toFixed(2)).join(' ');
-    return {
-      top: `M${at(180 + gap)} A${r} ${r} 0 0 1 ${at(360 - gap)}`,
-      bottom: `M${at(180 - gap)} A${r} ${r} 0 0 0 ${at(gap)}`,
-    };
-  })();
+  // The speedometer's arc, from 9 o'clock over to 3: 48px across, Carbon's
+  // 4px stroke, its centre on the box's foot.
+  const ARC = 'M2 24 A22 22 0 0 1 46 24';
 
-  // The split ring: the speed on top, the fuel underneath, the speed or the
-  // state's word inside over F and the fuel's percent. Its words are the
-  // dial's and the fuel's, which it stands in for on five and six rows.
-  function ring(live, state) {
-    const lv = levelOf(live.fuel, FUEL);
-    const box = el('span', `scheduler-row-head__ring scheduler-row-head__ring--${state.tone}${running(live) ? ' scheduler-row-head__ring--running' : ''}`);
-    if (lv) box.dataset.level = lv;
+  // The speedometer: the arc filled with the speed, the speed or the
+  // state's word inside at its foot, and mph or how long under it. Its words
+  // are the dial's, which it stands in for on five and six rows; the fuel
+  // keeps its own bar under it.
+  function speedometer(live, state) {
+    const box = el('span', `scheduler-row-head__arc scheduler-row-head__arc--${state.tone}${running(live) ? ' scheduler-row-head__arc--running' : ''}`);
     box.setAttribute('role', 'img');
-    box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
-    const svg = svgEl('svg', { class: 'scheduler-row-head__ring-svg', width: 48, height: 48, viewBox: '0 0 48 48', 'aria-hidden': 'true' });
-    const arc = (d, cls, share) => svgEl('path', { d, class: cls, pathLength: 100, ...(share == null ? {} : { 'stroke-dasharray': `${share} 200` }) });
-    svg.append(arc(RING.top, 'scheduler-row-head__ring-track'), arc(RING.bottom, 'scheduler-row-head__ring-track'));
+    box.setAttribute('aria-label', state.words);
+    const bow = el('span', 'scheduler-row-head__arc-bow');
+    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 48, height: 26, viewBox: '0 0 48 26', 'aria-hidden': 'true' });
+    svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-track', pathLength: 100 }));
     const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
-    if (mph) svg.appendChild(arc(RING.top, 'scheduler-row-head__ring-speed', mph));
-    const fuel = Math.max(0, Math.min(100, live.fuel ?? 0));
-    if (fuel) svg.appendChild(arc(RING.bottom, 'scheduler-row-head__ring-fuel', fuel));
-    const mid = el('span', 'scheduler-row-head__ring-mid');
-    mid.appendChild(el('span', /^\d+$/.test(state.dial) ? 'scheduler-row-head__ring-figure' : 'scheduler-row-head__ring-figure scheduler-row-head__ring-figure--word', state.dial));
-    if (live.fuel != null) {
-      const f = el('span', 'scheduler-row-head__ring-pct');
-      f.append(el('span', 'scheduler-row-head__ring-f', 'F'), el('span', null, `${live.fuel}%`));
-      mid.appendChild(f);
-    }
-    box.append(svg, mid);
+    if (mph) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-speed', pathLength: 100, 'stroke-dasharray': `${mph} 200` }));
+    const figure = /^\d+$/.test(state.dial);
+    bow.append(svg, el('span', figure ? 'scheduler-row-head__arc-figure' : 'scheduler-row-head__arc-figure scheduler-row-head__arc-figure--word', state.dial));
+    box.appendChild(bow);
+    const under = figure ? 'mph' : state.under;
+    if (under) box.appendChild(el('span', 'scheduler-row-head__arc-under', under));
     return box;
   }
 
@@ -226,7 +213,7 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
-      gauges.appendChild(ring(shown, state));
+      gauges.appendChild(speedometer(shown, state));
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));

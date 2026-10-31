@@ -509,20 +509,19 @@ expect('no answer for the bus: the inspection alone, amber within 45 days, and n
 expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
-const ring = h => {
-  const r = h.querySelector('.scheduler-row-head__ring');
-  const share = cls => r.querySelector(`.scheduler-row-head__ring-${cls}`)?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null;
-  return [text(r, '.scheduler-row-head__ring-figure'), text(r, '.scheduler-row-head__ring-pct'), r.classes().find(c => /__ring--(?!running)/.test(c)).split('--')[1], r.dataset.level, share('speed'), share('fuel')];
+const speedometer = h => {
+  const r = h.querySelector('.scheduler-row-head__arc');
+  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1],
+    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null];
 };
-expect('the split ring: the speed\'s share of 80 mph on top, the fuel\'s underneath, the speed over F and the percent, the tank\'s level on it',
-  [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55 }]
-    .map(l => ring(busHead(l))),
-  [['52', 'F68%', 'moving', 'normal', '65', '68'], ['92', 'F20%', 'warning', 'low', '100', '20'], ['Idle', 'F8%', 'quiet', 'critical', null, '8'], ['Off', 'F0%', 'quiet', 'critical', null, null], ['–', 'F55%', 'quiet', 'normal', null, '55']]);
-expect('the ring says its speed and fuel on its label',
-  busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__ring').getAttribute('aria-label'),
-  'Moving, 52 mph. Fuel 20%, low');
-expect('a bus that reports no fuel has a ring with no percent',
-  ring(busHead({ engine: 'on', mph: 30, fuel: null })).slice(0, 2), ['30', null]);
+expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it',
+  [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55, seen: ago(180) }]
+    .map(l => speedometer(busHead(l))),
+  [['52', 'mph', 'moving', '65'], ['92', 'mph', 'warning', '100'], ['Idle', '5m', 'quiet', null], ['Off', null, 'quiet', null], ['–', '3h', 'quiet', null]]);
+expect('the speedometer says its state on its label, and the fuel keeps its own bar beside it',
+  [busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__arc').getAttribute('aria-label'),
+    busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__level[data-tank="F"]').dataset.level],
+  ['Moving, 52 mph', 'low']);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

@@ -1518,17 +1518,15 @@
      nothing and answers false: a bus the new days use that has no row yet, a
      row whose out-of-service mark changes, or a strip with no day in common.
 
-     The browser's costs decide the shape. Taking a cell or a bar out of the
-     grid, or putting one in anywhere but at the end of its row, has the
-     browser work out the style of every element after it again, 30ms on a
-     strip, so nothing is removed or inserted here: a bar that goes is
-     retired where it stands, and `sweepRetired` removes it when the browser
-     is idle after the scroll. A bar's own style costs the browser a tenth of
-     a millisecond and a new bar a millisecond, so only the bars on screen or
-     about to be move at once; the rest, and every new bar, are off screen
-     for days yet and follow a few a frame, in `settleOwed`. What is left is
-     the bars on screen, some 40, at 5ms a step, whatever the step's length,
-     which is why the strip moves a week at a time. */
+     The browser's costs decide the shape. A bar's own style costs the
+     browser a tenth of a millisecond and a new bar a millisecond, so only
+     the bars on screen or about to be move at once; the rest, and every new
+     bar, are off screen for days yet and follow a few a frame, in
+     `settleOwed`. What is left is the bars on screen, some 40, at 5ms a
+     step, whatever the step's length, which is why the strip moves a week
+     at a time. A bar that goes is removed at once; that costs nothing so
+     long as no stylesheet rule has a bare `*` after a `+` or `~`, which
+     app.css says beside `.scheduler-panel-section__head`. */
   function growStrip(on) {
     const w = dayWidth();
     if (!w || !stripStart || !cached || barsInHand) return false;
@@ -1686,45 +1684,10 @@
   }
   // Whether a layout places the bar a key names.
   const laidHas = (laid, key, placedKey) => [...laid.tracks.values()].some(bars => bars.some(b => placedKey(b) === key));
-  /* A bar or yard card the strip has moved past. It is put far off the
-     strip's left, where no scroll reaches, since a hand turning back within
-     the half second before the sweep would otherwise find it standing on
-     its old days, and stops being anything a reader finds: on no day, of no
-     trip, assignment or bus, not focusable. A bar an edge of the strip cut
-     short is anchored to that edge by app.css, not to its start, and would
-     stretch from the far left to the edge, so it is hidden instead, which
-     costs more and is rare. Taking one out of its row would cost the row's
-     style, 3ms, so `sweepRetired` removes them when the browser is idle
-     after the scroll. */
+  // A bar or yard card the strip has moved past is taken out of its row.
   function retire(node) {
     owedBars.delete(node);
-    node.dataset.gone = '';
-    node.dataset.start = '-999';
-    if (node.classList.contains('scheduler-bar--from-prev') || node.classList.contains('scheduler-bar--to-next')) node.style.display = 'none';
-    else node.style.setProperty('--scheduler-start', '-999');
-    for (const name of ['data-trip-id', 'data-assignment-id', 'data-bus-id']) node.removeAttribute(name);
-    // Only the selected bar's mark comes off: the attribute is in a rule, so touching it costs the bar's style.
-    if (node.getAttribute('aria-current') === 'true') node.removeAttribute('aria-current');
-    node.tabIndex = -1;
-  }
-  let sweepIdle = 0;
-  const whenIdle = window.requestIdleCallback ? fn => requestIdleCallback(fn, { timeout: 1000 }) : fn => setTimeout(fn, 250);
-  // Removes the retired bars and cards, two rows' worth at a time, each row's removal costing its style once.
-  function sweepRetired() {
-    sweepIdle = 0;
-    const rows = new Map();
-    for (const gone of gridEl.querySelectorAll('[data-gone]')) {
-      if (!rows.has(gone.parentNode)) rows.set(gone.parentNode, []);
-      rows.get(gone.parentNode).push(gone);
-    }
-    let n = 0;
-    for (const nodes of rows.values()) {
-      if (n++ >= 2) { sweepIdle = whenIdle(sweepRetired); break; }
-      for (const node of nodes) node.remove();
-    }
-  }
-  function scheduleSweep() {
-    if (!sweepIdle && gridEl.querySelector('[data-gone]')) sweepIdle = whenIdle(sweepRetired);
+    node.remove();
   }
   /* WHAT A GROWTH LEAVES FOR THE FRAMES AFTER IT, all of it off screen for
      days yet: the bars and yard cards kept whose place on screen has yet to
@@ -18089,8 +18052,8 @@
       render(data);
       shown = asked;
     } catch (e) {
-      // A queued read follows and reports for itself.
-      if (readAgain) return;
+      // A queued read follows and reports for itself; a read ahead of the hand asked for nothing to show, and the next growth asks again.
+      if (readAgain || ahead) return;
       // A failed read keeps the last good week on screen and puts its label
       // back; only a first load, with nothing drawn yet, hides the grid.
       if (shown) setRange(stripStart ? cursor : shown, lastShown(stripStart ? cursor : shown));
@@ -18656,11 +18619,15 @@
     let roomy = stripRoomy();
     // Near either end, with the days around the week in view held, the strip moves along to centre it.
     if (!roomy && holds(cursor) && growStrip(cursor)) roomy = true;
-    scheduleSweep();
-    // A read that landed under the hand and found the strip changed draws it now.
+    // A read that landed under the hand and found the strip changed draws it now, or once a bar in hand is let go.
     const stale = stripStale && holds(cursor);
     stripStale = false;
-    settleRows(() => { if (stale) drawBoard(cached.data); else if (roomy) fitLanesInView(); else return show(); });
+    settleRows(() => {
+      if (stale && barsInHand) drawOwed = true;
+      else if (stale) drawBoard(cached.data);
+      else if (roomy) fitLanesInView();
+      else return show();
+    });
     if (roomy && liveHeld) liveRefresh();
   }
   /* Fits the rows to the trips in view once a scroll stops. The board is held

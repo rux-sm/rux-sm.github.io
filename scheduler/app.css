@@ -3244,7 +3244,12 @@ button.scheduler-row-head__num::after {
   justify-content: space-between;
   gap: var(--rux-spacing-05);
 }
-.scheduler-panel-section__head + * { margin-block-start: var(--rux-spacing-05); }
+/* The space is the head's own, below it, and never a rule on whatever
+   follows: a bare `*` after `+` is tried by the browser on every element on
+   the page and marks each parent, so that any element inserted or removed
+   anywhere, a bar on the board included, had every sibling after it styled
+   again. A last head keeps no space, since nothing follows it. */
+.scheduler-panel-section__head:not(:last-child) { margin-block-end: var(--rux-spacing-05); }
 /* Centred beside its control, a title keeps no bottom margin, which would lift
    it 4px off the control's middle. */
 .scheduler-panel-section__head .scheduler-panel-section__title { margin-block-end: 0; }

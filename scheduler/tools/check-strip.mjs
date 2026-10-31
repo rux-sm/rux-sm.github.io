@@ -109,7 +109,7 @@ const scenario = `(async () => {
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const until = async (test, ms, what) => { const t0 = performance.now(); while (performance.now() - t0 < ms) { if (test()) return true; await wait(50); } throw new Error('timed out waiting for ' + what); };
   const label = () => document.getElementById('scheduler-range')?.textContent ?? '';
-  const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar:not([data-gone])').length;
+  const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar').length;
   await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length === 35, 15000, 'the strip');
   await wait(800);
   const w = parseFloat(sch.style.getPropertyValue('--scheduler-day-w'));
@@ -121,17 +121,16 @@ const scenario = `(async () => {
   const snap = () => ({
     first: document.querySelector('.scheduler-day').textContent, label: label(), week: toIso(document.getElementById('scheduler-week-date').value),
     at: Math.round(sch.scrollLeft / w * 100) / 100, stripStart: shift(toIso(document.getElementById('scheduler-week-date').value), -Math.round(sch.scrollLeft / w)),
-    bars: [...document.querySelectorAll('.scheduler-track > .scheduler-bar:not([data-gone])')].map(b => ({
+    bars: [...document.querySelectorAll('.scheduler-track > .scheduler-bar')].map(b => ({
       key: (b.parentElement.dataset.busId ?? 'u') + '|' + b.dataset.tripId + '|' + b.dataset.legKey + '|' + (b.dataset.assignmentId || '') + '|' + b.dataset.slot,
       start: Number(b.dataset.start), span: Number(b.dataset.span), lane: b.style.getPropertyValue('--scheduler-lane'), varStart: b.style.getPropertyValue('--scheduler-start'),
       cls: [...b.classList].filter(c => !/--(road|watched|saving|pressed|open|same-trip|driver|saved)$/.test(c)).sort().join(' '),
       text: b.textContent, folded: b.hasAttribute('data-folded'),
     })),
-    yards: [...document.querySelectorAll('.scheduler-track > .scheduler-yard:not([data-gone])')].map(y => (y.parentElement.dataset.busId ?? 'u') + '|' + y.dataset.start + '|' + y.style.getPropertyValue('--scheduler-lane') + '|' + y.className + '|' + y.title).sort(),
-    retired: document.querySelectorAll('[data-gone]').length,
+    yards: [...document.querySelectorAll('.scheduler-track > .scheduler-yard')].map(y => (y.parentElement.dataset.busId ?? 'u') + '|' + y.dataset.start + '|' + y.style.getPropertyValue('--scheduler-lane') + '|' + y.className + '|' + y.title).sort(),
   });
   const swipe = async (dx, n) => { for (let i = 0; i < n; i++) { sch.dispatchEvent(new WheelEvent('wheel', { deltaX: dx, deltaY: 1, deltaMode: 0, bubbles: true, cancelable: true })); await wait(16); } };
-  const settled = async () => { await wait(1500); await until(() => document.querySelectorAll('[data-gone]').length === 0, 5000, 'the sweep'); await wait(300); };
+  const settled = async () => { await wait(1800); };
   const pick = async isoDay => { const was = label(); const input = document.getElementById('scheduler-week-date'); input.value = fromIso(isoDay); input.dispatchEvent(new Event('change', { bubbles: true })); await until(() => label() !== was, 8000, 'the week ' + isoDay); await wait(600); };
   /* A whole draw with the same days on screen as the grown strip: a week far
      off is drawn first, so the way back is a draw and not a scroll; the pick
@@ -148,7 +147,7 @@ const scenario = `(async () => {
   const compare = (name, grown, fresh) => {
     const delta = days(fresh.stripStart, grown.stripStart);
     const inside = (start, span) => start >= 1 && start + span <= 34;
-    const out = { name, delta, sameDays: grown.week === fresh.week, grownBars: grown.bars.length, freshBars: fresh.bars.length, onEdge: Math.abs(grown.at - Math.round(grown.at)) < 0.01, retired: grown.retired, diffs: [], laneDiffs: 0, compared: 0, unsettled: grown.bars.filter(b => Number(b.varStart) !== b.start).length };
+    const out = { name, delta, sameDays: grown.week === fresh.week, grownBars: grown.bars.length, freshBars: fresh.bars.length, onEdge: Math.abs(grown.at - Math.round(grown.at)) < 0.01, diffs: [], laneDiffs: 0, compared: 0, unsettled: grown.bars.filter(b => Number(b.varStart) !== b.start).length };
     const f = new Map(fresh.bars.filter(b => inside(b.start, b.span) && inside(b.start - delta, b.span)).map(b => [b.key, { ...b, start: b.start - delta }]));
     for (const g of grown.bars.filter(b => inside(b.start, b.span) && inside(b.start + delta, b.span))) { const b = f.get(g.key); if (!b) { out.diffs.push({ key: g.key, only: 'grown' }); continue; } f.delete(g.key); out.compared++;
       for (const k of ['start', 'span', 'cls', 'text', 'folded']) if (g[k] !== b[k]) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
@@ -240,7 +239,6 @@ async function main() {
       if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
       if (!r.sameDays) { fail('strip', `${r.name}: the whole draw could not be brought to the same day`); bad = true; }
       if (r.unsettled) { fail('strip', `${r.name}: ${r.unsettled} bars not where their data-start says`); bad = true; }
-      if (r.retired) { fail('strip', `${r.name}: ${r.retired} retired bars left after the sweep`); bad = true; }
       if (!r.yardsSame && !r.yardsSameButLane) { bad = true; fail('strip', `${r.name}: the yard cards differ from a whole draw`); for (const y of r.yardDiffs) console.log(`          ${y}`); }
       if (r.diffs.length) { bad = true; fail('strip', `${r.name}: ${r.diffs.length} bars differ from a whole draw`); for (const d of r.diffs.slice(0, 8)) console.log(`          ${JSON.stringify(d)}`); }
       if (!bad) ok('strip', words);

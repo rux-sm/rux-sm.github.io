@@ -161,6 +161,7 @@
     for (const part of ['duty', 'hours', 'away', 'left', 'rest', 'rest-time']) item.querySelector(`:scope > .scheduler-crew__${part}`)?.remove();
     item.classList.remove('scheduler-crew--wheel', 'scheduler-crew--away', 'scheduler-crew--seat');
     item.style.removeProperty('--scheduler-seat-fill');
+    item.removeAttribute('data-fill-short');
     delete item.dataset.duty;
     // A driver Samsara has in the bus is on the trip: their mark reads
     // confirmed while the bus is out, whatever they answered.
@@ -213,10 +214,12 @@
     }
     // How far the seat's meter is filled, where app.css turns its reading
     // from dark to the row's ink: the rest so far while resting, else the
-    // hours left.
+    // hours left. Under half, the reading stands after the fill instead, so
+    // no word is cut in two colours.
     const elapsed = resting(d) ? restProgress(d).ms : null;
-    item.style.setProperty('--scheduler-seat-fill', `${resting(d) ? (elapsed == null ? 0 : share(elapsed, REST))
-      : d.left_ms != null ? share(d.left_ms, DRIVE) : 0}%`);
+    const fill = resting(d) ? (elapsed == null ? 0 : share(elapsed, REST)) : d.left_ms != null ? share(d.left_ms, DRIVE) : 0;
+    item.style.setProperty('--scheduler-seat-fill', `${fill}%`);
+    item.toggleAttribute('data-fill-short', fill < 50);
     item.title = `${item.title}\nSamsara: ${words(d)}`;
   }
   // The bar of driving hours left under a seat; red and full for the wrong bus.

@@ -333,7 +333,7 @@
     if (!(done && dot && !c.needed && c.status?.value !== 'declined')) {
       const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
         c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
-      const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt-inverted--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
+      const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
         : svgUse(c.icon, '16', c.box);
       if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-major' : 'rux--icon-indicator--not-started')
         : c.status.indicator);

@@ -211,7 +211,7 @@ const useOf = m => m ? [...m.walk()].find(n => n.tagName === 'USE')?.getAttribut
 const icon = c => useOf(c.querySelector('.scheduler-crew__mark'));
 expect('each driver state uses its Carbon icon and tone',
   drawn('crew', 'Each status').map(b => { const c = b.querySelector('.scheduler-crew'); return [c.querySelector('.scheduler-crew__mark').classes().find(x => /--(off|error|major|warning|success)$/.test(x))?.split('--')[1], icon(c), c.classList.contains('scheduler-crew--declined')]; }),
-  [['off', '#i-circle-dash', false], ['major', '#i-warning--alt-inverted--filled', false], ['off', '#i-pending--filled', false],
+  [['off', '#i-circle-dash', false], ['major', '#i-warning--alt--filled', false], ['off', '#i-pending--filled', false],
     ['success', '#i-checkmark--outline', false], ['success', '#i-checkmark--outline', false], ['error', '#i-error--filled', true]]);
 const [relief] = drawn('crew', 'Co-driver and relief');
 expect('drivers wear their status and relief drivers arrows',
@@ -231,7 +231,7 @@ expect('staffing warning includes day fourteen, excludes day fifteen and ended l
 const emptyDriver = {needed:true,role:'driver',label:'Driver'};
 expect('empty seats show Caution major only when due',
   [true,false].map(due => icon(Bar.crewEl(emptyDriver,due,false))),
-  ['#i-warning--alt-inverted--filled',null]);
+  ['#i-warning--alt--filled',null]);
 const declinedDriver = {role:'driver',label:'Driver',who:{name:'Alex'},status:window.SchedulerLegFacts.DRIVER_STATUSES.find(s=>s.value==='declined')};
 expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDriver,true,true)), '#i-error--filled');
 

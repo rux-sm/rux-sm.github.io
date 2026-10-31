@@ -1079,9 +1079,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--from-prev.scheduler-bar--to-next { inline-size: auto; }
 
 /* A LEG THAT LEAVES THE GROUP, OR FETCHES IT, wears a chip after its
-   destination: the arrow alone in a high-contrast tag, the inverse surface
-   with its inverse ink, so it is the one light solid mark on a bar in a dark
-   theme and the one dark one in a light theme, found at a glance. */
+   destination: the arrow alone in a ring of the destination's ink, as thin
+   as the bar's other marks, so it reads with the name it follows. */
 .scheduler-bar__row > .scheduler-bar__kind {
   flex: none;
   align-self: center;
@@ -1104,9 +1103,9 @@ button.scheduler-row-head__num::after {
   block-size: 18px;
   padding: 0;
   border-radius: 9px;
-  background: var(--rux-background-inverse);
-  color: var(--rux-text-inverse);
-  box-shadow: none;
+  background: none;
+  color: var(--scheduler-strong, var(--rux-text-primary));
+  box-shadow: inset 0 0 0 1px currentColor;
 }
 .scheduler-bar__kind--icon > svg { inline-size: 12px; block-size: 12px; }
 .scheduler-bar__kind--icon > .scheduler-bar__kind-word { display: none; }
@@ -2480,7 +2479,9 @@ button.scheduler-row-head__num::after {
    rest so far of eight; one in another bus is red and full, with that bus.
    The reading is dark over the fill, in the footer's colour or a theme's
    `--scheduler-seat-ink`, and the row's ink past it, from road-bar.js's
-   `--scheduler-seat-fill`. Two seats split the row. */
+   `--scheduler-seat-fill`; under half full it stands just after the fill,
+   all in the row's ink, so no word is cut in two colours. Two seats split
+   the row. */
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__update { display: none; }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(2 * var(--scheduler-row-h)); }
 /* A driver Samsara has no reading for has no meter, so their name stands
@@ -2529,6 +2530,11 @@ button.scheduler-row-head__num::after {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat[data-fill-short] > :is(.scheduler-crew__hours, .scheduler-crew__rest-time) {
+  background-image: none;
+  background-color: var(--scheduler-footer-fg);
+  padding-inline-start: calc(var(--scheduler-seat-fill) + var(--rux-spacing-02));
 }
 /* A driver's name on a bar is what a press pulls the driver out by, whatever
    seat they are in, so it shows the open hand; the trip in the editor and a

@@ -1503,17 +1503,6 @@
 [data-theme="rux-100"] .scheduler-row--unassigned { --scheduler-unassigned: var(--scheduler-region); }
 [data-theme="rux-100"] .scheduler-bar-shortcuts:not([data-docked]) { --rux-layer: var(--rux-layer-01); }
 
-/* A TRIP IN A GEIST PAIR HAS ITS 400 FOR AN EDGE, as Geist's banners and
-   notes draw one: a 1px line inside the bar, so it costs none of its
-   writing. At the lowest weight, so the selection, the same trip's ring
-   and focus draw over it. A grey trip, in Carbon's grey, keeps none. */
-:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) {
-  outline: 1px solid var(--scheduler-border);
-  outline-offset: -1px;
-}
-[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-border: oklch(35.53% 0.0903 66.2971); --scheduler-strong: oklch(96.7% 0.0418 84.59); }
-/* The destination in the trip's 1000; a grey trip keeps its own ink. */
-[data-theme="rux-100"] .scheduler-bar > .scheduler-bar__dest { color: var(--scheduler-strong, inherit); }
 /* The raised surface a panel's tiles and fields take: Geist's Colour 1,
    #1a1a1a, 1.14 to 1 on the board's sheet, and its Colour 2, #1f1f1f, on
    hover. */
@@ -1531,6 +1520,17 @@
   --scheduler-border: oklch(34.1% 0.121 254.74);
   --scheduler-strong: oklch(96.75% 0.0179 242.423);
 }
+/* A TRIP IN A GEIST PAIR HAS ITS 400 FOR AN EDGE, as Geist's banners and
+   notes draw one: a 1px line inside the bar, so it costs none of its
+   writing. At the lowest weight, so the selection, the same trip's ring
+   and focus draw over it. A grey trip, in Carbon's grey, keeps none. */
+:where([data-theme="rux-100"]) .scheduler-bar:where(.scheduler-bar--blue, .scheduler-bar--red, .scheduler-bar--amber, .scheduler-bar--magenta, .scheduler-bar--purple, .scheduler-bar--green, .scheduler-bar--teal) {
+  outline: 1px solid var(--scheduler-border);
+  outline-offset: -1px;
+}
+[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-border: oklch(35.53% 0.0903 66.2971); --scheduler-strong: oklch(96.7% 0.0418 84.59); }
+/* The destination in the trip's 1000; a grey trip keeps its own ink. */
+[data-theme="rux-100"] .scheduler-bar > .scheduler-bar__dest { color: var(--scheduler-strong, inherit); }
 /* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its drivers' duty marks
    flash on the beat the board's red road warning blinks to, so the buses
    out now show by the one thing moving, at the wheel, resting or parked.

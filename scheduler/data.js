@@ -1616,9 +1616,13 @@
         bar.classList.toggle('scheduler-bar--yard-end', yards.some(y => y.after === b));
         bar.classList.toggle('scheduler-bar--yard-start', yards.some(y => y.before === b));
       }
+      /* A bar to draw is queued for the frames after, unless it stands on
+         screen: a bar the old strip's end cut short, drawn whole now, would
+         be gone for a frame if it waited. */
       for (const { key, b, current } of toDraw) {
-        owedDraws.set(key, { b, track, current, driversById: laid.driversById, busesById: laid.busesById, statuses: data.statuses,
-          yardEnd: yards.some(y => y.after === b), yardStart: yards.some(y => y.before === b) });
+        const owed = { b, track, current, driversById: laid.driversById, busesById: laid.busesById, statuses: data.statuses,
+          yardEnd: yards.some(y => y.after === b), yardStart: yards.some(y => y.before === b) };
+        if (near(b.place.start, b.place.span)) { owedDraws.delete(key); drawQueuedBar(owed); } else owedDraws.set(key, owed);
       }
       const oldYards = [...track.querySelectorAll(':scope > .scheduler-yard')];
       for (const card of oldYards) {

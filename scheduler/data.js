@@ -2221,9 +2221,11 @@
         if (it.checked) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
         li.appendChild(check);
       }
-      if (it.icon) {
+      /* A menu with icons gives every item the icon's column, empty where an
+         item has none, as Carbon does, so no label falls into it. */
+      if (radio) {
         const icon = el('div', 'rux--menu-item__icon');
-        icon.appendChild(it.icon);
+        if (it.icon) icon.appendChild(it.icon);
         li.appendChild(icon);
       }
       li.appendChild(el('div', 'rux--menu-item__label', it.label));

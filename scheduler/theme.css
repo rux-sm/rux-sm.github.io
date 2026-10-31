@@ -311,12 +311,10 @@
 :is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) .scheduler-bar--green {
   --scheduler-bg: var(--rux-notification-background-success); --scheduler-hover: var(--rux-tag-background-green);
 }
-/* The roster's free-day check and caution are drawn on white here, where
-   the success and warning tones alone fall under 3 to 1, so each is mixed
-   toward black until it holds 3. */
+/* The roster's open slot on white is Carbon's success notification, its
+   edge the success tone. */
 :is([data-theme="white"], [data-theme="g10"], [data-theme="apple-light"]) {
-  --scheduler-free-whole: color-mix(in oklab, var(--rux-support-success) 80%, #000);
-  --scheduler-free-part: color-mix(in oklab, var(--rux-support-warning) 60%, #000);
+  --scheduler-free-fill: var(--rux-notification-background-success);
 }
 :is([data-theme="white"], [data-theme="g10"]) .scheduler-bar--teal {
   --scheduler-bg: #d9fbfb; --scheduler-hover: var(--rux-tag-background-teal);
@@ -1607,6 +1605,12 @@
   --scheduler-hover: oklch(25.91% 0.0921 314.41);
   --scheduler-border: oklch(35.93% 0.1504 309.78);
   --scheduler-strong: oklch(96.1% 0.0304 316.46);
+}
+/* Rux 100's open slot in the roster is Geist's green pair, 100 for the fill
+   and 900 for the dashed edge, as its green trip is drawn. */
+[data-theme="rux-100"] {
+  --scheduler-free-fill: oklch(23.09% 0.0716 149.68);
+  --scheduler-free-edge: oklch(73.1% 0.2158 148.29);
 }
 [data-theme="rux-100"] .scheduler-bar--green {
   --scheduler-bg: oklch(23.09% 0.0716 149.68);

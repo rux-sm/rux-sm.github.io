@@ -3684,19 +3684,34 @@ button.scheduler-row-head__num::after {
    enters the header row. It is the board's day rule, at the same half
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
-/* A FREE DAY OF THE SELECTED TRIP carries an icon and no mark, so the only
-   bars in the roster are the days that are taken: a check in the success
-   tone where the driver is free every day of the trip, and a caution in the
-   warning tone where only some. Centred in the cell, as a mark's drawing is.
-   A booked or day-off cell keeps its own mark instead. */
+/* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
+   days: a booking's box, dashed, in the success tint with the success edge,
+   so it reads as room to put them. One free on only some days has nothing
+   drawn, since they cannot take the trip. A booked or day-off cell keeps its
+   own mark instead. */
 .scheduler-avail__cell--on-day { position: relative; }
-.scheduler-avail__free {
+.scheduler-avail__cell--whole::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  margin: auto;
-  color: var(--scheduler-free-part, var(--rux-support-warning));
+  inset: 2px;
+  border: 1px dashed var(--scheduler-free-edge, var(--rux-support-success));
+  border-radius: var(--scheduler-mark-radius, 0);
+  background: var(--scheduler-free-fill, color-mix(in oklab, var(--rux-support-success) 12%, transparent));
 }
-.scheduler-avail__cell--whole > .scheduler-avail__free { color: var(--scheduler-free-whole, var(--rux-support-success)); }
+/* One slot over the days, as a booking is one bar: a day joined to the next
+   runs over the rule between them and leaves its edge to that day. */
+.scheduler-avail__cell--whole:has(+ .scheduler-avail__cell--whole)::after {
+  inset-inline-end: -1px;
+  border-inline-end-width: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.scheduler-avail__cell--whole + .scheduler-avail__cell--whole::after {
+  inset-inline-start: 0;
+  border-inline-start-width: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {
   position: relative;

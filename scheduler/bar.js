@@ -88,11 +88,52 @@
   const doneOf = (out, back, now) => (!(back > out) ? (now >= back ? 100 : 0)
     : Math.round(Math.min(1, Math.max(0, (now - out) / (back - out))) * 1000) / 10);
   const tripDone = (leg, now = Date.now()) => doneOf(...legSpan(leg), now);
+  /* A DOT ON THE TRACK FOR EACH STOP, once the route is done: the spot at the
+     pickup first, then each stop's arrival, placed by its time between the
+     yard out and back. A stop with no time or no date has none, and the
+     return to the yard is the track's own end. Two closer than STOP_GAP
+     pixels on the track are one dot naming both; the track is about a day
+     column for each day less the two times beside it, TIMES_W. */
+  const STOP_GAP = 9;
+  const DAY_W = 145;
+  const TIMES_W = 105;
+  const stopDots = (trip, leg, out, back, days) => {
+    if (!(back > out)) return [];
+    const stops = window.SchedulerWeek.stopsOfKey(trip, leg.key);
+    const pickup = stops.find(s => s.type === 'pickup') ?? stops[0];
+    const times = [];
+    for (const s of stops.slice(Math.max(stops.indexOf(pickup), 0))) {
+      if (s.type === 'return') continue;
+      const [t, day] = s === pickup ? [s.spot, s.spot_date] : [s.arrive, s.arrive_date];
+      if (!t || !day) continue;
+      const at = (clockAt(day, t) - out) / (back - out) * 100;
+      if (at > 0 && at < 100) times.push({ at, words: `${s === pickup ? 'Spot' : 'Arrive'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
+    }
+    const dots = [];
+    for (const t of times.sort((a, b) => a.at - b.at)) {
+      const last = dots.at(-1);
+      if (last && t.at - last.at < STOP_GAP / Math.max(30, days * DAY_W - TIMES_W) * 100) last.words.push(t.words);
+      else dots.push({ at: t.at, words: [t.words] });
+    }
+    return dots.map(d => {
+      const dot = el('span', 'scheduler-bar__stop');
+      dot.style.setProperty('--scheduler-at', `${Math.round(d.at * 10) / 10}%`);
+      dot.dataset.at = String(d.at);
+      dot.title = d.words.join('\n');
+      return dot;
+    });
+  };
+  // A stop the leg has reached is filled, and one still ahead is a ring.
+  const markStops = (track, done) => {
+    for (const d of track.querySelectorAll('.scheduler-bar__stop')) d.classList.toggle('scheduler-bar__stop--ahead', Number(d.dataset.at) > done);
+  };
   // Every track under `root` filled again to the clock, for the board's
   // minute tick, since a bar is drawn again only when its trip changes.
   const fillTracks = (root, now = Date.now()) => {
     for (const t of root.querySelectorAll('.scheduler-bar__track[data-out]')) {
-      t.style.setProperty('--scheduler-done', `${doneOf(Number(t.dataset.out), Number(t.dataset.back), now)}%`);
+      const done = doneOf(Number(t.dataset.out), Number(t.dataset.back), now);
+      t.style.setProperty('--scheduler-done', `${done}%`);
+      markStops(t, done);
     }
   };
 
@@ -623,6 +664,11 @@
       const track = el('span', 'scheduler-bar__track', unseen);
       [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
       track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
+      // A leg that runs off the week has its track masked to the line, which would hide them.
+      if (trip.route_done_at && !crosses) {
+        track.append(...stopDots(trip, leg, ...legSpan(leg), Number(place.span)));
+        markStops(track, tripDone(leg));
+      }
       if (!place.fromPrev) {
         const out = el('span', 'scheduler-bar__when');
         out.append(...depart);

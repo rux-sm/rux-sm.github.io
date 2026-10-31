@@ -6,6 +6,10 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - For a bus Samsara answers for, in whatever week is shown, its
+     state and fuel in a split ring under the number on five and six rows:
+     the top arc fills with the speed to MAX_MPH, the bottom arc with the
+     fuel, and inside it the speed, or Idle, Off or a dash, over F and the
+     fuel's percent. On fewer rows, its
      state in a display under the number, on the rows app.css gives it, so
      the fuel under it stands at one height down the column. While the engine runs the display is
      filled: moving, the speed over mph on green, amber over SPEEDING;
@@ -56,8 +60,9 @@
   // Each tank's low and critical marks, in percent.
   const FUEL = { low: 25, critical: 10, letter: 'F', word: 'Fuel' };
   const DEF = { low: 15, critical: 5, letter: 'D', word: 'DEF' };
-  // The speed past which a moving bus turns amber.
+  // The speed past which a moving bus turns amber, and the speed that fills the ring's top arc.
   const SPEEDING = 75;
+  const MAX_MPH = 80;
   const IDLE_MS = 30 * 60e3;
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
@@ -132,6 +137,44 @@
     return g;
   }
 
+  // The ring's two halves, split at 9 and 3 o'clock, each drawn from left
+  // to right: 48px across, Carbon's 4px stroke, a 12° gap at either side.
+  const RING = (() => {
+    const c = 24, r = 22, gap = 12;
+    const at = deg => [c + r * Math.cos(deg * Math.PI / 180), c + r * Math.sin(deg * Math.PI / 180)].map(n => n.toFixed(2)).join(' ');
+    return {
+      top: `M${at(180 + gap)} A${r} ${r} 0 0 1 ${at(360 - gap)}`,
+      bottom: `M${at(180 - gap)} A${r} ${r} 0 0 0 ${at(gap)}`,
+    };
+  })();
+
+  // The split ring: the speed on top, the fuel underneath, the speed or the
+  // state's word inside over F and the fuel's percent. Its words are the
+  // dial's and the fuel's, which it stands in for on five and six rows.
+  function ring(live, state) {
+    const lv = levelOf(live.fuel, FUEL);
+    const box = el('span', `scheduler-row-head__ring scheduler-row-head__ring--${state.tone}${running(live) ? ' scheduler-row-head__ring--running' : ''}`);
+    if (lv) box.dataset.level = lv;
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
+    const svg = svgEl('svg', { class: 'scheduler-row-head__ring-svg', width: 48, height: 48, viewBox: '0 0 48 48', 'aria-hidden': 'true' });
+    const arc = (d, cls, share) => svgEl('path', { d, class: cls, pathLength: 100, ...(share == null ? {} : { 'stroke-dasharray': `${share} 200` }) });
+    svg.append(arc(RING.top, 'scheduler-row-head__ring-track'), arc(RING.bottom, 'scheduler-row-head__ring-track'));
+    const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
+    if (mph) svg.appendChild(arc(RING.top, 'scheduler-row-head__ring-speed', mph));
+    const fuel = Math.max(0, Math.min(100, live.fuel ?? 0));
+    if (fuel) svg.appendChild(arc(RING.bottom, 'scheduler-row-head__ring-fuel', fuel));
+    const mid = el('span', 'scheduler-row-head__ring-mid');
+    mid.appendChild(el('span', /^\d+$/.test(state.dial) ? 'scheduler-row-head__ring-figure' : 'scheduler-row-head__ring-figure scheduler-row-head__ring-figure--word', state.dial));
+    if (live.fuel != null) {
+      const f = el('span', 'scheduler-row-head__ring-pct');
+      f.append(el('span', 'scheduler-row-head__ring-f', 'F'), el('span', null, `${live.fuel}%`));
+      mid.appendChild(f);
+    }
+    box.append(svg, mid);
+    return box;
+  }
+
   // The inspection's state, as the Fleet page words it.
   function inspection(bus) {
     const v = String(bus.inspection_exp ?? '').slice(0, 10);
@@ -183,6 +226,7 @@
     if (shown) {
       body.classList.add('scheduler-row-head__body--live');
       const gauges = el('div', 'scheduler-row-head__gauges');
+      gauges.appendChild(ring(shown, state));
       gauges.appendChild(dial(shown, state));
       if (shown.fuel != null) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
@@ -237,5 +281,5 @@
     ].filter(Boolean);
   }
 
-  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, IDLE_MS, WARN_DAYS };
+  window.SchedulerBusHead = { draw, tipOf, stateOf, FUEL, DEF, SPEEDING, MAX_MPH, IDLE_MS, WARN_DAYS };
 })();

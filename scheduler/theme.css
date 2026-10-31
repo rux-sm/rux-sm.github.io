@@ -891,10 +891,10 @@
    trigger without a fill. */
 [data-theme="rux-100"] .scheduler-row-head:has(.rux--popover--open):is(*, :hover) { background: var(--rux-layer); }
 /* A RUX 100 BUS AT REST STEPS BACK: one with its engine off or no signal
-   dims its icon, dial, fuel and kit to 35%, so the buses running are the
+   dims its icon, dial or ring, fuel and kit to 35%, so the buses running are the
    bright heads in the column. Its number stays at full strength, since it
    names the row, and so does a low tank, since the office has to act on it. */
-[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"], .scheduler-row-head__equip) {
+[data-theme="rux-100"] .scheduler-row-head:is([data-engine="off"], [data-engine="none"]) :is(.scheduler-row-head__top > :not(.rux--popover-container), .scheduler-row-head__dial, .scheduler-row-head__ring:not([data-level="low"], [data-level="critical"]), .scheduler-row-head__level[data-level="normal"], .scheduler-row-head__equip) {
   opacity: .35;
 }
 /* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the

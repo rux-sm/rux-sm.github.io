@@ -262,7 +262,7 @@
 /* One column, so a part placed on a row stands in it even over another, as
    the DEF tag stands over the state's foot. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
-.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
+.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__ring, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
 .scheduler-row-head__top { grid-row: 1; }
 .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
 .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
@@ -530,6 +530,59 @@ button.scheduler-row-head__num::after {
 /* With no signal the display's reading and a normal fuel fade to their last reading. */
 /* A low tank keeps its strength, since the office still has to act on it. */
 .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
+/* THE SPLIT RING, on five and six rows in the dial's and the fuel's place:
+   the top arc the speed to 80 mph, green or amber over 75; the bottom arc
+   the fuel, grey until low or critical as the fuel bar is. Inside, the
+   speed or the state's word in the dial's colours, over F and the percent.
+   48px, the head's whole width inside its padding. */
+.scheduler-row-head__ring { display: none; }
+.scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  align-self: center;
+  inline-size: 48px;
+  block-size: 48px;
+}
+.scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { display: none; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__ring { grid-row: 2 / span 3; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__ring { grid-row: 2 / span 4; }
+/* A low DEF's tag: under the ring on six, in the 12px the ring leaves at
+   its foot; across the ring's foot on five, where it has none. */
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> .scheduler-row-head__ring) > [data-tank="D"] { grid-row: 4; margin-block-end: 0; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__ring) > [data-tank="D"] { grid-row: 5; margin-block-end: 0; }
+.scheduler-row-head__ring-svg { grid-area: 1 / 1; display: block; }
+.scheduler-row-head__ring-svg path { fill: none; stroke-width: 4; stroke-linecap: round; }
+.scheduler-row-head__ring-track { stroke: var(--rux-border-subtle-01); }
+.scheduler-row-head__ring-speed { stroke: var(--scheduler-head-moving); }
+.scheduler-row-head__ring--warning .scheduler-row-head__ring-speed { stroke: var(--scheduler-head-low); }
+.scheduler-row-head__ring-fuel { stroke: var(--rux-icon-secondary); }
+.scheduler-row-head__ring[data-level="low"] .scheduler-row-head__ring-fuel { stroke: var(--scheduler-fuel-low); }
+.scheduler-row-head__ring[data-level="critical"] .scheduler-row-head__ring-fuel { stroke: var(--scheduler-fuel-critical); }
+.scheduler-row-head__ring-mid {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.scheduler-row-head__ring-figure { font-size: 15px; font-weight: 600; line-height: 16px; color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__ring--running .scheduler-row-head__ring-figure { color: var(--scheduler-head-idle-ink); }
+.scheduler-row-head__ring--running.scheduler-row-head__ring--moving .scheduler-row-head__ring-figure { color: var(--scheduler-head-moving); }
+.scheduler-row-head__ring--running.scheduler-row-head__ring--warning .scheduler-row-head__ring-figure { color: var(--scheduler-head-low); }
+.scheduler-row-head__ring-figure--word { font-size: var(--rux-label-01-font-size); }
+/* F in the secondary ink names the tank; a low or critical percent takes
+   its tank's colour and weight. */
+.scheduler-row-head__ring-pct { display: flex; gap: 2px; margin-block-start: 1px; font-size: 10px; line-height: 12px; color: var(--rux-text-primary); }
+.scheduler-row-head__ring-f { font-weight: 600; color: var(--rux-text-secondary); }
+.scheduler-row-head__ring[data-level="low"] .scheduler-row-head__ring-pct { color: var(--scheduler-fuel-low); font-weight: 600; }
+.scheduler-row-head__ring[data-level="critical"] .scheduler-row-head__ring-pct { color: var(--scheduler-fuel-critical); font-weight: 600; }
+/* With no signal the track is dotted and the ring fades, but a low tank
+   keeps its strength. */
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__ring-track { stroke-dasharray: 3 6; stroke-linecap: butt; }
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__ring:not([data-level="low"], [data-level="critical"]) { opacity: .45; }
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }

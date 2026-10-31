@@ -509,6 +509,20 @@ expect('no answer for the bus: the inspection alone, amber within 45 days, and n
 expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
+const ring = h => {
+  const r = h.querySelector('.scheduler-row-head__ring');
+  const share = cls => r.querySelector(`.scheduler-row-head__ring-${cls}`)?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null;
+  return [text(r, '.scheduler-row-head__ring-figure'), text(r, '.scheduler-row-head__ring-pct'), r.classes().find(c => /__ring--(?!running)/.test(c)).split('--')[1], r.dataset.level, share('speed'), share('fuel')];
+};
+expect('the split ring: the speed\'s share of 80 mph on top, the fuel\'s underneath, the speed over F and the percent, the tank\'s level on it',
+  [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55 }]
+    .map(l => ring(busHead(l))),
+  [['52', 'F68%', 'moving', 'normal', '65', '68'], ['92', 'F20%', 'warning', 'low', '100', '20'], ['Idle', 'F8%', 'quiet', 'critical', null, '8'], ['Off', 'F0%', 'quiet', 'critical', null, null], ['–', 'F55%', 'quiet', 'normal', null, '55']]);
+expect('the ring says its speed and fuel on its label',
+  busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__ring').getAttribute('aria-label'),
+  'Moving, 52 mph. Fuel 20%, low');
+expect('a bus that reports no fuel has a ring with no percent',
+  ring(busHead({ engine: 'on', mph: 30, fuel: null })).slice(0, 2), ['30', null]);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

@@ -511,17 +511,18 @@ expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
 const speedometer = h => {
   const r = h.querySelector('.scheduler-row-head__arc');
-  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1],
-    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null];
+  return [text(r, '.scheduler-row-head__arc-figure'), text(r, '.scheduler-row-head__arc-under')?.trim() || null, text(r, '.scheduler-row-head__arc-pct'), r.classes().find(c => /__arc--(?!running)/.test(c)).split('--')[1], r.dataset.level,
+    r.querySelector('.scheduler-row-head__arc-speed')?.getAttribute('stroke-dasharray')?.split(' ')[0] ?? null, r.querySelector('.scheduler-row-head__arc-fuel')?.style.getPropertyValue('--scheduler-tank') || null];
 };
-expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it',
+expect('the speedometer: the speed\'s share of 80 mph on the arc, the speed or the word inside, mph or how long under it, the fuel\'s bar over F and the percent',
   [{ engine: 'on', mph: 52, fuel: 68 }, { engine: 'on', mph: 92, fuel: 20 }, { engine: 'idle', engine_at: ago(5), mph: 0, fuel: 8 }, { engine: 'off', mph: 0, fuel: 0 }, { engine: null, mph: null, fuel: 55, seen: ago(180) }]
     .map(l => speedometer(busHead(l))),
-  [['52', 'mph', 'moving', '65'], ['92', 'mph', 'warning', '100'], ['Idle', '5m', 'quiet', null], ['Off', null, 'quiet', null], ['–', '3h', 'quiet', null]]);
-expect('the speedometer says its state on its label, and the fuel keeps its own bar beside it',
-  [busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__arc').getAttribute('aria-label'),
-    busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__level[data-tank="F"]').dataset.level],
-  ['Moving, 52 mph', 'low']);
+  [['52', 'mph', 'F68%', 'moving', 'normal', '65', '68%'], ['92', 'mph', 'F20%', 'warning', 'low', '100', '20%'], ['Idle', '5m', 'F8%', 'quiet', 'critical', null, '8%'], ['Off', null, 'F0%', 'quiet', 'critical', null, '0%'], ['–', '3h', 'F55%', 'quiet', 'normal', null, '55%']]);
+expect('the speedometer says its speed and fuel on its label',
+  busHead({ engine: 'on', mph: 52, fuel: 20 }).querySelector('.scheduler-row-head__arc').getAttribute('aria-label'),
+  'Moving, 52 mph. Fuel 20%, low');
+expect('a bus that reports no fuel has a speedometer with no bar or percent',
+  speedometer(busHead({ engine: 'on', mph: 30, fuel: null })).slice(0, 3), ['30', 'mph', null]);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]
     .map(l => busHead(l).querySelector('.scheduler-row-head__dot').dataset.tone),

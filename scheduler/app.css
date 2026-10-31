@@ -269,13 +269,13 @@
 .scheduler-row-head__equip { grid-row: 5; }
 /* A two-row state stands 2px clear of the number and 3px of the fuel. */
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__dial { margin-block: 2px 3px; }
-/* On six the state's three rows hold the speedometer, 2px under the number,
-   and a low DEF's tag stands 2px over their foot, clear of its unit. */
+/* On six the state is 40px tall, Carbon's md control height, centred in its
+   three rows, and a low DEF's tag crosses its foot by 3px. */
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 3; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__dial { align-self: center; block-size: var(--rux-layout-size-height-md, 2.5rem); }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__equip { grid-row: 6; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] { grid-row: 4; margin-block-end: 2px; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] { grid-row: 4; margin-block-end: calc((3 * var(--scheduler-row-h) - var(--rux-layout-size-height-md, 2.5rem)) / 2 - 3px); }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
 .scheduler-week[data-bar-rows="4"] .scheduler-row-head__equip { grid-row: 4; }
@@ -530,11 +530,15 @@ button.scheduler-row-head__num::after {
 /* With no signal the display's reading and a normal fuel fade to their last reading. */
 /* A low tank keeps its strength, since the office still has to act on it. */
 .scheduler-row-head[data-signal-lost] :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-level="normal"]) { opacity: .45; }
-/* THE SPEEDOMETER, on five and six rows in the dial's place: a half ring,
-   48px across, filled with the speed to 80 mph, green or amber over 75;
-   inside it at its foot the speed or the state's word in the dial's
-   colours, and under it mph, or how long the bus has idled or been
-   unseen. The fuel keeps its own bar under it, as on four rows. */
+/* THE SPEEDOMETER, on five and six rows in the dial's and the fuel's place:
+   a half ring, 48px across, filled with the speed to 80 mph, green or amber
+   over 75; inside it at its foot the speed or the state's word in the
+   dial's colours; under it mph, or how long the bus has idled or been
+   unseen; then the fuel, a round 4px bar filled to its share over F and the
+   percent, grey until low or critical as the fuel bar is. On six rows its
+   60px stand 2px under the number in the four rows' 72, which leaves the
+   10px at their foot to a low DEF's tag; on five its lines close up to the
+   three rows' 54, and the tag crosses its foot. */
 .scheduler-row-head__arc { display: none; }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__arc {
   display: flex;
@@ -542,13 +546,15 @@ button.scheduler-row-head__num::after {
   align-items: center;
   justify-self: center;
   align-self: start;
-  grid-row: 2 / span 2;
+  grid-row: 2 / span 3;
   inline-size: 48px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__dial { display: none; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 3; margin-block-start: 2px; }
+.scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { display: none; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 4; margin-block-start: 2px; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 4; margin-block-end: 0; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 5; margin-block-end: 0; }
 .scheduler-row-head__arc-bow { display: grid; }
 .scheduler-row-head__arc-bow > * { grid-area: 1 / 1; }
 .scheduler-row-head__arc-svg { display: block; }
@@ -562,11 +568,30 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc--running.scheduler-row-head__arc--warning .scheduler-row-head__arc-figure { color: var(--scheduler-head-low); }
 .scheduler-row-head__arc-figure--word { font-size: var(--rux-label-01-font-size); }
 .scheduler-row-head__arc-under { font-size: 10px; line-height: 11px; color: var(--rux-text-secondary); }
-/* Two rows are 36px: the arc's 26 and a 10px unit. */
+.scheduler-row-head__arc-fuel {
+  --scheduler-tank-ink: var(--rux-icon-secondary);
+  align-self: stretch;
+  block-size: 4px;
+  margin: 3px 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
+}
+.scheduler-row-head__arc[data-level="low"] .scheduler-row-head__arc-fuel { --scheduler-tank-ink: var(--scheduler-fuel-low); }
+.scheduler-row-head__arc[data-level="critical"] .scheduler-row-head__arc-fuel { --scheduler-tank-ink: var(--scheduler-fuel-critical); }
+/* F in the secondary ink names the tank; a low or critical percent takes
+   its tank's colour and weight. */
+.scheduler-row-head__arc-pct { display: flex; gap: 2px; font-size: 10px; line-height: 11px; color: var(--rux-text-primary); }
+.scheduler-row-head__arc-f { font-weight: 600; color: var(--rux-text-secondary); }
+.scheduler-row-head__arc[data-level="low"] .scheduler-row-head__arc-pct { color: var(--scheduler-fuel-low); font-weight: 600; }
+.scheduler-row-head__arc[data-level="critical"] .scheduler-row-head__arc-pct { color: var(--scheduler-fuel-critical); font-weight: 600; }
+/* Three rows are 54px: the arc's 28, a 10px unit, the bar in 6 and a 10px percent. */
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-under { line-height: 10px; }
-/* With no signal the arc is dotted and the speedometer fades to its last reading. */
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-fuel { margin-block: 1px; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-pct { line-height: 10px; }
+/* With no signal the arc is dotted and the speedometer fades, but a low
+   tank keeps its strength. */
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__arc-track { stroke-dasharray: 3 6; stroke-linecap: butt; }
-.scheduler-row-head[data-signal-lost] .scheduler-row-head__arc { opacity: .45; }
+.scheduler-row-head[data-signal-lost] .scheduler-row-head__arc:not([data-level="low"], [data-level="critical"]) { opacity: .45; }
 /* The compact board has no room for the dial: the number and the dot. */
 .scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
 .scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }

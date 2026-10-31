@@ -6,11 +6,12 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - For a bus Samsara answers for, in whatever week is shown, its
-     state under the number as a speedometer on five and six rows: a half
-     ring that fills with the speed to MAX_MPH, the speed, or Idle, Off or
-     a dash, inside it at its foot, and mph or how long under it. On fewer
-     rows, its state in a display under the number, on the rows app.css
-     gives it, so the fuel under it stands at one height down the column.
+     state and fuel under the number as a speedometer on five and six rows:
+     a half ring that fills with the speed to MAX_MPH, the speed, or Idle,
+     Off or a dash, inside it at its foot, mph or how long under it, and
+     the fuel as a round bar over F and its percent. On fewer rows, its
+     state in a display under the number, on the rows app.css gives it, so
+     the fuel under it stands at one height down the column.
      While the engine runs the display is
      filled: moving, the speed over mph on green, amber over SPEEDING;
      idling, Idle over how long on grey, amber past IDLE_MS. With the
@@ -139,18 +140,21 @@
 
   // The speedometer's arc, from 9 o'clock over to 3: 48px across, Carbon's
   // 4px stroke, its centre on the box's foot.
-  const ARC = 'M2 24 A22 22 0 0 1 46 24';
+  const ARC = 'M2 26 A22 22 0 0 1 46 26';
 
   // The speedometer: the arc filled with the speed, the speed or the
-  // state's word inside at its foot, and mph or how long under it. Its words
-  // are the dial's, which it stands in for on five and six rows; the fuel
-  // keeps its own bar under it.
+  // state's word inside at its foot, mph or how long under it, then the
+  // fuel as a round bar filled to its share over F and the percent. Its
+  // words are the dial's and the fuel's, which it stands in for on five and
+  // six rows.
   function speedometer(live, state) {
+    const lv = levelOf(live.fuel, FUEL);
     const box = el('span', `scheduler-row-head__arc scheduler-row-head__arc--${state.tone}${running(live) ? ' scheduler-row-head__arc--running' : ''}`);
+    if (lv) box.dataset.level = lv;
     box.setAttribute('role', 'img');
-    box.setAttribute('aria-label', state.words);
+    box.setAttribute('aria-label', [state.words, live.fuel != null ? `Fuel ${live.fuel}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}` : null].filter(Boolean).join('. '));
     const bow = el('span', 'scheduler-row-head__arc-bow');
-    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 48, height: 26, viewBox: '0 0 48 26', 'aria-hidden': 'true' });
+    const svg = svgEl('svg', { class: 'scheduler-row-head__arc-svg', width: 48, height: 28, viewBox: '0 0 48 28', 'aria-hidden': 'true' });
     svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-track', pathLength: 100 }));
     const mph = moving(live) ? Math.min(100, Math.round(live.mph / MAX_MPH * 100)) : 0;
     if (mph) svg.appendChild(svgEl('path', { d: ARC, class: 'scheduler-row-head__arc-speed', pathLength: 100, 'stroke-dasharray': `${mph} 200` }));
@@ -158,7 +162,15 @@
     bow.append(svg, el('span', figure ? 'scheduler-row-head__arc-figure' : 'scheduler-row-head__arc-figure scheduler-row-head__arc-figure--word', state.dial));
     box.appendChild(bow);
     const under = figure ? 'mph' : state.under;
-    if (under) box.appendChild(el('span', 'scheduler-row-head__arc-under', under));
+    // The unit's line stands even with nothing to say, so the fuel keeps its place.
+    box.appendChild(el('span', 'scheduler-row-head__arc-under', under ?? '\u00a0'));
+    if (live.fuel != null) {
+      const bar = el('span', 'scheduler-row-head__arc-fuel');
+      bar.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, live.fuel))}%`);
+      const pct = el('span', 'scheduler-row-head__arc-pct');
+      pct.append(el('span', 'scheduler-row-head__arc-f', 'F'), el('span', null, `${live.fuel}%`));
+      box.append(bar, pct);
+    }
     return box;
   }
 

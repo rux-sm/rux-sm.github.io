@@ -239,9 +239,11 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 8px all round: the number stands against the top and the equipment
-     against the foot, 1px under where the bar's lines start. */
-  padding: var(--rux-spacing-03);
+  /* 8px at the top and sides: the number stands against the top, 1px under
+     where the bar's lines start, and the last row's foot lands 8px over the
+     row rule by the track's own gap, so no padding is needed below, and
+     none is set, or the head would stand taller than its track. */
+  padding: var(--rux-spacing-03) var(--rux-spacing-03) 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -430,10 +432,12 @@ button.scheduler-row-head__num::after {
    its lift, each in one place down the column. The seats are a number in
    10px type, the icons Carbon's 16px; a cell the bus lacks is empty band.
    At its row's start, which on six rows is 4px under the percent and the
-   16px to the head's padding. Presses go through to the number, whose tip
-   and title name them. */
+   16px to the row rule's 8px; centred like the speedometer, since the column
+   takes the days' spare pixels and can stand wider than 48 inside. Presses
+   go through to the number, whose tip and title name them. */
 .scheduler-row-head__equip {
   align-self: start;
+  justify-self: center;
   display: grid;
   grid-template-columns: repeat(3, 16px);
   flex: none;

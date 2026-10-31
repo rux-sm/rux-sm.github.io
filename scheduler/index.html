@@ -28,7 +28,7 @@
      window.Rux.customThemes as it loads. -->
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<!-- The saved view's shape, Fill the window and Two weeks, before the first paint. -->
+<!-- The saved view's shape, Fill the window and Up to two weeks, before the first paint. -->
 <script src="view.js"></script>
 <style>
 /* No rule offsets the content for the nav. The nav carries
@@ -778,18 +778,12 @@
       <div class="rux--menu-item__label">Drivers on the bar</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
-    <!-- Two weeks from md up; below md the board keeps one week. -->
-    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="twoWeeks">
+    <!-- Up to two weeks: the strip shows as many days as fit at their least
+         width, seven to fourteen, from md up. See data.js. -->
+    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="fitDays">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"></div>
-      <div class="rux--menu-item__label">Two weeks</div>
-    </li>
-    <!-- The days scroll sideways through the weeks, a week in view, from md
-         up; below md the board keeps paging. See data.js. -->
-    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="scroll">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"></div>
-      <div class="rux--menu-item__label">Scroll continuously</div>
+      <div class="rux--menu-item__label">Up to two weeks</div>
     </li>
     <!-- The days share the whole window rather than stopping at their width
          in app.css. -->

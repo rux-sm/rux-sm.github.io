@@ -137,34 +137,42 @@
   const firstDayOf = d => addDays(d, -(weekStart === 'sunday' ? d.getDay()
     : weekStart === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
       : (d.getDay() + 6) % 7));
-  /* How many days the board shows from its first: two weeks when the view
-     option asks for them, on a screen md or wider, and one week below md,
-     where fourteen days cannot fit and the swipe needs a week to move by. The
-     arrows and the swipe step by this many days. Scrolling continuously shows
-     one week in view whatever Two weeks says. */
+  /* How many days the board moves and reads by: a week. The arrows and a
+     phone's swipe step by it. `twoWeeks` is the paged board's two weeks,
+     which no option turns on any more and which the paged code still reads.
+     The board is a strip of days either side of the week in view, scrolled
+     sideways; a phone pages a week at a time, because its fling and the
+     strip's redraw are the risky pair. `cursor` is the week in view's first
+     day, the leftmost day on screen, and follows the scroll. */
   const phoneQuery = matchMedia('(max-width: 41.98rem)');
   let twoWeeks = false;
-  /* Scroll continuously: the board is a strip of days either side of the week
-     in view, scrolled sideways, rather than one week paged at a time. A phone
-     keeps paging, because its fling and the strip's redraw are the risky
-     pair. `cursor` is the week in view's first day, the leftmost day on
-     screen, and follows the scroll. */
-  let scrollDays = false;
-  const scrolling = () => scrollDays && !phoneQuery.matches;
+  /* From md up the board is always the strip; below it, a phone pages a
+     week at a time. `fitDays` is the View menu's Up to two weeks: the strip
+     shows as many days as fit at their least width, seven to fourteen,
+     which app.js measures and writes as `data-days-in-view`. The week the
+     strip moves by, reads around and labels from stays seven days; only
+     the days on screen grow. */
+  let fitDays = false;
+  const scrolling = () => !phoneQuery.matches;
   const daysShown = () => (twoWeeks && !scrolling() && !phoneQuery.matches ? 14 : 7);
+  const MAX_IN_VIEW = 14;
+  const inView = () => (fitDays && scrolling() ? Math.min(MAX_IN_VIEW, Math.max(7, Number(schEl?.dataset.daysInView) || 7)) : 7);
   const lastShown = start => addDays(start, daysShown() - 1);
   /* The strip's days before and after the week in view. Two weeks either side
      keeps the strip inside the four weeks either side that a read holds, so
      the strip is drawn again around the week in view from what is held, and
      never waits on the network while it is scrolled. */
   const STRIP_BEFORE = 14;
-  const STRIP_AFTER = 14;
-  const STRIP_DAYS = STRIP_BEFORE + 7 + STRIP_AFTER;
+  // After the week in view, two weeks, and with Up to two weeks the days past the week it can show as well.
+  const stripAfter = () => 14 + (fitDays ? MAX_IN_VIEW - 7 : 0);
+  const stripDays = () => STRIP_BEFORE + 7 + stripAfter();
+  // The last day on screen from a first: the label's end, which is the week's unless more days fit.
+  const viewEnd = start => (scrolling() ? addDays(start, inView() - 1) : lastShown(start));
   // The strip is drawn again around the week in view once that week comes this close to either end.
   const STRIP_EDGE = 7;
   // The days a week starting on `start` is drawn with: the strip around it, or itself.
   const drawnRange = start => (scrolling()
-    ? [addDays(start, -STRIP_BEFORE), addDays(lastShown(start), STRIP_AFTER)]
+    ? [addDays(start, -STRIP_BEFORE), addDays(lastShown(start), stripAfter())]
     : [start, lastShown(start)]);
   // The weekend is read from the date, not the column, because a Sunday-first
   // week puts it at both ends. The board and the driver roster share it.
@@ -1334,7 +1342,7 @@
     }
 
     // A strip's label is the week in view, which the scroll moves.
-    if (strip) setRange(cursor, lastShown(cursor));
+    if (strip) setRange(cursor, viewEnd(cursor));
     else setRange(weekStart, weekEnd);
 
     const barCount = [...tracks.values()].reduce((n, list) => n + list.length, 0);
@@ -1484,7 +1492,7 @@
   // Where the week in view sits in the strip, in days from its first.
   const stripAt = () => (stripStart ? daysBetween(stripStart, cursor) : -1);
   // Whether the week in view is far enough from both ends that the strip need not be drawn again.
-  const stripRoomy = () => !!stripStart && stripAt() >= STRIP_EDGE && stripAt() <= STRIP_DAYS - 7 - STRIP_EDGE;
+  const stripRoomy = () => !!stripStart && stripAt() >= STRIP_EDGE && stripAt() <= stripDays() - inView() - STRIP_EDGE;
 
   /* Draws the board from a payload: the week `cursor` starts, or with Scroll
      continuously the strip around it, scrolled so that week is in view. */
@@ -1497,7 +1505,7 @@
       const keep = axis === 'x' && stripStart && w ? schEl.scrollLeft - Math.round(schEl.scrollLeft / w) * w : 0;
       stripStart = addDays(cursor, -STRIP_BEFORE);
       stripData = data;
-      render({ ...data, weekStart: stripStart, weekEnd: addDays(lastShown(cursor), STRIP_AFTER) });
+      render({ ...data, weekStart: stripStart, weekEnd: addDays(lastShown(cursor), stripAfter()) });
       placeStrip(keep);
     } else {
       stripStart = stripData = null;
@@ -1533,9 +1541,10 @@
     const start = addDays(on, -STRIP_BEFORE);
     const shift = daysBetween(stripStart, start);
     if (!shift) return true;
-    if (Math.abs(shift) >= STRIP_DAYS) return false;
+    const total = stripDays();
+    if (Math.abs(shift) >= total) return false;
     const data = cached.data;
-    const end = addDays(start, STRIP_DAYS - 1);
+    const end = addDays(start, total - 1);
     const laid = layOutBoard(data, start, end);
     const rowEls = [...gridEl.querySelectorAll(':scope > .scheduler-row')];
     const rowKey = r => (r.id === UNASSIGNED ? UNASSIGNED : String(r.id));
@@ -1672,9 +1681,9 @@
     if ((owedBars.size || owedDraws.size) && !owedFrame) owedFrame = requestAnimationFrame(settleOwed);
     /* The roster reads the board's whole range; the days it drew keep their
        dates under the new first day, or it draws again once asked. */
-    availAll = { rows: availabilityRows({ ...data, weekStart: start, weekEnd: end }), weekStart: start, days: STRIP_DAYS };
+    availAll = { rows: availabilityRows({ ...data, weekStart: start, weekEnd: end }), weekStart: start, days: total };
     const [first, count] = availSlice.split(':').map(Number);
-    availSlice = availSlice && first - shift >= 0 && first - shift <= STRIP_DAYS - 7 ? `${first - shift}:${count}` : '';
+    availSlice = availSlice && first - shift >= 0 && first - shift <= total - 7 ? `${first - shift}:${count}` : '';
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
     // The notice for an empty strip comes and goes with the trips; the room it takes is app.js's sum.
     const barCount = [...laid.tracks.values()].reduce((n, list) => n + list.length, 0);
@@ -1724,7 +1733,7 @@
     if (grewThisFrame) { grewThisFrame = false; owedFrame = requestAnimationFrame(settleOwed); return; }
     // Nearest the week in view first, so what the hand is bringing on is ready before what it is leaving.
     const w = dayWidth();
-    const middle = w ? schEl.scrollLeft / w + 3.5 : STRIP_BEFORE + 3.5;
+    const middle = (w ? schEl.scrollLeft / w : STRIP_BEFORE) + inView() / 2;
     const nearest = (items, at, count) => [...items].sort((x, y) => Math.abs(at(x) - middle) - Math.abs(at(y) - middle)).slice(0, count);
     for (const bar of nearest(owedBars, bar => Number(bar.dataset.start), OWED_SHIFTS_PER_FRAME)) {
       owedBars.delete(bar);
@@ -12078,18 +12087,17 @@
      key it replaced, still written beside it so a tab running the older
      script reads a Sunday start, and read when `weekStart` was never saved. */
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
-    twoWeeks: false, scroll: false, yard: false, fill: false, motion: reducedMotion.matches ? 'calm' : 'full' };
+    fitDays: false, yard: false, fill: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'twoWeeks', 'scroll', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'fitDays', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
     view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason the week start is: it sizes the range.
-  twoWeeks = view.twoWeeks;
-  scrollDays = view.scroll;
+  fitDays = view.fitDays;
   // Set before `cursor` is first computed below, because `firstDayOf` reads it
   // and the first week drawn must honour a saved start.
   weekStart = view.weekStart;
@@ -12104,24 +12112,24 @@
     const picker = document.getElementById('scheduler-week-picker');
     if (!picker) return;
     picker.dataset.ruxFirstDay = weekStart === 'sunday' ? '0' : '1';
-    picker.dataset.ruxSpan = twoWeeks && !scrolling() ? '14' : '7';
+    picker.dataset.ruxSpan = '7';
   }
 
   function applyView() {
     weekStart = view.weekStart;
     view.sunday = weekStart === 'sunday';
-    twoWeeks = view.twoWeeks;
-    scrollDays = view.scroll;
-    // Scroll continuously: the strip's snap and its day widths, which app.css and app.js read from this class.
+    fitDays = view.fitDays;
+    // The strip's snap and its day widths, which app.css and app.js read from this class.
     schEl.classList.toggle('scheduler-week--scroll', scrolling());
     dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
-    // Fill the window and Two weeks, set on the root as view.js sets them
-    // before the first paint: the frame widens to the window, and the loading
-    // week counts the days the drawn one will, which app.css reads from there.
+    // Fill the window and Up to two weeks, set on the root as view.js sets
+    // them before the first paint: the frame widens to the window, and app.js
+    // counts the days that fit.
     document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
+    document.documentElement.toggleAttribute('data-scheduler-fit-days', view.fitDays);
     if (daysShown() === 14) document.documentElement.dataset.schedulerDays = '14';
     else delete document.documentElement.dataset.schedulerDays;
     // One for the destination, which never goes, plus whatever is left on;
@@ -12191,11 +12199,8 @@
     if (!(key in view)) return;
     view[key] = !view[key];
     applyView();
-    // The row toggles are drawing only and need no fetch.
-    // Two weeks reads a longer range from the same first day, and asks the
-    // board for more room, which may close a panel.
-    if (key === 'twoWeeks') { show(); placeRoom(); }
-    if (key === 'scroll') redrawLayout();
+    // The row toggles are drawing only and need no fetch; Up to two weeks makes the strip longer, so it is drawn again.
+    if (key === 'fitDays') redrawLayout();
   });
   // The menu's caret takes the ⋮'s hover with it while they are attached.
   viewTrigger?.addEventListener('pointerenter', () => { if (viewMenu?.dataset.attached != null) viewMenu.dataset.hover = ''; });
@@ -12207,10 +12212,10 @@
     if (viewTrigger) delete viewTrigger.dataset.attached;
   });
 
-  /* Scroll continuously turned on or off, or a window crossing md with it on,
-     which a phone pages through: the board is drawn again the other way. A
-     paged week starts on the week's first day, and a strip keeps the day in
-     view at its left edge. */
+  /* Up to two weeks turned on or off, or a window crossing md, below which a
+     phone pages through weeks: the board is drawn again. A paged week starts
+     on the week's first day, and a strip keeps the day in view at its left
+     edge. */
   function redrawLayout() {
     // A hold the strip's scroll began ends with the strip, or no read would ever draw again.
     if (stripStart) endStripHold();
@@ -12223,11 +12228,10 @@
     placeRoom();
   }
 
-  // Crossing md changes how many days two weeks shows, and whether the strip scrolls, so the board redraws.
-  phoneQuery.addEventListener('change', () => {
-    if (view.scroll) redrawLayout();
-    else if (twoWeeks) show();
-  });
+  // Crossing md changes whether the strip scrolls, so the board redraws.
+  phoneQuery.addEventListener('change', redrawLayout);
+  // A window that widens or narrows changes how many days fit, and the label says what is on screen.
+  schEl?.addEventListener('scheduler:days-in-view', () => { if (stripStart) setRange(cursor, viewEnd(cursor), { quiet: true }); });
 
   // Once at start, so the saved rows are off before the first week is drawn
   // rather than blinking off after it.
@@ -17736,7 +17740,7 @@
     if (!holds(cursor)) return;
     if (scrolling()) {
       if (stripRoomy() && stripData) {
-        const strip = [stripStart, addDays(stripStart, STRIP_DAYS - 1)];
+        const strip = [stripStart, addDays(stripStart, stripDays() - 1)];
         if (weekPrint(data, ...strip) === weekPrint(stripData, ...strip)) { stripData = data; return; }
       }
     } else if (weekPrint(data, cursor) === weekPrint(before, cursor)) { afterBoard?.(); return; }
@@ -17993,7 +17997,7 @@
     stripAhead = false;
     if (weekMotion && !ahead) await weekMotion;
     const asked = cursor;
-    setRange(asked, lastShown(asked));
+    setRange(asked, viewEnd(asked));
 
     /* A week the last read already covers is drawn at once, with no dim and no
        network. The read still follows, because every change re-read before this
@@ -18033,7 +18037,7 @@
         cached = { data, centre: asked };
         if (!holds(cursor)) { stripAhead = ahead; weekOwed = true; readAgain = true; return; }
         if ((stripRoomy() || ahead) && before) {
-          const strip = [stripStart, addDays(stripStart, STRIP_DAYS - 1)];
+          const strip = [stripStart, addDays(stripStart, stripDays() - 1)];
           if (weekPrint(data, ...strip) === weekPrint(before, ...strip)) { stripData = data; return; }
         }
         if (weekMotion) { stripStale = true; return; }
@@ -18056,7 +18060,7 @@
       if (readAgain || ahead) return;
       // A failed read keeps the last good week on screen and puts its label
       // back; only a first load, with nothing drawn yet, hides the grid.
-      if (shown) setRange(stripStart ? cursor : shown, lastShown(stripStart ? cursor : shown));
+      if (shown) setRange(stripStart ? cursor : shown, viewEnd(stripStart ? cursor : shown));
       else schEl.hidden = true;
       const why = String(e && e.message ? e.message : e);
       say('error', 'Could not load that week', shown
@@ -18595,10 +18599,10 @@
     const w = dayWidth();
     if (!w || !stripStart) return;
     fitLanesInView({ grow: true });
-    const day = addDays(stripStart, Math.max(0, Math.min(STRIP_DAYS - 7, Math.round(schEl.scrollLeft / w))));
+    const day = addDays(stripStart, Math.max(0, Math.min(stripDays() - inView(), Math.round(schEl.scrollLeft / w))));
     if (iso(day) === iso(cursor)) return;
     cursor = day;
-    setRange(cursor, lastShown(cursor), { quiet: true });
+    setRange(cursor, viewEnd(cursor), { quiet: true });
   }
   // Ends a strip's scroll hold, so reads and live changes draw again.
   function endStripHold() {
@@ -18614,7 +18618,7 @@
     followScroll();
     placedLeft = schEl.scrollLeft;
     endStripHold();
-    setRange(cursor, lastShown(cursor));
+    setRange(cursor, viewEnd(cursor));
     drawRoster();
     let roomy = stripRoomy();
     // Near either end, with the days around the week in view held, the strip moves along to centre it.
@@ -18828,7 +18832,7 @@
       weekOwed = true;
       readInTurn();
     }
-    if ((at < STRIP_EDGE || at > STRIP_DAYS - 7 - STRIP_EDGE) && holds(on) && growStrip(on)) { fitLanesInView({ grow: true }); return; }
+    if ((at < STRIP_EDGE || at > stripDays() - inView() - STRIP_EDGE) && holds(on) && growStrip(on)) { fitLanesInView({ grow: true }); return; }
     if (stripRoomy()) wallAsked = false;
     else if (!wallAsked && !reading) { wallAsked = true; scrollStopped(); }
   }, { passive: false });
@@ -18847,15 +18851,27 @@
   const stepWeek = days => {
     if (stripStart && scrolling()) {
       const to = (aim ?? stripAt()) + days;
-      if (to >= 0 && to <= STRIP_DAYS - 7) { toast(null); scrollStripTo(to); return; }
+      if (to >= 0 && to <= stripDays() - inView()) { toast(null); scrollStripTo(to); return; }
       // Past the strip's end, the week is drawn again from where the last press was going.
       if (aim != null) cursor = addDays(stripStart, aim);
     }
     go(days);
   };
-  // A step is everything on the board, so two weeks shown move on to the two after them.
+  // An arrow moves a week, on from the day the strip is lined up on.
   stepPrev?.addEventListener('click', () => stepWeek(-daysShown()));
   stepNext?.addEventListener('click', () => stepWeek(daysShown()));
+  /* The Left and Right keys move the strip a day, and with Shift a week,
+     wherever focus is not taking the keys itself: a field, a menu, a
+     dialog, the editor or a slider such as the viewer's edge. */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !stripStart || !scrolling() || barsInHand) return;
+    const at = e.target;
+    if (at?.closest?.('input, textarea, select, [contenteditable=""], [contenteditable="true"], [role="menu"], [role="listbox"], [role="dialog"], [role="slider"], [role="tablist"], [role="separator"], #scheduler-panel, .scheduler-viewer')) return;
+    e.preventDefault();
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    stepWeek(dir * (e.shiftKey ? 7 : 1));
+  });
   document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); stopStripScroll(); cursor = firstDayOf(new Date()); show(); });
 
   /* The toolbar's row of controls scrolls sideways where it has no room for

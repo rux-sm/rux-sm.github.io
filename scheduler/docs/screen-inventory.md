@@ -136,11 +136,11 @@ Three homes, and one rule for choosing.
 - **History is a page.** It is the detail of nothing, and last in the nav: it is consulted, not
   worked in.
 - **View options go in the toolbar's overflow menu.** The week's first day, Monday, Sunday or
-  Today, each week then starting on today's weekday, and the bar-row toggles are there; time-aligned and two weeks join when the grid can draw them, then Scroll
-  continuously, off until turned on, kept by the browser and from md up only, for a week in view that scrolls through the weeks either side of it with the arrows scrolling a week, then Fill the window, off
+  Today, each week then starting on today's weekday, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Up to
+  two weeks, off until turned on and kept by the browser, for as many days on screen as fit at their least width, seven to fourteen, in the strip that is the board from md up, its arrows moving a week and the Left and Right keys a day, then Fill the window, off
   until turned on and kept by the browser, for a board that takes the whole window rather than Design's 99rem wide frame, in
   which the days share what the open panels leave, down to 160px each, and the week scrolls past it, so opening a panel
-  moves no edge of the page, both from the first paint, Two weeks and Fill the window read from the browser before it by `view.js`, then Motion, full, calm or
+  moves no edge of the page, both from the first paint, Up to two weeks and Fill the window read from the browser before it by `view.js`, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to
   reduce motion, and What the colours mean, a window of each colour of a live bar's dial. It hangs under its ⋮ and opens
   attached to it, one surface.

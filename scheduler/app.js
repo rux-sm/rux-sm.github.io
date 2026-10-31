@@ -155,14 +155,22 @@
     const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
     const ruledWidth = ruled.getBoundingClientRect().width;
     const dayMin = ruledWidth > 0 ? ruledWidth : NaN;
-    // A strip of days that scrolls is sized for the week in view, seven days.
+    /* A strip of days that scrolls is sized for the days in view: a week,
+       or with Up to two weeks as many as fit at their least width, seven to
+       fourteen, which data.js reads back to label and bound the strip. */
     const strip = sch.classList.contains('scheduler-week--scroll');
-    const days = strip ? 7 : parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
     const pane = sch.clientWidth;
     ruled.remove();
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
 
     const available = pane - headBase;
+    const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
+    const days = !strip ? parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7
+      : fits ? Math.min(14, Math.max(7, Math.floor(available / dayMin))) : 7;
+    if (strip && sch.dataset.daysInView !== String(days)) {
+      sch.dataset.daysInView = String(days);
+      sch.dispatchEvent(new Event('scheduler:days-in-view'));
+    }
     let day = Math.floor(available / days);
     let head = headBase;
     const crowded = day < dayMin;

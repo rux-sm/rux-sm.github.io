@@ -185,6 +185,7 @@
   function applyView() {
     page.dataset.motion = view.motion;
     if (view.compact) page.dataset.board = 'compact'; else delete page.dataset.board;
+    if (view.compact) document.documentElement.dataset.schedulerBoard = 'compact'; else delete document.documentElement.dataset.schedulerBoard;
     for (const board of root.querySelectorAll('.scheduler-components__board')) showRows(board);
   }
   motionSwitch?.addEventListener('rux:content-switcher-selected', e => {

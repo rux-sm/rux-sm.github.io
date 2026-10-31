@@ -945,7 +945,7 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 @media (hover: hover) {
   .scheduler-print__pick[data-attached]:hover,
   .scheduler-viewer__toolbar > .scheduler-print__pick[data-attached]:hover { background-color: var(--rux-layer-hover); }
-  :has(> .scheduler-print__pick[data-attached]:hover) > .scheduler-print__menu[data-attached]::before { background-color: var(--rux-layer-hover); }
+  .scheduler-print__menu[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
 }
 
 /* One that does something on a press is a button, so it takes a pointer, a
@@ -1180,9 +1180,10 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 /* While the trip panel is open the toast lifts clear of its action bar: 48px
    of condensed actions, the 32px under the panel and the toast's own 16px
    gutter. Carbon's `--rux--side-panel--actions-height` is scoped to the panel
-   and does not resolve here. `:has()` reads the panel's `[hidden]`, so no
-   class has to be kept in sync. */
-body:has(#scheduler-panel:not([hidden])) .scheduler-toast:not([data-place="header"]) {
+   and does not resolve here. data.js declares the open panel on the root as
+   it shows and hides it; read from `body` with `:has()` it cost every change
+   on the page a full style pass. */
+:root[data-scheduler-panel] .scheduler-toast:not([data-place="header"]) {
   /* Plus the home bar, which the toast keeps above whether the panel is beside
      the week or in front of the board. */
   inset-block-end: calc(var(--rux-spacing-09) + var(--rux-spacing-07) + var(--rux-spacing-05) + var(--scheduler-safe-bottom));

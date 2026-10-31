@@ -70,6 +70,27 @@ const BANNER = `/*!
 `;
 
 // After @charset, which must lead the file to have any effect.
+/* TWO OF CARBON'S `:has()` SELECTORS ARE ANCHORED SO BROADLY that any change
+   to a page has the browser work the whole page's style out again: the UI
+   shell's `div:has(.rux--header) ~ .rux--content`, where every div on the
+   page is a candidate, and the tile decorator's `> *:has(> .rux--popover--open)`,
+   where every element is. On the scheduler's board that pass cost 30ms per
+   change. Design's shell never wraps the header in a div, so that selector
+   is dropped from its list, and the decorator's child is Carbon's popover
+   container, so it is named. Either one missing from a new Carbon fails the
+   build, so the rewrite is looked at again rather than silently gone. */
+function tame(css) {
+  // Sass writes each selector on its own line, and the compressed build on one.
+  const shell = /,\s*div:has\(\.rux--header\)\s*~\s*\.rux--content/g;
+  const decorator = />\s*\*:has\(>\s*\.rux--popover--open\)/g;
+  if (!shell.test(css) || !decorator.test(css)) {
+    console.error('\n  FAIL: Carbon no longer ships the :has() selectors tame() rewrites; read tame() again.');
+    process.exit(1);
+  }
+  shell.lastIndex = decorator.lastIndex = 0;
+  return css.replace(shell, '').replace(decorator, '> .rux--popover-container:has(> .rux--popover--open)');
+}
+
 function brand(css) {
   const m = css.match(/^@charset[^;]*;\n?/);
   return m ? m[0] + BANNER + css.slice(m[0].length) : BANNER + css;
@@ -92,7 +113,7 @@ for (const [out, extra] of [[OUT, []], [MIN, ['--style=compressed']]]) {
       + done.undeclared.map(n => `--rux-${n}`).join(', '));
     process.exit(1);
   }
-  const css = brand(done.css);
+  const css = tame(brand(done.css));
   writeFileSync(out, css);
   // Scans the banner too, deliberately: a notice that named the old prefix would be a
   // build failure rather than a comment nobody reads.

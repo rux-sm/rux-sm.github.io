@@ -126,9 +126,9 @@
    their minimum, so a panel opening beside the week takes its width from the
    days and no edge of the page moves; past the minimum the week scrolls.
    Fill the window, in the view menu, widens the frame to the window, and
-   Maintenance's two weeks always fill it. */
-:root[data-scheduler-fill],
-:root:has(.scheduler-week--static) { --frame-wide: 100vw; }
+   Maintenance's pages declare it on `<html>`, since their two weeks always
+   fill it. */
+:root[data-scheduler-fill] { --frame-wide: 100vw; }
 /* Two weeks, set on the root by view.js before the first paint, so the
    loading week counts the fourteen days the drawn one will; render() in
    data.js sets the drawn week's own count. */
@@ -239,11 +239,12 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 8px at the top and sides: the number stands against the top, 1px under
-     where the bar's lines start, and the last row's foot lands 8px over the
-     row rule by the track's own gap, so no padding is needed below, and
-     none is set, or the head would stand taller than its track. */
-  padding: var(--rux-spacing-03) var(--rux-spacing-03) 0;
+  /* 8px at the sides, and at the top the bar's own clear space and padding,
+     so each of the head's rows stands level with the bar's; the last row's
+     foot lands over the row rule by the track's own gap, so no padding is
+     needed below, and none is set, or the head would stand taller than its
+     track. */
+  padding: calc(var(--scheduler-gap-clear) + var(--rux-spacing-02)) var(--rux-spacing-03) 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -1229,7 +1230,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* Out and back at 12px across the row's top, out at the start and back
    pushed to the end, with the track under them from side to side, as a
-   live bar's times are: 2px, centred 14px down the 18px row, the trip's ink
+   live bar's times are: 2px, centred 15px down the 18px row, the trip's ink
    as far as its time has gone and a fifth of it after, the dash inside it
    unseen. The times are smaller than the other rows' words so the track
    has the bar's whole width for its dots. */
@@ -1241,14 +1242,17 @@ button.scheduler-row-head__num::after {
   align-items: flex-start;
   min-inline-size: 0;
   font-size: var(--rux-label-01-font-size);
-  line-height: 12px;
+  line-height: 14px;
 }
+/* The cut end's triangle stands a pixel below the row, which would clip it. */
+.scheduler-bar > .scheduler-bar__time,
+.scheduler-bar > .scheduler-bar__time > .scheduler-bar__span { overflow: visible; }
 .scheduler-bar__when { flex: none; }
 .scheduler-bar__span > .scheduler-bar__when:last-child { margin-inline-start: auto; }
 .scheduler-bar__track {
   position: absolute;
   inset-inline: 3px;
-  inset-block-end: 3px;
+  inset-block-end: 2px;
   block-size: 2px;
   border-radius: 1px;
   font-size: 0;
@@ -1287,7 +1291,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
   --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 8px 8px no-repeat;
   --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 8px 8px no-repeat;
-  inset-block-end: 0;
+  inset-block-end: -1px;
   block-size: 8px;
   border-radius: 0;
 }
@@ -2340,7 +2344,7 @@ button.scheduler-row-head__num::after {
   align-items: flex-start;
   overflow: visible;
   font-size: var(--rux-label-01-font-size);
-  line-height: 12px;
+  line-height: 14px;
 }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
@@ -2349,14 +2353,14 @@ button.scheduler-row-head__num::after {
 /* Running late back: the expected return, or the time past the plan, amber. */
 .scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
 .scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }
-/* The track under out and back: 2px, centred 14px down the row however
+/* The track under out and back: 2px, centred 15px down the row however
    tall the lift leaves it, filled as far as the trip has gone, which is
    now, in the row's ink so it reads as the times do, with its stops' dots
    on it. */
 .scheduler-road__track {
   position: absolute;
   inset-inline: 3px;
-  inset-block-end: calc(3px - var(--scheduler-road-lift, 0px));
+  inset-block-end: calc(2px - var(--scheduler-road-lift, 0px));
   block-size: 2px;
   border-radius: 1px;
   /* Its stops' dots stand past it either side, which a row's parts would clip. */
@@ -2856,7 +2860,7 @@ button.scheduler-row-head__num::after {
    of the menu's grey shows across the ⋮'s bottom. */
 @media (hover: hover) {
   .scheduler-toolbar__more[data-attached]:hover { background-color: var(--rux-layer-hover); }
-  body:has(.scheduler-toolbar__more[data-attached]:hover) .scheduler-view-menu[data-attached]::before { background-color: var(--rux-layer-hover); }
+  .scheduler-view-menu[data-attached][data-hover]::before { background-color: var(--rux-layer-hover); }
 }
 .scheduler-view-menu[data-attached]::before {
   position: absolute;
@@ -4279,7 +4283,7 @@ button.scheduler-row-head__num::after {
 /* The view menu is laid out beside the board rather than inside it, so a rule
    that reads the board's state reaches it through `:has` on the body. */
 @media (min-width: 42rem) {
-  body:has(.scheduler-page:not([data-room="tight"])) .scheduler-menu-item--sm-only { display: none; }
+  :root:not([data-scheduler-room="tight"]) .scheduler-menu-item--sm-only { display: none; }
 }
 .scheduler-page[data-room="tight"]:not([data-board="compact"]) .scheduler-toolbar__lg-only { display: none; }
 /* On the compact board a swipe changes the week, so the two chevrons come off
@@ -4288,12 +4292,12 @@ button.scheduler-row-head__num::after {
    71px, so the swap hands the week label back 9px. `Today` then sits in one
    place rather than two, and the menu row that stood in for it goes. */
 .scheduler-page[data-board="compact"] .scheduler-toolbar__step { display: none; }
-body:has(.scheduler-page[data-board="compact"]) .scheduler-menu-item--sm-only { display: none; }
+:root[data-scheduler-board="compact"] .scheduler-menu-item--sm-only { display: none; }
 /* New trip is the menu's first row on a phone's compact board and under the
    tight width, where the week label needs the 40px. */
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
-body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .scheduler-menu-item--new { display: none; }
+:root:not([data-scheduler-room="tight"]):not([data-scheduler-board="compact"]) .scheduler-menu-item--new { display: none; }
 /* In the same state, and on the compact board, the week's own button gives up
    two steps of inset: 24px, as the insets come down from 16px to 8px and the
    icon's gap from 12px to 4px. That is what the label needs to read whole
@@ -4431,7 +4435,7 @@ body:has(.scheduler-page:not([data-room="tight"]):not([data-board="compact"])) .
    otherwise scroll or bounce the board behind it, which is set aside. The lock
    is on the root, where the page's own scroll lives; the panel scrolls inside
    itself and is untouched. */
-html:has(.scheduler-page[data-takeover]) {
+html[data-scheduler-takeover] {
   overflow: hidden;
 }
 

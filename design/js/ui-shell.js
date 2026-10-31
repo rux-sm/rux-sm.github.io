@@ -324,6 +324,14 @@
 
   /* Adopt the markup: a nav shipped `--expanded` is open, and each submenu's
      panel is hidden or shown to match the attribute the button already carries. */
+  /* THE PERSISTENT SHELL IS DECLARED ON THE ROOT, `data-nav="open"`, for
+     css/rux-overrides.css, which frames a page whose nav stands open beside
+     the content. Read from `body` with `:has()` it cost every change on the
+     page a full style pass, 30ms on the scheduler's board. The shell is the
+     markup's declaration, so it is read once, here. */
+  const openNav = [...document.querySelectorAll('.rux--side-nav--ux')].some(nav => !nav.classList.contains(FLOATS)
+    && (nav.parentElement === document.body || (nav.parentElement?.classList.contains('rux--header') && nav.parentElement.parentElement === document.body)));
+  if (openNav) document.documentElement.setAttribute('data-nav', 'open');
   for (const nav of document.querySelectorAll('.rux--side-nav')) {
     const burger = nav.closest('.rux--header')?.querySelector('.rux--header__menu-toggle');
     if (nav.classList.contains(EXPANDED)) setNav(nav, true, burger, true);

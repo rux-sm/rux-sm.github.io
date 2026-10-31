@@ -3654,6 +3654,7 @@
     const picked = selectedBar();
     if (picked && isEditorBar(picked)) picked.setAttribute('aria-current', 'false');
     panelEl.hidden = true;
+    document.documentElement.removeAttribute('data-scheduler-panel');
     if (tripEl) tripEl.hidden = true;
     syncSelection();
     const opener = panelOpener;
@@ -9681,6 +9682,8 @@
 
     if (!again) panelOpener = bar;
     panelEl.hidden = false;
+    // Said on the root for overrides.css, which lifts the toast over the panel's actions.
+    document.documentElement.setAttribute('data-scheduler-panel', '');
     const editorWasShut = !!tripEl?.hidden;
     if (tripEl) tripEl.hidden = false;
     // The editor always opens, and the oldest panels close for its room.
@@ -11662,6 +11665,9 @@
     const shown = front && viewers[front] ? 'viewer' : front === 'prep' ? 'to-do' : front;
     if (shown) pageEl.setAttribute('data-takeover', shown);
     else pageEl.removeAttribute('data-takeover');
+    // Said on the root too, for app.css's rules on the page's frame: read
+    // from the page with `:has()`, they cost every change a full style pass.
+    document.documentElement.toggleAttribute('data-scheduler-takeover', !!shown);
     pageEl.toggleAttribute('data-cover', !!cover);
 
     /* Behind the one in front, the board is set aside rather than there to be
@@ -11683,6 +11689,8 @@
 
     if (room < TOOLBAR_TIGHT * rem) pageEl.setAttribute('data-room', 'tight');
     else pageEl.removeAttribute('data-room');
+    if (room < TOOLBAR_TIGHT * rem) document.documentElement.setAttribute('data-scheduler-room', 'tight');
+    else document.documentElement.removeAttribute('data-scheduler-room');
 
     /* Compact is the board's own answer, not a panel's: a board that cannot
        show three readable days shows all seven as blocks instead. It asks the
@@ -11690,6 +11698,9 @@
        the week itself a different week. */
     if (board < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
     else pageEl.removeAttribute('data-board');
+    // The menus the view menu holds stand outside the page, so they read it from the root.
+    if (board < SCHEDULE_FLOOR * rem) document.documentElement.setAttribute('data-scheduler-board', 'compact');
+    else document.documentElement.removeAttribute('data-scheduler-board');
 
     /* A panel opening or closing moves the board without always resizing its
        grid, so the trip card, fixed to the window, is placed again once the
@@ -11888,6 +11899,9 @@
     if (key === 'twoWeeks') { show(); placeRoom(); }
     if (key === 'scroll') redrawLayout();
   });
+  // The menu's caret takes the ⋮'s hover with it while they are attached.
+  viewTrigger?.addEventListener('pointerenter', () => { if (viewMenu?.dataset.attached != null) viewMenu.dataset.hover = ''; });
+  viewTrigger?.addEventListener('pointerleave', () => { if (viewMenu) delete viewMenu.dataset.hover; });
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');

@@ -24,10 +24,11 @@ first paint is the final layout and nothing moves once the scripts load.
 - **Every theme frames the header,** Carbon's four, the Apple pair and the
   rest as rux-dark and geist-dark do, so a page is laid out one way
   whatever theme it wears.
-- **Wide is the one opt-in, and Carbon's full-width grid is its switch,**
-  `rux--css-grid--full-width` as the content's own grid, because it is
-  Carbon's own mark of a page worked in rather than read, and the frame in
-  `design/css/rux-overrides.css` already reads it.
+- **Wide is the one opt-in, declared as `data-frame="wide"` on `<html>`** by
+  a page whose content is Carbon's full-width grid, `rux--css-grid--full-width`,
+  Carbon's own mark of a page worked in rather than read. The frame in
+  `design/css/rux-overrides.css` reads the declaration, not the tree, since a
+  `:has()` on `body` costs every change to the page a full style pass.
 - **Wide is 99rem,** Carbon's `max` breakpoint and its grid's widest, centred
   in the window, or the window less a 16px margin either side where it is
   narrower, the header's contents standing on that margin. It is the

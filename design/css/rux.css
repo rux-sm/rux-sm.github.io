@@ -28828,10 +28828,10 @@ span.rux--pagination__text.rux--pagination__items-count {
   z-index: 1;
 }
 
-.rux--tile--decorator.rux--tile--selectable .rux--tile--inner-decorator > *:has(> .rux--popover--open),
-.rux--clickable-tile__wrapper > .rux--tile--inner-decorator > *:has(> .rux--popover--open),
-.rux--selectable-tile__wrapper--decorator > .rux--tile--inner-decorator > *:has(> .rux--popover--open),
-.rux--radio-tile__wrapper--decorator > .rux--tile--inner-decorator > *:has(> .rux--popover--open),
+.rux--tile--decorator.rux--tile--selectable .rux--tile--inner-decorator > .rux--popover-container:has(> .rux--popover--open),
+.rux--clickable-tile__wrapper > .rux--tile--inner-decorator > .rux--popover-container:has(> .rux--popover--open),
+.rux--selectable-tile__wrapper--decorator > .rux--tile--inner-decorator > .rux--popover-container:has(> .rux--popover--open),
+.rux--radio-tile__wrapper--decorator > .rux--tile--inner-decorator > .rux--popover-container:has(> .rux--popover--open),
 .rux--tile--slug.rux--tile--selectable .rux--ai-label:has(> .rux--popover--open),
 .rux--tile--slug.rux--tile--selectable .rux--slug:has(> .rux--popover--open),
 .rux--selectable-tile__wrapper--slug > .rux--ai-label:has(> .rux--popover--open),
@@ -29562,8 +29562,7 @@ li.rux--tree-node-link-parent > .rux--tree-node__children {
   will-change: margin-left;
 }
 
-.rux--header ~ .rux--content,
-div:has(.rux--header) ~ .rux--content {
+.rux--header ~ .rux--content {
   margin-block-start: 3rem;
 }
 
@@ -30615,8 +30614,7 @@ a.rux--side-nav__link--current::before {
   will-change: margin-left;
 }
 
-.rux--header ~ .rux--content,
-div:has(.rux--header) ~ .rux--content {
+.rux--header ~ .rux--content {
   margin-block-start: 3rem;
 }
 

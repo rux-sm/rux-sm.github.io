@@ -870,11 +870,15 @@ button.scheduler-row-head__num::after {
 }
 
 /* ── Trip bar ─────────────────────────────────────────────────────────── */
-/* Registered as its own, not inherited, so a change to where a bar starts,
-   as data.js moves the strip along under a scroll, has the browser work out
-   the bar's style again and not every element inside it. Nothing reads it
-   from a parent. */
+/* Registered as their own, not inherited, so a change to where a bar
+   starts or how many days it spans, as data.js moves the strip along under a
+   scroll, or to its lane or its track's lanes, as the rows fit the trips in
+   view, has the browser work out that one element's style again and not
+   every element inside it. Each is read only on the element that sets it. */
 @property --scheduler-start { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --scheduler-span { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --scheduler-lane { syntax: '<integer>'; inherits: false; initial-value: 0; }
+@property --scheduler-lanes { syntax: '<integer>'; inherits: false; initial-value: 1; }
 .scheduler-bar {
   --scheduler-bg: var(--rux-tag-background-gray);
   --scheduler-fg: var(--rux-tag-color-gray);

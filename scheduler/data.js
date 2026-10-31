@@ -489,9 +489,9 @@
      overlap is decided per leg in `render`, not by this filter, which is what
      lets one payload draw nine weeks. A driver's time off reaches 90 days
      further back, for their days lately. */
-  function windowOf(weekStart, weekEnd = lastShown(weekStart)) {
-    const from = addDays(weekStart, -NEAR_DAYS);
-    return { weekEnd, from, hi: iso(addDays(weekEnd, NEAR_DAYS)), lo: iso(addDays(from, -90)), ended: iso(addDays(from, -ENDED_DAYS)) };
+  function windowOf(weekStart, weekEnd = lastShown(weekStart), reach = NEAR_DAYS) {
+    const from = addDays(weekStart, -reach);
+    return { weekEnd, from, hi: iso(addDays(weekEnd, reach)), lo: iso(addDays(from, -90)), ended: iso(addDays(from, -ENDED_DAYS)) };
   }
 
   /* A TRIP IS READ BY ITS LEGS' DAYS: one that starts by the last day drawn
@@ -598,9 +598,10 @@
     }
   }
 
-  async function read(weekStart) {
+  // `reach` is how many days either side come with the week; the payload says which it was read with.
+  async function read(weekStart, reach = NEAR_DAYS) {
     const mine = ++readsBegun;
-    const win = windowOf(weekStart);
+    const win = windowOf(weekStart, lastShown(weekStart), reach);
     const [, trips, oos, timeOff] = await withTimeout(Promise.all([
       readLists([...listsOwed]),
       tripsIn(win).order('start_date').then(rowsOf),
@@ -608,7 +609,7 @@
       timeOffIn(win),
     ]));
     const statuses = statusMap(await statusesOf(trips));
-    const data = { ...lists, trips, oos, timeOff, statuses, weekStart, weekEnd: win.weekEnd };
+    const data = { ...lists, trips, oos, timeOff, statuses, weekStart, weekEnd: win.weekEnd, reach };
     carryMoves(data, mine);
     return data;
   }
@@ -623,7 +624,7 @@
     if (!tripIds.size && !windows && !names.length) return null;
     const mine = ++readsBegun;
     const ids = [...tripIds];
-    const win = windowOf(base.weekStart, base.weekEnd);
+    const win = windowOf(base.weekStart, base.weekEnd, base.reach ?? NEAR_DAYS);
     const [, rows, oos, timeOff] = await withTimeout(Promise.all([
       readLists(names),
       ids.length ? tripsIn(win).in('id', ids).then(rowsOf) : [],
@@ -1468,6 +1469,10 @@
   let stripAhead = false, stripStale = false, stripAskedFrom = null;
   // How far the week in view travels from the centre of what is held before more is read ahead, in days.
   const READ_AHEAD_DAYS = 4;
+  /* The days either side a read ahead brings: a read takes a second or two
+     on the office's line and a fast hand covers ten days in one, so twice
+     the usual reach, six weeks of travel from the centre before it runs out. */
+  const STRIP_REACH = 2 * NEAR_DAYS;
   // The axis a trackpad gesture is held to, 'x' or 'y', and whether the day
   // snap is paused for it; the lock itself is beside the strip's scroll handler.
   let axis = null, snapPaused = false;
@@ -1689,7 +1694,7 @@
   }
   let sweepIdle = 0;
   const whenIdle = window.requestIdleCallback ? fn => requestIdleCallback(fn, { timeout: 1000 }) : fn => setTimeout(fn, 250);
-  // Removes the retired bars and cards, three rows' worth at a time, each row's removal costing its style once.
+  // Removes the retired bars and cards, two rows' worth at a time, each row's removal costing its style once.
   function sweepRetired() {
     sweepIdle = 0;
     const rows = new Map();
@@ -1699,7 +1704,7 @@
     }
     let n = 0;
     for (const nodes of rows.values()) {
-      if (n++ >= 3) { sweepIdle = whenIdle(sweepRetired); break; }
+      if (n++ >= 2) { sweepIdle = whenIdle(sweepRetired); break; }
       for (const node of nodes) node.remove();
     }
   }
@@ -1720,8 +1725,8 @@
   /* What a frame takes on, beside the scroll it is drawing: a bar moved costs
      the browser a tenth of a millisecond at the frame, a bar drawn one, so
      the budget is a count, not the loop's own time. */
-  const OWED_SHIFTS_PER_FRAME = 24;
-  const OWED_DRAWS_PER_FRAME = 2;
+  const OWED_SHIFTS_PER_FRAME = 12;
+  const OWED_DRAWS_PER_FRAME = 1;
   function drawQueuedBar({ b, track, current, driversById, busesById, statuses, yardEnd, yardStart }) {
     if (!track.isConnected) return;
     const bar = barEl(b, driversById, busesById, statuses);
@@ -17553,7 +17558,8 @@
   const holds = start => {
     if (!cached) return false;
     const [from, to] = drawnRange(start);
-    return iso(addDays(cached.centre, -NEAR_DAYS)) <= iso(from) && iso(to) <= iso(addDays(cached.data.weekEnd, NEAR_DAYS));
+    const reach = cached.data.reach ?? NEAR_DAYS;
+    return iso(addDays(cached.centre, -reach)) <= iso(from) && iso(to) <= iso(addDays(cached.data.weekEnd, reach));
   };
   /* What one week would have to change for a redraw to be worth it: which trips
      it draws and when each was last written, which is what an edit moves, and
@@ -18029,14 +18035,14 @@
     schEl.setAttribute('aria-busy', 'true');
     // Only a week already on screen dims, and only where it was not just drawn
     // from what was held; before the first one the grid is the skeleton and
-    // stays at full strength.
-    if (shown && !held) gridEl.classList.add('scheduler-grid--busy');
+    // stays at full strength, and a strip under a sideways gesture keeps it too.
+    if (shown && !held && !(scrolling() && axis === 'x')) gridEl.classList.add('scheduler-grid--busy');
 
     try {
       // This read covers the live changes waiting.
       liveTrips.clear();
       liveWindows = liveListsAsked = false;
-      const data = await read(asked);
+      const data = await read(asked, ahead ? STRIP_REACH : NEAR_DAYS);
       if (weekMotion && !ahead) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;

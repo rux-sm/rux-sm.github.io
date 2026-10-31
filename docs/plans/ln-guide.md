@@ -242,6 +242,33 @@ tutorial, reference and explanation.
   width, so the two rules that size Back, Next and a choice live in
   `ln/overrides.css` until a second app needs a set that fits.
 
+### Every guide to one standard
+
+Every guide reads in plain voice, atlas's `standards/prose.md` section 3, and
+its printed Document meets [the standard](../../ln/docs/document-standard.md),
+with Ship from stock as the finished example of both.
+
+- **Guide by guide: each written to the standard, then walked in LN before
+  the next.** A changed task loses its walked mark, so the walk straight
+  after proves its values and stamps it once, and at most one guide is
+  unwalked at a time.
+- **A guide is written to the standard in one pass:** each task's Example,
+  written from its walk before the walk that proves it; each result as a
+  fact a tester can tick; a Before you start naming what must exist before
+  the first step; and the uses of what an earlier step wrote down.
+- **Atlas marks a use in a task's frontmatter, `uses:`**, as its
+  `task-rules.md` says, and Guided shows the value under the step's action;
+  paper keeps the step's words naming the figure and where it was written.
+- **Every guide is walked in full** by an agent in rux's Chrome, in the
+  training company, even where it creates master data there.
+- **rux approves each guide after its walk.** Ship from stock is approved;
+  the six walked since are drafts.
+- **What no walk covers is rewritten freely**: the ideas pages, each screen's
+  purpose line, and side tasks with no steps. LN's labels stay exact.
+- **The real records and the screenshots wait for the team's page** in
+  [ln-guide-document.md](ln-guide-document.md), because neither can go on the
+  public site.
+
 ### What carries over
 
 - **The pipeline and the reader's tools:** atlas, `emit.py`, the export with
@@ -260,7 +287,14 @@ None open.
 
 ## Tasks
 
-- [ ] In atlas, write the Example of every other walked task, one process at
-      a time, from the run that walked it.
+- [ ] Run order planning for one item: write it to the standard, then walk it.
+- [ ] Demand to shipment via planning: write it to the standard, then walk it.
+- [ ] Create basic test items and defaults: write it to the standard, then
+      walk it.
+- [ ] In atlas, check every walked guide's results are facts a tester can
+      tick, Production order's first, as Ship from stock's are.
+- [ ] Side tasks with steps: write each to the standard and walk it with the
+      guide nearest it.
+- [ ] Ideas' full text, which only the owner sees, in atlas's concepts.
 - [ ] In atlas, write a screen file for the four screens still without one, once
       a source says how each is opened.

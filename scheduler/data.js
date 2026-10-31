@@ -764,6 +764,8 @@
   let roadAnswer = null, roadAsked = 0, roadStopped = false, roadBusy = false, roadLive = null;
   const BusHead = window.SchedulerBusHead;
   const roadBusOf = bar => roadAnswer?.buses?.find(b => b.bus_id === bar.dataset.busId) ?? null;
+  // Logged in and samsara-now not yet asked: the heads draw every bus at rest until it answers.
+  const roadWaiting = () => !!client && !roadStopped && !roadAnswer && !roadAsked;
   const roadEta = Road.arrivals((a, b) => driveBetween(a, b).then(d => d?.min ?? null), () => drawRoad());
 
   /* Where an out bar's bus is on its leg: its stops, the stop it is at or
@@ -809,7 +811,7 @@
       const bus = panelIndex.buses.get(head.dataset.busId);
       if (!bus) continue;
       const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
-      BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-bus-tip') });
+      BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-bus-tip'), waiting: roadWaiting() });
     }
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-bus-id]')) {
       const bus = roadBusOf(bar);
@@ -1200,7 +1202,7 @@
         head.querySelector('.scheduler-bus-tip')?.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', words));
       }
       if (kit.childElementCount) top.appendChild(kit);
-      if (r.bus) BusHead.draw(head, r.bus, null);
+      if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
 
       /* The bus's kit on the head's last row: one band of three cells, its
          seats, its sleeper and its lift, so each stands in one place down

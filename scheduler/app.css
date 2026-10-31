@@ -2333,9 +2333,9 @@ button.scheduler-row-head__num::after {
 
 /* THE TIMES: out at the start and back at the end, then the minutes late
    in amber, at 12px across the row's top with the track under them, as a
-   planned bar's are; between them, on a leg whose route is done, the next
-   stop and when the bus gets there, its name dimmed as the client's is and
-   cut short before its time is. Or a problem's words, at the row's size.
+   planned bar's are; between them, on a leg whose route is done, a dimmed
+   arrow and when the bus gets to its next stop, centred in the room left.
+   Or a problem's words, at the row's size.
    The track's dots stand into the row below where the drivers row is
    lifted, so the row lets them show. */
 .scheduler-bar__row.scheduler-road__times { justify-content: flex-start; gap: var(--rux-spacing-02); }
@@ -2347,10 +2347,12 @@ button.scheduler-row-head__num::after {
   font-size: var(--rux-label-01-font-size);
   line-height: 14px;
 }
+/* Never cut short, even first in the row, where a row's first part gives way. */
+.scheduler-bar__row.scheduler-road__times > .scheduler-road__when { flex: none; }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
 .scheduler-road__next { flex: 1 1 auto; min-inline-size: 0; display: flex; justify-content: center; gap: var(--rux-spacing-02); white-space: nowrap; }
-.scheduler-road__next-name { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; opacity: .85; }
+.scheduler-road__next-arrow { flex: none; opacity: .85; }
 /* Running late back: the expected return, or the time past the plan, amber. */
 .scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
 .scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }

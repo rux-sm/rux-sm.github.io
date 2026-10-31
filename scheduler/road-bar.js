@@ -397,8 +397,8 @@
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, with its next-day mark, at either end of a
      track filled as far as the time between them has gone, carrying the
-     stops' dots, and between them the next stop's arrival on a leg whose
-     route is done. A bus running late back
+     stops' dots, and between them an arrow and the next stop's arrival on
+     a leg whose route is done. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
@@ -436,12 +436,18 @@
         track.append(dot);
       }
       parts.push(track);
-      /* The next stop and when the bus gets there, from where it is now and
-         the map's drive, on a leg whose route is done: none while it stands
-         at a stop, or when the late return at the row's end says it. */
+      /* When the bus gets to its next stop, from where it is now and the
+         map's drive, on a leg whose route is done: an arrow and the time,
+         the stop named on hover, since a one-day bar has no room for a
+         name; none while it stands at a stop, or when the late return at
+         the row's end says it. */
       if (bar.dataset.routeDone != null && next?.stop && !next.at && next.arrival != null && expected == null) {
+        const at = hhmm(Road.clockOf(next.arrival), true);
         const ahead = el('span', 'scheduler-road__next');
-        ahead.append(el('span', 'scheduler-road__next-name', next.stop.name), clock(hhmm(Road.clockOf(next.arrival), true)));
+        const arrow = el('span', 'scheduler-road__next-arrow', '\u2192');
+        arrow.setAttribute('aria-hidden', 'true');
+        ahead.append(arrow, clock(at));
+        ahead.title = `${next.stop.name}: arrives ${at}`;
         parts.push(ahead);
       }
     }

@@ -29,10 +29,13 @@
      warning colour within WARN_DAYS. Its seats are the number's
      toggletip's.
    The fuel bar is a neutral grey until low or critical, running or not,
-   so a bus asks nothing unless its tank does.
+   so a bus asks nothing unless its tank does. Until samsara-now first
+   answers, every bus is drawn at rest, Off over an empty fuel bar and a
+   dash for its percent, so the column has its shape while it loads.
 
    `draw(head, bus, live, opts)` draws it inside a head data.js made: `bus`
-   is the bus's row and `live` its bus of samsara-now's answer or null; what
+   is the bus's row and `live` its bus of samsara-now's answer or null, and
+   `opts.waiting` says no answer has come yet; what
    the bus is doing now stands in every week. `tipOf(bus, live)` is
    the lines the number's toggletip adds. data.js draws every head with it,
    and tools/check-bar.mjs checks each state.
@@ -68,6 +71,8 @@
   // An expiry this close shows as a warning, as the Fleet page warns.
   const WARN_DAYS = 45;
   const DAY = 864e5;
+  // A bus before samsara-now answers: at rest, its fuel not yet read.
+  const WAITING = { engine: 'off', mph: 0, fuel: null, waiting: true };
 
   const levelOf = (pct, tank) => (pct == null ? null : pct <= tank.critical ? 'critical' : pct <= tank.low ? 'low' : 'normal');
   const ago = at => {
@@ -122,10 +127,10 @@
   function level(pct, tank) {
     const lv = levelOf(pct, tank);
     const g = el('span', 'scheduler-row-head__level');
-    g.dataset.level = lv;
+    if (lv) g.dataset.level = lv;
     g.dataset.tank = tank.letter;
-    g.style.setProperty('--scheduler-tank', `${pct}%`);
-    const words = `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
+    g.style.setProperty('--scheduler-tank', `${pct ?? 0}%`);
+    const words = pct == null ? `${tank.word} not read yet` : `${tank.word} ${pct}%${lv === 'critical' ? ', critical' : lv === 'low' ? ', low' : ''}`;
     g.setAttribute('role', 'img');
     g.setAttribute('aria-label', words);
     const reading = el('span', 'scheduler-row-head__reading');
@@ -134,7 +139,7 @@
     // Fuel's figure stands beside its pump with no sign, the bar and the
     // pump saying what it counts, which leaves Carbon's 16px pump and 12px
     // figure room in the display's 40px; DEF's tag keeps its sign.
-    reading.appendChild(el('span', 'scheduler-row-head__pct', tank === FUEL ? String(pct) : `${pct}%`));
+    reading.appendChild(el('span', 'scheduler-row-head__pct', pct == null ? '\u2013' : tank === FUEL ? String(pct) : `${pct}%`));
     g.appendChild(reading);
     if (tank === FUEL) g.appendChild(el('span', 'scheduler-row-head__tank'));
     return g;
@@ -166,11 +171,11 @@
     const under = figure ? 'mph' : state.under;
     // The unit's line stands even with nothing to say, so the fuel keeps its place.
     box.appendChild(el('span', 'scheduler-row-head__arc-under', under ?? '\u00a0'));
-    if (live.fuel != null) {
+    if (live.fuel != null || live.waiting) {
       const bar = el('span', 'scheduler-row-head__arc-fuel');
-      bar.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, live.fuel))}%`);
+      bar.style.setProperty('--scheduler-tank', `${Math.max(0, Math.min(100, live.fuel ?? 0))}%`);
       const pct = el('span', 'scheduler-row-head__arc-pct');
-      pct.append(el('span', 'scheduler-row-head__arc-f', 'F'), el('span', null, `${live.fuel}%`));
+      pct.append(el('span', 'scheduler-row-head__arc-f', 'F'), el('span', null, live.fuel == null ? '\u2013' : `${live.fuel}%`));
       box.append(bar, pct);
     }
     return box;
@@ -195,8 +200,8 @@
   }
 
   function draw(head, bus, live, opts = {}) {
-    const shown = live;
-    const key = JSON.stringify(shown ? [shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
+    const shown = live ?? (opts.waiting ? WAITING : null);
+    const key = JSON.stringify(shown ? [shown.waiting, shown.engine, shown.mph, shown.fuel, shown.def, shown.place, shown.fault,
       shown.seen && ago(shown.seen), shown.engine_at && ago(shown.engine_at)] : [bus.inspection_exp]);
     if (head.dataset.live === key) return;
     head.dataset.live = key;
@@ -213,7 +218,7 @@
     // The one state dot the compact board draws: the worst tone the head shows.
     const tone = lamp?.tone === 'error' || levels.includes('critical') ? 'error'
       : lamp || state?.tone === 'warning' || levels.includes('low') ? 'warning'
-      : state?.tone === 'quiet' && noSignal(shown) ? 'quiet' : shown ? 'normal' : null;
+      : state?.tone === 'quiet' && noSignal(shown) ? 'quiet' : live ? 'normal' : null;
     top?.querySelector('.scheduler-row-head__dot')?.remove();
     if (tone && top) {
       const dot = el('span', 'scheduler-row-head__dot');
@@ -229,7 +234,7 @@
       const gauges = el('div', 'scheduler-row-head__gauges');
       gauges.appendChild(speedometer(shown, state));
       gauges.appendChild(dial(shown, state));
-      if (shown.fuel != null) gauges.appendChild(level(shown.fuel, FUEL));
+      if (shown.fuel != null || shown.waiting) gauges.appendChild(level(shown.fuel, FUEL));
       if (shown.def != null && levelOf(shown.def, DEF) !== 'normal') gauges.appendChild(level(shown.def, DEF));
       body.appendChild(gauges);
     } else {
@@ -246,7 +251,7 @@
     if (body.childElementCount) head.insertBefore(body, head.querySelector(':scope > .scheduler-row-head__equip'));
 
     if (opts.tip) {
-      const lines = tipOf(bus, shown);
+      const lines = tipOf(bus, live);
       let box = opts.tip.querySelector('.scheduler-bus-tip__live');
       if (!lines.length) box?.remove();
       else {

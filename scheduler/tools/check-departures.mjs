@@ -89,7 +89,7 @@ expect('nothing done: problems warn, and the office\'s own steps say where they 
 
 expect('a step still to do names the column it is kept in, and the hotel, booked on the trip, names none',
   [raw.lines.at(-1).mark, raw.buses[0].crew[0].lines.map(l => l.mark),
-    page({ ...trip, need_hotel: true }, 'outbound', read).lines.find(l => l.key === 'hotel').mark],
+    page({ ...trip, trip_reqs: { hotel: true } }, 'outbound', read).lines.find(l => l.key === 'hotel').mark],
   ['driver_info_sent', [null, 'itinerary_printed', 'envelope_printed', 'trip_reminder_sent'], null]);
 
 expect('a confirmed trip that still owes says so, with the figure',
@@ -107,7 +107,7 @@ expect('a leg whose stops have no times says so, and is not ready',
 
 expect('the hotel is a line only where the office books it',
   [said(page({ ...trip, trip_reqs: { hotel: true } }, 'outbound', read).lines).filter(l => /Hotel/.test(l)),
-    said(page({ ...trip, need_hotel: true, hotel_booked_outbound: true, hotel_itinerary_number_outbound: 'H77' }, 'outbound', read).lines).filter(l => /Hotel/.test(l))],
+    said(page({ ...trip, trip_reqs: { hotel: true }, hotel_booked_outbound: true, hotel_itinerary_number_outbound: 'H77' }, 'outbound', read).lines).filter(l => /Hotel/.test(l))],
   [['todo Hotel -> billing'], ['done Hotel [H77]']]);
 
 const two = page({ ...trip, bus_count: 3, trip_reqs: { sleeper: true }, trip_assignments: [
@@ -130,7 +130,7 @@ expect('a bus and its driver say what stands in their way, each a line still to 
   [['On trip Austin'], ['warn On trip Austin', 'warn Time off']]);
 expect('with nothing read around it, a leg says no clash', page(trip, 'outbound', read).buses[0].needs.filter(n => !n.met).length, 0);
 
-const card = page({ ...trip, bus_count: 2, need_fuel_card: true, trip_assignments: [
+const card = page({ ...trip, bus_count: 2, trip_reqs: { fuelCard: true }, trip_assignments: [
   bus('a1', 1, [seat('s1', 'd1', 'driver', done)], { fuel_card_number: '4417' }),
   bus('a2', 2, [seat('s2', 'd2', 'driver', done)], { position: 1 }),
 ] }, 'outbound', read);

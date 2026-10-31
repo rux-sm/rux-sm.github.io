@@ -296,10 +296,9 @@
     'id', 'trip_ref', 'destination', 'customer', 'customer_id', 'start_date', 'end_date',
     'return_start_date', 'return_end_date', 'departure_time', 'return_time',
     'trip_type', 'confirmed', 'trip_bar_color', 'bus_count', 'return_bus_count',
-    'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'updated_at',
-    // What the trip needs, for its card and the bus fit: the list the office keeps,
-    // with the older columns behind it for a trip saved before it existed.
-    'trip_reqs', 'need_fuel_card',
+    'updated_at',
+    // What the trip needs, for its card and the bus fit: the list the office keeps.
+    'trip_reqs',
     // The vehicle the trip needs, `Coach` or `Van`; null is any.
     'vehicle_type',
     // Each leg's hotel: the bar's hotel mark, its menu item and the Buses tab.
@@ -4509,12 +4508,6 @@
         }
         return out;
       } },
-    // The vehicle's three are true when any vehicle on the trip needs them.
-    ...[['req_sleeper', 'sleeper'], ['req_ada', 'adaLift'], ['req_56pax', 'pax56']]
-      .map(([key, id]) => ({ key, get: () => fleetNeedUnion()?.has(id) ?? !!editing?.before?.[key] })),
-    // A reminder to book a hotel, not the bus's equipment; it is listed with the needs.
-    { key: 'need_hotel', get: () => hotelNeeded() },
-    { key: 'need_fuel_card', get: () => !!editing?.fuelCard },
     // Each leg's hotel: whether it is booked, and its confirmation number.
     ...['outbound', 'return'].flatMap(l => [
       { key: `hotel_booked_${l}`, get: () => !!editing?.hotel?.[l]?.booked },
@@ -6981,8 +6974,7 @@
       destination: null, customer: null,
       trip_type: 'round_trip', vehicle_type: null, confirmed: false,
       start_date: start, end_date: start,
-      req_sleeper: false, req_ada: false, req_56pax: false, need_hotel: false,
-      need_fuel_card: false, trip_reqs: {},
+      trip_reqs: {},
       notes: null, trip_assignments: [], trip_stops: [],
       // The id the trip is inserted with, fixed for the panel's life, so a
       // second press of Save cannot make a second trip.
@@ -7214,8 +7206,8 @@
          card, turned on from the Route tab. */
       hotel: Object.fromEntries(['outbound', 'return'].map(l => [l,
         { ref: legFactsOf(trip, l).hotelNumber, booked: legFactsOf(trip, l).hotelBooked }])),
-      hotelWanted: !!trip.need_hotel,
-      fuelCard: !!trip.need_fuel_card,
+      hotelWanted: trip.trip_reqs?.hotel === true,
+      fuelCard: trip.trip_reqs?.fuelCard === true,
       // Itinerary not needed, set from the Checklist's itinerary row or the Files tab.
       itineraryNotNeeded: !!trip.itinerary_not_needed,
       // The price the customer was sent and the day, or null before it is.
@@ -7239,11 +7231,6 @@
       // The name it paints as, so a trip still storing `cyan` opens on Teal
       // with nothing changed, and saves nothing until another colour is picked.
       trip_bar_color: tripColorOf(trip),
-      req_sleeper: !!trip.req_sleeper,
-      req_ada: !!trip.req_ada,
-      req_56pax: !!trip.req_56pax,
-      need_hotel: !!trip.need_hotel,
-      need_fuel_card: !!trip.need_fuel_card,
       /* Every need the trip carries, answered true or false, so a tag turned
          off counts as a change rather than as a key that quietly vanished. It
          is merged over the stored object exactly as a save is, or an untouched

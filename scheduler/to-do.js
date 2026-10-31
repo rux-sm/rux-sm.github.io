@@ -197,7 +197,7 @@
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)'].join(',');
   // What the other three rules read, of the trips leaving soon enough to be asked.
-  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'vehicle_type',
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',

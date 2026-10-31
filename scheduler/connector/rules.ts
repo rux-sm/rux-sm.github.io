@@ -115,15 +115,10 @@ const window = {};
   // The ids a needs object holds true, sorted, so two can be compared.
   const needIds = o => (o && typeof o === 'object' ? Object.keys(o).filter(k => o[k] === true).sort() : []);
 
-  /* The ids a trip carries, from `trip_reqs` where it is set and the older
-     columns where it is not -- the pair print.js reads too. */
+  // The ids a trip's `trip_reqs` holds true, as print.js reads them too.
   function requirementsOf(trip) {
     const reqs = trip.trip_reqs;
-    const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
-      ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k)
-      : [['pax56', trip.req_56pax], ['sleeper', trip.req_sleeper], ['adaLift', trip.req_ada],
-         ['hotel', trip.need_hotel], ['fuelCard', trip.need_fuel_card]]
-        .filter(([, v]) => v).map(([k]) => k);
+    const on = reqs && typeof reqs === 'object' ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k) : [];
     /* In the office's own order, the same one the editor lays its tags out in,
        so a need sits in the same place on the bar as in the panel. Anything
        the trip carries that is not on the list -- a need since deactivated --
@@ -214,8 +209,6 @@ const window = {};
     ...(r.legId ? [[statusKey(r.tripId, r.driverId, r.legId, r.role), r]] : []),
     [statusKey(r.tripId, r.driverId, r.leg, r.role), r]]));
 
-  // The tone names an older row holds in place of a status.
-  const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
 
   /* The roles an assignment turns on, each with the status saved
      after it as `role:state`, which a trip with no status row still shows. An
@@ -228,7 +221,7 @@ const window = {};
       : (assign.trip_drivers || []).map(d => d.role || 'driver');
     for (const entry of saved) {
       const [role, state] = entry.split(':');
-      on.set(role, LEGACY_STATUS[state] ?? state ?? 'off');
+      on.set(role, state ?? 'off');
     }
     return on;
   }
@@ -722,7 +715,7 @@ const window = {};
   // The first leg's itinerary, which a later leg is handed too until it has its own.
   const hasItinerary = trip => !!window.SchedulerTripShape.itineraryFor(trip, legsOf(trip)[0]);
   // A requirement the trip carries, from its tags, or the old column before it had them.
-  const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
+  const wants = (trip, id) => trip.trip_reqs?.[id] === true;
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
@@ -792,12 +785,12 @@ const window = {};
           : facts.formsLeft ? `${plural(facts.formsLeft, 'driver', 'drivers')} left` : null);
     }
 
-    if (wants(trip, 'hotel', 'need_hotel')) {
+    if (wants(trip, 'hotel')) {
       const marks = Week().legByKey(trip, leg);
       add('Extras', 'hotel', 'Hotel booked', marks?.hotelBooked, TABS.billing, marks?.hotelNumber || null);
     }
     // A card is a bus's, its number typed on the first driver's envelope.
-    if (wants(trip, 'fuelCard', 'need_fuel_card')) {
+    if (wants(trip, 'fuelCard')) {
       add('Extras', 'fuel-card', 'Fuel card assigned', !facts.fuelCardsLeft, TABS.forms,
         facts.fuelCardsLeft ? `${plural(facts.fuelCardsLeft, 'bus', 'buses')} without a card` : null);
     }
@@ -1574,15 +1567,10 @@ const window = {};
     return leg === 'return' ? back : out;
   };
 
-  const LEGACY_REQS = [['sleeper', 'req_sleeper'], ['pax56', 'req_56pax'], ['adaLift', 'req_ada'], ['hotel', 'need_hotel'], ['fuelCard', 'need_fuel_card']];
   const LEGACY_NAMES = WORDS.en.legacy;
   // `names` is the office's list, id to label, as the link's read hands it over.
-  const requirementsOf = (trip, names = new Map()) => {
-    const ids = trip.trip_reqs && Object.keys(trip.trip_reqs).length
-      ? Object.entries(trip.trip_reqs).filter(([, on]) => on).map(([id]) => id)
-      : LEGACY_REQS.filter(([, col]) => trip[col]).map(([id]) => id);
-    return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
-  };
+  const requirementsOf = (trip, names = new Map()) => Object.entries(trip.trip_reqs || {})
+    .filter(([, on]) => on).map(([id]) => names.get(id) || LEGACY_NAMES[id] || id);
 
   /* A leg's papers, its day-of contacts and its files, as trip-shape.js
      hands them: the trip is read with its legs, `trip_contacts` and its
@@ -2278,7 +2266,7 @@ const window = {};
     'date_paid', 'balance_paid', 'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_documents(label)',
     'trip_updates(created_at,kind)'].join(',');
   // What the other three rules read, of the trips leaving soon enough to be asked.
-  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+  const HEAVY = ['id', 'contact_not_needed', 'trip_reqs', 'vehicle_type',
     'departure_time', 'return_time', 'spot_time', 'trip_documents(id,label,created_at,file_path,leg,leg_id)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',
@@ -2472,7 +2460,7 @@ const window = {};
     }
 
     // The office books the room only where the trip says so, by its tag or the older column.
-    const hotel = trip.trip_reqs && 'hotel' in trip.trip_reqs ? trip.trip_reqs.hotel === true : !!trip.need_hotel;
+    const hotel = trip.trip_reqs?.hotel === true;
     if (hotel) {
       const marks = Week.legByKey(trip, leg);
       lines.push(marks?.hotelBooked
@@ -2499,7 +2487,7 @@ const window = {};
       }
     }
     // A trip with a fuel card asks one of every bus, by its number; it is typed on the first driver's envelope.
-    const wantsCard = trip.trip_reqs && 'fuelCard' in trip.trip_reqs ? trip.trip_reqs.fuelCard === true : !!trip.need_fuel_card;
+    const wantsCard = trip.trip_reqs?.fuelCard === true;
     if (wantsCard) {
       const number = String(assign.fuel_card_number ?? '').trim();
       needs.push({ id: 'fuelCard', label: number ? `Fuel card ${number}` : 'Fuel card', met: !!number, action: 'forms:envelope' });
@@ -2593,7 +2581,7 @@ const window = {};
     'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
     'itinerary_not_needed', 'contact_not_needed',
-    'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+    'trip_reqs', 'vehicle_type',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',

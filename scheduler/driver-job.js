@@ -94,15 +94,10 @@
     return leg === 'return' ? back : out;
   };
 
-  const LEGACY_REQS = [['sleeper', 'req_sleeper'], ['pax56', 'req_56pax'], ['adaLift', 'req_ada'], ['hotel', 'need_hotel'], ['fuelCard', 'need_fuel_card']];
   const LEGACY_NAMES = WORDS.en.legacy;
   // `names` is the office's list, id to label, as the link's read hands it over.
-  const requirementsOf = (trip, names = new Map()) => {
-    const ids = trip.trip_reqs && Object.keys(trip.trip_reqs).length
-      ? Object.entries(trip.trip_reqs).filter(([, on]) => on).map(([id]) => id)
-      : LEGACY_REQS.filter(([, col]) => trip[col]).map(([id]) => id);
-    return ids.map(id => names.get(id) || LEGACY_NAMES[id] || id);
-  };
+  const requirementsOf = (trip, names = new Map()) => Object.entries(trip.trip_reqs || {})
+    .filter(([, on]) => on).map(([id]) => names.get(id) || LEGACY_NAMES[id] || id);
 
   /* A leg's papers, its day-of contacts and its files, as trip-shape.js
      hands them: the trip is read with its legs, `trip_contacts` and its

@@ -41,7 +41,7 @@
   // The first leg's itinerary, which a later leg is handed too until it has its own.
   const hasItinerary = trip => !!window.SchedulerTripShape.itineraryFor(trip, legsOf(trip)[0]);
   // A requirement the trip carries, from its tags, or the old column before it had them.
-  const wants = (trip, id, legacy) => (trip.trip_reqs && id in trip.trip_reqs ? trip.trip_reqs[id] === true : !!trip[legacy]);
+  const wants = (trip, id) => trip.trip_reqs?.[id] === true;
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
   /* One leg's items. `facts` is the board's reading of the leg's buses:
@@ -111,12 +111,12 @@
           : facts.formsLeft ? `${plural(facts.formsLeft, 'driver', 'drivers')} left` : null);
     }
 
-    if (wants(trip, 'hotel', 'need_hotel')) {
+    if (wants(trip, 'hotel')) {
       const marks = Week().legByKey(trip, leg);
       add('Extras', 'hotel', 'Hotel booked', marks?.hotelBooked, TABS.billing, marks?.hotelNumber || null);
     }
     // A card is a bus's, its number typed on the first driver's envelope.
-    if (wants(trip, 'fuelCard', 'need_fuel_card')) {
+    if (wants(trip, 'fuelCard')) {
       add('Extras', 'fuel-card', 'Fuel card assigned', !facts.fuelCardsLeft, TABS.forms,
         facts.fuelCardsLeft ? `${plural(facts.fuelCardsLeft, 'bus', 'buses')} without a card` : null);
     }

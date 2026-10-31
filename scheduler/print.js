@@ -265,13 +265,7 @@
 
   function needsOf(trip) {
     const reqs = trip.trip_reqs;
-    const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
-      ? new Set(Object.entries(reqs).filter(([, v]) => v).map(([k]) => k))
-      : new Set([
-          ['pax56', trip.req_56pax], ['sleeper', trip.req_sleeper],
-          ['adaLift', trip.req_ada], ['fuelCard', trip.need_fuel_card],
-          ['hotel', trip.need_hotel],
-        ].filter(([, v]) => v).map(([k]) => k));
+    const on = new Set(reqs && typeof reqs === 'object' ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k) : []);
     if (trip.trip_type && trip.trip_type !== 'round_trip') on.add('oneWay');
     const named = NEED_ORDER.filter(id => on.has(id));
     const rest = [...on].filter(id => !NEEDS[id]);
@@ -2565,7 +2559,7 @@
       columns: [
         'quoted_price', 'bus_count', 'return_bus_count', 'pickup_address', 'booking_contact_email',
         'trip_quote_lines(position,kind,leg,item,description,quantity,cost,amount)',
-        'trip_assignments(leg,needs)', 'trip_reqs', 'req_56pax',
+        'trip_assignments(leg,needs)', 'trip_reqs',
         'customers:customer_id(name,bill_to,usual:usual_location_id(address))',
       ],
       // NO TICK. `envelope_printed` and `itinerary_printed` are dispatch's
@@ -2668,7 +2662,7 @@
       'id', 'trip_ref', 'customer', 'destination', 'trip_type',
       'start_date', 'end_date', 'return_start_date', 'return_end_date',
       'departure_time', 'spot_time',
-      'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'trip_reqs',
+      'trip_reqs',
       'booking_contact_name', 'booking_contact_phone',
       'trip_contact_1_name', 'trip_contact_1_phone',
       'trip_contact_2_name', 'trip_contact_2_phone',
@@ -3534,7 +3528,6 @@
      legs are read beside the buses. */
   const TRIP_BUSES_QUERY = 'id,destination,customer_id,start_date,return_start_date,trip_stops(leg,route_id),'
     + 'trip_legs(id,leg,kind,start_date,end_date,bus_count,created_at,trip_routes(id,position,name)),'
-    + 'itinerary_printed_outbound,itinerary_printed_return,hos_form_printed_outbound,hos_form_printed_return,'
     + 'trip_assignments(id,leg,route_id,position,buses:bus_id(number),'
     + 'trip_drivers(id,driver_id,role,envelope_printed,driver_forms_printed,drivers:driver_id(name,short_name)))';
 
@@ -3822,7 +3815,7 @@
   const WEEK_TRIP_COLUMNS = [
     'id,destination,customer,start_date,end_date,return_start_date,return_end_date',
     'bus_count,return_bus_count,trip_type,trip_bar_color,confirmed,contract_status,trip_reqs',
-    'req_56pax,req_sleeper,req_ada,need_hotel,need_fuel_card,departure_time,return_time',
+    'departure_time,return_time',
     'booking_contact_name,booking_contact_phone,trip_contact_1_name,trip_contact_1_phone',
     'est_miles,actual_miles,quoted_price,deposit_amount,balance_paid,date_paid',
     'po_ref,po_received,po_amount,invoice_number,invoiced,invoice_status',

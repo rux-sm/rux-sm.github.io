@@ -45,12 +45,12 @@ expect('a part-time driver asks for the hours-of-service record',
     ids(checklist(ready, () => ({ ...full, partTime: true }), true)).filter(i => i.startsWith('hos'))],
   [['hos:l1-'], ['hos:l1+']]);
 
-expect('hotel and fuel card appear only when wanted, from tags or the old columns',
+expect('hotel and fuel card appear only when the trip\'s needs ask for them',
   [ids(checklist(ready, () => full, true)).filter(i => /hotel|fuel/.test(i)),
-    ids(checklist({ ...ready, trip_reqs: { hotel: true }, need_fuel_card: true, trip_legs: [leg('l1', 'outbound', '2026-11-10', { hotel_booked: true })] },
+    ids(checklist({ ...ready, trip_reqs: { hotel: true, fuelCard: true }, trip_legs: [leg('l1', 'outbound', '2026-11-10', { hotel_booked: true })] },
       () => ({ ...full, fuelCardsLeft: 1 }), true))
       .filter(i => /hotel|fuel/.test(i)),
-    ids(checklist({ ...ready, need_fuel_card: true }, () => full, true)).filter(i => /fuel/.test(i))],
+    ids(checklist({ ...ready, trip_reqs: { fuelCard: true } }, () => full, true)).filter(i => /fuel/.test(i))],
   [[], ['hotel:l1+', 'fuel-card:l1-'], ['fuel-card:l1+']]);
 
 const split = checklist({ ...ready, trip_type: 'dropoff_pickup', return_start_date: '2026-11-12',

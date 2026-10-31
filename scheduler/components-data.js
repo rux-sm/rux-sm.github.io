@@ -224,7 +224,7 @@
       intro: "A problem puts the warning badge at the destination row's end: red once a bus does not fit, amber for seats or a driver, for a confirmed trip with nothing paid, and for a trip contact or itinerary still missing two days before the leg leaves. Other paperwork, a hotel or an HOS form, marks nothing on the bar; the card lists it.",
       samples: [
         { name: 'A hotel to book', note: 'A need that is a job, not equipment.', days: 3,
-          rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', need_hotel: true, trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },
+          rows: [row('101', bar(trip({ customer: 'Coastal Youth Choir', trip_reqs: { hotel: true }, buses: [crewed('b101')] })))] },
         { name: 'No one to call on the day', note: 'No day-of contact on a trip not marked as needing none.', days: 3,
           rows: [row('102', bar(trip({ customer: 'Harbor Tours', trip_contacts: [], buses: [crewed('b102')] })))] },
         { name: 'More passengers than seats', note: 'Said on every bar of the leg.', days: 3,

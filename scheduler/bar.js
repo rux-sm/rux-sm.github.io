@@ -450,7 +450,7 @@
     bar.dataset.itineraryId = itinerary?.id ?? '';
     // The bar menu's hotel item reads both: whether the trip needs a hotel, and
     // whether this leg's is booked.
-    bar.dataset.needHotel = trip.need_hotel ? 'true' : '';
+    bar.dataset.needHotel = trip.trip_reqs?.hotel === true ? 'true' : '';
     bar.dataset.hotelBooked = leg.hotelBooked ? 'true' : '';
     bar.setAttribute('role', 'group');
     bar.setAttribute('aria-keyshortcuts', 'Enter Space');

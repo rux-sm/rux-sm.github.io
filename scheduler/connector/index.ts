@@ -53,7 +53,7 @@ const TRIP_SUMMARY = [
 // A trip on its own: what a dispatcher reads off the editor's tabs.
 const TRIP_DETAIL = [
   TRIP_SUMMARY, 'pickup_address', 'est_miles', 'actual_miles',
-  'driving_hours', 'on_duty_hours', 'quoted_price', 'deposit_amount',
+  'quoted_price', 'deposit_amount',
   'balance_paid', 'date_paid', 'contract_status', 'contract_note',
   'po_received', 'po_ref', 'po_amount', 'invoiced', 'invoice_status',
   'invoice_number', 'booking_contact_phone',
@@ -68,8 +68,7 @@ const TRIP_DETAIL = [
   // The trip's legs in date order, each with its days, buses and routes, and
   // its day-of contacts as a list, each naming the leg it is for, or none.
   TRIP_LEGS, 'trip_contacts(position, leg_id, name, phone)',
-  'req_sleeper', 'req_56pax', 'req_ada',
-  'need_hotel', 'need_fuel_card', 'trip_reqs',
+  'trip_reqs',
   'cancellation_reason', 'updated_at',
   // What a save writes to the Details and Billing tabs and the three Done
   // marks, so a session reads its own save back.
@@ -147,9 +146,10 @@ function legsTaken(trip: Record<string, unknown>) {
 const legWords = (l: { leg: string | null; number: number }) => (l.leg ? `the ${l.leg} leg` : `leg ${l.number}`)
 
 /** What the trip needs from a bus, in words, as the editor's Buses tab asks. */
-function busNeeds(trip: { req_56pax?: boolean | null; req_ada?: boolean | null; req_sleeper?: boolean | null; vehicle_type?: string | null }) {
+function busNeeds(trip: { trip_reqs?: Record<string, boolean> | null; vehicle_type?: string | null }) {
+  const reqs = trip.trip_reqs ?? {}
   return [
-    trip.vehicle_type, trip.req_56pax && '56 seats', trip.req_ada && 'lift', trip.req_sleeper && 'sleeper',
+    trip.vehicle_type, reqs.pax56 && '56 seats', reqs.adaLift && 'lift', reqs.sleeper && 'sleeper',
   ].filter(Boolean) as string[]
 }
 
@@ -411,7 +411,7 @@ Deno.serve(
               supabase.from('drivers').select('id, name, short_name, phone, priority')
                 .eq('status', 'active').order('sort_order').then(orThrow),
               // A trip with a leg that ends, or with no end starts, on or after the day before, by `ends`.
-              supabase.from('trips').select(`id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, departure_time, return_time, vehicle_type, req_56pax, req_ada, req_sleeper, ${TRIP_LEGS}, trip_stops(leg, route_id, position, type, depart_prev, arrive, spot), ends:trip_legs!inner()`)
+              supabase.from('trips').select(`id, trip_ref, customer, destination, trip_type, confirmed, trip_bar_color, quote_sent_price, quote_sent_on, start_date, end_date, departure_time, return_time, vehicle_type, trip_reqs, ${TRIP_LEGS}, trip_stops(leg, route_id, position, type, depart_prev, arrive, spot), ends:trip_legs!inner()`)
                 .is('cancelled_at', null).lte('start_date', until)
                 .or(`end_date.gte.${since},start_date.gte.${since}`, { referencedTable: 'ends' }).then(orThrow),
               supabase.from('bus_out_of_service').select('bus_id, start_date, end_date, reason').then(orThrow),

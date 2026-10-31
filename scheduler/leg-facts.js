@@ -75,15 +75,10 @@
   // The ids a needs object holds true, sorted, so two can be compared.
   const needIds = o => (o && typeof o === 'object' ? Object.keys(o).filter(k => o[k] === true).sort() : []);
 
-  /* The ids a trip carries, from `trip_reqs` where it is set and the older
-     columns where it is not -- the pair print.js reads too. */
+  // The ids a trip's `trip_reqs` holds true, as print.js reads them too.
   function requirementsOf(trip) {
     const reqs = trip.trip_reqs;
-    const on = reqs && typeof reqs === 'object' && Object.keys(reqs).length
-      ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k)
-      : [['pax56', trip.req_56pax], ['sleeper', trip.req_sleeper], ['adaLift', trip.req_ada],
-         ['hotel', trip.need_hotel], ['fuelCard', trip.need_fuel_card]]
-        .filter(([, v]) => v).map(([k]) => k);
+    const on = reqs && typeof reqs === 'object' ? Object.entries(reqs).filter(([, v]) => v).map(([k]) => k) : [];
     /* In the office's own order, the same one the editor lays its tags out in,
        so a need sits in the same place on the bar as in the panel. Anything
        the trip carries that is not on the list -- a need since deactivated --
@@ -174,8 +169,6 @@
     ...(r.legId ? [[statusKey(r.tripId, r.driverId, r.legId, r.role), r]] : []),
     [statusKey(r.tripId, r.driverId, r.leg, r.role), r]]));
 
-  // The tone names an older row holds in place of a status.
-  const LEGACY_STATUS = { default: 'off', danger: 'pending-assignment', warning: 'pending-response', success: 'confirmed' };
 
   /* The roles an assignment turns on, each with the status saved
      after it as `role:state`, which a trip with no status row still shows. An
@@ -188,7 +181,7 @@
       : (assign.trip_drivers || []).map(d => d.role || 'driver');
     for (const entry of saved) {
       const [role, state] = entry.split(':');
-      on.set(role, LEGACY_STATUS[state] ?? state ?? 'off');
+      on.set(role, state ?? 'off');
     }
     return on;
   }

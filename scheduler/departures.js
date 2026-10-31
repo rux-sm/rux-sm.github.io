@@ -125,7 +125,7 @@
     }
 
     // The office books the room only where the trip says so, by its tag or the older column.
-    const hotel = trip.trip_reqs && 'hotel' in trip.trip_reqs ? trip.trip_reqs.hotel === true : !!trip.need_hotel;
+    const hotel = trip.trip_reqs?.hotel === true;
     if (hotel) {
       const marks = Week.legByKey(trip, leg);
       lines.push(marks?.hotelBooked
@@ -152,7 +152,7 @@
       }
     }
     // A trip with a fuel card asks one of every bus, by its number; it is typed on the first driver's envelope.
-    const wantsCard = trip.trip_reqs && 'fuelCard' in trip.trip_reqs ? trip.trip_reqs.fuelCard === true : !!trip.need_fuel_card;
+    const wantsCard = trip.trip_reqs?.fuelCard === true;
     if (wantsCard) {
       const number = String(assign.fuel_card_number ?? '').trim();
       needs.push({ id: 'fuelCard', label: number ? `Fuel card ${number}` : 'Fuel card', met: !!number, action: 'forms:envelope' });
@@ -246,7 +246,7 @@
     'quoted_price', 'contract_status', 'po_received', 'po_amount', 'deposit_amount', 'date_paid', 'balance_paid',
     'trip_payments(amount,date)', 'trip_pos(amount)', 'trip_updates(created_at,kind)',
     'itinerary_not_needed', 'contact_not_needed',
-    'trip_reqs', 'req_sleeper', 'req_ada', 'req_56pax', 'need_hotel', 'need_fuel_card', 'vehicle_type',
+    'trip_reqs', 'vehicle_type',
     'booking_contact_name', 'contacts:booking_contact_id(id,name,phone,email)',
     // The legs, their routes and the day-of contacts, as trip-shape.js reads them.
     ToDo.TRIP_LEGS, 'trip_contacts(id,position,leg_id,contact_id,name,phone)',

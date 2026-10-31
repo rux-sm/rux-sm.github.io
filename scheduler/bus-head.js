@@ -6,8 +6,8 @@
    toggletip's alone, its line led by the lamp. Under them the head draws
    what belongs to the bus rather than a trip:
    - For a bus Samsara answers for, in whatever week is shown, its
-     state in a 38px display under the number, so the fuel under it stands
-     at one height down the column. While the engine runs the display is
+     state in a display under the number, on the rows app.css gives it, so
+     the fuel under it stands at one height down the column. While the engine runs the display is
      filled: moving, the speed over mph on green, amber over SPEEDING;
      idling, Idle over how long on grey, amber past IDLE_MS. With the
      engine off it is the word alone, Off, with no fill or edge, and with no
@@ -198,7 +198,8 @@
       const insp = inspection(bus);
       if (insp) {
         const line = el('span', `scheduler-row-head__line scheduler-row-head__insp${insp.soon ? ' scheduler-row-head__insp--soon' : ''}`);
-        line.append(el('span', null, 'Insp'), el('span', null, insp.short));
+        // The word goes where the inspection has one row, and the date stays.
+        line.append(el('span', 'scheduler-row-head__insp-word', 'Insp'), el('span', null, insp.short));
         line.setAttribute('aria-label', insp.words);
         body.appendChild(line);
       }

@@ -239,20 +239,52 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  padding-block: var(--rux-spacing-03);
+  /* The bar's own top: its gap above the lane and its padding. */
+  padding-block: calc(var(--scheduler-gap-clear) + var(--rux-spacing-02)) 0;
   padding-inline: var(--rux-spacing-02);
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  /* The number and the type along the top, the dial and the levels under
-     them, or in another week a line or two at the foot. Sized by its row and
-     never the other way, so a row the view makes shorter keeps its height
-     and clips the foot. */
+  /* One row for each of the bar's, so each line of the head stands level
+     with one of the bar's and a row the view turns off takes one from both.
+     Sized by its row and never the other way. */
   contain: size;
-  display: flex;
-  flex-direction: column;
-  gap: var(--rux-spacing-02);
+  display: grid;
+  grid-template-rows: repeat(var(--scheduler-bar-rows), var(--scheduler-row-h));
+  align-content: start;
   text-align: start;
 }
+/* WHAT THE HEAD SHOWS IN HOW MANY ROWS, `data-bar-rows` on the board, which
+   data.js sets with the bar's: six, the number two rows tall, the state two,
+   the fuel and the equipment; five, the number one row; four, the state one
+   row; three, no equipment; two, no fuel; one, the number and its dot. A bus
+   with no tracker has its inspection in the state's place. A low DEF is a
+   tag across a two-row state's foot. */
+/* One column, so a part placed on a row stands in it even over another, as
+   the DEF tag stands over the state's foot. */
+.scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
+.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
+.scheduler-row-head__top { grid-row: 1 / span 2; }
+.scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 3 / span 2; }
+.scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
+.scheduler-row-head__equip { grid-row: 6; }
+.scheduler-week:not([data-bar-rows="6"]) .scheduler-row-head__top { grid-row: 1; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__equip { grid-row: 5; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__level[data-tank="D"] { grid-row: 3; }
+.scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
+.scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
+.scheduler-week[data-bar-rows="4"] .scheduler-row-head__equip { grid-row: 4; }
+.scheduler-week[data-bar-rows="3"] .scheduler-row-head__equip,
+.scheduler-week[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__level, .scheduler-row-head__equip),
+.scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip),
+.scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__level[data-tank="D"] { display: none; }
+/* The state on one row: its reading beside its unit, and the inspection its date alone. */
+.scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: 3px; padding-block-end: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-row-h); }
+.scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__insp-word { display: none; }
+/* On one row the number and its dot, as the compact board's, and "No bus" on one line. */
+.scheduler-week[data-bar-rows="1"] .scheduler-row-head__dot { display: block; }
+.scheduler-week[data-bar-rows="1"] .scheduler-row--unassigned .scheduler-row-head__num { white-space: nowrap; }
 /* Below the last row the board's own sheet carries that rule on to its foot,
    on the head's own pixel, drawn in the pane's background so it stays put as
    the board scrolls and the heads cover it where there are rows. */
@@ -344,8 +376,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bus-tip__lamp--warning > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
 .scheduler-bus-tip__lamp--error > svg { color: var(--rux-support-error-inverse); --rux-icon-inner: var(--rux-text-on-color); }
 .scheduler-row-head__num {
-  font-size: 18px;
-  line-height: 20px;
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--scheduler-row-h);
   letter-spacing: 0;
   font-weight: 700;
   color: var(--rux-text-primary);
@@ -368,13 +400,13 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__dot[data-tone="warning"] { background: var(--scheduler-head-low); }
 .scheduler-row-head__dot[data-tone="error"] { background: var(--scheduler-head-critical); }
 /* For a bus Samsara answers for, the dial and the fuel in every week; for
-   any other, the inspection at the foot. */
-/* The body clips, not the head, whose number's tip must reach past it.
+   any other, the inspection in the dial's place. */
+/* The body and its gauges add no box, so their parts stand on the head's
+   rows.
    Its display and fuel stand above the number's click layer, so presses
    go through them to it: the whole head is one button, and the tip says
    what each part does. */
-.scheduler-row-head__body { display: flex; flex-direction: column; flex: 1 1 auto; min-block-size: 0; overflow: hidden; pointer-events: none; }
-.scheduler-row-head__body:not(.scheduler-row-head__body--live) { justify-content: flex-end; }
+.scheduler-row-head__body { display: contents; pointer-events: none; }
 .scheduler-row-head__line {
   min-inline-size: 0;
   overflow: hidden;
@@ -385,15 +417,14 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
-.scheduler-row-head__insp { display: flex; flex-direction: column; font-variant-numeric: tabular-nums; }
+.scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
-.scheduler-row-head__gauges { display: flex; flex-direction: column; gap: 5px; }
-/* The bus's equipment at the head's foot, under the body or, where a week
-   draws none, in its place, two even slots, the sleeper's and the lift's,
+.scheduler-row-head__gauges { display: contents; }
+/* The bus's equipment on its own row, two even slots, the sleeper's and the lift's,
    each icon centred in its half. Presses go through to the number, whose
    tip and title name them. */
 .scheduler-row-head__equip {
-  margin-block-start: auto;
+  align-self: center;
   display: grid;
   grid-template-columns: 1fr 1fr;
   /* A rule between the two slots, drawn only where the bus has equipment. */
@@ -404,7 +435,7 @@ button.scheduler-row-head__num::after {
   color: var(--rux-text-secondary);
 }
 .scheduler-row-head__equip svg { display: block; }
-/* The state's display, 38px tall and the head's width, so the fuel under
+/* The state's display, on its rows and the head's width, so the fuel under
    it stands at one height down the column. While the engine runs it is
    filled in the state's tone and its words are written in it: moving
    green, idling blue, amber when speeding or idling too long. With the
@@ -420,7 +451,7 @@ button.scheduler-row-head__num::after {
   --scheduler-head-idle-ink: var(--scheduler-head-idle);
   --scheduler-head-quiet-ink: var(--rux-text-secondary);
 }
-.scheduler-row-head__dial { position: relative; display: flex; block-size: 38px; color: var(--scheduler-head-quiet-ink); }
+.scheduler-row-head__dial { position: relative; display: flex; min-block-size: 0; color: var(--scheduler-head-quiet-ink); }
 .scheduler-row-head__dial--running { background: var(--scheduler-head-idle-fill); color: var(--scheduler-head-idle-ink); }
 .scheduler-row-head__dial--running.scheduler-row-head__dial--moving { background: var(--scheduler-head-moving-fill); color: var(--scheduler-head-moving); }
 .scheduler-row-head__dial--running.scheduler-row-head__dial--warning { background: var(--scheduler-head-low-fill); color: var(--scheduler-head-low); }
@@ -437,7 +468,6 @@ button.scheduler-row-head__num::after {
   line-height: 16px;
   font-variant-numeric: tabular-nums;
 }
-.scheduler-row-head__speed:not(.scheduler-row-head__speed--word) { font-size: 20px; line-height: 20px; }
 .scheduler-row-head__under { font-size: 10px; font-weight: 400; line-height: 11px; }
 .scheduler-row-head__dial:not(.scheduler-row-head__dial--running) .scheduler-row-head__under { color: var(--scheduler-head-quiet-ink); }
 /* Fuel: a pump and its figure, over a square 4px bar filled to the tank's
@@ -446,7 +476,8 @@ button.scheduler-row-head__num::after {
   --scheduler-tank-ink: var(--rux-icon-secondary);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-self: center;
+  gap: 2px;
   font-size: 11px;
   line-height: 12px;
 }
@@ -478,13 +509,12 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__level[data-tank="F"] .scheduler-row-head__reading { gap: 2px; }
 /* A low DEF is a tag across the display's foot, on the head's own surface,
    and takes no height of its own. */
-.scheduler-row-head__gauges { position: relative; }
 .scheduler-row-head__gauges:has(> [data-tank="D"]) .scheduler-row-head__speed { padding-block-end: 9px; }
 .scheduler-row-head__level[data-tank="D"] {
-  position: absolute;
-  inset-block-start: 31px;
-  inset-inline-start: 50%;
-  translate: -50% 0;
+  grid-row: 4;
+  align-self: end;
+  justify-self: center;
+  translate: 0 3px;
   padding-inline: 2px;
   background: var(--rux-layer);
   font-size: 9px;
@@ -493,7 +523,7 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-row-head__level[data-tank="D"] .scheduler-row-head__reading { gap: 2px; }
 .scheduler-row-head__tank {
-  block-size: 4px;
+  block-size: 3px;
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
 }
 /* With no signal the display's reading and a normal fuel fade to their last reading. */

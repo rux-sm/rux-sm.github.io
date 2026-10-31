@@ -873,28 +873,23 @@
      900 when low and its red 900 when critical. */
   --scheduler-fuel-half: oklch(81.87% 0.1969 76.46);
 }
-/* Rux 100's state display is a 40px square, Carbon's md control height,
-   the size of the board's buttons, with 8px either side of it: the column
-   is 57px, the display, 8px each side and the head's 1px rule. The head's
-   padding is 4px at the sides, and the fuel takes 4px more to stand in the
-   display's inset, 40px for its percent and bar, and
-   8px at the top and foot, with 4px between the number, the display, the
-   fuel and the equipment, which fills the 123px row to the pixel; the fuel's
-   percent sits 2px over its bar for it. A low DEF's tag moves down with the
-   display's foot. */
+/* Rux 100's state display is 40px wide, Carbon's md control height, the
+   size of the board's buttons, with 8px either side of it: the column is
+   57px, the display, 8px each side and the head's 1px rule. Its height is
+   the rows it stands on. The head's padding is 4px at the sides, and the
+   fuel takes 4px more to stand in the display's inset, 40px for its percent
+   and bar. */
 [data-theme="rux-100"] .scheduler-corner { min-inline-size: calc(var(--rux-layout-size-height-md, 2.5rem) + 2 * var(--rux-spacing-03) + 1px); }
-[data-theme="rux-100"] .scheduler-row-head { padding-block: var(--rux-spacing-03); }
-[data-theme="rux-100"] .scheduler-row-head__level { gap: 2px; }
 /* The fuel stands in the display's own 8px inset, so its percent and bar line
    up with the display's edges. */
 [data-theme="rux-100"] .scheduler-row-head__level[data-tank="F"] { margin-inline: var(--rux-spacing-02); }
 [data-theme="rux-100"] .scheduler-row-head__dial {
-  align-self: center;
+  justify-self: center;
   inline-size: var(--rux-layout-size-height-md, 2.5rem);
-  block-size: var(--rux-layout-size-height-md, 2.5rem);
 }
-[data-theme="rux-100"] .scheduler-row-head__gauges { gap: var(--rux-spacing-02); }
-[data-theme="rux-100"] .scheduler-row-head__level[data-tank="D"] { inset-block-start: calc(var(--rux-layout-size-height-md, 2.5rem) - 7px); }
+/* On one row the state's reading and its unit stand side by side, which
+   takes the head's whole width. */
+[data-theme="rux-100"] .scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__dial { inline-size: auto; justify-self: stretch; }
 /* A Rux 100 bus head whose tip is open is back at the board's own sheet,
    pointer or not: the open tip is the mark, as an open menu marks Geist's
    trigger without a fill. */

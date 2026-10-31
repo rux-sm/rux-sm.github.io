@@ -1192,7 +1192,7 @@
       if (kit.childElementCount) top.appendChild(kit);
       if (r.bus) BusHead.draw(head, r.bus, null);
 
-      /* The bus's equipment at the head's foot, a slot each, the sleeper on
+      /* The bus's equipment on its row of the head, a slot each, the sleeper on
          the left and the lift on the right, so a lift stands in the same
          place down the column whether or not its bus has a sleeper. */
       if (r.bus?.sleeper || r.bus?.ada_lift) {
@@ -11790,8 +11790,11 @@
     document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
     if (daysShown() === 14) document.documentElement.dataset.schedulerDays = '14';
     else delete document.documentElement.dataset.schedulerDays;
-    // One for the destination, which never goes, plus whatever is left on.
-    schEl.style.setProperty('--scheduler-bar-rows', String(1 + VIEW_ROWS.filter(r => view[r]).length));
+    // One for the destination, which never goes, plus whatever is left on;
+    // the bus heads lay out their parts by the count, from app.css.
+    const barRows = String(1 + VIEW_ROWS.filter(r => view[r]).length);
+    schEl.style.setProperty('--scheduler-bar-rows', barRows);
+    schEl.dataset.barRows = barRows;
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.
     placeBarOpen();

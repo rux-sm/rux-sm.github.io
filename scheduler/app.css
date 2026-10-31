@@ -3685,16 +3685,18 @@ button.scheduler-row-head__num::after {
    strength, so a driver reads as one row as a bus does beside it. */
 .scheduler-avail__cell { border-inline-start: 1px solid var(--scheduler-day-rule); }
 /* A DRIVER FREE FOR THE WHOLE SELECTED TRIP has an open slot across its
-   days: a booking's box, dashed, in the success tint with the success edge,
-   so it reads as room to put them. One free on only some days has nothing
-   drawn, since they cannot take the trip. A booked or day-off cell keeps its
-   own mark instead. */
+   days: a booking's box in the success tint with the success edge, and one
+   check at the middle of the slot in the success ink, so it reads as room
+   to put them. One free on only some days has nothing drawn, since they
+   cannot take the trip. A booked or day-off cell keeps its own mark
+   instead. */
 .scheduler-avail__cell--on-day { position: relative; }
+.scheduler-avail__cell--whole { overflow: visible; }
 .scheduler-avail__cell--whole::after {
   content: '';
   position: absolute;
   inset: 2px;
-  border: 1px dashed var(--scheduler-free-edge, var(--rux-support-success));
+  border: 1px solid var(--scheduler-free-edge, var(--rux-support-success));
   border-radius: var(--scheduler-mark-radius, 0);
   background: var(--scheduler-free-fill, color-mix(in oklab, var(--rux-support-success) 12%, transparent));
 }
@@ -3711,6 +3713,17 @@ button.scheduler-row-head__num::after {
   border-inline-start-width: 0;
   border-start-start-radius: 0;
   border-end-start-radius: 0;
+}
+/* The check stands in the first day and is moved to the slot's middle by
+   the count of its days, over the days after it. */
+.scheduler-avail__free {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--scheduler-free-days, 1) * 50%);
+  translate: -50% -50%;
+  fill: var(--scheduler-free-ink, var(--rux-support-success));
+  pointer-events: none;
 }
 .scheduler-avail__cell--busy,
 .scheduler-avail__cell--off {

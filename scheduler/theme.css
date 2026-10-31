@@ -1606,11 +1606,12 @@
   --scheduler-border: oklch(35.93% 0.1504 309.78);
   --scheduler-strong: oklch(96.1% 0.0304 316.46);
 }
-/* Rux 100's open slot in the roster is Geist's green pair, 100 for the fill
-   and 900 for the dashed edge, as its green trip is drawn. */
+/* Rux 100's open slot in the roster is drawn as its green trip is: Geist's
+   green 100 for the fill, 400 for the edge and 900 for the check. */
 [data-theme="rux-100"] {
   --scheduler-free-fill: oklch(23.09% 0.0716 149.68);
-  --scheduler-free-edge: oklch(73.1% 0.2158 148.29);
+  --scheduler-free-edge: oklch(34.39% 0.1039 147.78);
+  --scheduler-free-ink: oklch(73.1% 0.2158 148.29);
 }
 [data-theme="rux-100"] .scheduler-bar--green {
   --scheduler-bg: oklch(23.09% 0.0716 149.68);

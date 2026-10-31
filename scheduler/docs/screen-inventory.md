@@ -215,9 +215,10 @@ The grid is a table edge to edge in the pane, its day band right under the
 pane's head and level with the board's, with the drivers in priority order:
 a rule parts one priority from the next, and a name's title says its
 priority. With a trip selected, its days are shaded in the header, and each
-driver free on every one of them has an open slot across them, a dashed
-box in the success tint with a success edge, Geist's green 100 and 900 in
-Rux 100; a driver free on only some has nothing drawn.
+driver free on every one of them has an open slot across them, a box in
+the success tint with a success edge and one check at its middle, Geist's
+green 100, 400 and 900 in Rux 100; a driver free on only some has nothing
+drawn.
 
 A driver's name is a toggle: pressed, it puts down the selected trip and its
 card, every bar but that driver's dims on the board, and their name is set in

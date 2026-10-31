@@ -10993,9 +10993,9 @@
 
   /* Marks the selected trip's days down the roster, so "who is free then"
      needs no counting; null clears it. A driver free on every day shown,
-     whole, has an open slot drawn across those days; one free on only some
-     has nothing drawn, since they cannot take the trip, and the cell's title
-     says so. */
+     whole, has an open slot drawn across those days, one check at its middle
+     carried by its first day; one free on only some has nothing drawn, since
+     they cannot take the trip, and the cell's title says so. */
   const OPEN = ['scheduler-avail__cell--on-day', 'scheduler-avail__day--on-day', 'scheduler-avail__cell--open',
     'scheduler-avail__cell--whole'];
   function markAvailDays(start, span) {
@@ -11003,6 +11003,7 @@
       if (c.classList.contains('scheduler-avail__cell--open')) c.removeAttribute('title');
       c.classList.remove(...OPEN);
     }
+    for (const icon of availGrid.querySelectorAll('.scheduler-avail__free')) icon.remove();
     if (start == null) return;
     // A day the roster is not showing matches no cell, so the days of a trip
     // that runs on into the other week are simply not there to light.
@@ -11024,6 +11025,12 @@
         c.classList.add('scheduler-avail__cell--open');
         if (all) c.classList.add('scheduler-avail__cell--whole');
         c.title = all ? 'Free for the whole trip' : 'Free for part of the trip';
+      }
+      if (all) {
+        const icon = svgUse('#m-check', '16', '0 0 32 32');
+        icon.classList.add('scheduler-avail__free');
+        icon.style.setProperty('--scheduler-free-days', open.length);
+        open[0].appendChild(icon);
       }
     }
   }

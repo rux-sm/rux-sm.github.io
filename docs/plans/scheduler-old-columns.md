@@ -35,35 +35,26 @@ the office or the connector uses lost on the way.
   selects; the `itinerary_printed_*` and `hos_form_printed_*` columns on
   `trips`, which `print.js`'s trip read for the print hub selects; and
   `platform.profiles.scheduler_shortcuts`.
-- **`trip_driver_confirmations` is written only by the database,** by
-  `confirm_trip_assignment` and `decline_trip_assignment` beside
-  `trip_driver_statuses`, and nothing on the site reads it, so stopping it
-  is a change to those two functions, not to a page.
+- **The archived `rux-ui` site's forwards go,** on rux's choice, so an old
+  link in a driver's texts finds nothing.
 - **The connector and its generated `rules.ts` change before any column
   goes.**
 
 ## Questions
 
-- The archived `rux-ui` repository still serves forwards for old driver,
-  maintenance and document links. Keep them for links still sitting in
-  drivers' texts, or take them down?
-- Does anything you use outside this site still read
-  `trip_driver_confirmations`? If not, it stops being written and goes.
+None open.
 
 ## Tasks
 
 - [ ] Switch every reader of the old needs columns to `trip_reqs` and stop
       writing them, stop selecting the unread columns in `print.js` and the
       connector, and remove `LEGACY_STATUS`.
-- [ ] If nothing reads `trip_driver_confirmations`, write the SQL that stops
-      `confirm_trip_assignment` and `decline_trip_assignment` writing it,
-      show it to rux, and apply it on his yes.
 - [ ] In a later session, once the office's tabs have been reloaded, write
       the SQL that imports the two trips' unrecorded notes as updates, fills
       `trip_reqs` where it is empty, rewrites yellow and cyan, and drops the
-      needs columns, the unread columns and, if it goes,
-      `trip_driver_confirmations`; show it to rux, and apply it on his yes;
+      needs columns and the unread columns; show it to rux, and apply it on
+      his yes;
       then remove `RETIRED_COLORS` and its history labels and the old colour
       names from `get_trip`'s words, and update the scheduler's database
       inventory in the same commit.
-- [ ] Take down the archived `rux-ui` repository's forwards, if they go.
+- [ ] Take down the archived `rux-ui` repository's forwards.

@@ -21,6 +21,9 @@ import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(import.meta.url), '..', '..');
+// Every check runs on the office's clock, so a day a page counts from is the
+// day its samples are dated in, wherever the check runs; CI's clock is UTC.
+process.env.TZ = 'America/Chicago';
 const DS = join(ROOT, 'design');
 const APP_CHECK = join(DS, 'tools', 'check-app.mjs');
 const FULL = process.argv.includes('--full');

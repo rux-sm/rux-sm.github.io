@@ -467,10 +467,11 @@ const marks = h => h.querySelectorAll('.scheduler-row-head__mark').map(m => m.cl
 const line = h => text(h, '.scheduler-row-head__line');
 const dial = h => [text(h, '.scheduler-row-head__speed'), h.querySelector('.scheduler-row-head__dial').classes().find(c => /__dial--/.test(c)).split('--')[1], has(h, '.scheduler-row-head__dial--running')];
 const ago = min => new Date(Date.now() - min * 60e3).toISOString();
-// The office's day `n` days on, as the head counts an inspection's days from it; a UTC day is a day ahead each evening.
-const officeDayIn = n => {
-  const [y, m, d] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()).split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+// The day `n` days on, as the head counts an inspection's days from the day it is.
+const dayIn = n => {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 expect('moving: the speed over mph in a filled green display, the fuel\'s figure with no sign, alone while DEF is normal, no line under them, no marks',
   (() => { const h = busHead({ engine: 'on', mph: 64, fuel: 72, def: 60, place: '625 Gregsons Bend, San Marcos, TX, 78666' }); return [dial(h), levels(h), text(h, '.scheduler-row-head__pct'), line(h), marks(h)]; })(),
@@ -499,11 +500,11 @@ expect('a bus with its engine running fills the display, moving or idling; one o
   [true, true, false, false]);
 expect('no answer for the bus: the inspection alone, amber within 45 days, and no seats',
   [line(busHead(null)),
-    has(busHead(null, { capacity: 56, inspection_exp: officeDayIn(20) }), '.scheduler-row-head__insp--soon'),
-    has(busHead(null, { capacity: 56, inspection_exp: officeDayIn(90) }), '.scheduler-row-head__insp--soon')],
+    has(busHead(null, { capacity: 56, inspection_exp: dayIn(20) }), '.scheduler-row-head__insp--soon'),
+    has(busHead(null, { capacity: 56, inspection_exp: dayIn(90) }), '.scheduler-row-head__insp--soon')],
   [null, true, false]);
 expect('a live bus keeps its inspection on the tip, before the lamp\'s line',
-  BusHead.tipOf({ inspection_exp: officeDayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
+  BusHead.tipOf({ inspection_exp: dayIn(20) }, { engine: 'off', mph: 0, fault: 'check', faults: [] }),
   ['Engine off', 'Inspection expires in 20 days', 'Engine warning lamp on']);
 expect('the compact board\'s one dot takes the worst tone',
   [{ engine: 'on', mph: 64, fuel: 72 }, { engine: 'on', mph: 64, fuel: 20 }, { engine: 'on', mph: 64, fuel: 5 }, { engine: null, fuel: 50 }]

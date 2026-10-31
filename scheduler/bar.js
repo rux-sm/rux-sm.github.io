@@ -727,6 +727,8 @@
     // The two times the time row draws, for the live card's tooltip and its way back to the yard.
     if (dep) bar.dataset.depart = dep;
     if (back) bar.dataset.back = back;
+    // A leg whose route is done, whose live times row says when the bus gets to its next stop.
+    if (trip.route_done_at) bar.dataset.routeDone = '';
 
     // The crew in role order, or what the bar needs before it can have one.
     const crew = assign ? crewOf(trip, assign, driversById, statuses).filter(c => !(placeholder && c.needed)) : [];

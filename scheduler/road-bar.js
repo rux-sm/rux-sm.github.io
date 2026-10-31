@@ -396,7 +396,9 @@
 
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, with its next-day mark, at either end of a
-     track filled as far as the time between them has gone, carrying the stops' dots. A bus running late back
+     track filled as far as the time between them has gone, carrying the
+     stops' dots, and between them the next stop's arrival on a leg whose
+     route is done. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
@@ -413,6 +415,7 @@
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
     const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
     const parts = [];
+    const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
     if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
     if (bar.dataset.depart && bar.dataset.back) {
       const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
@@ -433,8 +436,15 @@
         track.append(dot);
       }
       parts.push(track);
+      /* The next stop and when the bus gets there, from where it is now and
+         the map's drive, on a leg whose route is done: none while it stands
+         at a stop, or when the late return at the row's end says it. */
+      if (bar.dataset.routeDone != null && next?.stop && !next.at && next.arrival != null && expected == null) {
+        const ahead = el('span', 'scheduler-road__next');
+        ahead.append(el('span', 'scheduler-road__next-name', next.stop.name), clock(hhmm(Road.clockOf(next.arrival), true)));
+        parts.push(ahead);
+      }
     }
-    const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
     const over = overBy(bar, Date.now());
     if (expected != null) {
       const when = clock(hhmm(Road.clockOf(expected), true), 'scheduler-road__when scheduler-road__when--late');

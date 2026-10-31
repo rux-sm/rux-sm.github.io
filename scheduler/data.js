@@ -18383,6 +18383,67 @@
   }, { passive: true });
   schEl?.addEventListener('scrollend', scrollStopped);
 
+  /* A TRACKPAD GESTURE SCROLLS ONE WAY. A Mac trackpad's stroke is seldom
+     straight: a scroll up or down carries a few pixels sideways, which the day
+     snap then pulls back, a wobble, and a swipe across carries a few pixels
+     down. The first events of a gesture say which way it means, once one axis
+     has moved twice the other, and the gesture keeps that axis: the board
+     scrolls itself by that part alone and drops the rest. A stroke near the
+     diagonal is left to the browser. Sideways, a scroll by script lands every
+     step on a day under the mandatory snap, so the snap is paused for the
+     gesture, and when the gesture ends, a pause of AXIS_GAP_MS, the board
+     glides to the nearest day and the snap comes back. The listener cannot be
+     passive, since it cancels the browser's own scroll, which is why the
+     board's style changes are kept cheap. */
+  const AXIS_GAP_MS = 120;
+  let axis = null, axisAt = 0, axisX = 0, axisY = 0, axisTimer = 0, snapPaused = false;
+  // On the scroller's own style, not a class: a class on the week has the
+  // browser work out the style of everything under it, 60ms on a strip.
+  function pauseSnap(on) {
+    if (snapPaused === on) return;
+    snapPaused = on;
+    if (on) schEl.style.scrollSnapType = 'none';
+    else schEl.style.removeProperty('scroll-snap-type');
+  }
+  function endAxis() {
+    axis = null;
+    if (!snapPaused) return;
+    const w = dayWidth();
+    const at = w && scrolling() ? Math.round(schEl.scrollLeft / w) * w : schEl.scrollLeft;
+    if (!w || Math.abs(schEl.scrollLeft - at) < 1) { pauseSnap(false); return; }
+    // The snap returns once the glide has landed, so it does not jump the board there itself.
+    const landed = () => { schEl.removeEventListener('scrollend', landed); clearTimeout(fallback); pauseSnap(false); };
+    const fallback = setTimeout(landed, 700);
+    schEl.addEventListener('scrollend', landed);
+    schEl.scrollTo({ left: at, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+  }
+  schEl?.addEventListener('wheel', e => {
+    // A pinch zoom, or a mouse wheel that steps by lines or pages, is the browser's.
+    if (e.ctrlKey || e.deltaMode !== 0) return;
+    const now = performance.now();
+    if (now - axisAt > AXIS_GAP_MS) { axis = null; axisX = axisY = 0; }
+    axisAt = now;
+    clearTimeout(axisTimer);
+    axisTimer = setTimeout(endAxis, AXIS_GAP_MS);
+    if (!axis) {
+      axisX += Math.abs(e.deltaX);
+      axisY += Math.abs(e.deltaY);
+      if (axisX > 2 && axisX >= 2 * axisY) axis = 'x';
+      else if (axisY > 2 && axisY >= 2 * axisX) axis = 'y';
+      else return;
+    }
+    if (axis === 'y') {
+      // A straight stroke is left to the browser; only a stray sideways part is dropped.
+      if (!e.deltaX) return;
+      e.preventDefault();
+      schEl.scrollBy({ top: e.deltaY, behavior: 'instant' });
+      return;
+    }
+    e.preventDefault();
+    pauseSnap(true);
+    schEl.scrollBy({ left: e.deltaX, behavior: 'instant' });
+  }, { passive: false });
+
   // Scrolls the strip to a day, as many days from its first, smoothly unless motion is reduced.
   function scrollStripTo(at) {
     aim = at;

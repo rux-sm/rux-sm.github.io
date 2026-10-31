@@ -1553,8 +1553,12 @@
     // A live read since the strip was drawn changed nothing in it, but the standing rules read the payload in hand.
     if (data !== stripData) { boardNearby = { trips: data.trips, off: data.timeOff, oos: data.oos }; standingOf.clear(); }
     const left = schEl.scrollLeft;
-    // The days on screen and the day either side, in the new strip's days: the bars there move at once.
+    /* The days on screen and the day either side, in the new strip's days.
+       A bar there moves at once, and so does one whose old place lands there:
+       the scroll moves by the days taken off, so until its place is written
+       a bar stands a step's worth of days from where it was. */
     const nearFrom = (left - shift * w) / w - 1, nearTo = (left - shift * w + schEl.clientWidth) / w + 1;
+    const near = (start, span) => (start <= nearTo && start + span >= nearFrom) || (start + shift <= nearTo && start + shift + span >= nearFrom);
     const today = iso(new Date());
     // A bar is the same bar by its trip, its leg and its assignment row or empty slot.
     const keyOf = (tripId, legKey, assignmentId, slot) => `${tripId}|${legKey}|${assignmentId ?? ''}|${slot}`;
@@ -1580,7 +1584,7 @@
         if (bar && unchanged(bar, b)) {
           b.lane = Number(bar.style.getPropertyValue('--scheduler-lane')) || 0;
           bar.dataset.start = b.place.start;
-          if (b.place.start <= nearTo && b.place.start + b.place.span >= nearFrom) {
+          if (near(b.place.start, b.place.span)) {
             owedBars.delete(bar);
             bar.style.setProperty('--scheduler-start', b.place.start);
           } else owedBars.add(bar);
@@ -1620,7 +1624,7 @@
       for (const card of oldYards) {
         const at = Number(card.dataset.start) - shift;
         card.dataset.start = at;
-        if (at <= nearTo && at >= nearFrom) { owedBars.delete(card); card.style.setProperty('--scheduler-start', at); } else owedBars.add(card);
+        if (near(at, 0)) { owedBars.delete(card); card.style.setProperty('--scheduler-start', at); } else owedBars.add(card);
       }
       const newYards = yards.map(yardEl);
       // Compared by what they say and where they stand, their start as the kept cards' will be.
@@ -1677,16 +1681,18 @@
   }
   // Whether a layout places the bar a key names.
   const laidHas = (laid, key, placedKey) => [...laid.tracks.values()].some(bars => bars.some(b => placedKey(b) === key));
-  /* A bar or yard card the strip has moved past. It stays where it stands,
-     off screen for days whichever way the strip goes, and stops being
-     anything a reader finds: on no day, of no trip, assignment or bus, not
-     focusable and not read aloud. Hiding it would cost its style; taking it
-     out of its row would cost the row's, 3ms, so `sweepRetired` removes them
-     when the browser is idle after the scroll. */
+  /* A bar or yard card the strip has moved past. It is put far off the
+     strip's left, where no scroll reaches, since a hand turning back within
+     the half second before the sweep would otherwise find it standing on
+     its old days, and stops being anything a reader finds: on no day, of no
+     trip, assignment or bus, not focusable. Hiding it would cost more than
+     moving it; taking it out of its row would cost the row's style, 3ms, so
+     `sweepRetired` removes them when the browser is idle after the scroll. */
   function retire(node) {
     owedBars.delete(node);
     node.dataset.gone = '';
     node.dataset.start = '-999';
+    node.style.setProperty('--scheduler-start', '-999');
     for (const name of ['data-trip-id', 'data-assignment-id', 'data-bus-id']) node.removeAttribute(name);
     // Only the selected bar's mark comes off: the attribute is in a rule, so touching it costs the bar's style.
     if (node.getAttribute('aria-current') === 'true') node.removeAttribute('aria-current');

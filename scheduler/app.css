@@ -254,10 +254,10 @@
   text-align: start;
 }
 /* WHAT THE HEAD SHOWS IN HOW MANY ROWS, `data-bar-rows` on the board, which
-   data.js sets with the bar's: the number level with the destination, the
-   state two rows, the fuel and the equipment, with six leaving its last row
-   free; four, the state one row; three, no equipment; two, no fuel; one, the
-   number and its dot. A bus with no tracker has its inspection in the
+   data.js sets with the bar's: the number level with the destination, then
+   on six the state a square across three rows, the fuel and the equipment
+   level with the bar's last two; five, the state two rows; four, the state
+   one row; three, no equipment; two, no fuel; one, the number and its dot. A bus with no tracker has its inspection in the
    state's place. A low DEF is a tag across a two-row state's foot. */
 /* One column, so a part placed on a row stands in it even over another, as
    the DEF tag stands over the state's foot. */
@@ -268,7 +268,14 @@
 .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
 .scheduler-row-head__equip { grid-row: 5; }
 /* A two-row state stands 2px clear of the number and 3px of the fuel. */
-.scheduler-week:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__dial { margin-block: 2px 3px; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__dial { margin-block: 2px 3px; }
+/* On six the state is 40px tall, Carbon's md control height, centred in its
+   three rows, and a low DEF's tag crosses its foot by 3px. */
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 3; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__dial { align-self: center; block-size: var(--rux-layout-size-height-md, 2.5rem); }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__equip { grid-row: 6; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] { grid-row: 4; margin-block-end: calc((3 * var(--scheduler-row-h) - var(--rux-layout-size-height-md, 2.5rem)) / 2 - 3px); }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
 .scheduler-week[data-bar-rows="4"] .scheduler-row-head__equip { grid-row: 4; }
@@ -506,6 +513,9 @@ button.scheduler-row-head__num::after {
   grid-row: 3;
   align-self: end;
   justify-self: center;
+  /* Over the display, which is positioned for its own layers. */
+  position: relative;
+  z-index: 1;
   padding-inline: 2px;
   background: var(--rux-layer);
   font-size: 9px;

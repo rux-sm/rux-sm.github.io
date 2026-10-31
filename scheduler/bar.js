@@ -90,8 +90,11 @@
   const tripDone = (leg, now = Date.now()) => doneOf(...legSpan(leg), now);
   /* A DOT ON THE TRACK FOR EACH STOP, once the route is done: the spot at the
      pickup first, then each stop's arrival, placed by its time between the
-     yard out and back. A stop with no time or no date has none, and the
-     return to the yard is the track's own end. Two closer than STOP_GAP
+     yard out and back. A time is on its saved date, or the stop before's
+     with none, and on the day after where that puts it before the stop
+     before, as the Route tab reads a time past midnight, since an older row
+     is dated a day early. A stop with no time has none, and the return to
+     the yard is the track's own end. Two closer than STOP_GAP
      pixels on the track are one dot naming both; the track is about a day
      column for each day less the two times beside it, TIMES_W. */
   const STOP_GAP = 9;
@@ -102,11 +105,15 @@
     const stops = window.SchedulerWeek.stopsOfKey(trip, leg.key);
     const pickup = stops.find(s => s.type === 'pickup') ?? stops[0];
     const times = [];
+    let before = out, day = leg.from;
     for (const s of stops.slice(Math.max(stops.indexOf(pickup), 0))) {
       if (s.type === 'return') continue;
-      const [t, day] = s === pickup ? [s.spot, s.spot_date] : [s.arrive, s.arrive_date];
-      if (!t || !day) continue;
-      const ms = clockAt(day, t);
+      const [t, date] = s === pickup ? [s.spot, s.spot_date] : [s.arrive, s.arrive_date];
+      if (!t) continue;
+      let ms = clockAt(date || day, t);
+      while (ms < before) ms += 864e5;
+      before = ms;
+      day = iso(new Date(ms));
       const at = (ms - out) / (back - out) * 100;
       if (at > 0 && at < 100) times.push({ at, ms, id: String(s.id), words: `${s === pickup ? 'Spot' : 'Arrive'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
     }

@@ -431,7 +431,7 @@ button.scheduler-row-head__num::after {
    three square cells parted by 1px of the sheet, its seats, its sleeper and
    its lift, each in one place down the column. The seats are a number in
    10px type, the icons Carbon's 16px; a cell the bus lacks is empty band.
-   At its row's start, which on six rows is 4px under the percent and the
+   At its row's start, which on six rows is 6px under the percent and the
    16px to the row rule's 8px; centred like the speedometer, since the column
    takes the days' spare pixels and can stand wider than 48 inside. Presses
    go through to the number, whose tip and title name them. */
@@ -554,10 +554,15 @@ button.scheduler-row-head__num::after {
    dial's colours; under it mph, or how long the bus has idled or been
    unseen; then the fuel, a round 4px bar filled to its share over F and the
    percent, grey until low or critical as the fuel bar is. On six rows the
-   number, the arc, the unit, the bar, the percent and the equipment stand
-   4px apart down the four rows' 72; on five its lines close up to the three
-   rows' 54. A low DEF's tag stands on the percent's line, since the bar
-   still shows the tank and the tip says its number. */
+   head's four facts stand in the four rows' 72 as four clusters: the
+   number, then the arc with its figure and unit 2px under it, then the bar
+   with its percent 4px under it, then the kit, 6px between the clusters
+   and 2px under the number, which the text's own leading evens out to
+   about 7px of air between each and less inside. On five its lines close
+   up to the three rows' 54. A low DEF's tag stands on the percent's line,
+   since the bar still shows the tank and the tip says its number. Every
+   empty thing on the head, the arc's track, the bar's and the kit's band,
+   is the one accent grey. */
 .scheduler-row-head__arc { display: none; }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__arc {
   display: flex;
@@ -571,14 +576,14 @@ button.scheduler-row-head__num::after {
   white-space: nowrap;
 }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { display: none; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 4; margin-block-start: 4px; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 4; margin-block-start: 2px; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 4; margin-block-end: 0; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 5; margin-block-end: 4px; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 5; margin-block-end: 6px; }
 .scheduler-row-head__arc-bow { display: grid; }
 .scheduler-row-head__arc-bow > * { grid-area: 1 / 1; }
 .scheduler-row-head__arc-svg { display: block; }
 .scheduler-row-head__arc-svg path { fill: none; stroke-width: 4; stroke-linecap: round; }
-.scheduler-row-head__arc-track { stroke: var(--rux-border-subtle-01); }
+.scheduler-row-head__arc-track { stroke: var(--rux-layer-accent-01); }
 .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--warning .scheduler-row-head__arc-speed { stroke: var(--scheduler-head-low); }
 .scheduler-row-head__arc-figure { align-self: end; justify-self: center; font-size: 15px; font-weight: 600; line-height: 16px; color: var(--scheduler-head-quiet-ink); }
@@ -586,14 +591,14 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc--running.scheduler-row-head__arc--moving .scheduler-row-head__arc-figure { color: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--warning .scheduler-row-head__arc-figure { color: var(--scheduler-head-low); }
 .scheduler-row-head__arc-figure--word { font-size: var(--rux-label-01-font-size); }
-.scheduler-row-head__arc-under { margin-block-start: 4px; font-size: 10px; line-height: 10px; color: var(--rux-text-secondary); }
+.scheduler-row-head__arc-under { margin-block-start: 2px; font-size: 10px; line-height: 10px; color: var(--rux-text-secondary); }
 .scheduler-row-head__arc-fuel {
   --scheduler-tank-ink: var(--rux-icon-secondary);
   align-self: stretch;
   block-size: 4px;
-  margin-block: 4px;
+  margin-block: 6px 4px;
   border-radius: 2px;
-  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
+  background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-layer-accent-01) 0);
 }
 .scheduler-row-head__arc[data-level="low"] .scheduler-row-head__arc-fuel { --scheduler-tank-ink: var(--scheduler-fuel-low); }
 .scheduler-row-head__arc[data-level="critical"] .scheduler-row-head__arc-fuel { --scheduler-tank-ink: var(--scheduler-fuel-critical); }

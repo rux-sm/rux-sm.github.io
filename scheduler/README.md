@@ -79,7 +79,7 @@ different phone or email, and a pickup or drop-off no location holds. Nothing
 is added to a list unless ticked, and the trip is saved either way.
 
 On the compact board a swipe slides one week of trip cells under fixed date and bus headers; a week not yet loaded shows a loading mark after 200 ms, slides in when it lands, and a failed load keeps the current week and offers a retry.
-From md up, the View menu's Scroll continuously makes the board a strip of five weeks that scrolls sideways and comes to rest on a day's edge, the week in view at its left, each row as tall as its trips stack in view, growing while a scroll runs and shrinking once it stops, with the board gliding up to its new foot; once a scroll stops within a week of either end, `drawBoard` in `data.js` draws the strip again around that week from what the last read holds.
+From md up, the View menu's Scroll continuously makes the board a strip of five weeks that scrolls sideways and comes to rest on a day's edge, the week in view at its left, each row as tall as its trips stack in view, growing while a scroll runs and shrinking once it stops, with the board gliding up to its new foot; a week from either end the strip moves along a week, `growStrip` in `data.js`, from what is held and read ahead, and is drawn whole only where that cannot be. `docs/review.md` is the board reviewed for what could lose an edit, show the wrong bar or cost a frame.
 
 The quote page, `quote.html`, is the quote calculator: the office spreadsheet's
 formulas in `quote.js`. Its rates, and the rules the formulas follow such as
@@ -143,6 +143,7 @@ A bus out on its trip opens its live card from its drivers' rows, and its moveme
 From the repository root, one level up:
 
     npm run check        # Design's shared check, the sprite, the print rule, the rules' sample trips, and every page's scripts parsed and loaded
+    node scheduler/tools/check-strip.mjs   # the strip grown each way against a whole draw, in headless Chrome on invented trips; twenty seconds
 
 Open it at http://localhost:8641/scheduler/, the always-on preview the root
 `README.md` describes; the pages link `/design/…` absolutely, so this folder is

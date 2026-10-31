@@ -46,8 +46,6 @@ None open.
 
 ## Tasks
 
-- [ ] Deploy the connector, whose code no longer selects the needs columns,
-      `driving_hours` or `on_duty_hours`.
 - [ ] In a later session, once the office's tabs have been reloaded, write
       the SQL that imports the two trips' unrecorded notes as updates, fills
       `trip_reqs` where it is empty, rewrites yellow and cyan, and drops the

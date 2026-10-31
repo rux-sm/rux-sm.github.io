@@ -179,8 +179,8 @@
     && (bus.engine === 'on' || bus.engine === 'idle' || (from + MARGIN <= now && now <= to - MARGIN));
 
   // An instant as the office's clock reads it, "17:40".
-  const clockOf = ms => new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
-    hour: '2-digit', minute: '2-digit' }).format(new Date(ms));
+  const OFFICE_CLOCK = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23', hour: '2-digit', minute: '2-digit' });
+  const clockOf = ms => OFFICE_CLOCK.format(new Date(ms));
 
   // How many minutes late to `stop` a bus that gets there at `arrival` is:
   // 0 on time, or for any stop but a pickup.

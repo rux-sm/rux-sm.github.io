@@ -131,9 +131,11 @@
      at its departure, or its first day's start with none; it is back at its
      yard return, on the day after `to` when that is past midnight, or with no
      return at the late-return hour after its last day. */
+  // Made once: a draw reads the office's clock about 1,600 times.
+  const OFFICE_WALL = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
+    year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
   const officeWall = ms => {
-    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
-      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms));
+    const parts = OFFICE_WALL.formatToParts(new Date(ms));
     const n = t => Number(parts.find(p => p.type === t)?.value);
     return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'));
   };

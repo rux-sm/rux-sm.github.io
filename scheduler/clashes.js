@@ -92,44 +92,69 @@
      work spreads. `range` is the leg's dates, with its `depart` and `back`
      times when it has them, and comes back with the answer. `skip` leaves out the editor's whole trip, whose
      buses it holds unsaved, or the one bus a bar is. */
-  function fitFor({ trips, off, oos }, range, skip) {
+  /* A trip's legs, and the leg each of its vehicles runs on, worked out once
+     for each list of what is around: a draw hands its one list to every
+     bar, and working them out again for each bar was most of a draw's clash
+     reading. */
+  const around = new WeakMap();
+  const memoOf = nearby => {
+    if (!around.has(nearby)) around.set(nearby, { legs: new WeakMap(), keys: new WeakMap(), all: null });
+    return around.get(nearby);
+  };
+  const legsIn = (memo, t) => {
+    if (!memo.legs.has(t)) memo.legs.set(t, legsOf(t));
+    return memo.legs.get(t);
+  };
+  const keyIn = (memo, t, a) => {
+    if (!memo.keys.has(a)) memo.keys.set(a, legKeyOfVehicle(t, a));
+    return memo.keys.get(a);
+  };
+
+  function fitFor(nearby, range, skip) {
+    const { trips, off, oos } = nearby;
+    const memo = memoOf(nearby);
     const buses = new Map(), drivers = new Map(), near = new Map(), worked = new Map(), tight = new Set();
     const add = (map, id, text) => { if (id == null) return; if (!map.has(id)) map.set(id, []); if (!map.get(id).includes(text)) map.get(id).push(text); };
     if (!range) return { buses, drivers, near, tight, worked, range };
     const before = iso(addDays(parseISO(range.from), -1));
+    const after = iso(addDays(parseISO(range.to), 1));
     const recent = { from: iso(addDays(parseISO(range.from), -RECENT_DAYS)), to: before };
-    for (const t of trips) {
+    /* Every leg around, in trip order, once for the list. A leg that ends
+       before the days lately or starts after the day after the range can be
+       neither a clash, back-to-back nor a day worked, so it is passed over
+       before anything is worked out for it. */
+    memo.all ??= trips.flatMap(t => legsIn(memo, t).map(l => ({ t, l })));
+    for (const { t, l } of memo.all) {
       if (skip.tripId != null && String(t.id) === String(skip.tripId)) continue;
-      for (const l of legsOf(t)) {
-        const beside = besideOf(range, l);
-        const clash = beside?.kind === 'clash';
-        const next = beside?.kind === 'near';
-        const days = [];
-        if (datesOverlap(recent, l)) {
-          for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
-        }
-        if (!clash && !next && !days.length) continue;
-        for (const a of t.trip_assignments || []) {
-          if (legKeyOfVehicle(t, a) !== l.key) continue;
-          if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
-          const text = `On trip ${t.destination || 'with no destination'}`;
-          const on = activeRolesOf(a);
-          const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
-          if (clash) {
-            add(buses, a.bus_id, text);
-            for (const d of crew) add(drivers, d.driver_id, text);
-          } else if (next) {
-            const rest = beside.rest;
-            const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
-            for (const d of crew) {
-              add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
-              if (rest == null || rest < REST_HOURS) tight.add(d.driver_id);
-            }
-          }
+      if ((l.to && l.to < recent.from) || l.from > after) continue;
+      const beside = besideOf(range, l);
+      const clash = beside?.kind === 'clash';
+      const next = beside?.kind === 'near';
+      const days = [];
+      if (datesOverlap(recent, l)) {
+        for (let d = parseISO(l.from > recent.from ? l.from : recent.from); iso(d) <= (l.to < recent.to ? l.to : recent.to); d = addDays(d, 1)) days.push(iso(d));
+      }
+      if (!clash && !next && !days.length) continue;
+      for (const a of t.trip_assignments || []) {
+        if (keyIn(memo, t, a) !== l.key) continue;
+        if (skip.assignmentId != null && String(a.id) === String(skip.assignmentId)) continue;
+        const text = `On trip ${t.destination || 'with no destination'}`;
+        const on = activeRolesOf(a);
+        const crew = (a.trip_drivers || []).filter(d => d.driver_id != null && on.has(d.role || 'driver'));
+        if (clash) {
+          add(buses, a.bus_id, text);
+          for (const d of crew) add(drivers, d.driver_id, text);
+        } else if (next) {
+          const rest = beside.rest;
+          const said = rest == null ? 'rest unknown' : `${Math.round(rest * 10) / 10}h rest`;
           for (const d of crew) {
-            if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
-            for (const day of days) worked.get(d.driver_id).add(day);
+            add(near, d.driver_id, `Back-to-back with ${t.destination || 'a trip'}, ${said}`);
+            if (rest == null || rest < REST_HOURS) tight.add(d.driver_id);
           }
+        }
+        for (const d of crew) {
+          if (!worked.has(d.driver_id)) worked.set(d.driver_id, new Set());
+          for (const day of days) worked.get(d.driver_id).add(day);
         }
       }
     }

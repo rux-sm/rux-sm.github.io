@@ -377,7 +377,8 @@
   const expectedBack = (bar, next) => (next?.stop?.type === 'return' && !next.at && next.arrival != null
     && next.arrival - plannedBack(bar) > Road.LATE_MIN * 60e3 ? next.arrival : null);
   // The office's calendar day of an instant, and the midnights from one to another.
-  const dayOf = ms => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date(ms));
+  const OFFICE_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' });
+  const dayOf = ms => OFFICE_DAY.format(new Date(ms));
   const midnights = (from, to) => Math.round((Date.parse(dayOf(to)) - Date.parse(dayOf(from))) / 864e5);
   /* The return's next-day mark, bar.js's on the bar's own times row, one day
      further for each midnight between the planned return and `expected`

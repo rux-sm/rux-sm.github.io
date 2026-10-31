@@ -32,7 +32,13 @@
     return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])) : null;
   };
   // English unless a locale is named: what Accept keeps is always English.
-  const dayFmt = (opts, locale = 'en-US') => new Intl.DateTimeFormat(locale, { timeZone: 'UTC', ...opts });
+  // Each format is made once and kept, since making one costs many times using one.
+  const dayFormats = new Map();
+  const dayFmt = (opts, locale = 'en-US') => {
+    const key = `${locale}|${JSON.stringify(opts)}`;
+    if (!dayFormats.has(key)) dayFormats.set(key, new Intl.DateTimeFormat(locale, { timeZone: 'UTC', ...opts }));
+    return dayFormats.get(key);
+  };
   const dayText = (v, year = true, locale) => {
     const d = dateOnly(v);
     return d ? dayFmt({ weekday: 'short', month: 'short', day: 'numeric', ...(year ? { year: 'numeric' } : {}) }, locale).format(d) : '';
@@ -59,7 +65,8 @@
     return /^\d{1,2}:\d{2}\s*[ap]m$/i.test(t) ? t.replace(/\s+/g, ' ').toUpperCase() : t;
   };
   // A leg stays until the end of its last day, in the office's time.
-  const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
+  const OFFICE_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: TZ });
+  const todayIso = () => OFFICE_DAY.format(new Date());
 
   // -- the trip ---------------------------------------------------------------
   // A seat's kind, which the page writes in its language, and its English

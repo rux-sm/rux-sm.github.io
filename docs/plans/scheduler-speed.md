@@ -50,14 +50,6 @@ in, writes recorded and none sent. The last task times the same steps again.
 
 ### Drawing
 
-- **Each draw works a fact out once.** A trip's legs, its back time and each
-  leg's standing are kept per trip for the draw, keyed by the trip object, so
-  a bar never sorts the same legs or walks every trip in the read again.
-- **A leg's standing looks only at the legs near it,** from an index of the
-  read's legs by day built once per draw, since a clash is only ever with a
-  leg on or next to its days.
-- **Date formatters are made once per module,** never inside a call, because
-  making one costs ten times using one.
 - **Measure, then change.** Rows, lanes and crews are measured in one pass and
   written in the next, so a draw or a scroll forces no layout per row or bar.
 - **A swipe's spare week is drawn while the page is idle,** after each draw,
@@ -80,10 +72,6 @@ None open.
 
 ## Tasks
 
-- [ ] Keep legs, back times and standing per trip for a draw, index the
-      read's legs by day for standing, and make every date formatter once,
-      in `data.js`, `week.js`, `clashes.js`, `bar.js`, `road.js`,
-      `road-bar.js`, `driver-job.js` and `departures.js`.
 - [ ] Measure before writing in `spareFor`, `fitLanesInView` and
       `fitStuckRows`; draw a swipe's spare weeks when idle; and
       skip `fillTracks` while the page is hidden.

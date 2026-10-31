@@ -64,8 +64,15 @@
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
   const parseDay = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+  // Each date format is made once and kept, since making one costs many times using one.
+  const formats = new Map();
+  const formatOf = (locale, opts) => {
+    const key = `${locale}|${JSON.stringify(opts)}`;
+    if (!formats.has(key)) formats.set(key, new Intl.DateTimeFormat(locale, opts));
+    return formats.get(key);
+  };
   // "Tue", of an ISO day or a date.
-  const weekday = d => (d instanceof Date ? d : parseDay(d)).toLocaleDateString('en-US', { weekday: 'short' });
+  const weekday = d => formatOf('en-US', { weekday: 'short' }).format(d instanceof Date ? d : parseDay(d));
   // The days after the last it takes a leg comes back, before the office's
   // late-return hour, as `SchedulerWeek.takes` counts them: the bar marks its
   // return +1.
@@ -161,7 +168,7 @@
     if (min < 60) return `${Math.max(1, Math.floor(min))}m`;
     if (min < 1440) return `${Math.floor(min / 60)}h`;
     if (min < 43200) return `${Math.floor(min / 1440)}d`;
-    return new Date(at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return formatOf(undefined, { month: 'short', day: 'numeric' }).format(new Date(at));
   };
   const ageMark = (at, words) => {
     const m = el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
@@ -229,7 +236,7 @@
   const setAt = at => {
     const d = new Date(at || '');
     return Number.isNaN(d.getTime()) ? ''
-      : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      : formatOf('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(d);
   };
 
   /* An update's stamp: when, who wrote it, and whether its words were
@@ -239,8 +246,7 @@
     const at = new Date(u.created_at);
     const opts = { month: 'short', day: 'numeric' };
     if (at.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
-    const when = u.kind === 'imported' ? at.toLocaleDateString(undefined, opts)
-      : at.toLocaleString(undefined, { ...opts, hour: 'numeric', minute: '2-digit' });
+    const when = formatOf(undefined, u.kind === 'imported' ? opts : { ...opts, hour: 'numeric', minute: '2-digit' }).format(at);
     return [when, u.actor_name || (u.kind === 'imported' ? 'From the old notes' : 'Someone'),
       u.edited_at ? 'edited' : null].filter(Boolean).join(' · ');
   }

@@ -48,13 +48,6 @@ in, writes recorded and none sent. The last task times the same steps again.
   them out saves about 15% of a read that now runs only on a week change or
   a return to the tab, and opening a trip would then wait on its own read.
 
-### Drawing
-
-- **Measure, then change.** Rows, lanes and crews are measured in one pass and
-  written in the next, so a draw or a scroll forces no layout per row or bar.
-- **A swipe's spare week is drawn while the page is idle,** after each draw,
-  so the first sideways move only slides.
-
 ### Loading
 
 - **The editor stays in `data.js`,** because its scripts take under 170 ms of
@@ -72,8 +65,5 @@ None open.
 
 ## Tasks
 
-- [ ] Measure before writing in `spareFor`, `fitLanesInView` and
-      `fitStuckRows`; draw a swipe's spare weeks when idle; and
-      skip `fillTracks` while the page is hidden.
 - [ ] Time the same steps as the first timing again and compare them with
       its figures.

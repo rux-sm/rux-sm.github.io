@@ -413,6 +413,8 @@
   let drawOwed = false;
   // Counts the stand-in rows, so each has an id of its own.
   let standIns = 0;
+  // Counts the changes made to the held week in place, so a week drawn ahead from it before one is not used.
+  let heldEdits = 0;
 
   // Writes one move into a week's payload: the row's bus, or the row a slot was given.
   function moveInto(data, id, move) {
@@ -436,6 +438,7 @@
     const id = String(assignmentId);
     const move = { tripId, busId, saving, standIn, row: row ?? heldMoves.get(id)?.row ?? null, since: readsBegun };
     heldMoves.set(id, move);
+    heldEdits++;
     // The held week changes under the strip drawn from it, which must be drawn again.
     stripData = null;
     return !!cached && moveInto(cached.data, id, move);
@@ -451,6 +454,7 @@
     const id = String(assignmentId);
     const move = heldMoves.get(id);
     heldMoves.delete(id);
+    heldEdits++;
     stripData = null;
     const trip = heldTrip(tripId);
     if (!trip) return;
@@ -462,6 +466,7 @@
      and on its bar, so the answer needs no draw. */
   function fillStandIn(tripId, standInId, made) {
     heldMoves.delete(standInId);
+    heldEdits++;
     const trip = heldTrip(tripId);
     const rows = trip?.trip_assignments || [];
     const bar = gridEl.querySelector(`.scheduler-bar[data-assignment-id="${CSS.escape(standInId)}"]`);
@@ -897,7 +902,9 @@
 
   setInterval(askRoad, ROAD_EVERY);
   // Each bar's times track keeps up with the clock between redraws.
-  setInterval(() => window.SchedulerBar.fillTracks(gridEl), 60e3);
+  // A tab nobody is looking at is filled when it is looked at again.
+  setInterval(() => { if (!document.hidden) window.SchedulerBar.fillTracks(gridEl); }, 60e3);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) window.SchedulerBar.fillTracks(gridEl); });
 
   /* THE DOCKED SHEET OF A TRIP OUT ON THE ROAD has three tabs: On the
      road, Needs and Updates, and opens on On the road; the tab picked stays
@@ -1294,7 +1301,10 @@
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
     window.Rux?.schedule?.fit?.();
+    afterBoard?.();
   }
+  // Told after each board is drawn: the swipe draws the weeks either side then.
+  let afterBoard = null;
 
   /* ── Moving a trip to another bus ──
      A drag writes one assignment's `bus_id`, or inserts the row for an empty
@@ -17412,7 +17422,7 @@
         const strip = [stripStart, addDays(stripStart, STRIP_DAYS - 1)];
         if (weekPrint(data, ...strip) === weekPrint(stripData, ...strip)) { stripData = data; return; }
       }
-    } else if (weekPrint(data, cursor) === weekPrint(before, cursor)) return;
+    } else if (weekPrint(data, cursor) === weekPrint(before, cursor)) { afterBoard?.(); return; }
     if (barsInHand) { drawOwed = true; return; }
     drawBoard(data);
   }
@@ -17715,7 +17725,8 @@
          screen moves. */
       const same = held && cached && weekPrint(data, asked) === weekPrint(cached.data, asked);
       cached = { data, centre: asked };
-      if (same) return;
+      // The weeks drawn ahead were drawn from the payload this replaces.
+      if (same) { afterBoard?.(); return; }
       if (barsInHand) { drawOwed = true; return; }
       render(data);
       shown = asked;
@@ -18441,25 +18452,62 @@
     /* The week one step away, drawn into a grid of its own. `render` with a
        target draws the rows and nothing else, so the board's label, index and
        roster stay with the week being read until this one is settled on. */
+    const weekBeside = dir => addDays(cursor, dir < 0 ? daysShown() : -daysShown());
+    const drawSpare = (side, week) => {
+      const spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
+      spare.setAttribute('aria-hidden', 'true');
+      render({ ...cached.data, weekStart: week, weekEnd: lastShown(week) }, spare);
+      return spare;
+    };
+
+    /* THE WEEKS EITHER SIDE ARE DRAWN AHEAD, while the page is idle after a
+       draw of the compact board, which is the one a finger swipes, so the
+       first sideways move only puts one in. Each is kept with the payload and
+       week it was drawn from and used only while both still hold. */
+    const ahead = { next: null, prev: null };
+    let aheadAsked = false;
+    const idle = window.requestIdleCallback ?? (fn => setTimeout(fn, 200));
+    afterBoard = () => {
+      ahead.next = ahead.prev = null;
+      if (aheadAsked) return;
+      aheadAsked = true;
+      idle(() => {
+        aheadAsked = false;
+        // A board drawn as a swipe settles is drawn ahead of once the week stands still.
+        if (weekMotion) { weekMotion.then(() => afterBoard()); return; }
+        if (scrolling() || document.hidden || pageEl?.getAttribute('data-board') !== 'compact' || !cached) return;
+        for (const [side, dir] of [['next', -1], ['prev', 1]]) {
+          const week = weekBeside(dir);
+          if (holds(week)) ahead[side] = { data: cached.data, edits: heldEdits, week: iso(week), spare: drawSpare(side, week) };
+        }
+      });
+    };
+
+    /* The week one step away, in a grid of its own: the one drawn ahead, or
+       drawn now. `render` with a target draws the rows and nothing else, so
+       the board's label, index and roster stay with the week being read until
+       this one is settled on. */
     const spareFor = dir => {
       const side = dir < 0 ? 'next' : 'prev';
       let spare = schEl.querySelector(`.scheduler-grid--${side}`);
       if (spare) return spare;
-      const week = addDays(cursor, dir < 0 ? daysShown() : -daysShown());
+      const week = weekBeside(dir);
       if (!holds(week)) return null;
-      spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
-      spare.setAttribute('aria-hidden', 'true');
-      schEl.appendChild(spare);
-      render({ ...cached.data, weekStart: week, weekEnd: lastShown(week) }, spare);
-      // Keep incoming buses aligned with the stationary row headers.
+      const kept = ahead[side];
+      ahead[side] = null;
+      spare = kept && kept.data === cached.data && kept.edits === heldEdits && kept.week === iso(week) ? kept.spare : drawSpare(side, week);
+      /* Keep incoming buses aligned with the stationary row headers. Every
+         row's height is read before the spare goes in and anything is
+         written, so the rows cost one layout rather than one each. */
       const rows = [...gridEl.querySelectorAll('.scheduler-row')];
+      const heights = rows.map(row => row.querySelector('.scheduler-track').getBoundingClientRect().height);
+      schEl.appendChild(spare);
       [...spare.querySelectorAll('.scheduler-row')].forEach((row, i) => {
         const source = rows[i];
         if (!source) return;
         row.hidden = source.hidden;
-        const height = source.querySelector('.scheduler-track').getBoundingClientRect().height;
         const track = row.querySelector('.scheduler-track');
-        track.style.blockSize = `${height}px`;
+        track.style.blockSize = `${heights[i]}px`;
         track.style.minBlockSize = '0';
         track.style.overflow = 'hidden';
       });

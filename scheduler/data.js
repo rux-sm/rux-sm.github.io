@@ -175,7 +175,7 @@
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
-  const { TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
+  const { TRIP_COLORS, tripColorOf, standardHueOf, hueFor } = window.SchedulerWeek;
 
   /* A trip's bar, its crew and its alerts, and the times as they say them:
      bar.js, which the components page draws its samples with too. */
@@ -7230,8 +7230,8 @@
       customer_id: trip.customer_id ?? null,
       trip_type: heldType,
       vehicle_type: trip.vehicle_type ?? null,
-      // The name it paints as, so a trip still storing `cyan` opens on Teal
-      // with nothing changed, and saves nothing until another colour is picked.
+      // The name it paints as, null for a name the list does not hold, so a
+      // trip opens with nothing changed and saves nothing until a colour is picked.
       trip_bar_color: tripColorOf(trip),
       /* Every need the trip carries, answered true or false, so a tag turned
          off counts as a change rather than as a key that quietly vanished. It

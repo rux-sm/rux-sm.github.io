@@ -19,10 +19,7 @@
   /* The trip colours, read by the board, the editor, the bar menu and the
      printed week. `value` is what `trips.trip_bar_color` stores and `hue` is
      the `scheduler-bar--*` class that paints it. Amber is the office's
-     placeholder colour; billing.js says when an amber trip is a placeholder.
-
-     Retired names are mapped on read and never rewritten:
-     orange and yellow paint as amber, cyan as teal. */
+     placeholder colour; billing.js says when an amber trip is a placeholder. */
   const TRIP_COLORS = [
     { value: 'teal', label: 'Teal', hue: 'teal' },
     { value: 'green', label: 'Green', hue: 'green' },
@@ -30,12 +27,10 @@
     { value: 'amber', label: 'Placeholder', hue: 'amber' },
     { value: 'pink', label: 'Pink', hue: 'magenta' },
   ];
-  const RETIRED_COLORS = { orange: 'amber', cyan: 'teal', yellow: 'amber' };
   // The colour a trip paints as, by its current name, or null for standard.
   const tripColorOf = trip => {
     const stored = String(trip.trip_bar_color || '').toLowerCase();
-    const name = RETIRED_COLORS[stored] ?? stored;
-    return TRIP_COLORS.some(c => c.value === name) ? name : null;
+    return TRIP_COLORS.some(c => c.value === stored) ? stored : null;
   };
   // Standard is the status colour: red for an unconfirmed trip, blue otherwise.
   const standardHueOf = trip => (trip.confirmed === false ? 'red' : 'blue');
@@ -240,7 +235,7 @@
   }
 
   window.SchedulerWeek = {
-    TRIP_COLORS, RETIRED_COLORS, tripColorOf, standardHueOf, hueFor,
+    TRIP_COLORS, tripColorOf, standardHueOf, hueFor,
     stopsOfLeg, stopsOfKey, timesOf, legsOf, legKeyOfVehicle, legByKey, takes, setLateReturn, lateReturn, clip, assignLanes,
     officeInstant, departAt, backAt,
   };

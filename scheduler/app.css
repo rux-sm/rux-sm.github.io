@@ -425,26 +425,24 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's kit on its own row: three 14px tiles 3px apart across the
-   head's 48px, its seats, its sleeper and its lift, each in one place down
-   the column. A tile the bus has is grey under its mark, the seats in 10px
-   type and the icons 12px; one it lacks is an empty outline. At the row's
-   foot, so the tiles end on the head's padding. Presses go through to the
-   number, whose tip and title name them. */
+/* The bus's kit on its own row: one 16px band across the head's 48px in
+   three square cells parted by 1px of the sheet, its seats, its sleeper and
+   its lift, each in one place down the column. The seats are a number in
+   10px type, the icons Carbon's 16px; a cell the bus lacks is empty band.
+   At its row's start, which on six rows is 4px under the percent and the
+   16px to the head's padding. Presses go through to the number, whose tip
+   and title name them. */
 .scheduler-row-head__equip {
   align-self: start;
   display: grid;
-  grid-template-columns: repeat(3, 14px);
-  justify-content: space-between;
-  margin-block-start: 2px;
+  grid-template-columns: repeat(3, 16px);
   flex: none;
   pointer-events: none;
 }
 .scheduler-row-head__tile {
   display: grid;
   place-items: center;
-  block-size: 14px;
-  border-radius: 3px;
+  block-size: 16px;
   background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
   font-size: 10px;
@@ -452,7 +450,7 @@ button.scheduler-row-head__num::after {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.scheduler-row-head__tile[data-on="0"] { background: none; box-shadow: inset 0 0 0 1px var(--rux-border-subtle-01); }
+.scheduler-row-head__tile + .scheduler-row-head__tile { box-shadow: inset 1px 0 0 var(--rux-layer); }
 .scheduler-row-head__equip svg { display: block; }
 /* The state's display, on its rows and the head's width, so the fuel under
    it stands at one height down the column. While the engine runs it is

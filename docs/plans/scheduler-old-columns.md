@@ -35,8 +35,6 @@ the office or the connector uses lost on the way.
   selects; the `itinerary_printed_*` and `hos_form_printed_*` columns on
   `trips`, which `print.js`'s trip read for the print hub selects; and
   `platform.profiles.scheduler_shortcuts`.
-- **The archived `rux-ui` site's forwards go,** on rux's choice, so an old
-  link in a driver's texts finds nothing.
 - **The connector and its generated `rules.ts` change before any column
   goes.**
 
@@ -54,4 +52,3 @@ None open.
       then remove `RETIRED_COLORS` and its history labels and the old colour
       names from `get_trip`'s words, and update the scheduler's database
       inventory in the same commit.
-- [ ] Take down the archived `rux-ui` repository's forwards.

@@ -101,8 +101,8 @@ everything has played a whole game.
   the sheet is imported.
 - **The front page counts the whole course,** and says so when every sprite
   is found, in place of the empty page a finished player has now.
-- **The puzzle of the day and the leaderboard stay off.** This plan does not
-  touch them.
+- **The puzzle of the day is on and the leaderboard off.** This plan does
+  not touch them.
 
 ### The course
 

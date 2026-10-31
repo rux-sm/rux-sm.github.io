@@ -21,7 +21,9 @@ the quote prints the customer's address without anyone typing it.
   typed on a contact or a customer except the optional bill-to.
 - **The word is Customer, the table `customers`.** It is the word staff and
   QuickBooks use, and it still fits a family with no school behind them.
-- **A customer is a name, a usual pickup and an optional bill-to address.** The
+- **A customer is a name, a usual pickup and an optional bill-to address,**
+  with the notes, usual needs, usual vehicle type and Part of the Customers
+  page also edits. The
   name is spelled as QuickBooks spells it, because an export matches on it. The
   bill-to is filled only when bills go somewhere other than the pickup, such as
   a district office or a PO box.
@@ -43,8 +45,7 @@ the quote prints the customer's address without anyone typing it.
 - **Locations and customers are tables that carry `updated_at`,** set by the
   database, and Save compares it rather than the whole row, as `contacts` and
   `buses` cannot. Both are staff-only. `contacts.customer_id` and
-  `trips.customer_id` link to a customer, and 204 contacts were linked from
-  their organization names as rux settled them.
+  `trips.customer_id` link to a customer, and 290 contacts are linked.
 - **A usual pickup was filled only where one saved place had the customer's
   name,** 10 of the 119; the rest are picked on the Customers page, since a
   guessed link would put the wrong address on a quote.

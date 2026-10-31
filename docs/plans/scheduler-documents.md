@@ -46,13 +46,12 @@ Customer page, and `scheduler/docs/database-inventory.md`.
 - **A document's real content never enters this repository,** which is
   public: a form is read where rux keeps it, and a check uses an invented
   file.
-- **rux-ui does not change.**
 
 ## Questions
 
 - Which background check PDF may a session read, by its file name in
   Downloads?
-- 182 names on 389 trips match no customer, 29 of them on 49 trips still to
+- 181 names on 382 trips match no customer, 24 of them on 37 trips still to
   come: the same place spelled several ways, or a group after its name. Which
   customer does each coming name belong to?
 - A Google Sheet rux owns holds DOT forms, a fuel card log, a pre-trip

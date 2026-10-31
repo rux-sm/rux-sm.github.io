@@ -40,10 +40,8 @@ One bar:
 - **Play shows no bar,** only its own keys and a way back, as Pixels' puzzle
   and Pixelator do now.
 - **On a phone what a header would hold is on the Player page,** as a list
-  under the player: How to play, Add to home screen, Theme, the way to Rux
-  Home, and for the owner alone Manage and Players.
-- **A guest has Theme too.** It is kept in the browser, so it asks nothing
-  of an account, and a guest has no Rux Home to go to.
+  under the player: How to play, Add to home screen and the way to Rux
+  Home. A game that locks its theme, as Pixels does, has no Theme there.
 - **That list is Carbon's contained list,** which Design ships, so it needs
   no part of its own.
 - **The switcher on Home still lists every game.** `switcher.json` and the

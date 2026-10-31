@@ -28,8 +28,9 @@ page the real records and one screenshot per task.
 
 ## Tasks
 
-- [ ] In atlas, write the Example section of each task in the six guides
-      still to be reworded, before each one's walk in
+- [ ] In atlas, write the Example section of each task in the three guides
+      still to be reworded, Run order planning, Demand to shipment and
+      Create basic test items, before each one's walk in
       [ln-plain-voice.md](ln-plain-voice.md).
 - [ ] In atlas, write each task's result as a fact a tester can tick, as
       Ship from stock's are, so Check the result can pass or fail.

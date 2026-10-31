@@ -54,10 +54,9 @@ The world map:
   reward.
 - **The page opens with the player's own rift in view:** the one they last
   went into, kept in this browser, or the first with a sprite left to find.
-- **Continue is one primary button that opens the next puzzle to play:** the
-  first not found in the player's rift, or in the first open rift with one
-  left. It stands over the bar of places on a phone, by the thumb, and over
-  the puzzles on a wider screen, and is not there once everything is found.
+- **Continue is a card under the logo, over the rifts, that opens the next
+  puzzle to play:** the first not found in the player's rift, or in the
+  first open rift with one left. It is not there once everything is found.
 - **A custom rift is not on the path.** It has no number, so it keeps its
   tile, under the map, and one side place on the map's first part, off the
   path, leads to those tiles. Every player has different friends, so spots
@@ -92,8 +91,8 @@ Playing:
   nobody has to find a gesture.
 - **The switch shows the two pictures alone,** since the board shows the
   mark each leaves.
-- **How to play says it as a fight:** strike the squares that are the
-  monster, and guard the ones that are not.
+- **How to play's words are `pixels-polish.md`'s,** which says fill and
+  cross out in three steps.
 - **The character has five hearts, and a mistake takes one.** The clock
   only counts up and is the score, so nobody loses by thinking slowly. A
   hint adds time as it does now.

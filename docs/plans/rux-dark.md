@@ -6,7 +6,8 @@ type: plan
 
 ## Goal
 
-Rux Dark is the one look every Rux app wears unless someone picks another.
+Rux Dark is the look every Rux app wears unless someone picks another,
+beside Rux 100, a second Rux look on a black base.
 It is black and white like the logo, square like the logo, and built on
 Carbon, so a page reads as Rux at a glance and not as Geist or IBM. Colour
 means a status and nothing else. Each part of the look has one rule, written
@@ -17,8 +18,8 @@ once in Design, so a page never looks half finished.
 What stands now:
 
 - **One ink on a near-black page.** Words, icons, the main button, links and
-  focus are the logo's `#f4f4f4` on a `#181818` page, and raised surfaces climb
-  one even ladder of neutral greys from there.
+  focus are the logo's `#f4f4f4` on a `#1b1b1b` page, and raised surfaces climb
+  one even ladder of neutral greys from `#181818`.
 - **Colour is a status.** The palette is vivid, and it marks success,
   warning, error, info and a tag's kind. Error is red, warning amber, and
   orange only what is worse than a warning; yellow marks no status. Links, the on toggle and focus are

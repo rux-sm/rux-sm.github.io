@@ -36,10 +36,8 @@ exports, so a correction is made once and every page redraws.
   to learn than a site and a phone app with tabs.
 
 - **The mockup in `design/m/ln-guide/` is the picture of these decisions**:
-  Home, the Ship from stock process page, one task in both views, and the
-  Document of three processes, `doc-*.html`, drawn by its `build-doc.mjs`
-  from the export's own text. A decision changes there first, because a
-  mockup is cheap to redraw.
+  Home, the Ship from stock process page and one task in both views. A
+  decision changes there first, because a mockup is cheap to redraw.
 
 ### Four kinds of page
 
@@ -83,8 +81,8 @@ tutorial, reference and explanation.
 - **Two views of the same task, Document and Guided.** The Document is the
   task as one readable document and is what prints. Guided is one step at a time:
   a progress bar under the task's name, the step in large type, what you should
-  see, the route, two closed folds reading Stuck? with its count and Why LN
-  works this way, two quiet links reading Document and Read it to me, and
+  see, the route, three closed folds reading Your values, Stuck? with its
+  count and Why LN works this way, two quiet links reading Document and Read it to me, and
   Back and Next fixed at the foot, with the arrow keys. It is one column on
   every screen, because one layout stays right where a second one drifts.
 

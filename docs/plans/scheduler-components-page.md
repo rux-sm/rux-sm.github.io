@@ -36,7 +36,9 @@ None open.
 
 - [ ] Move the trip card and its tabs, with the live card and its map, out
       of `data.js`, and add their section.
-- [ ] Move the task rows and the Departures panel's drawing, and add their section.
-- [ ] Move a bus's row head, its tip and the yard card, and add their section.
+- [ ] Add the section for the task rows and the Departures panel, whose
+      drawing is already in files of their own.
+- [ ] Move the yard card out of `data.js`, and add the section for it and a
+      bus's row head and tip, which `bus-head.js` already draws.
 - [ ] Move the editor's route stops, quote lines and billing tiles, and add
       their section.

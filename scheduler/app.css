@@ -206,10 +206,10 @@
   z-index: 5;
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
-     by their row and add nothing, so their gauges never widen it. 56px holds
-     a bus number with a mark and two gauges; app.js measures this cell, so
-     its arithmetic includes it. */
-  min-inline-size: 3.5rem;
+     by their row and add nothing, so their gauges never widen it. 65px holds
+     the 48px speedometer with the head's 8px either side and its 1px rule;
+     app.js measures this cell, so its arithmetic includes it. */
+  min-inline-size: calc(4rem + 1px);
   justify-content: center;
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
@@ -239,9 +239,9 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* The bar's own top: its gap above the lane and its padding. */
-  padding-block: calc(var(--scheduler-gap-clear) + var(--rux-spacing-02)) 0;
-  padding-inline: var(--rux-spacing-02);
+  /* 8px all round: the number stands against the top and the equipment
+     against the foot, 1px under where the bar's lines start. */
+  padding: var(--rux-spacing-03);
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -425,12 +425,12 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's equipment on its own row, two slots at the fuel's edges, the
-   sleeper under the pump and the lift under the figure, so each stands in
-   one place down the column. Presses go through to the number, whose tip
-   and title name them. */
+/* The bus's equipment on its own row, two slots at the head's edges, the
+   sleeper left and the lift right, so each stands in one place down the
+   column; at the row's start, so the icons' 16px end on the head's padding.
+   Presses go through to the number, whose tip and title name them. */
 .scheduler-row-head__equip {
-  align-self: center;
+  align-self: start;
   display: grid;
   grid-template-columns: 16px 16px;
   justify-content: space-between;
@@ -480,7 +480,8 @@ button.scheduler-row-head__num::after {
   --scheduler-tank-ink: var(--rux-icon-secondary);
   display: flex;
   flex-direction: column;
-  align-self: center;
+  /* At its row's start, so its bar stands 1px clear of the equipment under it. */
+  align-self: start;
   gap: 2px;
   font-size: 11px;
   line-height: 12px;
@@ -535,10 +536,11 @@ button.scheduler-row-head__num::after {
    over 75; inside it at its foot the speed or the state's word in the
    dial's colours; under it mph, or how long the bus has idled or been
    unseen; then the fuel, a round 4px bar filled to its share over F and the
-   percent, grey until low or critical as the fuel bar is. On six rows its
-   60px stand 2px under the number in the four rows' 72, which leaves the
-   10px at their foot to a low DEF's tag; on five its lines close up to the
-   three rows' 54, and the tag crosses its foot. */
+   percent, grey until low or critical as the fuel bar is. On six rows the
+   number, the arc, the unit, the bar, the percent and the equipment stand
+   4px apart down the four rows' 72; on five its lines close up to the three
+   rows' 54. A low DEF's tag stands on the percent's line, since the bar
+   still shows the tank and the tip says its number. */
 .scheduler-row-head__arc { display: none; }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head__arc {
   display: flex;
@@ -552,9 +554,9 @@ button.scheduler-row-head__num::after {
   white-space: nowrap;
 }
 .scheduler-week:is([data-bar-rows="5"], [data-bar-rows="6"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level[data-tank="F"]) { display: none; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 4; margin-block-start: 2px; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__arc { grid-row: 2 / span 4; margin-block-start: 4px; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 4; margin-block-end: 0; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 5; margin-block-end: 0; }
+.scheduler-week[data-bar-rows="6"] .scheduler-row-head__gauges:has(> .scheduler-row-head__arc) > [data-tank="D"] { grid-row: 5; margin-block-end: 4px; }
 .scheduler-row-head__arc-bow { display: grid; }
 .scheduler-row-head__arc-bow > * { grid-area: 1 / 1; }
 .scheduler-row-head__arc-svg { display: block; }
@@ -567,12 +569,12 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc--running.scheduler-row-head__arc--moving .scheduler-row-head__arc-figure { color: var(--scheduler-head-moving); }
 .scheduler-row-head__arc--running.scheduler-row-head__arc--warning .scheduler-row-head__arc-figure { color: var(--scheduler-head-low); }
 .scheduler-row-head__arc-figure--word { font-size: var(--rux-label-01-font-size); }
-.scheduler-row-head__arc-under { font-size: 10px; line-height: 11px; color: var(--rux-text-secondary); }
+.scheduler-row-head__arc-under { margin-block-start: 4px; font-size: 10px; line-height: 10px; color: var(--rux-text-secondary); }
 .scheduler-row-head__arc-fuel {
   --scheduler-tank-ink: var(--rux-icon-secondary);
   align-self: stretch;
   block-size: 4px;
-  margin: 3px 3px;
+  margin-block: 4px;
   border-radius: 2px;
   background: linear-gradient(to right, var(--scheduler-tank-ink) 0 var(--scheduler-tank), var(--rux-border-subtle-01) 0);
 }
@@ -580,14 +582,13 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__arc[data-level="critical"] .scheduler-row-head__arc-fuel { --scheduler-tank-ink: var(--scheduler-fuel-critical); }
 /* F in the secondary ink names the tank; a low or critical percent takes
    its tank's colour and weight. */
-.scheduler-row-head__arc-pct { display: flex; gap: 2px; font-size: 10px; line-height: 11px; color: var(--rux-text-primary); }
+.scheduler-row-head__arc-pct { display: flex; gap: 2px; font-size: 10px; line-height: 10px; color: var(--rux-text-primary); }
 .scheduler-row-head__arc-f { font-weight: 600; color: var(--rux-text-secondary); }
 .scheduler-row-head__arc[data-level="low"] .scheduler-row-head__arc-pct { color: var(--scheduler-fuel-low); font-weight: 600; }
 .scheduler-row-head__arc[data-level="critical"] .scheduler-row-head__arc-pct { color: var(--scheduler-fuel-critical); font-weight: 600; }
 /* Three rows are 54px: the arc's 28, a 10px unit, the bar in 6 and a 10px percent. */
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-under { line-height: 10px; }
+.scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-under { margin-block-start: 0; }
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-fuel { margin-block: 1px; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__arc-pct { line-height: 10px; }
 /* With no signal the arc is dotted and the speedometer fades, but a low
    tank keeps its strength. */
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__arc-track { stroke-dasharray: 3 6; stroke-linecap: butt; }
@@ -6100,9 +6101,9 @@ html:has(.scheduler-page[data-takeover]) {
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
 /* A sample has no day band, so no corner sets its bus column, and the heads
-   size to nothing: the column takes the corner's own floor instead, 3.5rem,
+   size to nothing: the column takes the corner's own floor instead, 65px,
    or the compact board's 2rem. */
-.scheduler-components__board { --scheduler-head-w: 3.5rem; }
+.scheduler-components__board { --scheduler-head-w: calc(4rem + 1px); }
 .scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
 
 /* Alert buttons brighten on hover; their active state is shared with Live. */

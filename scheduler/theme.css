@@ -870,15 +870,8 @@
   --scheduler-head-quiet-ink: #a1a1a1;
 }
 /* Rux 100's state display is 40px wide, Carbon's md control height, the
-   size of the board's buttons, with 8px either side of it: the column is
-   57px, the display, 8px each side and the head's 1px rule. Its height is
-   the rows it stands on. The head's padding is 4px at the sides, and the
-   fuel takes 4px more to stand in the display's inset, 40px for its percent
-   and bar. */
-[data-theme="rux-100"] .scheduler-corner { min-inline-size: calc(var(--rux-layout-size-height-md, 2.5rem) + 2 * var(--rux-spacing-03) + 1px); }
-/* The fuel and the equipment stand in the display's own 8px inset, so they
-   line up with the display's edges. */
-[data-theme="rux-100"] :is(.scheduler-row-head__level[data-tank="F"], .scheduler-row-head__equip) { margin-inline: var(--rux-spacing-02); }
+   size of the board's buttons, centred in the head's 48px. Its height is
+   the rows it stands on. */
 [data-theme="rux-100"] .scheduler-row-head__dial {
   justify-self: center;
   inline-size: var(--rux-layout-size-height-md, 2.5rem);

@@ -1689,14 +1689,18 @@
      strip's left, where no scroll reaches, since a hand turning back within
      the half second before the sweep would otherwise find it standing on
      its old days, and stops being anything a reader finds: on no day, of no
-     trip, assignment or bus, not focusable. Hiding it would cost more than
-     moving it; taking it out of its row would cost the row's style, 3ms, so
-     `sweepRetired` removes them when the browser is idle after the scroll. */
+     trip, assignment or bus, not focusable. A bar an edge of the strip cut
+     short is anchored to that edge by app.css, not to its start, and would
+     stretch from the far left to the edge, so it is hidden instead, which
+     costs more and is rare. Taking one out of its row would cost the row's
+     style, 3ms, so `sweepRetired` removes them when the browser is idle
+     after the scroll. */
   function retire(node) {
     owedBars.delete(node);
     node.dataset.gone = '';
     node.dataset.start = '-999';
-    node.style.setProperty('--scheduler-start', '-999');
+    if (node.classList.contains('scheduler-bar--from-prev') || node.classList.contains('scheduler-bar--to-next')) node.style.display = 'none';
+    else node.style.setProperty('--scheduler-start', '-999');
     for (const name of ['data-trip-id', 'data-assignment-id', 'data-bus-id']) node.removeAttribute(name);
     // Only the selected bar's mark comes off: the attribute is in a rule, so touching it costs the bar's style.
     if (node.getAttribute('aria-current') === 'true') node.removeAttribute('aria-current');

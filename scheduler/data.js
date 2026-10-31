@@ -1430,6 +1430,9 @@
   let stripStart = null;
   let stripData = null;
   let placedLeft = null;
+  // The axis a trackpad gesture is held to, 'x' or 'y', and whether the day
+  // snap is paused for it; the lock itself is beside the strip's scroll handler.
+  let axis = null, snapPaused = false;
   /* A day's width, as app.js last set it, which costs no layout; measured
      only before app.js has set one. */
   const dayWidth = () => parseFloat(schEl.style.getPropertyValue('--scheduler-day-w'))
@@ -1443,10 +1446,15 @@
      continuously the strip around it, scrolled so that week is in view. */
   function drawBoard(data) {
     if (scrolling()) {
+      /* A strip drawn again under a sideways gesture keeps its exact place: the
+         part of a day the board stood past the week in view is carried over,
+         so the redraw moves nothing on screen and the gesture runs on. */
+      const w = dayWidth();
+      const keep = axis === 'x' && stripStart && w ? schEl.scrollLeft - Math.round(schEl.scrollLeft / w) * w : 0;
       stripStart = addDays(cursor, -STRIP_BEFORE);
       stripData = data;
       render({ ...data, weekStart: stripStart, weekEnd: addDays(lastShown(cursor), STRIP_AFTER) });
-      placeStrip();
+      placeStrip(keep);
     } else {
       stripStart = stripData = null;
       render({ ...data, weekStart: cursor, weekEnd: lastShown(cursor) });
@@ -1459,14 +1467,15 @@
      narrowed has days of another width: either is scrolled again to the week
      in view, when nothing is scrolling it. */
   if ('ResizeObserver' in window) {
-    new ResizeObserver(() => { if (stripStart && !weekMotion) placeStrip(); }).observe(gridEl);
+    // Not under a sideways gesture, whose redraw has just placed the strip to the pixel.
+    new ResizeObserver(() => { if (stripStart && !weekMotion && axis !== 'x') placeStrip(); }).observe(gridEl);
   }
 
   // Scrolls the strip, at once, so the week in view starts at its left edge.
-  function placeStrip() {
+  function placeStrip(keep = 0) {
     const w = dayWidth();
     if (!w || !stripStart) return;
-    schEl.scrollLeft = stripAt() * w;
+    schEl.scrollLeft = stripAt() * w + keep;
     placedLeft = schEl.scrollLeft;
     fitLanesInView();
   }
@@ -18381,7 +18390,10 @@
     clearTimeout(scrollIdle);
     scrollIdle = setTimeout(scrollStopped, 'onscrollend' in window ? 500 : 150);
   }, { passive: true });
-  schEl?.addEventListener('scrollend', scrollStopped);
+  // A gesture the axis lock below drives scrolls by script, and each step
+  // ends a scroll of its own; its real end is the glide that follows, or the
+  // pause above.
+  schEl?.addEventListener('scrollend', () => { if (axis || snapPaused) return; scrollStopped(); });
 
   /* A TRACKPAD GESTURE SCROLLS ONE WAY. A Mac trackpad's stroke is seldom
      straight: a scroll up or down carries a few pixels sideways, which the day
@@ -18396,7 +18408,7 @@
      passive, since it cancels the browser's own scroll, which is why the
      board's style changes are kept cheap. */
   const AXIS_GAP_MS = 120;
-  let axis = null, axisAt = 0, axisX = 0, axisY = 0, axisTimer = 0, snapPaused = false;
+  let axisAt = 0, axisX = 0, axisY = 0, axisTimer = 0, wallAsked = false;
   // On the scroller's own style, not a class: a class on the week has the
   // browser work out the style of everything under it, 60ms on a strip.
   function pauseSnap(on) {
@@ -18407,6 +18419,7 @@
   }
   function endAxis() {
     axis = null;
+    wallAsked = false;
     if (!snapPaused) return;
     const w = dayWidth();
     const at = w && scrolling() ? Math.round(schEl.scrollLeft / w) * w : schEl.scrollLeft;
@@ -18442,6 +18455,14 @@
     e.preventDefault();
     pauseSnap(true);
     schEl.scrollBy({ left: e.deltaX, behavior: 'instant' });
+    /* A gesture nearing the strip's end has the strip drawn again around the
+       week in view now, a week before the end and keeping its place on
+       screen, so the hand never runs into the end and waits for the pause
+       that would draw it once it had stopped. Once, until the strip is roomy
+       again. */
+    if (!stripStart) return;
+    if (stripRoomy()) wallAsked = false;
+    else if (!wallAsked) { wallAsked = true; scrollStopped(); }
   }, { passive: false });
 
   // Scrolls the strip to a day, as many days from its first, smoothly unless motion is reduced.

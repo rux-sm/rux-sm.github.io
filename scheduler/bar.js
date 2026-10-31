@@ -585,7 +585,13 @@
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
     addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? paidBadge);
-    addRow(bar, 'scheduler-bar__client', el('span', null, trip.customer || ''));
+    // The words in a run, which may outgrow the row; see app.css's sticky rows.
+    const runOf = (...parts) => {
+      const run = el('span', 'scheduler-bar__run');
+      run.append(...parts.filter(Boolean));
+      return run;
+    };
+    addRow(bar, 'scheduler-bar__client', runOf(el('span', null, trip.customer || '')));
 
     // The booking contact as the trip records it. The board shows the name
     // alone; the phone is kept for the docked sheet, where it dials.
@@ -662,8 +668,7 @@
     updateRow.setAttribute('aria-expanded', 'false');
     updateRow.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
       .filter(Boolean).join('. '));
-    if (age) updateRow.appendChild(age);
-    updateRow.appendChild(news);
+    updateRow.appendChild(runOf(age, news));
     bar.appendChild(updateRow);
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;

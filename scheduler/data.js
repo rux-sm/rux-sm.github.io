@@ -11014,15 +11014,13 @@
     return svg;
   }
 
-  /* A LONG ROW KEEPS ITS LEFT EDGE WITH THE OTHERS. A bar's customer and
-     update rows may run as wide as their words, and every row sticks at the
-     bus column's edge as the board scrolls; but a sticky row that meets the
-     bar's end is pushed back past that edge. So while a bar's start is under
-     the bus column, those two rows are held to the room between the edge and
-     the bar's end, `--scheduler-row-room`, which app.css reads, and their
-     words are cut there instead. The edge is where the destination row
-     stands, read rather than worked out. The times row does not stick, so
-     it needs nothing here.
+  /* A LONG ROW'S WORDS STOP AT THE BAR'S END. A bar's customer and update
+     rows stick a day wide, as the others do, and their words run past that
+     day; they are held to the room between where the rows stand and the
+     bar's end, `--scheduler-row-room`, which app.css reads, and cut there.
+     Where the rows stand is the destination row's edge, read rather than
+     worked out. The rows never move for it, so a scroll that outruns this
+     only moves where the words are cut, for a frame.
      Every bar is read before any is written, because a write between two reads
      has the browser lay the whole board out again for the second, once a bar
      on a strip's five weeks. A bar off the pane is left until a scroll brings
@@ -11044,10 +11042,7 @@
         at: dest.getBoundingClientRect().left,
       });
     }
-    for (const { bar, start, end, at } of fits) {
-      if (at > start) bar.style.setProperty('--scheduler-row-room', `${Math.max(0, end - at)}px`);
-      else bar.style.removeProperty('--scheduler-row-room');
-    }
+    for (const { bar, start, end, at } of fits) bar.style.setProperty('--scheduler-row-room', `${Math.max(0, end - Math.max(at, start))}px`);
   }
 
   function markTripBars() {

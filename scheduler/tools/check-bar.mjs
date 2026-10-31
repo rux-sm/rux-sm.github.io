@@ -196,7 +196,7 @@ expect('a trip back says Paid in the alert badge\'s place once paid in full, and
   drawn('trip-bar', 'Back at the yard').map(b => [text(b, '.scheduler-bar__dest .scheduler-bar__paid'), has(b, '.scheduler-bar__alert')]),
   [['', false], ['Paid', false], ['', false], ['Paid', false]].map(([p, a]) => [p || null, a]));
 expect('a trip back keeps the regular update row and carries no driver status icon',
-  drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
+  drawn('trip-bar', 'Back at the yard').map(b => [has(b, '.scheduler-bar__update > .scheduler-bar__run > .scheduler-bar__age'), has(b, '.scheduler-bar__complete'), b.querySelectorAll('.scheduler-crew__mark use').length]),
   [[true, false, 0], [true, false, 0], [true, false, 0], [true, false, 0]]);
 expect('the times row', drawn('trip-bar', 'Times').map(b => text(b, '.scheduler-bar__time > span')),
   ['7:30a\u2009\u2013\u20096:00p', '2:10p\u2009\u2013\u200912:30a+1', 'Dep 7:30a', 'Ret 6:00p', 'No times']);

@@ -478,20 +478,15 @@ button.scheduler-row-head__num::after {
   font-size: 11px;
   line-height: 12px;
 }
-/* The fuel's four bands: green past half, amber at half or under, orange
-   when low and red when critical. A running bus's bar takes all four; with
-   the engine off it is the neutral grey until low. */
+/* The fuel bar is the neutral grey until low, orange, or critical, red,
+   so a bus asks nothing of the office unless its tank does. */
 .scheduler-row-head {
-  --scheduler-fuel-full: var(--scheduler-head-moving);
-  --scheduler-fuel-half: var(--rux-status-yellow);
   --scheduler-fuel-low: var(--rux-status-orange);
   --scheduler-fuel-critical: var(--scheduler-head-critical);
 }
 .scheduler-row-head__level[data-level="low"] { --scheduler-tank-ink: var(--scheduler-fuel-low); }
 .scheduler-row-head__level[data-level="critical"] { --scheduler-tank-ink: var(--scheduler-fuel-critical); }
 .scheduler-row-head__level[data-tank="D"][data-level="low"] { --scheduler-tank-ink: var(--scheduler-head-low); }
-.scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__level[data-band="full"] .scheduler-row-head__tank { --scheduler-tank-ink: var(--scheduler-fuel-full); }
-.scheduler-row-head:is([data-engine="moving"], [data-engine="idle"]) .scheduler-row-head__level[data-band="half"] .scheduler-row-head__tank { --scheduler-tank-ink: var(--scheduler-fuel-half); }
 .scheduler-row-head__reading { display: flex; align-items: center; gap: 3px; color: var(--rux-text-primary); font-variant-numeric: tabular-nums; }
 .scheduler-row-head__reading { justify-content: space-between; }
 /* Carbon's pump at its own 16px, which overhangs the 12px line by 2px either

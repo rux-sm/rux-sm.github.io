@@ -129,12 +129,11 @@
 [data-theme="g100"] {
   --scheduler-head-idle: #78a9ff;
 }
-/* On a light pane the fuel's amber and orange bands take Carbon's yellow 60
-   and orange 60, which hold 3 to 1 as a bar where the status colours do not. */
+/* On a light pane a low tank's orange takes Carbon's orange 60, which holds
+   3 to 1 as a bar where the status colour does not. */
 [data-theme="white"] .scheduler-row-head,
 [data-theme="g10"] .scheduler-row-head,
 [data-theme="apple-light"] .scheduler-row-head {
-  --scheduler-fuel-half: #8e6a00;
   --scheduler-fuel-low: #ba4e00;
 }
 /* A live seat's reading over its meter is dark, the inverse text, since the
@@ -869,9 +868,6 @@
   --scheduler-head-low-fill: var(--scheduler-amber-bg);
   --scheduler-head-idle-fill: oklch(22.17% 0.069 259.89);
   --scheduler-head-quiet-ink: #a1a1a1;
-  /* The fuel's bands: Geist's green 900, its amber 700 at half, its amber
-     900 when low and its red 900 when critical. */
-  --scheduler-fuel-half: oklch(81.87% 0.1969 76.46);
 }
 /* Rux 100's state display is 40px wide, Carbon's md control height, the
    size of the board's buttons, with 8px either side of it: the column is

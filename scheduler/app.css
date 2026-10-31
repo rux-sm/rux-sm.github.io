@@ -2456,8 +2456,12 @@ button.scheduler-row-head__num::after {
 .scheduler-crew--away > .scheduler-crew__name,
 .scheduler-crew__away { color: var(--scheduler-age-old); font-weight: 600; }
 .scheduler-crew__away { flex: none; }
-/* A driver at the wheel the bar does not name, a seat at the drivers row's end. */
+/* A driver at the wheel the bar does not name, a seat in the drivers row,
+   first as the one at the wheel always is. Beside it the bar's own drivers
+   take an equal share each, so neither name is cut for the other's room. */
 .scheduler-bar__drivers > .scheduler-road__who { flex: 1 1 0; min-inline-size: 0; display: flex; align-items: center; gap: var(--rux-spacing-02); }
+.scheduler-bar__drivers:has(> .scheduler-road__who) > .scheduler-bar__crew { flex: 1 1 0; }
+.scheduler-bar__drivers:has(> .scheduler-road__who) > .scheduler-bar__crew:has(> .scheduler-crew:nth-child(2)) { flex-grow: 2; }
 
 /* A LIVE BAR'S DRIVERS TAKE THE UPDATE ROW'S PLACE, whose updates the live
    card keeps under its Updates tab, so each seat has two lines: its duty's
@@ -2470,7 +2474,9 @@ button.scheduler-row-head__num::after {
    `--scheduler-seat-fill`. Two seats split the row. */
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__update { display: none; }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers { block-size: calc(2 * var(--scheduler-row-h)); }
-.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-road__who { align-self: flex-start; block-size: var(--scheduler-row-h); }
+/* A driver Samsara has no reading for has no meter, so their name stands
+   on the first row with the seats' names, not centred across both. */
+.scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road > .scheduler-bar__drivers > .scheduler-bar__crew > .scheduler-crew:not(.scheduler-crew--seat) { align-self: flex-start; block-size: var(--scheduler-row-h); }
 .scheduler-week:not(.scheduler-week--no-update, .scheduler-week--no-drivers) .scheduler-bar--road .scheduler-crew--seat {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

@@ -1221,8 +1221,9 @@ button.scheduler-row-head__num::after {
     color-mix(in srgb, currentColor 22%, transparent);
 }
 /* A stop's dot, 6px on the line at its time: filled once the leg has
-   reached it, and a ring in the line's ink, on the bar's own fill, while
-   it is ahead. It names the stop and its time on hover. */
+   reached it, in the trip's strongest ink where its theme gives one, so it
+   stands out of the filled line, and a ring in the line's ink, on the
+   bar's own fill, while it is ahead. It names the stop and its time on hover. */
 .scheduler-bar__track:has(> .scheduler-bar__stop) { position: relative; }
 .scheduler-bar__stop {
   position: absolute;
@@ -1233,7 +1234,7 @@ button.scheduler-row-head__num::after {
   inline-size: 6px;
   block-size: 6px;
   border-radius: 50%;
-  background: currentColor;
+  background: var(--scheduler-strong, currentColor);
 }
 .scheduler-bar__stop--ahead { background: var(--scheduler-bg); border: 1.5px solid currentColor; }
 /* A leg that runs off the week has no time on that side: its track runs on

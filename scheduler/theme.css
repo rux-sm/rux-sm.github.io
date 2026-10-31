@@ -925,8 +925,9 @@
    pane's sheet, every row parted by the board's one line. A mark is small
    and carries no words but a rest's hours, so it is Geist's solid badge,
    its 700 and 800 fills, the steps Geist keeps for a high-contrast mark: a
-   booked day is blue 800 and a day off red 800, each with white words, and
-   a rest under 10 hours amber 700 with black, as Geist's badges pair them.
+   booked day is blue 800 and a day off red 800, each with white words, as
+   Geist's badges pair them. A rest is a booked day: its hours are the words
+   that say it, so a run of booked days stays one blue bar.
    A day free for the picked trip carries the shared check or caution, in
    Geist's green 900 and amber 900, the theme's success and warning. */
 /* No rule runs between the days, on the board or in the roster: each bus
@@ -946,10 +947,6 @@
 [data-theme="rux-100"] .scheduler-avail__cell--off {
   --scheduler-avail-fill: oklch(58.01% 0.227 25.12);
   color: #fff;
-}
-[data-theme="rux-100"] .scheduler-avail__cell--busy.scheduler-avail__cell--tight {
-  --scheduler-avail-fill: oklch(81.87% 0.1969 76.46);
-  color: #000;
 }
 /* A roster mark carries no drawing: the blue mark already says booked and
    the red one away, and a drawing on the first day of every bar filled the

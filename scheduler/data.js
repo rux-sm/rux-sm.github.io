@@ -11021,17 +11021,14 @@
      the bus column, those two rows are held to the room between the edge and
      the bar's end, `--scheduler-row-room`, which app.css reads, and their
      words are cut there instead. The edge is where the destination row
-     stands, read rather than worked out. A bar's times run its whole length,
-     and a live bar's from its start rather than today's column, so they are
-     held to the room from where they stick, the week's edge and their own
-     sticky inset, `--scheduler-times-room`.
+     stands, read rather than worked out. The times row does not stick, so
+     it needs nothing here.
      Every bar is read before any is written, because a write between two reads
      has the browser lay the whole board out again for the second, once a bar
      on a strip's five weeks. A bar off the pane is left until a scroll brings
      it in, when this runs again. */
   function fitStuckRows() {
     const pane = schEl.getBoundingClientRect();
-    const paneEdge = pane.left + schEl.clientLeft;
     const fits = [];
     for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
       if (!(Number(bar.dataset.span) > 1)) continue;
@@ -11040,21 +11037,16 @@
       const box = bar.getBoundingClientRect();
       if (box.right < pane.left || box.left > pane.right) continue;
       const cs = getComputedStyle(bar);
-      const times = bar.querySelector(':scope > .scheduler-road__times') ?? bar.querySelector(':scope > .scheduler-bar__time');
       fits.push({
         bar,
         start: box.left + parseFloat(cs.paddingLeft) + 0.5,
         end: box.right - parseFloat(cs.paddingRight),
         at: dest.getBoundingClientRect().left,
-        edge: times ? paneEdge + (parseFloat(getComputedStyle(times).insetInlineStart) || 0) : -Infinity,
       });
     }
-    for (const { bar, start, end, at, edge } of fits) {
-      const room = from => `${Math.max(0, end - from)}px`;
-      if (at > start) bar.style.setProperty('--scheduler-row-room', room(at));
+    for (const { bar, start, end, at } of fits) {
+      if (at > start) bar.style.setProperty('--scheduler-row-room', `${Math.max(0, end - at)}px`);
       else bar.style.removeProperty('--scheduler-row-room');
-      if (edge > start) bar.style.setProperty('--scheduler-times-room', room(edge));
-      else bar.style.removeProperty('--scheduler-times-room');
     }
   }
 

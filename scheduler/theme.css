@@ -898,10 +898,10 @@
   opacity: .35;
 }
 /* A RUX 100 TRIP IS ONE COLOUR: every line, the customer, the contact, the
-   update and the drivers with the destination and times, is written in the
-   trip's own Geist 900 on its 100, so a trip reads as one shape; only the
-   drivers' names are white, below. The
-   destination stays bold. A trip the office colours does the same in its
+   update and the drivers with the times, is written in the trip's own
+   Geist 900 on its 100, so a trip reads as one shape; the destination, the
+   line that names the trip, takes its 1000, as a Geist banner's action
+   does, and the drivers' names are white, below. The destination stays bold. A trip the office colours does the same in its
    own Geist pair; one with no colour, a grey, keeps Geist's grey 900 for
    these lines. A mark with its own colour inside them, a driver away or
    short on hours, keeps it. */
@@ -1518,7 +1518,9 @@
   outline: 1px solid var(--scheduler-border);
   outline-offset: -1px;
 }
-[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-border: oklch(35.53% 0.0903 66.2971); }
+[data-theme="rux-100"] .scheduler-bar--amber { --scheduler-border: oklch(35.53% 0.0903 66.2971); --scheduler-strong: oklch(96.7% 0.0418 84.59); }
+/* The destination in the trip's 1000; a grey trip keeps its own ink. */
+[data-theme="rux-100"] .scheduler-bar > .scheduler-bar__dest { color: var(--scheduler-strong, inherit); }
 /* The raised surface a panel's tiles and fields take: Geist's Colour 1,
    #1a1a1a, 1.14 to 1 on the board's sheet, and its Colour 2, #1f1f1f, on
    hover. */
@@ -1527,13 +1529,14 @@
   --scheduler-raised-hover: #1f1f1f;
 }
 /* RUX 100'S CONFIRMED TRIP IS BLUE, drawn as Geist draws its blue: blue 100
-   for the surface, blue 900 for the destination and times, 6.9 to 1, blue
-   200 on hover and blue 400 for its edge. */
+   for the surface, blue 900 for the times, 6.9 to 1, blue 1000 for the
+   destination, blue 200 on hover and blue 400 for its edge. */
 [data-theme="rux-100"] .scheduler-bar--blue {
   --scheduler-bg: oklch(22.17% 0.069 259.89);
   --scheduler-fg: oklch(71.7% 0.1648 250.794);
   --scheduler-hover: oklch(25.45% 0.0811 255.8);
   --scheduler-border: oklch(34.1% 0.121 254.74);
+  --scheduler-strong: oklch(96.75% 0.0179 242.423);
 }
 /* A Rux 100 trip on the road marks now on its track with a white dot ringed
    in the bar's own fill, so where the bus is in its day stands out of the
@@ -1598,34 +1601,39 @@
   --scheduler-fg: oklch(69.96% 0.2136 22.03);
   --scheduler-hover: oklch(25.93% 0.0834 19.02);
   --scheduler-border: oklch(35.27% 0.1273 21.23);
+  --scheduler-strong: oklch(95.6% 0.0293 6.61);
 }
 /* THE COLOURS THE OFFICE PICKS ARE GEIST'S OWN PAIRS, as the status
    colours are: each hue's 100 for the surface, its 900 for the words and
-   marks, its 200 on hover and its 400 for the edge. Magenta takes Geist's pink, its nearest hue. A
+   marks, its 1000 for the destination, its 200 on hover and its 400 for the edge. Magenta takes Geist's pink, its nearest hue. A
    trip stored as cyan paints as teal, week.js's retired name. */
 [data-theme="rux-100"] .scheduler-bar--magenta {
   --scheduler-bg: oklch(22.67% 0.0628 354.73);
   --scheduler-fg: oklch(69.36% 0.2223 3.91);
   --scheduler-hover: oklch(26.2% 0.0859 356.68);
   --scheduler-border: oklch(32.13% 0.1174 356.71);
+  --scheduler-strong: oklch(95.74% 0.0326 350.08);
 }
 [data-theme="rux-100"] .scheduler-bar--purple {
   --scheduler-bg: oklch(22.34% 0.0779 316.87);
   --scheduler-fg: oklch(69.87% 0.2037 309.51);
   --scheduler-hover: oklch(25.91% 0.0921 314.41);
   --scheduler-border: oklch(35.93% 0.1504 309.78);
+  --scheduler-strong: oklch(96.1% 0.0304 316.46);
 }
 [data-theme="rux-100"] .scheduler-bar--green {
   --scheduler-bg: oklch(23.09% 0.0716 149.68);
   --scheduler-fg: oklch(73.1% 0.2158 148.29);
   --scheduler-hover: oklch(27.12% 0.0895 150.09);
   --scheduler-border: oklch(34.39% 0.1039 147.78);
+  --scheduler-strong: oklch(96.76% 0.056 154.18);
 }
 [data-theme="rux-100"] .scheduler-bar--teal {
   --scheduler-bg: oklch(22.1% 0.0544 178.74);
   --scheduler-fg: oklch(74.56% 0.1765 182.8);
   --scheduler-hover: oklch(25.06% 0.062 178.76);
   --scheduler-border: oklch(32.43% 0.0763 180.13);
+  --scheduler-strong: oklch(96.46% 0.056 180.29);
 }
 
 /* THE FLOATING CARD IS ON THE MENUS' SURFACE IN EVERY THEME: the surface, hover, rule and shadow of Carbon's menu, so a context menu and the

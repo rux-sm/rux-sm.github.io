@@ -36,11 +36,11 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    growth broken on purpose. It takes twenty seconds, so it is run by hand
    after a change to either renderer, not by `npm run check`.
 
-3. **Reads chase a fast hand.** A read ahead that lands with the week in
-   view already past what it reached asks again at once; at ten days a
-   second with two-second reads that is a read every second until the hand
-   stops. Bounded, and the eight-week reach makes it rare. Fix: none now;
-   note it before widening the strip.
+3. **A jump past what is held redraws once.** The board holds seventeen
+   weeks either side of where it last read, so scrolling and arrows never
+   wait, but a date picked further off, Today straight after one, or arrows
+   pressed faster than the strip can follow for more than four weeks are
+   drawn whole: one frame of 120 to 280ms. Fix: none now; it is a jump.
 
 ### Costs a frame
 

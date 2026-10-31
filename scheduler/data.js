@@ -1056,9 +1056,13 @@
       }
     }
 
-    // Rows: every active bus, plus any bus this week actually uses, so a trip
-    // on a retired bus is visible rather than silently dropped.
+    /* Rows: every active bus, plus any bus a trip held uses, so a trip on a
+       retired bus is visible rather than silently dropped. Held, not drawn:
+       the rows stay the same while the strip moves through what is held,
+       rather than a row coming and going, and every row under it moving,
+       as such a trip comes into the days drawn and leaves. */
     const used = new Set([...tracks.keys()]);
+    for (const trip of data.trips) for (const a of trip.trip_assignments || []) if (a.bus_id != null) used.add(a.bus_id);
     /* Grouped by type in the order of the office's vehicle-types list, fleet
        order kept within a type, so a van never reads as the next coach down.
        Each bus's head draws its type's icon, so no band parts the groups; a
@@ -1470,18 +1474,21 @@
   let stripStart = null;
   let stripData = null;
   let placedLeft = null;
-  /* A read asked for under a sideways gesture, so the strip can keep growing
-     from what is held: it neither waits for the hand to stop nor draws.
+  /* A WIDE READ, which brings the strip's months either side so scrolling
+     and jumping never wait on the network: it neither waits for the hand to
+     stop nor draws, unless the strip it covers reads differently. A week is
+     read narrow first, so the board draws as soon as it can, and wide right
+     after; a week already held is read wide at once; and a gesture travelling
+     half the reach from the centre of what is held asks for one around it.
      `stripStale` is a strip such a read found changed, drawn once the hand
      stops; `stripAskedFrom` is the centre of what was held when one was last
      asked, so each centre is asked on from once. */
   let stripAhead = false, stripStale = false, stripAskedFrom = null;
-  // How far the week in view travels from the centre of what is held before more is read ahead, in days.
-  const READ_AHEAD_DAYS = 4;
-  /* The days either side a read ahead brings: a read takes a second or two
-     on the office's line and a fast hand covers ten days in one, so twice
-     the usual reach, six weeks of travel from the centre before it runs out. */
-  const STRIP_REACH = 2 * NEAR_DAYS;
+  /* The days either side a wide read brings, seventeen weeks: measured on
+     the office's line, a read of four weeks either side takes 0.6s and one
+     of seventeen 0.8s, since waiting on the server, not the rows, is most
+     of it. */
+  const STRIP_REACH = 119;
   // The axis a trackpad gesture is held to, 'x' or 'y', and whether the day
   // snap is paused for it; the lock itself is beside the strip's scroll handler.
   let axis = null, snapPaused = false;
@@ -17602,6 +17609,8 @@
       if (barsInHand) drawOwed = true;
       else drawBoard(cached.data);
     }
+    // A person's ask is read as theirs, never as a quiet read queued before it.
+    stripAhead = false;
     weekOwed = true;
     return readInTurn();
   }
@@ -18024,7 +18033,10 @@
       // This read covers the live changes waiting.
       liveTrips.clear();
       liveWindows = liveListsAsked = false;
-      const data = await read(asked, ahead ? STRIP_REACH : NEAR_DAYS);
+      const wide = scrolling() && (ahead || held);
+      const data = await read(asked, wide ? STRIP_REACH : NEAR_DAYS);
+      // A narrow read is followed by a wide one, unless a newer ask is waiting, which will be.
+      if (scrolling() && !wide && !readAgain) { stripAhead = true; weekOwed = true; }
       if (weekMotion && !ahead) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;
@@ -18701,6 +18713,10 @@
   // pause above.
   schEl?.addEventListener('scrollend', () => {
     if (axis || snapPaused) return;
+    /* An arrow's glide that has not reached its day is still going: the end
+       the strip's own move along sends under it is not the glide's. A glide
+       that stops short for good is caught by the pause after the last scroll. */
+    if (aim != null && Math.abs(schEl.scrollLeft - aim * dayWidth()) > 1) return;
     scrollStopped();
     if (Math.abs(schEl.scrollTop - restTop) >= 1) alignRows();
   });
@@ -18810,6 +18826,8 @@
       return;
     }
     e.preventDefault();
+    // A hand on the strip takes over from an arrow's glide.
+    aim = null;
     pauseSnap(true);
     schEl.scrollBy({ left: e.deltaX, behavior: 'instant' });
     if (!stripStart) return;
@@ -18826,7 +18844,7 @@
     /* What is held runs out two weeks from its centre, so once the week in
        view is a few days from it, more is read around it, quietly, while the
        hand is still moving; a read already going is followed by this one. */
-    if (cached && iso(cached.centre) !== stripAskedFrom && Math.abs(daysBetween(cached.centre, on)) >= READ_AHEAD_DAYS) {
+    if (cached && iso(cached.centre) !== stripAskedFrom && Math.abs(daysBetween(cached.centre, on)) >= (cached.data.reach ?? NEAR_DAYS) / 2) {
       stripAskedFrom = iso(cached.centre);
       stripAhead = true;
       weekOwed = true;
@@ -18852,6 +18870,21 @@
     if (stripStart && scrolling()) {
       const to = (aim ?? stripAt()) + days;
       if (to >= 0 && to <= stripDays() - inView()) { toast(null); scrollStripTo(to); return; }
+      /* Past the strip's end, from what is held: the strip moves along, nothing
+         on screen moving, so that the day on screen and the day sought sit
+         either side of its middle, the screen well inside it, and glides
+         there as it would within the strip. Presses faster than the glide
+         that ask for more than the strip holds are drawn again whole. */
+      const w = dayWidth();
+      const now = w ? Math.round(schEl.scrollLeft / w) : stripAt();
+      const span = stripDays() - inView();
+      const first = Math.round((now + to) / 2 - span / 2);
+      const on = addDays(stripStart, first + STRIP_BEFORE);
+      if (first <= Math.min(now, to) && first + span >= Math.max(now, to) && holds(on) && growStrip(on)) {
+        toast(null);
+        scrollStripTo(to - first);
+        return;
+      }
       // Past the strip's end, the week is drawn again from where the last press was going.
       if (aim != null) cursor = addDays(stripStart, aim);
     }

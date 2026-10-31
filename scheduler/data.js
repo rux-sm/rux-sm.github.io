@@ -1251,8 +1251,9 @@
 
       /* The bus's kit on the head's last row: one band of three cells, its
          seats, its sleeper and its lift, so each stands in one place down
-         the column; a cell the bus lacks is empty, so every head has three.
-         The number's tip and title name them for the reader. */
+         the column; the sleeper and lift are drawn on every head, dimmed
+         where the bus lacks one. The number's tip and title name them for
+         the reader. */
       if (r.bus) {
         const equip = el('div', 'scheduler-row-head__equip');
         const tile = (on, label) => {
@@ -1266,7 +1267,7 @@
         equip.appendChild(seats);
         for (const [on, href, label] of [[r.bus.sleeper, '#m-airline_seat_flat-fill', 'Sleeper'], [r.bus.ada_lift, '#m-accessible-fill', 'ADA lift']]) {
           const t = tile(on, label);
-          if (on) t.appendChild(svgUse(href, '16', '0 0 32 32'));
+          t.appendChild(svgUse(href, '16', '0 0 32 32'));
           equip.appendChild(t);
         }
         head.appendChild(equip);

@@ -429,19 +429,21 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's kit on its own row: one 16px band across the head's 48px in
-   three square cells parted by 1px of the sheet, its seats, its sleeper and
-   its lift, each in one place down the column. The seats are a number in
-   10px type, the icons Carbon's 16px; a cell the bus lacks is empty band.
-   At its row's start, which on six rows is 6px under the percent and the
-   16px to the row rule's 8px; centred like the speedometer, since the column
-   takes the days' spare pixels and can stand wider than 48 inside. Presses
-   go through to the number, whose tip and title name them. */
+/* The bus's kit on its own row: three 16px cells 2px apart across the
+   head's 52px, its seats, its sleeper and its lift, each in one place down
+   the column. The seats are a number in 12px regular type, the icons
+   Carbon's 16px, in the primary ink where the bus has it and the disabled
+   ink where it lacks it. At its row's start, which on six rows is 6px under
+   the percent and the 16px to the row rule's 8px; centred like the
+   speedometer, since the column takes the days' spare pixels and can stand
+   wider inside. Presses go through to the number, whose tip and title name
+   them. */
 .scheduler-row-head__equip {
   align-self: start;
   justify-self: center;
   display: grid;
   grid-template-columns: repeat(3, 16px);
+  column-gap: 2px;
   flex: none;
   pointer-events: none;
 }
@@ -449,14 +451,12 @@ button.scheduler-row-head__num::after {
   display: grid;
   place-items: center;
   block-size: 16px;
-  background: var(--rux-layer-accent-01);
   color: var(--rux-text-primary);
-  font-size: 10px;
-  line-height: 10px;
-  font-weight: 600;
+  font-size: var(--rux-label-01-font-size);
+  line-height: 16px;
   font-variant-numeric: tabular-nums;
 }
-.scheduler-row-head__tile + .scheduler-row-head__tile { box-shadow: inset 1px 0 0 var(--rux-layer); }
+.scheduler-row-head__tile[data-on="0"] { color: var(--rux-icon-disabled); }
 .scheduler-row-head__equip svg { display: block; }
 /* The state's display, on its rows and the head's width, so the fuel under
    it stands at one height down the column. While the engine runs it is

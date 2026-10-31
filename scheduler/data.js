@@ -18695,7 +18695,11 @@
   // A gesture the axis lock below drives scrolls by script, and each step
   // ends a scroll of its own; its real end is the glide that follows, or the
   // pause above.
-  schEl?.addEventListener('scrollend', () => { if (axis || snapPaused) return; scrollStopped(); });
+  schEl?.addEventListener('scrollend', () => {
+    if (axis || snapPaused) return;
+    scrollStopped();
+    if (Math.abs(schEl.scrollTop - restTop) >= 1) alignRows();
+  });
 
   /* A TRACKPAD GESTURE SCROLLS ONE WAY. A Mac trackpad's stroke is seldom
      straight: a scroll up or down carries a few pixels sideways, which the day
@@ -18719,9 +18723,56 @@
     if (on) schEl.style.scrollSnapType = 'none';
     else schEl.style.removeProperty('scroll-snap-type');
   }
+  /* A STRIP COMES TO REST WITH NO BAR CUT BY THE DAY HEADER. Once a scroll
+     up or down stops, the line under the header is moved to the nearest
+     place a bar's lane begins, each bus's row and each lane stacked in it:
+     a bar the header hides less than half of slides back into full view, and
+     one it hides more of gives way to the bar after it. A scroll that would
+     be undone entirely, a short nudge or a mouse wheel's notch, goes on to
+     the next lane instead, so a small step still moves the board. The foot
+     of the board, where the rows end, is left as the scroll left it. */
+  let restTop = 0;
+  function alignRows() {
+    const from = restTop;
+    restTop = schEl.scrollTop;
+    if (!scrolling() || !stripStart || barsInHand || gridEl.style.minBlockSize) return;
+    const moved = schEl.scrollTop - from;
+    const max = schEl.scrollHeight - schEl.clientHeight;
+    if (Math.abs(moved) < 1 || schEl.scrollTop >= max - 1) return;
+    const head = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().bottom;
+    if (head == null) return;
+    // Every place a lane begins, by where its bars stand below their track's top.
+    const lines = [];
+    for (const track of gridEl.querySelectorAll('.scheduler-row:not([hidden]) > .scheduler-track')) {
+      const box = track.getBoundingClientRect();
+      if (box.bottom < head - schEl.clientHeight || box.top > head + schEl.clientHeight) continue;
+      lines.push(box.top);
+      const bars = [...track.querySelectorAll(':scope > .scheduler-bar:not([data-folded])')];
+      const first = bars.find(b => !Number(b.style.getPropertyValue('--scheduler-lane')));
+      if (!first) continue;
+      const clear = first.getBoundingClientRect().top - box.top;
+      for (const bar of bars) if (Number(bar.style.getPropertyValue('--scheduler-lane'))) lines.push(bar.getBoundingClientRect().top - clear);
+    }
+    if (!lines.length) return;
+    lines.sort((a, b) => a - b);
+    let at = lines.reduce((best, line) => (Math.abs(line - head) < Math.abs(best - head) ? line : best));
+    // A step that would land back where it began goes one lane on instead.
+    if (Math.abs(schEl.scrollTop + (at - head) - from) < 1) {
+      const on = moved > 0 ? lines.find(line => line > head + 1) : [...lines].reverse().find(line => line < head - 1);
+      if (on != null) at = on;
+    }
+    const to = Math.max(0, Math.min(max, schEl.scrollTop + at - head));
+    if (Math.abs(to - schEl.scrollTop) < 1) return;
+    restTop = to;
+    schEl.scrollTo({ top: to, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+  }
+
   function endAxis() {
+    const was = axis;
     axis = null;
     wallAsked = false;
+    // A scroll up or down the lock drove by script sends no end of its own.
+    if (was === 'y') alignRows();
     if (!snapPaused) return;
     const w = dayWidth();
     const at = w && scrolling() ? Math.round(schEl.scrollLeft / w) * w : schEl.scrollLeft;

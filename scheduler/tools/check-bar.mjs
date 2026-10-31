@@ -238,8 +238,8 @@ expect('a recorded return cannot erase a decline', icon(Bar.crewEl(declinedDrive
 console.log('\n  Alerts');
 const alerts = ['A hotel to book', 'No one to call on the day', 'More passengers than seats', 'A driver said no', 'A driver to tell',
   'Hours of service', 'The wrong type of bus', 'A bus short of a need', 'Both', 'Nothing paid'];
-// The samples leave today, so a missing trip contact is near enough to warn of.
-expect('a problem wears the alert badge in its colour, a contact missing near the day too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
+// The samples are confirmed, so a missing trip contact warns whatever day they leave.
+expect('a problem wears the alert badge in its colour, a confirmed trip\'s missing contact too, other paperwork none', alerts.map(n => mark(drawn('alerts', n)[0])), [
   null, 'amber Trip contact missing', 'amber More passengers than seats: 52 passengers and 49 seats',
   'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed',
   'red Sleeper needed · Trip contact missing', 'amber PO, deposit or payment pending']);
@@ -271,6 +271,12 @@ expect('a confirmed trip with nothing paid is a problem however far off it leave
   [money(unpaidTrip()), money(unpaidTrip({ deposit_amount: 500, trip_payments: [{ amount: 500, date: far }] })),
     money(unpaidTrip({ po_received: true, po_amount: 4885 })), money(unpaidTrip({ confirmed: false })), money(unpaidTrip({ quoted_price: 0 }))],
   [['PO, deposit or payment pending'], [], [], [], []]);
+// Four months off, with no trip contact and no itinerary.
+const bare = (more = {}) => unpaidTrip({ trip_contacts: [], itinerary_not_needed: false, po_received: true, po_amount: 4885, ...more });
+const missing = t => Bar.problemsOf(t, {}, Week.legsOf(t)[0]).map(a => a.words).filter(w => /contact|tinerary/.test(w));
+expect('a confirmed trip\'s missing contact and itinerary are problems however far off it leaves, and a trip not confirmed\'s are not',
+  [missing(bare()).length, missing(bare({ confirmed: false })), missing(bare({ contact_not_needed: true, itinerary_not_needed: true }))],
+  [2, [], []]);
 expect('same section toggles closed, another switches, and closed cards open',
   [Bar.opensSection(true, 'needs', 'needs'), Bar.opensSection(true, 'needs', 'updates'), Bar.opensSection(false, 'updates', 'updates')],
   [false, true, true]);

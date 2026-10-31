@@ -195,9 +195,9 @@
   };
   // The waits that are money: the PO, deposit or payment before the trip leaves, the balance after.
   const MONEY = new Set(['po', 'balance']);
-  /* BUT A CONFIRMED TRIP'S CONTACT AND ITINERARY ARE A PROBLEM, whatever
-     day it leaves: still missing, they put up the warning sign too. A trip
-     not yet confirmed is still the Tasks list's to ask for. */
+  /* BUT A TRIP'S CONTACT AND ITINERARY ARE A PROBLEM, whatever day it
+     leaves and confirmed or not: still missing, they put up the warning sign
+     too. A placeholder, not quoted yet, wears no problem at all. */
   /* A destination as the bar shows it: the home state, ", TX" or " TX" at
      the end, is left off, since nearly every trip is in Texas and the two
      letters cut the place's own name short. Another state stays. What was
@@ -419,13 +419,11 @@
   function problemsOf(trip, facts, leg) {
     if (window.SchedulerCloseOut.isBack(trip)) return [];
     const list = alertsOf(trip, facts).filter(isProblem);
-    if (trip.confirmed === true) {
-      if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed)
-        list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
-      const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
-      if (!trip.itinerary_not_needed && !window.SchedulerTripShape.itineraryFor(trip, firstLeg))
-        list.push({ row: 'scheduler-card__asks', go: 'itinerary', spot: 'itinerary', words: WAIT_WORDS.itinerary });
-    }
+    if (!dayOfContact(trip, leg.key) && !trip.contact_not_needed)
+      list.push({ row: 'scheduler-card__warn', go: 'details', spot: 'contact', words: 'Trip contact missing' });
+    const firstLeg = window.SchedulerWeek.legsOf(trip)[0]?.key;
+    if (!trip.itinerary_not_needed && !window.SchedulerTripShape.itineraryFor(trip, firstLeg))
+      list.push({ row: 'scheduler-card__asks', go: 'itinerary', spot: 'itinerary', words: WAIT_WORDS.itinerary });
     return list;
   }
 

@@ -239,12 +239,11 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 8px at the sides, and at the top the bar's own clear space and padding,
-     so each of the head's rows stands level with the bar's; the last row's
-     foot lands over the row rule by the track's own gap, so no padding is
-     needed below, and none is set, or the head would stand taller than its
-     track. */
-  padding: calc(var(--scheduler-gap-clear) + var(--rux-spacing-02)) var(--rux-spacing-03) 0;
+  /* 8px at the top and sides: the number stands against the top, 1px under
+     where the bar's lines start, and the last row's foot lands 8px over the
+     row rule by the track's own gap, so no padding is needed below, and
+     none is set, or the head would stand taller than its track. */
+  padding: var(--rux-spacing-03) var(--rux-spacing-03) 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -266,7 +265,9 @@
    the DEF tag stands over the state's foot. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
 .scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__arc, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
-.scheduler-row-head__top { grid-row: 1; }
+/* The number's row a pixel up, out of the head's 8px, so it stands level
+   with the destination, whose line starts 7px down the bar. */
+.scheduler-row-head__top { grid-row: 1; align-self: start; margin-block-start: -1px; }
 .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
 .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
 .scheduler-row-head__equip { grid-row: 5; }

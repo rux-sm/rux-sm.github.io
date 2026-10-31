@@ -106,19 +106,23 @@
       if (s.type === 'return') continue;
       const [t, day] = s === pickup ? [s.spot, s.spot_date] : [s.arrive, s.arrive_date];
       if (!t || !day) continue;
-      const at = (clockAt(day, t) - out) / (back - out) * 100;
-      if (at > 0 && at < 100) times.push({ at, words: `${s === pickup ? 'Spot' : 'Arrive'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
+      const ms = clockAt(day, t);
+      const at = (ms - out) / (back - out) * 100;
+      if (at > 0 && at < 100) times.push({ at, ms, id: String(s.id), words: `${s === pickup ? 'Spot' : 'Arrive'} · ${s.name || s.label || s.address || 'Stop'} · ${hhmm(t)}` });
     }
     const dots = [];
     for (const t of times.sort((a, b) => a.at - b.at)) {
       const last = dots.at(-1);
-      if (last && t.at - last.at < STOP_GAP / Math.max(30, days * DAY_W - TIMES_W) * 100) last.words.push(t.words);
-      else dots.push({ at: t.at, words: [t.words] });
+      if (last && t.at - last.at < STOP_GAP / Math.max(30, days * DAY_W - TIMES_W) * 100) { last.words.push(t.words); last.ids.push(t.id); }
+      else dots.push({ at: t.at, ms: t.ms, ids: [t.id], words: [t.words] });
     }
     return dots.map(d => {
       const dot = el('span', 'scheduler-bar__stop');
       dot.style.setProperty('--scheduler-at', `${Math.round(d.at * 10) / 10}%`);
       dot.dataset.at = String(d.at);
+      // When it is due and which stops it stands for, which a live bar's track places and fills it by.
+      dot.dataset.ms = String(d.ms);
+      dot.dataset.stops = d.ids.join(' ');
       dot.title = d.words.join('\n');
       return dot;
     });

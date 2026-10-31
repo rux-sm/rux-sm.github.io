@@ -396,7 +396,7 @@
 
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, with its next-day mark, at either end of a
-     track filled as far as the time between them has gone, with a dot at now. A bus running late back
+     track filled as far as the time between them has gone, carrying the stops' dots. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
@@ -420,6 +420,18 @@
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
       const track = el('span', 'scheduler-road__track');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
+      /* The stops' dots the time row drew, placed on this track and filled
+         once the bus has reached every stop a dot stands for, so a ring the
+         filled line has passed is a stop it is late to. */
+      const reached = new Set((next?.stops ?? []).slice(0, (next?.where?.reached ?? -1) + 1).map(s => s.key));
+      for (const drawn of bar.querySelectorAll(':scope > .scheduler-bar__time .scheduler-bar__stop')) {
+        const dot = drawn.cloneNode(false);
+        const at = back > out ? (Number(drawn.dataset.ms) - out) / (back - out) * 100 : -1;
+        if (!(at > 0 && at < 100)) continue;
+        dot.style.setProperty('--scheduler-at', `${Math.round(at * 10) / 10}%`);
+        dot.classList.toggle('scheduler-bar__stop--ahead', !drawn.dataset.stops.split(' ').every(k => reached.has(k)));
+        track.append(dot);
+      }
       parts.push(track);
     }
     const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;

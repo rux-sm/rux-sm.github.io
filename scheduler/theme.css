@@ -1538,13 +1538,6 @@
   --scheduler-border: oklch(34.1% 0.121 254.74);
   --scheduler-strong: oklch(96.75% 0.0179 242.423);
 }
-/* A Rux 100 trip on the road marks now on its track with a white dot ringed
-   in the bar's own fill, so where the bus is in its day stands out of the
-   blue track and times around it. */
-[data-theme="rux-100"] .scheduler-bar--road .scheduler-road__track::after {
-  background: var(--rux-text-primary);
-  box-shadow: 0 0 0 2px var(--scheduler-bg);
-}
 /* A CONFIRMED TRIP ON THE ROAD KEEPS ITS BLUE, and its drivers' duty marks
    flash on the beat the board's red road warning blinks to, so the buses
    out now show by the one thing moving, at the wheel, resting or parked.

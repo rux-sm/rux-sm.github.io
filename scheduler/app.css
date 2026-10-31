@@ -2298,7 +2298,8 @@ button.scheduler-row-head__num::after {
 .scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
 .scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }
 /* The track between out and back: 2px, filled as far as the trip has gone,
-   with a 6px dot at now, all in the row's ink so it reads as the times do. */
+   which is now, in the row's ink so it reads as the times do, with its
+   stops' dots on it. */
 .scheduler-road__track {
   position: relative;
   flex: 1 1 auto;
@@ -2307,21 +2308,11 @@ button.scheduler-row-head__num::after {
   block-size: 2px;
   margin-inline: var(--rux-spacing-02);
   border-radius: 1px;
-  /* Its dot stands 2px past it either side, which a row's parts would clip. */
+  /* Its stops' dots stand past it either side, which a row's parts would clip. */
   overflow: visible;
   background:
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     color-mix(in srgb, currentColor 22%, transparent);
-}
-.scheduler-road__track::after {
-  content: '';
-  position: absolute;
-  inset-block-start: -2px;
-  inset-inline-start: calc(var(--scheduler-done, 0%) - 3px);
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 50%;
-  background: currentColor;
 }
 .scheduler-road__say { min-inline-size: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .scheduler-road__say--error { color: var(--scheduler-age-old); font-weight: 600; }

@@ -642,6 +642,16 @@
 
   /* `quiet` writes the label alone, as a strip does on every day a scroll
      crosses; the picker follows once the scroll stops. */
+  /* Writes a label's words into the text node it has, and only when they
+     change: replacing the node, as textContent does, counts as a DOM change
+     that has the page's style worked out again, 35ms on a strip, and the
+     label is written on every day a scroll crosses. */
+  function setText(el, words) {
+    if (!el || el.textContent === words) return;
+    const node = el.firstChild;
+    if (node && node.nodeType === Node.TEXT_NODE && node === el.lastChild) node.nodeValue = words;
+    else el.textContent = words;
+  }
   function setRange(weekStart, weekEnd, { quiet = false } = {}) {
     if (!rangeEl) return;
     /* One pattern for every week, "Sep 7 – Sep 13, 2026": both months and the
@@ -651,11 +661,11 @@
        three shapes and twice the width between them. The month is short so
        the widest thing in the toolbar does not wrap its row. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
-    rangeTextEl.textContent = `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`;
+    setText(rangeTextEl, `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`);
     // The arrows step by what is shown, and say so.
     const stretch = daysShown() > 7 ? 'two weeks' : 'week';
-    stepPrev?.setAttribute('aria-label', `Previous ${stretch}`);
-    stepNext?.setAttribute('aria-label', `Next ${stretch}`);
+    if (stepPrev?.getAttribute('aria-label') !== `Previous ${stretch}`) stepPrev?.setAttribute('aria-label', `Previous ${stretch}`);
+    if (stepNext?.getAttribute('aria-label') !== `Next ${stretch}`) stepNext?.setAttribute('aria-label', `Next ${stretch}`);
     /* Below md the label is the week's months and year, "Sep – Oct 2026",
        because the day header under it numbers the days and a phone's toolbar
        has no more room beside its four buttons. `formatRange` writes a week
@@ -663,11 +673,11 @@
        week names its year once. */
     if (rangeMonthsEl) {
       const months = new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' });
-      rangeMonthsEl.textContent = weekStart.getFullYear() === weekEnd.getFullYear() && typeof months.formatRange === 'function'
+      setText(rangeMonthsEl, weekStart.getFullYear() === weekEnd.getFullYear() && typeof months.formatRange === 'function'
         ? months.formatRange(weekStart, weekEnd)
         : weekStart.getMonth() === weekEnd.getMonth()
           ? months.format(weekEnd)
-          : `${weekStart.toLocaleDateString(undefined, { month: 'short' })} – ${months.format(weekEnd)}`;
+          : `${weekStart.toLocaleDateString(undefined, { month: 'short' })} – ${months.format(weekEnd)}`);
     }
     /* The week picker's hidden input follows the shown week, so the calendar
        opens on it rather than on today. `valueSetBySelf` stops the `change`
@@ -9740,8 +9750,11 @@
     for (const c of gridEl.querySelectorAll('.scheduler-crew[data-driver-id]')) {
       c.classList.toggle('scheduler-crew--focus', c.dataset.driverId === id);
     }
+    // Written only when it changes: this runs at every scroll's end, and each
+    // attribute written has the page's style worked out again.
     for (const n of availGrid.querySelectorAll('.scheduler-avail__name[data-driver-id]')) {
-      n.setAttribute('aria-pressed', String(n.dataset.driverId === id));
+      const pressed = String(n.dataset.driverId === id);
+      if (n.getAttribute('aria-pressed') !== pressed) n.setAttribute('aria-pressed', pressed);
     }
   }
 
@@ -11029,8 +11042,11 @@
      only moves where the words are cut, for a frame.
      Every bar is read before any is written, because a write between two reads
      has the browser lay the whole board out again for the second, once a bar
-     on a strip's five weeks. A bar off the pane is left until a scroll brings
-     it in, when this runs again. */
+     on a strip's five weeks. A bar is written only when its room has changed,
+     because each write has the board laid out again before the next frame,
+     40ms on a strip, and a scroll changes the room of the bars cut by the bus
+     column alone, a handful, while every bar in view was being written. A bar
+     off the pane is left until a scroll brings it in, when this runs again. */
   function fitStuckRows() {
     const pane = schEl.getBoundingClientRect();
     const fits = [];
@@ -11048,7 +11064,10 @@
         at: dest.getBoundingClientRect().left,
       });
     }
-    for (const { bar, start, end, at } of fits) bar.style.setProperty('--scheduler-row-room', `${Math.max(0, end - Math.max(at, start))}px`);
+    for (const { bar, start, end, at } of fits) {
+      const room = `${Math.round(Math.max(0, end - Math.max(at, start)) * 10) / 10}px`;
+      if (bar.style.getPropertyValue('--scheduler-row-room') !== room) bar.style.setProperty('--scheduler-row-room', room);
+    }
   }
 
   function markTripBars() {

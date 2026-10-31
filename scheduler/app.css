@@ -254,24 +254,21 @@
   text-align: start;
 }
 /* WHAT THE HEAD SHOWS IN HOW MANY ROWS, `data-bar-rows` on the board, which
-   data.js sets with the bar's: six, the number two rows tall, the state two,
-   the fuel and the equipment; five, the number one row; four, the state one
-   row; three, no equipment; two, no fuel; one, the number and its dot. A bus
-   with no tracker has its inspection in the state's place. A low DEF is a
-   tag across a two-row state's foot. */
+   data.js sets with the bar's: the number level with the destination, the
+   state two rows, the fuel and the equipment, with six leaving its last row
+   free; four, the state one row; three, no equipment; two, no fuel; one, the
+   number and its dot. A bus with no tracker has its inspection in the
+   state's place. A low DEF is a tag across a two-row state's foot. */
 /* One column, so a part placed on a row stands in it even over another, as
    the DEF tag stands over the state's foot. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
 .scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
-.scheduler-row-head__top { grid-row: 1 / span 2; }
-.scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 3 / span 2; }
-.scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
-.scheduler-row-head__equip { grid-row: 6; }
-.scheduler-week:not([data-bar-rows="6"]) .scheduler-row-head__top { grid-row: 1; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__equip { grid-row: 5; }
-.scheduler-week[data-bar-rows="5"] .scheduler-row-head__level[data-tank="D"] { grid-row: 3; }
+.scheduler-row-head__top { grid-row: 1; }
+.scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
+.scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
+.scheduler-row-head__equip { grid-row: 5; }
+/* A two-row state stands 2px clear of the number and 3px of the fuel. */
+.scheduler-week:is([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__dial { margin-block: 2px 3px; }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
 .scheduler-week[data-bar-rows="4"] .scheduler-row-head__equip { grid-row: 4; }
@@ -379,7 +376,8 @@ button.scheduler-row-head__num::after {
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--scheduler-row-h);
   letter-spacing: 0;
-  font-weight: 700;
+  /* The destination's weight, so the number and it read as one line. */
+  font-weight: 600;
   color: var(--rux-text-primary);
   font-variant-numeric: tabular-nums;
 }
@@ -420,16 +418,15 @@ button.scheduler-row-head__num::after {
 .scheduler-row-head__insp { display: flex; flex-direction: column; justify-content: center; text-align: center; font-variant-numeric: tabular-nums; }
 .scheduler-row-head__insp--soon { color: var(--scheduler-head-low); font-weight: 600; }
 .scheduler-row-head__gauges { display: contents; }
-/* The bus's equipment on its own row, two even slots, the sleeper's and the lift's,
-   each icon centred in its half. Presses go through to the number, whose
-   tip and title name them. */
+/* The bus's equipment on its own row, two slots at the fuel's edges, the
+   sleeper under the pump and the lift under the figure, so each stands in
+   one place down the column. Presses go through to the number, whose tip
+   and title name them. */
 .scheduler-row-head__equip {
   align-self: center;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  /* A rule between the two slots, drawn only where the bus has equipment. */
-  background: linear-gradient(var(--rux-border-subtle-01), var(--rux-border-subtle-01)) center / 1px 12px no-repeat;
-  justify-items: center;
+  grid-template-columns: 16px 16px;
+  justify-content: space-between;
   flex: none;
   pointer-events: none;
   color: var(--rux-text-secondary);
@@ -511,10 +508,9 @@ button.scheduler-row-head__num::after {
    and takes no height of its own. */
 .scheduler-row-head__gauges:has(> [data-tank="D"]) .scheduler-row-head__speed { padding-block-end: 9px; }
 .scheduler-row-head__level[data-tank="D"] {
-  grid-row: 4;
+  grid-row: 3;
   align-self: end;
   justify-self: center;
-  translate: 0 3px;
   padding-inline: 2px;
   background: var(--rux-layer);
   font-size: 9px;

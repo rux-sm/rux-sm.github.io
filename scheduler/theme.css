@@ -880,9 +880,9 @@
    fuel takes 4px more to stand in the display's inset, 40px for its percent
    and bar. */
 [data-theme="rux-100"] .scheduler-corner { min-inline-size: calc(var(--rux-layout-size-height-md, 2.5rem) + 2 * var(--rux-spacing-03) + 1px); }
-/* The fuel stands in the display's own 8px inset, so its percent and bar line
-   up with the display's edges. */
-[data-theme="rux-100"] .scheduler-row-head__level[data-tank="F"] { margin-inline: var(--rux-spacing-02); }
+/* The fuel and the equipment stand in the display's own 8px inset, so they
+   line up with the display's edges. */
+[data-theme="rux-100"] :is(.scheduler-row-head__level[data-tank="F"], .scheduler-row-head__equip) { margin-inline: var(--rux-spacing-02); }
 [data-theme="rux-100"] .scheduler-row-head__dial {
   justify-self: center;
   inline-size: var(--rux-layout-size-height-md, 2.5rem);

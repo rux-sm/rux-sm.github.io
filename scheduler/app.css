@@ -248,8 +248,11 @@
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
      with one of the bar's and a row the view turns off takes one from both.
-     Sized by its row and never the other way. */
+     Sized by its row and never the other way: no height of its own, and at
+     least its row's, so a row closing or opening takes the head with it. */
   contain: size;
+  block-size: 0;
+  min-block-size: 100%;
   display: grid;
   grid-template-rows: repeat(var(--scheduler-bar-rows), var(--scheduler-row-h));
   align-content: start;
@@ -655,7 +658,11 @@ button.scheduler-row-head__num::after {
 .scheduler-track {
   position: relative;
   grid-column: span var(--scheduler-days);
-  min-block-size: calc(var(--scheduler-gap-clear) + var(--scheduler-lanes, 1) * var(--scheduler-bar-h) + (var(--scheduler-lanes, 1) - 1) * var(--scheduler-lane-gap) + var(--scheduler-gap));
+  /* The lanes' height, written so that no lanes, a bus no longer active with
+     no trip on screen, is no height at all: the clear space and gap above
+     and below the lanes count only while there is a lane. */
+  min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (var(--scheduler-gap-clear) + var(--scheduler-gap) - var(--scheduler-lane-gap))
+    + var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* The day rules: data.js writes the stop list `--scheduler-day-rules` on each
      track, drawn in `--scheduler-day-rule`. A background image paints over the
@@ -832,6 +839,29 @@ button.scheduler-row-head__num::after {
   line-height: var(--scheduler-row-h);
   z-index: 1;
 }
+/* ROWS OPEN AND CLOSE. On a strip, a row grows a lane when a trip stacked
+   on another comes on screen and gives it back once a scroll stops, and a
+   bus no longer active stands shut, `data-shut`, until one of its trips is
+   on screen; data.js writes `--scheduler-lanes`, registered as a number so
+   the height between counts is drawn, and the bars slide to their lanes as
+   it changes. The head takes the row's height, so it follows. A row shut, or
+   still opening, `data-opening`, clips what is in it, so no bar or head
+   paints over the row below. Not while the board is first drawn, which sets
+   `data-animate` once it has been fitted, and not with motion off. */
+@media (prefers-reduced-motion: no-preference) {
+  .scheduler-week:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-track {
+    transition: --scheduler-lanes 220ms cubic-bezier(.2, 0, .38, .9), border-block-end-width 220ms cubic-bezier(.2, 0, .38, .9);
+  }
+  .scheduler-week:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-row-head {
+    transition: padding-block-start 220ms cubic-bezier(.2, 0, .38, .9), border-block-end-width 220ms cubic-bezier(.2, 0, .38, .9);
+  }
+  .scheduler-week:not([data-motion="off"]) .scheduler-grid[data-animate] .scheduler-track > :is(.scheduler-bar:not(.scheduler-bar--leaving), .scheduler-yard) {
+    transition: inset-block-start 220ms cubic-bezier(.2, 0, .38, .9), transform 140ms cubic-bezier(.2, .9, .3, 1.3), box-shadow 140ms ease-out;
+  }
+}
+.scheduler-row[data-shut] > * { padding-block-start: 0; border-block-end-width: 0; overflow: clip; }
+.scheduler-row[data-opening] > * { overflow: clip; }
+
 /* On a strip, a bar or yard card off screen in a lane deeper than its row is
    drawn stands in the first lane until a scroll brings it in, data.js's
    `data-folded`, so it never hangs below the board and lets it scroll past
@@ -878,7 +908,7 @@ button.scheduler-row-head__num::after {
 @property --scheduler-start { syntax: '<number>'; inherits: false; initial-value: 0; }
 @property --scheduler-span { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --scheduler-lane { syntax: '<integer>'; inherits: false; initial-value: 0; }
-@property --scheduler-lanes { syntax: '<integer>'; inherits: false; initial-value: 1; }
+@property --scheduler-lanes { syntax: '<number>'; inherits: false; initial-value: 1; }
 .scheduler-bar {
   --scheduler-bg: var(--rux-tag-background-gray);
   --scheduler-fg: var(--rux-tag-color-gray);

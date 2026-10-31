@@ -1056,13 +1056,14 @@
       }
     }
 
-    /* Rows: every active bus, plus any bus a trip held uses, so a trip on a
-       retired bus is visible rather than silently dropped. Held, not drawn:
-       the rows stay the same while the strip moves through what is held,
-       rather than a row coming and going, and every row under it moving,
-       as such a trip comes into the days drawn and leaves. */
+    /* Rows: every active bus, plus any bus no longer active that a trip uses,
+       so a trip on a retired bus is visible rather than silently dropped. On
+       the strip, every bus, so the rows stay the same whatever is read and
+       wherever the strip goes: one no longer active stands shut until one of
+       its trips is on screen, `fitLanesInView`, and below every active bus,
+       so its opening moves no active row. */
     const used = new Set([...tracks.keys()]);
-    for (const trip of data.trips) for (const a of trip.trip_assignments || []) if (a.bus_id != null) used.add(a.bus_id);
+    const retired = b => b.status !== 'active';
     /* Grouped by type in the order of the office's vehicle-types list, fleet
        order kept within a type, so a van never reads as the next coach down.
        Each bus's head draws its type's icon, so no band parts the groups; a
@@ -1074,9 +1075,9 @@
       return i < 0 ? typeList.length : i;
     };
     const rows = buses
-      .filter(b => b.status === 'active' || used.has(b.id))
+      .filter(b => scrolling() || b.status === 'active' || used.has(b.id))
       .map(b => ({ id: b.id, bus: b }))
-      .sort((a, b) => typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
+      .sort((a, b) => retired(a.bus) - retired(b.bus) || typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
     // Always present, hidden when empty. A drag has to be able to drop the
     // week's first unassigned trip somewhere, and a row that is not in the
     // document has no rectangle to aim at.
@@ -1126,7 +1127,7 @@
      pane's own border closes a grid that reaches it. Only where it moves: the
      class reaches every element in the row, so touching it costs the row. */
   function markLastRow(into) {
-    const shownRows = [...into.querySelectorAll('.scheduler-row')].filter(r => !r.hidden);
+    const shownRows = [...into.querySelectorAll('.scheduler-row')].filter(r => !r.hidden && !r.hasAttribute('data-shut'));
     const last = shownRows[shownRows.length - 1] ?? null;
     const was = into.querySelector('.scheduler-row--last');
     if (was === last) return;
@@ -1157,7 +1158,7 @@
     if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
                                 contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
 
-    if (!target) forgetOwed();
+    if (!target) { forgetOwed(); into.removeAttribute('data-animate'); }
     into.replaceChildren();
     // The corner over the bus numbers is empty: each head draws its own type.
     into.appendChild(el('div', 'scheduler-corner'));
@@ -1290,6 +1291,7 @@
       // The day rules. Per track, for the reason the note above gives.
       track.style.setProperty('--scheduler-day-rules', dayRuleStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
+      if (r.bus && r.bus.status !== 'active') track.dataset.retired = '';
       for (const w of windows) track.appendChild(oosEl(w, clip(w.start_date, w.end_date, weekStart, weekEnd)));
       const yards = r.bus ? yardGaps(bars) : [];
       for (const b of bars) {
@@ -1726,7 +1728,8 @@
     const bar = barEl(b, driversById, busesById, statuses);
     installDrag(bar);
     // Off screen in a lane the row does not show, as `fitLanesInView` would leave it.
-    if (b.lane >= (Number(track.style.getPropertyValue('--scheduler-lanes')) || 1)) bar.toggleAttribute('data-folded', true);
+    const lanes = track.style.getPropertyValue('--scheduler-lanes');
+    if (b.lane >= (lanes === '' ? 1 : Number(lanes))) bar.toggleAttribute('data-folded', true);
     if (current) bar.setAttribute('aria-current', 'true');
     bar.classList.toggle('scheduler-bar--yard-end', yardEnd);
     bar.classList.toggle('scheduler-bar--yard-start', yardStart);
@@ -1781,6 +1784,8 @@
     schEl.scrollLeft = stripAt() * w + keep;
     placedLeft = schEl.scrollLeft;
     fitLanesInView();
+    // Rows open and close smoothly from the frame after the strip is first fitted, so its drawing is not seen opening.
+    requestAnimationFrame(() => requestAnimationFrame(() => gridEl.setAttribute('data-animate', '')));
   }
 
   /* A strip's rows grow only where their trips stack in view, as a paged
@@ -1799,8 +1804,12 @@
     const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
     const first = schEl.scrollLeft / w;
     const last = (schEl.scrollLeft + schEl.clientWidth - head) / w;
+    let folding = false;
     for (const track of gridEl.querySelectorAll('.scheduler-track')) {
-      let lanes = grow ? Number(track.style.getPropertyValue('--scheduler-lanes')) || 1 : 1;
+      // A bus no longer active has no lane at all until one of its trips is on screen.
+      const least = track.dataset.retired != null ? 0 : 1;
+      const now = track.style.getPropertyValue('--scheduler-lanes');
+      let lanes = grow && now !== '' ? Number(now) : least;
       const items = [...track.querySelectorAll(':scope > .scheduler-bar, :scope > .scheduler-yard')].map(item => {
         // A yard card stands on the day a bar starts, with no span of its own.
         const yard = item.classList.contains('scheduler-yard');
@@ -1810,12 +1819,23 @@
         if (start <= last && start + span >= first) lanes = Math.max(lanes, lane + 1);
         return { item, lane };
       });
-      if (track.style.getPropertyValue('--scheduler-lanes') !== String(lanes)) track.style.setProperty('--scheduler-lanes', lanes);
+      if (now !== String(lanes)) track.style.setProperty('--scheduler-lanes', lanes);
       for (const { item, lane } of items) {
         if (item.hasAttribute('data-folded') !== lane >= lanes) item.toggleAttribute('data-folded', lane >= lanes);
       }
+      const row = track.parentElement;
+      if (row.hasAttribute('data-shut') !== !lanes) {
+        folding = true;
+        row.toggleAttribute('data-shut', !lanes);
+        // A row opening keeps its parts clipped until it has opened, so nothing in it paints over the row below.
+        if (lanes) { row.dataset.opening = ''; setTimeout(() => delete row.dataset.opening, ROW_MOTION_MS + 40); }
+      }
     }
+    if (folding) markLastRow(gridEl);
   }
+  // How long a row takes to open or close, as app.css draws it.
+  const ROW_MOTION_MS = 220;
+
 
   /* Draws the board from the held week, with no read. Nothing is drawn under
      a bar in hand, whose drag is measuring these rows; that draw is owed, and
@@ -18671,6 +18691,11 @@
     };
     // A draw from what is held happens at once; only a board left as it was waits for the read's.
     const pending = fit();
+    // Rows closing take their time to close; the foot is where they end.
+    if (gridEl.hasAttribute('data-animate')) {
+      await new Promise(r => setTimeout(r, ROW_MOTION_MS + 20));
+      if (turn !== settling) return;
+    }
     let foot = footOf();
     if (pending && foot >= held) {
       try { await pending; } catch { /* the read says so itself; the board is let go below */ }
@@ -18764,7 +18789,7 @@
     if (head == null) return;
     // Every place a lane begins, by where its bars stand below their track's top.
     const lines = [];
-    for (const track of gridEl.querySelectorAll('.scheduler-row:not([hidden]) > .scheduler-track')) {
+    for (const track of gridEl.querySelectorAll('.scheduler-row:not([hidden]):not([data-shut]) > .scheduler-track')) {
       const box = track.getBoundingClientRect();
       if (box.bottom < head - schEl.clientHeight || box.top > head + schEl.clientHeight) continue;
       lines.push(box.top);

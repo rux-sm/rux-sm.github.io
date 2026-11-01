@@ -46,8 +46,5 @@ and the office can set the real day beside the planned one.
 
 ## Tasks
 
-- [ ] Show rux the nightly schedule that calls `samsara-miles` for the day's
-  returned legs and saves their times, with its key set on the function and
-  in the vault, and apply it on his yes.
 - [ ] Fill in the legs back since October 1 through the same route, read-only
   first, written on his yes.

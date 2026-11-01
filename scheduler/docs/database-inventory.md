@@ -273,8 +273,13 @@ matches drivers, and the farthest bus's total, each leg named by its old word
 and, in `leg_id`, its id. A bus is the Samsara vehicle named with its number. A
 leg runs from its yard-out to its yard-back, widened by two hours each side
 but never into the same bus's trip before or after. Without Read Vehicle
-Trips nobody is known and the miles still come. It writes nothing; Save
-writes `trips.actual_miles` and each seat's `trip_drivers.miles`. It is deployed with Verify JWT off, as §5 is.
+Trips nobody is known and the miles still come. Asked from the editor it
+writes nothing; Save writes `trips.actual_miles` and each seat's
+`trip_drivers.miles`. Each night at 10:30 UTC the database's `samsara-night`
+schedule, through `pg_net`, asks it for the day before and that day with the
+vault's `samsara_night_key` in `x-night-key`, which matches the function's
+`SAMSARA_NIGHT_KEY`, and it saves each bus row's yard times and stop arrivals
+on the service role. It is deployed with Verify JWT off, as §5 is.
 `scheduler/tools/check-samsara-miles.mjs` runs it against sample trips.
 
 ## 8. Samsara now

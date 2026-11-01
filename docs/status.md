@@ -21,6 +21,9 @@ done and how.
   needs a plan of its own.
 - An uploaded certificate's four part dates are typed by hand. Every
   certificate on file is the same insurance form, so the page could read them.
+- Restyling one element of the board costs about 8µs, most of it rules in
+  `design/css/rux-overrides.css` and `scheduler/app.css`; finding and fixing
+  them touches every app, so it needs a plan of its own.
 
 ## Pixels
 

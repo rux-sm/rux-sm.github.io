@@ -14,13 +14,14 @@ Five parts open a card. Two already open the tip: the bus number and a
 stop's tick. Three do not: a trip's alert badge, its update line and the
 drivers' line on a bus out on the road. Those three are one card,
 `#scheduler-bar-shortcuts`, drawn by `drawCard` and `drawLiveCard` in
-`scheduler/data.js`.
+`scheduler/data.js`. A driver's icon on a trip not yet on the road opens
+nothing, and gets a tip too.
 
 ## Decisions
 
 - **The tip's rows are one family, `scheduler-tip`,** renamed from
-  `scheduler-bus-tip`, because the bus, the stop and the three cards all
-  draw them. The head, rows, marks and lamp keep their look.
+  `scheduler-bus-tip`, because the bus, the stop, the trip's tips and the
+  driver's all draw them. The head, rows, marks and lamp keep their look.
 - **The card keeps its own placing:** beside the trip's first day, on the
   other side where there is no room, the caret on the pressed part. Design's
   `popover.js` does no placing and the board's placer already does.
@@ -30,11 +31,9 @@ drivers' line on a bus out on the road. Those three are one card,
 - **No Close and no trip head.** A press elsewhere, Escape or the same press
   puts a tip away, as the bus tip's does.
 - **A trip's tips open from an icon, as Alerts does from its badge:**
-  Updates from the chat icon that leads the update line, and on a bus out on
-  the road the Live tip from any driver's icon, a relief's arrow too. The
-  rest of each line is the trip's, so a press there selects the trip, as
-  anywhere else on the bar. A done trip's drivers carry no icon, so it opens
-  no Live tip.
+  Updates from the chat icon that leads the update line, and a driver's tip
+  from that driver's icon, a relief's arrow too. The rest of each line is the
+  trip's, so a press there selects the trip, as anywhere else on the bar.
 - **Each opening icon is a button named for its tip,** such as "Updates, 6",
   so Tab and Enter reach it. Its press area is 24px, Carbon's smallest
   target, with the icon drawn at 16px as now.
@@ -54,16 +53,37 @@ drivers' line on a bus out on the road. Those three are one card,
   its words, then who and how long ago in the faded line the bus tip uses
   for a bus's make. The avatars go. Add update is the last row and opens the
   Updates window, as the bar's right-click Add update does.
-- **Live:** the head is the bus, as in the bus tip: its disc, its number and
-  what it is doing now. Then a lamp row for each warning, a small map, where
-  it is and when last seen, the next stop and when it gets there, and one row
-  per driver with their duty and drive time left.
-- **The live tip's map is small:** the tip's full width and 8rem tall,
-  fitted to the leg, with its map credit and no zoom buttons. Live map and
-  Google Maps are link rows under it, for a bigger look.
-- **The bus tip's live rows and the live tip come from one function,** so a
-  bus on the road says the same in both. `bus-head.js` draws the bus tip's
-  today.
+- **A driver's tip has one head at every stage:** their photo, or their
+  initials, their full name, and one faded line under it. Each driver's icon
+  opens that driver's own tip, so two drivers on one bus have two.
+- **Before the trip, the driver's tip says whether the driver is set.** The
+  faded line is their role, and Part-time where they are. Then their status
+  with who set it and when, as the hover label says it today; a lamp row
+  only for what stands in the way, a trip changed since they confirmed, another
+  trip or time off, or a licence or medical card that runs out before the leg
+  ends; their rest before this leg; and their phone as a link row.
+- **On the road, the driver's tip says how the driver is doing,** the live
+  card's drivers part with the driver as its head. The faded line is their
+  duty now. Then their Drive, Shift and Cycle time left with each one's bar,
+  their rest, a lamp row for each road warning the live card shows, the
+  small map, the next stop and when they get there, and Live map and Google
+  Maps as link rows.
+- **The map is small:** the tip's full width and 8rem tall, fitted to the
+  leg, with its map credit and no zoom buttons.
+- **The bus's own state stays in the bus tip,** its engine, fuel, town and
+  last reading, so the driver's tip never repeats it.
+- **After the trip, nothing opens,** because a done trip's drivers carry no
+  icon. A driver who declined keeps their icon, which opens the tip from
+  before the trip, saying Declined.
+- **The board already reads every line of the driver's tip but the photo:**
+  `drivers` for the name, phone, type and card dates,
+  `get_trip_driver_statuses` for the status, `driver-job.js` for a change
+  since they confirmed, `clashes.js` for what stands in the way and the
+  rest, and Samsara's reading for the road.
+- **The photo comes from the `driver-photos` bucket, as the Drivers page
+  reads it:** the board adds `photo_path` to its `drivers` read and signs a
+  driver's link when their tip first opens, with the initials until it
+  loads.
 - **The phone's docked sheet keeps its look and tabs,** because it is a sheet
   along the foot, not a tip. Its rows are the new ones.
 - **This plan's tasks go before the
@@ -72,14 +92,9 @@ drivers' line on a bus out on the road. Those three are one card,
 
 ## Questions
 
-- **Does a driver's icon open a tip on a trip that is not on the road?** It
-  shows a hover label today, such as "Driver · name · Confirmed by the
-  driver · date". Recommended: yes, a Driver tip with the driver's photo and
-  name as its head, then the status, who set it and when, and their phone,
-  so every driver icon opens a tip on every trip.
 - **What does Space on a trip open?** It opens the whole card today, with the
-  trip's destination as its head. Recommended: the Updates tip, and the Live
-  tip on a bus out on the road, as now.
+  trip's destination as its head. Recommended: the Updates tip, and on a bus
+  out on the road the first driver's tip.
 
 ## Tasks
 
@@ -87,14 +102,17 @@ drivers' line on a bus out on the road. Those three are one card,
       `data.js`, `bus-head.js`, `app.css`, `overrides.css` and
       `tools/check-bar.mjs`, with the bus and stop tips measured the same
       before and after.
-- [ ] Make the chat icon and a road bar's driver icons the openers in place
-      of their whole rows, in `bar.js` and `road-bar.js`, each a named
-      button with a 24px press area, a hover and no hover label.
+- [ ] Make the chat icon and every driver's icon the openers in place of
+      their whole rows, in `bar.js` and `road-bar.js`, each a named button
+      with a 24px press area, a hover and no hover label.
 - [ ] Give the floating card the toggletip's surface, caret and size, with
       no Close, no trip head and no pop.
 - [ ] Draw the Alerts tip from the tip's rows.
 - [ ] Draw the Updates tip, its Add update opening the Updates window.
-- [ ] Draw the Live tip, its live rows shared with the bus tip.
-- [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see all
-      five tips in Chrome on :8641 on a dark and a light theme, with the
+- [ ] Draw the driver's tip before the trip, with the photo read from
+      `driver-photos`.
+- [ ] Draw the driver's tip on the road, with its small map, in place of the
+      live card.
+- [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
+      every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

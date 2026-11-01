@@ -160,6 +160,19 @@
 }
 .scheduler-week--scroll .scheduler-day { scroll-snap-align: start; }
 .scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head) { margin-inline-end: var(--scheduler-edge); }
+/* The rules along the column's cells, the band's and each row's, run on
+   across the edge they leave unpainted, so a line never breaks there where
+   no day stands under it, as in the loading skeleton or at the strip's
+   start. Over a day they draw on the day's own rule. */
+.scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head)::after {
+  content: '';
+  position: absolute;
+  inset-block: -1px;
+  inset-inline-start: 100%;
+  inline-size: calc(var(--scheduler-edge) + 1px);
+  border-block: inherit;
+  pointer-events: none;
+}
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and

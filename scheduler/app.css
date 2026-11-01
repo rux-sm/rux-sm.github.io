@@ -1730,7 +1730,7 @@ button:is(.scheduler-bar__when, .scheduler-road__when):focus-visible { outline: 
   padding: 0;
   border-radius: 2px;
 }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
 .scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])::after {
   inline-size: 0;
   block-size: 0;
@@ -1777,6 +1777,34 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tip__answer { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
 .scheduler-tip--card .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
 :is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
+.scheduler-tip__why { font-weight: 400; }
+/* On the road: the three clocks side by side, each its name and the hours
+   left over a 3px meter of them in the inverse green, amber and the hours
+   bold under an hour; the small map the tip's full width and 8rem tall,
+   with its credit and no zoom buttons, since Live map is a press away; the
+   next stop with when the bus gets there at the row's end; and the two
+   links, underlined in the tip's ink. */
+.scheduler-tip__clocks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--rux-spacing-04); padding-block: var(--rux-spacing-03); }
+.scheduler-tip__clock { display: grid; gap: var(--rux-spacing-02); min-inline-size: 0; }
+.scheduler-tip__clock-top { display: flex; justify-content: space-between; gap: var(--rux-spacing-02); white-space: nowrap; }
+.scheduler-tip__clock-top > :first-child { opacity: .75; }
+.scheduler-tip__left { font-variant-numeric: tabular-nums; }
+.scheduler-tip__clock--low .scheduler-tip__left { font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-tip__meter {
+  --scheduler-meter: var(--rux-support-success-inverse);
+  block-size: 3px;
+  background: linear-gradient(var(--scheduler-meter), var(--scheduler-meter)) no-repeat 0 0 / var(--scheduler-left, 0%) 100%,
+    color-mix(in srgb, currentColor 25%, transparent);
+}
+.scheduler-tip__clock--low .scheduler-tip__meter { --scheduler-meter: var(--rux-support-warning-inverse); }
+.scheduler-tip__map { padding: 0; }
+.scheduler-tip--card .scheduler-card__live-map-box { block-size: 8rem; }
+.scheduler-tip--card .leaflet-control-zoom { display: none; }
+.scheduler-tip__next { display: flex; align-items: baseline; gap: var(--rux-spacing-03); }
+.scheduler-tip__next--late > .scheduler-tip__when { opacity: 1; font-weight: var(--rux-heading-compact-01-font-weight); }
+.scheduler-tip__links { display: flex; gap: var(--rux-spacing-05); }
+.scheduler-tip__link { color: inherit; text-decoration: underline; }
+.scheduler-tip__link:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: 1px; }
 .scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-tip__go:focus-visible, .scheduler-tip__open:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }

@@ -11198,8 +11198,9 @@
   // Asking again brings back a card put away by one of its actions.
   /* THE CARD IS ONE PART AT A TIME: Alerts, opened from a bar's alert
      badge, Updates, from its update line's chat mark, a driver's tip, from
-     their status mark, the route, from its times, line and ticks, and the
-     live card, from a duty mark on a bus out on the road. Each draws only
+     their status mark, or their duty mark on a bus out on the road, the
+     route, from its times, line and ticks, and the live card, from a duty
+     mark Samsara names no driver for. Each draws only
      its own part, sized to what it holds, with no head,
      since its trip is the bar beside it. The docked sheet keeps an out trip's
      parts as tabs. */
@@ -16656,15 +16657,26 @@
 
   // A driver's three clocks, each against the most its rule allows.
   const LIVE_CLOCKS = [['Drive', 'drive_ms', 10 * ROAD_HOUR], ['Shift', 'shift_ms', 15 * ROAD_HOUR], ['Cycle', 'cycle_ms', 70 * ROAD_HOUR]];
-  /* A DRIVER'S TIP, before the trip, says whether the driver is set: their
-     photo, or their initials until it comes, their name, and their seat with
-     Part-time where they are; then their answer, who gave it and when; a
-     lamp row for each thing in the way, a leg that changed since they said
+  /* A DRIVER'S TIP has one head at every stage: their photo, or their
+     initials until it comes, their name, and one faded line. `section` is
+     `driver:<id>:<seat>`, the seat `wheel` for a driver at the wheel the bar
+     does not name. The photo is signed from the Drivers page's bucket; every
+     other line is read from what the board holds.
+
+     BEFORE THE TRIP it says whether the driver is set: their seat under the
+     name, with Part-time where they are; their answer, who gave it and when;
+     a lamp row for each thing in the way, a leg that changed since they said
      yes in amber and what stands in the way of the seat, clashes.js's, in
-     red; a back-to-back trip either side and the rest between, in amber
-     where the rest is short; and their phone, a press that calls. Every line
-     is read from what the board holds but the photo, which is signed from
-     the Drivers page's bucket. `section` is `driver:<id>:<seat>`. */
+     red; a back-to-back trip either side with the rest between, in amber
+     where the rest is short; and their phone, a press that calls.
+
+     ON THE ROAD, for a driver Samsara has in the bus, it says how they are
+     doing, the live card's driver with the driver as its head: their duty
+     under the name; their Drive, Shift and Cycle time left, each over its
+     meter, amber under an hour; their rest while off or in the sleeper; a
+     lamp row for each of the road's warnings; the small map of the leg; the
+     next stop and when the bus gets there; and Live map and Google Maps. The
+     bus's own state, its engine, fuel and place, is the bus tip's. */
   const DRIVER_PHOTOS = 'driver-photos';
   const driverPhotoLinks = new Map();
   const driverPhoto = path => {
@@ -16682,35 +16694,86 @@
     const [, driverId, role] = section.split(':');
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
     tip.dataset.tripId = trip.id;
+    const bus = bar.dataset.road ? roadBusOf(bar) : null;
+    const d = bus?.drivers.find(x => x.driver_id != null && String(x.driver_id) === driverId) ?? null;
     const found = barSeat(bar, role);
     const c = found && crewOf(found.trip, found.assign, panelIndex.driversById, panelIndex.statuses)
       .find(x => x.role === role && String(x.driverId) === driverId);
+    const who = c?.who ?? driverById(driverId) ?? null;
     const head = el('div', 'scheduler-tip__head');
     tip.appendChild(head);
-    if (!c?.who) {
+    if (!d && !c?.who) {
       head.appendChild(el('strong', 'scheduler-tip__name', 'Driver'));
       tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__none', 'Nobody is in this seat now.'));
       return tip;
     }
-    const face = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm scheduler-tip__face', initialsOf(c.who.name));
+    const name = who?.name || d?.name || who?.short_name || 'Unnamed driver';
+    const face = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm scheduler-tip__face', initialsOf(name));
     face.setAttribute('aria-hidden', 'true');
-    driverPhoto(c.who.photo_path).then(url => {
+    driverPhoto(who?.photo_path).then(url => {
       if (!url || !face.isConnected) return;
       const img = el('img', 'rux--user-avatar__photo rux--user-avatar__photo--sm');
       img.alt = '';
       img.src = url;
-      img.addEventListener('error', () => { face.textContent = initialsOf(c.who.name); }, { once: true });
+      img.addEventListener('error', () => { face.textContent = initialsOf(name); }, { once: true });
       face.replaceChildren(img);
     });
     const said = el('div', 'scheduler-tip__said');
-    said.append(el('strong', 'scheduler-tip__name', c.who.name || c.who.short_name || 'Unnamed driver'),
-      el('span', null, [c.label, c.who.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
+    said.append(el('strong', 'scheduler-tip__name', name), el('span', null, d
+      ? [(ROAD_DUTY[d.duty] ?? ROAD_DUTY.unknown).word, d.wheel ? 'at the wheel' : null].filter(Boolean).join(' · ')
+      : [c.label, who?.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
     head.append(face, said);
-    const lamp = (tone, words) => {
+    const lamp = (tone, words, why) => {
       const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
-      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', words));
+      const text = el('span', 'scheduler-tip__words', words);
+      if (why) text.append(' ', el('span', 'scheduler-tip__why', why));
+      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), text);
       tip.appendChild(row);
     };
+    if (d) {
+      const clocks = el('div', 'scheduler-tip__row scheduler-tip__clocks');
+      for (const [label, field, most] of LIVE_CLOCKS) {
+        const ms = d[field];
+        if (ms == null) continue;
+        const clock = el('div', `scheduler-tip__clock${ms < ROAD_HOUR ? ' scheduler-tip__clock--low' : ''}`);
+        const top = el('span', 'scheduler-tip__clock-top');
+        top.append(el('span', null, label), el('span', 'scheduler-tip__left', roadHours(ms)));
+        const meter = el('span', 'scheduler-tip__meter');
+        meter.style.setProperty('--scheduler-left', `${Math.round(Math.min(1, ms / most) * 100)}%`);
+        clock.append(top, meter);
+        clocks.appendChild(clock);
+      }
+      if (clocks.children.length) tip.appendChild(clocks);
+      if (['sleeper', 'off'].includes(d.duty)) {
+        const rest = roadRest(d);
+        tip.appendChild(el('div', 'scheduler-tip__row', rest ? `${rest} of 8h` : 'Continuous rest unknown'));
+      }
+      const next = roadNext(bar, bus);
+      for (const w of roadLook(bar, bus, next, roadNamed(bar)).warnings) lamp(w.tone === 'error' ? 'error' : 'warning', w.title, w.sentence);
+      const mapRow = el('div', 'scheduler-tip__row scheduler-tip__map');
+      const holder = el('div', 'scheduler-card__live-map-box');
+      mapRow.appendChild(holder);
+      tip.appendChild(mapRow);
+      liveMapInto(holder, bar, bus, next, hueFor(trip));
+      if (next?.stop) {
+        const words = next.at ? 'Here now' : [next.stop.due != null ? `due ${hhmm(Road.clockOf(next.stop.due), true)}` : null,
+          next.arrival != null ? `arrives ${hhmm(Road.clockOf(next.arrival), true)}` : null, next.late ? `${next.late} min late` : null].filter(Boolean).join(' · ');
+        const row = el('div', `scheduler-tip__row scheduler-tip__next${next.late ? ' scheduler-tip__next--late' : ''}`);
+        row.append(el('span', 'scheduler-tip__words', `Next: ${next.stop.name || 'Stop'}`), el('span', 'scheduler-tip__when', words || 'No time'));
+        tip.appendChild(row);
+      }
+      const links = el('div', 'scheduler-tip__row scheduler-tip__links');
+      const link = (words, href, away) => {
+        const a = el('a', 'scheduler-tip__link', words);
+        a.href = href;
+        if (away) { a.target = '_blank'; a.rel = 'noopener'; }
+        return a;
+      };
+      links.appendChild(link('Live map', `live.html?bus=${encodeURIComponent(bar.dataset.busId)}`, false));
+      if (bus.lat != null && bus.lng != null) links.appendChild(link('Google Maps', `https://www.google.com/maps/search/?api=1&query=${bus.lat},${bus.lng}`, true));
+      tip.appendChild(links);
+      return tip;
+    }
     // Their answer: who gave it and when, as the bar's own words say it.
     const { value, label } = c.status;
     const answer = el('div', 'scheduler-tip__row scheduler-tip__answer');
@@ -16733,11 +16796,11 @@
       if (fit.tight.has(nearKey)) lamp('warning', words);
       else tip.appendChild(el('div', 'scheduler-tip__row', words));
     }
-    if (c.who.phone) {
+    if (who.phone) {
       const call = el('a', 'scheduler-tip__row scheduler-tip__go scheduler-tip__call');
-      call.href = `tel:${dial(c.who.phone)}`;
-      call.setAttribute('aria-label', `Call ${c.who.name}`);
-      call.append(svgUse('#m-call', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', showPhone(c.who.phone)));
+      call.href = `tel:${dial(who.phone)}`;
+      call.setAttribute('aria-label', `Call ${name}`);
+      call.append(svgUse('#m-call', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', showPhone(who.phone)));
       tip.appendChild(call);
     }
     return tip;
@@ -19429,7 +19492,24 @@
     else if (!wallAsked && !reading && !glides.x) { wallAsked = true; scrollStopped(); }
   }
 
+  /* A WHEEL OVER A TIP IS THE TIP'S, a trip's tip, the docked sheet or a bus
+     number's: the innermost box in it that can still scroll that way takes
+     it, as the browser would, and with none left the wheel stops there, so
+     the board behind it never moves under the pointer. A pinch is the
+     browser's zoom wherever it is. */
+  function keepWheel(e, tip) {
+    const dy = e.deltaY, dx = e.deltaX;
+    const across = Math.abs(dx) > Math.abs(dy);
+    for (let n = e.target; n && n !== tip.parentElement; n = n.parentElement) {
+      const y = getComputedStyle(n).overflowY;
+      if (across || !/(auto|scroll)/.test(y) || n.scrollHeight <= n.clientHeight) continue;
+      if ((dy < 0 && n.scrollTop > 0) || (dy > 0 && n.scrollTop + n.clientHeight < n.scrollHeight - 1)) return;
+    }
+    e.preventDefault();
+  }
   schEl?.addEventListener('wheel', e => {
+    const tip = e.target.closest?.('#scheduler-bar-shortcuts, .rux--popover-content');
+    if (tip && !e.ctrlKey) { keepWheel(e, tip); return; }
     // A pinch zoom, a mouse's wheel, or a step in lines or pages, is the browser's.
     if (e.ctrlKey || e.deltaMode !== 0 || !fromTrackpad(e) || !scrolling() || !stripStart) {
       stopGlides();

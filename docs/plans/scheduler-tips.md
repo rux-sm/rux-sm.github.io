@@ -116,8 +116,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the driver's tip on the road, with its small map, in place of the
-      live card, the duty icon losing its hover label.
 - [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
       every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

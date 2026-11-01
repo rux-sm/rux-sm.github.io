@@ -335,6 +335,8 @@
     const wheel = bus?.drivers.find(d => d.wheel) ?? null;
     if (!row || !wheel || named.has(wheel.driver_id)) return;
     const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
+    // Whose tip the mark opens; not `data-driver-id`, which names a seat's driver.
+    if (wheel.driver_id != null) who.dataset.wheelDriver = wheel.driver_id;
     // Not sent's circle in the slot every driver has, so the name lines
     // up: this driver has no status on the trip to colour it.
     const mark = el('button', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
@@ -360,12 +362,12 @@
   const vehicleState = bus => bus.mph > 0 ? 'moving' : bus.engine === 'idle' ? 'idle'
     : bus.engine === 'on' ? 'on' : bus.engine === 'off' ? 'off' : 'unknown';
 
-  /* A trip in progress opens its live card from each driver's duty mark,
-     and from the mark of a driver at the wheel the bar does not name, as
-     the alert badge opens Alerts: the driving duty's arrow flashes,
-     app.css's, and what the bus is doing is the bus column's. The rest of
-     the row is the trip's, and a press on a name lifts that driver. A bus
-     no longer out takes the marks away with it. */
+  /* A trip in progress opens each driver's tip from their duty mark, and
+     from the mark of a driver at the wheel the bar does not name, as the
+     alert badge opens Alerts: the driving duty's arrow flashes, app.css's,
+     and what the bus is doing is the bus column's. The rest of the row is
+     the trip's, and a press on a name lifts that driver. A bus no longer out
+     takes the marks away with it. */
   function liveOpener(bar, bus) {
     const row = bar.querySelector(':scope > .scheduler-bar__drivers');
     if (!row || !bus) return;
@@ -373,7 +375,9 @@
       m.dataset.cardOpener = '';
       m.setAttribute('aria-expanded', 'false');
       const name = m.parentElement.querySelector('.scheduler-crew__name')?.textContent;
-      m.setAttribute('aria-label', [name, m.getAttribute('aria-label') ?? 'Not on this trip', 'live card'].filter(Boolean).join(': '));
+      m.setAttribute('aria-label', [name, m.getAttribute('aria-label') ?? 'Not on this trip', 'details'].filter(Boolean).join(': '));
+      // No hover label of its own over the name's, since its tip says it.
+      m.title = '';
     }
   }
 

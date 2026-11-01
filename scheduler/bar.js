@@ -780,15 +780,17 @@
     return { bar, facts };
   }
 
-  /* The part a card opener opens: Alerts, a live bar's card, a driver's tip,
-     named by the driver and the seat so each driver's icon opens their own,
-     or Updates. */
+  /* The part a card opener opens: Alerts, a driver's tip, named by the
+     driver and the seat so each driver's icon opens their own, the seat
+     `wheel` for a driver at the wheel the bar does not name, or Updates. A
+     live bar's mark with no driver Samsara knows opens its live card. */
   const cardSectionOf = opener => {
     if (opener.matches('.scheduler-bar__alert')) return 'needs';
     if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
     const crew = opener.closest('.scheduler-crew');
-    return opener.matches('.scheduler-crew > .scheduler-crew__mark') && crew?.dataset.driverId
-      ? `driver:${crew.dataset.driverId}:${crew.dataset.seat}` : 'road';
+    const id = crew?.dataset.driverId ?? crew?.dataset.wheelDriver;
+    return opener.matches('.scheduler-crew > :is(.scheduler-crew__mark, .scheduler-crew__duty)') && id
+      ? `driver:${id}:${crew.dataset.seat ?? 'wheel'}` : 'road';
   };
   const opensSection = (showing, current, requested) => !showing || current !== requested;
   // What a press on opens the route's tip: the time line, its ticks and either time, on any bar.

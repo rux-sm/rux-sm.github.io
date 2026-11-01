@@ -4201,11 +4201,11 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-times .rux--text-input { inline-size: 100%; min-inline-size: 0; }
 
 /* ══ The compact board ═════════════════════════════════════════════════════
-   Where the schedule cannot show three readable days -- on a phone, or beside
-   two open panels on a narrow window -- it shows all seven compact instead of
-   scrolling sideways to about two. `placeRoom` in data.js turns it on from the
-   same width it measures everything else by, and only after the roster has
-   already stepped aside, so a readable board is kept wherever one fits. */
+   Where the schedule cannot show three readable days, on a window as narrow
+   as a phone's, it shows all seven compact instead of scrolling sideways to
+   about two. `placeRoom` in data.js turns it on from the whole board's width,
+   panels and all, not from the room they leave the week, so opening a panel
+   never turns it on. */
 .scheduler-page[data-board="compact"] .scheduler-week {
   /* A day falls from three shortcut slots to one. The floor is three because a
      one-day bar has to be as wide as the shortcut bar pointing at it; that bar

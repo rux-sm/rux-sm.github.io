@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="g90">
+<html lang="en" data-theme="g90" data-frame="wide">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
@@ -229,8 +229,8 @@
        pages are. No filter strip: a contact has no status, and a filter would
        hide people from the search too. contacts.js draws the rows and owns the
        sort, because Next trip sorts by the date it describes. -->
-  <div class="rux--css-grid" id="scheduler-contacts-list">
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
+  <div class="rux--css-grid rux--css-grid--full-width" id="scheduler-contacts-list">
+    <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-5">
         <h1 class="rux--type-productive-heading-04" id="scheduler-contacts-h">Contacts</h1>
 
@@ -335,7 +335,7 @@
        makes one. Centred in eight of the sixteen columns at lg: one form on
        its Details tab, so every unsaved change is on one tab; the Trips tab
        holds what is only read, and has nothing to save. -->
-  <div class="rux--css-grid" id="scheduler-contact" hidden>
+  <div class="rux--css-grid rux--css-grid--full-width" id="scheduler-contact" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-3">

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="g90">
+<html lang="en" data-theme="g90" data-frame="wide">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
@@ -239,8 +239,8 @@
        The table has no header block: the page's h1 names it, and a second
        heading would repeat the word. drivers.js draws the rows and owns the
        sort, because the Compliance column sorts by date, not by its text. -->
-  <div class="rux--css-grid" id="scheduler-drivers-list">
-    <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-3 rux--lg:col-span-12">
+  <div class="rux--css-grid rux--css-grid--full-width" id="scheduler-drivers-list">
+    <div class="rux--css-grid-column rux--col-span-100">
       <div class="rux--stack-vertical rux--stack-scale-5">
         <h1 class="rux--type-productive-heading-04" id="scheduler-drivers-h">Drivers</h1>
 
@@ -354,7 +354,7 @@
        one. Centred in eight of the sixteen columns at lg: one long form in
        sections on its Details tab, so every unsaved change is on one tab;
        the Schedule tab holds what is only read, and has nothing to save. -->
-  <div class="rux--css-grid" id="scheduler-driver" hidden>
+  <div class="rux--css-grid rux--css-grid--full-width" id="scheduler-driver" hidden>
     <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-start-5 rux--lg:col-span-8">
       <div class="rux--stack-vertical rux--stack-scale-7">
         <div class="rux--stack-vertical rux--stack-scale-3">

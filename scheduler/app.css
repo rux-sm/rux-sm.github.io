@@ -131,7 +131,7 @@
 @supports (block-size: round(1px, 1px)) {
   .scheduler-week { --scheduler-row-h: round(calc(var(--rux-body-compact-01-font-size) * var(--rux-body-compact-01-line-height)), 1px); }
 }
-/* The board is Design's wide frame, 99rem, and the days share it down to
+/* The board is the Scheduler's frame, overrides.css's 82rem, and the days share it down to
    their minimum, so a panel opening beside the week takes its width from the
    days and no edge of the page moves; past the minimum the week scrolls.
    Fill the window, in the view menu, widens the frame to the window, and

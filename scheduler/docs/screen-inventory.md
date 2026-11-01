@@ -160,7 +160,7 @@ Three homes, and one rule for choosing.
 - **View options go in the toolbar's overflow menu.** The week's first day, Monday, Sunday or
   Today, each week then starting on today's weekday, Compact, which in one press leaves a bar its destination, times and drivers, about half its height, ticked while the rows stand so and turning them all back on when pressed again, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Up to
   two weeks, off until turned on and kept by the browser, for as many days on screen as fit at their least width, seven to fourteen, in the strip that is the board from md up, its arrows moving a week and the Left and Right keys a day, then Fill the window, off
-  until turned on and kept by the browser, for a board that takes the whole window rather than Design's 99rem wide frame, in
+  until turned on and kept by the browser, for a board that takes the whole window rather than the Scheduler's 1312px frame, in
   which the days share what the open panels leave, down to 160px each, and the week scrolls past it, so opening a panel
   moves no edge of the page, both from the first paint, Up to two weeks and Fill the window read from the browser before it by `view.js`, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to

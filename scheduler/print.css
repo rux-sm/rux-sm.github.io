@@ -251,6 +251,8 @@ html:not([data-rux-standalone]) .scheduler-print { background: var(--rux-layer-0
 .scheduler-print__grid {
   flex: 1;
   min-block-size: 0;
+  /* The Scheduler's frame, which the header stands in too. */
+  max-inline-size: var(--frame-wide);
   /* One row, and it takes the page's height rather than its content's. A grid
      row sizes to what is in it by default, so a sheet as tall as a sheet of
      paper made the row that tall and the fit had nothing to fit against. */

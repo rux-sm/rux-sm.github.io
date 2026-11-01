@@ -151,6 +151,14 @@
 
 
 
+/* EVERY SCHEDULER PAGE STANDS IN ONE FRAME, 82rem, Carbon's extra-large
+   breakpoint: its header, its content and the panels it opens are 1312px
+   wide and centred, or the window less 16px either side where it is
+   narrower, so no edge moves from page to page. Each page declares Design's
+   wide frame on `<html>` and sets this width; a list fills the frame, and a
+   record or a form keeps its reading columns inside it. */
+:root { --frame-wide: 82rem; }
+
 /* The page grids add no margin or gutter: the board's inset is
    `.rux--content`'s padding, and each grid on this page holds one column. The
    gap between the board's regions is `.scheduler-board`'s own. */
@@ -637,14 +645,15 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
   padding-block-end: calc(var(--rux-spacing-05) + var(--scheduler-safe-bottom));
 }
-/* A page pair's page, from md up, takes the template's 2rem inset on every
-   side, as design/templates/list-page.html sets on its own page class. The
+/* A page pair's page, from md up, takes the template's 2rem inset above and
+   below, as design/templates/list-page.html sets on its own page class, and
+   the frame's 16px at its sides, where the board and the header stand. The
    pair's class beside Carbon's beats the flat 16px above; a phone keeps that
    narrower gutter, and a landscape phone's cutout still wins. */
 @media (min-width: 42rem) {
   .rux--content.scheduler-pair-page {
     padding: var(--rux-spacing-07);
-    padding-inline: max(var(--rux-spacing-07), var(--scheduler-safe-left)) max(var(--rux-spacing-07), var(--scheduler-safe-right));
+    padding-inline: max(var(--rux-spacing-05), var(--scheduler-safe-left)) max(var(--rux-spacing-05), var(--scheduler-safe-right));
     padding-block-end: calc(var(--rux-spacing-07) + var(--scheduler-safe-bottom));
   }
 }

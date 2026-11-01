@@ -1131,17 +1131,19 @@
       cell.classList.add('scheduler-day--today');
       cell.setAttribute('aria-current', 'date');
     }
-    /* A month's first day names its month, "Dec 1", so the change shows. The
-       month, and the space beside it, are spans of their own, which the
-       phone's narrow day band leaves out. */
     const num = el('span', 'scheduler-day__num');
-    if (d.getDate() === 1) {
-      for (const part of new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).formatToParts(d)) {
-        num.append(part.type === 'day' ? part.value : el('span', 'scheduler-day__month', part.value));
-      }
-    } else num.textContent = String(d.getDate());
+    dayNum(num, d);
     cell.append(document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })), num);
     return cell;
+  }
+  /* Writes a day's number into its header's number span. A month's first day
+     names its month, "Dec 1", so the change shows; the month, and the space
+     beside it, are spans of their own, which the phone's narrow day band
+     leaves out. */
+  function dayNum(num, d) {
+    if (d.getDate() !== 1) { num.textContent = String(d.getDate()); return; }
+    num.replaceChildren(...new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).formatToParts(d)
+      .map((part) => (part.type === 'day' ? part.value : el('span', 'scheduler-day__month', part.value))));
   }
   /* Marks the last row on screen, whose rule the stylesheet decides, as the
      pane's own border closes a grid that reaches it. Only where it moves: the
@@ -1669,7 +1671,7 @@
     gridEl.querySelectorAll(':scope > .scheduler-day').forEach((cell, i) => {
       const d = addDays(start, i);
       cell.firstChild.nodeValue = d.toLocaleDateString(undefined, { weekday: 'short' });
-      cell.lastChild.textContent = String(d.getDate());
+      dayNum(cell.lastChild, d);
       cell.classList.toggle('scheduler-day--weekend', isWeekend(d));
       const now = iso(d) === today;
       cell.classList.toggle('scheduler-day--today', now);

@@ -422,7 +422,34 @@
     return row;
   }
 
-  let deleteArmed = null;
+  /* DELETING ASKS FIRST, as an update on a trip's card does: the bin puts
+     Delete this message? with Cancel and Delete under the text, in place of
+     the message's tools, until one of them or Escape is pressed. */
+  let asking = null;
+  let removing = false;
+  function askOf(msg) {
+    const ask = el('div', 'scheduler-team-msg__ask');
+    const small = (cls, text) => {
+      const b = el('button', `rux--btn ${cls} rux--btn--sm rux--layout--size-sm`, text);
+      b.type = 'button';
+      return b;
+    };
+    const cancel = small('rux--btn--secondary', 'Cancel');
+    const yes = small('rux--btn--danger', 'Delete');
+    yes.disabled = removing;
+    const stop = () => { asking = null; draw(); box.focus(); };
+    cancel.addEventListener('click', stop);
+    yes.addEventListener('click', () => removeMessage(msg));
+    ask.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); stop(); } });
+    ask.append(el('span', 'scheduler-team-msg__ask-words', 'Delete this message?'), cancel, yes);
+    return ask;
+  }
+  function askDelete(msg) {
+    asking = msg.id;
+    draw();
+    list.querySelector(`[data-id="${msg.id}"] .scheduler-team-msg__ask .rux--btn--secondary`)?.focus();
+  }
+
   function messageOf(msg, prev, seenHere) {
     const item = el('li', 'scheduler-team-msg');
     item.dataset.id = msg.id;
@@ -457,9 +484,10 @@
     }
     const seen = seenOf(msg, seenHere);
     if (seen) main.appendChild(seen);
+    if (asking === msg.id) main.appendChild(askOf(msg));
     item.append(face, main);
 
-    if (mine || owner) {
+    if ((mine || owner) && asking !== msg.id) {
       const tools = el('div', 'scheduler-team-msg__tools');
       if (mine) {
         const edit = iconButton('#m-edit', 'Edit message');
@@ -467,12 +495,7 @@
         tools.appendChild(edit);
       }
       const del = iconButton('#m-delete', 'Delete message');
-      if (deleteArmed === msg.id) {
-        del.classList.add('scheduler-team-msg__confirm');
-        del.setAttribute('aria-label', 'Press again to delete');
-        del.title = 'Press again to delete';
-      }
-      del.addEventListener('click', () => removeMessage(msg));
+      del.addEventListener('click', () => askDelete(msg));
       tools.appendChild(del);
       item.appendChild(tools);
     }
@@ -581,7 +604,7 @@
   // A message deleted, here or elsewhere: gone from the room, and from the box if it was being edited.
   function forget(id) {
     messages.delete(id);
-    if (deleteArmed === id) deleteArmed = null;
+    if (asking === id) asking = null;
     if (draft.editing === id) resetDraft();
   }
 
@@ -745,16 +768,12 @@
   });
 
   async function removeMessage(msg) {
-    if (deleteArmed !== msg.id) {
-      deleteArmed = msg.id;
-      draw();
-      list.querySelector(`[data-id="${msg.id}"] .scheduler-team-msg__confirm`)?.focus();
-      setTimeout(() => { if (deleteArmed === msg.id) { deleteArmed = null; draw(); } }, 4000);
-      return;
-    }
-    deleteArmed = null;
+    if (removing) return;
+    removing = true;
+    draw();
     // A row the database would not let this person delete comes back as no row, not an error.
     const { data, error } = await client.from('chat_messages').delete().eq('id', msg.id).select('id');
+    removing = false;
     if (error || !data?.length) {
       window.SchedulerToast?.toast('error', 'Message not deleted', error?.message ?? 'Only its sender or an owner can delete it.');
       draw();

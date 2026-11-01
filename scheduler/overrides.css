@@ -1266,7 +1266,24 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 @media (hover: none) {
   .scheduler-team-msg__tools { position: static; display: flex; grid-column: 2; }
 }
-.scheduler-team-msg__confirm { color: var(--rux-text-error); }
+/* Deleting asks first, in words and two small buttons at the message's foot,
+   as an update on a trip's card does; the buttons take their words' width. */
+.scheduler-team-msg__ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--rux-spacing-02);
+  margin-block-start: var(--rux-spacing-03);
+}
+.scheduler-team-msg__ask-words {
+  margin-inline-end: auto;
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+.scheduler-team-msg__ask > .rux--btn { flex: none; inline-size: auto; min-inline-size: 0; max-inline-size: none; padding-inline: var(--rux-spacing-05); }
 
 /* A link: a pill with its kind's icon and its label, in the link colour,
    opening the record; a record since removed is struck through and opens nothing. A

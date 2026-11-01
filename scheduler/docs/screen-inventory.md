@@ -72,8 +72,8 @@ tab; a removed record is struck through, and a driver's link has Call and
 Text. Send to chat, on a trip bar's menu with the trip's email thread and
 beside History on a customer, contact, driver, bus or location, opens the
 chat with that link in the box. The sender edits or deletes their own
-message, an owner deletes any, and a deleted one is gone from every open
-page at once. An
+message, an owner deletes any: the bin asks Delete this message? with Cancel
+and Delete, and a deleted one is gone from every open page at once. An
 unread message puts a dot on the action, in the urgent colour when it is
 urgent or names the person, and a toast while no other toast is up. An
 urgent message opens the panel for everyone it names, or everyone when it

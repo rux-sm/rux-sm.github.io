@@ -21,10 +21,16 @@ three times for each change.
 - **Every task is measured before and after** in Chrome on :8641 on a real
   week: the restyle after a change of width, and the frames of a 240ms
   glide of the week's width. The numbers go in the commit message.
-- **One restyle per change of width.** `fit` in `scheduler/app.js` clears
-  the day widths and measures again, and `fitShort` measures after it,
-  each forcing a restyle; the bus column's and a day's least width are kept
+- **One restyle per change of width.** The restyle comes from `fit` in
+  `scheduler/app.js` writing the day widths, custom properties every element
+  of the week inherits: with `data-days-held` set the board's width alone
+  costs 1–2ms. `fit` clears them and measures again, and `fitShort`
+  measures after it, so the bus column's and a day's least width are kept
   from the last full measure, since only new rows change them.
+- **A panel's glide holds the days,** as dragging a document wider already
+  does: with `data-days-held` set a 240ms glide of the week's width drew
+  23–25 frames, against 2–3 without, and the days are fitted once when it
+  ends, which costs about 71ms.
 - **Trips far off screen are skipped.** The strip marks a trip more than
   three days out of view, and `app.css` gives it `content-visibility:
   hidden`, so its box keeps its place and lanes and only its insides are
@@ -35,10 +41,12 @@ three times for each change.
   and without `scheduler/app.css` 29ms. Rules are switched off one at a time
   to find the ones every element pays for, and each fix leaves every page
   looking the same, proven by screenshots before and after.
-- **Opening the editor writes the root's attributes once.** Each attribute
-  on the root costs a restyle of the whole page, about 43ms.
-- **Panel motion comes last,** once a change of width fits in a frame, on
-  Carbon's curves and durations in `design/docs/motion.md`.
+- **The editor's pause is traced before it is cut.** The root's attributes
+  it sets cost under 1ms each, so they are not the cause; a class on the
+  root costs about 40ms, and the refit after a change of width is the first
+  suspect.
+- **Panel motion comes last,** once the single fit at a glide's end is
+  short, on Carbon's curves and durations in `design/docs/motion.md`.
 
 ## Questions
 
@@ -55,7 +63,7 @@ three times for each change.
 - [ ] Skip the trips far off screen, keeping glides, swipes, drag and drop,
       Today and the keyboard's focus working.
 - [ ] Find the costly rules and fix them in the file they live in.
-- [ ] Open the editor with one write to the root.
+- [ ] Trace the editor's pause on opening, and cut it.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files
       a panel arriving under expressive motion where Carbon's side panel is
       productive.

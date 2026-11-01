@@ -62,8 +62,9 @@ the schedule open, and faces on a bar show who has that trip, each 16px at the d
 the staff, a header action beside the faces opening a header panel, 24rem
 wide and the whole screen on a phone. Messages run oldest to newest, by day,
 each with the sender's face, name and time; Show earlier reads a hundred
-more. Enter sends and Shift-Enter starts a line; on a touch screen Send
-sends. `@` lists the staff to name; `#` and two letters list trips,
+more. The box is one 48px line that grows with its text, with Urgent and
+Send inside it at its end. Enter sends and Shift-Enter starts a line; on a
+touch screen Send sends. `@` lists the staff to name; `#` and two letters list trips,
 drivers, buses, customers, contacts and locations to link; a pasted Scheduler
 or Missive address becomes a link. A link shows its record as it is now and
 opens it, a trip on the board in its editor and a Missive thread in a new

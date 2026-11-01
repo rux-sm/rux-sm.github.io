@@ -1147,48 +1147,59 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 .scheduler-team__list { margin: 0; padding: 0; list-style: none; }
 .scheduler-team-day {
-  padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-02);
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-04) var(--rux-spacing-05) var(--rux-spacing-02);
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
   color: var(--rux-text-secondary);
 }
+.scheduler-team-day::before,
+.scheduler-team-day::after { content: ''; flex: 1; border-block-start: 1px solid var(--rux-border-subtle-01); }
 
 /* A message: the face, then the name and time over the text, its links and
    what is said about it. One from the same person a moment after their last
    drops the face and the name. An urgent one has the urgent colour's edge
-   and tint; one that names this person has the link colour's edge. */
+   and a solid tint of it; one that names this person has the link colour's
+   edge. Edit and delete sit on the name's line with no fill of their own, so
+   they take the row's hover with it. */
 .scheduler-team-msg {
   position: relative;
   display: grid;
   grid-template-columns: 1.5rem minmax(0, 1fr);
   column-gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-02) var(--rux-spacing-05) var(--rux-spacing-02) calc(var(--rux-spacing-05) - 3px);
+  padding: var(--rux-spacing-03) var(--rux-spacing-05) var(--rux-spacing-03) calc(var(--rux-spacing-05) - 3px);
   border-inline-start: 3px solid transparent;
 }
-.scheduler-team-msg[data-follows] { padding-block-start: 0; }
+.scheduler-team-msg[data-follows] { margin-block-start: calc(-1 * var(--rux-spacing-03)); padding-block-start: var(--rux-spacing-02); }
 .scheduler-team-msg[data-follows] .scheduler-team-msg__face { visibility: hidden; block-size: 0; }
 .scheduler-team-msg[data-follows] .scheduler-team-msg__meta { display: none; }
 .scheduler-team-msg[data-named] { border-inline-start-color: var(--rux-link-primary); }
 .scheduler-team-msg[data-urgent] {
   border-inline-start-color: var(--rux-support-error);
-  background: color-mix(in srgb, var(--rux-support-error) 12%, transparent);
+  background: color-mix(in srgb, var(--rux-support-error) 12%, var(--rux-layer));
 }
 @media (any-hover: hover) {
   .scheduler-team-msg:hover { background-color: var(--rux-layer-hover); }
+  .scheduler-team-msg[data-urgent]:hover { background-color: color-mix(in srgb, var(--rux-support-error) 18%, var(--rux-layer)); }
 }
 .scheduler-team-msg__main { min-inline-size: 0; }
 .scheduler-team-msg__meta {
   display: flex;
   align-items: baseline;
   gap: var(--rux-spacing-03);
-  min-block-size: 1.5rem;
+  min-block-size: 1.25rem;
+  padding-inline-end: 3.5rem;
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
 }
 .scheduler-team-msg__who { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-text-primary); }
 .scheduler-team-msg__time { color: var(--rux-text-secondary); }
+.scheduler-team-msg__meta .scheduler-team-msg__edited { margin-inline-start: calc(-1 * var(--rux-spacing-02)); }
+.scheduler-team-msg__meta .scheduler-team-msg__edited::before { content: '· '; }
 .scheduler-team-msg__urgent { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-text-error); }
 .scheduler-team-msg__body {
   font-size: var(--rux-body-compact-01-font-size);
@@ -1215,34 +1226,42 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
 }
 .scheduler-team-msg__tools {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-end: var(--rux-spacing-03);
+  inset-block-start: var(--rux-spacing-03);
+  inset-inline-end: var(--rux-spacing-04);
   display: none;
-  background: var(--rux-layer);
+  gap: var(--rux-spacing-01);
+}
+.scheduler-team-msg__tools .rux--btn {
+  justify-content: center;
+  inline-size: 1.5rem;
+  min-block-size: 1.5rem;
+  block-size: 1.5rem;
+  padding: 0;
 }
 .scheduler-team-msg:is(:hover, :focus-within) .scheduler-team-msg__tools { display: flex; }
 @media (hover: none) {
-  .scheduler-team-msg__tools { position: static; display: flex; grid-column: 2; background: none; }
+  .scheduler-team-msg__tools { position: static; display: flex; grid-column: 2; }
 }
 .scheduler-team-msg__confirm { color: var(--rux-text-error); }
 
-/* A link: its kind's icon and its label, in the link colour, opening the
-   record; a record since removed is struck through and opens nothing. A
+/* A link: a pill with its kind's icon and its label, in the link colour,
+   opening the record; a record since removed is struck through and opens nothing. A
    driver's link has Call and Text beside it, and one in the box a way to take
    it off. */
 .scheduler-team-link {
   display: inline-flex;
   align-items: stretch;
   max-inline-size: 100%;
+  overflow: hidden;
   border: 1px solid var(--rux-border-subtle-01);
-  background: var(--rux-layer-02);
+  border-radius: 1rem;
 }
 .scheduler-team-link__open {
   display: inline-flex;
   align-items: center;
   gap: var(--rux-spacing-02);
   min-inline-size: 0;
-  padding: var(--rux-spacing-01) var(--rux-spacing-03);
+  padding: 0.1875rem var(--rux-spacing-03);
   font-size: var(--rux-label-01-font-size);
   line-height: var(--rux-label-01-line-height);
   letter-spacing: var(--rux-label-01-letter-spacing);
@@ -1263,7 +1282,7 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   align-items: center;
   justify-content: center;
   inline-size: 1.75rem;
-  padding: 0;
+  padding: 0 var(--rux-spacing-01) 0 0;
   border: 0;
   border-inline-start: 1px solid var(--rux-border-subtle-01);
   background: none;
@@ -1274,19 +1293,22 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
   .scheduler-team-link__extra:hover { background: var(--rux-layer-hover); color: var(--rux-icon-primary); }
 }
 
-/* The box: what is being edited, the links it carries, the text, then
-   Urgent and Send. The list of names and records opens above the text. */
+/* The box: what is being edited, the links it carries, then the text with
+   Urgent and Send inside it. On one line the field is 48px, Carbon's large
+   field, and the two 32px buttons sit 8px in from its end and its foot, which
+   centres them; as the text grows they stay on its last line. The text keeps
+   clear of them, and the list of names and records opens above. */
 .scheduler-team__compose {
   position: relative;
   display: flex;
   flex: none;
   flex-direction: column;
   gap: var(--rux-spacing-03);
-  padding: var(--rux-spacing-04) var(--rux-spacing-05) var(--rux-spacing-05);
+  padding: var(--rux-spacing-04) var(--rux-spacing-05);
   border-block-start: 1px solid var(--rux-border-subtle-01);
 }
 @media (max-width: 41.98rem) {
-  .scheduler-team__compose { padding-block-end: calc(var(--rux-spacing-05) + env(safe-area-inset-bottom, 0px)); }
+  .scheduler-team__compose { padding-block-end: calc(var(--rux-spacing-04) + env(safe-area-inset-bottom, 0px)); }
 }
 .scheduler-team__editing {
   display: flex;
@@ -1300,10 +1322,30 @@ a.scheduler-team-link__open:hover { text-decoration: underline; }
 .scheduler-team__chips[hidden],
 .scheduler-team__pick[hidden] { display: none; }
 .scheduler-team__chips { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
-.scheduler-team__box-wrap { inline-size: 100%; }
-.scheduler-team__box { inline-size: 100%; min-block-size: 2.5rem; resize: none; }
-.scheduler-team__row { display: flex; align-items: center; justify-content: space-between; }
-.scheduler-team__urgent { flex: none; inline-size: auto; }
+.scheduler-team__box-wrap { position: relative; inline-size: 100%; }
+.scheduler-team__box {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 3rem;
+  /* A line of text, 1lh, in the 48px with Carbon's 1px foot under it: the
+     line's centre is the buttons' centre. */
+  padding: calc((3rem - 1lh) / 2) 5.25rem calc((3rem - 1lh) / 2 - 1px) var(--rux-spacing-05);
+  resize: none;
+}
+.scheduler-team__box-wrap[data-urgent] .scheduler-team__box { outline: 2px solid var(--rux-support-error); outline-offset: -2px; }
+.scheduler-team__field-tools {
+  position: absolute;
+  inset-block-end: var(--rux-spacing-03);
+  inset-inline-end: var(--rux-spacing-03);
+  display: flex;
+  gap: var(--rux-spacing-02);
+}
+.scheduler-team__urgent[aria-pressed="true"] {
+  background-color: color-mix(in srgb, var(--rux-support-error) 16%, transparent);
+  color: var(--rux-support-error);
+}
+.scheduler-team__urgent[aria-pressed="true"] svg { fill: var(--rux-support-error); }
+.scheduler-team__send:not(:disabled) { color: var(--rux-link-primary); }
 .scheduler-team__pick {
   position: absolute;
   z-index: 2;

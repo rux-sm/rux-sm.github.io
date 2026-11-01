@@ -177,23 +177,28 @@
   box.title = 'Type @ to name someone, # to link a trip, driver, bus or customer';
   box.setAttribute('aria-label', 'Message');
   box.setAttribute('aria-controls', picker.id);
-  boxWrap.appendChild(box);
-  const row = el('div', 'scheduler-team__row');
-  const urgentItem = el('div', 'rux--form-item rux--checkbox-wrapper scheduler-team__urgent');
-  const urgent = el('input', 'rux--checkbox');
-  urgent.type = 'checkbox';
-  urgent.id = 'scheduler-team-urgent';
-  const urgentLab = el('label', 'rux--checkbox-label');
-  urgentLab.setAttribute('for', urgent.id);
-  urgentLab.appendChild(el('div', 'rux--checkbox-label-text', 'Urgent'));
-  urgentItem.append(urgent, urgentLab);
-  const send = el('button', 'rux--btn rux--btn--primary rux--btn--icon-only rux--layout--size-sm scheduler-team__send');
+  /* Urgent and Send sit inside the box, at its foot and its end, as Carbon's
+     chat input carries its send: on one line they are centred in it, and as
+     the text grows they stay on its last line. Urgent is a switch that turns
+     the box's edge the urgent colour; Send waits for something to send. */
+  const fieldTools = el('div', 'scheduler-team__field-tools');
+  const urgent = iconButton('#m-warning', 'Urgent', 'scheduler-team__urgent');
+  urgent.setAttribute('aria-pressed', 'false');
+  let urgentOn = false;
+  const setUrgent = on => {
+    urgentOn = on;
+    urgent.setAttribute('aria-pressed', String(on));
+    urgent.title = on ? 'Urgent: on' : 'Urgent';
+    boxWrap.toggleAttribute('data-urgent', on);
+  };
+  urgent.addEventListener('click', () => { setUrgent(!urgentOn); box.focus(); });
+  const send = iconButton('#m-send', 'Send', 'scheduler-team__send');
   send.type = 'submit';
-  send.setAttribute('aria-label', 'Send');
-  send.title = 'Send';
-  send.appendChild(svgUse('#m-send'));
-  row.append(urgentItem, send);
-  compose.append(editingBar, chips, picker, boxWrap, row);
+  const drawSend = () => { send.disabled = sending || !box.value.trim(); };
+  fieldTools.append(urgent, send);
+  boxWrap.append(box, fieldTools);
+  drawSend();
+  compose.append(editingBar, chips, picker, boxWrap);
 
   panel.append(head, scroller, compose);
 
@@ -373,7 +378,7 @@
     const when = new Date(msg.created_at);
     const follows = prev && prev.author_id === msg.author_id && !prev.deleted_at
       && dayKey(new Date(prev.created_at)) === dayKey(when)
-      && when - new Date(prev.created_at) < 5 * 60 * 1000 && !msg.urgent;
+      && when - new Date(prev.created_at) < 5 * 60 * 1000 && !msg.urgent && !msg.edited_at;
     if (follows) item.dataset.follows = '';
     if (msg.urgent && !msg.deleted_at) item.dataset.urgent = '';
     if (mine) item.dataset.mine = '';
@@ -390,6 +395,7 @@
     time.dateTime = msg.created_at;
     time.title = when.toLocaleString();
     meta.appendChild(time);
+    if (msg.edited_at && !msg.deleted_at) meta.appendChild(el('span', 'scheduler-team-msg__edited', 'Edited'));
     if (msg.urgent && !msg.deleted_at) meta.appendChild(el('span', 'scheduler-team-msg__urgent', 'Urgent'));
     main.appendChild(meta);
 
@@ -402,7 +408,6 @@
         for (const link of msg.links) links.appendChild(linkOf(link, false));
         main.appendChild(links);
       }
-      if (msg.edited_at) main.appendChild(el('div', 'scheduler-team-msg__edited', 'Edited'));
       if (msg.urgent) main.appendChild(readLine(msg));
     }
     item.append(face, main);
@@ -598,7 +603,9 @@
      a line and Send sends. */
   function fit() {
     box.style.blockSize = 'auto';
-    box.style.blockSize = `${Math.min(box.scrollHeight + 2, Math.max(80, panel.clientHeight / 3))}px`;
+    const edges = box.offsetHeight - box.clientHeight;
+    box.style.blockSize = `${Math.min(box.scrollHeight + edges, Math.max(80, panel.clientHeight / 3))}px`;
+    drawSend();
   }
   function drawChips() {
     chips.replaceChildren(...draft.links.map(l => linkOf(l, true)));
@@ -608,7 +615,7 @@
   function resetDraft() {
     draft = { links: [], mentions: new Map(), editing: null };
     box.value = '';
-    urgent.checked = false;
+    setUrgent(false);
     editingBar.hidden = true;
     drawChips();
     fit();
@@ -617,7 +624,7 @@
     draft = { links: [...(msg.links ?? [])], mentions: new Map(), editing: msg.id };
     for (const id of msg.mentions ?? []) if (people.has(id)) draft.mentions.set(people.get(id).name, id);
     box.value = msg.body;
-    urgent.checked = msg.urgent;
+    setUrgent(msg.urgent);
     editingBar.hidden = false;
     drawChips();
     fit();
@@ -634,15 +641,15 @@
     if (sending) return;
     const body = box.value.trim();
     if (!body) { box.focus(); return; }
-    const row = { body, urgent: urgent.checked, mentions: mentionsIn(body), links: draft.links };
+    const row = { body, urgent: urgentOn, mentions: mentionsIn(body), links: draft.links };
     sending = true;
-    send.disabled = true;
+    drawSend();
     const write = draft.editing
       ? client.from('chat_messages').update(row).eq('id', draft.editing).select().single()
       : client.from('chat_messages').insert(row).select().single();
     const { data, error } = await write;
     sending = false;
-    send.disabled = false;
+    drawSend();
     if (error) {
       window.SchedulerToast?.toast('error', 'Message not sent', error.message);
       return;

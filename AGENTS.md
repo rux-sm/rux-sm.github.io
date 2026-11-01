@@ -44,6 +44,14 @@ authored with invented, generic content, and nothing from atlas or a client
 goes under `design/`; a database change is applied to production as its own
 deliberate step, never by a deploy of either site.
 
+## Every change is the real fix
+
+A change fixes the cause in the code that owns it and leaves that code
+cleaner: never a patch over a symptom, a special case beside the rule, a
+hold or cache standing in for the fix, or a workaround left for later. Where
+the clean fix is bigger than the task, it is planned rather than patched
+around, because every patch is one more thing the next change has to know.
+
 ## The four commands
 
     npm run serve               the site at http://localhost:8640/, loopback only, offline

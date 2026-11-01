@@ -2803,7 +2803,11 @@ a.scheduler-tip__go { text-decoration: none; }
    beside, and data.js puts the newest of them in front of the board instead.
    `--scheduler-room` is what data.js measured as actually free, so the minimum
    is kept wherever it fits and never pushes the board off the page where it
-   does not. Without script the frame shrinks as it always did. */
+   does not. Without script the frame shrinks as it always did. Registered
+   as not inherited, because only the frame reads it and data.js writes it on
+   every change of width: inherited, it restyled all 6,300 elements of the
+   week each time, about 47ms. */
+@property --scheduler-room { syntax: '<length>'; inherits: false; initial-value: 0px; }
 .scheduler-frame {
   display: flex;
   flex-direction: column;

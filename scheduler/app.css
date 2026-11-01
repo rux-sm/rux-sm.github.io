@@ -1308,12 +1308,14 @@ button.scheduler-row-head__num::after {
    and a bigger mark to press, standing a pixel past the 18px row above and
    below, a little lighter and over the shadow Carbon gives a raised menu,
    as a raised surface is lighter in a dark theme and casts a shadow in a
-   light one. It stays up while its tip is
-   open and settles flat under a press. It grows toward the inside of the
-   bar, the alert to its left and the rest to their right, so the bar's edge
-   never cuts it, and the rows that hold one let it past their top and
-   bottom. The grow is Carbon's moderate-01 on its productive standard curve,
-   a small expansion. */
+   light one. It stays up while its tip is open and settles flat under a
+   press. It grows toward the inside of the bar, the alert to its left and
+   the rest to their right, so the bar's edge never cuts it. The rows that
+   hold one cut only what passes 8px beyond their edges, the bar's padding,
+   so the icon and its shadow show whole and the bar's own edge is still
+   the last cut; they clip both ways because Chrome keeps a clip's margin
+   only then. The grow is Carbon's moderate-01 on its productive standard
+   curve, a small expansion. */
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] {
   padding: 0;
   background: none;
@@ -1326,7 +1328,7 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-bar__alert { transform-origin: right center; }
 .scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__drivers),
 .scheduler-bar__update > .scheduler-bar__run,
-.scheduler-bar__drivers > .scheduler-bar__crew { overflow-x: clip; overflow-y: visible; }
+.scheduler-bar__drivers > .scheduler-bar__crew { overflow: clip; overflow-clip-margin: var(--rux-spacing-03); }
 .scheduler-bar__alert:focus-visible { outline-offset: 2px; }
 /* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
 .scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {

@@ -1333,9 +1333,14 @@
   background: var(--rux-text-primary);
   line-height: 1;
 }
-/* Rux 100's menus and calendars are Geist's menu material, the board's own
-   sheet in its line, from Design. The open ⋮ and the open week's name join
-   the menu and the calendar they open in it. */
+/* Rux 100's menus and calendars are Geist's menu material, Background 1,
+   #0a0a0a, in its line, from Design. The open ⋮ and the open week's name
+   join the menu and the calendar they open in it, so they take that sheet
+   rather than the board's black. */
+[data-theme="rux-100"] :is(.scheduler-toolbar__more[data-attached], .scheduler-weekbtn[aria-expanded="true"]) {
+  --scheduler-region: #0a0a0a;
+  --scheduler-region-hover: #1a1a1a;
+}
 [data-theme="rux-100"] .scheduler-toolbar__more[data-attached] {
   --rux-layer: var(--scheduler-region);
   --rux-layer-hover: var(--scheduler-region-hover);
@@ -1435,17 +1440,16 @@
   --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
 }
 
-/* RUX 100'S BOARD IS LAYERED AS GEIST'S PAGES ARE, Carbon's table in
-   Geist's greys: the page is black, and every region on it, the toolbar,
-   the day band and its corner, the bus column, the tracks and each panel
-   beside them, is Geist's Background 1, #0a0a0a, a sheet 1.06 to 1 off the
-   page, and anything on it under the pointer takes Geist's gray 100,
-   #1a1a1a, the hover Geist gives a component on Background 1. Every
-   region is parted from the next by one 1px line in Geist's
-   default border, #2e2e2e, 1.46 to 1 on the sheet, set as border-subtle-01
-   on the board, every panel and the ⋮'s menu, which opens outside the
-   board, so the toolbar's dividers, the rows, the region edges and the
-   panels' rules are all that one grey.
+/* RUX 100'S BOARD IS THE PAGE'S OWN BLACK, Carbon's table in Geist's
+   greys: every region on the page, the header, the toolbar, the day band
+   and its corner, the bus column, the tracks and each panel beside them,
+   is the page's #000, Geist's Background 2, and anything on it under the
+   pointer takes Geist's gray 100, #1a1a1a. The regions are told apart by
+   their lines alone: each is parted from the next by one 1px line in
+   Geist's default border, #2e2e2e, set as border-subtle-01 on the board,
+   every panel and the ⋮'s menu, which opens outside the board on Geist's
+   Background 1, #0a0a0a, so the toolbar's dividers, the rows, the region
+   edges and the panels' rules are all that one grey.
    The driver roster beside it is the same sheet with the same lines, and
    so is the header over them.
    Unassigned, a darker tint of the board elsewhere, is the same sheet, its
@@ -1454,9 +1458,10 @@
 [data-theme="rux-100"] :is(.rux--header, .scheduler-frame, .scheduler-aside, .scheduler-to-do--pane, .scheduler-trip .rux--side-panel, .scheduler-viewer .rux--side-panel, #scheduler-view-menu),
 [data-theme="rux-100"]:not([data-rux-standalone]) .scheduler-print {
   --rux-border-subtle-01: #2e2e2e;
-  --scheduler-region: #0a0a0a;
+  --scheduler-region: #000;
   --scheduler-region-hover: #1a1a1a;
 }
+[data-theme="rux-100"] #scheduler-view-menu { --scheduler-region: #0a0a0a; }
 /* The header's menu and account panel open on the same sheet, as the ⋮'s
    menu does: its layer, its hover and its one grey line, round the panel,
    its open button and the rules inside it. */

@@ -11249,6 +11249,10 @@
       const section = window.SchedulerBar.cardSectionOf(trigger);
       trigger.setAttribute('aria-expanded', String(!none && owner === bar && (bar.dataset.road ? roadPartOf(bar) : cardSection) === section));
     }
+    // The time line stays lit while the route it opened shows, as an opener's icon stays up.
+    const route = !none && (bar.dataset.road ? roadPartOf(bar) : cardSection).startsWith('route:');
+    for (const lit of gridEl.querySelectorAll('.scheduler-bar[data-route-open]')) if (!(route && lit === bar)) delete lit.dataset.routeOpen;
+    if (route) bar.dataset.routeOpen = '';
     if (cardSection && !(docked && bar?.dataset.road)) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
     // The Contacts window goes with its trip when it is put down.
     if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }

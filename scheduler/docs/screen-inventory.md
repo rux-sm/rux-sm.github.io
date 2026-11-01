@@ -296,12 +296,13 @@ too, an open card waiting until the menu shuts. A double-click, Enter, the bar's
 Open loads it into the panel, and the board scrolls across to show that trip whole beside it. A trip
 opens on the tab the last one was on. New trip is the toolbar's + before its ⋮, an icon button like the
 others, and a row of the overflow menu where the toolbar has no room; it puts down the
-selected trip and opens on Details. The trip's tips open only when asked, each from an icon on the bar, a
-16px ghost icon button whose 24px square takes Carbon's background hover under the pointer, its selected
-tone while its tip is open and its active tone under a press: the alert badge opens Alerts, the chat
-mark leading the update line opens Updates, and a driver's status mark, or on a bus out on the road
-their duty mark, opens that driver's tip; a press on the time line, a
-stop's tick or either time opens the route. Each press selects the trip as well, and a press on the
+selected trip and opens on Details. The trip's tips open only when asked, each from a 16px icon on the
+bar with no fill behind it, which lifts under the pointer, an eighth larger, a little lighter and over a
+1px shadow, stays up while its tip is open and settles flat under a press: the alert badge opens Alerts,
+the chat mark leading the update line, in the trip's strongest ink, opens Updates, and a driver's status
+mark, or on a bus out on the road their duty mark, opens that driver's tip; a press on the time line, a
+stop's tick or either time opens the route, and the line takes the trip's strongest ink under the
+pointer and while the route is open. Each press selects the trip as well, and a press on the
 rest of a line only selects it. The same press or Escape puts a tip away, another opener switches
 tips, and selecting another trip takes it away. It never stands beside the trip's own editor. On a
 phone the docked sheet still comes up with the selection, because it carries the trip's actions, and

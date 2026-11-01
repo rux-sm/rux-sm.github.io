@@ -1212,7 +1212,7 @@ button.scheduler-row-head__num::after {
   padding: 0;
   border-radius: 9px;
   background: none;
-  color: var(--scheduler-strong, var(--rux-text-primary));
+  color: var(--scheduler-ink-strong);
   box-shadow: inset 0 0 0 1px currentColor;
 }
 .scheduler-bar__kind--icon > svg { inline-size: 12px; block-size: 12px; }
@@ -1267,6 +1267,15 @@ button.scheduler-row-head__num::after {
   border-radius: 50%;
 }
 .scheduler-bar__lead > svg { inline-size: 100%; block-size: 100%; }
+/* THE TRIP'S STRONGEST INK: the theme's own for the bar's colour,
+   `--scheduler-strong`, where it gives one, or else black or white, whichever
+   stands further from the bar's fill, which the footer shares. The kind chip
+   and the chat mark are drawn in it, and the time line while it opens the
+   route. The chat mark has no status to colour it, so this is what makes it
+   stand out from the update's words, as the crew's marks stand out from
+   their names. */
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) { --scheduler-ink-strong: var(--scheduler-strong, oklch(from var(--scheduler-bg) calc((0.59 - l) * 100) 0 0)); }
+.scheduler-bar .scheduler-bar__chat[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* The alert badge pairs its count with the warning icon. */
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
 /* The footer spans the trip while its content keeps the existing sticky rows. */
@@ -1293,28 +1302,28 @@ button.scheduler-row-head__num::after {
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]) { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update [data-card-opener], .scheduler-bar__drivers [data-card-opener], [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
-/* THE ICONS THAT OPEN A CARD ARE CARBON'S GHOST ICON BUTTON at the icon's
-   own 16px: no fill at rest, and a 24px square behind the icon in Carbon's
-   background hover, selected and active tones, which reach past the icon's
-   box so the rows keep their spacing and which are the press area too. The
-   tones are grey washes, so they read on every bar's fill and the footer's
-   alike. The square sits under the icon inside the button's own stacking. */
+/* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
+   pointer the 16px icon grows an eighth, to the 18px row's full height, a
+   little lighter and over a 1px shadow, as a raised surface is lighter in a
+   dark theme and casts a shadow in a light one. It stays up while its tip is
+   open and settles flat under a press. It grows toward the inside of the
+   bar, the alert to its left and the rest to their right, so the bar's edge
+   never cuts it, and the rows that hold one let it past their top and
+   bottom. The grow is Carbon's moderate-01 on its productive standard curve,
+   a small expansion. */
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] {
-  position: relative;
-  isolation: isolate;
   padding: 0;
   background: none;
   color: inherit;
   font-size: inherit;
   line-height: inherit;
+  transform-origin: left center;
+  transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: calc((var(--scheduler-mark-glyph) - 24px) / 2);
-  background: var(--scheduler-opener-fill, transparent);
-}
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-bar__alert { transform-origin: right center; }
+.scheduler-bar > :is(.scheduler-bar__dest, .scheduler-bar__drivers),
+.scheduler-bar__update > .scheduler-bar__run,
+.scheduler-bar__drivers > .scheduler-bar__crew { overflow-x: clip; overflow-y: visible; }
 .scheduler-bar__alert:focus-visible { outline-offset: 2px; }
 /* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
 .scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
@@ -1331,7 +1340,9 @@ button.scheduler-row-head__num::after {
 }
 .scheduler-bar__alert > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-bar__alert.scheduler-bar__msg--error > svg { color: var(--scheduler-driver-error); }
-.scheduler-bar__alert.scheduler-bar__msg--warning > svg { color: var(--scheduler-footer-warning); }
+/* The warning's mark is the ink on a warning fill, as Carbon fills it on
+   yellow, so a light bar does not show through it. */
+.scheduler-bar__alert.scheduler-bar__msg--warning > svg { color: var(--scheduler-footer-warning); --rux-icon-inner: var(--scheduler-on-warning); }
 /* The row's first part gives way by app.css's general rule; the icon never
    does, so the words are what a long update cuts. */
 .scheduler-bar__update :is(.scheduler-bar__lead, .scheduler-bar__age) { flex: none; }
@@ -1345,15 +1356,37 @@ button.scheduler-row-head__num::after {
    the inks reads on it, so its icon keeps the bar's own. */
 /* An opening icon says so under the pointer, since a press anywhere else
    on the bar only selects it. A touch screen has no pointer to wait for, so
-   it shows no hover; the open and pressed tones show on any screen. */
+   it shows no hover; the open and pressed states show on any screen. */
 @media (hover: hover) {
-  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover { --scheduler-opener-fill: var(--rux-background-hover); }
+  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover {
+    transform: scale(1.125);
+    filter: brightness(1.2) drop-shadow(0 1px 1px var(--rux-shadow));
+  }
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--rux-background-selected); }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { --scheduler-opener-fill: var(--rux-background-active); }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] {
+  transform: scale(1.125);
+  filter: brightness(1.2) drop-shadow(0 1px 1px var(--rux-shadow));
+}
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { transform: none; filter: none; }
+/* The time line opens the route, and has no icon to lift: its times and
+   track take the trip's strongest ink, the chat mark's, under the pointer on
+   a time or the track and while the route is open, data.js's
+   `data-route-open`. A late return keeps its amber. The change is a fade,
+   Carbon's fast-02. */
+.scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times),
+.scheduler-bar__time > * { transition: color 110ms cubic-bezier(0.2, 0, 0.38, 0.9); }
+@media (hover: hover) {
+  .scheduler-bar__time > :has(> :is(.scheduler-bar__when, .scheduler-bar__track):hover),
+  .scheduler-bar > .scheduler-road__times:has(> :is(.scheduler-road__when, .scheduler-road__track):hover) { color: var(--scheduler-ink-strong); }
+}
+.scheduler-bar[data-route-open] > :is(.scheduler-bar__time, .scheduler-road__times) { color: var(--scheduler-ink-strong); }
+.scheduler-week[data-motion="off"] :is([data-card-opener], .scheduler-bar__time, .scheduler-bar__time > *, .scheduler-road__times) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-week :is([data-card-opener], .scheduler-bar__time, .scheduler-bar__time > *, .scheduler-road__times) { transition: none; }
+}
 /* The phone's docked sheet has no driver's tip, so a driver's icon there is
    drawn plain: it takes no press of its own, which goes to the trip, and
-   shows no square. */
+   does not lift. */
 .scheduler-page[data-board="compact"] :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-crew > .scheduler-crew__mark[data-card-opener] {
   pointer-events: none;
   cursor: default;

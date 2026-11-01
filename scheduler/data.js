@@ -1131,11 +1131,16 @@
       cell.classList.add('scheduler-day--today');
       cell.setAttribute('aria-current', 'date');
     }
-    // A month's first day names its month, "Dec 1", so the change shows.
-    cell.append(
-      document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })),
-      el('span', 'scheduler-day__num', d.getDate() === 1 ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : String(d.getDate())),
-    );
+    /* A month's first day names its month, "Dec 1", so the change shows. The
+       month, and the space beside it, are spans of their own, which the
+       phone's narrow day band leaves out. */
+    const num = el('span', 'scheduler-day__num');
+    if (d.getDate() === 1) {
+      for (const part of new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).formatToParts(d)) {
+        num.append(part.type === 'day' ? part.value : el('span', 'scheduler-day__month', part.value));
+      }
+    } else num.textContent = String(d.getDate());
+    cell.append(document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })), num);
     return cell;
   }
   /* Marks the last row on screen, whose rule the stylesheet decides, as the
@@ -1324,7 +1329,6 @@
     syncSelection();
     // Every bar is new, so the faces on them are drawn again.
     presenceDraw();
-    fitStuckRows();
 
     // The only mark for today is its header cell, so the grid brings that cell
     // into view rather than leaving it past the right edge -- which is where a
@@ -11430,43 +11434,6 @@
     return svg;
   }
 
-  /* A LONG ROW'S WORDS STOP AT THE BAR'S END. A bar's customer and update
-     rows stick a day wide, as the others do, and their words run past that
-     day; they are held to the room between where the rows stand and the
-     bar's end, `--scheduler-row-room`, which app.css reads, and cut there.
-     Where the rows stand is the destination row's edge, read rather than
-     worked out. The rows never move for it, so a scroll that outruns this
-     only moves where the words are cut, for a frame.
-     Every bar is read before any is written, because a write between two reads
-     has the browser lay the whole board out again for the second, once a bar
-     on a strip's five weeks. A bar is written only when its room has changed,
-     because each write has the board laid out again before the next frame,
-     40ms on a strip, and a scroll changes the room of the bars cut by the bus
-     column alone, a handful, while every bar in view was being written. A bar
-     off the pane is left until a scroll brings it in, when this runs again. */
-  function fitStuckRows() {
-    const pane = schEl.getBoundingClientRect();
-    const fits = [];
-    for (const bar of gridEl.querySelectorAll('.scheduler-bar')) {
-      if (!(Number(bar.dataset.span) > 1)) continue;
-      const dest = bar.querySelector(':scope > .scheduler-bar__dest');
-      if (!dest) continue;
-      const box = bar.getBoundingClientRect();
-      if (box.right < pane.left || box.left > pane.right) continue;
-      const cs = getComputedStyle(bar);
-      fits.push({
-        bar,
-        start: box.left + parseFloat(cs.paddingLeft) + 0.5,
-        end: box.right - parseFloat(cs.paddingRight),
-        at: dest.getBoundingClientRect().left,
-      });
-    }
-    for (const { bar, start, end, at } of fits) {
-      const room = `${Math.round(Math.max(0, end - Math.max(at, start)) * 10) / 10}px`;
-      if (bar.style.getPropertyValue('--scheduler-row-room') !== room) bar.style.setProperty('--scheduler-row-room', room);
-    }
-  }
-
   function markTripBars() {
     const picked = selectedBar();
     for (const bar of gridEl.querySelectorAll('.scheduler-bar[data-trip-id]')) {
@@ -11829,17 +11796,12 @@
      changed width -- the editor opening beside it, the window resized, the
      compact board taking over -- has to place them again, or a shrunken bar
      keeps a face it can no longer hold and a grown one never gets its. */
-  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); fitStuckRows(); })).observe(gridEl);
+  new ResizeObserver(() => requestAnimationFrame(() => { placeBarOpen(); markTripBars(); presenceDraw(); })).observe(gridEl);
   /* The shortcut bar scrolls with its trip, but which side of the trip it fits
      on changes as the board scrolls under the sticky day band, so it is placed
      again. */
-  let stuckRowsAsked = false;
   schEl.addEventListener('scroll', () => {
     if (!barShortcuts?.hidden) requestAnimationFrame(() => placeBarOpen());
-    if (!stuckRowsAsked) {
-      stuckRowsAsked = true;
-      requestAnimationFrame(() => { stuckRowsAsked = false; fitStuckRows(); });
-    }
   }, { passive: true });
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and

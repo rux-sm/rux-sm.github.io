@@ -4204,6 +4204,9 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-page[data-board="compact"] .scheduler-day__num {
   font-size: var(--rux-heading-compact-01-font-size);
 }
+/* A month's first day shows its number alone here, as every other does, since
+   "Dec 1" is wider than the column; the toolbar names the month. */
+.scheduler-page[data-board="compact"] .scheduler-day__month { display: none; }
 
 /* A block says which trip it is in one word: the destination's code, centred,
    and nothing else. Every row the full board draws comes off. At a day this

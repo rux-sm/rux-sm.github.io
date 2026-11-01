@@ -13,30 +13,17 @@ every frame and what makes the board stutter at random; the board's own
 sideways scrolling, the cause of the rest, is replaced by the browser's in a
 plan of its own, which this one writes.
 
-A day on the strip is a fixed 175px, so a change of width moves no trip.
-What is left: in an arrow's glide the median frame takes 4.3ms and one in ten
-about 10ms, most of it the 815 sticky rows of the 163 trips drawn. A window
-resize still has one frame of about 58ms, and of 74–93ms where it crosses one
-of Carbon's breakpoints, a restyle of the whole page with no script in it.
+A day on the strip is a fixed 175px and a trip's words stay at its start, so
+a change of width or a scroll moves no row: in an arrow's glide one frame in
+ten takes about 7ms and in a swipe about 4ms, and a window resize keeps its
+frames under 25ms except where it crosses one of Carbon's breakpoints.
 
 ## Decisions
 
-- **A window resize's slow frame is measured again once the sticky words
-  go,** because it is a restyle of every element: crossing one of Carbon's
-  breakpoints, 1056, 1220 or 1312px, changes which rules apply, and the
-  frame shrinks with the elements the board draws. The 58ms frame that comes
-  where no breakpoint is crossed is traced then.
-- **A trip's words stay at its own start; nothing sticks or slides,** as rux
-  decided: the sticking was made before the strip scrolled continuously,
-  and a swipe now shows the rest. A trip that starts a day or two before the
-  first day in view shows no words until it is swiped to or selected; over
-  Nov 1–14, 2 to 5 trips on screen did on 12 of the 14 days. The sticky rows,
-  `fitStuckRows` and its scroll, frame and resize calls, and
-  `--scheduler-row-room` go. The customer and update rows' words run to the
-  trip's end and end in "…" there, worked out in app.css from the trip's
-  length, since they no longer move. The bar keeps its clip, and
-  `--scheduler-live-day` stays, because a trip on the road starts its words
-  at today's column by it.
+- **A window resize crossing one of Carbon's breakpoints, 1056, 1220 or
+  1312px, restyles every element,** 51–58ms, because it changes which rules
+  apply; the native-strip plan measures it again, since the frame shrinks
+  with the elements the board draws.
 - **A trip's `aria-expanded` is set where its card opens and closes,** not
   worked out again for some 285 trips by `placeBarOpen` on every resize of
   the grid.
@@ -76,9 +63,6 @@ None open.
 
 ## Tasks
 
-- [ ] Delete the sticky words.
-- [ ] Measure a window resize again, and trace the 58ms frame it has where
-      it crosses no breakpoint.
 - [ ] Set a trip's `aria-expanded` where its card opens and closes.
 - [ ] Write the native-strip plan.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files

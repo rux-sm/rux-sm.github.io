@@ -655,7 +655,7 @@
        is happening now on the right: the faces of whoever else has it, which
        data.js adds, and Live while the bus is out, road-bar.js's. */
     addRow(bar, 'scheduler-bar__dest', dest, kind ? kindEl(kind) : null, alert ?? paidBadge);
-    // The words in a run, which may outgrow the row; see app.css's sticky rows.
+    // The words in a run, which spans the trip's length; see app.css's row widths.
     const runOf = (...parts) => {
       const run = el('span', 'scheduler-bar__run');
       run.append(...parts.filter(Boolean));

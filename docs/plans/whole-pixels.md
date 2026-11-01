@@ -31,12 +31,11 @@ one does not, so it stays that way.
 
 ## Questions
 
-- **The bus column's odd pixel.** The days share the board in whole pixels
-  and up to six are left over. The bus column takes the even part, split
-  evenly round the kit. Where does an odd last pixel go: (a) a 1px space
-  after the last day, unpainted (recommended); (b) the right corner of the
-  kit 1px wider than the left; (c) one gap between the kit's icons 3px
-  instead of 2px?
+- **The board's leftover pixels.** Seven whole days rarely fill the board
+  exactly. At the 1312px frame they do with the kit 6px clear all round
+  (a 65px column, 177px days, 4px edges), or 8px clear with 2px edges
+  (recommended: the first); at other widths a day 1px narrower when the
+  leftover is odd keeps it even, so the kit's clearance grows evenly.
 - **iPhone Safari has no `calc-size`.** Text-sized boxes stay fractional
   there unless a script rounds them. Leave the phone as it falls
   (recommended, its screen draws three dots to a pixel), or add the script?

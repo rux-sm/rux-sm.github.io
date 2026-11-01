@@ -25,7 +25,7 @@
   });
 
   /* Whole-pixel day columns. Bars are placed by percentage across a track of
-     equal days, seven or fourteen, and a fractional column paints every bar edge and day
+     equal days, seven to thirteen, and a fractional column paints every bar edge and day
      rule across two device pixels, which blurs them. So the day width is
      floored, and the remainder goes to the bus column, because a day wider
      than the others would break the placement every bar is measured against.
@@ -152,16 +152,23 @@
        that column. */
     const corner = sch.querySelector('.scheduler-corner');
     const ruled = rulerIn(sch, '--scheduler-day-min');
-    const headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
+    let headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
     const ruledWidth = ruled.getBoundingClientRect().width;
     const dayMin = ruledWidth > 0 ? ruledWidth : NaN;
     /* A strip of days that scrolls is sized for the days in view: a week,
-       or with Up to two weeks as many as fit at their least width, seven to
-       fourteen, which data.js reads back to label and bound the strip. */
+       or with Up to two weeks as many as fit at their least width, seven,
+       nine, eleven or thirteen, which data.js reads back to label and bound
+       the strip. The count is odd so the days' leftover can always be made
+       even, below. */
     const strip = sch.classList.contains('scheduler-week--scroll');
     const pane = sch.clientWidth;
     ruled.remove();
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
+    /* The kit row is an even width, centred in the column less its 1px rule
+       and as far from its foot as from its sides, so the column is odd for
+       that clearance to be whole pixels. The compact board shows no kit. */
+    const kit = !sch.closest('[data-board="compact"]');
+    if (kit && headBase % 2 === 0) headBase += 1;
 
     /* The strip's days stand `--scheduler-edge` clear of the bus column and
        of the pane's right edge, so both are taken from the days' share and
@@ -170,7 +177,7 @@
     const available = pane - headBase - 2 * edge;
     const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
     const days = !strip ? parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7
-      : fits ? Math.min(14, Math.max(7, Math.floor(available / dayMin))) : 7;
+      : fits ? (Math.min(13, Math.max(7, Math.floor(available / dayMin))) - 1) | 1 : 7;
     if (strip && sch.dataset.daysInView !== String(days)) {
       sch.dataset.daysInView = String(days);
       sch.dispatchEvent(new Event('scheduler:days-in-view'));
@@ -188,6 +195,11 @@
       // takes the few pixels the days could not share, so the week fills the
       // frame and its edges stay on the header's.
       head = pane - day * days - edge;
+      /* An even column would leave the kit half a pixel off centre, so the
+         days give up a pixel each, an odd count, and the column's leftover
+         turns even. That can take a day a pixel under its least width,
+         which the drivers' 70px spaces have room for. */
+      if (kit && (head - edge) % 2 === 0) { day -= 1; head += days; }
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // Bars, stripes and day rules are placed from this rather than from a

@@ -53,8 +53,12 @@
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
   /* The kit row's three 16px tiles and their 2px gaps, which set the bus
-     column: the row with the head's 8px either side and its 1px rule. */
+     column: the row, at least 8px clear of the head's sides and foot, and
+     its 1px rule. In the 1312px frame's 1310px inside, app.js widens the
+     clearance to 12px, which with the strip's 4px edges and seven 175px
+     days fills it exactly: 77 + 4 + 7 × 175 + 4. */
   --scheduler-kit-w: calc(3 * 16px + 2 * var(--rux-spacing-01));
+  --scheduler-kit-pad: var(--rux-spacing-03);
   --scheduler-kit-clear: calc((var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px - var(--scheduler-kit-w)) / 2);
   /* The narrowest a day column gets; past it the grid scrolls rather than
      squeezing. A one-day bar holds two drivers side by side, each in a 70px
@@ -254,10 +258,10 @@
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
      by their row and add nothing, so their gauges never widen it. 69px holds
-     the 52px kit row with the head's 8px either side and its 1px rule, and
-     the 48px speedometer within it; app.js measures this cell, so its
-     arithmetic includes it. */
-  min-inline-size: calc(var(--scheduler-kit-w) + 2 * var(--rux-spacing-03) + 1px);
+     the 52px kit row 8px clear either side and its 1px rule, and the 48px
+     speedometer within it; app.js measures this cell, so its arithmetic
+     includes it. */
+  min-inline-size: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px);
   justify-content: center;
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
@@ -490,8 +494,8 @@ button.scheduler-row-head__num::after {
    them. */
 /* The kit stands in the head's foot, centred, as far above the row's rule as
    it is from the head's sides, so its two outer tiles sit evenly in the
-   corners: 8px at the column's 69px floor, and half of any pixels the days
-   leave the column on each side and below. Placed on the head's own box,
+   corners: 8px at the column's 69px floor, and half of the even number of
+   pixels the days leave the column on each side and below. Placed on the head's own box,
    not a grid row, so a taller row keeps it in the corner. */
 .scheduler-row-head__equip {
   position: absolute;
@@ -6318,7 +6322,7 @@ html[data-scheduler-takeover] {
 /* A sample has no day band, so no corner sets its bus column, and the heads
    size to nothing: the column takes the corner's own floor instead, 69px,
    or the compact board's 2rem. */
-.scheduler-components__board { --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--rux-spacing-03) + 1px); }
+.scheduler-components__board { --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px); }
 .scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
 
 /* Alert buttons brighten on hover; their active state is shared with Live. */

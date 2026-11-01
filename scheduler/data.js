@@ -148,14 +148,14 @@
   let twoWeeks = false;
   /* From md up the board is always the strip; below it, a phone pages a
      week at a time. `fitDays` is the View menu's Up to two weeks: the strip
-     shows as many days as fit at their least width, seven to fourteen,
+     shows as many days as fit at their least width, an odd count from seven to thirteen,
      which app.js measures and writes as `data-days-in-view`. The week the
      strip moves by, reads around and labels from stays seven days; only
      the days on screen grow. */
   let fitDays = false;
   const scrolling = () => !phoneQuery.matches;
   const daysShown = () => (twoWeeks && !scrolling() && !phoneQuery.matches ? 14 : 7);
-  const MAX_IN_VIEW = 14;
+  const MAX_IN_VIEW = 13;
   const inView = () => (fitDays && scrolling() ? Math.min(MAX_IN_VIEW, Math.max(7, Number(schEl?.dataset.daysInView) || 7)) : 7);
   const lastShown = start => addDays(start, daysShown() - 1);
   /* The strip's days before and after the week in view. Two weeks either side

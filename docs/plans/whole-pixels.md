@@ -18,6 +18,8 @@ one does not, so it stays that way.
 - **A box sized by its text is rounded up to the next whole pixel,** with
   `calc-size(fit-content, round(up, size, 1px))`, in Design's shared rules,
   so tags, buttons and pills are fixed once for every app.
+- **Spacing stays on Carbon's scale,** 2, 4, 8, 12, 16px and up; a gap
+  that takes a leftover is the one exception, and is whole and even.
 - **A shared part is fixed in Design,** never in an app, because the same
   defect shows in every app that links it.
 - **Things placed by time or by share are rounded where they are placed:**
@@ -31,11 +33,6 @@ one does not, so it stays that way.
 
 ## Questions
 
-- **The board's leftover pixels.** Seven whole days rarely fill the board
-  exactly. At the 1312px frame they do with the kit 6px clear all round
-  (a 65px column, 177px days, 4px edges), or 8px clear with 2px edges
-  (recommended: the first); at other widths a day 1px narrower when the
-  leftover is odd keeps it even, so the kit's clearance grows evenly.
 - **iPhone Safari has no `calc-size`.** Text-sized boxes stay fractional
   there unless a script rounds them. Leave the phone as it falls
   (recommended, its screen draws three dots to a pixel), or add the script?
@@ -48,8 +45,8 @@ one does not, so it stays that way.
 - [ ] Design's text-sized boxes: tags, buttons, pills, the select field.
 - [ ] Design's data table: whole-pixel columns and row tops.
 - [ ] Design's tiles and progress bar, which LN Guide, Coins and Pixels show.
-- [ ] Scheduler board: stops and tracks, the road strip, the bus column's
-  kit, gauges and tiles, and the bar's kind icon.
+- [ ] Scheduler board: stops and tracks, the road strip, and the bar's kind
+  icon.
 - [ ] Scheduler lists, records, forms, chat and print pages.
 - [ ] LN Guide's status icons, Pixels' header menu, Sevens' and Coins'
   buttons.

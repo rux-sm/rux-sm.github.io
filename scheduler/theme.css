@@ -715,14 +715,6 @@
    colour, which the tile's step already clears. */
 [data-theme="rux-dark"] :is(.scheduler-to-do--pane, .scheduler-trip, .scheduler-viewer) .rux--tile,
 [data-theme="rux-dark"]:not([data-rux-standalone]) .scheduler-print .rux--tile { box-shadow: none; }
-/* Its rows start and end on that 12px edge. A row gives up its 16px sides,
-   so its words stand on the edge; a row that lights under
-   the pointer carries the light 6px past each side, where the row itself
-   used to reach. The updates' list runs 6px out and each update comes 6px
-   back in, so an update's own light keeps that reach too. Add is the
-   outlined button as well, its edge where the ages end, and so is the
-   head's Close, as the trip panel's is. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row { padding-inline: 0; }
 /* The live card's tiles keep their 16px all round: the 4px past that 12px
    at the sides and over the foot the panel scrolls under, and the whole
    16px under the tabs, which the 12px does not reach. */
@@ -731,40 +723,6 @@
 /* Standing alone in the card, the live card's tiles take the 4px past that
    12px on every side. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) > .scheduler-card.scheduler-card--live { padding: var(--rux-spacing-02); }
-/* Its top and foot stand on that edge too, so the card's 12px is the margin
-   all round. Add, first in a card with no warnings, is 32px on the title's
-   18px line, so the line stands 7px in and Add's box 12px from the top, as
-   from the side; the last update's 32px row ends 12px from the foot, and with
-   no updates Add's box does. The Needs title stands on the edge too, 12px
-   down as from the side, and the card's 12px parts its box from the updates,
-   whose Add stands that far under it; the updates start 12px under their
-   title, the same step. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__needs {
-  padding-block: 0 var(--rux-spacing-04);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates > .scheduler-card__title:not(:last-child) {
-  margin-block-end: var(--rux-spacing-04);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:first-child {
-  padding-block-start: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates {
-  padding-block-end: calc((var(--rux-layout-size-height-sm) - 1.125rem) / 2);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates:has(> .scheduler-card__update-list) {
-  padding-block-end: 0;
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__row:is([data-go], [data-more]):hover {
-  box-shadow: -6px 0 0 var(--card-hover), 6px 0 0 var(--card-hover);
-}
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update-list { margin-inline: -6px; }
-/* The trip card's tiles keep their 16px from the card's edge: the 4px past
-   that 12px, and the whole 16px under the tabs, which the 12px does not reach. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { padding: var(--rux-spacing-02); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel > .scheduler-card:has(> .scheduler-card__tile) { padding-block-start: var(--rux-spacing-05); }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update[data-update-id] { padding-inline: 6px; }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action { margin-inline-end: 0; }
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) :is(.scheduler-card__action, .scheduler-card__close):not(:focus-visible, .rux--btn--primary) { border-color: var(--rux-border-subtle-02); }
 /* The card inside it takes the same raised surface's ink, and parts its rows
    with the hairline that edges the menu, as a Geist menu parts its groups. */
 :is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) {
@@ -775,9 +733,6 @@
   --card-rule: var(--rux-border-subtle-01);
   --card-focus: var(--rux-focus);
 }
-/* The rule between two updates steps down to the faintest border, as Design's
-   Geist table rows do, so a wrapped update still reads as one row. */
-:is([data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__update { border-block-start-color: var(--rux-border-subtle-00); }
 [data-theme="geist-dark"] .scheduler-bar--red {
   --scheduler-bg: oklch(27% 0.1084 19.02); --scheduler-hover: oklch(29% 0.1084 19.02);
   --scheduler-fg: oklch(69.96% 0.2136 22.03); --scheduler-border: oklch(69.96% 0.2136 22.03);
@@ -1144,11 +1099,6 @@
    for this one outweighs. */
 @media (max-width: 41.98rem) {
   [data-theme^="apple-"] .scheduler-page :is(.scheduler-toolbar, .scheduler-aside__head) .rux--btn { border-radius: 0; }
-}
-/* The card's Add is a grey push button here, where geist-dark rings it. */
-[data-theme^="apple-"] .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__action:not(:focus-visible, .rux--btn--primary) {
-  border-color: transparent;
-  background-color: var(--rux-button-secondary);
 }
 
 /* Design draws a box around every side panel in this theme, and overrides.css
@@ -1662,10 +1612,35 @@
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="below"]::after { border-block-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="right"]::after { border-inline-end-color: var(--card-surface); }
 [data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked])[data-side="left"]::after { border-inline-start-color: var(--card-surface); }
-/* A field is one step lighter than the surface it stands on, as Carbon's field-03 is on a layer-02 card; the card is already that step, so
-   its fields are one more, with the field's own bottom border keeping its edge. */
-[data-theme] .scheduler-bar-shortcuts[data-card]:not([data-docked]) :is(.scheduler-card__quick .rux--text-input, .scheduler-card__edit .rux--text-area) {
-  background: color-mix(in srgb, var(--card-surface), #fff 9%);
+/* THE TRIP'S TIPS ARE THE BUS NUMBER'S IN EVERY THEME, Carbon's high-contrast toggletip: the inverse surface and ink under Carbon's popover
+   shadow, with no ring, so every tip over the board is one thing. The caret takes the surface through `--card-surface`. */
+[data-theme] .scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) {
+  --card-surface: var(--rux-background-inverse);
+  background: var(--rux-background-inverse);
+  color: var(--rux-text-inverse);
+  box-shadow: none;
+  /* Carbon's popover shadow, the value Design's `.rux--popover--drop-shadow` falls back to. */
+  filter: drop-shadow(0 0.125rem 0.125rem rgba(0, 0, 0, 0.2));
+}
+/* A press row lights with the inverse hover. Carbon's field and buttons inside take the inverse surface's colours: the field the inverse
+   hover with an edge of the ink, the ink for words and a ghost button, the inverse focus, the inverse red for Delete, and a button
+   that cannot act yet a faint wash of the ink. */
+[data-theme] .scheduler-tip--card :is(.scheduler-tip__go, .scheduler-tip__update:not([data-editing])):hover { background: var(--rux-background-inverse-hover); }
+[data-theme] .scheduler-tip--card {
+  --rux-text-primary: var(--rux-text-inverse);
+  --rux-text-placeholder: color-mix(in srgb, var(--rux-text-inverse) 60%, transparent);
+  --rux-icon-primary: var(--rux-icon-inverse);
+  --rux-field: var(--rux-background-inverse-hover);
+  --rux-border-strong: color-mix(in srgb, var(--rux-text-inverse) 55%, transparent);
+  --rux-link-primary: var(--rux-text-inverse);
+  --rux-link-primary-hover: var(--rux-text-inverse);
+  --rux-background-hover: color-mix(in srgb, var(--rux-text-inverse) 12%, transparent);
+  --rux-background-active: color-mix(in srgb, var(--rux-text-inverse) 24%, transparent);
+  --rux-focus: var(--rux-focus-inverse);
+  --rux-focus-inset: var(--rux-background-inverse);
+  --rux-button-danger-secondary: var(--rux-support-error-inverse);
+  --rux-button-disabled: color-mix(in srgb, var(--rux-text-inverse) 18%, transparent);
+  --rux-text-on-color-disabled: color-mix(in srgb, var(--rux-text-inverse) 45%, transparent);
 }
 
 /* RUX 100'S TODAY IS A PILL, since its accent is white and white words alone

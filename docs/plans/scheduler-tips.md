@@ -108,11 +108,6 @@ None open.
 
 ## Tasks
 
-- [ ] Give the floating card the toggletip's surface, caret and size, with
-      no Close, no trip head and no pop.
-- [ ] Draw the Alerts tip from the tip's rows, the badge losing its hover
-      label.
-- [ ] Draw the Updates tip.
 - [ ] Draw the driver's tip before the trip, every driver's status icon a
       button that opens it, with the photo read from `driver-photos` and the
       driver's hover label gone.

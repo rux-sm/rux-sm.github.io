@@ -190,9 +190,9 @@
 
   /* THE ALERT BADGE, at the end of the destination row: the red circle
      with an exclamation mark for a bus that does not fit and Carbon's Warning triangle for the rest,
-     alone, the problems' words on the tooltip and their count in the card's Alerts. It stands in the same
-     place on every bar, and a bar with no problem has none. A press on it
-     opens the trip's card, so it is one of the bar's card openers. */
+     alone, the problems' words in its accessible name and the Alerts tip it opens, with no hover label to
+     repeat them. It stands in the same place on every bar, and a bar with no problem has none. A press on
+     it opens the trip's Alerts tip, so it is one of the bar's card openers. */
   const alertMark = (tone, words) => {
     const m = el('button', `scheduler-bar__msg scheduler-bar__msg--${tone} scheduler-bar__alert`);
     m.type = 'button';
@@ -200,7 +200,6 @@
     m.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'));
     m.dataset.cardOpener = '';
     m.setAttribute('aria-label', `Alerts: ${words}`);
-    m.title = words;
     return m;
   };
   /* THE PAID BADGE takes the alert badge's place on a trip that is back and
@@ -214,7 +213,7 @@
     return m;
   };
   /* The newest update's age is neutral metadata, without a clock or pill.
-     The entire update row is the entry point, including when it has no update. */
+     The row's chat mark opens Updates, including when it has no update. */
   const ageWords = at => {
     const min = (Date.now() - Date.parse(at)) / 60e3;
     if (min < 60) return `${Math.max(1, Math.floor(min))}m`;

@@ -1615,38 +1615,6 @@ button.scheduler-row-head__num::after {
   box-shadow: 0 0 0 1px var(--card-edge), var(--scheduler-lift);
 }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) > :is(.scheduler-card, .scheduler-card-tabs) { flex: 1 1 auto; min-block-size: 0; }
-/* THE HEAD IS THE TRIP PANEL'S: the trip's destination in the panel
-   title's 16px heading, 16px from the card's edge, and Close at its end, the
-   control height, in the corner where the card holds nothing in from its
-   edge and that inset in from the top and the end where a theme holds it in,
-   as the panel's close stands. It spans the card, out over that inset, so
-   its hairline, the card's own edge, runs side to side as the panel's does,
-   drawn inside it so the head is the panel's height. The parts under it
-   start 16px below it, and the tabs straight under it. */
-.scheduler-card__top {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: var(--rux-spacing-03);
-  min-block-size: var(--rux-layout-size-height-md);
-  margin: calc(-1 * var(--scheduler-shortcut-pad, 0px)) calc(-1 * var(--scheduler-shortcut-pad, 0px)) 0;
-  padding: var(--scheduler-shortcut-pad, 0px) var(--scheduler-shortcut-pad, 0px) var(--scheduler-shortcut-pad, 0px) var(--rux-spacing-05);
-  box-shadow: inset 0 -1px 0 var(--card-edge);
-}
-.scheduler-card__top + .scheduler-card { margin-block-start: var(--scheduler-shortcut-pad, 0px); }
-.scheduler-card__top-title {
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--card-ink);
-  font-size: var(--rux-heading-compact-02-font-size);
-  font-weight: var(--rux-heading-compact-02-font-weight);
-  line-height: var(--rux-heading-compact-02-line-height);
-  letter-spacing: var(--rux-heading-compact-02-letter-spacing);
-}
-.scheduler-card__close { flex: none; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card {
   display: flex;
   flex-direction: column;
@@ -1705,6 +1673,73 @@ button.scheduler-row-head__num::after {
   border-inline-start-width: 1px;
   border-block-start-width: 1px;
 }
+/* THE TRIP'S TIPS, Alerts and Updates, are Carbon's high-contrast
+   toggletip, as the bus number's is: its 2px corners, its drop shadow and its
+   12px by 6px caret, with no ring and none of the theme's inset; theme.css
+   gives it the inverse surface and ink. The card's own placing stands it
+   beside the trip, as tall as what it holds; past the board's room it
+   scrolls inside, so the caret outside it is never cut. */
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) {
+  padding: 0;
+  border-radius: 2px;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])::after {
+  inline-size: 0;
+  block-size: 0;
+  border: 0 solid transparent;
+  background: none;
+  transform: none;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]):is([data-side="right"], [data-side="left"])::after {
+  inset-block-start: calc(var(--scheduler-open-tip, 50%) - 6px);
+  border-block-width: 6px;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="right"]::after { inset-inline-start: -6px; border-inline-end-width: 6px; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="left"]::after { inset-inline-start: 100%; border-inline-start-width: 6px; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]):is([data-side="above"], [data-side="below"])::after {
+  inset-inline-start: var(--scheduler-open-tip, var(--rux-spacing-05));
+  border-inline-width: 6px;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="above"]::after { inset-block-start: 100%; border-block-start-width: 6px; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])[data-side="below"]::after { inset-block-start: -6px; border-block-end-width: 6px; }
+/* Inside it are the bus tip's head and ruled rows. Its count stands beside
+   its name in plain faded type. A row that is a press takes the inverse
+   hover under the pointer and the inverse focus ring, and leads with its
+   16px icon. An update is its words over who wrote it and how long ago, the
+   press a button laid over the row; Add update is a row of its own. */
+.scheduler-tip--card { min-inline-size: 0; }
+.scheduler-tip__count { margin-inline-start: var(--rux-spacing-03); font-weight: 400; opacity: .75; }
+.scheduler-tip__go {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rux-spacing-03);
+  inline-size: 100%;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+button.scheduler-tip__go { border-inline: 0; border-block-end: 0; background: none; }
+.scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
+.scheduler-tip__go:focus-visible, .scheduler-tip__open:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
+.scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.scheduler-tip__when { flex: none; margin-inline-start: auto; font-weight: 400; opacity: .75; white-space: nowrap; }
+.scheduler-tip__none { opacity: .75; }
+.scheduler-tip__list { margin: 0; padding: 0; list-style: none; }
+.scheduler-tip__update { position: relative; display: grid; gap: var(--rux-spacing-01); }
+.scheduler-tip__by { opacity: .75; }
+.scheduler-tip__open { position: absolute; inset: 0; padding: 0; border: 0; background: none; cursor: pointer; }
+/* A box opened in a row, Add's or an update's: Carbon's small field over its
+   buttons at the row's end, Delete alone at its start. */
+.scheduler-tip__box { display: grid; gap: var(--rux-spacing-03); padding-block: var(--rux-spacing-03); }
+.scheduler-tip__box .rux--text-input, .scheduler-tip__edit .rux--text-area { inline-size: 100%; }
+.scheduler-tip__edit { display: grid; gap: var(--rux-spacing-03); min-inline-size: 0; }
+.scheduler-tip__acts { display: flex; align-items: center; justify-content: flex-end; gap: var(--rux-spacing-02); }
+.scheduler-tip__acts > [data-edit-act="ask-delete"] { margin-inline-end: auto; }
+.scheduler-tip__ask { margin-inline-end: auto; white-space: nowrap; }
+.scheduler-tip__acts > .rux--btn { flex: none; inline-size: auto; min-inline-size: 0; max-inline-size: none; padding-inline: var(--rux-spacing-05); }
 .scheduler-bar-shortcuts[data-card][data-docked] {
   inline-size: auto;
   --card-ink: var(--rux-text-primary);
@@ -2074,61 +2109,6 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 .scheduler-card__open:focus-visible { outline: 2px solid var(--card-focus); outline-offset: -2px; }
-/* THE FLOATING TRIP CARD IS TILES, as the live card is: the Needs and the
-   Updates each a tile holding its title, its button and its rows, 16px from
-   the card's sides and top and a step apart, the Updates filling the card to
-   16px off its foot and scrolling inside. A tile holds its words 16px in,
-   Add's box ending where the ages do; its rows run out to its sides, so a
-   row's light fills its width. An update is Carbon's 40px row with a quiet
-   hairline between it and the next, Add's box 16px in from the tile's top
-   and side, the first row's hairline 16px under it and the last ending 16px off the
-   tile's foot; with none, a line says so 8px under the title, in a tile only as tall as that. A theme that holds
-   the card 12px from its edge gives the 4px more in theme.css. A part is named four times to outrank the
-   padding the card and the themes set for its rows. */
-/* The parts sit straight on the card, a step apart, with no tile or rule of their own. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:has(> .scheduler-card__tile) { gap: 0; padding: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card-tabs__panel.rux--tab-content:has(> .scheduler-card) { padding: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__tile.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile {
-  min-block-size: 0;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0 var(--rux-spacing-05) var(--rux-spacing-05);
-  border-block-start: 0;
-  border-radius: 0;
-  background: none;
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile.scheduler-card__tile.scheduler-card__tile:has(> .scheduler-card__update-list) {
-  padding-block-end: calc(var(--rux-spacing-05) - (var(--rux-layout-size-height-md) - 1.125rem) / 2);
-}
-/* A part's heading is one 40px row, its title 16px in and its button, where it has one, the row's full height and flush to the card's edge. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title {
-  box-sizing: border-box;
-  min-block-size: var(--rux-layout-size-height-md);
-  margin: 0 calc(-1 * var(--rux-spacing-05));
-  padding-inline: var(--rux-spacing-05) 0;
-}
-/* Under the heading's hairline the updates run straight on; the quick
-   update's box stands 16px under it and 16px over the first update. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:not(:last-child) {
-  margin-block-end: 0;
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__updates.scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(+ .scheduler-card__none) { margin-block-end: var(--rux-spacing-03); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__updates.scheduler-card__tile:has(> .scheduler-card__none) { flex: none; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__quick:has(+ .scheduler-card__update-list) { margin-block-end: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > :is(.scheduler-card__action, .scheduler-card__link) { align-self: stretch; align-items: center; block-size: var(--rux-layout-size-height-md); min-block-size: 0; margin: 0; padding-block: 0; border-radius: 0; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list {
-  margin: var(--rux-spacing-03) calc(-1 * var(--rux-spacing-05)) calc((1.125rem - var(--rux-layout-size-height-sm)) / 2);
-  padding: 0;
-  border-radius: 0;
-  background: none;
-}
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__needs-list > .scheduler-card__row { padding-inline: var(--rux-spacing-05); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__update-list.scheduler-card__update-list { margin-inline: calc(-1 * var(--rux-spacing-05)); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update[data-update-id].scheduler-card__update {
-  padding: calc((var(--rux-layout-size-height-md) - 1.125rem) / 2) var(--rux-spacing-05);
-  border-radius: 0;
-}
-/* Floating, the updates stand apart by their own padding, with no rule between them or under the heading. */
 .scheduler-card__none {
   margin: 0;
   color: var(--rux-text-secondary);
@@ -2171,6 +2151,8 @@ button.scheduler-row-head__num::after {
 .scheduler-bar-shortcuts[data-card][data-side="left"] { --card-rise-x: 4px; }
 .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-in 110ms cubic-bezier(0, 0, .38, .9) both; }
 .scheduler-bar-shortcuts[data-pop][data-docked] { animation-name: scheduler-card-fade; }
+/* A tip appears as the bus number's does, with no pop: Carbon's popover has no entrance motion. */
+.scheduler-bar-shortcuts[data-pop][data-tip] { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-bar-shortcuts[data-pop] { animation: scheduler-card-fade 110ms linear both; }
 }
@@ -6333,15 +6315,6 @@ html[data-scheduler-takeover] {
 .scheduler-week--no-update.scheduler-week--no-drivers .scheduler-bar { --scheduler-footer-paint: none; }
 .scheduler-bar__msg.scheduler-bar__paid { block-size: 18px; min-inline-size: 18px; line-height: 18px; border-radius: 9px; font-size: var(--rux-label-01-font-size); }
 
-/* AN UPDATE OPEN IN THE CARD is its face beside a box with Delete at the left and Cancel and Save at the right, or beside its words and the
-   question that Delete asks, in the row's own place, so the other updates stay where they are. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile .scheduler-card__update--editing[data-update-id].scheduler-card__update.scheduler-card__update--editing {
-  display: grid;
-  grid-template-columns: 1rem minmax(0, 1fr);
-  gap: var(--rux-spacing-03);
-  align-items: start;
-  padding: var(--rux-spacing-04) var(--rux-spacing-05);
-}
 .scheduler-card__edit { display: flex; flex-direction: column; gap: var(--rux-spacing-03); min-inline-size: 0; }
 .scheduler-card__edit .rux--text-area { inline-size: 100%; }
 .scheduler-card__edit-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--rux-spacing-02); }
@@ -6356,52 +6329,9 @@ html[data-scheduler-takeover] {
 .scheduler-card__go { flex: none; margin-inline-start: auto; padding-inline-start: var(--rux-spacing-04); color: var(--rux-text-secondary); font-size: var(--rux-label-01-font-size); line-height: var(--rux-body-compact-01-line-height); }
 .scheduler-card__asks-when + .scheduler-card__go { margin-inline-start: 0; }
 
-/* THE FOOTER runs along the card's foot as a Carbon window's does, one hairline over it and its buttons the control height and edge to edge,
-   a button alone the whole width and two sharing it; a new update's box stands in it over Cancel and Save. It stays in view while a
-   card of needs scrolls. */
+/* The live card scrolls inside the floating card, sideways never. */
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card { overflow-x: hidden; }
 .scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card:not(:has(> .scheduler-card__updates)) { overflow-y: auto; }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card > .scheduler-card__footer {
-  position: sticky;
-  inset-block-end: 0;
-  display: flex;
-  flex-wrap: wrap;
-  margin-block-start: auto;
-  border-block-start: 1px solid var(--card-rule);
-  background: var(--card-surface);
-}
-.scheduler-card__footer > .rux--btn {
-  flex: 1 1 0;
-  margin: 0;
-  align-items: center;
-  block-size: var(--rux-layout-size-height-md);
-  min-block-size: 0;
-  max-inline-size: none;
-  padding-inline: var(--rux-spacing-05);
-  border-radius: 0;
-}
-.scheduler-card__footer > .scheduler-card__quick { flex: 1 1 100%; margin: var(--rux-spacing-04) var(--rux-spacing-05); }
-
-/* A ONE-PART CARD'S HEADING is a Carbon window's: the title in the 20px heading, regular, with its count beside it in small secondary text,
-   and Close the row's height square at the corner, flush to its edges. */
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title.scheduler-card__title:has(> .scheduler-card__close) {
-  min-block-size: var(--rux-layout-size-height-md);
-}
-.scheduler-card__title:has(> .scheduler-card__close) .scheduler-card__heading {
-  font-size: var(--rux-heading-03-font-size);
-  font-weight: var(--rux-heading-03-font-weight);
-  line-height: var(--rux-heading-03-line-height);
-  letter-spacing: var(--rux-heading-03-letter-spacing);
-}
-.scheduler-card__title:has(> .scheduler-card__close) .scheduler-card__count { font-size: var(--rux-body-compact-01-font-size); }
-.scheduler-bar-shortcuts[data-card]:not([data-docked]) .scheduler-card__tile > .scheduler-card__title > .scheduler-card__close {
-  align-self: stretch;
-  inline-size: var(--rux-layout-size-height-md);
-  block-size: var(--rux-layout-size-height-md);
-  min-block-size: 0;
-  margin: 0;
-  border-radius: 0;
-}
 
 .scheduler-card__rest-progress { position: relative; display: grid; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); }
 .scheduler-card__rest-progress > .scheduler-crew__rest { position: relative; inset: auto; inline-size: 100%; block-size: 4px; grid-row: 2; }

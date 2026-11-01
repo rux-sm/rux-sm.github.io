@@ -160,7 +160,7 @@ function drawn(sectionId, name, later = false) {
 const has = (bar, sel) => !!bar.querySelector(sel);
 const text = (bar, sel) => bar.querySelector(sel)?.textContent ?? null;
 // The warning sign a bar wears for a problem, its colour and its words; a clock is not one.
-const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.title}` : null; };
+const mark = bar => { const m = bar.querySelector('.scheduler-bar__alert'); return m ? `${m.classList.contains('scheduler-bar__msg--error') ? 'red' : 'amber'} ${m.getAttribute('aria-label').replace(/^Alerts: /, '')}` : null; };
 const hue = bar => bar.classes().find(c => /^scheduler-bar--(blue|red|teal|green|purple|magenta|amber)$/.test(c))?.slice(15);
 
 let failed = 0;
@@ -294,13 +294,13 @@ expect('same section toggles closed, another switches, and closed cards open',
   [false, true, true]);
 expect('trip groups do not swallow their child button semantics',
   [holder.getAttribute('role'), holder.getAttribute('aria-current')], ['group', 'false']);
-expect('the badge is the icon alone, its tooltip the exact problem list',
+expect('the badge is the icon alone, named for the exact problem list, with no hover label',
   alerts.map(n => {
     const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
-    return badge ? [badge.textContent, badge.title] : ['', ''];
+    return badge ? [badge.textContent, badge.getAttribute('aria-label'), badge.title] : ['', '', ''];
   }), alerts.map(n => {
     const problems = factsByBar.get(drawn('alerts', n)[0]).problems;
-    return ['', problems.map(a=>a.words).join(' · ')];
+    return problems.length ? ['', `Alerts: ${problems.map(a=>a.words).join(' · ')}`, ''] : ['', '', ''];
   }));
 
 // Exercise the actual card builder with specimen trips and a minimal page.
@@ -312,6 +312,7 @@ const cardContext = {
   pageEl: { getAttribute: () => 'full' }, dueFollowUp: () => false,
   updatesOf: window.SchedulerFollowUp.updatesOf, updatesOpenFor: null, quickOpenFor: null,
   quickDraft: { tripId: null, text: '' },
+  cardEdit: null,
   svgUse: () => make('svg'), updateFace: () => make('span'), ageShort: () => '1d', updateStamp: Bar.updateStamp,
   cardAction: () => make('button'),
   cardClose: () => make('button'),
@@ -321,12 +322,22 @@ runInNewContext(cardSource + '\nglobalThis.testDrawCard = drawCard;', cardContex
 const specimen = (section, name) => data.sections.find(s=>s.id===section).samples.find(s=>s.name===name).rows[0].bars[0].trip;
 const [needsBar] = drawn('alerts', 'Both');
 const needsCard = cardContext.testDrawCard(specimen('alerts','Both'), needsBar, 'needs');
-expect('the card leads with the exact badge count and lists broader needs separately',
-  needsCard.querySelector('.test-title')?.textContent, `Alerts: ${factsByBar.get(needsBar).problems.length}`);
+const tipHead = tip => [tip.querySelector('.scheduler-tip__name')?.childNodes[0]?.textContent, tip.querySelector('.scheduler-tip__count')?.textContent ?? null];
+expect('the Alerts tip heads with the exact badge count, its alerts lamp rows that go where each is put right',
+  [tipHead(needsCard), needsCard.classList.contains('scheduler-tip'), needsCard.querySelectorAll('.scheduler-tip__go').length === needsCard.querySelectorAll('[data-go][role="button"]').length,
+    needsCard.querySelectorAll('.scheduler-tip__lamp').length],
+  [['Alerts', String(factsByBar.get(needsBar).problems.length)], true, true, factsByBar.get(needsBar).problems.length]);
 const [paperBar] = drawn('alerts','A hotel to book');
 const paperCard = cardContext.testDrawCard(specimen('alerts','A hotel to book'), paperBar,'needs');
-expect('paperwork does not turn into a counted operational alert in the card', paperCard.querySelector('.test-title')?.textContent, 'Other needs: 1');
-expect('Needs does not draw a second Updates editor', paperCard.querySelector('.scheduler-card__updates'), null);
+expect('paperwork does not turn into a counted operational alert in the tip', tipHead(paperCard), ['Other needs', '1']);
+expect('the Alerts tip has no Updates, Close or Open trip', [paperCard.querySelector('.scheduler-tip__update, [data-card-action]'), paperCard.querySelector('button.rux--btn')], [null, null]);
+const updatesTrip = specimen('trip-bar', 'Update ages');
+const updatesTip = cardContext.testDrawCard(updatesTrip, null, 'updates');
+expect('the Updates tip heads with its count, a row per update with who and how long ago, and Add update last',
+  [tipHead(updatesTip)[0], updatesTip.querySelectorAll('.scheduler-tip__update').length === updatesTrip.trip_updates.filter(u => u.kind !== 'nothing').length,
+    updatesTip.querySelectorAll('.scheduler-tip__update [data-update-open]').length > 0, text(updatesTip, '.scheduler-tip__by')?.endsWith('1d') ?? false,
+    updatesTip.children.at(-1).dataset.cardAction, updatesTip.querySelector('.scheduler-card__face, .rux--user-avatar')],
+  ['Updates', true, true, true, 'update', null]);
 
 const tabsSource = dataSource.slice(dataSource.indexOf('  function drawRoadCard('), dataSource.indexOf('  function drawCard('));
 cardContext.roadTabOf = () => 'needs';
@@ -340,10 +351,17 @@ expect('live cards keep three reachable sections and select the requested one',
 cardContext.quickOpenFor = tripWithPaperwork.id;
 cardContext.quickDraft = { tripId: tripWithPaperwork.id, text: 'Draft still being written' };
 cardContext.markSave = () => {};
+const draftTips = [cardContext.testDrawCard(tripWithPaperwork, paperBar, 'updates'), cardContext.testDrawCard(tripWithPaperwork, paperBar, 'updates')];
+expect('the Updates tip\'s redraws keep one box in Add\'s place and preserve the draft',
+  draftTips.map(c => [c.querySelectorAll('[data-quick] input').map(n => n.value), c.querySelector('.scheduler-tip__add'), c.querySelectorAll('[data-card-action]').map(b => b.dataset.cardAction)]),
+  Array(2).fill([['Draft still being written'], null, ['cancel', 'save']]));
+// The docked sheet on a phone keeps the card's own bands.
+cardContext.pageEl = { getAttribute: () => 'compact' };
 const draftCards = [cardContext.testDrawRoadCard(tripWithPaperwork, paperBar), cardContext.testDrawRoadCard(tripWithPaperwork, paperBar)];
-expect('live-card redraws keep one Updates input and preserve the draft',
-  draftCards.map(c=>c.querySelectorAll('.scheduler-card__quick input').map(n=>n.value)),
+expect('docked redraws keep one Updates input and preserve the draft',
+  draftCards.map(c=>c.querySelectorAll('[data-quick] input').map(n=>n.value)),
   [['Draft still being written'],['Draft still being written']]);
+cardContext.pageEl = { getAttribute: () => 'full' };
 
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 

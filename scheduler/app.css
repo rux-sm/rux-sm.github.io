@@ -1312,9 +1312,10 @@ button.scheduler-row-head__num::after {
 /* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
    pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
    and a bigger mark to press, standing a pixel past the 18px row above and
-   below, a little lighter and over the shadow Carbon gives a raised menu,
-   as a raised surface is lighter in a dark theme and casts a shadow in a
-   light one. It stays up while its tip is open and settles flat under a
+   below, a little lighter and over a tight shadow, Carbon's tab tip's in
+   the theme's shadow colour, which stays within the row's 8px margin, as a
+   raised surface is lighter in a dark theme and casts a shadow in a light
+   one. It stays up while its tip is open and settles flat under a
    press. It grows toward the inside of the bar, the alert to its left and
    the rest to their right, so the bar's edge never cuts it. The rows that
    hold one cut only what passes 8px beyond their edges, the bar's padding,
@@ -1375,12 +1376,12 @@ button.scheduler-row-head__num::after {
 @media (hover: hover) {
   :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover {
     transform: scale(1.25);
-    filter: brightness(1.2) drop-shadow(0 2px 6px var(--rux-shadow));
+    filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
   }
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] {
   transform: scale(1.25);
-  filter: brightness(1.2) drop-shadow(0 2px 6px var(--rux-shadow));
+  filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):active { transform: none; filter: none; }
 /* The time line lifts as a line does: from 2px to 4px, and its part still to

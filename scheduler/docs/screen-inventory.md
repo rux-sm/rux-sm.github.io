@@ -298,7 +298,7 @@ opens on the tab the last one was on. New trip is the toolbar's + before its ⋮
 others, and a row of the overflow menu where the toolbar has no room; it puts down the
 selected trip and opens on Details. The trip's tips open only when asked, each from one of the bar's
 marks and never its words. A 16px icon, with no fill behind it, lifts under the pointer to 20px,
-Carbon's next icon size, a little lighter and over a soft shadow, stays up while its tip is open and settles flat under a
+Carbon's next icon size, a little lighter and over a tight shadow, stays up while its tip is open and settles flat under a
 press: the alert badge opens Alerts, the chat mark leading the update line, in the trip's strongest
 ink, opens Updates, and a driver's status mark, or on a bus out on the road their duty mark, opens that
 driver's tip. The time line between the two times, or a stop's tick on it, opens the route; it grows

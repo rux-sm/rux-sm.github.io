@@ -12,7 +12,7 @@ at what was pressed, a head naming its one subject, and ruled rows under it.
 
 Five parts open a card. Two already open the tip: the bus number and a
 stop's tick. Three do not: a trip's alert badge, its update line and the
-drivers on a bus out on the road. Those three are one card,
+drivers' line on a bus out on the road. Those three are one card,
 `#scheduler-bar-shortcuts`, drawn by `drawCard` and `drawLiveCard` in
 `scheduler/data.js`.
 
@@ -29,6 +29,18 @@ drivers on a bus out on the road. Those three are one card,
   `--card-*` tokens take the inverse values.
 - **No Close and no trip head.** A press elsewhere, Escape or the same press
   puts a tip away, as the bus tip's does.
+- **A trip's tips open from an icon, as Alerts does from its badge:**
+  Updates from the chat icon that leads the update line, and on a bus out on
+  the road the Live tip from any driver's icon, a relief's arrow too. The
+  rest of each line is the trip's, so a press there selects the trip, as
+  anywhere else on the bar. A done trip's drivers carry no icon, so it opens
+  no Live tip.
+- **Each opening icon is a button named for its tip,** such as "Updates, 6",
+  so Tab and Enter reach it. Its press area is 24px, Carbon's smallest
+  target, with the icon drawn at 16px as now.
+- **An opening icon shows it can be pressed:** the pointer, Carbon's ghost
+  hover square behind it, and the selected look while its tip is open. It
+  drops its hover label, because its tip says the same.
 - **A tip is as tall as what it holds,** 14rem to 20rem wide as the bus tip,
   scrolling only past the board's height. The fixed 33rem card goes, since
   floating has no tabs to hold the same size for.
@@ -60,6 +72,11 @@ drivers on a bus out on the road. Those three are one card,
 
 ## Questions
 
+- **Does a driver's icon open a tip on a trip that is not on the road?** It
+  shows a hover label today, such as "Driver · name · Confirmed by the
+  driver · date". Recommended: yes, a Driver tip with the driver's photo and
+  name as its head, then the status, who set it and when, and their phone,
+  so every driver icon opens a tip on every trip.
 - **What does Space on a trip open?** It opens the whole card today, with the
   trip's destination as its head. Recommended: the Updates tip, and the Live
   tip on a bus out on the road, as now.
@@ -70,6 +87,9 @@ drivers on a bus out on the road. Those three are one card,
       `data.js`, `bus-head.js`, `app.css`, `overrides.css` and
       `tools/check-bar.mjs`, with the bus and stop tips measured the same
       before and after.
+- [ ] Make the chat icon and a road bar's driver icons the openers in place
+      of their whole rows, in `bar.js` and `road-bar.js`, each a named
+      button with a 24px press area, a hover and no hover label.
 - [ ] Give the floating card the toggletip's surface, caret and size, with
       no Close, no trip head and no pop.
 - [ ] Draw the Alerts tip from the tip's rows.

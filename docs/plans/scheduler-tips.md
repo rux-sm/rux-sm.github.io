@@ -97,8 +97,15 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
   while holding puts it back unsaved, and a let-go with no arrow writes
   nothing. The held key's repeats are ignored, and days still change only in
   the editor.
+- **Every tip opened from a trip bar stands beside the trip,** the route tip
+  too, with its caret on what was pressed, because a tip laid over the bar
+  covers the trips above and below it. The bus number's tip keeps its place
+  at the number, in the bus column.
+- **A press on a trip bar that opens a tip selects the trip,** the route
+  tip's too, so the selected trip's ring always shows whose tip is open.
 - **The phone's docked sheet keeps its look and tabs,** because it is a sheet
-  along the foot, not a tip, and a driver's icon there selects the trip.
+  along the foot, not a tip. It has no driver's tip, so a driver's icon on
+  the phone is drawn plain, not as a button that looks pressable.
 - **This plan's tasks go before the
   [components page plan](scheduler-components-page.md)'s card task,** so the
   card moves out of `data.js` once, already a tip.
@@ -110,7 +117,10 @@ None open.
 ## Tasks
 
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
-      live card.
+      live card, the duty icon losing its hover label.
+- [ ] Open the route tip in the card's own placing beside the trip, its caret
+      on the time, tick or line pressed, and let that press select the trip.
+- [ ] Draw a driver's icon plain on the phone's docked board.
 - [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
       every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

@@ -82,15 +82,17 @@ ended. A touch screen already scrolls the strip natively.
   with Carbon's overlay fade. With reduced motion the panel only fades and
   the week moves at once.
 
+- **The arrows and Today use the browser's own smooth scroll,** as rux
+  decided, so a press moves the strip as a trackpad does; Today from more
+  than a week off is set a week short of today and scrolls the last week.
+- **The phone's compact week is the same strip,** as rux decided, swiped
+  with the iPhone's own fling and resting on a week's first day, so its own
+  swipe code goes; paging was kept only because a fling while the strip was
+  drawn again was the risk, and the strip is never drawn again.
+
 ## Questions
 
-- Should the arrows and Today use the browser's own smooth scroll, so a
-  press moves the strip exactly as a trackpad does, smoothest of the two, on
-  a curve and timing that are the browser's and not Carbon's? Or should they
-  keep Carbon's curve and durations, 240ms to 700ms by distance, drawn by the
-  page's code frame by frame?
-- Should the phone's compact week become the same native strip, swiped
-  freely and resting on a week's first day, or keep paging a week a swipe?
+None open.
 
 ## Tasks
 
@@ -100,10 +102,11 @@ ended. A touch screen already scrolls the strip natively.
       delete the wheel handling, glides, landings, spring and strip regrowth.
 - [ ] Follow the first day in view on each scroll frame and do the rest at
       `scrollend`, lanes after the rest, and delete the holds.
-- [ ] Move the arrows and Today as answered.
+- [ ] Move the arrows and Today with the browser's smooth scroll.
 - [ ] Keep the strip's first day as a panel opens and closes.
 - [ ] Rewrite the strip check for the drawn-near-the-view strip.
-- [ ] Bring the phone's week to the strip, or leave it paging, as answered.
+- [ ] Bring the phone's week onto the strip, resting on a week's first day,
+      checked in the iPhone simulator.
 - [ ] Add the panel motion.
 - [ ] Correct `design/docs/motion.md`: its two motions without a Carbon
       answer go, and a panel arriving is productive motion, as Carbon's side

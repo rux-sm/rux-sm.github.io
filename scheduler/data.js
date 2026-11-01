@@ -1765,8 +1765,9 @@
      narrowed has days of another width: either is scrolled again to the week
      in view, when nothing is scrolling it. */
   if ('ResizeObserver' in window) {
-    // Not under a sideways gesture, whose redraw has just placed the strip to the pixel.
-    new ResizeObserver(() => { if (stripStart && !weekMotion && axis !== 'x') placeStrip(); }).observe(gridEl);
+    // Not under a sideways gesture, whose redraw has just placed the strip to
+    // the pixel, nor under an arrow's or Today's glide, which it would cut short.
+    new ResizeObserver(() => { if (stripStart && !weekMotion && aim == null && axis !== 'x') placeStrip(); }).observe(gridEl);
   }
 
   // Scrolls the strip, at once, so the week in view starts at its left edge.
@@ -17191,10 +17192,7 @@
   document.getElementById('scheduler-menu-today')?.addEventListener('click', () => {
     const menu = document.getElementById('scheduler-view-menu');
     if (menu) { window.Rux?.menu?.close?.(menu); menu.hidden = true; }
-    toast(null);
-    stopStripScroll();
-    cursor = firstDayOf(new Date());
-    show();
+    goToday();
   });
   // The week on screen as the forms page's week schedule, in its own tab.
   // What the colours mean: the legend of the bus column's gauges, in a window of its own.
@@ -17668,12 +17666,24 @@
   // Whether the last read covers every day drawn from this first day: one of
   // its nine weeks, with two weeks shown the one after too, and with Scroll
   // continuously the strip around it.
-  const holds = start => {
-    if (!cached) return false;
+  // Whether a payload read covers every day the board would draw for a week, the held one by default.
+  const heldBy = (payload, start) => {
+    if (!payload) return false;
     const [from, to] = drawnRange(start);
-    const reach = cached.data.reach ?? NEAR_DAYS;
-    return iso(addDays(cached.centre, -reach)) <= iso(from) && iso(to) <= iso(addDays(cached.data.weekEnd, reach));
+    const reach = payload.data.reach ?? NEAR_DAYS;
+    return iso(addDays(payload.centre, -reach)) <= iso(from) && iso(to) <= iso(addDays(payload.data.weekEnd, reach));
   };
+  const holds = start => heldBy(cached, start);
+  /* TODAY'S WEEKS STAY HELD. What is held follows the board, so a board
+     scrolled months away no longer holds today; the last payload that held
+     the weeks either side of today is kept as `home`, so Today draws at once
+     from it rather than waiting on a read, and the read that follows brings
+     it up to date. */
+  let home = null;
+  function keepHome() {
+    const today = firstDayOf(new Date());
+    if (heldBy(cached, addDays(today, -7)) && heldBy(cached, addDays(today, 7))) home = cached;
+  }
   /* What one week would have to change for a redraw to be worth it: which trips
      it draws and when each was last written, which is what an edit moves, and
      the windows that stripe a row or a day in it. It is taken for one week and
@@ -17870,6 +17880,7 @@
     }
     if (!data) return;
     cached = { data, centre: data.weekStart };
+    keepHome();
     if (!holds(cursor)) return;
     if (scrolling()) {
       if (stripRoomy() && stripData) {
@@ -18175,6 +18186,7 @@
       if (scrolling()) {
         const before = stripData;
         cached = { data, centre: asked };
+        keepHome();
         if (!holds(cursor)) { stripAhead = ahead; weekOwed = true; readAgain = true; return; }
         if ((stripRoomy() || ahead) && before) {
           const strip = [stripStart, addDays(stripStart, stripDays() - 1)];
@@ -18190,6 +18202,7 @@
          screen moves. */
       const same = held && cached && weekPrint(data, asked) === weekPrint(cached.data, asked);
       cached = { data, centre: asked };
+      keepHome();
       // The weeks drawn ahead were drawn from the payload this replaces.
       if (same) { afterBoard?.(); return; }
       if (barsInHand) { drawOwed = true; return; }
@@ -19215,7 +19228,40 @@
     const dir = e.key === 'ArrowRight' ? 1 : -1;
     stepWeek(dir * (e.shiftKey ? 7 : 1));
   });
-  document.getElementById('scheduler-today')?.addEventListener('click', () => { toast(null); stopStripScroll(); cursor = firstDayOf(new Date()); show(); });
+  /* TODAY GLIDES HOME, whatever the distance. Within the strip it glides
+     there as an arrow does. From further, the strip is drawn at once a week
+     short of today, on the side the board is coming from, the trips fading
+     up as the dates change, and glides the last week, so it reads as a fast
+     scroll back without running through every week between; today's weeks
+     come from what is held, or from `home`. With motion reduced, or with
+     nothing held for today, the week is drawn as before. */
+  function goToday() {
+    toast(null);
+    stopStripScroll();
+    const today = firstDayOf(new Date());
+    if (scrolling() && stripStart && !barsInHand) {
+      // Today with a week of room either side of it in the strip is glided to as it stands.
+      const at = daysBetween(stripStart, today);
+      const roomy = at >= STRIP_EDGE && at <= stripDays() - inView() - STRIP_EDGE;
+      const side = Math.sign(daysBetween(today, cursor)) || 1;
+      const runUp = addDays(today, side * 7);
+      if (!roomy && !holds(today) && heldBy(home, today)) cached = home;
+      /* Near enough, the strip moves along with nothing on screen moving, so
+         today has that room and the glide runs from where the board is; from
+         further it is drawn at the run-up. */
+      if (!roomy && !reducedMotion.matches && holds(runUp) && !growStrip(runUp)) {
+        cursor = runUp;
+        drawBoard(cached.data);
+        schEl.classList.remove('scheduler-week--arrive');
+        void schEl.offsetWidth;
+        schEl.classList.add('scheduler-week--arrive');
+        setTimeout(() => schEl.classList.remove('scheduler-week--arrive'), 400);
+      }
+    }
+    cursor = today;
+    show();
+  }
+  document.getElementById('scheduler-today')?.addEventListener('click', goToday);
 
   /* The toolbar's row of controls scrolls sideways where it has no room for
      them. A mouse has no swipe, so a wheel turned over the row moves it

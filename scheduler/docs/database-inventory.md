@@ -104,7 +104,8 @@ names on the bar. `bus_out_of_service` (`bus_id`, `start_date`, `end_date`,
 | `maintenance_schedule_shares` | this app's maintenance pages | one row, `scope = 'main'`, `token`, `revoked_at`. RPC only. |
 | `settings` | Settings view | key-value, `value` jsonb. `yard-location-v1` (`{ name, address, lat, lng }`), `requirements-v1` (a list of `{ id, label, type, active, sortOrder, icon }`, `type` vehicle for a bus's need or driver for the trip's), `billing-workflow-v1` (`{ workflow, confirmWhen }`: each of `contractSigned`, `poReceived` and `invoiced` with its `label` and `active`, and the billing statuses that confirm a trip), which the Settings page's Office tab edits, locations, and `vehicle-types-v1`, the office's vehicle types as `{ name, label?, icon }`, live here, with the Settings page's `rate-calendar-v1` (`{ months }`, a month's number to the id of the mileage rate it starts from), `route-times-v1`, `fuel-card-v1` (`{ miles, days }`), `dead-miles-v1` (`{ miles }`, null for no offer) and `late-return-v1` (`{ hour }`, 0 to 12, the hour of the morning before which a bus back at the yard came back the night before; 4 with no row). |
 | `profiles` | both apps' staff log-in, the old app's profile | `display_name`, `photo_path`, `settings` jsonb, `avatar_color`; `user_id`, the Auth user this staff member logs in as; which apps an account opens is in its `app_metadata`. Ruxbot is the one row with no `user_id`, the profile an agent's to-do rows are made by, whose id `ruxbot_profile_id()` returns. Not `platform.profiles`. |
-| `team_messages`, `team_message_reactions`, `team_chat_reads` | team chat | dropped from this app, see the screen inventory |
+| `chat_messages` | the team chat, `team-chat.js` | one row a message: `body` up to 2,000 characters, `urgent`, `mentions` the staff it names as profile ids, `links` a list of `{ kind, id, label, date }` (trip, customer, contact, driver, bus, location or missive), `edited_at`, `deleted_at`. A trigger sets `author_id` to the person logged in and the times; only the sender edits, the sender or an owner deletes, which empties the row and keeps it. Staff read; no row is ever removed. |
+| `chat_reads` | the team chat | one row a person, `last_read_id`, the newest message they have seen, written through `chat_mark_read`, which only moves it forward. Staff read. |
 | `game_*` (four tables, nine functions) | Flip Seven | dropped |
 | `quote_rates` | quote calculator | this app's own. `key` and `value`, one row per named rate or rule; the keys are listed in `scheduler/quote.js`, and a rule not yet saved falls back to the spreadsheet's figure there. Staff only. |
 | `quote_mileage_rates` | quote calculator | this app's own. `rate`, `note`, `is_default` (at most one true). Staff only. |
@@ -136,6 +137,7 @@ one To do line, who the row is about ahead of its words. The RPCs a screen calls
 | Maintenance status | the `maintenance-status` Edge Function (§9), for a bar's details on the maintenance pages; it writes nothing |
 | History | `record_trip_history`, which every trip entry is written through; `search_history` and `history_people`, the History page's read of trip and record entries together and its names; `get_trip_history`, which nothing calls. All staff only. `record_row_history` and `record_line_history` are the trigger functions, with `history_actor` and `history_text` under them, and nobody calls those four. |
 | Vehicle types | `rename_vehicle_type`, staff only, which the Fleet page's Vehicle types list calls: it renames a type on `buses`, `trips`, `trip_assignments` and `customers`, and puts back the Buses done and Billing done the rename takes off |
+| Team chat | `chat_people`, the staff who may open the Scheduler, whom a message can name; `chat_mark_read`. Both staff only |
 | Access, owner only, on the Account page | `is_owner`, `list_accounts`, `set_account_apps`; not callable without a log-in |
 
 ### Storage buckets
@@ -153,7 +155,8 @@ The board subscribes twice: its `scheduler-board` channel to the tables
 it, the to-do list and Departures draw from, which hands each change to
 all three, and its `scheduler-to-do` channel to `to_dos`. The Trips page,
 which has no board, holds `scheduler-to-do-rows` to the trip tables the
-to-do list reads.
+to-do list reads. Every page with the team chat holds `scheduler-team-chat`
+to `chat_messages` and `chat_reads`.
 
 ## 3. Table to screen
 

@@ -13038,6 +13038,16 @@
       return;
     }
 
+    // The trip, and its email thread when it has one, as links in the team chat's box.
+    if (item.id === 'scheduler-bar-menu-chat') {
+      const trip = panelIndex.trips.get(bar.dataset.tripId);
+      window.SchedulerTeamChat?.share([
+        { kind: 'trip', id: bar.dataset.tripId, record: trip },
+        { kind: 'missive', url: barThreadUrl(bar) },
+      ]);
+      return;
+    }
+
     if (item.id === 'scheduler-bar-menu-contacts') {
       openContactsFrom(bar, bar);
       return;
@@ -13175,6 +13185,7 @@
     document.getElementById('scheduler-bar-menu-upload').hidden = !!bar.dataset.itineraryId || !client;
     document.getElementById('scheduler-bar-menu-thread').hidden = !barThreadUrl(bar);
     document.getElementById('scheduler-bar-menu-thread-add').hidden = !!barThreadUrl(bar) || !client;
+    document.getElementById('scheduler-bar-menu-chat').hidden = !window.SchedulerTeamChat;
     // Mark this leg's hotel booked or not, on a trip that needs one, and not for
     // the trip open in the editor, which has its own Booked box.
     const hotelItem = document.getElementById('scheduler-bar-menu-hotel');

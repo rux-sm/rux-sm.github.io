@@ -1081,6 +1081,270 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   color: var(--rux-text-secondary);
 }
 
+/* THE TEAM CHAT, team-chat.js, here beside the faces for the same reason.
+   Its header action carries a dot while something is unread, in the urgent
+   colour when an unread message is urgent for this person or names them.
+   Its panel is Carbon's header panel at the width a conversation needs, and
+   the whole screen on a phone: the room above, the box below. */
+.scheduler-team-action { position: relative; }
+.scheduler-team-action__dot {
+  position: absolute;
+  inset-block-start: 0.625rem;
+  inset-inline-end: 0.625rem;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 50%;
+  background: var(--rux-link-primary);
+  box-shadow: 0 0 0 2px var(--rux-background);
+  pointer-events: none;
+}
+.scheduler-team-action__dot[data-tone="urgent"] { background: var(--rux-support-error); }
+.scheduler-team-action__dot[hidden] { display: none; }
+.scheduler-team.rux--header-panel--expanded {
+  display: flex;
+  flex-direction: column;
+  inline-size: 24rem;
+  block-size: min(40rem, calc(100dvh - 3rem - var(--rux-spacing-07)));
+  overflow: hidden;
+  border-block-end: 1px solid var(--rux-border-subtle);
+}
+@media (max-width: 41.98rem) {
+  .scheduler-team.rux--header-panel--expanded { inline-size: 100%; block-size: calc(100dvh - 3rem); border-inline-width: 0; border-block-end: 0; }
+}
+.scheduler-team__head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--rux-spacing-01);
+  padding: var(--rux-spacing-03) var(--rux-spacing-03) var(--rux-spacing-03) var(--rux-spacing-05);
+  border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-team__head .rux--btn[hidden] { display: none; }
+.scheduler-team__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  letter-spacing: var(--rux-heading-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
+}
+.scheduler-team__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: var(--rux-spacing-03);
+}
+.scheduler-team__earlier { display: flex; margin-inline: auto; }
+.scheduler-team__earlier[hidden],
+.scheduler-team__empty[hidden] { display: none; }
+.scheduler-team__empty {
+  margin: 0;
+  padding: var(--rux-spacing-05);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-team__list { margin: 0; padding: 0; list-style: none; }
+.scheduler-team-day {
+  padding: var(--rux-spacing-05) var(--rux-spacing-05) var(--rux-spacing-02);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-text-secondary);
+}
+
+/* A message: the face, then the name and time over the text, its links and
+   what is said about it. One from the same person a moment after their last
+   drops the face and the name. An urgent one has the urgent colour's edge
+   and tint; one that names this person has the link colour's edge. */
+.scheduler-team-msg {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  column-gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-02) var(--rux-spacing-05) var(--rux-spacing-02) calc(var(--rux-spacing-05) - 3px);
+  border-inline-start: 3px solid transparent;
+}
+.scheduler-team-msg[data-follows] { padding-block-start: 0; }
+.scheduler-team-msg[data-follows] .scheduler-team-msg__face { visibility: hidden; block-size: 0; }
+.scheduler-team-msg[data-follows] .scheduler-team-msg__meta { display: none; }
+.scheduler-team-msg[data-named] { border-inline-start-color: var(--rux-link-primary); }
+.scheduler-team-msg[data-urgent] {
+  border-inline-start-color: var(--rux-support-error);
+  background: color-mix(in srgb, var(--rux-support-error) 12%, transparent);
+}
+@media (any-hover: hover) {
+  .scheduler-team-msg:hover { background-color: var(--rux-layer-hover); }
+}
+.scheduler-team-msg__main { min-inline-size: 0; }
+.scheduler-team-msg__meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rux-spacing-03);
+  min-block-size: 1.5rem;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-team-msg__who { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-text-primary); }
+.scheduler-team-msg__time { color: var(--rux-text-secondary); }
+.scheduler-team-msg__urgent { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-text-error); }
+.scheduler-team-msg__body {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+  color: var(--rux-text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.scheduler-team-msg__name { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-link-primary); }
+.scheduler-team-msg__deleted,
+.scheduler-team-msg__edited,
+.scheduler-team-msg__read {
+  font-size: var(--rux-helper-text-01-font-size);
+  line-height: var(--rux-helper-text-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-team-msg__deleted { font-style: italic; }
+.scheduler-team-msg__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rux-spacing-02);
+  margin-block-start: var(--rux-spacing-02);
+}
+.scheduler-team-msg__tools {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: var(--rux-spacing-03);
+  display: none;
+  background: var(--rux-layer);
+}
+.scheduler-team-msg:is(:hover, :focus-within) .scheduler-team-msg__tools { display: flex; }
+@media (hover: none) {
+  .scheduler-team-msg__tools { position: static; display: flex; grid-column: 2; background: none; }
+}
+.scheduler-team-msg__confirm { color: var(--rux-text-error); }
+
+/* A link: its kind's icon and its label, in the link colour, opening the
+   record; a record since removed is struck through and opens nothing. A
+   driver's link has Call and Text beside it, and one in the box a way to take
+   it off. */
+.scheduler-team-link {
+  display: inline-flex;
+  align-items: stretch;
+  max-inline-size: 100%;
+  border: 1px solid var(--rux-border-subtle-01);
+  background: var(--rux-layer-02);
+}
+.scheduler-team-link__open {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rux-spacing-02);
+  min-inline-size: 0;
+  padding: var(--rux-spacing-01) var(--rux-spacing-03);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+  color: var(--rux-link-primary);
+  text-decoration: none;
+}
+.scheduler-team-link__open svg { flex: none; }
+a.scheduler-team-link__open:hover { text-decoration: underline; }
+.scheduler-team-link__open:focus-visible,
+.scheduler-team-link__extra:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-team-link__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-team-link[data-gone] .scheduler-team-link__open { color: var(--rux-text-secondary); }
+.scheduler-team-link[data-gone] .scheduler-team-link__label { text-decoration: line-through; }
+.scheduler-team-link__gone { color: var(--rux-text-secondary); }
+.scheduler-team-link__extra {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-inline-start: 1px solid var(--rux-border-subtle-01);
+  background: none;
+  color: var(--rux-icon-secondary);
+  cursor: pointer;
+}
+@media (any-hover: hover) {
+  .scheduler-team-link__extra:hover { background: var(--rux-layer-hover); color: var(--rux-icon-primary); }
+}
+
+/* The box: what is being edited, the links it carries, the text, then
+   Urgent and Send. The list of names and records opens above the text. */
+.scheduler-team__compose {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-04) var(--rux-spacing-05) var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+@media (max-width: 41.98rem) {
+  .scheduler-team__compose { padding-block-end: calc(var(--rux-spacing-05) + env(safe-area-inset-bottom, 0px)); }
+}
+.scheduler-team__editing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+.scheduler-team__editing[hidden],
+.scheduler-team__chips[hidden],
+.scheduler-team__pick[hidden] { display: none; }
+.scheduler-team__chips { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02); }
+.scheduler-team__box-wrap { inline-size: 100%; }
+.scheduler-team__box { inline-size: 100%; min-block-size: 2.5rem; resize: none; }
+.scheduler-team__row { display: flex; align-items: center; justify-content: space-between; }
+.scheduler-team__urgent { flex: none; inline-size: auto; }
+.scheduler-team__pick {
+  position: absolute;
+  z-index: 2;
+  inset-inline: var(--rux-spacing-05);
+  inset-block-end: calc(100% - var(--rux-spacing-03));
+  max-block-size: 16rem;
+  margin: 0;
+  padding: var(--rux-spacing-02) 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--rux-border-subtle-01);
+  background: var(--rux-layer-02);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
+}
+.scheduler-team__option {
+  display: flex;
+  align-items: center;
+  gap: var(--rux-spacing-03);
+  padding: var(--rux-spacing-02) var(--rux-spacing-04);
+  color: var(--rux-icon-secondary);
+  cursor: pointer;
+}
+.scheduler-team__option svg { flex: none; }
+.scheduler-team__option[aria-selected="true"] { background: var(--rux-layer-selected); }
+@media (any-hover: hover) {
+  .scheduler-team__option:hover { background: var(--rux-layer-hover); }
+}
+.scheduler-team__option-words { display: flex; flex-direction: column; min-inline-size: 0; }
+.scheduler-team__option-label,
+.scheduler-team__option-detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scheduler-team__option-label {
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  color: var(--rux-text-primary);
+}
+.scheduler-team__option-detail {
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  color: var(--rux-text-secondary);
+}
+
 /* The editor's Cancel trip is grey beside Reset and takes Carbon's danger red
    under the pointer and while pressed, so the rarest action warns only when it
    is reached for. The two classes together outrank Carbon's secondary hover. */

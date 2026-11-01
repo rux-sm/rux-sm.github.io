@@ -54,9 +54,30 @@ The side nav lists only pages that exist; each view is added when its page is. D
 | Notifications | drop | The office does not use it. |
 | Driver card | later | Popover from a cell of the availability grid (§7). |
 
-Dropped: dev notes, team chat, and the old profile menu (the Design account
-panel replaces it). Presence is kept: faces in the header show who else has
+Dropped: dev notes and the old profile menu (the Design account panel
+replaces it). Presence is kept: faces in the header show who else has
 the schedule open, and faces on a bar show who has that trip, each 16px at the destination row's end, before the route icon, two at most and then a count.
+
+**Team chat** (`team-chat.js`, on every page with the faces): one room for
+the staff, a header action beside the faces opening a header panel, 24rem
+wide and the whole screen on a phone. Messages run oldest to newest, by day,
+each with the sender's face, name and time; Show earlier reads a hundred
+more. Enter sends and Shift-Enter starts a line; on a touch screen Send
+sends. `@` lists the staff to name; `#` and two letters list trips,
+drivers, buses, customers, contacts and locations to link; a pasted Scheduler
+or Missive address becomes a link. A link shows its record as it is now and
+opens it, a trip on the board in its editor and a Missive thread in a new
+tab; a removed record is struck through, and a driver's link has Call and
+Text. Send to chat, on a trip bar's menu with the trip's email thread and
+beside History on a customer, contact, driver, bus or location, opens the
+chat with that link in the box. The sender edits or deletes their own
+message, an owner deletes any; a deleted one reads Message deleted. An
+unread message puts a dot on the action, in the urgent colour when it is
+urgent or names the person, and a toast while no other toast is up. An
+urgent message opens the panel for everyone it names, or everyone when it
+names no one, without moving the focus, plays two notes unless the panel's
+sound is off, and says who has read it. The bell turns on the browser's
+notifications for urgent messages and names while the tab is behind others.
 
 ## 3. Schedule view in detail
 

@@ -63,9 +63,9 @@ that stops partway says what did not save, and Save again sends only the rest:
 never a second bus, a doubled day out or a conflict with the page's own write.
 A phone number is shown through `phone.js`, on those pages, the board and the
 forms, a ten-digit US number as (956) 994-1169; what is stored stays as typed.
-Every page loads `people.js`, which shows who else has the Scheduler open as
-faces in the header, each a link to that person's page or open trip; the
-board adds which trip each person is on through it.
+Every page loads `people.js`, the faces in the header of who else has the
+Scheduler open, each a link to their page or open trip, and `team-chat.js`,
+the team chat beside them, which `docs/screen-inventory.md` describes.
 
 In the trip editor, Customer is picked from that list and saved with the trip;
 a name not in it becomes a new customer on Save. Picking the booking contact

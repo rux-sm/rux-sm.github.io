@@ -724,12 +724,18 @@ button.scheduler-row-head__num::after {
 /* A bus head's skeleton stands in the head's own classes, which size and
    place it; these give each grey block the height of what it stands for:
    the number's line, and the fuel's reading over its bar. The display takes
-   the head's width, or the square a theme sets it to. */
+   the head's width, or the square a theme sets it to, and the height of the
+   rows the head gives it, not the placeholder's own 100px. */
 .scheduler-row-head .rux--skeleton__text { margin-block-end: 0; }
 .scheduler-skeleton-num { inline-size: 2rem; block-size: 20px; }
-.scheduler-skeleton-dial { inline-size: auto; }
+.scheduler-skeleton-dial { inline-size: auto; block-size: auto; }
 .scheduler-skeleton-reading { block-size: 12px; }
 .scheduler-skeleton-tank { block-size: 4px; }
+/* The arc's fuel empty, its percent and the kit's three marks in the size of
+   their words. */
+.scheduler-skeleton-fuel { --scheduler-tank: 0%; }
+.scheduler-skeleton-pct { inline-size: 28px; block-size: 10px; }
+.scheduler-skeleton-kit { inline-size: 14px; block-size: 10px; }
 /* Placed and sized like a trip bar in the first lane. */
 .scheduler-skeleton-bar {
   position: absolute;

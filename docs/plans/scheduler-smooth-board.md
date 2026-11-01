@@ -60,14 +60,19 @@ inherit and restyle for; the width alone costs 1–2ms.
   the editor together; a panel in front of a week at its 33rem least; Fill
   the window; and the phone, turned both ways. Where a panel opens, the
   trip it opens for stays in view as the week narrows.
-- **Panel motion comes last,** on Carbon's curves and durations in
-  `design/docs/motion.md`.
+- **A panel pushes the week, as Carbon's side panel pushes the page,** and
+  comes last. Beside the week the panel slides 320px in and fades up over
+  150ms on the productive entrance curve, and leaves on the exit curve,
+  Carbon's own keyframes in `design/css/rux.css`; the week narrows and
+  widens over 240ms at the same moment, on the productive standard curve,
+  since Carbon's code names the 240ms and no curve. In front of the board,
+  on the phone or a week at its least, the panel slides over the week as it
+  dims, with Carbon's overlay fade. With reduced motion the panel only fades
+  and the week moves at once.
 
 ## Questions
 
-- Should a panel push the week as Carbon's does, the week narrowing while
-  the panel slides in, or use Reveal, the week narrowing at once and the
-  panel sliding into the space?
+None open.
 
 ## Tasks
 

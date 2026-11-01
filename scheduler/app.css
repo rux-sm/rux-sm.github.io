@@ -797,6 +797,12 @@ button.scheduler-row-head__num::after {
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
 }
+/* On the strip the skeleton is three weeks of days, so a board Fill the
+   window has widened loads full to its edge, and the pane cuts the days it
+   cannot hold; a paged week keeps its first seven. render() takes the
+   grid's skeleton class off as it draws the board. */
+.scheduler-week--scroll > .scheduler-grid--skeleton { --scheduler-days: 21; }
+.scheduler-week:not(.scheduler-week--scroll) .scheduler-skeleton-more { display: none; }
 
 /* While a trip is dragged a copy of its bar rides with the pointer, lifted,
    and glides into the row it would land in; the bar itself dims where it

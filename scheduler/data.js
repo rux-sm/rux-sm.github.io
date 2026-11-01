@@ -1173,7 +1173,7 @@
     if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
                                 contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
 
-    if (!target) { forgetOwed(); into.removeAttribute('data-animate'); }
+    if (!target) { forgetOwed(); into.removeAttribute('data-animate'); into.classList.remove('scheduler-grid--skeleton'); }
     into.replaceChildren();
     // The corner over the bus numbers is empty: each head draws its own type.
     into.appendChild(el('div', 'scheduler-corner'));

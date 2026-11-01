@@ -430,16 +430,19 @@
                  the options for how the board draws. -->
           <button type="button" class="rux--btn rux--btn--ghost rux--btn--icon-only rux--layout--size-md scheduler-toolbar__more" id="scheduler-view-trigger" aria-label="More" aria-haspopup="menu" aria-expanded="false"><svg class="rux--btn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-more_vert"/></svg></button>
           </div>
-            <!-- The loading skeleton: the corner, seven day cells and ten rows of
-                 grey placeholders in the real grid's classes, so the first paint
-                 is already the board. Each bus head is this week's head in grey,
+            <!-- The loading skeleton: the corner, three weeks of day cells and ten
+                 rows of grey placeholders in the real grid's classes, so the first
+                 paint is already the board. The strip shows as many of the days as
+                 its pane holds, as Fill the window does; a paged week, the phone's,
+                 shows the first seven, and the rest are marked
+                 `scheduler-skeleton-more`. Each bus head is this week's head in grey,
                  its number, display, fuel and kit in the head's own classes, the
                  arc's and the dial's both, so each theme and each count of bar
                  rows sizes and shows it as it does a bus's; the week starts on
                  six rows, the board's own, until data.js sets the saved count.
                  render() in data.js replaces all of it. -->
             <div class="scheduler-week" id="scheduler-week" role="region" aria-label="Week schedule" aria-busy="true" data-bar-rows="6">
-              <div class="scheduler-grid" id="scheduler-grid">
+              <div class="scheduler-grid scheduler-grid--skeleton" id="scheduler-grid">
                 <div class="scheduler-corner"></div>
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
@@ -448,22 +451,46 @@
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
                 <div class="scheduler-day"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
+                <div class="scheduler-day scheduler-skeleton-more"><div class="scheduler-skeleton-label"><p class="rux--skeleton__text"></p></div></div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:1;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:9;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:12;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:15;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:17;--scheduler-span:1"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:4;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:10;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:16;--scheduler-span:3"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:3"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:7;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:11;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:14;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:20;--scheduler-span:1"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
@@ -471,12 +498,17 @@
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:2;--scheduler-span:1"></div>
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:5;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:12;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:15;--scheduler-span:2"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:3;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:8;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:10;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:18;--scheduler-span:1"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
@@ -484,12 +516,18 @@
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:1"></div>
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:4;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:9;--scheduler-span:3"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:14;--scheduler-span:3"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:5;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:7;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:13;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:16;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:19;--scheduler-span:1"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
@@ -497,12 +535,17 @@
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:1;--scheduler-span:1"></div>
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:3;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:8;--scheduler-span:2"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:17;--scheduler-span:2"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
                   <div class="scheduler-row-head"><div class="scheduler-row-head__top"><span class="rux--skeleton__text scheduler-skeleton-num"></span></div><div class="scheduler-row-head__body scheduler-row-head__body--live"><div class="scheduler-row-head__gauges"><span class="rux--skeleton__placeholder scheduler-row-head__dial scheduler-skeleton-dial"></span><div class="scheduler-row-head__level" data-tank="F"><span class="rux--skeleton__text scheduler-skeleton-reading"></span><span class="rux--skeleton__text scheduler-skeleton-tank"></span></div><span class="scheduler-row-head__arc"><span class="scheduler-row-head__arc-bow"><svg class="scheduler-row-head__arc-svg" width="48" height="28" viewBox="0 0 48 28" aria-hidden="true"><path d="M2 26 A22 22 0 0 1 46 26" class="scheduler-row-head__arc-track"/></svg></span><span class="scheduler-row-head__arc-under">&nbsp;</span><span class="scheduler-row-head__arc-fuel scheduler-skeleton-fuel"></span><span class="rux--skeleton__text scheduler-skeleton-pct"></span></span></div></div><div class="scheduler-row-head__equip"><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span><span class="scheduler-row-head__tile"><span class="rux--skeleton__text scheduler-skeleton-kit"></span></span></div></div>
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:2;--scheduler-span:3"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:11;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:14;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:18;--scheduler-span:2"></div>
                   </div>
                 </div>
                 <div class="scheduler-row">
@@ -510,6 +553,8 @@
                   <div class="scheduler-track scheduler-track--skeleton">
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:0;--scheduler-span:2"></div>
                     <div class="scheduler-skeleton-bar rux--skeleton__placeholder" style="--scheduler-start:6;--scheduler-span:1"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:7;--scheduler-span:3"></div>
+                    <div class="scheduler-skeleton-bar scheduler-skeleton-more rux--skeleton__placeholder" style="--scheduler-start:19;--scheduler-span:2"></div>
                   </div>
                 </div>
               </div>

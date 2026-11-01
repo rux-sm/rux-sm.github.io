@@ -53,14 +53,18 @@
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
   /* The narrowest a day column gets; past it the grid scrolls rather than
-     squeezing. 10rem leaves a one-day bar 145px of content, two 68px halves
-     and a rule, which a live bar's instruments are laid out on to the whole
-     pixel. It is never less than three shortcut slots at their
-     40px floor plus the gaps a bar keeps at either end, so a one-day trip is
-     never narrower than the narrowest shortcut bar pointing at it. Below this
-     the week scrolls, which is every board under about 1050px; a wider board
-     is on `1fr` and never sees this figure. */
-  --scheduler-day-min: max(10rem, calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear)));
+     squeezing. A one-day bar holds two drivers side by side, each in a 70px
+     space, a 16px status icon, 4px and a 50px name, which every driver's name
+     fits; with the gap between them, the bar's padding and the clear either
+     side of it, a day is 170px. It is never less than three shortcut slots
+     at their 40px floor plus the gaps a bar keeps at either end, so a one-day
+     trip is never narrower than the narrowest shortcut bar pointing at it.
+     Below this the week scrolls; a wider board is on `1fr` and never sees
+     this figure. */
+  --scheduler-driver-w: 4.375rem;
+  --scheduler-day-min: max(
+    calc(2 * var(--scheduler-driver-w) + var(--rux-spacing-02) + var(--rux-spacing-01) + 2 * var(--scheduler-bar-pad-inline) + 2 * var(--scheduler-gap-clear)),
+    calc(3 * var(--scheduler-slot-w) + var(--scheduler-gap) + var(--scheduler-gap-clear)));
   --scheduler-day-track: minmax(var(--scheduler-day-min), 1fr);
   /* One day's width, which every bar, out-of-service span and day rule is placed from. A
      percentage of the track by default, so the stylesheet stands alone; app.js

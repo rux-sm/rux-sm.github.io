@@ -400,8 +400,7 @@
   /* THE TIMES ROW, in the contact row's place: when the leg left the yard
      and when it is due back, with its next-day mark, at either end of a
      track filled as far as the time between them has gone, carrying the
-     stops' dots, and between them an arrow and the next stop's arrival on
-     a leg whose route is done. A bus running late back
+     stops' dots, the next one ringed. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
      return has passed, how long it is over. A problem takes the row
@@ -436,23 +435,13 @@
         if (!(at > 0 && at < 100)) continue;
         dot.style.setProperty('--scheduler-at', `${Math.round(at * 10) / 10}%`);
         dot.classList.toggle('scheduler-bar__stop--ahead', !drawn.dataset.stops.split(' ').every(k => reached.has(k)));
+        /* The next stop's tick is ringed, so the stop the bus is heading for
+           shows on the line; when it gets there is that tick's to tell,
+           pressed, which data.js's stop tip does. */
+        dot.classList.toggle('scheduler-bar__stop--next', !!next?.stop && !next.at && drawn.dataset.stops.split(' ').includes(next.stop.key));
         track.append(dot);
       }
       parts.push(track);
-      /* When the bus gets to its next stop, from where it is now and the
-         map's drive, on a leg whose route is done: an arrow and the time,
-         the stop named on hover, since a one-day bar has no room for a
-         name; none while it stands at a stop, or when the late return at
-         the row's end says it. */
-      if (bar.dataset.routeDone != null && next?.stop && !next.at && next.arrival != null && expected == null) {
-        const at = hhmm(Road.clockOf(next.arrival), true);
-        const ahead = el('span', 'scheduler-road__next');
-        const arrow = el('span', 'scheduler-road__next-arrow', '\u2192');
-        arrow.setAttribute('aria-hidden', 'true');
-        ahead.append(arrow, clock(at));
-        ahead.title = `${next.stop.name}: arrives ${at}`;
-        parts.push(ahead);
-      }
     }
     const over = overBy(bar, Date.now());
     if (expected != null) {

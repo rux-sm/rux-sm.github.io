@@ -1331,6 +1331,29 @@ button.scheduler-row-head__num::after {
   background: color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent));
   box-shadow: inset 0 0 0 calc(var(--scheduler-stop-grow, 0) * 1.5px) currentColor;
 }
+/* The stop a bus out on the leg is heading for wears a ring in the line's
+   ink, 2px out from its tick, so it shows before the mouse comes near. */
+.scheduler-bar__stop--next {
+  outline: 1.5px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+/* A tick is pressed for its tip, so it answers to 8px either side and the
+   bar's line height, more than its 2px. */
+.scheduler-bar__stop::before {
+  content: "";
+  position: absolute;
+  inset: -6px -8px;
+  cursor: pointer;
+}
+/* The stop's tip is fixed at the pressed tick's top centre, Carbon's
+   popover drawn above that point. */
+.scheduler-stop-tip.rux--popover-container {
+  position: fixed;
+  inline-size: 0;
+  block-size: 0;
+  z-index: 6000;
+}
 .scheduler-week[data-motion="off"] .scheduler-bar__stop { transition: none; }
 @media (prefers-reduced-motion: reduce) { .scheduler-bar__stop { transition: none; } }
 /* A leg that runs off the week has no time on that side: its track runs on
@@ -2402,8 +2425,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__row.scheduler-road__times > .scheduler-road__when { flex: none; }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
-.scheduler-road__next { flex: none; display: flex; gap: var(--rux-spacing-02); white-space: nowrap; }
-.scheduler-road__next-arrow { flex: none; opacity: .85; }
 /* Running late back: the expected return, or the time past the plan, amber. */
 .scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
 .scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }

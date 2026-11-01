@@ -12269,6 +12269,84 @@
     growStops(e.target.closest?.('.scheduler-bar__time, .scheduler-road__times') ?? null, e.clientX);
   });
   schEl.addEventListener('pointerleave', () => growStops(null));
+
+  /* A STOP SAYS WHAT IS KNOWN OF IT when it is pressed, in a tip over its
+     tick, the bus number's high-contrast toggletip: its name and planned
+     time, the Spot at a pickup and Arrives at any other stop, then on a bus
+     out on the leg whether it has reached the stop, is there, or when it
+     gets there from where it is now; and at the pickup, once Samsara's
+     history has said when the bus got there, that time and whether it was
+     on time, the only stop a bus can be late to. A tick that stands for two
+     stops close together tells both. Pressing a tick picks no trip. */
+  const stopTip = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--top rux--toggletip scheduler-stop-tip');
+  const stopTipBody = el('div', 'rux--toggletip-content scheduler-bus-tip');
+  {
+    const pop = el('span', 'rux--popover');
+    const content = el('span', 'rux--popover-content');
+    content.append(stopTipBody);
+    pop.append(content, el('span', 'rux--popover-caret'));
+    stopTip.append(pop);
+    stopTip.setAttribute('role', 'status');
+    document.body.append(stopTip);
+  }
+  let stopTipFor = null;
+  const clockOfMs = ms => hhmm(Road.clockOf(ms), true);
+  function stopFacts(dot) {
+    const bar = dot.closest('.scheduler-bar');
+    const trip = bar && heldTrip(bar.dataset.tripId);
+    if (!trip) return [];
+    const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
+    const bus = bar.classList.contains('scheduler-bar--road') ? roadBusOf(bar) : null;
+    const next = bus ? roadNext(bar, bus) : null;
+    const reached = next?.where?.reached ?? -1;
+    const assign = (trip.trip_assignments || []).find(a => String(a.id) === bar.dataset.assignmentId);
+    return dot.dataset.stops.split(' ').map(id => stops.find(st => st.key === id)).filter(Boolean).map(st => {
+      const i = stops.indexOf(st);
+      const due = st.due != null ? clockOfMs(st.due) : null;
+      const lines = [st.type === 'pickup' ? `Spot ${due ?? 'not set'}` : `Arrives ${due ?? 'not set'}`];
+      const arrivedAt = st.type === 'pickup' && assign?.pickup_at ? Date.parse(assign.pickup_at) : null;
+      if (arrivedAt != null) {
+        const late = Road.pickupLate(st.due, arrivedAt);
+        lines.push(`Arrived ${clockOfMs(arrivedAt)}${late == null ? '' : late === 0 ? ' · On time' : ` · ${late} min late`}`);
+      } else if (next && i === reached && next.at) lines.push('At the stop now');
+      else if (next && i <= reached) lines.push('Reached');
+      else if (next && next.stop?.key === st.key && next.arrival != null) {
+        lines.push(`Arriving ~${clockOfMs(next.arrival)}${next.late ? ` · ${next.late} min late` : ''}`);
+      }
+      return { name: st.name || (st.type === 'pickup' ? 'Pickup' : 'Stop'), pickup: st.type === 'pickup', lines };
+    });
+  }
+  function closeStopTip() {
+    if (!stopTipFor) return;
+    stopTip.classList.remove('rux--popover--open');
+    stopTipFor = null;
+  }
+  function openStopTip(dot) {
+    const facts = stopFacts(dot);
+    if (!facts.length) { closeStopTip(); return; }
+    stopTipBody.replaceChildren(...facts.flatMap(f => {
+      const head = el('div', 'scheduler-bus-tip__head');
+      head.append(el('span', 'scheduler-bus-tip__name', f.pickup ? `Pickup · ${f.name}` : f.name));
+      return [head, ...f.lines.map(line => el('div', 'scheduler-bus-tip__row', line))];
+    }));
+    const r = dot.getBoundingClientRect();
+    stopTip.style.left = `${r.left + r.width / 2}px`;
+    stopTip.style.top = `${r.top}px`;
+    stopTip.classList.add('rux--popover--open');
+    stopTipFor = dot;
+  }
+  // In the capture, ahead of the bar's own press, which would pick the trip.
+  schEl.addEventListener('click', e => {
+    const dot = e.target.closest?.('.scheduler-bar__stop');
+    if (!dot) return;
+    e.stopPropagation();
+    e.preventDefault();
+    if (stopTipFor === dot) closeStopTip(); else openStopTip(dot);
+  }, true);
+  document.addEventListener('pointerdown', e => { if (stopTipFor && !e.target.closest?.('.scheduler-bar__stop, .scheduler-stop-tip')) closeStopTip(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStopTip(); });
+  schEl.addEventListener('scroll', closeStopTip, { passive: true });
+  window.addEventListener('resize', closeStopTip);
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');

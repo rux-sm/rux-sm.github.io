@@ -10713,7 +10713,8 @@
      `installDrag` asks this first and stands down, so the press pulls the
      driver and not the trip. */
   const liftsFrom = down => {
-    if (!carries(down)) return null;
+    // A press on a driver's mark opens the card instead.
+    if (!carries(down) || down.target.closest?.('[data-card-opener]')) return null;
     const crew = down.target.closest?.('.scheduler-bar__crew > .scheduler-crew[data-seat][data-driver-id]');
     const bar = crew?.closest('.scheduler-bar');
     return bar && gridEl.contains(bar) && seatsDriver(bar) ? crew : null;
@@ -11135,9 +11136,9 @@
   let cardAwayFor = null;
   /* THE FLOATING CARD OPENS WHEN ASKED. A click on a bar only selects it,
      since a click is also how a trip is double-clicked open, dragged or
-     picked to move by key. The card opens from a part of the bar marked
-     `data-card-opener`, its alert count, its update line or a live bar's
-     drivers, or from Space on the bar, and the same press, Space or Escape
+     picked to move by key. The card opens from an icon on the bar marked
+     `data-card-opener`, its alert badge, its update line's chat mark or a
+     live bar's driver marks, or from Space on the bar, and the same press, Space or Escape
      puts it away, as selecting another trip does. It never stands beside the
      trip's own editor, and opening the editor forgets it was asked for. */
   let cardOpenFor = null;
@@ -11158,10 +11159,13 @@
   let cardTrigger = null;
   function cardOrigin(bar) {
     if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
+    // The bar drawn again: the same driver's mark, or the first.
+    const driver = cardTrigger?.closest('.scheduler-crew')?.dataset.driverId;
     const selector = cardTrigger?.matches('.scheduler-bar__alert') ? '.scheduler-bar__alert'
-      : cardTrigger?.matches('.scheduler-bar__drivers') ? ':scope > .scheduler-bar__drivers'
-      : cardTrigger?.matches('.scheduler-bar__update') ? '.scheduler-bar__update' : null;
-    return (selector && bar.querySelector(selector)) || bar;
+      : cardTrigger?.closest('.scheduler-bar__drivers')
+        ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}[data-card-opener]`
+      : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat' : null;
+    return (selector && (bar.querySelector(`:scope > .scheduler-bar__drivers ${selector}`) ?? bar.querySelector(selector))) || bar;
   }
   function askCard(bar, open, section = '') {
     if (open && !section) cardTrigger = bar;
@@ -11324,9 +11328,9 @@
       barShortcuts.dataset.side = side;
       barShortcuts.style.setProperty('--scheduler-open-top', `${y - host.top}px`);
       barShortcuts.style.setProperty('--scheduler-open-start', `${x - host.left}px`);
-      /* The arrow at the middle of what was pressed to open the card, the
-         update row or the alert, and at the bar's middle for any other way
-         in, at least 12px in from a corner. */
+      /* The arrow at the middle of the icon pressed to open the card, and at
+         the bar's middle for any other way in, at least 12px in from a
+         corner. */
       const pressed = bar.querySelector('[data-card-opener][aria-expanded="true"]')?.getBoundingClientRect();
       const point = pressed ? Math.max(pressed.top, ceiling) / 2 + Math.min(pressed.bottom, pane.bottom) / 2 : middle;
       barShortcuts.style.setProperty('--scheduler-open-tip', `${Math.max(12, Math.min(height - 12, point - y))}px`);

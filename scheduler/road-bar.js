@@ -128,12 +128,13 @@
     return parts.length > 1 ? `${parts[0]} ${parts.at(-1)[0]}.` : parts[0];
   };
   /* A duty's mark; given the hours left, ringed by them, the ring's share set
-     as a custom property app.css draws. */
-  const mark = (duty, left) => {
-    const m = el('span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
+     as a custom property app.css draws. A seat's mark is a button, which
+     `liveOpener` makes the live card's opener. */
+  const mark = (duty, left, press = false) => {
+    const m = el(press ? 'button' : 'span', `scheduler-crew__duty scheduler-crew__duty--${duty}`);
     const status = DUTY[duty] ?? DUTY.unknown;
     m.dataset.tone = status.tone;
-    m.setAttribute('role', 'img');
+    if (press) m.type = 'button'; else m.setAttribute('role', 'img');
     m.setAttribute('aria-label', status.word);
     m.appendChild(svgUse(status.icon, '16', status.box ?? '0 0 16 16'));
     if (left != null) {
@@ -175,7 +176,8 @@
     if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
     if (elsewhere) {
       item.dataset.baseTitle = item.title;
-      const m = el('span', 'scheduler-crew__duty scheduler-crew__duty--away');
+      const m = el('button', 'scheduler-crew__duty scheduler-crew__duty--away');
+      m.type = 'button';
       m.appendChild(svgUse('#m-report-fill', '16', '0 0 16 16'));
       item.prepend(m);
       item.dataset.duty = 'away';
@@ -201,7 +203,7 @@
     item.dataset.baseDeclined = String(item.classList.contains('scheduler-crew--declined'));
     item.classList.remove('scheduler-crew--declined');
     item.dataset.duty = d.duty ?? 'unknown';
-    const dutyMark = mark(d.duty ?? 'unknown');
+    const dutyMark = mark(d.duty ?? 'unknown', null, true);
     item.prepend(dutyMark);
     item.classList.toggle('scheduler-crew--wheel', d.wheel);
     item.append(hoursEl(d.left_ms));
@@ -335,7 +337,8 @@
     const who = el('span', 'scheduler-road__who scheduler-crew scheduler-crew--seat scheduler-crew--wheel');
     // Not sent's circle in the slot every driver has, so the name lines
     // up: this driver has no status on the trip to colour it.
-    const mark = el('span', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
+    const mark = el('button', 'scheduler-crew__mark scheduler-crew__mark--off scheduler-crew__mark--dot');
+    mark.type = 'button';
     mark.appendChild(svgUse(NOT_SENT_ICON, '16', '0 0 32 32'));
     who.append(mark, el('span', 'scheduler-crew__name', short(wheel.name)));
     crewOn(who, wheel, null);
@@ -357,15 +360,21 @@
   const vehicleState = bus => bus.mph > 0 ? 'moving' : bus.engine === 'idle' ? 'idle'
     : bus.engine === 'on' ? 'on' : bus.engine === 'off' ? 'off' : 'unknown';
 
-  /* A trip in progress opens its live card from its drivers' rows, the
-     seats and their meters, with no mark of its own: the driving duty's
-     arrow flashes, app.css's, and what the bus is doing is the bus
-     column's. Space on the bar opens the card from the keyboard. */
+  /* A trip in progress opens its live card from each driver's duty mark,
+     and from the mark of a driver at the wheel the bar does not name, as
+     the alert badge opens Alerts: the driving duty's arrow flashes,
+     app.css's, and what the bus is doing is the bus column's. The rest of
+     the row is the trip's, and a press on a name lifts that driver. A bus
+     no longer out takes the marks away with it. */
   function liveOpener(bar, bus) {
     const row = bar.querySelector(':scope > .scheduler-bar__drivers');
-    if (!row) return;
-    row.toggleAttribute('data-card-opener', !!bus);
-    if (!bus) for (const k of ['aria-expanded', 'aria-controls']) row.removeAttribute(k);
+    if (!row || !bus) return;
+    for (const m of row.querySelectorAll('button.scheduler-crew__duty, .scheduler-road__who > button.scheduler-crew__mark')) {
+      m.dataset.cardOpener = '';
+      m.setAttribute('aria-expanded', 'false');
+      const name = m.parentElement.querySelector('.scheduler-crew__name')?.textContent;
+      m.setAttribute('aria-label', [name, m.getAttribute('aria-label') ?? 'Not on this trip', 'live card'].filter(Boolean).join(': '));
+    }
   }
 
   // When the leg is due back at the yard, as an instant.

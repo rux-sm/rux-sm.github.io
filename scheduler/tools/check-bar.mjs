@@ -52,7 +52,7 @@ class Node {
   remove() { this.parentNode?.removeChild(this); }
   replaceWith(n) { const p = this.parentNode; if (!p) return; const i = p.childNodes.indexOf(this); p.removeChild(this); p.insertAt(i, n); }
   *walk() { for (const c of this.children) { yield c; yield* c.walk(); } }
-  querySelectorAll(sel) { return [...this.walk()].filter(e => matches(e, parse(sel), this)); }
+  querySelectorAll(sel) { const lists = sel.split(',').map(parse); return [...this.walk()].filter(e => lists.some(steps => matches(e, steps, this))); }
   querySelector(sel) { return this.querySelectorAll(sel)[0] ?? null; }
 }
 class Text extends Node { constructor(t) { super(); this.text = t; } get textContent() { return this.text; } }
@@ -258,14 +258,16 @@ expect('a later bus of a leg wears only its own problems: a misfit or a driver, 
   null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
-expect('every update row is a button, including a settled trip, and the age has no clock',
+expect('every update row leads with its chat mark as the button, including a settled trip, and the age has no clock',
   drawn('trip-bar', 'Update ages').map(b => {
     const row = b.querySelector('.scheduler-bar__update');
-    return [row.tagName, row.hasAttribute('data-card-opener'), row.getAttribute('aria-expanded'), b.querySelector('.scheduler-bar__age use') === null];
+    const chat = row.querySelector('.scheduler-bar__chat');
+    return [row.tagName, row.hasAttribute('data-card-opener'), chat.tagName, chat.hasAttribute('data-card-opener'), chat.getAttribute('aria-expanded'),
+      b.querySelector('.scheduler-bar__age use') === null];
   }),
-  Array.from({ length: 4 }, () => ['BUTTON', true, 'false', true]));
+  Array.from({ length: 4 }, () => ['DIV', false, 'BUTTON', true, 'false', true]));
 expect('empty updates remain a visible Updates entry point',
-  [holder.querySelector('.scheduler-bar__update').tagName, text(holder, '.scheduler-bar__age')], ['BUTTON', 'No updates']);
+  [holder.querySelector('.scheduler-bar__chat').tagName, text(holder, '.scheduler-bar__age')], ['BUTTON', 'No updates']);
 expect('alert buttons expose their purpose and expansion state',
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => {
     const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
@@ -369,10 +371,14 @@ expect('the hour the clocks go back: a leg leaves at the first 1:30 and is back 
   ['2026-11-01T06:30:00.000Z', '2026-11-01T07:30:00.000Z', '2026-11-01T07:30:00.000Z', '2026-11-01T08:30:00.000Z']);
 expect('the bar carries no speed or fuel: those are the bus column\'s',
   ['.scheduler-road__card', '.scheduler-road__big', '.scheduler-road__pct'].map(q => has(lit('At highway speed'), q)), [false, false, false]);
-expect('a trip in progress wears no bus icon, and its drivers\' rows open the live card',
-  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting', 'No signal'].map(n => [has(lit(n), '.scheduler-road__dot'),
-    lit(n).querySelector(':scope > .scheduler-bar__drivers').hasAttribute('data-card-opener')]),
-  Array(6).fill([false, true]));
+expect('a trip in progress wears no bus icon, and its drivers\' marks open the live card, not their row',
+  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting', 'No signal'].map(n => {
+    const drivers = lit(n).querySelector(':scope > .scheduler-bar__drivers');
+    const marks = drivers.querySelectorAll('button.scheduler-crew__duty, .scheduler-road__who > button.scheduler-crew__mark');
+    return [has(lit(n), '.scheduler-road__dot'), drivers.hasAttribute('data-card-opener'),
+      marks.length > 0 && marks.every(m => m.hasAttribute('data-card-opener') && m.getAttribute('aria-expanded') === 'false')];
+  }),
+  ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'Resting'].map(() => [false, false, true]).concat([[false, false, false]]));
 expect('where the bus is goes on the times row\'s tooltip', row(lit('At highway speed')).title.includes('I-37 N near Three Rivers'), true);
 expect('each warning its name in its colour in place of the times',
   ['Stop lamp', 'Not rolling', 'Wrong bus', 'Late to spot', 'Short on hours'].map(n => say(lit(n))), [
@@ -404,7 +410,7 @@ expect('a driver the bar does not name joins the drivers row with their own duty
     has(lit('Someone else at the wheel'), '.scheduler-road__who .scheduler-crew__duty use[href="#i-BPMN-link--fill"]')], ['Omar D.', true]);
 expect('a longer bar out stands its rows in today\'s column, and a one-day one on its own',
   [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);
-expect('a bus no longer out takes its opener, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [b.querySelector(':scope > .scheduler-bar__drivers').hasAttribute('data-card-opener'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
+expect('a bus no longer out takes its opener, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, ':scope > .scheduler-bar__drivers [data-card-opener]'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 
 expect('rest elapsed does not assert a reset of the HOS clocks',
   RoadBar.restWords({ duty: 'sleeper', rest_since: new Date(Date.now() - 3 * RoadBar.HOUR).toISOString() }), 'Rested 3h 00m');

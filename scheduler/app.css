@@ -1264,9 +1264,30 @@ button.scheduler-row-head__num::after {
    reads as every other. */
 .scheduler-bar__dest, .scheduler-bar__time, .scheduler-road__times { font-size: var(--rux-body-compact-01-font-size); }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]) { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
-.scheduler-bar__update[data-card-opener] { padding: 0; border-radius: 0; box-shadow: -3px 0 0 var(--scheduler-opener-fill, transparent), 3px 0 0 var(--scheduler-opener-fill, transparent); color: var(--scheduler-footer-fg); font-size: inherit; line-height: inherit; text-align: start; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update, [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update [data-card-opener], .scheduler-bar__drivers [data-card-opener], [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
+/* THE ICONS THAT OPEN A CARD ARE CARBON'S GHOST ICON BUTTON at the icon's
+   own 16px: no fill at rest, and a 24px square behind the icon in Carbon's
+   background hover, selected and active tones, which reach past the icon's
+   box so the rows keep their spacing and which are the press area too. The
+   tones are grey washes, so they read on every bar's fill and the footer's
+   alike. The square sits under the icon inside the button's own stacking. */
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] {
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: calc((var(--scheduler-mark-glyph) - 24px) / 2);
+  background: var(--scheduler-opener-fill, transparent);
+}
 .scheduler-bar__alert:focus-visible { outline-offset: 2px; }
 /* THE ALERT IS A STATUS ICON ALONE, with no pill: the error in the driver status red and the warning in the footer's yellow. */
 .scheduler-bar .scheduler-bar__alert.scheduler-bar__msg {
@@ -1295,27 +1316,14 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__run > :last-child { flex: 0 1 auto; min-inline-size: 0; }
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its icon keeps the bar's own. */
-/* THE PARTS THAT OPEN THE CARD SAY SO under the pointer, since a press
-   anywhere else on the bar only selects it: the update line fills with the
-   footer's hover tone, and an empty one says No updates; the bus icon
-   gains a tint of its ink behind it. A touch screen has no pointer to wait for, so it
-   shows none of them; a press fills on any screen. */
+/* An opening icon says so under the pointer, since a press anywhere else
+   on the bar only selects it. A touch screen has no pointer to wait for, so
+   it shows no hover; the open and pressed tones show on any screen. */
 @media (hover: hover) {
-  .scheduler-bar__update[data-card-opener]:hover {
-    --scheduler-opener-fill: var(--scheduler-footer-hover);
-    border-radius: 0;
-    background: var(--scheduler-opener-fill);
-  }
-  /* The words run past the row, so the fill goes with them. */
-  .scheduler-bar__update[data-card-opener]:hover > .scheduler-bar__run {
-    background: var(--scheduler-opener-fill);
-    box-shadow: -3px 0 0 var(--scheduler-opener-fill), 3px 0 0 var(--scheduler-opener-fill);
-  }
-  .scheduler-bar__drivers[data-card-opener]:hover {
-    --scheduler-opener-fill: var(--scheduler-footer-hover);
-    background: var(--scheduler-opener-fill);
-  }
+  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover { --scheduler-opener-fill: var(--rux-background-hover); }
 }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--rux-background-selected); }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { --scheduler-opener-fill: var(--rux-background-active); }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
@@ -2205,11 +2213,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__dest > :first-child:not(:has(+ .scheduler-bar__kind)),
 .scheduler-bar__dest > .scheduler-bar__kind { margin-inline-end: auto; }
 .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: var(--scheduler-day-one-end); }
-/* A live bar's drivers, their seats and meters, open its live card, lit
-   as the update line is, its fill running 3px past the row either side. */
-.scheduler-bar__drivers[data-card-opener] { cursor: pointer; box-shadow: -3px 0 0 var(--scheduler-opener-fill, transparent), 3px 0 0 var(--scheduler-opener-fill, transparent); }
-.scheduler-bar__drivers[data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--scheduler-footer-selected); background: var(--scheduler-opener-fill); }
-.scheduler-bar__drivers[data-card-opener]:active { --scheduler-opener-fill: var(--scheduler-footer-active); background: var(--scheduler-opener-fill); }
 /* Every driver's duty mark on a live bar pulses gently, whatever the duty,
    the one thing moving on the bars that are out; a driver Samsara has in
    another bus keeps their red stop sign still. */
@@ -6325,17 +6328,6 @@ html[data-scheduler-takeover] {
 .scheduler-components__board { --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px); }
 .scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
 
-/* Alert buttons brighten on hover; their active state is shared with Live. */
-@media (hover: hover) {
-  .scheduler-bar__alert[data-card-opener]:hover { filter: brightness(1.15); }
-}
-.scheduler-bar__alert[data-card-opener]:active { filter: brightness(.8); }
-/* The active entry point stays visible while its card is open. */
-.scheduler-bar [data-card-opener][aria-expanded="true"] { filter: brightness(.88); }
-/* The fill runs 3px past the text, which is the bar's 4px side padding less the 1px ring, so it never reaches the ring. */
-/* Carbon's fills for a row on a surface: hover lightens, the open row holds the selected fill, and a press is the lightest. */
-.scheduler-bar__update[data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--scheduler-footer-selected); background: var(--scheduler-opener-fill); }
-.scheduler-bar__update[data-card-opener]:active { --scheduler-opener-fill: var(--scheduler-footer-active); background: var(--scheduler-opener-fill); }
 
 .scheduler-bar__more[data-crew-overflow] { background: transparent; color: inherit; padding: 0; font: inherit; flex: none; }
 .scheduler-bar__more[data-crew-overflow]:hover { text-decoration: underline; }

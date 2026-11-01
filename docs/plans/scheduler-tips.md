@@ -104,15 +104,14 @@ None open.
 
 ## Tasks
 
-- [ ] Make the chat icon and every driver's icon the openers in place of
-      their whole rows, in `bar.js` and `road-bar.js`, each a named button
-      with a 24px press area, a hover and no hover label.
 - [ ] Give the floating card the toggletip's surface, caret and size, with
       no Close, no trip head and no pop.
-- [ ] Draw the Alerts tip from the tip's rows.
+- [ ] Draw the Alerts tip from the tip's rows, the badge losing its hover
+      label.
 - [ ] Draw the Updates tip, its Add update opening the Updates window.
-- [ ] Draw the driver's tip before the trip, with the photo read from
-      `driver-photos`.
+- [ ] Draw the driver's tip before the trip, every driver's status icon a
+      button that opens it, with the photo read from `driver-photos` and the
+      driver's hover label gone.
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
       live card.
 - [ ] Make a held Space carry the selected trip in `data.js`, ↑ and ↓ a bus

@@ -1181,9 +1181,9 @@
      keeps its rule, by `.scheduler-week--short` in app.css. */
   --scheduler-last-rule: 0;
 }
-/* rux-dark squares this app's pills too: a bar's kind label, an update's hover, a carried name, a Departures need and the
+/* rux-dark squares this app's pills too: a bar's kind label, a carried name, a Departures need and the
    live meters. A dot, a ring and a numbered or counting badge stay round. */
-[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-bar__update[data-card-opener]:hover, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-bar__track, .scheduler-crew__left) {
+[data-theme="rux-dark"] :is(.scheduler-bar__row > .scheduler-bar__kind, .scheduler-carried__name, .scheduler-departures__need, .scheduler-card__live-meter, .scheduler-road__track, .scheduler-bar__track, .scheduler-crew__left) {
   border-radius: 0;
 }
 
@@ -1435,11 +1435,6 @@
 @media (hover: hover) {
   [data-theme] .scheduler-bar:hover:not([aria-current="true"]) { --scheduler-footer: oklch(from var(--scheduler-footer-base) calc(l + 0.06) c h); }
   [data-theme] .scheduler-week--static .scheduler-bar:hover { --scheduler-footer: var(--scheduler-footer-base); }
-}
-[data-theme] .scheduler-bar {
-  --scheduler-footer-hover: oklch(from var(--scheduler-footer) calc(l + 0.06) c h);
-  --scheduler-footer-selected: oklch(from var(--scheduler-footer) calc(l + 0.08) c h);
-  --scheduler-footer-active: oklch(from var(--scheduler-footer) calc(l + 0.16) c h);
 }
 
 /* RUX 100'S BOARD IS THE PAGE'S OWN BLACK, Carbon's table in Geist's

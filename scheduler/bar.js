@@ -708,23 +708,23 @@
     else whenDep.append('No times');
     addRow(bar, 'scheduler-bar__time', when, whenDep);
 
-    // The update and crew share a footer; only the update row opens Updates.
+    // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;
     const nthWords = later ? `Bus ${b.nth} of ${count}` : null;
     const news = el('span', null, nthWords ?? latest?.body ?? '');
     if (latest && !later) news.title = `${latest.body}\n${updateStamp(latest)}`;
     const age = later ? null : ageMark(latest?.created_at, latest ? `Latest update ${updateStamp(latest)}` : 'No updates yet');
-    const updateRow = el('button', 'scheduler-bar__row scheduler-bar__update');
-    updateRow.type = 'button';
-    updateRow.dataset.cardOpener = '';
-    updateRow.setAttribute('aria-expanded', 'false');
-    updateRow.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
-      .filter(Boolean).join('. '));
+    const updateRow = el('div', 'scheduler-bar__row scheduler-bar__update');
     /* A chat mark leads the row, in the column the crew's marks stand in
-       below it, so the row reads as the button it is, as the alert reads as
-       its own; the whole row stays the one button. */
-    const chat = el('span', 'scheduler-bar__lead scheduler-bar__chat');
-    chat.setAttribute('aria-hidden', 'true');
+       below it, and is the button that opens Updates, as the alert badge
+       opens Alerts. The rest of the row is the trip's, so a press there
+       selects it. */
+    const chat = el('button', 'scheduler-bar__lead scheduler-bar__chat');
+    chat.type = 'button';
+    chat.dataset.cardOpener = '';
+    chat.setAttribute('aria-expanded', 'false');
+    chat.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
+      .filter(Boolean).join('. '));
     chat.append(svgUse('#i-chat', '16', '0 0 32 32'));
     updateRow.appendChild(runOf(chat, age, news));
     bar.appendChild(updateRow);
@@ -768,7 +768,7 @@
   }
 
   const cardSectionOf = opener => opener.matches('.scheduler-bar__alert') ? 'needs'
-    : opener.matches('.scheduler-bar__drivers') ? 'road' : 'updates';
+    : opener.closest('.scheduler-bar__drivers') ? 'road' : 'updates';
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {

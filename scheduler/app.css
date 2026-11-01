@@ -1037,8 +1037,8 @@ button.scheduler-row-head__num::after {
   letter-spacing: var(--scheduler-ls);
   line-height: var(--scheduler-row-h);
   font-weight: 400;
-  /* Clipped rather than hidden, which cuts the same but is no scroll pane of
-     its own, so its rows can stick to the board's edge as it scrolls. */
+  /* Clipped rather than hidden, which cuts the same but makes no scroll pane
+     of its own. */
   overflow: clip;
   cursor: pointer;
   z-index: 1;
@@ -1285,7 +1285,7 @@ button.scheduler-row-head__num::after {
 .scheduler-bar .scheduler-bar__chat[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* The alert badge pairs its count with the warning icon. */
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
-/* The footer spans the trip while its content keeps the existing sticky rows. */
+/* The footer spans the trip. */
 .scheduler-bar__update, .scheduler-bar__drivers { background: var(--scheduler-footer); color: var(--scheduler-footer-fg); }
 .scheduler-bar__update, .scheduler-bar__drivers {
   --scheduler-age-week: var(--scheduler-footer-warning);
@@ -1359,8 +1359,8 @@ button.scheduler-row-head__num::after {
    does, so the words are what a long update cuts. */
 .scheduler-bar__update :is(.scheduler-bar__lead, .scheduler-bar__age) { flex: none; }
 .scheduler-bar__update :is(.scheduler-bar__lead, .scheduler-bar__age) + * { min-inline-size: 0; }
-/* A row's words, which the customer and update rows hold in one box so they
-   can run past the row's day; see app.css's sticky rows. */
+/* A row's words, which the customer and update rows hold in one box that
+   runs the trip's length; see the rows' widths below. */
 .scheduler-bar__run { display: flex; gap: inherit; min-inline-size: 0; }
 .scheduler-bar__run > * { overflow: hidden; text-overflow: ellipsis; }
 .scheduler-bar__run > :last-child { flex: 0 1 auto; min-inline-size: 0; }
@@ -2513,58 +2513,32 @@ a.scheduler-tip__go { text-decoration: none; }
 /* A LIVE BAR, road-bar.js's: the rows of any bar, with the times in the
    time row's place and the drivers row as seats. */
 .scheduler-bar--road > .scheduler-bar__time { display: none; }
-/* ON A BAR LONGER THAN A DAY every row keeps to the width a one-day bar
-   gives it: one day of this bar, worked out as the bar's own width is, less
-   the gap and the two default paddings, with the marks at the destination
-   row's end. So every bar's writing is one size. A live bar's stands in
-   today's column, `--scheduler-today` days in, which road-bar.js sets while
-   the bus is out. And as the board scrolls sideways the rows stick to the
-   edge of the bus column, where a bar starting on the week's first day has
-   its words, so a trip whose
-   first day has scrolled out of sight still says what it is; the bar holds
-   them, so they stop at its end. The customer and update rows stick as a
-   day, as the others do, so all of them slide out together; their words,
-   the ones a day's width cuts short, run on past that day to the bar's end
-   in `.scheduler-bar__run`. */
+/* ON A BAR LONGER THAN A DAY the rows keep to the width a one-day bar gives
+   them: one day of this bar, worked out as the bar's own width is, less the
+   gap and the two default paddings, with the marks at the destination row's
+   end. So every bar's writing is one size. A live bar's stands in today's
+   column, `--scheduler-today` days in, which road-bar.js sets while the bus
+   is out. The rows stay where their trip puts them as the board scrolls: a
+   trip whose first day is out of view is swiped to, or selected, to be read. */
 .scheduler-bar {
   --scheduler-live-day: calc((100% + 2 * var(--scheduler-bar-pad-inline) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
 }
 .scheduler-bar > .scheduler-bar__row {
-  position: sticky;
-  inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline));
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
 }
-/* The row is the day that sticks, so it is never pushed back by words
-   wider than the room left; the words overflow it, held by data.js to that
-   room, `--scheduler-row-room`, and are cut there. At least the row's day
-   wide, so an empty update still opens the card from the whole line. */
-.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update) {
-  inline-size: 100%;
-  overflow: visible;
-}
-/* A scroll that outruns data.js leaves the words a frame too long, and the
-   bar trims them at its edge. `clip`, not `hidden`, so the rows still stick
-   to the board. */
-.scheduler-bar { overflow-x: clip; }
-.scheduler-bar > .scheduler-bar__row > .scheduler-bar__run {
-  flex: none;
-  inline-size: max-content;
-  min-inline-size: 100%;
-  max-inline-size: var(--scheduler-row-room, 100%);
-}
+/* The customer and the update run to the trip's end and end in "…" there,
+   since a day is too short for most of them; the empty update still opens
+   the card from the whole line. */
+.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update) { max-inline-size: none; }
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
 /* A bar's times run its whole length, out at its start and back at its
    end, so the track between them crosses every day the trip takes and its
    dot stands at now; on a live bar the rows above and below stay in today's
-   column. They are the one row that does not stick: a timeline stays on its
-   days, so it scrolls with the bar and is never squeezed. */
-.scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) {
-  position: static;
-  max-inline-size: none;
-}
+   column. */
+.scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) { max-inline-size: none; }
 .scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 

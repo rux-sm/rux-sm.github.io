@@ -82,6 +82,10 @@ Carbon lacks, such as the bar at the foot, are in `design/css/rux-frame.css`
 under `frame-`; the check fails on a `game-*` or `frame-*` class that is not
 there, so an app does not invent one. No Carbon file is ever edited.
 
+Anything that moves follows Carbon's motion, its curves and durations in
+`design/docs/motion.md`, so every app moves the same way; a motion Carbon has
+no answer for says so in a comment beside it.
+
 ## Where things are
 
 | | |

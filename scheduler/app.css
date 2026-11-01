@@ -52,6 +52,10 @@
      (see `.scheduler-corner`), so a wider bus number widens the column rather
      than clipping. app.js measures the corner and replaces this with pixels. */
   --scheduler-head-w: max-content;
+  /* The kit row's three 16px tiles and their 2px gaps, which set the bus
+     column: the row with the head's 8px either side and its 1px rule. */
+  --scheduler-kit-w: calc(3 * 16px + 2 * var(--rux-spacing-01));
+  --scheduler-kit-clear: calc((var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px - var(--scheduler-kit-w)) / 2);
   /* The narrowest a day column gets; past it the grid scrolls rather than
      squeezing. A one-day bar holds two drivers side by side, each in a 70px
      space, a 16px status icon, 4px and a 50px name, which every driver's name
@@ -249,10 +253,11 @@
   z-index: 5;
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
-     by their row and add nothing, so their gauges never widen it. 65px holds
-     the 48px speedometer with the head's 8px either side and its 1px rule;
-     app.js measures this cell, so its arithmetic includes it. */
-  min-inline-size: calc(4rem + 1px);
+     by their row and add nothing, so their gauges never widen it. 69px holds
+     the 52px kit row with the head's 8px either side and its 1px rule, and
+     the 48px speedometer within it; app.js measures this cell, so its
+     arithmetic includes it. */
+  min-inline-size: calc(var(--scheduler-kit-w) + 2 * var(--rux-spacing-03) + 1px);
   justify-content: center;
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
@@ -311,13 +316,12 @@
 /* One column, so a part placed on a row stands in it even over another, as
    the DEF tag stands over the state's foot. */
 .scheduler-row-head { grid-template-columns: minmax(0, 1fr); }
-.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__arc, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip) { grid-column: 1; }
+.scheduler-row-head :is(.scheduler-row-head__top, .scheduler-row-head__num, .scheduler-row-head__dial, .scheduler-row-head__arc, .scheduler-row-head__level, .scheduler-row-head__insp) { grid-column: 1; }
 /* The number's row a pixel up, out of the head's 8px, so it stands level
    with the destination, whose line starts 7px down the bar. */
 .scheduler-row-head__top { grid-row: 1; align-self: start; margin-block-start: -1px; }
 .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 2; }
 .scheduler-row-head__level[data-tank="F"] { grid-row: 4; }
-.scheduler-row-head__equip { grid-row: 5; }
 /* A two-row state stands 2px clear of the number and 3px of the fuel. */
 .scheduler-week[data-bar-rows="5"] .scheduler-row-head__dial { margin-block: 2px 3px; }
 /* On six the state is 40px tall, Carbon's md control height, centred in its
@@ -325,11 +329,9 @@
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2 / span 3; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__dial { align-self: center; block-size: var(--rux-layout-size-height-md, 2.5rem); }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="F"] { grid-row: 5; }
-.scheduler-week[data-bar-rows="6"] .scheduler-row-head__equip { grid-row: 6; }
 .scheduler-week[data-bar-rows="6"] .scheduler-row-head__level[data-tank="D"] { grid-row: 4; margin-block-end: calc((3 * var(--scheduler-row-h) - var(--rux-layout-size-height-md, 2.5rem)) / 2 - 3px); }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"], [data-bar-rows="2"]) .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__insp) { grid-row: 2; }
 .scheduler-week:is([data-bar-rows="4"], [data-bar-rows="3"]) .scheduler-row-head__level[data-tank="F"] { grid-row: 3; }
-.scheduler-week[data-bar-rows="4"] .scheduler-row-head__equip { grid-row: 4; }
 .scheduler-week[data-bar-rows="3"] .scheduler-row-head__equip,
 .scheduler-week[data-bar-rows="2"] .scheduler-row-head :is(.scheduler-row-head__level, .scheduler-row-head__equip),
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head :is(.scheduler-row-head__dial, .scheduler-row-head__level, .scheduler-row-head__insp, .scheduler-row-head__equip),
@@ -486,13 +488,20 @@ button.scheduler-row-head__num::after {
    speedometer, since the column takes the days' spare pixels and can stand
    wider inside. Presses go through to the number, whose tip and title name
    them. */
+/* The kit stands in the head's foot, centred, as far above the row's rule as
+   it is from the head's sides, so its two outer tiles sit evenly in the
+   corners: 8px at the column's 69px floor, and half of any pixels the days
+   leave the column on each side and below. Placed on the head's own box,
+   not a grid row, so a taller row keeps it in the corner. */
 .scheduler-row-head__equip {
-  align-self: start;
-  justify-self: center;
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: var(--scheduler-kit-clear);
+  margin-inline: auto;
+  inline-size: max-content;
   display: grid;
   grid-template-columns: repeat(3, 16px);
-  column-gap: 2px;
-  flex: none;
+  column-gap: var(--rux-spacing-01);
   pointer-events: none;
 }
 .scheduler-row-head__tile {
@@ -6307,9 +6316,9 @@ html[data-scheduler-takeover] {
 /* A sample is as tall as its rows: the board's cap is for a whole week. */
 .scheduler-components__board { max-block-size: none; }
 /* A sample has no day band, so no corner sets its bus column, and the heads
-   size to nothing: the column takes the corner's own floor instead, 65px,
+   size to nothing: the column takes the corner's own floor instead, 69px,
    or the compact board's 2rem. */
-.scheduler-components__board { --scheduler-head-w: calc(4rem + 1px); }
+.scheduler-components__board { --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--rux-spacing-03) + 1px); }
 .scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
 
 /* Alert buttons brighten on hover; their active state is shared with Live. */

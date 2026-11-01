@@ -426,9 +426,9 @@
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
       const track = el('span', 'scheduler-road__track');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
-      /* The stops' dots the time row drew, placed on this track and filled
-         once the bus has reached every stop a dot stands for, so a ring the
-         filled line has passed is a stop it is late to. */
+      /* The stops' ticks the time row drew, placed on this track and in the
+         strong ink once the bus has reached every stop a tick stands for, so
+         a dim tick the filled line has passed is a stop it is late to. */
       const reached = new Set((next?.stops ?? []).slice(0, (next?.where?.reached ?? -1) + 1).map(s => s.key));
       for (const drawn of bar.querySelectorAll(':scope > .scheduler-bar__time .scheduler-bar__stop')) {
         const dot = drawn.cloneNode(false);

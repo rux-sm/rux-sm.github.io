@@ -88,14 +88,14 @@
   const doneOf = (out, back, now) => (!(back > out) ? (now >= back ? 100 : 0)
     : Math.round(Math.min(1, Math.max(0, (now - out) / (back - out))) * 1000) / 10);
   const tripDone = (leg, now = Date.now()) => doneOf(...legSpan(leg), now);
-  /* A DOT ON THE TRACK FOR EACH STOP, once the route is done: the spot at the
+  /* A TICK ON THE TRACK FOR EACH STOP, once the route is done: the spot at the
      pickup first, then each stop's arrival, placed by its time between the
      yard out and back. A time is on its saved date, or the stop before's
      with none, and on the day after where that puts it before the stop
      before, as the Route tab reads a time past midnight, since an older row
      is dated a day early. A stop with no time has none, and the return to
      the yard is the track's own end. Two closer than STOP_GAP
-     pixels on the track are one dot naming both; the track is about a day
+     pixels on the track are one tick naming both; the track is about a day
      column for each day less the two times beside it, TIMES_W. */
   const STOP_GAP = 9;
   const DAY_W = 145;
@@ -134,7 +134,7 @@
       return dot;
     });
   };
-  // A stop the leg has reached is filled, and one still ahead is a ring.
+  // A stop the leg has reached is in the strong ink, and one still ahead is dimmed.
   const markStops = (track, done) => {
     for (const d of track.querySelectorAll('.scheduler-bar__stop')) d.classList.toggle('scheduler-bar__stop--ahead', Number(d.dataset.at) > done);
   };

@@ -12246,6 +12246,29 @@
   // The menu's caret takes the ⋮'s hover with it while they are attached.
   viewTrigger?.addEventListener('pointerenter', () => { if (viewMenu?.dataset.attached != null) viewMenu.dataset.hover = ''; });
   viewTrigger?.addEventListener('pointerleave', () => { if (viewMenu) delete viewMenu.dataset.hover; });
+
+  /* A STOP UNDER THE MOUSE GROWS, as an app does in the Mac's Dock: on the
+     time row it is over, each stop's tick takes `--scheduler-stop-grow`, 1 at
+     the pointer down to 0 at STOP_REACH from it, which app.css draws as a
+     dot, so the stop aimed at is the easiest to point at. */
+  const STOP_REACH = 40;
+  let stopRow = null;
+  const growStops = (row, x) => {
+    if (stopRow && stopRow !== row) for (const s of stopRow.querySelectorAll('.scheduler-bar__stop')) s.style.removeProperty('--scheduler-stop-grow');
+    stopRow = row;
+    if (!row) return;
+    for (const s of row.querySelectorAll('.scheduler-bar__stop')) {
+      const r = s.getBoundingClientRect();
+      const grow = Math.max(0, 1 - Math.abs(x - (r.left + r.width / 2)) / STOP_REACH);
+      if (grow) s.style.setProperty('--scheduler-stop-grow', grow.toFixed(2));
+      else s.style.removeProperty('--scheduler-stop-grow');
+    }
+  };
+  schEl.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    growStops(e.target.closest?.('.scheduler-bar__time, .scheduler-road__times') ?? null, e.clientX);
+  });
+  schEl.addEventListener('pointerleave', () => growStops(null));
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');

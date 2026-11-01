@@ -1299,22 +1299,31 @@ button.scheduler-row-head__num::after {
     linear-gradient(currentColor, currentColor) 0 0 / var(--scheduler-done, 0%) 100% no-repeat,
     color-mix(in srgb, currentColor 22%, transparent);
 }
-/* A stop's dot, 6px on the line at its time: filled once the leg has
-   reached it, in the trip's strongest ink where its theme gives one, so it
-   stands out of the filled line, and a ring in the line's ink, on the
-   bar's own fill, while it is ahead. It names the stop and its time on hover. */
+/* A stop's tick, 2px wide and 4px tall across the line at its time, 1px
+   over it each side, so it takes none of the times' room above: in the
+   trip's strongest ink once the leg has reached it, where its theme gives
+   one, so it stands out of the filled line, and the line's ink dimmed
+   toward the bar while it is ahead. Under a mouse it grows, as an app does
+   in the Mac's Dock, by data.js's `--scheduler-stop-grow`, 1 at the pointer
+   to 0 at 40px: into a 10px dot, a stop ahead ringed in the line's ink. It
+   names the stop and its time on hover. */
 .scheduler-bar__stop {
   position: absolute;
   inset-block-start: 50%;
   inset-inline-start: var(--scheduler-at);
   translate: -50% -50%;
-  box-sizing: border-box;
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 50%;
+  inline-size: calc(2px + var(--scheduler-stop-grow, 0) * 8px);
+  block-size: calc(4px + var(--scheduler-stop-grow, 0) * 6px);
+  border-radius: calc(var(--scheduler-stop-grow, 0) * 5px);
   background: var(--scheduler-strong, currentColor);
+  transition: inline-size .12s, block-size .12s, border-radius .12s;
 }
-.scheduler-bar__stop--ahead { background: var(--scheduler-bg); border: 1.5px solid currentColor; }
+.scheduler-bar__stop--ahead {
+  background: color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent));
+  box-shadow: inset 0 0 0 calc(var(--scheduler-stop-grow, 0) * 1.5px) currentColor;
+}
+.scheduler-week[data-motion="off"] .scheduler-bar__stop { transition: none; }
+@media (prefers-reduced-motion: reduce) { .scheduler-bar__stop { transition: none; } }
 /* A leg that runs off the week has no time on that side: its track runs on
    to the bar's padding at the cut end, where the other rows' words end,
    ending in an arrowhead there, so it reads as going on into the other

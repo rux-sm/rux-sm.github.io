@@ -106,15 +106,22 @@
   const gridEl = document.getElementById('scheduler-grid');
   const schEl = document.getElementById('scheduler-week');
   const statusEl = document.getElementById('scheduler-status');
-  // `rangeEl` is the week button, and `rangeTextEl` and `rangeMonthsEl` the
-  // spans inside it that `setRange` writes, because textContent on the button
-  // would delete its caret.
+  // `rangeEl` is the calendar's button, and `rangeTextEl` the hidden span
+  // inside it that `setRange` writes with the week in view, because
+  // textContent on the button would delete its glyph. The month's and the
+  // year's buttons beside it carry the spans it writes their names in.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
+  const monthBtn = document.getElementById('scheduler-month');
+  const monthLongEl = document.getElementById('scheduler-month-long');
+  const monthShortEl = document.getElementById('scheduler-month-short');
+  const yearBtn = document.getElementById('scheduler-year');
+  const yearTextEl = document.getElementById('scheduler-year-text');
+  // The day the month and year are named from, the middle one in view.
+  let viewDay = null;
   // The arrows either side of Today.
   const stepPrev = document.getElementById('scheduler-prev');
   const stepNext = document.getElementById('scheduler-next');
-  const rangeMonthsEl = document.getElementById('scheduler-range-months');
   // The week picker's hidden input and the guard that tells its `change`
   // events apart: ours, from setRange, or a person's, from the calendar.
   let weekInput = null;
@@ -680,27 +687,20 @@
   }
   function setRange(weekStart, weekEnd, { quiet = false } = {}) {
     if (!rangeEl) return;
-    /* One pattern for every week, "Sep 7 – Sep 13, 2026": both months and the
-       year the week ends in, so the label reads the same way and takes nearly
-       the same width whichever week it is. `formatRange` drops the second
-       month inside one month and writes both years across New Year, which is
-       three shapes and twice the width between them. The month is short so
-       the widest thing in the toolbar does not wrap its row. */
+    /* The days in view, "Sep 7 – Sep 13, 2026", heard as the calendar
+       button's name and the board's title; the day header shows each day. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
     setText(rangeTextEl, `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`);
-    /* Below md the label is the week's months and year, "Sep – Oct 2026",
-       because the day header under it numbers the days and a phone's toolbar
-       has no more room beside its four buttons. `formatRange` writes a week
-       across New Year as "Dec 2026 – Jan 2027", which is too wide, so that
-       week names its year once. */
-    if (rangeMonthsEl) {
-      const months = new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' });
-      setText(rangeMonthsEl, weekStart.getFullYear() === weekEnd.getFullYear() && typeof months.formatRange === 'function'
-        ? months.formatRange(weekStart, weekEnd)
-        : weekStart.getMonth() === weekEnd.getMonth()
-          ? months.format(weekEnd)
-          : `${weekStart.toLocaleDateString(undefined, { month: 'short' })} – ${months.format(weekEnd)}`);
-    }
+    /* The month and the year are the middle day's, the month most of the
+       days in view are in, since a week that starts the month can begin a
+       day or two before it. */
+    viewDay = addDays(weekStart, Math.floor(daysBetween(weekStart, weekEnd) / 2));
+    setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long' }));
+    setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short' }));
+    setText(yearTextEl, String(viewDay.getFullYear()));
+    // The calendar marks the days in view from the first.
+    const picker = document.getElementById('scheduler-week-picker');
+    if (picker) picker.dataset.ruxSpan = String(daysBetween(weekStart, weekEnd) + 1);
     /* The week picker's hidden input follows the shown week, so the calendar
        opens on it rather than on today. `valueSetBySelf` stops the `change`
        listener from treating this as a person's pick. */
@@ -1131,9 +1131,10 @@
       cell.classList.add('scheduler-day--today');
       cell.setAttribute('aria-current', 'date');
     }
+    // A month's first day names its month, "Dec 1", so the change shows.
     cell.append(
       document.createTextNode(d.toLocaleDateString(undefined, { weekday: 'short' })),
-      el('span', 'scheduler-day__num', String(d.getDate())),
+      el('span', 'scheduler-day__num', d.getDate() === 1 ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : String(d.getDate())),
     );
     return cell;
   }
@@ -12210,13 +12211,12 @@
   const viewTrigger = document.getElementById('scheduler-view-trigger');
 
   /* The week picker starts its calendar's rows on Sunday for a Sunday start
-     and on Monday otherwise, and marks the week the board shows from its
-     first day, which on a Today start runs across rows. */
+     and on Monday otherwise; `setRange` sets how many days it marks, the
+     days in view, which on a Today start run across rows. */
   function dressWeekPicker() {
     const picker = document.getElementById('scheduler-week-picker');
     if (!picker) return;
     picker.dataset.ruxFirstDay = weekStart === 'sunday' ? '0' : '1';
-    picker.dataset.ruxSpan = '7';
   }
 
   function applyView() {
@@ -18558,6 +18558,19 @@
     }
   }
 
+  /* Moves the board to the week containing `day`, which `firstDayOf` finds
+     from the week-start preference: the calendar's pick, a month's or a
+     year's. The same week is not drawn again; a strip's week is the one
+     scrolled to. */
+  function goToWeekOf(day) {
+    stopStripScroll();
+    const next = firstDayOf(day);
+    if (shown && iso(next) === iso(stripStart ? cursor : shown)) return;
+    toast(null);
+    cursor = next;
+    show();
+  }
+
   /* ── The week picker ───────────────────────────────────────────────────────
      The week label opens the picker through `data-rux-open`. The picker is
      built here, like the trip editor's date fields, from `DP_CONTAINER.single`
@@ -18593,16 +18606,59 @@
     weekInput.addEventListener('change', () => {
       if (valueSetBySelf) return;
       const day = isoOrNull(weekInput.value);
-      if (!day) return;
-      const picked = parseISO(day);
-      stopStripScroll();
-      const next = firstDayOf(picked);
-      // Same week, nothing to redraw; a strip's week is the one scrolled to.
-      if (shown && iso(next) === iso(stripStart ? cursor : shown)) return;
-      toast(null);
-      cursor = next;
-      show();
+      if (day) goToWeekOf(parseISO(day));
     });
+
+    /* THE MONTH AND THE YEAR, each a list beside the calendar. A month moves
+       to the week holding its first day in the year in view, and a year to
+       the month in view in that year, so the board starts on the week's first
+       day as the arrows leave it; the day header names the month's first day.
+       The years run from the first the scheduler holds trips in to next
+       year. */
+    const FIRST_YEAR = 2026;
+    const monthMenu = document.getElementById('scheduler-month-menu');
+    const yearMenu = document.getElementById('scheduler-year-menu');
+    const choice = (label, value, on) => {
+      const item = el('li', 'rux--menu-item');
+      item.setAttribute('role', 'menuitemradio');
+      item.setAttribute('aria-checked', String(on));
+      item.tabIndex = -1;
+      item.dataset.value = String(value);
+      const slot = el('div', 'rux--menu-item__selection-icon');
+      if (on) slot.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
+      item.append(slot, el('div', 'rux--menu-item__label', label));
+      return item;
+    };
+    const lists = [
+      [monthBtn, monthMenu, () => Array.from({ length: 12 }, (_, m) => choice(new Date(2000, m, 1).toLocaleDateString(undefined, { month: 'long' }), m, m === viewDay.getMonth())),
+        m => new Date(viewDay.getFullYear(), m, 1)],
+      [yearBtn, yearMenu, () => {
+        const now = new Date().getFullYear(), at = viewDay.getFullYear();
+        const years = [];
+        for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) years.push(choice(String(y), y, y === at));
+        return years;
+      }, y => new Date(y, viewDay.getMonth(), 1)],
+    ];
+    for (const [btn, menu, items, dayOf] of lists) {
+      if (!btn || !menu) continue;
+      btn.addEventListener('click', () => {
+        // A second press closes it, as the ⋮'s does.
+        if (window.Rux?.menu?.isOpen?.(menu)) { window.Rux.menu.close(menu); return; }
+        if (!viewDay) return;
+        menu.replaceChildren(...items());
+        const r = btn.getBoundingClientRect();
+        popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn);
+        btn.setAttribute('aria-expanded', 'true');
+      });
+      menu.addEventListener('click', e => {
+        const item = e.target.closest('[role="menuitemradio"]');
+        if (item && item.getAttribute('aria-checked') !== 'true') goToWeekOf(dayOf(Number(item.dataset.value)));
+      });
+      menu.addEventListener('rux:menu-closed', () => {
+        menu.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    }
 
     window.Rux?.datePicker?.init?.(weekRow);
 

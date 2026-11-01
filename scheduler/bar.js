@@ -791,8 +791,10 @@
       ? `driver:${crew.dataset.driverId}:${crew.dataset.seat}` : 'road';
   };
   const opensSection = (showing, current, requested) => !showing || current !== requested;
+  // What a press on opens the route's tip: the time line, its ticks and either time, on any bar.
+  const ROUTE_OPENER = '.scheduler-bar__stop, .scheduler-bar__track, .scheduler-road__track, .scheduler-bar__when, .scheduler-road__when';
 
   window.SchedulerBar = {
-    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, ROUTE_OPENER, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

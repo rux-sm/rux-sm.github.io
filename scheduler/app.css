@@ -1351,6 +1351,13 @@ button.scheduler-row-head__num::after {
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] { --scheduler-opener-fill: var(--rux-background-selected); }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { --scheduler-opener-fill: var(--rux-background-active); }
+/* The phone's docked sheet has no driver's tip, so a driver's icon there is
+   drawn plain: it takes no press of its own, which goes to the trip, and
+   shows no square. */
+.scheduler-page[data-board="compact"] :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-crew > .scheduler-crew__mark[data-card-opener] {
+  pointer-events: none;
+  cursor: default;
+}
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
 /* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
@@ -1447,14 +1454,6 @@ button:is(.scheduler-bar__when, .scheduler-road__when) {
   cursor: pointer;
 }
 button:is(.scheduler-bar__when, .scheduler-road__when):focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
-/* The route tip is fixed at the pressed point's top centre, Carbon's
-   popover drawn above that point. */
-.scheduler-route-tip.rux--popover-container {
-  position: fixed;
-  inline-size: 0;
-  block-size: 0;
-  z-index: 6000;
-}
 .scheduler-week[data-motion="off"] .scheduler-bar__stop { transition: none; }
 @media (prefers-reduced-motion: reduce) { .scheduler-bar__stop { transition: none; } }
 /* A leg that runs off the week has no time on that side: its track runs on

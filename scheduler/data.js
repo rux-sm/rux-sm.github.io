@@ -18808,6 +18808,7 @@
      where it is first, or the scroll would carry the week in view on past the
      one asked for. */
   function stopStripScroll() {
+    stopGlides();
     if (!stripStart || !weekMotion) return;
     schEl.scrollTo({ left: schEl.scrollLeft, behavior: 'instant' });
     placedLeft = schEl.scrollLeft;
@@ -18826,11 +18827,11 @@
     clearTimeout(scrollIdle);
     scrollIdle = setTimeout(scrollStopped, 'onscrollend' in window ? 500 : 150);
   }, { passive: true });
-  // A gesture the axis lock below drives scrolls by script, and each step
-  // ends a scroll of its own; its real end is the glide that follows, or the
-  // pause above.
+  // A gesture the board drives scrolls by script, and each step ends a
+  // scroll of its own; its real end is the board's landing, or the pause
+  // after the last scroll.
   schEl?.addEventListener('scrollend', () => {
-    if (axis || snapPaused) return;
+    if (axis || snapPaused || glides.x || glides.y) return;
     /* An arrow's glide that has not reached its day is still going: the end
        the strip's own move along sends under it is not the glide's. A glide
        that stops short for good is caught by the pause after the last scroll. */
@@ -18839,20 +18840,38 @@
     if (Math.abs(schEl.scrollTop - restTop) >= 1) alignRows();
   });
 
-  /* A TRACKPAD GESTURE SCROLLS ONE WAY. A Mac trackpad's stroke is seldom
-     straight: a scroll up or down carries a few pixels sideways, which the day
-     snap then pulls back, a wobble, and a swipe across carries a few pixels
-     down. The first events of a gesture say which way it means, once one axis
-     has moved twice the other, and the gesture keeps that axis: the board
-     scrolls itself by that part alone and drops the rest. A stroke near the
-     diagonal is left to the browser. Sideways, a scroll by script lands every
-     step on a day under the mandatory snap, so the snap is paused for the
-     gesture, and when the gesture ends, a pause of AXIS_GAP_MS, the board
-     glides to the nearest day and the snap comes back. The listener cannot be
-     passive, since it cancels the browser's own scroll, which is why the
-     board's style changes are kept cheap. */
+  /* A TRACKPAD GESTURE IS THE BOARD'S TO MOVE, from its first step, so it
+     moves one way, turns when the hand turns, and comes to rest on a day and
+     a lane in one motion.
+     One way: a Mac trackpad's stroke is seldom straight, a scroll up or down
+     carrying a few pixels sideways, which the day snap would pull back, a
+     wobble. The first steps of a gesture say which way it means, once one
+     axis has moved twice the other, and the board scrolls by that part
+     alone; a stroke near the diagonal moves both ways.
+     Turning: two steps in a row the other way, each twice this way's, turn
+     the gesture, so a stroke down straight after a swipe across moves at
+     once rather than once the swipe's glide has run out.
+     Coming to rest: a trackpad's glide after the hand lifts is steps that
+     only shrink. Once four have, the board works out where the glide would
+     have ended, picks the day, or the place a lane begins under the day
+     header, nearest it and still ahead, and eases there itself from the
+     glide's own speed, so it lands with no pause and no step back; the
+     glide's remaining steps are dropped, and a step that grows again is the
+     hand back on the trackpad, which takes over. A gesture that stops
+     between days or lanes eases to the nearest once its steps stop, a pause
+     of AXIS_GAP_MS, both ways at once.
+     Sideways the day snap is paused for the gesture and back once the board
+     rests. A mouse's wheel, a pinch and a scroll in lines or pages are the
+     browser's. The listener cannot be passive, since it cancels the
+     browser's own scroll, so the board's style changes are kept cheap. */
   const AXIS_GAP_MS = 120;
-  let axisAt = 0, axisX = 0, axisY = 0, axisTimer = 0, wallAsked = false;
+  const TURN_STEPS = 2;
+  let axisAt = 0, axisX = 0, axisY = 0, axisTimer = 0, wallAsked = false, turning = 0, movedY = false;
+  // The last steps the way the gesture runs, its glide's own landing on each
+  // axis, and the axes whose glide has landed this gesture.
+  let steps = [];
+  const glides = { x: null, y: null };
+  const landed = { x: false, y: false };
   // On the scroller's own style, not a class: a class on the week has the
   // browser work out the style of everything under it, 60ms on a strip.
   function pauseSnap(on) {
@@ -18861,29 +18880,22 @@
     if (on) schEl.style.scrollSnapType = 'none';
     else schEl.style.removeProperty('scroll-snap-type');
   }
-  /* A STRIP COMES TO REST WITH NO BAR CUT BY THE DAY HEADER. Once a scroll
-     up or down stops, the line under the header is moved to the nearest
-     place a bar's lane begins, each bus's row and each lane stacked in it:
-     a bar the header hides less than half of slides back into full view, and
-     one it hides more of gives way to the bar after it. A scroll that would
-     be undone entirely, a short nudge or a mouse wheel's notch, goes on to
-     the next lane instead, so a small step still moves the board. The foot
-     of the board, where the rows end, is left as the scroll left it. */
+  /* A mouse's wheel turns in notches of 120, straight up or down, and the
+     browser eases each one itself; a trackpad's steps are anything. */
+  const fromTrackpad = e => !(e.wheelDeltaY && e.wheelDeltaY % 120 === 0 && !e.deltaX);
+
+  /* A STRIP COMES TO REST WITH NO BAR CUT BY THE DAY HEADER, at a place a
+     bar's lane begins, each bus's row and each lane stacked in it: where
+     the board stands now, and each lane's beginning as the scroll position
+     that puts it under the header. */
   let restTop = 0;
-  function alignRows() {
-    const from = restTop;
-    restTop = schEl.scrollTop;
-    if (!scrolling() || !stripStart || barsInHand || gridEl.style.minBlockSize) return;
-    const moved = schEl.scrollTop - from;
-    const max = schEl.scrollHeight - schEl.clientHeight;
-    if (Math.abs(moved) < 1 || schEl.scrollTop >= max - 1) return;
+  function laneTops() {
     const head = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().bottom;
-    if (head == null) return;
-    // Every place a lane begins, by where its bars stand below their track's top.
+    if (head == null) return [];
     const lines = [];
     for (const track of gridEl.querySelectorAll('.scheduler-row:not([hidden]):not([data-shut]) > .scheduler-track')) {
       const box = track.getBoundingClientRect();
-      if (box.bottom < head - schEl.clientHeight || box.top > head + schEl.clientHeight) continue;
+      if (box.bottom < head - 2 * schEl.clientHeight || box.top > head + 2 * schEl.clientHeight) continue;
       lines.push(box.top);
       const bars = [...track.querySelectorAll(':scope > .scheduler-bar:not([data-folded])')];
       const first = bars.find(b => !Number(b.style.getPropertyValue('--scheduler-lane')));
@@ -18891,71 +18903,137 @@
       const clear = first.getBoundingClientRect().top - box.top;
       for (const bar of bars) if (Number(bar.style.getPropertyValue('--scheduler-lane'))) lines.push(bar.getBoundingClientRect().top - clear);
     }
-    if (!lines.length) return;
-    lines.sort((a, b) => a - b);
-    let at = lines.reduce((best, line) => (Math.abs(line - head) < Math.abs(best - head) ? line : best));
-    // A step that would land back where it began goes one lane on instead.
-    if (Math.abs(schEl.scrollTop + (at - head) - from) < 1) {
-      const on = moved > 0 ? lines.find(line => line > head + 1) : [...lines].reverse().find(line => line < head - 1);
-      if (on != null) at = on;
+    const max = schEl.scrollHeight - schEl.clientHeight;
+    return lines.map(line => Math.max(0, Math.min(max, schEl.scrollTop + line - head))).sort((a, b) => a - b);
+  }
+  /* Where a scroll up or down that stopped on its own comes to rest: the
+     nearest lane, a bar the header hides less than half of sliding back into
+     full view and one it hides more of giving way to the bar after it. A
+     scroll that would be undone entirely, a short nudge or a mouse wheel's
+     notch, goes on to the next lane instead, so a small step still moves the
+     board. The foot of the board, where the rows end, is left as it is. */
+  function laneRest(from) {
+    const now = schEl.scrollTop;
+    const moved = now - from;
+    const max = schEl.scrollHeight - schEl.clientHeight;
+    if (Math.abs(moved) < 1 || now >= max - 1) return null;
+    const tops = laneTops();
+    if (!tops.length) return null;
+    let to = tops.reduce((best, top) => (Math.abs(top - now) < Math.abs(best - now) ? top : best));
+    if (Math.abs(to - from) < 1) {
+      const on = moved > 0 ? tops.find(top => top > now + 1) : [...tops].reverse().find(top => top < now - 1);
+      if (on != null) to = on;
     }
-    const to = Math.max(0, Math.min(max, schEl.scrollTop + at - head));
-    if (Math.abs(to - schEl.scrollTop) < 1) return;
+    return Math.abs(to - now) < 1 ? null : to;
+  }
+  // A scroll the browser made, by the scroll bar or the keys, comes to rest the same way.
+  function alignRows() {
+    const from = restTop;
+    restTop = schEl.scrollTop;
+    if (!scrolling() || !stripStart || barsInHand || gridEl.style.minBlockSize) return;
+    const to = laneRest(from);
+    if (to == null) return;
     restTop = to;
     schEl.scrollTo({ top: to, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }
 
+  /* The board's own easing, a cubic ease-out, whose first speed is three
+     times the distance over the time: from a glide's speed, the time is
+     three times the distance over it, so the hand's motion runs on into the
+     landing. Sideways the place is kept in days, since the strip can move
+     along under it. */
+  const easeOut = t => 1 - (1 - t) ** 3;
+  function glide(way, to, ms) {
+    const run = { from: way === 'x' ? schEl.scrollLeft : schEl.scrollTop, to, start: stripStart, t0: performance.now(), ms };
+    glides[way] = run;
+    if (way === 'x') pauseSnap(true);
+    const frame = now => {
+      if (glides[way] !== run) return;
+      const k = reducedMotion.matches ? 1 : easeOut(Math.min(1, (now - run.t0) / run.ms));
+      if (way === 'x') {
+        // The strip moved along by so many days under the glide moves both its ends by as much.
+        const shift = run.start && stripStart ? daysBetween(run.start, stripStart) * dayWidth() : 0;
+        schEl.scrollLeft = run.from + (run.to - run.from) * k - shift;
+        stripEdge();
+      } else {
+        schEl.scrollTop = run.from + (run.to - run.from) * k;
+      }
+      if (k < 1) { requestAnimationFrame(frame); return; }
+      glides[way] = null;
+      if (way === 'y') restTop = schEl.scrollTop;
+      rest();
+    };
+    requestAnimationFrame(frame);
+  }
+  function stopGlides() { glides.x = glides.y = null; }
+  // The day nearest a sideways place, in the strip's pixels.
+  const nearestDay = left => { const w = dayWidth(); return w ? Math.round(left / w) * w : left; };
+
+  /* Once four steps have only shrunk, the glide is the trackpad's, and the
+     board lands it: its speed now, where its shrinking steps would take it,
+     and the day or lane nearest that, ahead. */
+  function landGlide(way) {
+    const mags = steps.map(s => Math.abs(s.d));
+    const last = steps.at(-1), dir = Math.sign(last.d);
+    const dt = Math.min(24, Math.max(6, last.t - steps.at(-2).t));
+    const speed = mags.at(-1) / dt;
+    let ratio = 0;
+    for (let i = mags.length - 3; i < mags.length; i++) ratio += mags[i] / mags[i - 1] / 3;
+    ratio = Math.min(0.96, Math.max(0.5, ratio));
+    const now = way === 'x' ? schEl.scrollLeft : schEl.scrollTop;
+    const ends = now + dir * mags.at(-1) * ratio / (1 - ratio);
+    let to;
+    if (way === 'x') {
+      const w = dayWidth();
+      if (!w) return;
+      let day = Math.round(ends / w);
+      if ((day * w - now) * dir < 0.5) day = dir > 0 ? Math.floor(now / w + 1e-6) + 1 : Math.ceil(now / w - 1e-6) - 1;
+      to = Math.max(0, Math.min(schEl.scrollWidth - schEl.clientWidth, day * w));
+    } else {
+      const max = schEl.scrollHeight - schEl.clientHeight;
+      const ahead = laneTops().filter(top => (top - now) * dir >= 0.5);
+      to = ahead.length ? ahead.reduce((best, top) => (Math.abs(top - ends) < Math.abs(best - ends) ? top : best)) : Math.max(0, Math.min(max, ends));
+    }
+    const far = Math.abs(to - now);
+    landed[way] = true;
+    if (far < 0.5) return;
+    glide(way, to, Math.min(650, Math.max(140, (3 * far) / Math.max(speed, 0.05))));
+  }
+
+  /* The board at rest: once the hand has stopped and no glide is running,
+     a way it was left between days or lanes eases to the nearest, both at
+     once; then the snap is back and the week in view is settled. */
+  function rest() {
+    if (axis || glides.x || glides.y) return;
+    const w = dayWidth();
+    const left = scrolling() ? nearestDay(schEl.scrollLeft) : schEl.scrollLeft;
+    const top = movedY && !landed.y && !barsInHand && !gridEl.style.minBlockSize ? laneRest(restTop) : null;
+    movedY = false;
+    if (w && Math.abs(schEl.scrollLeft - left) >= 1) glide('x', left, 260);
+    if (top != null) glide('y', top, 260);
+    if (glides.x || glides.y) return;
+    pauseSnap(false);
+    landed.x = landed.y = false;
+    restTop = schEl.scrollTop;
+    if (weekMotion) scrollStopped();
+  }
   function endAxis() {
-    const was = axis;
     axis = null;
     wallAsked = false;
-    // A scroll up or down the lock drove by script sends no end of its own.
-    if (was === 'y') alignRows();
-    if (!snapPaused) return;
-    const w = dayWidth();
-    const at = w && scrolling() ? Math.round(schEl.scrollLeft / w) * w : schEl.scrollLeft;
-    if (!w || Math.abs(schEl.scrollLeft - at) < 1) { pauseSnap(false); return; }
-    // The snap returns once the glide has landed, so it does not jump the board there itself.
-    const landed = () => { schEl.removeEventListener('scrollend', landed); clearTimeout(fallback); pauseSnap(false); };
-    const fallback = setTimeout(landed, 700);
-    schEl.addEventListener('scrollend', landed);
-    schEl.scrollTo({ left: at, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    steps = [];
+    turning = 0;
+    rest();
   }
-  schEl?.addEventListener('wheel', e => {
-    // A pinch zoom, or a mouse wheel that steps by lines or pages, is the browser's.
-    if (e.ctrlKey || e.deltaMode !== 0) return;
-    const now = performance.now();
-    if (now - axisAt > AXIS_GAP_MS) { axis = null; axisX = axisY = 0; }
-    axisAt = now;
-    clearTimeout(axisTimer);
-    axisTimer = setTimeout(endAxis, AXIS_GAP_MS);
-    if (!axis) {
-      axisX += Math.abs(e.deltaX);
-      axisY += Math.abs(e.deltaY);
-      if (axisX > 2 && axisX >= 2 * axisY) axis = 'x';
-      else if (axisY > 2 && axisY >= 2 * axisX) axis = 'y';
-      else return;
-    }
-    if (axis === 'y') {
-      // A straight stroke is left to the browser; only a stray sideways part is dropped.
-      if (!e.deltaX) return;
-      e.preventDefault();
-      schEl.scrollBy({ top: e.deltaY, behavior: 'instant' });
-      return;
-    }
-    e.preventDefault();
-    // A hand on the strip takes over from an arrow's glide.
-    aim = null;
-    pauseSnap(true);
-    schEl.scrollBy({ left: e.deltaX, behavior: 'instant' });
+
+  /* A gesture a week from either end has the strip moved along to centre
+     the week in view, from what is held, so the hand never meets an end;
+     a week at a time, since a step costs the same whatever its length. Where
+     the days ahead are not held and no read is bringing them, the strip is
+     drawn again around the week in view now, keeping its place on screen,
+     rather than once the hand had stopped. Once, until the strip is roomy
+     again. */
+  function stripEdge() {
     if (!stripStart) return;
-    /* A gesture a week from either end has the strip moved along to centre
-       the week in view, from what is held, so the hand never meets an end;
-       a week at a time, since a step costs the same whatever its length. Where
-       the days ahead are not held and no read is bringing them, the strip is
-       drawn again around the week in view now, keeping its place on screen,
-       rather than once the hand had stopped. Once, until the strip is roomy
-       again. */
     const w = dayWidth();
     const at = w ? Math.round(schEl.scrollLeft / w) : STRIP_BEFORE;
     const on = addDays(stripStart, at);
@@ -18971,10 +19049,95 @@
     if ((at < STRIP_EDGE || at > stripDays() - inView() - STRIP_EDGE) && holds(on) && growStrip(on)) { fitLanesInView({ grow: true }); return; }
     if (stripRoomy()) wallAsked = false;
     else if (!wallAsked && !reading) { wallAsked = true; scrollStopped(); }
+  }
+
+  schEl?.addEventListener('wheel', e => {
+    // A pinch zoom, a mouse's wheel, or a step in lines or pages, is the browser's.
+    if (e.ctrlKey || e.deltaMode !== 0 || !fromTrackpad(e) || !scrolling() || !stripStart) {
+      stopGlides();
+      return;
+    }
+    e.preventDefault();
+    const now = performance.now();
+    if (now - axisAt > AXIS_GAP_MS) {
+      // A new gesture: the hand takes over from any landing or an arrow's glide.
+      stopGlides();
+      axis = null; axisX = axisY = 0; steps = []; turning = 0;
+      landed.x = landed.y = false;
+      if (!snapPaused) restTop = schEl.scrollTop;
+    }
+    axisAt = now;
+    clearTimeout(axisTimer);
+    axisTimer = setTimeout(endAxis, AXIS_GAP_MS);
+    aim = null;
+    pauseSnap(true);
+    const dx = e.deltaX, dy = e.deltaY;
+    if (!axis) {
+      axisX += Math.abs(dx);
+      axisY += Math.abs(dy);
+      if (axisX > 2 && axisX >= 2 * axisY) axis = 'x';
+      else if (axisY > 2 && axisY >= 2 * axisX) axis = 'y';
+      else if (axisX + axisY > 12) axis = 'xy';
+      else return;
+    } else if (axis !== 'xy') {
+      // Two steps in a row the other way turn the gesture.
+      const mine = Math.abs(axis === 'x' ? dx : dy), other = Math.abs(axis === 'x' ? dy : dx);
+      turning = other >= 1.5 && other >= 2 * mine ? turning + 1 : 0;
+      if (turning >= TURN_STEPS) {
+        axis = axis === 'x' ? 'y' : 'x';
+        steps = [];
+        turning = 0;
+        landed[axis] = false;
+        glides[axis] = null;
+      }
+    }
+    if (axis === 'xy') {
+      stopGlides();
+      schEl.scrollBy({ left: dx, top: dy, behavior: 'instant' });
+      movedY = movedY || !!dy;
+      stripEdge();
+      return;
+    }
+    const d = axis === 'x' ? dx : dy;
+    if (!d) return;
+    const last = steps.at(-1);
+    /* Over a landing, or once one has landed, the glide's own steps are
+       dropped; a step that grows, or turns back, is the hand again. */
+    if (glides[axis] || landed[axis]) {
+      if (last && Math.sign(d) === Math.sign(last.d) && Math.abs(d) <= Math.abs(last.d) * 1.3 + 1) {
+        steps.push({ t: e.timeStamp, d });
+        if (steps.length > 6) steps.shift();
+        return;
+      }
+      glides[axis] = null;
+      landed[axis] = false;
+      steps = [];
+    }
+    steps.push({ t: e.timeStamp, d });
+    if (steps.length > 6) steps.shift();
+    if (axis === 'x') {
+      schEl.scrollBy({ left: d, behavior: 'instant' });
+      stripEdge();
+    } else {
+      schEl.scrollBy({ top: d, behavior: 'instant' });
+      movedY = true;
+    }
+    // Four steps that only shrank, the same way, are the glide after the hand lifted.
+    if (steps.length >= 4) {
+      const tail = steps.slice(-4);
+      const mags = tail.map(s => Math.abs(s.d));
+      if (tail.every(s => Math.sign(s.d) === Math.sign(d)) && mags.every((m, i) => !i || m <= mags[i - 1]) && mags[3] < mags[0] * 0.85) {
+        steps = tail;
+        landGlide(axis);
+      }
+    }
   }, { passive: false });
 
   // Scrolls the strip to a day, as many days from its first, smoothly unless motion is reduced.
   function scrollStripTo(at) {
+    // An arrow takes over from the board's own landing, and the day snap is back for its glide.
+    stopGlides();
+    if (!axis) { landed.x = landed.y = false; pauseSnap(false); }
     aim = at;
     schEl.scrollTo({ left: at * dayWidth(), behavior: reducedMotion.matches ? 'auto' : 'smooth' });
   }

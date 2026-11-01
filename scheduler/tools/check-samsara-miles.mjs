@@ -1,7 +1,7 @@
 // Runs samsara-miles's handler, the trip editor's door to Samsara's odometer,
 // against sample trips with invented readings: the window each leg is read
 // across, the miles each bus gets or why it gets none, when each reached its
-// pickup, when each left the yard and got back, the farthest bus's total, and what a caller who should not get an answer is told. The handler
+// pickup and each stop after it, when each left the yard and got back, the farthest bus's total, and what a caller who should not get an answer is told. The handler
 // is TypeScript with no imports; its types are taken off and the rest is run
 // as a module.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ const source = readFileSync(new URL('../samsara-miles/handler.ts', import.meta.u
 const scratch = mkdtempSync(join(tmpdir(), 'check-samsara-miles-'));
 const file = join(scratch, 'handler.mjs');
 writeFileSync(file, stripTypeScriptTypes(source));
-const { arrivalAt, handle, handleNight, instant, legWindow, milesFor, night, pickupOf, yardTimes } = await import(pathToFileURL(file).href);
+const { arrivalAt, handle, handleNight, instant, legStops, legWindow, milesFor, night, pickupOf, stopArrivals, yardTimes } = await import(pathToFileURL(file).href);
 rmSync(scratch, { recursive: true, force: true });
 
 let failed = 0;
@@ -326,6 +326,43 @@ p = parts({ odometer, found: placed, fixes: { v101: DAYOUT } });
 a = await milesFor(placed, p.deps);
 expect('with no yard set it says neither', [a.buses[0].legs[0].yard_depart_at, a.buses[0].legs[0].yard_return_at], [null, null]);
 
+// ── the stops after the pickup ──────────────────────────────────────────────
+// Two stops north of the pickup, due 9:00 and 10:00, 14:00Z and 15:00Z, and one with no map point between them.
+const MID = north(0.43), FAR = north(0.86);
+const routed = trip(10, { trip_stops: [
+  stop('pickup', 'outbound', 0, { id: 's-pick', depart_prev: '06:00', spot: '07:00', lat: String(PICK[0]), lng: String(PICK[1]) }),
+  stop('stop', 'outbound', 1, { id: 's-mid', arrive: '09:00', lat: String(MID[0]), lng: String(MID[1]) }),
+  stop('stop', 'outbound', 2, { id: 's-nowhere', arrive: '09:30' }),
+  stop('stop', 'outbound', 3, { id: 's-far', arrive: '10:00', lat: String(FAR[0]), lng: String(FAR[1]) }),
+  stop('return', 'outbound', 4, { id: 's-back', arrive: '01:00', lat: String(YARD[0]), lng: String(YARD[1]) }),
+], trip_assignments: [{ id: 'row-2', bus_id: 'b1', leg: 'outbound' }] });
+const ls = legStops(routed, 'outbound');
+expect('a leg\'s stops are due in route order, one past midnight on the next day',
+  ls.map(x => [x.key, iso(x.due), !!x.point]), [['s-pick', '2026-10-10T12:00:00.000Z', true], ['s-mid', '2026-10-10T14:00:00.000Z', true],
+    ['s-nowhere', '2026-10-10T14:30:00.000Z', false], ['s-far', '2026-10-10T15:00:00.000Z', true], ['s-back', '2026-10-11T06:00:00.000Z', true]]);
+const arrivals = (fixes, pickedUp = '12:04') => Object.fromEntries(Object.entries(stopArrivals(ls, fixes,
+  pickedUp == null ? null : Date.parse(`2026-10-10T${pickedUp}:00Z`))).map(([k, v]) => [k, iso(v)]));
+const ROUTE = [at('09:00', YARD), at('12:04', PICK), at('12:40', north(0.2)), at('13:55', MID), at('14:10', north(0.431)),
+  at('14:30', north(0.6)), at('14:58', FAR), at('16:30', north(0.3)), at('18:00', YARD)];
+expect('each stop after the pickup is reached at the first point inside a quarter mile, in order, the yard left to yardTimes',
+  arrivals(ROUTE), { 's-mid': '2026-10-10T13:55:00.000Z', 's-far': '2026-10-10T14:58:00.000Z' });
+expect('a bus passing a stop more than two hours early has not reached it',
+  arrivals([at('09:00', YARD), at('11:30', MID), at('11:45', north(0.6)), at('12:30', north(0.2)), at('13:55', MID)], null),
+  { 's-mid': '2026-10-10T13:55:00.000Z' });
+expect('one that stood ten minutes there that early reached it when it came to rest',
+  arrivals([at('09:00', YARD), at('11:30', MID), at('11:36', MID), at('11:42', MID), at('12:30', north(0.6))], null),
+  { 's-mid': '2026-10-10T11:30:00.000Z' });
+expect('a bus that goes to a later stop first has skipped the ones before',
+  arrivals([at('12:04', PICK), at('14:20', FAR), at('14:50', MID)]), { 's-far': '2026-10-10T14:20:00.000Z' });
+expect('a bus that reaches no stop has none', arrivals([at('12:04', PICK), at('15:00', north(0.2))]), {});
+p = parts({ odometer, found: routed, fixes: { v101: ROUTE }, yard: YARD });
+a = await milesFor(routed, p.deps);
+expect('each leg says when its bus reached each stop', a.buses[0].legs[0].stop_arrivals,
+  { 's-mid': '2026-10-10T13:55:00.000Z', 's-far': '2026-10-10T14:58:00.000Z' });
+p = parts({ odometer, found: placed, fixes: FIXES });
+a = await milesFor(placed, p.deps);
+expect('a leg with no stop reached says none', a.buses[0].legs[0].stop_arrivals, null);
+
 // ── each night ──────────────────────────────────────────────────────────────
 const rowed = { ...placed, trip_assignments: [{ id: 'row-1', bus_id: 'b1', leg: 'outbound' }] };
 const nightParts = (more = {}) => {
@@ -348,6 +385,11 @@ n.deps.tripsBetween = async () => [{ ...placed,
 got = await night(n.deps, '2026-10-10', '2026-10-11', true);
 expect('a trip read with its legs saves the row on its route\'s leg', n.saved,
   [{ id: 'row-1', actual_yard_depart_at: '2026-10-10T10:55:00.000Z', actual_yard_return_at: '2026-10-10T16:58:00.000Z' }]);
+n = nightParts({ fixes: { v101: ROUTE } });
+n.deps.tripsBetween = async () => [routed];
+await night(n.deps, '2026-10-10', '2026-10-11', true);
+expect('each night saves the stops each bus reached on its row', n.saved.map(r => [r.id, r.stop_arrivals]),
+  [['row-2', { 's-mid': '2026-10-10T13:55:00.000Z', 's-far': '2026-10-10T14:58:00.000Z' }]]);
 n = nightParts();
 got = await night(n.deps, '2026-10-01', '2026-10-11', false);
 expect('a run that may not write says what it found and saves nothing', [got.rows.length, n.saved.length], [1, 0]);

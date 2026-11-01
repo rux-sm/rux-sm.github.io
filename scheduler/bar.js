@@ -678,7 +678,9 @@
        it is back, empty before it leaves. The dash and any time left out stay
        inside it, unseen, so the row still reads and copies whole. */
     const when = el('span', none ? 'scheduler-bar__none' : null);
-    const backAt = el('span', 'scheduler-bar__when');
+    // Each time opens the leg's route tip, data.js's, so it is a button.
+    const timeButton = () => { const b = el('button', 'scheduler-bar__when'); b.type = 'button'; return b; };
+    const backAt = timeButton();
     backAt.append(...ret);
     if (dep && back) {
       when.className = 'scheduler-bar__span';
@@ -692,7 +694,7 @@
         markStops(track, tripDone(leg));
       }
       if (!place.fromPrev) {
-        const out = el('span', 'scheduler-bar__when');
+        const out = timeButton();
         out.append(...depart);
         when.append(out);
       }

@@ -419,6 +419,33 @@ button.scheduler-row-head__num::after {
   padding: var(--rux-spacing-02) var(--rux-spacing-04);
   border-block-start: 1px solid var(--tip-rule);
 }
+/* THE ROUTE TIP'S TABLE: each point of the leg a row of three, its name,
+   the planned time and the actual, the columns lined up down the tip by a
+   subgrid, their names faded over them. The point pressed is lit in the
+   inverse surface's hover tone. A time past the yard-out's day carries its
+   +1 as the bar's return does, and an estimate is faded, since it is not
+   yet a time that happened. */
+.scheduler-route { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; column-gap: var(--rux-spacing-05); }
+.scheduler-route__row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); opacity: .75; }
+.scheduler-route__row--lit { background: var(--rux-background-inverse-hover); }
+.scheduler-route__name { min-inline-size: 0; overflow-wrap: anywhere; }
+.scheduler-route__time { white-space: nowrap; }
+.scheduler-route__day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
+.scheduler-route__actual { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--rux-spacing-02); }
+.scheduler-route__actual--estimate { opacity: .75; }
+/* The pickup's on time in Carbon's green check, or late in its amber
+   warning, each in the support colour for an inverse surface. */
+.scheduler-route__judged { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); align-self: center; }
+.scheduler-route__judged > svg { flex: none; inline-size: 16px; block-size: 16px; }
+.scheduler-route__judged--on-time > svg { color: var(--rux-support-success-inverse); }
+.scheduler-route__judged--late > svg { color: var(--rux-support-warning-inverse); --rux-icon-inner: var(--scheduler-on-warning); }
 /* Equipment is an icon with its word, so the tip needs no legend. */
 .scheduler-tip__kit { display: flex; flex-wrap: wrap; gap: var(--rux-spacing-02) var(--rux-spacing-05); }
 .scheduler-tip__mark { display: inline-flex; align-items: center; gap: var(--rux-spacing-02); }
@@ -1391,17 +1418,38 @@ button.scheduler-row-head__num::after {
   outline-offset: 2px;
   border-radius: 50%;
 }
-/* A tick is pressed for its tip, so it answers to 8px either side and the
-   bar's line height, more than its 2px. */
+/* A tick and the line under it are pressed for the leg's route tip, so a
+   tick answers to 8px either side and both to the bar's line height, more
+   than their 2px. */
 .scheduler-bar__stop::before {
   content: "";
   position: absolute;
   inset: -6px -8px;
   cursor: pointer;
 }
-/* The stop's tip is fixed at the pressed tick's top centre, Carbon's
+:is(.scheduler-bar__track, .scheduler-road__track)::before {
+  content: "";
+  position: absolute;
+  inset: -6px 0;
+  cursor: pointer;
+}
+/* The two times open the route tip too, buttons drawn as the words they were. */
+button:is(.scheduler-bar__when, .scheduler-road__when) {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+button:is(.scheduler-bar__when, .scheduler-road__when):focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+/* The route tip is fixed at the pressed point's top centre, Carbon's
    popover drawn above that point. */
-.scheduler-stop-tip.rux--popover-container {
+.scheduler-route-tip.rux--popover-container {
   position: fixed;
   inline-size: 0;
   block-size: 0;
@@ -2444,8 +2492,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 
-/* THE TIMES: out at the start, the track, and back at the end, then the
-   minutes late in amber, at 12px in one line, as a planned bar's are; after
+/* THE TIMES: out at the start, the track, and back at the end, amber when
+   the bus is late back, at 12px in one line, as a planned bar's are; after
    the track, on a leg whose route is done, a dimmed arrow and when the bus
    gets to its next stop. Or a problem's words, at the row's size. */
 .scheduler-bar__row.scheduler-road__times { justify-content: flex-start; gap: var(--rux-spacing-02); }

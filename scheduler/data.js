@@ -319,7 +319,7 @@
     // hours-of-service form and the forms the customer asks for, each
     // printed or not, and how far its driver drove, which the Billing tab's
     // Miles edits.
-    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
+    'trip_assignments(id,bus_id,position,leg,route_id,active_roles,needs,vehicle_type,fuel_card_number,pickup_at,stop_arrivals,actual_yard_depart_at,actual_yard_return_at,trip_drivers(id,driver_id,role,report_time,instructions,miles,pay,envelope_printed,itinerary_printed,hos_form_printed,driver_forms_printed,trip_reminder_sent,trip_reminder_sent_at))',
     // The driver details sent to the booking contact, or not, which the Contact list says and marks,
     // and the QuickBooks estimate, which the bar menu marks.
     'trip_prep(driver_info_sent,driver_info_sent_at,qb_estimate)',
@@ -2696,7 +2696,7 @@
     seats.driver.on = true;
     const needs = needsObject(needIds(seed.needs));
     const vehicleType = seed.vehicleType ?? null;
-    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, pickupAt: null, yardDepartAt: null, yardReturnAt: null, seats,
+    return { key: `new-${++fleetSeq}`, id: null, position: null, busId: null, pickupAt: null, stopArrivals: null, yardDepartAt: null, yardReturnAt: null, seats,
       needs, vehicleType, seed: { needs: { ...needs }, vehicleType } };
   };
 
@@ -2709,6 +2709,7 @@
     bus.position = a.position ?? null;
     bus.busId = a.bus_id ?? null;
     bus.pickupAt = a.pickup_at ?? null;
+    bus.stopArrivals = a.stop_arrivals ?? null;
     bus.yardDepartAt = a.actual_yard_depart_at ?? null;
     bus.yardReturnAt = a.actual_yard_return_at ?? null;
     bus.needs = needsObject(needIds(a.needs));
@@ -2919,11 +2920,13 @@
         }
         const patch = {};
         if (!same(b.busId, prev.busId)) patch.bus_id = b.busId;
-        // Another bus did not reach the pickup, or leave and come back to the
-        // yard, when this one did.
+        // Another bus did not reach the pickup and its stops, or leave and
+        // come back to the yard, when this one did.
         const kept = same(b.busId, prev.busId);
         const pickupAt = kept ? b.pickupAt ?? null : null;
         if (!same(pickupAt, prev.pickupAt)) patch.pickup_at = pickupAt;
+        const stopArrivals = kept ? b.stopArrivals ?? null : null;
+        if (JSON.stringify(stopArrivals) !== JSON.stringify(prev.stopArrivals ?? null)) patch.stop_arrivals = stopArrivals;
         const yardDepartAt = kept ? b.yardDepartAt ?? null : null;
         if (!same(yardDepartAt, prev.yardDepartAt)) patch.actual_yard_depart_at = yardDepartAt;
         const yardReturnAt = kept ? b.yardReturnAt ?? null : null;
@@ -2956,7 +2959,7 @@
     /* Any change to who sits where, or a status picked here, sends the crew.
        A seat's miles and pay and a bus's pickup arrival and yard times are
        the close-out filling in, and send nothing. */
-    const SAMSARA_TIMES = new Set(['pickup_at', 'actual_yard_depart_at', 'actual_yard_return_at']);
+    const SAMSARA_TIMES = new Set(['pickup_at', 'stop_arrivals', 'actual_yard_depart_at', 'actual_yard_return_at']);
     const statusPicked = fleetLegs().some(leg => now[leg].some(b => ROLES.some(r => b.seats[r.role].statusDirty)));
     const onlyMiles = s => s.op === 'update' && Object.keys(s.patch).every(k => k === 'miles' || k === 'pay');
     const moved = work.legs.some(ops => ops.inserts.length || ops.deletes.length
@@ -9829,13 +9832,15 @@
           : [el('p', 'rux--form__helper-text', 'No buses on this trip yet.')]));
         placeMilesParts();
         /* Each seated driver Samsara saw drive the seat's bus on its leg, and
-           when each bus reached the leg's pickup and left the yard and got
-           back; a time Samsara cannot find leaves the one saved. */
+           when each bus reached the leg's pickup and each stop after it and
+           left the yard and got back; a time Samsara cannot find leaves the
+           one saved. */
         let filled = samsaraFound.actual != null;
         for (const leg of fleetLegs()) {
           for (const b of editing.fleet?.[leg] ?? []) {
             const found = b.busId ? legFound(b.busId, leg) : null;
             if (found?.pickup_at) { b.pickupAt = found.pickup_at; filled = true; }
+            if (found?.stop_arrivals) { b.stopArrivals = found.stop_arrivals; filled = true; }
             if (found?.yard_depart_at) { b.yardDepartAt = found.yard_depart_at; filled = true; }
             if (found?.yard_return_at) { b.yardReturnAt = found.yard_return_at; filled = true; }
             const drove = b.busId ? droveOn(b.busId, leg) : null;
@@ -12333,83 +12338,140 @@
   });
   schEl.addEventListener('pointerleave', () => growStops(null));
 
-  /* A STOP SAYS WHAT IS KNOWN OF IT when it is pressed, in a tip over its
-     tick, the bus number's high-contrast toggletip: its name and planned
-     time, the Spot at a pickup and Arrives at any other stop, then on a bus
-     out on the leg whether it has reached the stop, is there, or when it
-     gets there from where it is now; and at the pickup, once Samsara's
-     history has said when the bus got there, that time and whether it was
-     on time, the only stop a bus can be late to. A tick that stands for two
-     stops close together tells both. Pressing a tick picks no trip. */
-  const stopTip = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--top rux--toggletip scheduler-stop-tip');
-  const stopTipBody = el('div', 'rux--toggletip-content scheduler-tip');
+  /* THE ROUTE TIP: a press on a bar's time line, a stop's tick, the line
+     between ticks or either time, shows the leg's whole route in the bus
+     number's high-contrast toggletip, its caret on what was pressed: the
+     yard out, the pickup, each stop and the yard back, each with its planned
+     time beside what happened, the point pressed lit. Planned is the
+     route's own time, the pickup's spot and each stop's arrival; Actual is
+     what Samsara recorded on the bus's row, and on a bus out on the leg, a
+     stop reached, the one it is at, or the next one's estimate, faded. The
+     pickup alone says on time or how late, the only stop a bus can be late
+     to. A press picks no trip. */
+  const routeTip = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--top rux--toggletip scheduler-route-tip');
+  const routeTipBody = el('div', 'rux--toggletip-content scheduler-tip');
   {
     const pop = el('span', 'rux--popover');
     const content = el('span', 'rux--popover-content');
-    content.append(stopTipBody);
+    content.append(routeTipBody);
     pop.append(content, el('span', 'rux--popover-caret'));
-    stopTip.append(pop);
-    stopTip.setAttribute('role', 'status');
-    document.body.append(stopTip);
+    routeTip.append(pop);
+    routeTip.setAttribute('role', 'status');
+    document.body.append(routeTip);
   }
-  let stopTipFor = null;
+  let routeTipFor = null;
+  const ROUTE_OPENER = '.scheduler-bar__stop, .scheduler-bar__track, .scheduler-road__track, .scheduler-bar__when, .scheduler-road__when';
   const clockOfMs = ms => hhmm(Road.clockOf(ms), true);
-  function stopFacts(dot) {
-    const bar = dot.closest('.scheduler-bar');
+  const OFFICE_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' });
+  // A time as the bar writes it, with "+1" after it on a day past the leg's yard-out.
+  const routeClock = (ms, out) => {
+    const w = el('span', 'scheduler-route__time', clockOfMs(ms));
+    const days = out == null ? 0 : Math.round((Date.parse(OFFICE_DATE.format(ms)) - Date.parse(OFFICE_DATE.format(out))) / 864e5);
+    if (days > 0) w.appendChild(el('sup', 'scheduler-route__day', `+${days}`));
+    return w;
+  };
+  // The pickup's arrival judged: Carbon's green check for on time, its amber warning and the minutes for late.
+  const routeJudged = late => {
+    const j = el('span', `scheduler-route__judged scheduler-route__judged--${late ? 'late' : 'on-time'}`);
+    j.append(svgUse(late ? '#i-warning--alt--filled' : '#i-checkmark--filled', '16', late ? '0 0 32 32' : '0 0 16 16'), late ? `${late} min late` : 'On time');
+    return j;
+  };
+  // The leg's points in order, each its key, name, planned and actual times, or what a bus out says of it.
+  function routeOf(bar) {
     const trip = bar && heldTrip(bar.dataset.tripId);
-    if (!trip) return [];
+    if (!trip) return null;
     const stops = Road.stopsOf(trip, bar.dataset.legKey || bar.dataset.leg);
+    const track = bar.querySelector(':scope > .scheduler-bar__time .scheduler-bar__track[data-out]');
+    const out = track ? Number(track.dataset.out) : null;
     const bus = bar.classList.contains('scheduler-bar--road') ? roadBusOf(bar) : null;
     const next = bus ? roadNext(bar, bus) : null;
     const reached = next?.where?.reached ?? -1;
     const assign = (trip.trip_assignments || []).find(a => String(a.id) === bar.dataset.assignmentId);
-    return dot.dataset.stops.split(' ').map(id => stops.find(st => st.key === id)).filter(Boolean).map(st => {
-      const i = stops.indexOf(st);
-      const due = st.due != null ? clockOfMs(st.due) : null;
-      const lines = [st.type === 'pickup' ? `Spot ${due ?? 'not set'}` : `Arrives ${due ?? 'not set'}`];
-      const arrivedAt = st.type === 'pickup' && assign?.pickup_at ? Date.parse(assign.pickup_at) : null;
-      if (arrivedAt != null) {
-        const late = Road.pickupLate(st.due, arrivedAt);
-        lines.push(`Arrived ${clockOfMs(arrivedAt)}${late == null ? '' : late === 0 ? ' · On time' : ` · ${late} min late`}`);
-      } else if (next && i === reached && next.at) lines.push('At the stop now');
-      else if (next && i <= reached) lines.push('Reached');
-      else if (next && next.stop?.key === st.key && next.arrival != null) {
-        lines.push(`Arriving ~${clockOfMs(next.arrival)}${next.late ? ` · ${next.late} min late` : ''}`);
-      }
-      return { name: st.name || (st.type === 'pickup' ? 'Pickup' : 'Stop'), pickup: st.type === 'pickup', lines };
+    const at = v => (v ? Date.parse(v) : null);
+    const home = stops.findLastIndex(st => st.type === 'return');
+    const said = (row, st, i) => {
+      if (row.actual != null || !next) return row;
+      if (i === reached && next.at) row.words = 'Here now';
+      else if (i <= reached) row.words = 'Reached';
+      else if (next.stop?.key === st.key && next.arrival != null) row.estimate = next.arrival;
+      return row;
+    };
+    const rows = [{ key: 'yard-out', name: 'Yard out', planned: out, actual: at(assign?.actual_yard_depart_at) }];
+    stops.forEach((st, i) => {
+      if (i === home) return;
+      const pickup = st.type === 'pickup';
+      const actual = pickup ? at(assign?.pickup_at) : at(assign?.stop_arrivals?.[st.key]);
+      rows.push(said({ key: st.key, name: pickup ? `Pickup · ${st.name || 'Pickup'}` : st.name || 'Stop', planned: st.due, actual,
+        late: pickup && actual != null ? Road.pickupLate(st.due, actual) : null }, st, i));
     });
+    const back = { key: 'yard-back', name: 'Yard back', planned: track ? Number(track.dataset.back) : stops[home]?.due ?? null,
+      actual: at(assign?.actual_yard_return_at) };
+    rows.push(home >= 0 ? said(back, stops[home], home) : back);
+    return { rows, out };
   }
-  function closeStopTip() {
-    if (!stopTipFor) return;
-    stopTip.classList.remove('rux--popover--open');
-    stopTipFor = null;
+  /* What a press lights and where the caret points: a tick's stops, a
+     time's end of the yard, or on the line the tick nearest the press, or
+     the yard at the end nearer it. */
+  function routePressed(hit, e) {
+    const r = hit.getBoundingClientRect();
+    if (hit.matches('.scheduler-bar__stop')) return { lit: hit.dataset.stops.split(' '), x: r.left + r.width / 2, y: r.top };
+    if (hit.matches('.scheduler-bar__when, .scheduler-road__when')) {
+      const out = hit.nextElementSibling?.matches('.scheduler-bar__track, .scheduler-road__track');
+      return { lit: [out ? 'yard-out' : 'yard-back'], x: r.left + r.width / 2, y: r.top };
+    }
+    const points = [{ lit: ['yard-out'], x: r.left }, { lit: ['yard-back'], x: r.right },
+      ...[...hit.querySelectorAll('.scheduler-bar__stop')].map(t => {
+        const b = t.getBoundingClientRect();
+        return { lit: t.dataset.stops.split(' '), x: b.left + b.width / 2 };
+      })];
+    const near = points.reduce((a, b) => (Math.abs(b.x - e.clientX) < Math.abs(a.x - e.clientX) ? b : a));
+    return { lit: near.lit, x: near.x, y: r.top };
   }
-  function openStopTip(dot) {
-    const facts = stopFacts(dot);
-    if (!facts.length) { closeStopTip(); return; }
-    stopTipBody.replaceChildren(...facts.flatMap(f => {
-      const head = el('div', 'scheduler-tip__head');
-      head.append(el('span', 'scheduler-tip__name', f.pickup ? `Pickup · ${f.name}` : f.name));
-      return [head, ...f.lines.map(line => el('div', 'scheduler-tip__row', line))];
-    }));
-    const r = dot.getBoundingClientRect();
-    stopTip.style.left = `${r.left + r.width / 2}px`;
-    stopTip.style.top = `${r.top}px`;
-    stopTip.classList.add('rux--popover--open');
-    stopTipFor = dot;
+  function closeRouteTip() {
+    if (!routeTipFor) return;
+    routeTip.classList.remove('rux--popover--open');
+    routeTipFor = null;
+  }
+  function openRouteTip(bar, { lit, x, y }) {
+    const route = routeOf(bar);
+    if (!route) { closeRouteTip(); return; }
+    const head = el('div', 'scheduler-tip__head');
+    head.append(el('span', 'scheduler-tip__name', 'Route'));
+    const table = el('div', 'scheduler-route');
+    const names = el('div', 'scheduler-route__row scheduler-route__row--head');
+    names.append(el('span'), el('span', null, 'Planned'), el('span', null, 'Actual'));
+    table.append(names);
+    for (const r of route.rows) {
+      const row = el('div', 'scheduler-tip__row scheduler-route__row');
+      if (lit.includes(r.key)) { row.classList.add('scheduler-route__row--lit'); row.setAttribute('aria-current', 'true'); }
+      const actual = el('span', 'scheduler-route__actual');
+      if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
+      else if (r.words) actual.append(r.words);
+      else if (r.estimate != null) { actual.classList.add('scheduler-route__actual--estimate'); actual.append('~', routeClock(r.estimate, route.out)); }
+      else actual.append('—');
+      row.append(el('span', 'scheduler-route__name', r.name), r.planned != null ? routeClock(r.planned, route.out) : el('span', null, '—'), actual);
+      table.append(row);
+    }
+    routeTipBody.replaceChildren(head, table);
+    routeTip.style.left = `${x}px`;
+    routeTip.style.top = `${y}px`;
+    routeTip.classList.add('rux--popover--open');
+    routeTipFor = { bar, key: lit.join(' ') };
   }
   // In the capture, ahead of the bar's own press, which would pick the trip.
   schEl.addEventListener('click', e => {
-    const dot = e.target.closest?.('.scheduler-bar__stop');
-    if (!dot) return;
+    const hit = e.target.closest?.(ROUTE_OPENER);
+    const bar = hit?.closest('.scheduler-bar[data-trip-id]');
+    if (!bar) return;
     e.stopPropagation();
     e.preventDefault();
-    if (stopTipFor === dot) closeStopTip(); else openStopTip(dot);
+    const pressed = routePressed(hit, e);
+    if (routeTipFor?.bar === bar && routeTipFor.key === pressed.lit.join(' ')) closeRouteTip(); else openRouteTip(bar, pressed);
   }, true);
-  document.addEventListener('pointerdown', e => { if (stopTipFor && !e.target.closest?.('.scheduler-bar__stop, .scheduler-stop-tip')) closeStopTip(); }, true);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStopTip(); });
-  schEl.addEventListener('scroll', closeStopTip, { passive: true });
-  window.addEventListener('resize', closeStopTip);
+  document.addEventListener('pointerdown', e => { if (routeTipFor && !e.target.closest?.(`${ROUTE_OPENER}, .scheduler-route-tip`)) closeRouteTip(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRouteTip(); });
+  schEl.addEventListener('scroll', closeRouteTip, { passive: true });
+  window.addEventListener('resize', closeRouteTip);
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');

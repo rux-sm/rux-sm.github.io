@@ -29,7 +29,7 @@ const NIGHT_KEY = Deno.env.get('SAMSARA_NIGHT_KEY') ?? ''
 
 // A trip with its legs and routes, as handler.ts reads them, and `ends`, an
 // embed that returns nothing, which the reads of trips by their days test.
-const STOPS = 'trip_stops(leg,route_id,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
+const STOPS = 'trip_stops(id,leg,route_id,type,position,depart_prev,depart_prev_date,arrive,arrive_date,spot,spot_date,lat,lng)'
 const LEGS = 'trip_legs(id,leg,start_date,end_date,created_at,trip_routes(id,position))'
 const TRIP = `id,start_date,end_date,departure_time,return_time,${STOPS},${LEGS}`
 

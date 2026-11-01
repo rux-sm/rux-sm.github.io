@@ -383,6 +383,10 @@ expect('the times follow the time row they stand in for, before the update and t
 expect('the times: out and back either end of a track filled as far as the trip has gone',
   [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
   [2, true]);
+expect('each time on a planned and a live bar is a button, which opens the leg\'s route tip',
+  [[...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => [w.tagName, w.type]),
+    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__when')].map(w => [w.tagName, w.type])],
+  [[['BUTTON', 'button']], [['BUTTON', 'button'], ['BUTTON', 'button']]]);
 const lateWhens = b => [...row(lit(b)).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late'));
 expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added',
   [lateWhens('Late back to the yard'), lateWhens('Past its return'), lateWhens('At highway speed'), row(lit('Past its return')).children.length],

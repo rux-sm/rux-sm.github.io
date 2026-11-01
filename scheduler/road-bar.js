@@ -423,7 +423,8 @@
     row.title = tipOf(bar, bus, next, said, at);
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
-    const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
+    // Each time opens the leg's route tip, data.js's, so it is a button.
+    const clock = (at, cls = 'scheduler-road__when') => { const w = el('button', cls); w.type = 'button'; w.append(clockEl(at)); return w; };
     const parts = [];
     const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
     if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));

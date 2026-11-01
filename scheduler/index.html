@@ -164,6 +164,9 @@
        opens the one panel below, which holds the theme, the account's rows
        and the apps that account can open. -->
   <div class="rux--header__global">
+    <!-- What the page is fetching or holds, while the view menu's Activity
+         is on; activity.js fills it. -->
+    <div class="rux--inline-loading scheduler-activity" id="scheduler-activity" role="status" aria-live="polite" hidden></div>
     <!-- Who else has the Scheduler open, one face each beside my own on the
          Account action; a face links to the page that person is on. people.js
          fills it and shows it only while somebody is here. -->
@@ -853,6 +856,13 @@
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"></div>
       <div class="rux--menu-item__label">What the colours mean</div>
+    </li>
+    <li class="rux--menu-item-divider" role="separator"></li>
+    <!-- What the page is loading and holds, in the header; see activity.js. -->
+    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="activity">
+      <div class="rux--menu-item__selection-icon"></div>
+      <div class="rux--menu-item__icon"></div>
+      <div class="rux--menu-item__label">Activity</div>
     </li>
   </ul>
 
@@ -1810,6 +1820,7 @@
 <script src="/design/js/profile.js"></script>
 <script src="/switcher.js"></script>
 <script src="app.js"></script>
+<script src="activity.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js" integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP" crossorigin="anonymous"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="/account.js"></script>

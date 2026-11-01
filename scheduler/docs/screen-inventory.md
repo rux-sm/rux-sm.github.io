@@ -142,7 +142,10 @@ Three homes, and one rule for choosing.
   which the days share what the open panels leave, down to 160px each, and the week scrolls past it, so opening a panel
   moves no edge of the page, both from the first paint, Up to two weeks and Fill the window read from the browser before it by `view.js`, then Motion, full, calm or
   off, for whether a live bar shakes as it starts and blinks, starting calm on a computer set to
-  reduce motion, and What the colours mean, a window of each colour of a live bar's dial. It hangs under its ⋮ and opens
+  reduce motion, What the colours mean, a window of each colour of a live bar's dial, and Activity, which shows first in the
+  header's right side what the page is fetching, as Carbon's inline loading with what is being asked, such as Loading 35
+  weeks around Nov 7 or Reading trips, and at rest a check and the weeks held, its tooltip the last twelve things done with
+  their times, from `activity.js`, hidden below md. It hangs under its ⋮ and opens
   attached to it, one surface.
 - **The week label is the date-picker trigger.** A permanent mini calendar spends standing space on
   an occasional action. On a phone the label is the week's months and year, "Sep – Oct 2026", so

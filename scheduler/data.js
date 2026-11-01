@@ -610,13 +610,25 @@
   async function read(weekStart, reach = NEAR_DAYS) {
     const mine = ++readsBegun;
     const win = windowOf(weekStart, lastShown(weekStart), reach);
-    const [, trips, oos, timeOff] = await withTimeout(Promise.all([
-      readLists([...listsOwed]),
-      tripsIn(win).order('start_date').then(rowsOf),
-      outOfServiceIn(win),
-      timeOffIn(win),
-    ]));
-    const statuses = statusMap(await statusesOf(trips));
+    // The Activity line says the weeks asked for, and once read, the weeks held.
+    const weeks = Math.round(daysBetween(win.from, addDays(win.weekEnd, reach + 1)) / 7);
+    const shortDay = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const done = window.SchedulerActivity?.begin(`Loading ${weeks} weeks around ${shortDay(weekStart)}`, true);
+    let trips, oos, timeOff, statuses;
+    try {
+      [, trips, oos, timeOff] = await withTimeout(Promise.all([
+        readLists([...listsOwed]),
+        tripsIn(win).order('start_date').then(rowsOf),
+        outOfServiceIn(win),
+        timeOffIn(win),
+      ]));
+      statuses = statusMap(await statusesOf(trips));
+    } catch (e) {
+      done?.(false);
+      throw e;
+    }
+    done?.();
+    window.SchedulerActivity?.hold(`${weeks} weeks held, ${shortDay(win.from)} – ${shortDay(addDays(win.weekEnd, reach))}`);
     const data = { ...lists, trips, oos, timeOff, statuses, weekStart, weekEnd: win.weekEnd, reach };
     carryMoves(data, mine);
     return data;
@@ -1494,6 +1506,7 @@
       stripData = data;
       render({ ...data, weekStart: stripStart, weekEnd: addDays(lastShown(cursor), stripAfter()) });
       placeStrip(keep);
+      window.SchedulerActivity?.note('Drew the board again');
     } else {
       stripStart = stripData = null;
       render({ ...data, weekStart: cursor, weekEnd: lastShown(cursor) });
@@ -1676,6 +1689,7 @@
     const barCount = [...laid.tracks.values()].reduce((n, list) => n + list.length, 0);
     if (!barCount && statusEl.hidden) { say('info', 'Nothing these weeks', 'No trip touches the weeks around this one.'); window.Rux?.schedule?.fit?.(); }
     else if (barCount && !statusEl.hidden) { say(null); window.Rux?.schedule?.fit?.(); }
+    window.SchedulerActivity?.note(`Drew ${Math.abs(shift)} days ${shift > 0 ? 'ahead' : 'behind'} from what is held`);
     return true;
   }
   // Whether a layout places the bar a key names.
@@ -12093,7 +12107,7 @@
      key it replaced, still written beside it so a tab running the older
      script reads a Sunday start, and read when `weekStart` was never saved. */
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
-    fitDays: false, yard: false, fill: false, motion: reducedMotion.matches ? 'calm' : 'full' };
+    fitDays: false, yard: false, fill: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
   /* Compact is the rows' own switches set to the destination, the times and
      the drivers, about half a bar's height; it is not saved on its own, but
@@ -12104,7 +12118,7 @@
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'fitDays', 'yard', 'fill']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'fitDays', 'yard', 'fill', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
     view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
@@ -12154,6 +12168,8 @@
     placeBarOpen();
     markTripBars();
     schEl.dataset.motion = view.motion;
+    // Activity: what the page loads and holds, in the header.
+    window.SchedulerActivity?.show(view.activity);
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = item.dataset.motion ? view.motion === item.dataset.motion
@@ -18058,7 +18074,11 @@
   function openBoard() {
     boardCh = client.channel('scheduler-board');
     for (const table of LIVE_TABLES) {
-      boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, change => { tellListeners(change); liveSoon(change); });
+      boardCh.on('postgres_changes', { event: '*', schema: 'public', table }, change => {
+        window.SchedulerActivity?.note(`A change came in: ${table.replace(/_/g, ' ')}`);
+        tellListeners(change);
+        liveSoon(change);
+      });
     }
     boardCh.subscribe(boardStatus);
   }

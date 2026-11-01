@@ -6387,3 +6387,24 @@ html[data-scheduler-takeover] {
 .scheduler-card__rest-progress { position: relative; display: grid; gap: var(--rux-spacing-03); padding-block-end: var(--rux-spacing-03); }
 .scheduler-card__rest-progress > .scheduler-crew__rest { position: relative; inset: auto; inline-size: 100%; block-size: 4px; grid-row: 2; }
 .scheduler-card__rest-progress > .scheduler-crew__rest[data-split] { --scheduler-rest-gap: var(--card-surface, var(--rux-layer)); }
+
+/* THE ACTIVITY LINE, first in the header's right side, while the view
+   menu's Activity is on: Carbon's inline loading at the header's label
+   size, in its secondary ink, cut short where it runs long. Too little room
+   for it below md. */
+.scheduler-activity {
+  inline-size: auto;
+  max-inline-size: 24rem;
+  min-inline-size: 0;
+  margin-inline-end: var(--rux-spacing-05);
+  color: var(--rux-text-secondary);
+}
+.scheduler-activity[hidden] { display: none; }
+.scheduler-activity > .rux--inline-loading__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--rux-label-01-font-size);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+@media (max-width: 41.98rem) { .scheduler-activity { display: none; } }

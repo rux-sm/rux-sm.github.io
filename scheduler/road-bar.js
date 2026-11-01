@@ -381,8 +381,6 @@
   const plannedBack = bar => Number(bar.dataset.roadTo) - Road.MARGIN;
   // Whole minutes past the planned return, or 0.
   const overBy = (bar, now) => (bar.dataset.roadTo ? Math.max(0, Math.floor((now - plannedBack(bar)) / 60e3)) : 0);
-  // "+45m" under a hundred minutes, then "+2h", so it fits the narrowest bar.
-  const overWords = min => (min < 100 ? `+${min}m` : `+${Math.floor(min / 60)}h`);
   /* When the bus is now expected back: Geoapify's drive to the yard while
      the yard is its next stop, if that is more than LATE_MIN past the plan;
      else null. */
@@ -412,8 +410,9 @@
      stops' dots, the next one ringed. A bus running late back
      says so in amber: when it is now expected, in place of the planned
      return, while it is heading for the yard, or else, once the planned
-     return has passed, how long it is over. A problem takes the row
-     instead, its words in its colour. */
+     return has passed, the planned return itself, with how long past it on
+     its tooltip, so lateness takes no room on the row. A problem takes the
+     row instead, its words in its colour. */
   function times(bar, bus, next, said, worst, at) {
     let row = bar.querySelector(':scope > .scheduler-road__times');
     if (!bus) { row?.remove(); return; }
@@ -459,10 +458,10 @@
       when.append(...[nextDay(bar, expected)].filter(Boolean));
       parts.push(when);
     } else if (bar.dataset.back) {
-      const when = clock(bar.dataset.back);
+      const when = clock(bar.dataset.back, over > 0 ? 'scheduler-road__when scheduler-road__when--late' : undefined);
+      if (over > 0) when.title = `Due back ${bar.dataset.back}, ${over} min past it`;
       when.append(...[nextDay(bar, null)].filter(Boolean));
       parts.push(when);
-      if (over > 0) parts.push(el('span', 'scheduler-road__over', overWords(over)));
     }
     row.replaceChildren(...parts);
   }

@@ -359,11 +359,10 @@ expect('the times follow the time row they stand in for, before the update and t
 expect('the times: out and back either end of a track filled as far as the trip has gone',
   [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
   [2, true]);
-expect('late back: the expected return in amber in place of the plan, or how long past it',
-  [[...row(lit('Late back to the yard')).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late')),
-    // 45 minutes over when drawn, or 46 when the draw falls into the next minute.
-    /^\+4[56]m$/.test(text(row(lit('Past its return')), '.scheduler-road__over') ?? ''), has(row(lit('At highway speed')), '.scheduler-road__over')],
-  [[false, true], true, false]);
+const lateWhens = b => [...row(lit(b)).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late'));
+expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added',
+  [lateWhens('Late back to the yard'), lateWhens('Past its return'), lateWhens('At highway speed'), row(lit('Past its return')).children.length],
+  [[false, true], [false, true], [false, false], 3]);
 expect('the hour the clocks go back: a leg leaves at the first 1:30 and is back at the second',
   [Week.officeInstant('2026-11-01', '01:30'), Week.officeInstant('2026-11-01', '01:30', true),
     Week.backAt({ from: '2026-10-31', to: '2026-10-31', back: '01:30', backDays: 1 }), Week.officeInstant('2026-11-01', '02:30', true)]

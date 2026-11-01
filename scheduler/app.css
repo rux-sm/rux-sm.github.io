@@ -2473,8 +2473,7 @@ button.scheduler-row-head__num::after {
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
 /* Running late back: the expected return, or the time past the plan, amber. */
-.scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
-.scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }
+.scheduler-road__when--late { color: var(--scheduler-age-week); }
 /* The track between out and back: 2px, centred on the figures, filled as
    far as the trip has gone, which is now, in the row's ink so it reads as
    the times do, with its stops' ticks on it. */

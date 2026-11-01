@@ -1922,275 +1922,312 @@
       if (down.button !== 0 || down.target.closest('[data-card-opener], [data-crew-overflow]')) return;
       // A press on the driver's name lifts the driver, not the trip.
       if (liftsFrom(down)) return;
-      // The trip open in the editor is locked on the board, and so is a trip that is back.
-      if (isEditorTrip(bar) || bar.classList.contains('scheduler-bar--back')) return;
-      // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
-      if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return;
-      const touch = down.pointerType === 'touch';
-      /* A mouse or pen press raises the bar at once, and a release where it is
-         settles it back, both drawn by app.css. A finger raises nothing until
-         its hold is done, because most touches on the board mean to scroll. */
-      if (!touch) bar.classList.add('scheduler-bar--pressed');
-      const startX = down.clientX, startY = down.clientY;
-      const start = +bar.dataset.start, span = +bar.dataset.span;
-      const fromBus = bar.dataset.busId || null;
-      let moved = false, done = false, target = null, tracks = [], unassignedRow = null, hold = 0;
-      // The copy that rides with the pointer, where the bar sat when it lifted,
-      // how far below the bar's top the pointer holds it, and the bar's height
-      // above its track's top, which is where it lands in any row.
-      let ghost = null, origin = null, grip = 0, pad = 0;
-      // What a drop's packing changed, as [element, property, value before], so a failed move can put it back.
-      const packed = [];
+      carryTrip(bar, down);
+    });
+  }
 
-      const clear = () => {
-        for (const track of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
-      };
+  /* CARRYING A TRIP to another bus, by a pointer's press, `down`, or by the
+     keyboard, with `down` null: a held Space lifts the selected trip as a
+     held mouse button does, ↑ and ↓ carry it a row at a time, and letting go
+     drops it through the same drop, with its warnings, its saving mark and
+     its Undo. Escape while it is held puts it back unsaved. For the keyboard
+     it answers `{ step, finish }`, or null for a trip that cannot move. */
+  function carryTrip(bar, down) {
+    // The trip open in the editor is locked on the board, and so is a trip that is back.
+    if (isEditorTrip(bar) || bar.classList.contains('scheduler-bar--back')) return null;
+    // One bar at a time. A bar that is saving takes no pointer, in app.css; this is for a finger already down on it.
+    if (barsInHand || heldMoves.get(bar.dataset.assignmentId)?.saving) return null;
+    const keys = !down;
+    const touch = !keys && down.pointerType === 'touch';
+    /* A mouse or pen press raises the bar at once, and a release where it is
+       settles it back, both drawn by app.css. A finger raises nothing until
+       its hold is done, because most touches on the board mean to scroll. */
+    if (!touch && !keys) bar.classList.add('scheduler-bar--pressed');
+    const startX = down?.clientX ?? 0, startY = down?.clientY ?? 0;
+    const start = +bar.dataset.start, span = +bar.dataset.span;
+    const fromBus = bar.dataset.busId || null;
+    let moved = false, done = false, target = null, tracks = [], unassignedRow = null, hold = 0;
+    // The copy that rides with the pointer, where the bar sat when it lifted,
+    // how far below the bar's top the pointer holds it, and the bar's height
+    // above its track's top, which is where it lands in any row.
+    let ghost = null, origin = null, grip = 0, pad = 0;
+    // What a drop's packing changed, as [element, property, value before], so a failed move can put it back.
+    const packed = [];
 
-      /* While a finger carries a bar the page must not scroll under it.
-         `touch-action` is read only when a gesture starts, so a non-passive
-         `touchmove` stops the scroll; that works because the hold means the
-         browser has not started scrolling. */
-      const eat = ev => ev.preventDefault();
+    const clear = () => {
+      for (const track of tracks) track.classList.remove('scheduler-track--drop', 'scheduler-track--warn');
+    };
 
-      // Picks the bar up, the same for both pointers.
-      const lift = () => {
-        moved = true;
-        barsInHand++;
-        unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
-        if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
-        // Shut with none of its trips on screen, it opens a lane to drop on, and `putDown` lets it shut again.
-        if (unassignedRow?.hasAttribute('data-shut')) {
-          unassignedRow.removeAttribute('data-shut');
-          unassignedRow.querySelector(':scope > .scheduler-track').style.setProperty('--scheduler-lanes', 1);
-          unassignedRow.dataset.opened = 'true';
-          markLastRow(gridEl);
-        }
-        tracks = [...gridEl.querySelectorAll('.scheduler-track')];
-        /* The press's rise comes off the bar at once, with no settle, so the
-           bar is measured at its own size; the copy takes the rise over. */
-        const pressed = bar.classList.contains('scheduler-bar--pressed');
-        bar.style.transition = 'none';
-        bar.classList.remove('scheduler-bar--pressed');
-        origin = bar.getBoundingClientRect();
-        bar.style.removeProperty('transition');
-        grip = startY - origin.top;
-        /* The first lane's height above the track, read off the source track's
-           highest bar: this bar may sit in a lower lane, and the copy lands in
-           the first lane of the row it is over, as the bar would. */
-        const fromTop = bar.parentElement.getBoundingClientRect().top;
-        pad = Math.min(...[...bar.parentElement.querySelectorAll(':scope > .scheduler-bar')].map(b => b.getBoundingClientRect().top - fromTop));
-        bar.classList.add('scheduler-bar--dragging');
-        ghost = ghostOf(bar, origin);
-        placeBarOpen();
+    /* While a finger carries a bar the page must not scroll under it.
+       `touch-action` is read only when a gesture starts, so a non-passive
+       `touchmove` stops the scroll; that works because the hold means the
+       browser has not started scrolling. */
+    const eat = ev => ev.preventDefault();
+
+    // Picks the bar up, the same for both pointers.
+    const lift = () => {
+      moved = true;
+      barsInHand++;
+      unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
+      if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
+      // Shut with none of its trips on screen, it opens a lane to drop on, and `putDown` lets it shut again.
+      if (unassignedRow?.hasAttribute('data-shut')) {
+        unassignedRow.removeAttribute('data-shut');
+        unassignedRow.querySelector(':scope > .scheduler-track').style.setProperty('--scheduler-lanes', 1);
+        unassignedRow.dataset.opened = 'true';
+        markLastRow(gridEl);
+      }
+      tracks = [...gridEl.querySelectorAll('.scheduler-track')];
+      /* The press's rise comes off the bar at once, with no settle, so the
+         bar is measured at its own size; the copy takes the rise over. */
+      const pressed = bar.classList.contains('scheduler-bar--pressed');
+      bar.style.transition = 'none';
+      bar.classList.remove('scheduler-bar--pressed');
+      origin = bar.getBoundingClientRect();
+      bar.style.removeProperty('transition');
+      grip = keys ? 0 : startY - origin.top;
+      /* The first lane's height above the track, read off the source track's
+         highest bar: this bar may sit in a lower lane, and the copy lands in
+         the first lane of the row it is over, as the bar would. */
+      const fromTop = bar.parentElement.getBoundingClientRect().top;
+      pad = Math.min(...[...bar.parentElement.querySelectorAll(':scope > .scheduler-bar')].map(b => b.getBoundingClientRect().top - fromTop));
+      bar.classList.add('scheduler-bar--dragging');
+      ghost = ghostOf(bar, origin);
+      placeBarOpen();
+      if (!keys) {
         document.body.style.cursor = 'grabbing';
         try { bar.setPointerCapture(down.pointerId); } catch { /* the pointer is already gone */ }
-        if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
-        // A pressed bar was already up, so its copy starts lifted. Otherwise it
-        // is lifted on the next frame, so the rise is drawn rather than arrived
-        // at; a copy let go before that frame is already settling and stays flat.
-        if (reducedMotion.matches) { /* flat, as app.css draws it */ }
-        else if (pressed) ghost.classList.add('scheduler-ghost--lifted');
-        else requestAnimationFrame(() => {
-          if (ghost && !ghost.classList.contains('scheduler-ghost--settling')) ghost.classList.add('scheduler-ghost--lifted');
-        });
-      };
+      }
+      if (touch) { touchDragging = true; bar.addEventListener('touchmove', eat, { passive: false }); }
+      // A pressed bar was already up, so its copy starts lifted. Otherwise it
+      // is lifted on the next frame, so the rise is drawn rather than arrived
+      // at; a copy let go before that frame is already settling and stays flat.
+      if (reducedMotion.matches) { /* flat, as app.css draws it */ }
+      else if (pressed) ghost.classList.add('scheduler-ghost--lifted');
+      else requestAnimationFrame(() => {
+        if (ghost && !ghost.classList.contains('scheduler-ghost--settling')) ghost.classList.add('scheduler-ghost--lifted');
+      });
+    };
 
-      // Where the copy sits over a row: at rest in its first lane.
-      const restIn = track => track.getBoundingClientRect().top + pad;
+    // Where the copy sits over a row: at rest in its first lane.
+    const restIn = track => track.getBoundingClientRect().top + pad;
 
-      /* Packs a row as the board is about to draw it, with the carried bar on
-         it or gone from it, so a drop and the draw that follows agree: the row
-         takes its height, the bars already there move to their lanes, and the
-         answer is the lane the carried bar gets. The order is `render`'s: the
-         trips as read, a trip's legs in their order, a leg's buses
-         by position, and `assignLanes` over that. */
-      const pack = (track, carried) => {
-        const rank = new Map([...panelIndex.trips.keys()].map((id, i) => [String(id), i]));
-        const order = b => [rank.get(b.dataset.tripId) ?? 0, +b.dataset.legNumber || 1,
-          b === bar || b.dataset.assignmentId ? 0 : 1, +b.dataset.slot || 0];
-        const list = [...track.querySelectorAll(':scope > .scheduler-bar')].filter(b => b !== bar);
-        if (carried) list.push(bar);
-        const rows = list
-          .map(b => ({ bar: b, order: order(b), place: { start: +b.dataset.start, span: +b.dataset.span } }))
-          .sort((x, y) => { const i = x.order.findIndex((v, n) => v !== y.order[n]); return i < 0 ? 0 : x.order[i] - y.order[i]; });
-        const lanes = rows.length ? assignLanes(rows) : 1;
-        const set = (node, prop, value) => { packed.push([node, prop, node.style.getPropertyValue(prop)]); node.style.setProperty(prop, value); };
-        track.classList.add('scheduler-track--packing');
-        set(track, '--scheduler-lanes', lanes);
-        for (const r of rows) if (r.bar !== bar) set(r.bar, '--scheduler-lane', r.lane);
-        return rows.find(r => r.bar === bar)?.lane ?? 0;
-      };
-      const unpack = () => {
-        for (const [node, prop, value] of packed.splice(0).reverse()) node.style.setProperty(prop, value);
-      };
+    /* Packs a row as the board is about to draw it, with the carried bar on
+       it or gone from it, so a drop and the draw that follows agree: the row
+       takes its height, the bars already there move to their lanes, and the
+       answer is the lane the carried bar gets. The order is `render`'s: the
+       trips as read, a trip's legs in their order, a leg's buses
+       by position, and `assignLanes` over that. */
+    const pack = (track, carried) => {
+      const rank = new Map([...panelIndex.trips.keys()].map((id, i) => [String(id), i]));
+      const order = b => [rank.get(b.dataset.tripId) ?? 0, +b.dataset.legNumber || 1,
+        b === bar || b.dataset.assignmentId ? 0 : 1, +b.dataset.slot || 0];
+      const list = [...track.querySelectorAll(':scope > .scheduler-bar')].filter(b => b !== bar);
+      if (carried) list.push(bar);
+      const rows = list
+        .map(b => ({ bar: b, order: order(b), place: { start: +b.dataset.start, span: +b.dataset.span } }))
+        .sort((x, y) => { const i = x.order.findIndex((v, n) => v !== y.order[n]); return i < 0 ? 0 : x.order[i] - y.order[i]; });
+      const lanes = rows.length ? assignLanes(rows) : 1;
+      const set = (node, prop, value) => { packed.push([node, prop, node.style.getPropertyValue(prop)]); node.style.setProperty(prop, value); };
+      track.classList.add('scheduler-track--packing');
+      set(track, '--scheduler-lanes', lanes);
+      for (const r of rows) if (r.bar !== bar) set(r.bar, '--scheduler-lane', r.lane);
+      return rows.find(r => r.bar === bar)?.lane ?? 0;
+    };
+    const unpack = () => {
+      for (const [node, prop, value] of packed.splice(0).reverse()) node.style.setProperty(prop, value);
+    };
 
-      /* Eases the copy to `top`, or to the lane that many down from it, flat
-         again, and waits for app.css's transition to end, with SETTLE_MS as the
-         ceiling should it never fire. A copy already there and flat, or reduced
-         motion, waits for nothing. A lane is as tall as app.css makes one. */
-      const settle = async (top, lane = 0) => {
-        if (!ghost) return;
-        const at = lane ? `calc(${top}px + ${lane} * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)))` : `${top}px`;
-        const moving = ghost.style.top !== at || ghost.classList.contains('scheduler-ghost--lifted');
-        ghost.classList.remove('scheduler-ghost--lifted', 'scheduler-ghost--snapped');
-        ghost.classList.add('scheduler-ghost--settling');
-        ghost.style.top = at;
-        if (!moving || reducedMotion.matches) return;
-        await new Promise(r => {
-          const t = setTimeout(r, SETTLE_MS);
-          ghost.addEventListener('transitionend', () => { clearTimeout(t); r(); }, { once: true });
-        });
-      };
+    /* Eases the copy to `top`, or to the lane that many down from it, flat
+       again, and waits for app.css's transition to end, with SETTLE_MS as the
+       ceiling should it never fire. A copy already there and flat, or reduced
+       motion, waits for nothing. A lane is as tall as app.css makes one. */
+    const settle = async (top, lane = 0) => {
+      if (!ghost) return;
+      const at = lane ? `calc(${top}px + ${lane} * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)))` : `${top}px`;
+      const moving = ghost.style.top !== at || ghost.classList.contains('scheduler-ghost--lifted');
+      ghost.classList.remove('scheduler-ghost--lifted', 'scheduler-ghost--snapped');
+      ghost.classList.add('scheduler-ghost--settling');
+      ghost.style.top = at;
+      if (!moving || reducedMotion.matches) return;
+      await new Promise(r => {
+        const t = setTimeout(r, SETTLE_MS);
+        ghost.addEventListener('transitionend', () => { clearTimeout(t); r(); }, { once: true });
+      });
+    };
 
-      // Takes the copy away and undims the bar; the card follows the selection again.
-      const putDown = () => {
-        ghost?.remove();
-        ghost = null;
-        bar.classList.remove('scheduler-bar--dragging', 'scheduler-bar--leaving');
-        for (const track of tracks) track.classList.remove('scheduler-track--packing');
-        if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
-        if (unassignedRow?.dataset.opened) { delete unassignedRow.dataset.opened; fitLanesInView(); }
-        placeBarOpen();
-      };
+    // Takes the copy away and undims the bar; the card follows the selection again.
+    const putDown = () => {
+      ghost?.remove();
+      ghost = null;
+      bar.classList.remove('scheduler-bar--dragging', 'scheduler-bar--leaving');
+      for (const track of tracks) track.classList.remove('scheduler-track--packing');
+      if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
+      if (unassignedRow?.dataset.opened) { delete unassignedRow.dataset.opened; fitLanesInView(); }
+      placeBarOpen();
+    };
 
-      /* Every ending comes through here, once, and only a release writes. A
-         gesture the browser cancels -- a scroll takeover, a system dialog, a
-         button let go outside the window -- leaves the trip where it was. */
-      const finish = async (release) => {
-        if (done) return;
-        done = true;
-        // A press let go where it was settles back; a lifted bar already let its rise go.
-        bar.classList.remove('scheduler-bar--pressed');
-        if (hold) { clearTimeout(hold); hold = 0; }
-        window.removeEventListener('pointermove', move);
-        window.removeEventListener('pointerup', onUp);
-        window.removeEventListener('pointercancel', onCancel);
-        bar.removeEventListener('touchmove', eat);
-        touchDragging = false;
-        if (!moved) return;              // a press that never lifted still selects
-        barsInHand--;
-        document.body.style.cursor = '';
-        // The browser fires a click after this; suppress the one that would
-        // otherwise toggle selection at the end of a drag.
-        bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
-        const toBus = target ? (target.dataset.busId ?? null) : fromBus;
-        // A lifted bar the browser cancels says so, because a drop that goes
-        // quietly missing looks like a drag that does nothing.
-        if (!release) toast('info', 'Trip not moved', 'The drag was interrupted. Try again.');
-        if (!release || !target || toBus === fromBus) {
-          // Let go nowhere: the copy slides home and comes away.
-          clear();
-          await settle(origin.top);
-          putDown();
-          // A draw or a read the drag held is owed now that nothing is in hand.
-          if (drawOwed) drawHeld();
-          if (liveHeld) setTimeout(liveRefresh, 0);
-          return;
-        }
-        /* The copy settles flat into the row and the bar fades from where it
-           sat, while the write is already on its way. Both rows are packed
-           first, as the board will draw them, so the copy settles where its bar
-           will be and nothing jumps when it is drawn. */
-        let assignmentId = bar.dataset.assignmentId;
-        const { tripId, leg, slot } = bar.dataset;
-        const backTo = fromBus;
-        const label = busLabel(fromBus);
-        bar.classList.add('scheduler-bar--leaving');
-        const lane = pack(target, true);
-        pack(bar.parentElement, false);
-        schEl.setAttribute('aria-busy', 'true');
-        // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
-        const slotTrip = panelIndex.trips.get(tripId);
-        const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
-        const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
-        const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
-          .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
-        await settle(restIn(target), lane);
-        /* The bar is drawn on its new bus now, marked as saving, and the copy
-           comes away over it: from here the board is drawn from what is held,
-           so another move or a change of week draws it right. An empty slot
-           is held under a stand-in row until the database makes the real one. */
-        const heldAs = assignmentId || `saving-${++standIns}`;
-        holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
-          saving: true, standIn: true,
-          row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', route_id: slotRoute,
-                 active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
-        });
-        if (!drawHeld()) unpack();
+    /* Every ending comes through here, once, and only a release writes. A
+       gesture the browser cancels -- a scroll takeover, a system dialog, a
+       button let go outside the window -- leaves the trip where it was, and
+       says so unless it was put back on purpose, `quiet`, as Escape does. */
+    const finish = async (release, quiet = false) => {
+      if (done) return;
+      done = true;
+      // A press let go where it was settles back; a lifted bar already let its rise go.
+      bar.classList.remove('scheduler-bar--pressed');
+      if (hold) { clearTimeout(hold); hold = 0; }
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onCancel);
+      bar.removeEventListener('touchmove', eat);
+      touchDragging = false;
+      if (!moved) return;              // a press that never lifted still selects
+      barsInHand--;
+      document.body.style.cursor = '';
+      // The browser fires a click after a pointer's drag; suppress the one
+      // that would otherwise toggle selection at its end.
+      if (!keys) bar.addEventListener('click', e => e.stopPropagation(), { capture: true, once: true });
+      const toBus = target ? (target.dataset.busId ?? null) : fromBus;
+      // A lifted bar the browser cancels says so, because a drop that goes
+      // quietly missing looks like a drag that does nothing.
+      if (!release && !quiet) toast('info', 'Trip not moved', 'The drag was interrupted. Try again.');
+      if (!release || !target || toBus === fromBus) {
+        // Let go nowhere: the copy slides home and comes away; home is
+        // measured again for the keyboard, which may have scrolled the board.
         clear();
+        await settle(keys ? bar.getBoundingClientRect().top : origin.top);
         putDown();
-        const { made, failed } = await write;
-        schEl.removeAttribute('aria-busy');
-        if (failed) {
-          /* The bar is drawn back where it was, and the week is read after,
-             because a move that threw may still have landed. */
-          dropMove(tripId, heldAs, fromBus);
-          drawHeld();
-          toast('error', 'Could not move that trip', failed);
-          readAfterMove();
-          return;
-        }
-        recordBusChange(tripId, fromBus, toBus);
-        if (made) { fillStandIn(tripId, heldAs, made); assignmentId = made.id; }
-        const landed = drawBusMove(tripId, assignmentId, toBus, made);
-        refreshEditor(assignmentId);
-        /* An undo is offered only for a bar still on the board: the week may
-           have changed while the move was written, and an undo there would
-           move a trip nobody is looking at. */
-        if (landed) offerUndo(assignmentId, tripId, toBus, backTo, label);
-        else toast('success', 'Trip moved');
-      };
+        // A draw or a read the drag held is owed now that nothing is in hand.
+        if (drawOwed) drawHeld();
+        if (liveHeld) setTimeout(liveRefresh, 0);
+        return;
+      }
+      /* The copy settles flat into the row and the bar fades from where it
+         sat, while the write is already on its way. Both rows are packed
+         first, as the board will draw them, so the copy settles where its bar
+         will be and nothing jumps when it is drawn. */
+      let assignmentId = bar.dataset.assignmentId;
+      const { tripId, leg, slot } = bar.dataset;
+      const backTo = fromBus;
+      const label = busLabel(fromBus);
+      bar.classList.add('scheduler-bar--leaving');
+      const lane = pack(target, true);
+      pack(bar.parentElement, false);
+      schEl.setAttribute('aria-busy', 'true');
+      // An empty slot's row goes on its leg's first route, or by its word on a trip read without its legs.
+      const slotTrip = panelIndex.trips.get(tripId);
+      const slotRoute = shaped(slotTrip) ? SHAPE.legOf(slotTrip, bar.dataset.legKey)?.routes[0]?.id ?? null : null;
+      const place = slotRoute ? { route_id: slotRoute } : { leg: leg || 'outbound' };
+      const write = (assignmentId ? moveToBus(assignmentId, toBus) : fillSlot(tripId, place, +slot || 0, toBus))
+        .then(made => ({ made }), e => ({ failed: String(e && e.message ? e.message : e) }));
+      await settle(restIn(target), lane);
+      /* The bar is drawn on its new bus now, marked as saving, and the copy
+         comes away over it: from here the board is drawn from what is held,
+         so another move or a change of week draws it right. An empty slot
+         is held under a stand-in row until the database makes the real one. */
+      const heldAs = assignmentId || `saving-${++standIns}`;
+      holdMove(tripId, heldAs, toBus, assignmentId ? { saving: true } : {
+        saving: true, standIn: true,
+        row: { id: heldAs, bus_id: toBus, position: +slot || 0, leg: leg || 'outbound', route_id: slotRoute,
+               active_roles: null, needs: null, vehicle_type: null, trip_drivers: [] },
+      });
+      if (!drawHeld()) unpack();
+      clear();
+      putDown();
+      const { made, failed } = await write;
+      schEl.removeAttribute('aria-busy');
+      if (failed) {
+        /* The bar is drawn back where it was, and the week is read after,
+           because a move that threw may still have landed. */
+        dropMove(tripId, heldAs, fromBus);
+        drawHeld();
+        toast('error', 'Could not move that trip', failed);
+        readAfterMove();
+        return;
+      }
+      recordBusChange(tripId, fromBus, toBus);
+      if (made) { fillStandIn(tripId, heldAs, made); assignmentId = made.id; }
+      const landed = drawBusMove(tripId, assignmentId, toBus, made);
+      refreshEditor(assignmentId);
+      /* An undo is offered only for a bar still on the board: the week may
+         have changed while the move was written, and an undo there would
+         move a trip nobody is looking at. */
+      if (landed) offerUndo(assignmentId, tripId, toBus, backTo, label);
+      else toast('success', 'Trip moved');
+    };
 
-      const move = ev => {
-        if (ev.pointerId !== down.pointerId) return;
-        /* A mouse button let go before the bar lifted, where no pointerup
-           reached the page. Once the bar has lifted the pointer is captured and
-           its release always arrives, so `buttons` is not read again: a move
-           that reports no button mid-drag must not drop the trip. */
-        if (!touch && !moved && !(ev.buttons & 1)) { finish(false); return; }
-        if (!moved) {
-          const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY);
-          // A finger that travels before the hold is done means to scroll, so the
-          // drag stands down. Both axes count: the board scrolls sideways too.
-          if (touch) { if (dx > TOUCH_SLOP || dy > TOUCH_SLOP) finish(false); return; }
-          if (dy < DRAG_THRESHOLD) return;
-          lift();
-        }
-        ev.preventDefault();
-        // Measured on every move, so a board wheeled while a bar is carried
-        // still drops the trip on the row under the pointer.
-        const next = tracks.find(t => {
-          const rect = t.getBoundingClientRect();
-          return ev.clientY >= rect.top && ev.clientY <= rect.bottom;
-        }) ?? null;
-        const sameRow = next && (next.dataset.busId ?? null) === fromBus;
-        // Over a row the copy glides to where the bar would land; between rows
-        // it follows the pointer, with no glide to lag behind it.
-        if (ghost) {
-          ghost.classList.toggle('scheduler-ghost--snapped', !!next);
-          ghost.style.top = `${next ? (sameRow ? origin.top : restIn(next)) : ev.clientY - grip}px`;
-        }
-        if (next === target) return;
-        clear();
-        target = next;
-        if (target && !sameRow) {
-          target.classList.add(targetWarns(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
-        }
-      };
+    const move = ev => {
+      if (ev.pointerId !== down.pointerId) return;
+      /* A mouse button let go before the bar lifted, where no pointerup
+         reached the page. Once the bar has lifted the pointer is captured and
+         its release always arrives, so `buttons` is not read again: a move
+         that reports no button mid-drag must not drop the trip. */
+      if (!touch && !moved && !(ev.buttons & 1)) { finish(false); return; }
+      if (!moved) {
+        const dx = Math.abs(ev.clientX - startX), dy = Math.abs(ev.clientY - startY);
+        // A finger that travels before the hold is done means to scroll, so the
+        // drag stands down. Both axes count: the board scrolls sideways too.
+        if (touch) { if (dx > TOUCH_SLOP || dy > TOUCH_SLOP) finish(false); return; }
+        if (dy < DRAG_THRESHOLD) return;
+        lift();
+      }
+      ev.preventDefault();
+      // Measured on every move, so a board wheeled while a bar is carried
+      // still drops the trip on the row under the pointer.
+      aim(tracks.find(t => {
+        const rect = t.getBoundingClientRect();
+        return ev.clientY >= rect.top && ev.clientY <= rect.bottom;
+      }) ?? null, ev.clientY);
+    };
 
-      const onUp = ev => { if (ev.pointerId === down.pointerId) finish(true); };
-      const onCancel = ev => { if (ev.pointerId === down.pointerId) finish(false); };
+    /* Aims the carried bar at a row, or between rows at `y`. Over a row the
+       copy glides to where the bar would land, its own row where it sits;
+       between rows it follows the pointer, with no glide to lag behind it. A
+       row it would land on says whether it warns. */
+    const aim = (next, y) => {
+      const sameRow = next && (next.dataset.busId ?? null) === fromBus;
+      if (ghost) {
+        ghost.classList.toggle('scheduler-ghost--snapped', !!next);
+        ghost.style.top = `${next ? (sameRow ? (keys ? bar.getBoundingClientRect().top : origin.top) : restIn(next)) : y - grip}px`;
+      }
+      if (next === target) return;
+      clear();
+      target = next;
+      if (target && !sameRow) {
+        target.classList.add(targetWarns(target, start, span) ? 'scheduler-track--warn' : 'scheduler-track--drop');
+      }
+    };
 
-      // A second finger that finishes its hold while a bar is in hand stands down.
-      if (touch) hold = setTimeout(() => { hold = 0; if (barsInHand) finish(false); else lift(); }, TOUCH_HOLD_MS);
+    /* The keyboard's step: the row above or below the one aimed at, among
+       the rows on show, scrolled clear of the day band and the pane's foot
+       first, so the copy is measured where it lands. */
+    const step = dir => {
+      const rows = tracks.filter(t => t.offsetParent);
+      const at = rows.indexOf(target ?? bar.parentElement);
+      const next = rows[Math.max(0, Math.min(rows.length - 1, at + dir))];
+      if (!next) return;
+      const box = next.getBoundingClientRect(), pane = schEl.getBoundingClientRect();
+      const ceiling = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().bottom ?? pane.top;
+      if (box.top < ceiling) schEl.scrollTop -= ceiling - box.top + TIP_GAP;
+      else if (box.bottom > pane.bottom) schEl.scrollTop += box.bottom - pane.bottom + TIP_GAP;
+      aim(next);
+    };
 
-      /* Heard on the window, not the bar: a mouse is not captured until the bar
-         lifts, so a press that leaves the bar first would otherwise never hear
-         its release, and lift the bar the next time the cursor passed over it. */
-      window.addEventListener('pointermove', move);
-      window.addEventListener('pointerup', onUp);
-      window.addEventListener('pointercancel', onCancel);
-    });
+    const onUp = ev => { if (ev.pointerId === down.pointerId) finish(true); };
+    const onCancel = ev => { if (ev.pointerId === down.pointerId) finish(false); };
+    // The keyboard lifts at once and hears no pointer.
+    if (keys) { lift(); return { step, finish }; }
+
+    // A second finger that finishes its hold while a bar is in hand stands down.
+    if (touch) hold = setTimeout(() => { hold = 0; if (barsInHand) finish(false); else lift(); }, TOUCH_HOLD_MS);
+
+    /* Heard on the window, not the bar: a mouse is not captured until the bar
+       lifts, so a press that leaves the bar first would otherwise never hear
+       its release, and lift the bar the next time the cursor passed over it. */
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onCancel);
   }
 
   /* ── The trip panel ──
@@ -11135,11 +11172,11 @@
      or this one again after letting it go, brings the card back. */
   let cardAwayFor = null;
   /* THE FLOATING CARD OPENS WHEN ASKED. A click on a bar only selects it,
-     since a click is also how a trip is double-clicked open, dragged or
-     picked to move by key. The card opens from an icon on the bar marked
+     since a click is also how a trip is double-clicked open or dragged, and
+     Space carries it. The card opens from an icon on the bar marked
      `data-card-opener`, its alert badge, its update line's chat mark or a
-     live bar's driver marks, or from Space on the bar, and the same press, Space or Escape
-     puts it away, as selecting another trip does. It never stands beside the
+     driver's mark, and the same press or Escape puts it away, as selecting
+     another trip does. It never stands beside the
      trip's own editor, and opening the editor forgets it was asked for. */
   let cardOpenFor = null;
   const floatingCard = () => pageEl?.getAttribute('data-board') !== 'compact';
@@ -11147,12 +11184,12 @@
   // Whether this bar's card is on screen now, which a press toggles.
   const cardShowing = bar => bar === selectedBar() && cardAsked(bar) && !barShortcuts?.hidden;
   // Asking again brings back a card put away by one of its actions.
-  /* THE CARD IS THREE CARDS: Alerts, opened from a bar's alert badge, Updates,
-     from its update line, and Live, from the pill of a bus out on the road.
-     Each draws only its own part, sized to what it holds; Space opens the
-     whole card, and on an out trip the live card, which has no head, since
-     its trip is the bar beside it. The docked sheet keeps an out trip's parts
-     as tabs. */
+  /* THE CARD IS ONE PART AT A TIME: Alerts, opened from a bar's alert
+     badge, Updates, from its update line's chat mark, a driver's tip, from
+     status mark, and the live card, from a duty mark on a bus out on the
+     road. Each draws only its own part, sized to what it holds, with no head,
+     since its trip is the bar beside it. The docked sheet keeps an out trip's
+     parts as tabs. */
   let cardSection = '';
   // The part an out trip's card shows: floating, the one asked for; docked, its tab.
   const roadPartOf = bar => floatingCard() ? cardSection || 'road' : roadTabOf(bar);
@@ -11168,9 +11205,8 @@
       : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat' : null;
     return (selector && (bar.querySelector(`:scope > .scheduler-bar__drivers ${selector}`) ?? bar.querySelector(selector))) || bar;
   }
+  // Every way in names its part; putting the card away names none.
   function askCard(bar, open, section = '') {
-    if (open && !section) cardTrigger = bar;
-    if (open && !section && floatingCard()) section = bar.dataset.road ? 'road' : 'updates';
     cardOpenFor = open ? barKey(bar) : null;
     cardSection = open ? section : '';
     if (open && bar.dataset.road && section && !section.startsWith('driver:')) roadTabs.set(barKey(bar), section);
@@ -11794,17 +11830,31 @@
 
   // Enter on the selected bar opens it. Enter on any other bar is app.js's and
   // only selects that bar, even while a different one is selected.
+  /* A HELD SPACE CARRIES THE TRIP, as a held mouse button does, through
+     `carryTrip`: the key's first press lifts the bar, which app.js's Space
+     selects where it was not, and its repeats are not presses; ↑ and ↓ carry
+     it a row at a time; letting go drops it, and Escape, or the window losing
+     focus, puts it back. A let-go with no step writes nothing. */
+  let keyCarry = null;
+  const dropKeyCarry = (release, quiet) => { const c = keyCarry; keyCarry = null; c?.finish(release, quiet); };
   gridEl.addEventListener('keydown', e => {
     if (e.key === 'Enter' && e.target.matches?.('.scheduler-bar[aria-current="true"]')) openSelected();
-    /* Space shows the bar's card or puts it away. On a bar not selected yet
-       the card is asked for here and app.js's Space then selects the bar,
-       which keeps a card asked for it. */
     if (e.key === ' ' && e.target.matches?.('.scheduler-bar[data-trip-id]')) {
       e.preventDefault();
-      const bar = e.target;
-      askCard(bar, !cardShowing(bar));
+      if (!e.repeat && !keyCarry) keyCarry = carryTrip(e.target, null);
+    }
+    if (keyCarry && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      e.preventDefault();
+      keyCarry.step(e.key === 'ArrowUp' ? -1 : 1);
+    }
+    if (keyCarry && e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      dropKeyCarry(false, true);
     }
   });
+  window.addEventListener('keyup', e => { if (e.key === ' ' && keyCarry) dropKeyCarry(true); });
+  window.addEventListener('blur', () => { if (keyCarry) dropKeyCarry(false); });
   /* A press on a card opener shows the card or puts it away, and on a bar
      not selected yet app.js's click then selects it. A double-click's second
      press is the double-click's. */

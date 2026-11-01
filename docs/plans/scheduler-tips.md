@@ -111,10 +111,8 @@ None open.
 
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
       live card.
-- [ ] Make a held Space carry the selected trip in `data.js`, ↑ and ↓ a bus
-      at a time, the let-go dropping it through the drag's drop and Escape
-      putting it back, with its writes proved by
-      `scheduler/docs/proving-a-save.md` rather than a real move.
+- [ ] Prove that letting a held Space go on another bus writes what a mouse
+      drop does, by `scheduler/docs/proving-a-save.md`.
 - [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
       every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

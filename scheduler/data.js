@@ -1491,9 +1491,10 @@
   // The axis a trackpad gesture is held to, 'x' or 'y', and whether the day
   // snap is paused for it; the lock itself is beside the strip's scroll handler.
   let axis = null, snapPaused = false;
-  /* A day's width, as app.js last set it, which costs no layout; measured
-     only before app.js has set one. */
-  const dayWidth = () => parseFloat(schEl.style.getPropertyValue('--scheduler-day-w'))
+  /* A day's width, as app.js last fitted it, the strip's fixed day or a
+     phone's share, which costs no layout; measured only before app.js has
+     fitted one. */
+  const dayWidth = () => window.Rux?.schedule?.day?.()
     || gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().width || 0;
   // Where the week in view sits in the strip, in days from its first.
   const stripAt = () => (stripStart ? daysBetween(stripStart, cursor) : -1);

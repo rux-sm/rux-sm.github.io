@@ -112,7 +112,7 @@ const scenario = `(async () => {
   const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar').length;
   await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length === 35, 15000, 'the strip');
   await wait(800);
-  const w = parseFloat(sch.style.getPropertyValue('--scheduler-day-w'));
+  const w = window.Rux.schedule.day();
   // The week input holds the picker's own format, m/d/yyyy here; a pick is written the same way.
   const toIso = v => { const m = /^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0') : (v || ''); };
   const fromIso = isoDay => { const [y, m, d] = isoDay.split('-'); return Number(m) + '/' + Number(d) + '/' + y; };

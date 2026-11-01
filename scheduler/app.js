@@ -26,14 +26,10 @@
     if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (e.target.getAttribute('aria-current') !== 'true') e.target.click(); }
   });
 
-  /* Whole-pixel day columns. Bars are placed by percentage across a track of
-     equal days, seven to thirteen, and a fractional column paints every bar edge and day
-     rule across two device pixels, which blurs them. So the day width is
-     floored, and the remainder goes to the bus column, because a day wider
-     than the others would break the placement every bar is measured against.
-
-     This script is an enhancement: without it the stylesheet's own
-     `minmax(--scheduler-day-min, 1fr)` renders. */
+  /* The day columns: `fitStrip` for the strip from md up, whose days app.css
+     fixes, and `fitWeek` for the phone's seven, which share its width on
+     whole pixels. This script is an enhancement: without it the stylesheet's
+     own sizes render. */
   /* A custom property's computed value is the tokens it was written with, so a
      `calc()` comes back as a `calc()` and no arithmetic here would read it.
      The browser is asked instead: a hidden box inside the element takes the
@@ -138,12 +134,52 @@
     pane.classList.toggle('scheduler-week--short', pane.clientHeight - grid.offsetHeight > radius);
   }
 
-  function fitColumns(sch) {
+  // The day a trip is drawn on, in pixels, as the board was last fitted:
+  // data.js scrolls, glides and swipes by it through `Rux.schedule.day`.
+  let dayPx = 0;
+
+  /* THE STRIP'S DAYS NEVER CHANGE WIDTH. From md up the board is a strip of
+     days whose width, and the bus column's, app.css fixes, so a window
+     resized or a panel opened beside the week only changes how much of the
+     strip is in view, and moves no trip. Nothing is written on the week: a
+     custom property set there is inherited by every element on the board,
+     and restyling them all cost about 40ms a time, which made each change of
+     width take a tenth of a second. What is counted is the days in view: a
+     week, or with Up to two weeks as many as fit, seven to thirteen, which
+     data.js reads back to label and bound the strip. */
+  function fitStrip(sch) {
+    for (const name of ['--scheduler-day-track', '--scheduler-day-w', '--scheduler-head-w']) {
+      if (sch.style.getPropertyValue(name)) sch.style.removeProperty(name);
+    }
+    // A strip always scrolls, so the finger scrolls it and nothing is
+    // claimed from the browser; see `fitWeek`.
+    if (sch.style.touchAction) sch.style.touchAction = '';
+    const day = parseFloat(getComputedStyle(sch).getPropertyValue('--scheduler-day-w'));
+    const corner = sch.querySelector('.scheduler-corner');
+    if (!day || !corner) return;
+    dayPx = day;
+    /* The days stand `--scheduler-edge` clear of the bus column and of the
+       pane's right edge, which the corner's margin is. */
+    const edge = parseFloat(getComputedStyle(corner).marginInlineEnd) || 0;
+    const available = sch.clientWidth - corner.offsetWidth - 2 * edge;
+    const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
+    const days = String(fits ? Math.min(13, Math.max(7, Math.floor(available / day))) : 7);
+    if (sch.dataset.daysInView !== days) {
+      sch.dataset.daysInView = days;
+      sch.dispatchEvent(new Event('scheduler:days-in-view'));
+    }
+  }
+
+  /* A PAGED WEEK'S DAYS share its width: the phone's seven, below md where
+     the board pages a week at a time rather than scrolling a strip, and
+     Maintenance's two weeks. A fractional column paints every bar edge and
+     day rule across two device pixels, which blurs them, so the day width is
+     floored and the remainder goes to the bus column. A phone's width
+     changes only when it turns, and Maintenance has no panels beside its
+     weeks, so these writes on the week cost nothing in use. */
+  function fitWeek(sch) {
     // Cleared first so the pane and the corner are measured at their
     // stylesheet sizes, not at the sizes the last pass pinned.
-    sch.style.removeProperty('inline-size');
-    const frame = sch.closest('.scheduler-frame');
-    frame?.style.removeProperty('max-inline-size');
     sch.style.removeProperty('--scheduler-day-track');
     sch.style.removeProperty('--scheduler-day-w');
     sch.style.removeProperty('--scheduler-head-w');
@@ -154,62 +190,41 @@
        that column. */
     const corner = sch.querySelector('.scheduler-corner');
     const ruled = rulerIn(sch, '--scheduler-day-min');
-    let headBase = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
+    let head = corner ? Math.ceil(corner.getBoundingClientRect().width) : NaN;
     const ruledWidth = ruled.getBoundingClientRect().width;
     const dayMin = ruledWidth > 0 ? ruledWidth : NaN;
-    /* A strip of days that scrolls is sized for the days in view: a week,
-       or with Up to two weeks as many as fit at their least width, seven,
-       nine, eleven or thirteen, which data.js reads back to label and bound
-       the strip. The count is odd so the days' leftover can always be made
-       even, below. */
-    const strip = sch.classList.contains('scheduler-week--scroll');
     const pane = sch.clientWidth;
     ruled.remove();
-    if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
+    if (!pane || !Number.isFinite(head) || !Number.isFinite(dayMin)) return;
     /* The kit row is an even width, centred in the column less its 1px rule
        and as far from its foot as from its sides, so the column is odd for
        that clearance to be whole pixels. The compact board shows no kit. */
     const kit = !sch.closest('[data-board="compact"]');
-    if (kit && headBase % 2 === 0) headBase += 1;
-
-    /* The strip's days stand `--scheduler-edge` clear of the bus column and
-       of the pane's right edge, so both are taken from the days' share and
-       the left one is given to the column, which leaves it unpainted. */
-    const edge = strip && corner ? parseFloat(getComputedStyle(corner).marginInlineEnd) || 0 : 0;
-    const available = pane - headBase - 2 * edge;
-    const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
-    const days = !strip ? parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7
-      : fits ? (Math.min(13, Math.max(7, Math.floor(available / dayMin))) - 1) | 1 : 7;
-    if (strip && sch.dataset.daysInView !== String(days)) {
-      sch.dataset.daysInView = String(days);
-      sch.dispatchEvent(new Event('scheduler:days-in-view'));
-    }
-    let day = Math.floor(available / days);
-    let head = headBase + edge;
+    if (kit && head % 2 === 0) head += 1;
+    const days = parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7;
+    let day = Math.floor((pane - head) / days);
     const crowded = day < dayMin;
     if (crowded) {
       // The floor binds and the grid is wider than the pane: it scrolls, there
       // is no remainder to place, and the head stays at its content width.
       day = Math.floor(dayMin);
     } else {
-      // Each day takes a whole share of the frame, Design's wide frame, which
-      // keeps its width whatever opens beside the week, and the bus column
-      // takes the few pixels the days could not share, so the week fills the
-      // frame and its edges stay on the header's.
-      head = pane - day * days - edge;
+      // Each day takes a whole share of the pane and the bus column takes the
+      // few pixels the days could not share, so the week fills it.
+      head = pane - day * days;
       /* An even column would leave the kit half a pixel off centre, so the
          days give up a pixel each, an odd count, and the column's leftover
-         turns even. That can take a day a pixel under its least width,
-         which the drivers' 70px spaces have room for. */
-      if (kit && (head - edge) % 2 === 0) { day -= 1; head += days; }
+         turns even. That can take a day a pixel under its least width. */
+      if (kit && head % 2 === 0) { day -= 1; head += days; }
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // Bars, stripes and day rules are placed from this rather than from a
     // percentage of the track, so every edge lands on a whole pixel.
     sch.style.setProperty('--scheduler-day-w', `${day}px`);
     // The head is pinned to its width, measured once with the corner above
-    // and given the days' remainder, so the columns sum to the frame.
+    // and given the days' remainder, so the columns sum to the pane.
     sch.style.setProperty('--scheduler-head-w', `${head}px`);
+    dayPx = day;
 
     /* Where the days fit there is no sideways scrolling to do, so the
        horizontal axis is handed to the week swipe in data.js and the browser
@@ -218,9 +233,9 @@
        pan, and cancels the pointer -- which is every swipe with a little drift
        in it. `touch-action` is read when a gesture begins, so it has to be
        standing before the finger lands, which is why it is set here and not
-       when the swipe is read. Where the grid does scroll, as a strip always
-       does, the finger scrolls it and nothing is claimed from the browser. */
-    sch.style.touchAction = crowded || strip ? '' : 'pan-y';
+       when the swipe is read. Where the grid does scroll, the finger scrolls
+       it and nothing is claimed from the browser. */
+    sch.style.touchAction = crowded ? '' : 'pan-y';
   }
 
   const sch = document.getElementById('scheduler-week');
@@ -232,7 +247,8 @@
     // again each frame; they are fitted once the drag ends.
     const fit = () => {
       fitHeight(sch);
-      if (!sch.hasAttribute('data-days-held')) fitColumns(sch);
+      if (sch.classList.contains('scheduler-week--scroll')) fitStrip(sch);
+      else if (!sch.hasAttribute('data-days-held')) fitWeek(sch);
     };
 
     // Three triggers: a window resize; the observer, for a box change the
@@ -247,7 +263,7 @@
     for (const panel of sch.closest('.scheduler-board')?.children ?? []) watch.observe(panel);
     window.addEventListener('resize', fit);
     window.Rux = window.Rux || {};
-    window.Rux.schedule = { fit };
+    window.Rux.schedule = { fit, day: () => dayPx };
     fit();
 
     // The board and the roster each end short or not as their rows change, a

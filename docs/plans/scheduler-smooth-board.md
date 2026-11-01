@@ -6,38 +6,53 @@ type: plan
 
 ## Goal
 
-Every frame of a scroll, a swipe, an arrow's glide or a change of the
-board's width fits the screen's budget, 8.3ms at the 120Hz the Mac draws at,
-so the board moves as a native app does, and a panel pushes the week as
-Carbon's side panel pushes the page.
+Every frame of a scroll, a swipe or a change of the board's width fits the
+screen's budget, 8.3ms at the 120Hz the Mac draws at, and a panel pushes the
+week as Carbon's side panel pushes the page. This plan takes out what costs
+every frame and what makes the board stutter at random; the board's own
+sideways scrolling, the cause of the rest, is replaced by the browser's in a
+plan of its own, which this one writes.
 
-A day on the strip is already a fixed 175px, so a change of width moves no
-trip. What is left is the cost of each frame as the strip moves: in an arrow's
-glide the median frame takes 4.3ms and one in ten about 10ms, most of it the
-815 sticky rows of the 163 trips drawn, and a few bursts of 18–78ms.
+A day on the strip is a fixed 175px, so a change of width moves no trip.
+What is left: in an arrow's glide the median frame takes 4.3ms and one in ten
+about 10ms, most of it the 815 sticky rows of the 163 trips drawn, and
+whole-board restyles of 58–78ms come while idle and scrolling.
 
 ## Decisions
 
-- **A trip's rows are one sticky box, not one each.** Each row sticks so a
-  trip's words stay in view as it runs past the bus column; with the rows
-  not sticky an arrow's glide took 0.5ms a frame at the median and 5–9ms at
-  one in ten, and one box per trip keeps the words in view at about a fifth
-  of the boxes.
-- **A scroll writes nothing the browser must restyle the board for, and
-  reads no layout.** `--scheduler-row-room` is written on the element that
-  reads it, not inherited through a trip; `placeBarOpen` sets a trip's
-  `aria-expanded` only when it changes, where it now writes about 285 a
-  pass; the scroll listener's `fitLanesInView` takes the bus column's width
-  from app.css, where reading `offsetWidth` once forced 56ms of layout.
-- **The whole-week restyles of 58–78ms that come while idle and scrolling
-  are traced to their trigger before they are cut.** `aria-busy` on
-  `#scheduler-week` and the redraws of `drawQueuedBar` and `settleOwed` are
-  the first suspects.
-- **A row gaining a lane is measured again once the rows are one box,** since
-  its two frames of 19–20ms are the rows below it laid out again.
-- **A panel opening keeps the strip's first day,** moving it only where the
-  trip it opens for would leave view, and closing it returns the strip there;
-  opening a trip now moves the first day by one and closing leaves it moved.
+- **The whole-board restyles are traced to their trigger and fixed there,
+  first,** because one trigger may be behind the scroll listener's 56ms
+  forced layout, the idle hitches, the 70–85ms frame a window resize has and
+  the trip editor's pause. `.scheduler-grid--busy`, which fades the whole
+  grid to 55% while the page reads, is the first suspect; `aria-busy` is
+  not, since no stylesheet reads it.
+- **A trip's words stay at its own start; nothing sticks or slides,** as rux
+  decided: the sticking was made before the strip scrolled continuously,
+  and a swipe now shows the rest. A trip that starts a day or two before the
+  first day in view shows no words until it is swiped to or selected; over
+  Nov 1–14, 2 to 5 trips on screen did on 12 of the 14 days. The sticky rows,
+  `fitStuckRows` and its scroll, frame and resize calls, and
+  `--scheduler-row-room` go. The customer and update rows' words run to the
+  trip's end and end in "…" there, worked out in app.css from the trip's
+  length, since they no longer move. The bar keeps its clip, and
+  `--scheduler-live-day` stays, because a trip on the road starts its words
+  at today's column by it.
+- **A trip's `aria-expanded` is set where its card opens and closes,** not
+  worked out again for some 285 trips by `placeBarOpen` on every resize of
+  the grid.
+- **Rows keep one height while the strip moves,** as rux decided, and gain
+  or lose a lane only once the board has rested for a set time. The
+  native-strip plan carries this out, since it is where the board learns it
+  has stopped.
+- **The native-strip plan is written once the three changes above land,**
+  and before the panel motion. It replaces the wheel handling, glides,
+  landings and strip redraws with the browser's own scrolling of one long
+  strip, drawing only the trips near the view, and deletes the holds that
+  stand in for knowing a scroll has ended: `weekMotion`, the `scrollIdle`
+  timeout, the rows' grow hold and the grid's `min-block-size` hold. The
+  scroll listener's layout read goes with it, and so does the day the strip
+  loses as a panel opens: opening a trip moves the first day by one, and
+  closing leaves it moved.
 - **Every task is measured before and after** in Chrome on :8641 on a real
   week, the frames of an arrow's glide, a swipe and a 240ms change of the
   week's width, with the numbers in the commit message.
@@ -45,21 +60,15 @@ glide the median frame takes 4.3ms and one in ten about 10ms, most of it the
   nothing open; a list left of the week; the editor right of it; a list and
   the editor together; a panel in front of a week at its 33rem least; Fill
   the window; and the phone, turned both ways.
-- **A panel pushes the week, as Carbon's side panel pushes the page,** and
-  comes last. Beside the week the panel slides 320px in and fades up over
-  150ms on the productive entrance curve, and leaves on the exit curve,
-  Carbon's own keyframes in `design/css/rux.css`; the week narrows and
-  widens over 240ms at the same moment, on the productive standard curve,
-  since Carbon's code names the 240ms and no curve. In front of the board,
-  on the phone or a week at its least, the panel slides over the week as it
-  dims, with Carbon's overlay fade. With reduced motion the panel only fades
-  and the week moves at once.
-
-- **Then sideways scrolling moves to the browser's own,** one long strip the
-  browser scrolls with the Mac's trackpad momentum and day snapping, drawing
-  only the trips near the view, in place of the board's own wheel handling,
-  glides and strip redraws, which run on the page's thread. It is the
-  largest change, so it gets a plan of its own once these land.
+- **A panel pushes the week, as Carbon's side panel pushes the page.** Beside
+  the week the panel slides 320px in and fades up over 150ms on the
+  productive entrance curve, and leaves on the exit curve, Carbon's own
+  keyframes in `design/css/rux.css`; the week narrows and widens over 240ms
+  at the same moment, on the productive standard curve, since Carbon's code
+  names the 240ms and no curve, and the strip's day snap does not catch it
+  half way. In front of the board, on the phone or a week at its least, the
+  panel slides over the week as it dims, with Carbon's overlay fade. With
+  reduced motion the panel only fades and the week moves at once.
 
 ## Questions
 
@@ -67,16 +76,12 @@ None open.
 
 ## Tasks
 
-- [ ] Make a trip's rows one sticky box.
-- [ ] Write `--scheduler-row-room` where it is read, `aria-expanded` only
-      when it changes, and take the layout read out of the scroll listener.
-- [ ] Trace and cut the whole-week restyles while idle and scrolling, what
-      is left of the trip editor's pause on opening, and the frame of 70–85ms
-      a resize of the window still has.
-- [ ] Measure a row gaining a lane, and cut it where it still costs more
-      than a frame.
-- [ ] Keep the strip's first day as a panel opens and closes.
+- [ ] Trace the whole-board restyles to their trigger and fix it there, then
+      measure what is left of the trip editor's pause and a window resize's
+      slow frame.
+- [ ] Delete the sticky words.
+- [ ] Set a trip's `aria-expanded` where its card opens and closes.
+- [ ] Write the native-strip plan.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files
       a panel arriving under expressive motion where Carbon's side panel is
       productive.
-- [ ] Write the plan for scrolling the strip on the browser's own.

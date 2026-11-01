@@ -149,8 +149,14 @@ const scenario = `(async () => {
     const inside = (start, span) => start >= 1 && start + span <= 34;
     const out = { name, delta, sameDays: grown.week === fresh.week, grownBars: grown.bars.length, freshBars: fresh.bars.length, onEdge: Math.abs(grown.at - Math.round(grown.at)) < 0.01, diffs: [], laneDiffs: 0, compared: 0, unsettled: grown.bars.filter(b => Number(b.varStart) !== b.start).length };
     const f = new Map(fresh.bars.filter(b => inside(b.start, b.span) && inside(b.start - delta, b.span)).map(b => [b.key, { ...b, start: b.start - delta }]));
+    /* A yard card's mark goes to the bar its next bar shares a lane with, so
+       on a bus where a bar moved lane the mark may move to a neighbour, as
+       the card itself may; the mark is compared only on a bus whose bars all
+       kept their lanes. */
+    const moved = new Set(grown.bars.filter(g => { const b = f.get(g.key); return b && g.lane !== b.lane; }).map(g => g.key.split('|')[0]));
     for (const g of grown.bars.filter(b => inside(b.start, b.span) && inside(b.start + delta, b.span))) { const b = f.get(g.key); if (!b) { out.diffs.push({ key: g.key, only: 'grown' }); continue; } f.delete(g.key); out.compared++;
-      for (const k of ['start', 'span', 'cls', 'text', 'folded']) if (g[k] !== b[k]) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
+      const cls = x => moved.has(g.key.split('|')[0]) ? x.cls.split(' ').filter(c => c !== 'scheduler-bar--yard-end').join(' ') : x.cls;
+      for (const k of ['start', 'span', 'cls', 'text', 'folded']) if ((k === 'cls' ? cls(g) !== cls(b) : g[k] !== b[k])) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
       if (g.lane !== b.lane) out.laneDiffs++; }
     for (const key of f.keys()) out.diffs.push({ key, only: 'fresh' });
     // A card is compared only where both strips hold its day, as a bar is.

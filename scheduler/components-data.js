@@ -48,7 +48,9 @@
 
   function build() {
     const now = Date.now();
-    const day = n => dateAt(now + n * DAY);
+    // Calendar days from the office's today, so a day the clocks change is no shorter or longer than the rest.
+    const today = dateAt(now);
+    const day = n => { const d = new Date(`${today}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
     const busesById = new Map(BUSES.map(b => [b.id, b]));
     const driversById = new Map(DRIVERS.map(d => [d.id, d]));
     const statuses = new Map();

@@ -1766,8 +1766,8 @@
      in view, when nothing is scrolling it. */
   if ('ResizeObserver' in window) {
     // Not under a sideways gesture, whose redraw has just placed the strip to
-    // the pixel, nor under an arrow's or Today's glide, which it would cut short.
-    new ResizeObserver(() => { if (stripStart && !weekMotion && aim == null && axis !== 'x') placeStrip(); }).observe(gridEl);
+    // the pixel, nor under an arrow's, the board's or Today's glide, which it would cut short.
+    new ResizeObserver(() => { if (stripStart && !weekMotion && aim == null && !glides.x && axis !== 'x') placeStrip(); }).observe(gridEl);
   }
 
   // Scrolls the strip, at once, so the week in view starts at its left edge.
@@ -19189,27 +19189,23 @@
     if (w && Math.abs(schEl.scrollLeft - stripAt() * w) >= 1) scrollStripTo(stripAt());
   }
   // An arrow scrolls a strip by a week, on from where the last press was going; past its ends the week is drawn again.
+  /* An arrow glides the strip a week, by the board's own glide, on from the
+     day the last press was going to, so presses faster than the glide add
+     up. The glide moves the strip along under it as it goes, as a swipe
+     does, so it runs through every day between however far the presses
+     reach; the day it is going to is kept as a date, which the strip moving
+     along leaves where it was. */
+  let aimDay = null;
   const stepWeek = days => {
-    if (stripStart && scrolling()) {
-      const to = (aim ?? stripAt()) + days;
-      if (to >= 0 && to <= stripDays() - inView()) { toast(null); scrollStripTo(to); return; }
-      /* Past the strip's end, from what is held: the strip moves along, nothing
-         on screen moving, so that the day on screen and the day sought sit
-         either side of its middle, the screen well inside it, and glides
-         there as it would within the strip. Presses faster than the glide
-         that ask for more than the strip holds are drawn again whole. */
-      const w = dayWidth();
-      const now = w ? Math.round(schEl.scrollLeft / w) : stripAt();
-      const span = stripDays() - inView();
-      const first = Math.round((now + to) / 2 - span / 2);
-      const on = addDays(stripStart, first + STRIP_BEFORE);
-      if (first <= Math.min(now, to) && first + span >= Math.max(now, to) && holds(on) && growStrip(on)) {
-        toast(null);
-        scrollStripTo(to - first);
-        return;
-      }
-      // Past the strip's end, the week is drawn again from where the last press was going.
-      if (aim != null) cursor = addDays(stripStart, aim);
+    const w = dayWidth();
+    if (stripStart && scrolling() && w && !barsInHand) {
+      toast(null);
+      const from = glides.x && aimDay ? aimDay : addDays(stripStart, Math.round(schEl.scrollLeft / w));
+      aimDay = addDays(from, days);
+      const to = daysBetween(stripStart, aimDay) * w;
+      const far = Math.abs(to - schEl.scrollLeft) / w;
+      glide('x', to, Math.min(600, 260 + far * 30));
+      return;
     }
     go(days);
   };

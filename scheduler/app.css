@@ -145,6 +145,13 @@
 /* Scroll continuously: the board is a strip of days wider than the pane, sized
    by app.js for seven in view, and a scroll comes to rest on a day's edge,
    clear of the sticky bus column. */
+/* With a mouse or a trackpad the strip is moved sideways by data.js alone,
+   a gesture and the arrows both, so the browser keeps only the scroll up and
+   down and draws no sideways bar, whose thumb would leap back each time the
+   strip moves along. A touch screen scrolls it itself. */
+@media (pointer: fine) {
+  .scheduler-week--scroll { overflow-x: hidden; }
+}
 .scheduler-week--scroll {
   scroll-snap-type: x mandatory;
   scroll-padding-inline-start: var(--scheduler-head-w);

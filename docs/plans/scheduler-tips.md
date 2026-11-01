@@ -63,10 +63,11 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
   opens that driver's own tip, so two drivers on one bus have two.
 - **Before the trip, the driver's tip says whether the driver is set.** The
   faded line is their role, and Part-time where they are. Then their status
-  with who set it and when, as the hover label says it today; a lamp row
-  only for what stands in the way, a trip changed since they confirmed, another
-  trip or time off, or a licence or medical card that runs out before the leg
-  ends; their rest before this leg; and their phone as a link row.
+  with who set it and when; a lamp row only for what stands in the way, a
+  trip changed since they confirmed, another trip or time off, or a licence
+  or medical card that runs out before the leg ends; a back-to-back trip
+  either side with the rest between, in amber where it is short; and their
+  phone as a link row.
 - **On the road, the driver's tip says how the driver is doing,** the live
   card's drivers part with the driver as its head. The faded line is their
   duty now. Then their Drive, Shift and Cycle time left with each one's bar,
@@ -97,7 +98,7 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
   nothing. The held key's repeats are ignored, and days still change only in
   the editor.
 - **The phone's docked sheet keeps its look and tabs,** because it is a sheet
-  along the foot, not a tip. Its rows are the new ones.
+  along the foot, not a tip, and a driver's icon there selects the trip.
 - **This plan's tasks go before the
   [components page plan](scheduler-components-page.md)'s card task,** so the
   card moves out of `data.js` once, already a tip.
@@ -108,9 +109,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the driver's tip before the trip, every driver's status icon a
-      button that opens it, with the photo read from `driver-photos` and the
-      driver's hover label gone.
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
       live card.
 - [ ] Make a held Space carry the selected trip in `data.js`, ↑ and ↓ a bus

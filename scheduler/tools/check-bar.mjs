@@ -258,6 +258,12 @@ expect('a later bus of a leg wears only its own problems: a misfit or a driver, 
   null, null, null, 'amber Rosa declined', 'amber Tell Ben: Stops changed', null, 'red Coach needed', 'red Sleeper needed', 'red Sleeper needed', null]);
 expect('the alert badge ends the destination row', alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => drawn('alerts', n)[0].querySelector('.scheduler-bar__dest').children.at(-1)?.classList.contains('scheduler-bar__alert')),
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(() => true));
+expect('a seated driver\'s icon opens their own tip, an empty seat\'s opens nothing, and a done trip\'s drivers have none to press',
+  [drawn('crew', 'Empty seats').flatMap(b => [...b.querySelectorAll('.scheduler-crew')]).map(c => [!!c.querySelector(':scope > button.scheduler-crew__mark[data-card-opener]'), !!c.querySelector('.scheduler-bar__none')])
+    .every(([press, empty]) => press !== empty || (!press && !empty)),
+    drawn('trip-bar', 'Back at the yard').every(b => !b.querySelector('.scheduler-crew__mark[data-card-opener]') || b.querySelector('.scheduler-crew--declined')),
+    (() => { const m = drawn('trip-bar', 'Update ages')[0].querySelector('.scheduler-crew > .scheduler-crew__mark[data-card-opener]'); return m ? [m.parentElement.dataset.driverId != null && m.parentElement.dataset.seat != null, m.title, m.getAttribute('aria-expanded')] : null; })()],
+  [true, true, [true, '', 'false']]);
 expect('every update row leads with its chat mark as the button, including a settled trip, and the age has no clock',
   drawn('trip-bar', 'Update ages').map(b => {
     const row = b.querySelector('.scheduler-bar__update');
@@ -427,7 +433,7 @@ expect('a driver the bar does not name joins the drivers row with their own duty
     has(lit('Someone else at the wheel'), '.scheduler-road__who .scheduler-crew__duty use[href="#i-BPMN-link--fill"]')], ['Omar D.', true]);
 expect('a longer bar out stands its rows in today\'s column, and a one-day one on its own',
   [lit('On its second day').style.getPropertyValue('--scheduler-today'), lit('At highway speed').style.getPropertyValue('--scheduler-today')], ['1', '']);
-expect('a bus no longer out takes its opener, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, ':scope > .scheduler-bar__drivers [data-card-opener]'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
+expect('a bus no longer out takes its opener, times and instruments off', (() => { const b = lit('At highway speed'); RoadBar.draw(b, null); return [has(b, ':scope > .scheduler-bar__drivers .scheduler-crew__duty, :scope > .scheduler-bar__drivers .scheduler-road__who'), has(b, '.scheduler-road__card'), has(b, '.scheduler-road__times'), has(b, '.scheduler-crew__left')]; })(), [false, false, false, false]);
 
 expect('rest elapsed does not assert a reset of the HOS clocks',
   RoadBar.restWords({ duty: 'sleeper', rest_since: new Date(Date.now() - 3 * RoadBar.HOUR).toISOString() }), 'Rested 3h 00m');

@@ -1722,6 +1722,14 @@ button.scheduler-row-head__num::after {
   cursor: pointer;
 }
 button.scheduler-tip__go { border-inline: 0; border-block-end: 0; background: none; }
+a.scheduler-tip__go { text-decoration: none; }
+/* A driver's tip heads with their photo in Carbon's small avatar, where the
+   bus tip has its disc. Their answer and each lamp lead with a 16px icon,
+   as an alert's row does. */
+.scheduler-tip__face { flex: none; }
+.scheduler-tip__answer { display: flex; align-items: flex-start; gap: var(--rux-spacing-03); }
+.scheduler-tip--card .scheduler-tip__lamp { gap: var(--rux-spacing-03); }
+:is(.scheduler-tip__answer, .scheduler-tip--card .scheduler-tip__lamp) > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-tip__go > svg { flex: none; inline-size: 16px; block-size: 16px; }
 .scheduler-tip__go:focus-visible, .scheduler-tip__open:focus-visible { outline: 2px solid var(--rux-focus-inverse); outline-offset: -2px; }
 .scheduler-tip__words { min-inline-size: 0; overflow-wrap: anywhere; white-space: pre-wrap; }

@@ -323,7 +323,10 @@
      A trip that is done has no answer left to wait for, so its drivers carry
      no status icon, only their names, unless one declined. Empty seats inside
      fourteen days of departure take Caution minor, the alert badge's yellow
-     triangle, so the bar has one warning colour. */
+     triangle, so the bar has one warning colour. A seated driver's icon is
+     the button that opens their tip, as the alert badge opens Alerts, with
+     no hover label of its own over the name's, since the tip says it; a
+     done trip's drivers have none to press, but one who declined. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   function crewEl(c, due, done) {
     const tone = c.needed ? (due ? 'warning' : 'off') : c.status.tone;
@@ -331,8 +334,16 @@
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
     if (!(done && dot && !c.needed && c.status?.value !== 'declined')) {
-      const mark = el('span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
+      const press = !c.needed && !(done && c.status?.value !== 'declined');
+      const mark = el(press ? 'button' : 'span', ['scheduler-crew__mark', tone && `scheduler-crew__mark--${tone}`, dot && 'scheduler-crew__mark--dot',
         c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
+      if (press) {
+        mark.type = 'button';
+        mark.dataset.cardOpener = '';
+        mark.setAttribute('aria-expanded', 'false');
+        mark.setAttribute('aria-label', `${crewText(c)}: details`);
+        mark.title = '';
+      }
       const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
         : svgUse(c.icon, '16', c.box);
       if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-minor' : 'rux--icon-indicator--not-started')
@@ -767,8 +778,16 @@
     return { bar, facts };
   }
 
-  const cardSectionOf = opener => opener.matches('.scheduler-bar__alert') ? 'needs'
-    : opener.closest('.scheduler-bar__drivers') ? 'road' : 'updates';
+  /* The part a card opener opens: Alerts, a live bar's card, a driver's tip,
+     named by the driver and the seat so each driver's icon opens their own,
+     or Updates. */
+  const cardSectionOf = opener => {
+    if (opener.matches('.scheduler-bar__alert')) return 'needs';
+    if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
+    const crew = opener.closest('.scheduler-crew');
+    return opener.matches('.scheduler-crew > .scheduler-crew__mark') && crew?.dataset.driverId
+      ? `driver:${crew.dataset.driverId}:${crew.dataset.seat}` : 'road';
+  };
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {

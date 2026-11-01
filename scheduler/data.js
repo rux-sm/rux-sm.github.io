@@ -534,7 +534,7 @@
     // roster lists them in the order they are called on; `employment_type`,
     // because a part-time driver needs an hours-of-service record; the
     // licence and medical card dates, so the bar menu flags an expired one.
-    drivers: () => client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language').then(rowsOf),
+    drivers: () => client.from('drivers').select('id,name,short_name,status,priority,phone,texting_url,employment_type,license_exp,med_card_expiry,language,photo_path').then(rowsOf),
     // Every contact, for the contact search rather than a read on each keystroke.
     contacts: () => client.from('contacts').select('id,name,phone,email,client,customer_id').order('name').then(rowsOf),
     // The customers and the saved places, for the Customer field, the fill
@@ -11159,11 +11159,12 @@
   let cardTrigger = null;
   function cardOrigin(bar) {
     if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
-    // The bar drawn again: the same driver's mark, or the first.
+    // The bar drawn again: the same driver's mark of the same kind, or the first.
     const driver = cardTrigger?.closest('.scheduler-crew')?.dataset.driverId;
+    const kind = cardTrigger?.matches('.scheduler-crew__duty') ? '.scheduler-crew__duty' : '.scheduler-crew__mark';
     const selector = cardTrigger?.matches('.scheduler-bar__alert') ? '.scheduler-bar__alert'
       : cardTrigger?.closest('.scheduler-bar__drivers')
-        ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}[data-card-opener]`
+        ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}${kind}[data-card-opener]`
       : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat' : null;
     return (selector && (bar.querySelector(`:scope > .scheduler-bar__drivers ${selector}`) ?? bar.querySelector(selector))) || bar;
   }
@@ -11172,7 +11173,7 @@
     if (open && !section && floatingCard()) section = bar.dataset.road ? 'road' : 'updates';
     cardOpenFor = open ? barKey(bar) : null;
     cardSection = open ? section : '';
-    if (open && bar.dataset.road && section) roadTabs.set(barKey(bar), section);
+    if (open && bar.dataset.road && section && !section.startsWith('driver:')) roadTabs.set(barKey(bar), section);
     if (open && cardAwayFor === barKey(bar)) cardAwayFor = null;
     placeBarOpen();
   }
@@ -11813,6 +11814,8 @@
     // A crew's +1 inside a live bar's drivers opens Contacts, not the card.
     if (!bar || e.detail > 1 || e.target.closest('[data-crew-overflow]')) return;
     const section = window.SchedulerBar.cardSectionOf(opener);
+    // The docked sheet has no driver's tip, so a driver's mark there only selects the trip.
+    if (!floatingCard() && section.startsWith('driver:')) return;
     cardTrigger = opener;
     askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadPartOf(bar) : cardSection, section), section);
   });
@@ -15938,10 +15941,11 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [!bar.dataset.road ? drawCard(trip, bar, cardSection)
+    }), ...(carded ? [!docked && cardSection.startsWith('driver:') ? drawDriverTip(trip, bar, cardSection)
+      : !bar.dataset.road ? drawCard(trip, bar, cardSection)
       : docked ? drawRoadCard(trip, bar) : roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
     barShortcuts.toggleAttribute('data-card', carded);
-    // Floating, Alerts and Updates are tips, app.css's.
+    // Floating, Alerts, Updates and a driver's are tips, app.css's.
     barShortcuts.toggleAttribute('data-tip', carded && !docked && !(bar.dataset.road && roadPartOf(bar) === 'road'));
     if (focusQuick) {
       const input = barShortcuts.querySelector('[data-quick] input');
@@ -16549,6 +16553,93 @@
 
   // A driver's three clocks, each against the most its rule allows.
   const LIVE_CLOCKS = [['Drive', 'drive_ms', 10 * ROAD_HOUR], ['Shift', 'shift_ms', 15 * ROAD_HOUR], ['Cycle', 'cycle_ms', 70 * ROAD_HOUR]];
+  /* A DRIVER'S TIP, before the trip, says whether the driver is set: their
+     photo, or their initials until it comes, their name, and their seat with
+     Part-time where they are; then their answer, who gave it and when; a
+     lamp row for each thing in the way, a leg that changed since they said
+     yes in amber and what stands in the way of the seat, clashes.js's, in
+     red; a back-to-back trip either side and the rest between, in amber
+     where the rest is short; and their phone, a press that calls. Every line
+     is read from what the board holds but the photo, which is signed from
+     the Drivers page's bucket. `section` is `driver:<id>:<seat>`. */
+  const DRIVER_PHOTOS = 'driver-photos';
+  const driverPhotoLinks = new Map();
+  const driverPhoto = path => {
+    if (!path || !client) return Promise.resolve('');
+    const hit = driverPhotoLinks.get(path);
+    if (hit && Date.now() - hit.at < 540000) return hit.link;
+    const link = client.storage.from(DRIVER_PHOTOS).createSignedUrl(path, 600)
+      .then(({ data, error }) => (error ? '' : data?.signedUrl || ''), () => '');
+    driverPhotoLinks.set(path, { at: Date.now(), link });
+    return link;
+  };
+  const initialsOf = name => String(name || '').trim().split(/\s+/).filter(Boolean)
+    .map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
+  function drawDriverTip(trip, bar, section) {
+    const [, driverId, role] = section.split(':');
+    const tip = el('div', 'scheduler-tip scheduler-tip--card');
+    tip.dataset.tripId = trip.id;
+    const found = barSeat(bar, role);
+    const c = found && crewOf(found.trip, found.assign, panelIndex.driversById, panelIndex.statuses)
+      .find(x => x.role === role && String(x.driverId) === driverId);
+    const head = el('div', 'scheduler-tip__head');
+    tip.appendChild(head);
+    if (!c?.who) {
+      head.appendChild(el('strong', 'scheduler-tip__name', 'Driver'));
+      tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__none', 'Nobody is in this seat now.'));
+      return tip;
+    }
+    const face = el('div', 'rux--user-avatar rux--user-avatar--order-2-gray rux--user-avatar--sm scheduler-tip__face', initialsOf(c.who.name));
+    face.setAttribute('aria-hidden', 'true');
+    driverPhoto(c.who.photo_path).then(url => {
+      if (!url || !face.isConnected) return;
+      const img = el('img', 'rux--user-avatar__photo rux--user-avatar__photo--sm');
+      img.alt = '';
+      img.src = url;
+      img.addEventListener('error', () => { face.textContent = initialsOf(c.who.name); }, { once: true });
+      face.replaceChildren(img);
+    });
+    const said = el('div', 'scheduler-tip__said');
+    said.append(el('strong', 'scheduler-tip__name', c.who.name || c.who.short_name || 'Unnamed driver'),
+      el('span', null, [c.label, c.who.employment_type === 'part-time' ? 'Part-time' : null].filter(Boolean).join(' · ')));
+    head.append(face, said);
+    const lamp = (tone, words) => {
+      const row = el('div', `scheduler-tip__row scheduler-tip__lamp scheduler-tip__lamp--${tone}`);
+      row.append(svgUse(tone === 'error' ? '#m-error-fill' : '#i-warning--alt--filled', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', words));
+      tip.appendChild(row);
+    };
+    // Their answer: who gave it and when, as the bar's own words say it.
+    const { value, label } = c.status;
+    const answer = el('div', 'scheduler-tip__row scheduler-tip__answer');
+    const icon = svgUse(c.status.icon, '16', '0 0 32 32');
+    icon.setAttribute('class', c.status.indicator);
+    const by = value === 'off' ? label : [c.row?.source === 'driver' ? `${label} by the driver` : c.row?.source === 'samsara' ? `${label} by Samsara` : `${label}, set by dispatch`,
+      window.SchedulerBar.setAt((value === 'confirmed' && c.row?.acceptedAt) || (value === 'declined' && c.row?.declinedAt) || c.row?.updatedAt)].filter(Boolean).join(' · ');
+    answer.append(icon, el('span', 'scheduler-tip__words', by));
+    tip.appendChild(answer);
+    const leg = legKeyOfVehicle(trip, found.assign);
+    const changed = value === 'declined' ? [] : window.SchedulerDriverJob?.changesSince(trip, leg, c.driverId, c.row,
+      { busesById: panelIndex.buses, driversById: panelIndex.driversById, nameOf: requirementLabel }) ?? [];
+    if (changed.length) lamp('warning', `Changed since they said yes: ${changed.join(', ')}`);
+    for (const x of standingFor(trip, leg, panelIndex.driversById, panelIndex.buses)) {
+      if (String(x.assignmentId) === String(found.assign.id) && String(x.driverId) === driverId) lamp('error', x.what);
+    }
+    const fit = found.range ? fitFor(boardNearby, found.range, { tripId: trip.id }) : null;
+    const nearKey = fit && [...fit.near.keys()].find(k => String(k) === driverId);
+    for (const words of nearKey != null ? fit.near.get(nearKey) : []) {
+      if (fit.tight.has(nearKey)) lamp('warning', words);
+      else tip.appendChild(el('div', 'scheduler-tip__row', words));
+    }
+    if (c.who.phone) {
+      const call = el('a', 'scheduler-tip__row scheduler-tip__go scheduler-tip__call');
+      call.href = `tel:${dial(c.who.phone)}`;
+      call.setAttribute('aria-label', `Call ${c.who.name}`);
+      call.append(svgUse('#m-call', '16', '0 0 32 32'), el('span', 'scheduler-tip__words', showPhone(c.who.phone)));
+      tip.appendChild(call);
+    }
+    return tip;
+  }
+
   function drawLiveCard(trip, bar) {
     const card = el('div', 'scheduler-card scheduler-card--live');
     card.dataset.tripId = trip.id;
@@ -17080,6 +17171,7 @@
       const bar = selectedBar();
       if (!bar) return;
       if (overflow) openContactsFrom(bar, overflow);
+      else if (window.SchedulerBar.cardSectionOf(opener).startsWith('driver:')) return;
       else {
         cardTrigger = opener;
         askCard(bar, true, window.SchedulerBar.cardSectionOf(opener));

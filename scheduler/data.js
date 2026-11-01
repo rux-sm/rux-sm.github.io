@@ -18985,22 +18985,64 @@
      landing. Sideways the place is kept in days, since the strip can move
      along under it. */
   const easeOut = t => 1 - (1 - t) ** 3;
-  function glide(way, to, ms) {
-    const run = { from: way === 'x' ? schEl.scrollLeft : schEl.scrollTop, to, start: stripStart, t0: performance.now(), ms };
+  /* Carbon's motion: a curve given as CSS's cubic-bezier, solved for the
+     point at a share of the time; Carbon's productive standard curve, for
+     the board's frequent moves, and its durations by the distance moved,
+     240ms for a day or two and 400ms for a week, as its motion guidance asks
+     a larger move to take longer. */
+  const cubicBezier = (x1, y1, x2, y2) => t => {
+    if (t <= 0 || t >= 1) return Math.min(1, Math.max(0, t));
+    const at = (a, b, u) => 3 * (1 - u) ** 2 * u * a + 3 * (1 - u) * u ** 2 * b + u ** 3;
+    let lo = 0, hi = 1, u = t;
+    for (let i = 0; i < 24; i++) { u = (lo + hi) / 2; if (at(x1, x2, u) < t) lo = u; else hi = u; }
+    return at(y1, y2, u);
+  };
+  const carbonStandard = cubicBezier(0.2, 0, 0.38, 0.9);
+  const carbonMs = days => (days <= 2 ? 240 : days <= 7 ? 400 : Math.min(700, 400 + (days - 7) * 15));
+  /* The board's own glide of the strip, sideways or down. It eases by the
+     curve given, from where the board is, or with `spring` it carries on the
+     speed of the glide it takes over and settles on the new end as a
+     critically damped spring does, in about the time given, so a second
+     press while the first is still gliding speeds it on rather than starting
+     over. Carbon has no curve for a move that changes its end on the way;
+     this is the one used. Its places are the strip's pixels as they were
+     when it began, the strip's moves along taken off as it writes them, so
+     its speed, kept each frame for the next glide, is the board's own. */
+  function glide(way, to, ms, { ease = easeOut, spring = false } = {}) {
+    const before = glides[way];
+    const run = { from: way === 'x' ? schEl.scrollLeft : schEl.scrollTop, to, start: stripStart, t0: performance.now(), ms, v: 0 };
+    run.v0 = spring && before ? before.v : 0;
+    run.last = run.from;
+    run.lastT = run.t0;
     glides[way] = run;
     if (way === 'x') pauseSnap(true);
+    const omega = 6.6 / ms;
     const frame = now => {
       if (glides[way] !== run) return;
-      const k = reducedMotion.matches ? 1 : easeOut(Math.min(1, (now - run.t0) / run.ms));
+      const t = now - run.t0;
+      // The strip moved along by so many days under the glide moves both its ends by as much.
+      const shift = way === 'x' && run.start && stripStart ? daysBetween(run.start, stripStart) * dayWidth() : 0;
+      let at, done;
+      if (reducedMotion.matches) { at = run.to; done = true; }
+      else if (spring) {
+        const c1 = run.from - run.to, c2 = run.v0 + omega * c1;
+        at = run.to + (c1 + c2 * t) * Math.exp(-omega * t);
+        done = t >= ms * 1.5 || (Math.abs(at - run.to) < 0.5 && Math.abs(run.v) < 0.05 && t > 16);
+        if (done) at = run.to;
+      } else {
+        at = run.from + (run.to - run.from) * ease(Math.min(1, t / run.ms));
+        done = t >= run.ms;
+      }
+      if (now > run.lastT) run.v = (at - run.last) / (now - run.lastT);
+      run.last = at;
+      run.lastT = now;
       if (way === 'x') {
-        // The strip moved along by so many days under the glide moves both its ends by as much.
-        const shift = run.start && stripStart ? daysBetween(run.start, stripStart) * dayWidth() : 0;
-        schEl.scrollLeft = run.from + (run.to - run.from) * k - shift;
+        schEl.scrollLeft = at - shift;
         stripEdge();
       } else {
-        schEl.scrollTop = run.from + (run.to - run.from) * k;
+        schEl.scrollTop = at;
       }
-      if (k < 1) { requestAnimationFrame(frame); return; }
+      if (!done) { requestAnimationFrame(frame); return; }
       glides[way] = null;
       if (way === 'y') restTop = schEl.scrollTop;
       rest();
@@ -19055,6 +19097,8 @@
     if (top != null) glide('y', top, 260);
     if (glides.x || glides.y) return;
     pauseSnap(false);
+    // An arrow's or Today's glide has arrived.
+    aim = null;
     landed.x = landed.y = false;
     restTop = schEl.scrollTop;
     if (weekMotion) scrollStopped();
@@ -19090,7 +19134,8 @@
     }
     if ((at < STRIP_EDGE || at > stripDays() - inView() - STRIP_EDGE) && holds(on) && growStrip(on)) { fitLanesInView({ grow: true }); return; }
     if (stripRoomy()) wallAsked = false;
-    else if (!wallAsked && !reading) { wallAsked = true; scrollStopped(); }
+    // Not under the board's own glide, whose stop settles the strip, and which a settle now would turn back to the day in view.
+    else if (!wallAsked && !reading && !glides.x) { wallAsked = true; scrollStopped(); }
   }
 
   schEl?.addEventListener('wheel', e => {
@@ -19175,13 +19220,14 @@
     }
   }, { passive: false });
 
-  // Scrolls the strip to a day, as many days from its first, smoothly unless motion is reduced.
+  /* Glides the strip to a day, as many days from its first, by the board's
+     glide on Carbon's productive curve, as Today and a picked week do. */
   function scrollStripTo(at) {
-    // An arrow takes over from the board's own landing, and the day snap is back for its glide.
-    stopGlides();
-    if (!axis) { landed.x = landed.y = false; pauseSnap(false); }
+    const w = dayWidth();
+    if (!w) return;
+    if (!axis) { landed.x = landed.y = false; }
     aim = at;
-    schEl.scrollTo({ left: at * dayWidth(), behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    glide('x', at * w, carbonMs(Math.abs(at * w - schEl.scrollLeft) / w), { ease: carbonStandard });
   }
   // Scrolls the strip to the week `cursor` starts, when it is not there already.
   function scrollToCursor() {
@@ -19200,11 +19246,13 @@
     const w = dayWidth();
     if (stripStart && scrolling() && w && !barsInHand) {
       toast(null);
-      const from = glides.x && aimDay ? aimDay : addDays(stripStart, Math.round(schEl.scrollLeft / w));
+      const going = !!glides.x;
+      const from = going && aimDay ? aimDay : addDays(stripStart, Math.round(schEl.scrollLeft / w));
       aimDay = addDays(from, days);
       const to = daysBetween(stripStart, aimDay) * w;
       const far = Math.abs(to - schEl.scrollLeft) / w;
-      glide('x', to, Math.min(600, 260 + far * 30));
+      // From rest, Carbon's productive curve; over a glide still going, a spring that keeps its speed.
+      glide('x', to, carbonMs(far), going ? { spring: true } : { ease: carbonStandard });
       return;
     }
     go(days);

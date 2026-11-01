@@ -1171,26 +1171,6 @@
       into.appendChild(cell);
     }
 
-    /* A rule at each internal day boundary, so an empty row can
-       be counted; the bus column and the pane draw the two outer edges. The
-       stops are set on each track, which app.css draws as its background, so
-       `var(--scheduler-day-rule)` resolves on the track that defines it. */
-    const ruleCols = Array.from({ length: days - 1 }, (_, i) => i + 1);
-    const dayRuleStops = (() => {
-      const parts = [];
-      let prev = '0';
-      for (const i of ruleCols) {
-        // From the day's own width, not a percentage of the track: a seventh
-        // or a fourteenth lands on Blink's 1/64px and paints the rule across two device pixels.
-        const at = `calc(${i} * var(--scheduler-day-w))`;
-        parts.push(`transparent ${prev} calc(${i} * var(--scheduler-day-w) - 1px)`);
-        parts.push(`var(--scheduler-day-rule) calc(${i} * var(--scheduler-day-w) - 1px) ${at}`);
-        prev = at;
-      }
-      parts.push(`transparent ${prev} 100%`);
-      return parts.join(', ');
-    })();
-
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
       const lanes = bars.length ? assignLanes(bars) : 1;
@@ -1288,8 +1268,6 @@
 
       const track = el('div', 'scheduler-track');
       track.style.setProperty('--scheduler-lanes', lanes);
-      // The day rules. Per track, for the reason the note above gives.
-      track.style.setProperty('--scheduler-day-rules', dayRuleStops);
       if (r.bus) track.dataset.busId = r.bus.id; else track.dataset.unassigned = 'true';
       if (r.bus && r.bus.status !== 'active') track.dataset.retired = '';
       for (const w of windows) track.appendChild(oosEl(w, clip(w.start_date, w.end_date, weekStart, weekEnd)));

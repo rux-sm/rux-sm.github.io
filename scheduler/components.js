@@ -52,20 +52,6 @@
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
   } catch { /* no storage: the defaults stand */ }
 
-  // The day rules a track draws between its days, as data.js writes them.
-  const dayRules = days => {
-    const parts = [];
-    let prev = '0';
-    for (let i = 1; i < days; i++) {
-      const at = `calc(${i} * var(--scheduler-day-w))`;
-      parts.push(`transparent ${prev} calc(${i} * var(--scheduler-day-w) - 1px)`);
-      parts.push(`var(--scheduler-day-rule) calc(${i} * var(--scheduler-day-w) - 1px) ${at}`);
-      prev = at;
-    }
-    parts.push(`transparent ${prev} 100%`);
-    return parts.join(', ');
-  };
-
   /* What the board hands bar.js for one sample bar: the trip, its leg, the
      bus's assignment on that leg, or none for a bar in the No bus row, and
      where it sits in the sample's days. */
@@ -117,7 +103,6 @@
       const track = el('div', 'scheduler-track');
       const bars = r.bars.map(placed);
       track.style.setProperty('--scheduler-lanes', assignLanes(bars));
-      track.style.setProperty('--scheduler-day-rules', dayRules(sample.days));
       for (const b of bars) track.appendChild(barOf(b, data));
       row.append(head, track);
       grid.appendChild(row);

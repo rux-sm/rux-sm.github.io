@@ -103,14 +103,15 @@
      trip, so nothing about the trip caps this the way the old tab's width
      capped it at the sm height. */
   --scheduler-slot-w: var(--rux-layout-size-height-md, 2.5rem);
-  /* A bar keeps `--scheduler-gap-clear` of clear space on all four sides, and
-     the 1px rule at each boundary sits outside that. `--scheduler-gap` is the
-     pair -- the clear space plus its rule -- which is what a bar's size and a
-     track's height subtract to leave the clear space even. */
-  --scheduler-gap: calc(1.5 * var(--rux-spacing-02));
-  --scheduler-gap-clear: calc(var(--scheduler-gap) - 1px);
-  /* No rule runs between stacked bars, so they keep the full gap. */
-  --scheduler-lane-gap: var(--scheduler-gap);
+  /* Bars stand 8px apart, side by side and stacked, Carbon's spacing 03. No
+     rule runs between the days, so a bar keeps `--scheduler-gap-clear`, 4px,
+     clear of its days' edges and of its row's top, and `--scheduler-gap`,
+     what a bar's end gives up at a day's edge, is that clear space alone.
+     Under a row's last lane the row's 1px line counts inside the 8px: 3px
+     clear, then the line, since a track's height includes its border. */
+  --scheduler-gap-clear: var(--rux-spacing-02);
+  --scheduler-gap: var(--scheduler-gap-clear);
+  --scheduler-lane-gap: var(--rux-spacing-03);
   position: relative;
   overflow: auto;
   /* The grid is its own scroll pane, so the day header sticks to its top and the
@@ -671,11 +672,6 @@ button.scheduler-row-head__num::after {
   min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (var(--scheduler-gap-clear) + var(--scheduler-gap) - var(--scheduler-lane-gap))
     + var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   border-block-end: 1px solid var(--rux-border-subtle-01);
-  /* The day rules: data.js writes the stop list `--scheduler-day-rules` on each
-     track, drawn in `--scheduler-day-rule`. A background image paints over the
-     row's own tint and under every child, so bars and out-of-service stripes
-     cover it with no stacking order. */
-  background-image: linear-gradient(90deg, var(--scheduler-day-rules));
   /* A finger holding an empty cell opens the cell menu, so the browser's own
      hold gestures, the callout and text selection, are off. Safari reads only
      the prefixed selection property. */
@@ -683,11 +679,11 @@ button.scheduler-row-head__num::after {
   -webkit-user-select: none;
   user-select: none;
 }
-/* The day rule is `border-subtle-01`, the token the row rules use, at half
-   its strength: each bus reads as one row, and the days are still there to
-   find where a trip starts. Mixed toward transparent rather than to another
-   token, so it is half as strong in every theme and on the Unassigned tint. */
-.scheduler-track,
+/* The roster's day rule is `border-subtle-01`, the token the row rules use,
+   at half its strength: each driver reads as one row, and the days are still
+   there to find where a booking starts. Mixed toward transparent rather than
+   to another token, so it is half as strong in every theme. The board draws
+   none: its 8px gaps and the day band say where a day starts. */
 .scheduler-avail__cell { --scheduler-day-rule: color-mix(in srgb, var(--rux-border-subtle-01) 50%, transparent); }
 
 /* The loading skeleton. index.html ships it inside the grid and render()
@@ -704,17 +700,6 @@ button.scheduler-row-head__num::after {
 .scheduler-skeleton-dial { inline-size: auto; }
 .scheduler-skeleton-reading { block-size: 12px; }
 .scheduler-skeleton-tank { block-size: 4px; }
-/* The six day rules data.js writes on a real track. */
-.scheduler-track--skeleton {
-  --scheduler-day-rules:
-    transparent 0 calc(100% / 7 - 1px), var(--scheduler-day-rule) calc(100% / 7 - 1px) calc(100% / 7),
-    transparent calc(100% / 7) calc(200% / 7 - 1px), var(--scheduler-day-rule) calc(200% / 7 - 1px) calc(200% / 7),
-    transparent calc(200% / 7) calc(300% / 7 - 1px), var(--scheduler-day-rule) calc(300% / 7 - 1px) calc(300% / 7),
-    transparent calc(300% / 7) calc(400% / 7 - 1px), var(--scheduler-day-rule) calc(400% / 7 - 1px) calc(400% / 7),
-    transparent calc(400% / 7) calc(500% / 7 - 1px), var(--scheduler-day-rule) calc(500% / 7 - 1px) calc(500% / 7),
-    transparent calc(500% / 7) calc(600% / 7 - 1px), var(--scheduler-day-rule) calc(600% / 7 - 1px) calc(600% / 7),
-    transparent calc(600% / 7) 100%;
-}
 /* Placed and sized like a trip bar in the first lane. */
 .scheduler-skeleton-bar {
   position: absolute;

@@ -14514,10 +14514,12 @@
 
      The week is not laid out again while the pointer moves: fitting its bars
      to a new width costs far more than a frame, and it is the whole of what
-     made a drag stutter. It keeps the width it had, as the column grows over
-     its side, and the board clips what runs past; once the pointer is let go it
-     takes its place and is fitted once. The limits are read once, and the
-     width is set once a frame. */
+     made a drag stutter. It keeps its width and its place, and the column,
+     lifted over it, grows across the week's near side, so the week never
+     reaches the editor or any panel on its far side; once the pointer is let
+     go the column is beside it again and the week takes its place and is
+     fitted once. The limits are read once, and the width is set once a
+     frame. */
   resizer.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -14539,7 +14541,7 @@
       pending = 0;
       const w = Math.min(max, Math.max(min, startW + (x - startX) * sign));
       viewerEl.style.setProperty('--scheduler-viewer-w', `${w / rem}rem`);
-      frameEl.style.marginInlineEnd = `${startW - w}px`;
+      frameEl.style.marginInlineStart = `${startW - w}px`;
       resizer.setAttribute('aria-valuenow', String(Math.round(w)));
     };
     const move = ev => {
@@ -14553,7 +14555,7 @@
       resizer.removeEventListener('pointermove', move);
       resizer.removeEventListener('pointerup', stop);
       resizer.removeEventListener('pointercancel', stop);
-      for (const prop of ['flex', 'inlineSize', 'marginInlineEnd']) frameEl.style[prop] = '';
+      for (const prop of ['flex', 'inlineSize', 'marginInlineStart']) frameEl.style[prop] = '';
       boardEl.style.overflowX = '';
       syncResizer();
       placeRoom();

@@ -18904,12 +18904,8 @@
      that puts it under the header. */
   let restTop = 0;
   function laneTops() {
-    const band = gridEl.querySelector('.scheduler-day');
-    const head = band?.getBoundingClientRect().bottom;
+    const head = gridEl.querySelector('.scheduler-day')?.getBoundingClientRect().bottom;
     if (head == null) return [];
-    // The clear space under the band before the first row, which the top of
-    // the board keeps rather than resting the first row against the band.
-    const edge = parseFloat(getComputedStyle(band).marginBlockEnd) || 0;
     const lines = [];
     for (const track of gridEl.querySelectorAll('.scheduler-row:not([hidden]):not([data-shut]) > .scheduler-track')) {
       const box = track.getBoundingClientRect();
@@ -18922,7 +18918,7 @@
       for (const bar of bars) if (Number(bar.style.getPropertyValue('--scheduler-lane'))) lines.push(bar.getBoundingClientRect().top - clear);
     }
     const max = schEl.scrollHeight - schEl.clientHeight;
-    return lines.map(line => Math.min(max, schEl.scrollTop + line - head)).map(at => (at <= edge ? 0 : at)).sort((a, b) => a - b);
+    return lines.map(line => Math.max(0, Math.min(max, schEl.scrollTop + line - head))).sort((a, b) => a - b);
   }
   /* Where a scroll up or down that stopped on its own comes to rest: the
      nearest lane, a bar the header hides less than half of sliding back into

@@ -103,15 +103,17 @@
      trip, so nothing about the trip caps this the way the old tab's width
      capped it at the sm height. */
   --scheduler-slot-w: var(--rux-layout-size-height-md, 2.5rem);
-  /* EVERY BAR KEEPS 4PX CLEAR ON ALL FOUR SIDES, `--scheduler-gap-clear`, so
-     two bars side by side or stacked on one bus stand 8px apart, Carbon's
-     spacing 03, and two buses' bars stand 4px either side of the 1px line
-     between their rows, which a track's height adds to its lanes. No rule
-     runs between the days, so `--scheduler-gap`, what a bar's end gives up
-     at a day's edge, is that clear space alone. */
+  /* Two bars side by side or stacked on one bus stand 8px apart, Carbon's
+     spacing 03: a bar keeps `--scheduler-gap-clear`, 4px, clear of its days'
+     edges, and `--scheduler-lane-gap` parts its lanes. A bus's row keeps
+     `--scheduler-row-clear`, 8px, above its first lane and below its last,
+     so two buses' bars stand 8px either side of the 1px line between their
+     rows. No rule runs between the days, so `--scheduler-gap`, what a bar's
+     end gives up at a day's edge, is that clear space alone. */
   --scheduler-gap-clear: var(--rux-spacing-02);
   --scheduler-gap: var(--scheduler-gap-clear);
   --scheduler-lane-gap: var(--rux-spacing-03);
+  --scheduler-row-clear: var(--rux-spacing-03);
   position: relative;
   overflow: auto;
   /* The grid is its own scroll pane, so the day header sticks to its top and the
@@ -148,19 +150,16 @@
   scroll-padding-inline-start: var(--scheduler-head-w);
   /* THE DAYS IN VIEW STAND 8PX CLEAR OF ALL FOUR EDGES, the gap between two
      bars, when the strip is at rest: `--scheduler-edge`, a bar's own 4px
-     clear space again, is added beside the bus column, under the day
-     band, at the board's foot and, by app.js, at its right. Beside the
+     clear space again, is added beside the bus column and, by app.js, at
+     its right. Beside the
      column it is the column's own width, which the head cells leave
      unpainted, so the day before shows its last 4px there: empty, or a
-     trip running on into the days in view. At the foot the last row's 1px
-     line, or the blank pixel a theme that closes the board with its own
-     edge leaves in its place, is part of it. */
+     trip running on into the days in view. Under the band and at the foot
+     a row's own 8px clear space is that edge already. */
   --scheduler-edge: var(--scheduler-gap-clear);
 }
 .scheduler-week--scroll .scheduler-day { scroll-snap-align: start; }
 .scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head) { margin-inline-end: var(--scheduler-edge); }
-.scheduler-week--scroll :is(.scheduler-corner, .scheduler-day) { margin-block-end: var(--scheduler-edge); }
-.scheduler-week--scroll .scheduler-grid { padding-block-end: calc(var(--scheduler-edge) - 1px); }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and
@@ -264,7 +263,7 @@
      destination; the last row's foot lands over the row rule by the track's
      own gap, so no padding is needed below, and none is set, or the head
      would stand taller than its track. */
-  padding: calc(var(--scheduler-gap-clear) + var(--scheduler-bar-pad-block) + 1px) var(--rux-spacing-03) 0;
+  padding: calc(var(--scheduler-row-clear) + var(--scheduler-bar-pad-block) + 1px) var(--rux-spacing-03) 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -683,8 +682,12 @@ button.scheduler-row-head__num::after {
   /* The lanes' height, written so that no lanes, a bus no longer active with
      no trip on screen, is no height at all: the clear space and gap above
      and below the lanes count only while there is a lane. */
-  min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (var(--scheduler-gap-clear) + var(--scheduler-gap) - var(--scheduler-lane-gap) + 1px)
+  min-block-size: calc(min(1, var(--scheduler-lanes, 1)) * (2 * var(--scheduler-row-clear) - var(--scheduler-lane-gap))
     + var(--scheduler-lanes, 1) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  /* The line under the row is added to that, so a row whose line a theme
+     gives up to the board's own edge is that much shorter, and its last
+     bar stands the same 8px from the edge. */
+  box-sizing: content-box;
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* A finger holding an empty cell opens the cell menu, so the browser's own
      hold gestures, the callout and text selection, are off. Safari reads only
@@ -717,7 +720,7 @@ button.scheduler-row-head__num::after {
 /* Placed and sized like a trip bar in the first lane. */
 .scheduler-skeleton-bar {
   position: absolute;
-  inset-block-start: var(--scheduler-gap-clear);
+  inset-block-start: var(--scheduler-row-clear);
   inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear));
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap) - var(--scheduler-gap-clear));
   block-size: var(--scheduler-bar-h);
@@ -826,7 +829,7 @@ button.scheduler-row-head__num::after {
 .scheduler-yard {
   display: none;
   position: absolute;
-  inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) - var(--scheduler-yard-w) / 2);
   inline-size: var(--scheduler-yard-w);
   block-size: var(--scheduler-bar-h);
@@ -872,7 +875,7 @@ button.scheduler-row-head__num::after {
    drawn stands in the first lane until a scroll brings it in, data.js's
    `data-folded`, so it never hangs below the board and lets it scroll past
    its last row, taking the day band with it. */
-.scheduler-track > :is(.scheduler-bar, .scheduler-yard)[data-folded] { inset-block-start: var(--scheduler-gap-clear); }
+.scheduler-track > :is(.scheduler-bar, .scheduler-yard)[data-folded] { inset-block-start: var(--scheduler-row-clear); }
 .scheduler-yard__icon { display: inline-flex; }
 .scheduler-yard__hours {
   color: var(--rux-text-primary);
@@ -921,7 +924,7 @@ button.scheduler-row-head__num::after {
   --scheduler-hover: var(--rux-tag-hover-gray);
   --scheduler-border: var(--rux-tag-border-gray);
   position: absolute;
-  inset-block-start: calc(var(--scheduler-gap-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
+  inset-block-start: calc(var(--scheduler-row-clear) + var(--scheduler-lane, 0) * (var(--scheduler-bar-h) + var(--scheduler-lane-gap)));
   /* `--scheduler-cut-start` and `--scheduler-cut-end` are what an end gives
      up to a yard card beside it; nothing otherwise. */
   inset-inline-start: calc(var(--scheduler-start) * var(--scheduler-day-w) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px));

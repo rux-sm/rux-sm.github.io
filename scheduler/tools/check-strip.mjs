@@ -152,11 +152,22 @@ const scenario = `(async () => {
     /* A yard card's mark goes to the bar its next bar shares a lane with, so
        on a bus where a bar moved lane the mark may move to a neighbour, as
        the card itself may; the mark is compared only on a bus whose bars all
-       kept their lanes. */
+       kept their lanes. It is half of its card, so it is compared only where
+       the card is: where its next bar too lies on days both strips hold. A
+       strip's last day cuts a bar short, and the bars after it are not drawn,
+       so there it can take another lane than a strip holding its whole span
+       gives it, and the card and its mark move with it. */
     const moved = new Set(grown.bars.filter(g => { const b = f.get(g.key); return b && g.lane !== b.lane; }).map(g => g.key.split('|')[0]));
-    for (const g of grown.bars.filter(b => inside(b.start, b.span) && inside(b.start + delta, b.span))) { const b = f.get(g.key); if (!b) { out.diffs.push({ key: g.key, only: 'grown' }); continue; } f.delete(g.key); out.compared++;
-      const cls = x => moved.has(g.key.split('|')[0]) ? x.cls.split(' ').filter(c => c !== 'scheduler-bar--yard-end').join(' ') : x.cls;
-      for (const k of ['start', 'span', 'cls', 'text', 'folded']) if ((k === 'cls' ? cls(g) !== cls(b) : g[k] !== b[k])) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
+    const busOf = x => x.key.split('|')[0];
+    const common = x => inside(x.start, x.span) && inside(x.start + delta, x.span);
+    const freshHere = fresh.bars.map(b => ({ ...b, start: b.start - delta }));
+    const cardHeld = (x, list) => { const next = list.find(n => busOf(n) === busOf(x) && n.lane === x.lane && n.start === x.start + x.span); return !!next && common(next); };
+    const cls = (x, list) => moved.has(busOf(x)) || !cardHeld(x, list) ? x.cls.split(' ').filter(c => c !== 'scheduler-bar--yard-end').join(' ') : x.cls;
+    out.marks = 0; out.marksAtEdge = 0;
+    for (const g of grown.bars.filter(common)) { const b = f.get(g.key); if (!b) { out.diffs.push({ key: g.key, only: 'grown' }); continue; } f.delete(g.key); out.compared++;
+      const marked = [[g, grown.bars], [b, freshHere]].filter(([x]) => x.cls.includes('scheduler-bar--yard-end'));
+      if (marked.length && !moved.has(busOf(g))) { if (marked.every(([x, list]) => cardHeld(x, list))) out.marks++; else out.marksAtEdge++; }
+      for (const k of ['start', 'span', 'cls', 'text', 'folded']) if ((k === 'cls' ? cls(g, grown.bars) !== cls(b, freshHere) : g[k] !== b[k])) out.diffs.push({ key: g.key, field: k, grown: String(g[k]).slice(0, 60), fresh: String(b[k]).slice(0, 60) });
       if (g.lane !== b.lane) out.laneDiffs++; }
     for (const key of f.keys()) out.diffs.push({ key, only: 'fresh' });
     // A card is compared only where both strips hold its day, as a bar is.
@@ -241,7 +252,7 @@ async function main() {
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
     let bad = false;
     for (const r of result.value.results) {
-      const words = `${r.name}: ${r.compared} bars the same as a whole draw${r.laneDiffs ? `, ${r.laneDiffs} in another lane` : ''}${!r.yardsSame && r.yardsSameButLane ? ', yard cards moved with them' : ''}`;
+      const words = `${r.name}: ${r.compared} bars the same as a whole draw${r.laneDiffs ? `, ${r.laneDiffs} in another lane` : ''}${!r.yardsSame && r.yardsSameButLane ? ', yard cards moved with them' : ''}, ${r.marks} yard marks compared${r.marksAtEdge ? `, ${r.marksAtEdge} by a strip's edge left out` : ''}`;
       if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
       if (!r.sameDays) { fail('strip', `${r.name}: the whole draw could not be brought to the same day`); bad = true; }
       if (r.unsettled) { fail('strip', `${r.name}: ${r.unsettled} bars not where their data-start says`); bad = true; }

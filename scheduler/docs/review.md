@@ -32,9 +32,9 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    it along; they must agree on every bar. `tools/check-strip.mjs` now
    proves they do, on invented trips in headless Chrome, two weeks on and
    four weeks back, comparing every bar's row, trip, leg, assignment, slot,
-   days, lane, classes, words and fold, and every yard card; it fails on a
-   growth broken on purpose. It takes twenty seconds, so it is run by hand
-   after a change to either renderer, not by `npm run check`.
+   days, lane, classes, words and fold, and every yard card and yard mark
+   on the days both strips hold; it fails on a growth broken on purpose. It
+   takes twenty seconds and runs in `npm run check`.
 
 3. **A jump past what is held redraws once.** The board holds seventeen
    weeks either side of where it last read, so scrolling and arrows never

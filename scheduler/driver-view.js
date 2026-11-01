@@ -252,7 +252,6 @@
     if (r.error) { problem("The link wasn't revoked, so it still works. Try again."); return; }
     link = null;
     page.clear();
-    page.say('info', 'This driver has no link', 'Tick their trips and create one.');
     refresh();
   }
 
@@ -334,7 +333,8 @@
     $('scheduler-send').hidden = true;
     $('scheduler-leg-link').hidden = true;
     driver = drivers.find(d => d.id === id) || null;
-    if (!driver) { page.say('info', 'Pick a driver', 'Tick their trips to send, and read their page as they will see it.'); return; }
+    // The picker itself says Pick a driver, so nothing else does.
+    if (!driver) return;
     history.replaceState(null, '', `driver-view.html?driver=${encodeURIComponent(id)}`);
     const [share] = await Promise.all([client.rpc('get_driver_schedule_share_for_driver', { p_driver_id: id }), loadLegs()]);
     if (share.error) { page.say('error', "The driver's link didn't load", 'Try again.', () => pick(id, drivers)); return; }
@@ -347,8 +347,8 @@
     drawList();
     refresh();
     $('scheduler-send').hidden = false;
+    // With no link, the list's own line says so above its Create link.
     if (link) await page.show(link.token);
-    else page.say('info', 'This driver has no link', 'Tick their trips and create one.');
   }
 
   async function start() {

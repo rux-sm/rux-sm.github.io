@@ -287,16 +287,23 @@
   // A second name for `note`, which the Route tab calls it by.
   const notice = (...args) => note(...args);
 
-  /* Above the board, in flow, for the notices that stand in for the grid:
-     nothing this week, or a week that would not load. The region starts as
-     screen-reader text for the loading skeleton; a notice makes it visible.
-     Everything else goes to `toast`. */
+  /* Above the board, in flow, for the notices that stand in for the grid: a
+     week that would not load, or a page that cannot read the schedule. The
+     region starts as screen-reader text for the loading skeleton; a notice
+     makes it visible. Everything else goes to `toast`. */
   function say(kind, title, subtitle, action) {
     statusEl.replaceChildren();
     if (!kind) { statusEl.hidden = true; return; }
     statusEl.classList.remove('rux--visually-hidden');
     statusEl.hidden = false;
     statusEl.appendChild(note(kind, title, subtitle, action, 'page'));
+  }
+  // What the grid already shows, an empty week, said only to a screen
+  // reader, so nothing above the board takes space.
+  function sayQuietly(text) {
+    statusEl.replaceChildren(text);
+    statusEl.classList.add('rux--visually-hidden');
+    statusEl.hidden = false;
   }
 
   // -- reading --------------------------------------------------------------
@@ -1343,9 +1350,8 @@
     else setRange(weekStart, weekEnd);
 
     const barCount = [...tracks.values()].reduce((n, list) => n + list.length, 0);
-    if (!barCount && strip) say('info', 'Nothing these weeks', 'No trip touches the weeks around this one.');
-    else if (!barCount) say('info', days > 7 ? 'Nothing these two weeks' : 'Nothing this week',
-      `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
+    if (!barCount) sayQuietly(strip ? 'No trip touches the weeks around this one.'
+      : `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
     else say(null);
 
     // The new bars and heads take what Samsara last said, and ask again if it is old.
@@ -1686,9 +1692,10 @@
     const [first, count] = availSlice.split(':').map(Number);
     availSlice = availSlice && first - shift >= 0 && first - shift <= total - 7 ? `${first - shift}:${count}` : '';
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
-    // The notice for an empty strip comes and goes with the trips; the room it takes is app.js's sum.
+    // The screen-reader line for an empty strip comes and goes with the trips.
+    // A notice it replaces gives back its room, which app.js refits.
     const barCount = [...laid.tracks.values()].reduce((n, list) => n + list.length, 0);
-    if (!barCount && statusEl.hidden) { say('info', 'Nothing these weeks', 'No trip touches the weeks around this one.'); window.Rux?.schedule?.fit?.(); }
+    if (!barCount && statusEl.hidden) sayQuietly('No trip touches the weeks around this one.');
     else if (barCount && !statusEl.hidden) { say(null); window.Rux?.schedule?.fit?.(); }
     window.SchedulerActivity?.note(`Drew ${Math.abs(shift)} days ${shift > 0 ? 'ahead' : 'behind'} from what is held`);
     return true;

@@ -221,22 +221,24 @@
 
 <main id="main-content" class="rux--content scheduler-live-page">
   <h1 class="rux--visually-hidden">Live map</h1>
-  <div id="scheduler-buses-notice" class="scheduler-live__notice" hidden>
-    <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-buses-notice-box">
-      <div class="rux--inline-notification__details">
-        <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-buses-notice-icon" href="#m-info-fill"/></svg>
-        <div class="rux--inline-notification__text-wrapper">
-          <div class="rux--inline-notification__title" id="scheduler-buses-notice-title"></div>
-          <div class="rux--inline-notification__subtitle" id="scheduler-buses-notice-text"></div>
-        </div>
-      </div>
-    </div>
-  </div>
   <!-- The map, and the panel of buses beside it on a wide screen or under
        it on a phone, On the road over the Yard; live.js fills both. -->
   <div class="scheduler-live">
     <div class="scheduler-live__map" id="scheduler-live-map"></div>
     <div class="scheduler-live__panel" id="scheduler-live-panel"></div>
+    <!-- What stops the map, such as Samsara not answering, over the map's
+         top so the map keeps its height. -->
+    <div id="scheduler-buses-notice" class="scheduler-live__notice" hidden>
+      <div class="rux--inline-notification rux--inline-notification--info" role="status" id="scheduler-buses-notice-box">
+        <div class="rux--inline-notification__details">
+          <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use id="scheduler-buses-notice-icon" href="#m-info-fill"/></svg>
+          <div class="rux--inline-notification__text-wrapper">
+            <div class="rux--inline-notification__title" id="scheduler-buses-notice-title"></div>
+            <div class="rux--inline-notification__subtitle" id="scheduler-buses-notice-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 

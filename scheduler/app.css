@@ -6226,8 +6226,8 @@ html[data-scheduler-takeover] {
    board does; on a phone the panel goes under the map. A bus's pin and its
    number in its tile wear its trip's colour from the bar's own palette. */
 .scheduler-live-page [hidden] { display: none; }
-.scheduler-live__notice { margin-block-end: var(--rux-spacing-05); }
 .scheduler-live {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 20rem;
   block-size: calc(100dvh - 3rem - 2 * var(--rux-spacing-05) - var(--scheduler-safe-bottom));
@@ -6236,6 +6236,15 @@ html[data-scheduler-takeover] {
   background: var(--rux-layer-01);
 }
 .scheduler-live__map { isolation: isolate; min-block-size: 0; background: var(--rux-layer-02); }
+/* A notice stands over the top of the map's own cell, so the card keeps the
+   window's height; the map's isolation keeps Leaflet's layers under it. */
+.scheduler-live__notice {
+  position: absolute;
+  z-index: 1;
+  grid-area: 1 / 1 / 2 / 2;
+  inset-block-start: var(--rux-spacing-05);
+  inset-inline: var(--rux-spacing-05);
+}
 /* Leaflet sets its own face on the map; the pins take the page's. */
 .scheduler-live__map.leaflet-container { font: inherit; }
 /* The panel stands on the page's own surface, so its tiles stand out on it as

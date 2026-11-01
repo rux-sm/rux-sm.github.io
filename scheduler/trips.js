@@ -250,7 +250,7 @@
       await FollowUp.save(db, { waitDays: Number(waitSelect.value), chaseDays: Number(chaseSelect.value) });
       window.Rux?.modal?.close?.('scheduler-follow-modal');
       drawList();
-      pair.say('success', 'Follow-ups saved.', '');
+      pair.result('success', 'Follow-ups saved.');
     } catch (e) {
       $('scheduler-follow-error').textContent = `The follow-ups did not save. ${e.message}`;
     } finally {

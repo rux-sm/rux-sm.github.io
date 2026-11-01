@@ -1403,7 +1403,7 @@
       }
       window.Rux?.modal?.close?.('scheduler-types-modal');
       drawList();
-      say('success', 'Vehicle types saved.', '');
+      result('success', 'Vehicle types saved.');
     } catch (e) {
       error.textContent = `The types did not save. ${e.message}`;
     } finally {

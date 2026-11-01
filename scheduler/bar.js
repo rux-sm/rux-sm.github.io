@@ -322,11 +322,12 @@
 
   /* Carbon status icons identify each driver; relief retains its role arrows.
      A trip that is done has no answer left to wait for, so its drivers carry
-     no status icon, only their names, unless one declined. Empty seats become Caution major inside
-     fourteen days of departure. */
+     no status icon, only their names, unless one declined. Empty seats inside
+     fourteen days of departure take Caution minor, the alert badge's yellow
+     triangle, so the bar has one warning colour. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   function crewEl(c, due, done) {
-    const tone = c.needed ? (due ? 'major' : 'off') : c.status.tone;
+    const tone = c.needed ? (due ? 'warning' : 'off') : c.status.tone;
     const item = el('span', ['scheduler-crew', c.status?.value === 'declined' && 'scheduler-crew--declined',
       c.needed && due && 'scheduler-crew--due'].filter(Boolean).join(' '));
     const dot = !RELIEF_ROLES.has(c.role);
@@ -335,7 +336,7 @@
         c.needed && 'scheduler-crew__mark--empty'].filter(Boolean).join(' '));
       const glyph = dot ? svgUse(c.needed ? (due ? '#i-warning--alt--filled' : '#i-circle-dash') : c.status.icon, '16', '0 0 32 32')
         : svgUse(c.icon, '16', c.box);
-      if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-major' : 'rux--icon-indicator--not-started')
+      if (dot) glyph.setAttribute('class', c.needed ? (due ? 'rux--icon-indicator--caution-minor' : 'rux--icon-indicator--not-started')
         : c.status.indicator);
       // Distant empty seats need no status indicator; the neutral label is enough.
       if (!c.needed || due || !dot) mark.appendChild(glyph);

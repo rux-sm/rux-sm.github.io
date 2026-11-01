@@ -2316,7 +2316,6 @@ button.scheduler-row-head__num::after {
 /* Marks use the driver status set, which a theme steps for its bars' fills. */
 .scheduler-crew__mark {
   --rux-status-gray: var(--scheduler-driver-neutral);
-  --rux-status-orange: var(--scheduler-driver-major);
   --rux-status-blue: var(--scheduler-driver-normal);
   --rux-status-green: var(--scheduler-driver-success);
   --rux-status-red: var(--scheduler-driver-error);
@@ -2659,9 +2658,8 @@ button.scheduler-row-head__num::after {
 .scheduler-crew__mark--success { color: var(--scheduler-driver-success); }
 .scheduler-crew__mark--error { color: var(--scheduler-driver-error); }
 .scheduler-crew__mark--warning { color: var(--scheduler-mark-warning); }
-/* Neutral workflow states stay gray; missing assignment takes Caution major. */
+/* Neutral workflow states stay gray; missing assignment takes the warning yellow. */
 .scheduler-crew__mark--off { color: var(--scheduler-driver-neutral); }
-.scheduler-crew__mark--major { color: var(--scheduler-driver-major); }
 /* In the bar menu the disc is the size of a menu icon. */
 .rux--menu-item__icon .scheduler-crew__mark { inline-size: var(--rux-spacing-05); block-size: var(--rux-spacing-05); }
 /* The bar menu's Call or text carries the card's Needs bell, in its warning

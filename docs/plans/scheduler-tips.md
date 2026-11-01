@@ -53,6 +53,11 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
 - **Updates:** the head is "Updates" and its count. Each update is one row,
   its words, then who and how long ago in the faded line the bus tip uses
   for a bus's make. The avatars go. Add update is the last row.
+- **An update is typed in the Updates tip,** as in the card now: Add update
+  opens a box in its place, Save or Enter adds it, and pressing an update
+  opens it there to change or delete. The fields and buttons take Carbon's
+  colours for the inverse surface, so adding an update stays one press from
+  the board, and the bar's right-click Add update opens the tip at its box.
 - **A driver's tip has one head at every stage:** their photo, or their
   initials, their full name, and one faded line under it. Each driver's icon
   opens that driver's own tip, so two drivers on one bus have two.
@@ -99,14 +104,7 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
 
 ## Questions
 
-- **Where is an update typed?** The card is the only place an update is
-  added, changed or deleted: Add update opens a box in it, the bar's
-  right-click Add update opens the card at that box, and pressing an update
-  opens it there to change. The Updates window opens only from Save, and
-  lists earlier updates without changing them. Recommended: the box and an
-  opened update stay in the Updates tip, its field in Carbon's colours for a
-  field on the inverse surface, so adding an update stays one press from the
-  board.
+None open.
 
 ## Tasks
 

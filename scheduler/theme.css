@@ -1394,7 +1394,6 @@
   --scheduler-footer-fg: #f4f4f4;
   --scheduler-footer-warning: var(--rux-status-yellow);
   --scheduler-driver-neutral: var(--rux-status-gray);
-  --scheduler-driver-major: var(--rux-status-orange);
   --scheduler-driver-normal: var(--rux-status-blue);
   --scheduler-driver-error: var(--rux-status-red);
   --scheduler-driver-success: var(--rux-status-green);

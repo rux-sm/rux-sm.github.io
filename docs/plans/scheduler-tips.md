@@ -15,7 +15,8 @@ stop's tick. Three do not: a trip's alert badge, its update line and the
 drivers' line on a bus out on the road. Those three are one card,
 `#scheduler-bar-shortcuts`, drawn by `drawCard` and `drawLiveCard` in
 `scheduler/data.js`. A driver's icon on a trip not yet on the road opens
-nothing, and gets a tip too.
+nothing, and gets a tip too. Space, which opened the old card, becomes the
+keyboard's way to move a trip to another bus, which only a drag can do now.
 
 ## Decisions
 
@@ -84,6 +85,13 @@ nothing, and gets a tip too.
   reads it:** the board adds `photo_path` to its `drivers` read and signs a
   driver's link when their tip first opens, with the initials until it
   loads.
+- **Holding Space carries the selected trip, as holding the mouse button
+  does,** since the card Space opened goes. ↑ and ↓ move it to the bus above
+  or below, and letting go drops it there through the drag's own drop: the
+  unassigned row showing, its warnings, its saving mark and its Undo. Escape
+  while holding puts it back unsaved, and a let-go with no arrow writes
+  nothing. The held key's repeats are ignored, and days still change only in
+  the editor.
 - **The phone's docked sheet keeps its look and tabs,** because it is a sheet
   along the foot, not a tip. Its rows are the new ones.
 - **This plan's tasks go before the
@@ -92,9 +100,7 @@ nothing, and gets a tip too.
 
 ## Questions
 
-- **What does Space on a trip open?** It opens the whole card today, with the
-  trip's destination as its head. Recommended: the Updates tip, and on a bus
-  out on the road the first driver's tip.
+None open.
 
 ## Tasks
 
@@ -113,6 +119,10 @@ nothing, and gets a tip too.
       `driver-photos`.
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
       live card.
+- [ ] Make a held Space carry the selected trip in `data.js`, ↑ and ↓ a bus
+      at a time, the let-go dropping it through the drag's drop and Escape
+      putting it back, with its writes proved by
+      `scheduler/docs/proving-a-save.md` rather than a real move.
 - [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
       every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

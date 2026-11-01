@@ -15,17 +15,17 @@ plan of its own, which this one writes.
 
 A day on the strip is a fixed 175px, so a change of width moves no trip.
 What is left: in an arrow's glide the median frame takes 4.3ms and one in ten
-about 10ms, most of it the 815 sticky rows of the 163 trips drawn, and
-whole-board restyles of 58–78ms come while idle and scrolling.
+about 10ms, most of it the 815 sticky rows of the 163 trips drawn. A window
+resize still has one frame of about 58ms, and of 74–93ms where it crosses one
+of Carbon's breakpoints, a restyle of the whole page with no script in it.
 
 ## Decisions
 
-- **The whole-board restyles are traced to their trigger and fixed there,
-  first,** because one trigger may be behind the scroll listener's 56ms
-  forced layout, the idle hitches, the 70–85ms frame a window resize has and
-  the trip editor's pause. `.scheduler-grid--busy`, which fades the whole
-  grid to 55% while the page reads, is the first suspect; `aria-busy` is
-  not, since no stylesheet reads it.
+- **A window resize's slow frame is measured again once the sticky words
+  go,** because it is a restyle of every element: crossing one of Carbon's
+  breakpoints, 1056, 1220 or 1312px, changes which rules apply, and the
+  frame shrinks with the elements the board draws. The 58ms frame that comes
+  where no breakpoint is crossed is traced then.
 - **A trip's words stay at its own start; nothing sticks or slides,** as rux
   decided: the sticking was made before the strip scrolled continuously,
   and a swipe now shows the rest. A trip that starts a day or two before the
@@ -76,10 +76,9 @@ None open.
 
 ## Tasks
 
-- [ ] Trace the whole-board restyles to their trigger and fix it there, then
-      measure what is left of the trip editor's pause and a window resize's
-      slow frame.
 - [ ] Delete the sticky words.
+- [ ] Measure a window resize again, and trace the 58ms frame it has where
+      it crosses no breakpoint.
 - [ ] Set a trip's `aria-expanded` where its card opens and closes.
 - [ ] Write the native-strip plan.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files

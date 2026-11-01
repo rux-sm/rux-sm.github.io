@@ -7,7 +7,8 @@
 // Design's panel between markers, the sprite currency rule for the pages that paste the
 // sprite by hand, the same rule for the home screen icons drawn from a
 // favicon, the parse rule for every script, the names sweep over every text
-// file in the repository, the switcher rule, the lock rule and the print rule.
+// file in the repository, the switcher rule, the lock rule, the print rule and
+// the selector rule.
 // `--full` adds Design's `npm run verify` and LN Guide's paper check, which
 // prints every Document and warns of a near-empty last page. Exits 1 on any failure. The
 // pre-commit hook runs the fast form; CI runs --full.
@@ -160,6 +161,24 @@ for (const f of FORMS) {
 }
 console.log(`  ${painted ? 'FAIL' : ' ok '}  forms   ${FORMS.length} files${painted ? '' : ', nothing on a form is painted as a picture'}`);
 if (painted) failed.push('print');
+
+// THE SELECTOR RULE. A selector that matches class names by a fragment,
+// `[class*=…]`, `[class^=…]`, `[class$=…]` or `[class|=…]`, cannot say which
+// class it means, so the browser restyles everything under any element whose
+// classes change: one in Design's rux-overrides.css made every class change
+// on the scheduler's grid restyle its 6,500 elements, about 40ms. A selector
+// names its classes. Every stylesheet and every page's <style> is read.
+console.log('\n── selectors');
+const FRAGMENT = /\[\s*class\s*[*^$|]=/;
+const sheets = text.filter(p => p.endsWith('.css') || p.endsWith('.html'));
+let fragments = 0;
+for (const p of sheets) {
+  let s = readFileSync(join(ROOT, p), 'utf8');
+  if (p.endsWith('.html')) s = [...s.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1]).join('\n');
+  if (FRAGMENT.test(s.replace(/\/\*[\s\S]*?\*\//g, ''))) { fragments++; console.log(`  FAIL  ${p}: a selector matches class names by a fragment; name the classes it means`); }
+}
+console.log(`  ${fragments ? 'FAIL' : ' ok '}  sheets  ${sheets.length} files${fragments ? '' : ', every selector names its classes'}`);
+if (fragments) failed.push('selectors');
 
 if (FULL) step('design verify', 'npm', ['run', 'verify', '--silent'], { cwd: DS });
 if (FULL) step('paper', process.execPath, ['ln/tools/check-paper.mjs']);

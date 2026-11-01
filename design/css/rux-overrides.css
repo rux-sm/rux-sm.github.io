@@ -1092,7 +1092,11 @@
     --rux-layout-size-height-md: 2rem;
   }
 }
-:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--btn:not([class*="rux--layout--size-"]):not([class*="rux--layout--size-"] *) {
+/* A button with no size of its own, in no sized region, takes the theme's
+   height. The six sizes are named rather than matched by a fragment of the
+   class, which would have the browser restyle everything under any element
+   whose classes change. */
+:is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--btn:not(.rux--layout--size-xs, .rux--layout--size-sm, .rux--layout--size-md, .rux--layout--size-lg, .rux--layout--size-xl, .rux--layout--size-2xl):not(:is(.rux--layout--size-xs, .rux--layout--size-sm, .rux--layout--size-md, .rux--layout--size-lg, .rux--layout--size-xl, .rux--layout--size-2xl) *) {
   --rux-layout-size-height: var(--rux-layout-size-height-md);
 }
 :is([data-theme="ant-dark"], [data-theme="geist-dark"], [data-theme="rux-dark"], [data-theme^="apple-"]) .rux--date-picker__input:not(.rux--date-picker__input--lg, .rux--date-picker__input--sm),
@@ -3101,7 +3105,7 @@
 [data-theme^="apple-"] .rux--tile {
   box-shadow: none;
 }
-[data-theme^="apple-"] :is(.rux--side-panel, .rux--modal-container, .rux--popover-content, .rux--data-table-container, .rux--header-panel, .rux--side-nav, .rux--tile, [class*="rux--layer-"]) .rux--tile {
+[data-theme^="apple-"] :is(.rux--side-panel, .rux--modal-container, .rux--popover-content, .rux--data-table-container, .rux--header-panel, .rux--side-nav, .rux--tile, .rux--layer-one, .rux--layer-two, .rux--layer-three) .rux--tile {
   box-shadow: inset 0 0 0 1px var(--rux-border-subtle-02);
 }
 /* A CHECKBOX AND A RADIO REST AS A GREY FILL WITH NO RING, measured on the

@@ -24,9 +24,6 @@ button beside Save.
 
 ## Questions
 
-- Should Activity go, the header showing a thin Carbon progress line while
-  the page loads and saying only what went wrong, or stay as an option with
-  plainer words?
 - Should Cancel trip move from the editor's footer into a ⋮ in the editor's
   head, leaving Reset and Save in the footer, so a cancel is never a slip
   beside Save?

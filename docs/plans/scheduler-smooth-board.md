@@ -55,15 +55,15 @@ glide the median frame takes 4.3ms and one in ten about 10ms, most of it the
   dims, with Carbon's overlay fade. With reduced motion the panel only fades
   and the week moves at once.
 
+- **Then sideways scrolling moves to the browser's own,** one long strip the
+  browser scrolls with the Mac's trackpad momentum and day snapping, drawing
+  only the trips near the view, in place of the board's own wheel handling,
+  glides and strip redraws, which run on the page's thread. It is the
+  largest change, so it gets a plan of its own once these land.
+
 ## Questions
 
-- Once these land, should the board's sideways scrolling be rebuilt on the
-  browser's own: one long strip the browser scrolls, with the Mac's own
-  trackpad momentum and day snapping, drawing only the trips near the view?
-  It takes out the board's own wheel handling, glides and strip redraws,
-  which run on the page's thread, and the two motions
-  `design/docs/motion.md` lists for want of a Carbon answer. It is the
-  largest change here, so it would get a plan of its own.
+None open.
 
 ## Tasks
 
@@ -79,3 +79,4 @@ glide the median frame takes 4.3ms and one in ten about 10ms, most of it the
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files
       a panel arriving under expressive motion where Carbon's side panel is
       productive.
+- [ ] Write the plan for scrolling the strip on the browser's own.

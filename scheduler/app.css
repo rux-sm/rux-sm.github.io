@@ -2779,10 +2779,6 @@ button.scheduler-row-head__num::after {
   inline-size: 2px;
 }
 .scheduler-viewer__resize:hover::after { background: var(--rux-border-interactive); }
-/* While its handle is held the column is lifted over the week, which keeps
-   its place under it until the drag ends; see data.js. Above the week's
-   sticky bus column, day band and corner, 3 to 5, as its open print menu is. */
-.scheduler-viewer:has(> .scheduler-viewer__resize[data-dragging]) { z-index: 6; }
 .scheduler-viewer__resize:focus-visible::after,
 .scheduler-viewer__resize[data-dragging]::after { background: var(--rux-focus); }
 /* A STORED FILE OPENED LARGER stands in a window centred over the page, as

@@ -14512,14 +14512,13 @@
      take the drag, and the width follows how far the pointer has moved from
      where it went down: the column is left of the week, so right is wider.
 
-     The week is not laid out again while the pointer moves: fitting its bars
-     to a new width costs far more than a frame, and it is the whole of what
-     made a drag stutter. It keeps its width and its place, and the column,
-     lifted over it, grows across the week's near side, so the week never
-     reaches the editor or any panel on its far side; once the pointer is let
-     go the column is beside it again and the week takes its place and is
-     fitted once. The limits are read once, and the width is set once a
-     frame. */
+     The week gives way as the column grows, frame by frame, but keeps its
+     days' width while the pointer moves: fitting its bars to a new day width
+     costs far more than a frame, and it is the whole of what made a drag
+     stutter. So app.js leaves the days as they are while the week holds
+     `data-days-held`, the week shows fewer of them or more and scrolls as it
+     always can, and once the pointer is let go the days are shared out again
+     once. The limits are read once, and the width is set once a frame. */
   resizer.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -14530,18 +14529,13 @@
     const { min, max } = resizeLimits();
     resizer.setPointerCapture(e.pointerId);
     resizer.setAttribute('data-dragging', '');
-    // Read first: with `flex: none` the week measures as its content, not as it is shown.
-    const weekW = frameEl.getBoundingClientRect().width;
-    frameEl.style.flex = 'none';
-    frameEl.style.inlineSize = `${weekW}px`;
-    boardEl.style.overflowX = 'clip';
+    schEl.dataset.daysHeld = '';
     let x = startX;
     let pending = 0;
     const apply = () => {
       pending = 0;
       const w = Math.min(max, Math.max(min, startW + (x - startX) * sign));
       viewerEl.style.setProperty('--scheduler-viewer-w', `${w / rem}rem`);
-      frameEl.style.marginInlineStart = `${startW - w}px`;
       resizer.setAttribute('aria-valuenow', String(Math.round(w)));
     };
     const move = ev => {
@@ -14555,8 +14549,7 @@
       resizer.removeEventListener('pointermove', move);
       resizer.removeEventListener('pointerup', stop);
       resizer.removeEventListener('pointercancel', stop);
-      for (const prop of ['flex', 'inlineSize', 'marginInlineStart']) frameEl.style[prop] = '';
-      boardEl.style.overflowX = '';
+      delete schEl.dataset.daysHeld;
       syncResizer();
       placeRoom();
       window.Rux?.schedule?.fit?.();

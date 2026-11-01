@@ -213,9 +213,12 @@
   if (sch && 'ResizeObserver' in window) {
     // The pane is observed, not the grid: the grid's width is what this
     // changes, so observing it would feed its own output back in.
+    // While a document beside the week is dragged wider, data.js holds the
+    // days' width, so the week gives way without its bars being laid out
+    // again each frame; they are fitted once the drag ends.
     const fit = () => {
       fitHeight(sch);
-      fitColumns(sch);
+      if (!sch.hasAttribute('data-days-held')) fitColumns(sch);
     };
 
     // Three triggers: a window resize; the observer, for a box change the

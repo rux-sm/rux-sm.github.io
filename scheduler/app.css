@@ -146,8 +146,19 @@
 .scheduler-week--scroll {
   scroll-snap-type: x mandatory;
   scroll-padding-inline-start: var(--scheduler-head-w);
+  /* THE DAYS IN VIEW STAND 8PX CLEAR OF ALL FOUR EDGES, the gap between two
+     bars, when the strip is at rest: `--scheduler-edge`, a bar's own 4px
+     clear space again, is added beside the bus column, under the day
+     band, at the board's foot and, by app.js, at its right. Beside the
+     column it is the column's own width, which the head cells leave
+     unpainted, so the day before shows its last 4px there: empty, or a
+     trip running on into the days in view. */
+  --scheduler-edge: var(--scheduler-gap-clear);
 }
 .scheduler-week--scroll .scheduler-day { scroll-snap-align: start; }
+.scheduler-week--scroll :is(.scheduler-corner, .scheduler-row-head) { margin-inline-end: var(--scheduler-edge); }
+.scheduler-week--scroll :is(.scheduler-corner, .scheduler-day) { margin-block-end: var(--scheduler-edge); }
+.scheduler-week--scroll .scheduler-grid { padding-block-end: var(--scheduler-edge); }
 
 /* The grid: one label column, then one column per day. A row is
    display: contents so its head and its track are both grid children and
@@ -305,12 +316,13 @@
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head__dot { display: block; }
 .scheduler-week[data-bar-rows="1"] .scheduler-row--unassigned .scheduler-row-head__num { white-space: nowrap; }
 /* Below the last row the board's own sheet carries that rule on to its foot,
-   on the head's own pixel, drawn in the pane's background so it stays put as
-   the board scrolls and the heads cover it where there are rows. */
+   on the head's own pixel, inside the strip's edge the heads leave
+   unpainted, drawn in the pane's background so it stays put as the board
+   scrolls and the heads cover it where there are rows. */
 .scheduler-frame > .scheduler-week:not(.scheduler-week--static) {
   background-image: linear-gradient(var(--rux-border-subtle-01), var(--rux-border-subtle-01));
   background-size: 1px 100%;
-  background-position: calc(var(--scheduler-head-w) - 1px) 0;
+  background-position: calc(var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px) 0;
   background-repeat: no-repeat;
 }
 .scheduler-row-head__top {

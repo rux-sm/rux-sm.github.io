@@ -163,7 +163,11 @@
     ruled.remove();
     if (!pane || !Number.isFinite(headBase) || !Number.isFinite(dayMin)) return;
 
-    const available = pane - headBase;
+    /* The strip's days stand `--scheduler-edge` clear of the bus column and
+       of the pane's right edge, so both are taken from the days' share and
+       the left one is given to the column, which leaves it unpainted. */
+    const edge = strip && corner ? parseFloat(getComputedStyle(corner).marginInlineEnd) || 0 : 0;
+    const available = pane - headBase - 2 * edge;
     const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
     const days = !strip ? parseInt(getComputedStyle(sch).getPropertyValue('--scheduler-days'), 10) || 7
       : fits ? Math.min(14, Math.max(7, Math.floor(available / dayMin))) : 7;
@@ -172,7 +176,7 @@
       sch.dispatchEvent(new Event('scheduler:days-in-view'));
     }
     let day = Math.floor(available / days);
-    let head = headBase;
+    let head = headBase + edge;
     const crowded = day < dayMin;
     if (crowded) {
       // The floor binds and the grid is wider than the pane: it scrolls, there
@@ -183,7 +187,7 @@
       // keeps its width whatever opens beside the week, and the bus column
       // takes the few pixels the days could not share, so the week fills the
       // frame and its edges stay on the header's.
-      head = pane - day * days;
+      head = pane - day * days - edge;
     }
     sch.style.setProperty('--scheduler-day-track', `${day}px`);
     // Bars, stripes and day rules are placed from this rather than from a

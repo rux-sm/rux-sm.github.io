@@ -4,9 +4,9 @@
    A message is its text, whether it is urgent, the people it names and the
    records it links to, in one `chat_messages` row; the database stamps who
    sent it, when, and any edit or delete. `chat_reads` holds the newest
-   message each person has seen, so the dot on the header action is right on
-   every computer. Both tables arrive live on the `scheduler-team-chat`
-   channel.
+   message each person has seen and when, so the dot on the header action
+   and the faces under the messages are right on every computer. Both tables
+   arrive live on the `scheduler-team-chat` channel.
 
    An urgent message opens the panel on the screen of each person it names,
    or of everyone when it names no one, and leaves the focus where it was.
@@ -105,13 +105,15 @@
     }));
   }
 
-  /* THE STATE. `messages` by id; `reads`, each person's newest read; the
-     people a message can name; and what the box holds while it is written. */
+  /* THE STATE. `messages` by id; `reads`, each person's newest read, and
+     `readAt`, when they read it; the people a message can name; and what the
+     box holds while it is written. */
   let me = null;
   let owner = false;
   const people = new Map();
   const messages = new Map();
   const reads = new Map();
+  const readAt = new Map();
   let oldest = Infinity;
   let more = true;
   let channel = null;
@@ -272,7 +274,6 @@
   /* PEOPLE. A name is read from `chat_people()`, so a renamed person shows
      their new name; someone no longer on the staff is Former staff. */
   const nameOf = id => people.get(id)?.name ?? 'Former staff';
-  const firstName = id => nameOf(id).split(/\s+/)[0];
   const forMe = msg => msg.mentions?.includes(me.id);
   const urgentForMe = msg => msg.urgent && (!msg.mentions?.length || forMe(msg));
 
@@ -360,18 +361,70 @@
     return wrap;
   }
 
-  // Who has read an urgent message: those it names, or everyone but its sender.
-  function readLine(msg) {
-    const who = msg.mentions?.length ? msg.mentions : [...people.keys()];
-    const others = who.filter(id => id !== msg.author_id);
-    const seen = others.filter(id => (reads.get(id) ?? 0) >= msg.id).map(firstName);
-    const line = el('div', 'scheduler-team-msg__read');
-    line.textContent = seen.length ? `Read by ${seen.join(', ')}` : 'Not read yet';
+  /* WHO HAS SEEN IT. Each person but this one sits under the newest message
+     shown that they have read, unless it is their own, which says as much; a
+     deleted message holds no one, so its readers sit at the one above. */
+  function readSpots(all) {
+    const shown = all.filter(m => !m.deleted_at);
+    const spots = new Map();
+    for (const id of people.keys()) {
+      if (id === me.id) continue;
+      const at = shown.findLast(m => m.id <= (reads.get(id) ?? 0));
+      if (!at || at.author_id === id) continue;
+      if (!spots.has(at.id)) spots.set(at.id, []);
+      spots.get(at.id).push(id);
+    }
+    return spots;
+  }
+  function seenBy(id) {
+    const at = readAt.get(id) && new Date(readAt.get(id));
+    if (!at) return `Seen by ${nameOf(id)}`;
+    const day = dayKey(at) === dayKey(new Date()) ? '' : ` on ${DAY.format(at)}`;
+    return `Seen by ${nameOf(id)}${day} at ${TIME.format(at)}`;
+  }
+
+  // Of those an urgent message is for -- those it names, or everyone but its sender -- how many have seen it.
+  function countOf(msg) {
+    const who = (msg.mentions?.length ? msg.mentions : [...people.keys()])
+      .filter(id => id !== msg.author_id && people.has(id));
+    if (!who.length) return null;
+    const seen = who.filter(id => (reads.get(id) ?? 0) >= msg.id);
+    const unseen = who.filter(id => !seen.includes(id));
+    const line = el('span', 'scheduler-team-msg__read', `Seen by ${seen.length} of ${who.length}`);
+    line.title = [seen.length && `Seen: ${seen.map(nameOf).join(', ')}`, unseen.length && `Not yet: ${unseen.map(nameOf).join(', ')}`]
+      .filter(Boolean).join('\n');
     return line;
   }
 
+  /* The faces of those who stopped reading at this message, at its end, three
+     and then a count, each saying who and when; an urgent message's count of
+     who has seen it stands before them. */
+  const FACES = 3;
+  function seenOf(msg, ids = []) {
+    const count = msg.urgent ? countOf(msg) : null;
+    if (!count && !ids.length) return null;
+    const row = el('div', 'scheduler-team-msg__seen');
+    if (count) row.appendChild(count);
+    const shown = ids.slice(0, FACES);
+    for (const id of shown) {
+      const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-team-msg__seen-face');
+      face.setAttribute('aria-hidden', 'true');
+      face.title = seenBy(id);
+      account.drawAvatar(face, people.get(id), 'sm');
+      row.appendChild(face);
+    }
+    if (ids.length > shown.length) {
+      const more = el('span', 'scheduler-team-msg__seen-more', `+${ids.length - shown.length}`);
+      more.setAttribute('aria-hidden', 'true');
+      more.title = ids.slice(shown.length).map(seenBy).join('\n');
+      row.appendChild(more);
+    }
+    if (ids.length) row.appendChild(el('span', 'rux--visually-hidden', `Seen by ${ids.map(nameOf).join(', ')}`));
+    return row;
+  }
+
   let deleteArmed = null;
-  function messageOf(msg, prev) {
+  function messageOf(msg, prev, seenHere) {
     const item = el('li', 'scheduler-team-msg');
     item.dataset.id = msg.id;
     const mine = msg.author_id === me.id;
@@ -408,7 +461,8 @@
         for (const link of msg.links) links.appendChild(linkOf(link, false));
         main.appendChild(links);
       }
-      if (msg.urgent) main.appendChild(readLine(msg));
+      const seen = seenOf(msg, seenHere);
+      if (seen) main.appendChild(seen);
     }
     item.append(face, main);
 
@@ -435,6 +489,7 @@
   function draw() {
     const atFoot = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 40;
     const all = sorted();
+    const spots = readSpots(all);
     const frag = document.createDocumentFragment();
     let prev = null;
     let day = '';
@@ -445,7 +500,7 @@
         frag.appendChild(el('li', 'scheduler-team-day', dayName(d)));
         prev = null;
       }
-      frag.appendChild(messageOf(msg, prev));
+      frag.appendChild(messageOf(msg, prev, spots.get(msg.id)));
       prev = msg;
     }
     list.replaceChildren(frag);
@@ -466,9 +521,15 @@
     action.setAttribute('aria-label', unread.length ? `Team chat, ${unread.length} unread` : 'Team chat');
   }
 
-  // Marks every message shown read, while the panel is open on a page in view.
+  /* SEEN. Every message shown is marked read while the panel is open on a
+     page in view and the person is at this screen: at once when they opened
+     the panel or sent, and otherwise at their next press, key, wheel or
+     pointer move, so a message that opened the panel by itself, or came
+     while it stood open, is not counted read at an empty desk. */
   let marking = null;
+  let waiting = false;
   function markRead() {
+    waiting = false;
     if (!isOpen() || document.hidden) return;
     const newest = Math.max(0, ...messages.keys());
     if (newest <= (reads.get(me.id) ?? 0)) return;
@@ -480,6 +541,9 @@
         if (error) console.info('scheduler: the chat could not mark messages read --', error.message);
       });
     }, 300);
+  }
+  for (const type of ['pointerdown', 'pointermove', 'keydown', 'wheel']) {
+    document.addEventListener(type, () => { if (waiting) markRead(); }, { capture: true, passive: true });
   }
 
   /* READING. The newest page on opening, each earlier page on asking, and
@@ -497,9 +561,15 @@
     await readRecords(data.flatMap(m => m.links ?? []));
     return data;
   }
+  // A read mark only moves forward, as `chat_mark_read` keeps it.
+  function noteRead(r) {
+    if (Number(r.last_read_id) < (reads.get(r.profile_id) ?? 0)) return;
+    reads.set(r.profile_id, Number(r.last_read_id));
+    if (r.read_at) readAt.set(r.profile_id, r.read_at);
+  }
   async function readReads() {
-    const { data } = await client.from('chat_reads').select('profile_id,last_read_id');
-    for (const r of data ?? []) reads.set(r.profile_id, Math.max(reads.get(r.profile_id) ?? 0, Number(r.last_read_id)));
+    const { data } = await client.from('chat_reads').select('profile_id,last_read_id,read_at');
+    for (const r of data ?? []) noteRead(r);
   }
   earlier.addEventListener('click', async () => {
     const top = scroller.scrollHeight - scroller.scrollTop;
@@ -523,11 +593,11 @@
         draw();
         if (isNew && msg.author_id !== me.id) arrive(msg);
         drawDot();
-        markRead();
+        waiting = true;
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_reads' }, ({ new: r }) => {
         if (!r?.profile_id) return;
-        reads.set(r.profile_id, Math.max(reads.get(r.profile_id) ?? 0, Number(r.last_read_id)));
+        noteRead(r);
         draw();
         drawDot();
       })
@@ -548,7 +618,7 @@
       draw();
       for (const msg of fresh) if (msg.id > before && msg.author_id !== me.id && before) arrive(msg);
       drawDot();
-      markRead();
+      waiting = true;
     } catch { /* the next wake tries again */ }
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) { wake(); } });
@@ -585,9 +655,9 @@
     tabStops(true);
     draw();
     scroller.scrollTop = scroller.scrollHeight;
-    if (focusOnOpen) box.focus({ preventScroll: true });
+    // A press opened it, so the person is here; a message that opened it waits for them.
+    if (focusOnOpen) { box.focus({ preventScroll: true }); markRead(); } else waiting = true;
     focusOnOpen = true;
-    markRead();
   });
   panel.addEventListener('rux:header-panel-closed', () => {
     tabStops(false);

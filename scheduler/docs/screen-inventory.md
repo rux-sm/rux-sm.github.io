@@ -77,8 +77,13 @@ unread message puts a dot on the action, in the urgent colour when it is
 urgent or names the person, and a toast while no other toast is up. An
 urgent message opens the panel for everyone it names, or everyone when it
 names no one, without moving the focus, plays two notes unless the panel's
-sound is off, and says who has read it. The bell turns on the browser's
-notifications for urgent messages and names while the tab is behind others.
+sound is off, and says how many of those it is for have seen it. Under each
+message are the 16px faces of those who stopped reading there, three and
+then a count, each saying when. A message is seen once it is in the open
+panel on a page in view and the person has pressed, typed, scrolled or moved
+the pointer since it came, so one that opened the panel by itself is not
+seen at an empty desk. The bell turns on the browser's notifications for
+urgent messages and names while the tab is behind others.
 
 ## 3. Schedule view in detail
 

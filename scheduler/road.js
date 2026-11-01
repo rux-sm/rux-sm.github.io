@@ -87,8 +87,9 @@
      the office's clock or null. A time saved with no date is on the leg's
      first day, or the next day where it is earlier on the clock than the
      time before it, by past-midnight.js's rule. A stop is never due before
-     the one before it: a dated time that would be is on the next day, since
-     an older row dates a time past midnight a day early. */
+     the one before it: in the hour the clocks go back it takes the second
+     reading of the time, and a dated time that would still be is on the next
+     day, since an older row dates a time past midnight a day early. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
     const legOf = W.legByKey(trip, leg);
@@ -104,6 +105,7 @@
         else if (window.SchedulerPastMidnight.after(last, time)) day = dayFrom(day, 1);
         last = time;
         due = W.officeInstant(day, time);
+        if (before != null && due < before) due = W.officeInstant(day, time, true);
         while (before != null && due < before) { day = dayFrom(day, 1); due = W.officeInstant(day, time); }
         before = due;
       }

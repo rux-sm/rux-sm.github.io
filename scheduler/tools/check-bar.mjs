@@ -9,6 +9,16 @@
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 
+/* The samples are drawn from an ordinary noon in McAllen, 27 October 2026,
+   the clock running on from there, so none of their times falls in the hour
+   the clocks go back, which reads twice; that hour is checked on its own. */
+const RealDate = Date;
+const NOON = RealDate.parse('2026-10-27T12:00:00-05:00'), STARTED = RealDate.now();
+globalThis.Date = class extends RealDate {
+  constructor(...args) { super(...(args.length ? args : [RealDate.now() - STARTED + NOON])); }
+  static now() { return RealDate.now() - STARTED + NOON; }
+};
+
 /* ── A stand-in page ──────────────────────────────────────────────────────
    Elements with classes, attributes, a dataset kept in those attributes,
    style properties, children and text, found by class and attribute
@@ -352,6 +362,11 @@ expect('late back: the expected return in amber in place of the plan, or how lon
     // 45 minutes over when drawn, or 46 when the draw falls into the next minute.
     /^\+4[56]m$/.test(text(row(lit('Past its return')), '.scheduler-road__over') ?? ''), has(row(lit('At highway speed')), '.scheduler-road__over')],
   [[false, true], true, false]);
+expect('the hour the clocks go back: a leg leaves at the first 1:30 and is back at the second',
+  [Week.officeInstant('2026-11-01', '01:30'), Week.officeInstant('2026-11-01', '01:30', true),
+    Week.backAt({ from: '2026-10-31', to: '2026-10-31', back: '01:30', backDays: 1 }), Week.officeInstant('2026-11-01', '02:30', true)]
+    .map(ms => new Date(ms).toISOString()),
+  ['2026-11-01T06:30:00.000Z', '2026-11-01T07:30:00.000Z', '2026-11-01T07:30:00.000Z', '2026-11-01T08:30:00.000Z']);
 expect('the bar carries no speed or fuel: those are the bus column\'s',
   ['.scheduler-road__card', '.scheduler-road__big', '.scheduler-road__pct'].map(q => has(lit('At highway speed'), q)), [false, false, false]);
 expect('a trip in progress wears no bus icon, and its drivers\' rows open the live card',

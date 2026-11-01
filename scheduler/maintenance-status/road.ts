@@ -315,10 +315,14 @@ const window = {};
 
   /* THE OFFICE'S CLOCK. A McAllen date and time as an instant, whatever zone
      the browser is in: the offset is found at a first guess and checked once
-     more, which settles a guess across a clock change. A leg leaves the yard
-     at its departure, or its first day's start with none; it is back at its
-     yard return, on the day after `to` when that is past midnight, or with no
-     return at the late-return hour after its last day. */
+     more, which settles a guess across a clock change. The night the clocks
+     go back, 1:00 to 1:59 comes twice, and `later` takes the second reading
+     where the first is otherwise taken, so a leg leaves at the first and is
+     back at the second, and a bus is never thought late or home an hour
+     early. A leg leaves the yard at its departure, or its first day's start
+     with none; it is back at its yard return, on the day after `to` when that
+     is past midnight, or with no return at the late-return hour after its
+     last day. */
   // Made once: a draw reads the office's clock about 1,600 times.
   const OFFICE_WALL = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hourCycle: 'h23',
     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
@@ -327,17 +331,21 @@ const window = {};
     const n = t => Number(parts.find(p => p.type === t)?.value);
     return Date.UTC(n('year'), n('month') - 1, n('day'), n('hour'), n('minute'));
   };
-  const officeInstant = (day, time) => {
+  const HOUR_MS = 36e5;
+  const officeInstant = (day, time, later = false) => {
     const [y, m, d] = String(day).split('-').map(Number);
     const [h, min] = String(time || '00:00').split(':').map(Number);
     const asUtc = Date.UTC(y, m - 1, d, h || 0, min || 0);
     const first = asUtc - (officeWall(asUtc) - asUtc);
-    return asUtc - (officeWall(first) - first);
+    const at = asUtc - (officeWall(first) - first);
+    // A wall time read twice is an hour either side of `at`, which is one of them.
+    if (!later) return officeWall(at - HOUR_MS) === asUtc ? at - HOUR_MS : at;
+    return officeWall(at + HOUR_MS) === asUtc ? at + HOUR_MS : at;
   };
   const departAt = leg => officeInstant(leg.from, leg.depart);
   const backAt = leg => (leg.back
-    ? officeInstant(dayFrom(leg.to, leg.backDays ?? 0), leg.back)
-    : officeInstant(dayFrom(leg.to, 1), `${Math.floor(lateBefore / 60)}:${lateBefore % 60}`));
+    ? officeInstant(dayFrom(leg.to, leg.backDays ?? 0), leg.back, true)
+    : officeInstant(dayFrom(leg.to, 1), `${Math.floor(lateBefore / 60)}:${lateBefore % 60}`, true));
 
   /* THE DAYS A LEG TAKES, from its dates and its times as `timesOf` gives
      them. The bus is back on the leg's last day, or the day after when the
@@ -524,8 +532,9 @@ const window = {};
      the office's clock or null. A time saved with no date is on the leg's
      first day, or the next day where it is earlier on the clock than the
      time before it, by past-midnight.js's rule. A stop is never due before
-     the one before it: a dated time that would be is on the next day, since
-     an older row dates a time past midnight a day early. */
+     the one before it: in the hour the clocks go back it takes the second
+     reading of the time, and a dated time that would still be is on the next
+     day, since an older row dates a time past midnight a day early. */
   function stopsOf(trip, leg) {
     const W = window.SchedulerWeek;
     const legOf = W.legByKey(trip, leg);
@@ -541,6 +550,7 @@ const window = {};
         else if (window.SchedulerPastMidnight.after(last, time)) day = dayFrom(day, 1);
         last = time;
         due = W.officeInstant(day, time);
+        if (before != null && due < before) due = W.officeInstant(day, time, true);
         while (before != null && due < before) { day = dayFrom(day, 1); due = W.officeInstant(day, time); }
         before = due;
       }

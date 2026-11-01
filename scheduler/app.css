@@ -3094,9 +3094,6 @@ a.scheduler-tip__go { text-decoration: none; }
   clip-path: inset(-6px -6px 0 -6px);
 }
 .scheduler-toolbar > .scheduler-toolbar__more.rux--btn--ghost[data-attached]:not(:focus-visible) { border-inline-start-color: transparent; }
-/* While the week's calendar is open, Today's rule beside the week's name
-   goes, as the ⋮'s does while its menu is open. */
-.scheduler-toolbar:has(.scheduler-weekbtn[aria-expanded="true"]) .scheduler-toolbar__strip > #scheduler-today.rux--btn--ghost:not(:focus-visible) { border-inline-start-color: transparent; }
 /* Under the pointer the open ⋮ takes the menu's own hover, solid, as an open
    header button does, and the strip at its foot takes it with it, so no band
    of the menu's grey shows across the ⋮'s bottom. */
@@ -3114,11 +3111,11 @@ a.scheduler-tip__go { text-decoration: none; }
   background-color: var(--rux-layer);
 }
 .scheduler-toolbar__weekrow {
-  /* One width for every week, so stepping through them moves nothing: 18rem,
-     the width Carbon gives the open calendar, so the week picker hangs under
-     its trigger edge to edge. The widest week data.js writes, "May 28 – Jun
-     10, 2028", needs 14.25rem of it with the button's insets and icon. The
-     narrow toolbar below gives the width up with the full week. */
+  /* One width for every month, so moving through them moves nothing: 18rem,
+     the width Carbon gives the open calendar, so the calendar hangs under the
+     row edge to edge. The calendar's button, the month and the year share it,
+     the month taking what the other two leave, which holds "September". The
+     narrow toolbar below gives the width up with the month's full name. */
   flex: 0 1 auto;
   min-inline-size: 18rem;
   /* Its minimum follows the toolbar's size token, or it would hold the row
@@ -3139,16 +3136,22 @@ a.scheduler-tip__go { text-decoration: none; }
   overflow: hidden;
   pointer-events: none;
 }
-.scheduler-toolbar__weekrow--loading .scheduler-toolbar__range { visibility: hidden; }
+.scheduler-toolbar__weekrow--loading .scheduler-toolbar__when { visibility: hidden; }
+/* The calendar's button, the month and the year, side by side at the row's
+   height. */
+.scheduler-toolbar__when { display: flex; align-items: stretch; }
 
 .scheduler-toolbar__range {
   font-variant-numeric: tabular-nums;
-  min-inline-size: 0;
+  flex: none;
   margin: 0;
 }
-/* A heading that is also a trigger. Carbon ships no such control, so it is the
-   app's own and every value is a --rux-* token. Its type comes from
-   `.scheduler-toolbar__range`, which carries `rux--type-heading-compact-02`. */
+/* The calendar's button, a heading that is also a trigger, and the month and
+   the year, each a list's. Carbon ships no such control, so it is the app's
+   own and every value is a --rux-* token. Its type is
+   `rux--type-heading-compact-02`, which `.scheduler-toolbar__range` carries
+   and the row gives the two lists' buttons. */
+.scheduler-toolbar__when { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); font-variant-numeric: tabular-nums; }
 .scheduler-weekbtn {
   display: flex;
   align-items: center;
@@ -3163,14 +3166,19 @@ a.scheduler-tip__go { text-decoration: none; }
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
-  /* It fills the row's fixed width with its icon at the far end, as a date
-     field's is, so the icon holds still while the week beside it changes. */
+  /* Its glyph at the far end, as a date field's is, so the chevron holds
+     still while the month beside it changes. */
   justify-content: space-between;
-  inline-size: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+/* The month takes the row's width the calendar and the year leave. */
+.scheduler-weekbtn--month { flex: 1 1 auto; min-inline-size: 0; }
+/* A rule between the three, the one the toolbar's buttons draw on their
+   leading edge (see overrides.css). */
+.scheduler-weekbtn--month,
+.scheduler-weekbtn--year { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* Carbon's own ghost-button feedback, by token rather than by borrowing the
    class: `--rux-background-hover` is what a ghost button takes on hover and
    `--rux-focus` is the 2px inset ring every control on this page draws. */
@@ -3179,13 +3187,13 @@ a.scheduler-tip__go { text-decoration: none; }
   outline: 2px solid var(--rux-focus);
   outline-offset: -2px;
 }
-/* While its calendar is open the week is the calendar's own surface, as the
-   board's ⋮ is its menu's: the calendar hangs from the row's foot at the same
-   width, so the two read as one panel. `--rux-layer-02` is what the
-   calendar paints, one layer up through `rux--layer-two` in data.js. After
-   the hover rule, so the pointer still resting on it does not take the
-   surface back, and above the calendar, whose shadow would otherwise fall
-   across the week's foot. */
+/* While its calendar is open the calendar's button is the calendar's own
+   surface, as the board's ⋮ is its menu's: the calendar hangs from the row's
+   foot. `--rux-layer-02` is what the calendar paints, one layer up through
+   `rux--layer-two` in data.js. After the hover rule, so the pointer still
+   resting on it does not take the surface back, and above the calendar,
+   whose shadow would otherwise fall across the button's foot. The month's
+   and the year's take it too while their list is open. */
 .scheduler-weekbtn[aria-expanded="true"] {
   position: relative;
   z-index: 100000;
@@ -3197,33 +3205,33 @@ a.scheduler-tip__go { text-decoration: none; }
   .scheduler-weekbtn[aria-expanded="true"]:hover { background: var(--rux-layer-hover-02); }
 }
 /* The calendar the trip editor's date fields carry, because a calendar is
-   what the press opens. It is a `<use>` from the inlined sprite, like every
-   glyph here. */
+   what the press opens, and the lists' chevrons. Each is a `<use>` from the
+   inlined sprite, like every glyph here. */
 .scheduler-weekbtn__icon { flex: 0 0 auto; }
-/* The week's two labels: the full week, and its months and year. Either ends
-   in an ellipsis rather than being cut off. Where the toolbar is too narrow
-   the months show, and the week stays for a screen reader, which the months
-   are hidden from. */
-.scheduler-weekbtn__week,
-.scheduler-weekbtn__months {
+/* The month's two names, in full and short. Where the toolbar is too narrow
+   the short one shows, and the full one stays for a screen reader, which the
+   short one is hidden from. */
+.scheduler-weekbtn__long,
+.scheduler-weekbtn__short {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.scheduler-weekbtn__months { display: none; }
+.scheduler-weekbtn__short { display: none; }
 /* 48.5rem is where the room runs out in the roomiest theme: there the
    arrows, Today and six icons take 363px, the week's fixed 18rem another
    288px, the gaps between them 80px, the bar's own insets 24px, and the
    spacer keeps 1rem so the rule it draws never stands against the next
    button's, 771px in all. A theme whose buttons touch needs 694px, and
    takes the shorter week early rather than have a second width to keep.
-   Below it the week is as wide as its months. The toolbar is asked, not the
-   window, because the roster and the editor beside the schedule are what
-   take the room and a window's width cannot see them. */
+   Below it the month is as wide as its short name. The toolbar is asked, not
+   the window, because the roster and the editor beside the schedule are
+   what take the room and a window's width cannot see them. */
 @container scheduler-toolbar (max-width: 48.5rem) {
   .scheduler-toolbar__weekrow { min-inline-size: 0; }
-  .scheduler-weekbtn__months { display: block; }
-  .scheduler-weekbtn__week {
+  .scheduler-weekbtn--month { flex: none; }
+  .scheduler-weekbtn__short { display: block; }
+  .scheduler-weekbtn__long {
     position: absolute;
     inline-size: 1px;
     block-size: 1px;
@@ -4567,11 +4575,10 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-page[data-room="tight"] .scheduler-toolbar__new,
 .scheduler-page[data-board="compact"] .scheduler-toolbar__new { display: none; }
 :root:not([data-scheduler-room="tight"]):not([data-scheduler-board="compact"]) .scheduler-menu-item--new { display: none; }
-/* In the same state, and on the compact board, the week's own button gives up
-   two steps of inset: 24px, as the insets come down from 16px to 8px and the
-   icon's gap from 12px to 4px. That is what the label needs to read whole
-   rather than end in "…": "Sep 2026" at a 312px schedule beside its five
-   icons, and "Sep – Oct 2026" on a 402px phone beside Today and three. */
+/* In the same state, and on the compact board, the calendar's, the month's
+   and the year's buttons give up two steps of inset, as the insets come down
+   from 16px to 8px and the glyph's gap from 12px to 4px, so "Nov" and "2026"
+   leave a 402px phone room for Today and search beside them. */
 .scheduler-page:is([data-room="tight"], [data-board="compact"]) .scheduler-weekbtn {
   padding-inline: var(--rux-spacing-03);
   gap: var(--rux-spacing-02);

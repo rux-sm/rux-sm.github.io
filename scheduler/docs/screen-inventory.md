@@ -174,9 +174,12 @@ Three homes, and one rule for choosing.
   weeks around Nov 7 or Reading trips, and at rest a check and the weeks held, its tooltip the last twelve things done with
   their times, from `activity.js`, hidden below md. It hangs under its ⋮ and opens
   attached to it, one surface.
-- **The week label is the date-picker trigger.** A permanent mini calendar spends standing space on
-  an occasional action. On a phone the label is the week's months and year, "Sep – Oct 2026", so
-  Drivers fits beside it; the day header numbers the days.
+- **The board's title is a calendar button, the month and the year.** A permanent mini calendar
+  spends standing space on an occasional action, so the calendar opens from its glyph and marks the
+  days in view; the month and the year are each a list, a pick moving to the week holding that
+  month's first day, the years from 2026 to next year. They name the month most of the days in view
+  are in, "Nov" on a phone, and the day header names a month's first day, "Dec 1". The arrows step a
+  week at any width.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any stored file opens
   there under its type, and a form `print.html` draws opens in the Forms panel.

@@ -1090,9 +1090,10 @@
       .filter(b => scrolling() || b.status === 'active' || used.has(b.id))
       .map(b => ({ id: b.id, bus: b }))
       .sort((a, b) => retired(a.bus) - retired(b.bus) || typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
-    // Always present, hidden when empty. A drag has to be able to drop the
-    // week's first unassigned trip somewhere, and a row that is not in the
-    // document has no rectangle to aim at.
+    // Always present, hidden when empty, and on a strip shut like a bus no
+    // longer active while none of its trips is on screen. A drag has to be
+    // able to drop the week's first unassigned trip somewhere, and a row that
+    // is not in the document has no rectangle to aim at.
     rows.push({ id: UNASSIGNED, bus: null, empty: !tracks.has(UNASSIGNED) });
     /* Which of its leg's buses a bar is, counted down the board, so the
        topmost is the leg's first bus and bar.js tells the rest apart. */
@@ -1799,8 +1800,8 @@
     const last = (schEl.scrollLeft + schEl.clientWidth - head) / w;
     let folding = false;
     for (const track of gridEl.querySelectorAll('.scheduler-track')) {
-      // A bus no longer active has no lane at all until one of its trips is on screen.
-      const least = track.dataset.retired != null ? 0 : 1;
+      // A bus no longer active, and the No bus row, has no lane at all until one of its trips is on screen.
+      const least = track.dataset.retired != null || track.dataset.unassigned ? 0 : 1;
       const now = track.style.getPropertyValue('--scheduler-lanes');
       let lanes = grow && now !== '' ? Number(now) : least;
       const items = [...track.querySelectorAll(':scope > .scheduler-bar, :scope > .scheduler-yard')].map(item => {
@@ -1957,6 +1958,13 @@
         barsInHand++;
         unassignedRow = gridEl.querySelector('.scheduler-row--unassigned');
         if (unassignedRow?.hidden) { unassignedRow.hidden = false; unassignedRow.dataset.revealed = 'true'; }
+        // Shut with none of its trips on screen, it opens a lane to drop on, and `putDown` lets it shut again.
+        if (unassignedRow?.hasAttribute('data-shut')) {
+          unassignedRow.removeAttribute('data-shut');
+          unassignedRow.querySelector(':scope > .scheduler-track').style.setProperty('--scheduler-lanes', 1);
+          unassignedRow.dataset.opened = 'true';
+          markLastRow(gridEl);
+        }
         tracks = [...gridEl.querySelectorAll('.scheduler-track')];
         /* The press's rise comes off the bar at once, with no settle, so the
            bar is measured at its own size; the copy takes the rise over. */
@@ -2041,6 +2049,7 @@
         bar.classList.remove('scheduler-bar--dragging', 'scheduler-bar--leaving');
         for (const track of tracks) track.classList.remove('scheduler-track--packing');
         if (unassignedRow?.dataset.revealed) { unassignedRow.hidden = true; delete unassignedRow.dataset.revealed; }
+        if (unassignedRow?.dataset.opened) { delete unassignedRow.dataset.opened; fitLanesInView(); }
         placeBarOpen();
       };
 

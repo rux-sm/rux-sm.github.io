@@ -91,7 +91,13 @@
      It fills the box, so the air between marks is the gap alone -- which is
      why that gap is a step wider than the row's own. */
   --scheduler-mark-glyph: 16px;
-  --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--rux-spacing-02));
+  /* A BAR'S OWN SPACE: 6px above and below its lines and 8px either side of
+     them, chosen against 4px all round by looking at the board, the words
+     clear of the bar's edge without the bar standing taller than its six
+     lines need. */
+  --scheduler-bar-pad-block: calc(1.5 * var(--rux-spacing-02));
+  --scheduler-bar-pad-inline: var(--rux-spacing-03);
+  --scheduler-bar-h: calc(var(--scheduler-bar-rows) * var(--scheduler-row-h) + 2 * var(--scheduler-bar-pad-block));
   /* One square slot on the selected trip's shortcut bar: Carbon's md control
      height, as the board's toolbar buttons are. The bar floats clear of the
      trip, so nothing about the trip caps this the way the old tab's width
@@ -101,7 +107,7 @@
      the 1px rule at each boundary sits outside that. `--scheduler-gap` is the
      pair -- the clear space plus its rule -- which is what a bar's size and a
      track's height subtract to leave the clear space even. */
-  --scheduler-gap: var(--rux-spacing-02);
+  --scheduler-gap: calc(1.5 * var(--rux-spacing-02));
   --scheduler-gap-clear: calc(var(--scheduler-gap) - 1px);
   /* No rule runs between stacked bars, so they keep the full gap. */
   --scheduler-lane-gap: var(--scheduler-gap);
@@ -239,11 +245,12 @@
   /* The one vertical rule where the sticky column meets the tracks that scroll
      under it. It stops at the header band: the corner draws none. */
   border-inline-end: 1px solid var(--rux-border-subtle-01);
-  /* 8px at the top and sides: the number stands against the top, 1px under
-     where the bar's lines start, and the last row's foot lands 8px over the
-     row rule by the track's own gap, so no padding is needed below, and
-     none is set, or the head would stand taller than its track. */
-  padding: var(--rux-spacing-03) var(--rux-spacing-03) 0;
+  /* 8px at the sides, and at the top 1px under where the bar's lines start,
+     its clear space and its own padding, so the number stands level with the
+     destination; the last row's foot lands over the row rule by the track's
+     own gap, so no padding is needed below, and none is set, or the head
+     would stand taller than its track. */
+  padding: calc(var(--scheduler-gap-clear) + var(--scheduler-bar-pad-block) + 1px) var(--rux-spacing-03) 0;
   /* The row rule runs through the head too, in the same token as the track's. */
   border-block-end: 1px solid var(--rux-border-subtle-01);
   /* One row for each of the bar's, so each line of the head stands level
@@ -925,10 +932,9 @@ button.scheduler-row-head__num::after {
   box-sizing: border-box;
   /* Each side's padding is its own property, so an end that runs off the
      week can pad back the room it gains there. */
-  --scheduler-pad-start: var(--rux-spacing-02);
-  --scheduler-pad-end: var(--rux-spacing-02);
-  /* 4px on every side, so the words stand as far from each edge. */
-  padding: var(--rux-spacing-02) var(--scheduler-pad-end) var(--rux-spacing-02) var(--scheduler-pad-start);
+  --scheduler-pad-start: var(--scheduler-bar-pad-inline);
+  --scheduler-pad-end: var(--scheduler-bar-pad-inline);
+  padding: var(--scheduler-bar-pad-block) var(--scheduler-pad-end) var(--scheduler-bar-pad-block) var(--scheduler-pad-start);
   /* WHAT DAY ONE LEAVES, for the marks at a bar's top right end: the room
      past where a one-day bar's content would end, so a longer bar's dot and
      alert count stand where a one-day bar's do. A bar's content is `span`
@@ -937,9 +943,9 @@ button.scheduler-row-head__num::after {
      one day is that width plus what was taken off, divided by the span; a
      one-day bar's content ends a day in, less the gap and its own end
      padding. `max()` holds it at zero on a one-day bar. */
-  --scheduler-day-one-end: max(0px, calc(100% + 2 * var(--rux-spacing-02)
+  --scheduler-day-one-end: max(0px, calc(100% + 2 * var(--scheduler-bar-pad-inline)
     + var(--scheduler-gap) + var(--scheduler-gap-clear) + var(--scheduler-cut-start, 0px) - (100%
-    + 2 * var(--rux-spacing-02)
+    + 2 * var(--scheduler-bar-pad-inline)
     + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px))
     / var(--scheduler-span)));
@@ -1093,7 +1099,7 @@ button.scheduler-row-head__num::after {
   inline-size: calc(var(--scheduler-span) * var(--scheduler-day-w) - var(--scheduler-gap));
   /* The clear space the bar gives up at its start, given back inside it, so
      its words start where every other bar's in that day do. */
-  --scheduler-pad-start: calc(var(--rux-spacing-02) + var(--scheduler-gap-clear));
+  --scheduler-pad-start: calc(var(--scheduler-bar-pad-inline) + var(--scheduler-gap-clear));
   border-start-start-radius: 0;
   border-end-start-radius: 0;
 }
@@ -1102,7 +1108,7 @@ button.scheduler-row-head__num::after {
   inline-size: auto;
   /* The gap the bar gives up at its end, given back inside it, so its words
      and marks end where every other bar's in that day do. */
-  --scheduler-pad-end: calc(var(--rux-spacing-02) + var(--scheduler-gap));
+  --scheduler-pad-end: calc(var(--scheduler-bar-pad-inline) + var(--scheduler-gap));
   border-start-end-radius: 0;
   border-end-end-radius: 0;
 }
@@ -2337,13 +2343,13 @@ button.scheduler-row-head__num::after {
    the ones a day's width cuts short, run on past that day to the bar's end
    in `.scheduler-bar__run`. */
 .scheduler-bar {
-  --scheduler-live-day: calc((100% + 2 * var(--rux-spacing-02) + var(--scheduler-gap) + var(--scheduler-gap-clear)
+  --scheduler-live-day: calc((100% + 2 * var(--scheduler-bar-pad-inline) + var(--scheduler-gap) + var(--scheduler-gap-clear)
     + var(--scheduler-cut-start, 0px) + var(--scheduler-cut-end, 0px)) / var(--scheduler-span));
 }
 .scheduler-bar > .scheduler-bar__row {
   position: sticky;
-  inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--rux-spacing-02));
-  max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--rux-spacing-02));
+  inset-inline-start: calc(var(--scheduler-head-w, 0px) + var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline));
+  max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
 }
 /* The row is the day that sticks, so it is never pushed back by words
    wider than the room left; the words overflow it, held by data.js to that

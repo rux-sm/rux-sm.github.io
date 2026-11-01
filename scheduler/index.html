@@ -351,16 +351,13 @@
                  markup names no id that only script creates. -->
             <div class="scheduler-toolbar__weekrow" id="scheduler-weekrow">
               <h2 class="scheduler-toolbar__range rux--type-heading-compact-02">
-                <!-- The week's name, whose month and year step under a scroll
-                     or the up and down keys, and the calendar beside it, which
-                     opens the week picker. The name is this app's own control,
-                     which Carbon has none of, so it uses only --rux-* tokens;
-                     data.js writes it. The button's accessible name is the week
-                     itself, held in a visually hidden span, because
+                <!-- A heading that is also a trigger, which Carbon has no
+                     component for, so it is this app's own with only --rux-*
+                     tokens. Its accessible name is the week itself, because
                      js/date-picker.js needs the trigger to carry the value its
-                     hidden input holds. -->
-                <span class="scheduler-weekname" id="scheduler-weekname"></span>
-                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false" title="Choose a date"><span class="scheduler-weekbtn__week" id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button>
+                     hidden input holds. Below md it shows the week's months and
+                     year instead, and the week stays its name. -->
+                <button type="button" class="scheduler-weekbtn" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="scheduler-weekbtn__week" id="scheduler-range-text">&nbsp;</span><span class="scheduler-weekbtn__months" id="scheduler-range-months" aria-hidden="true"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button>
               </h2>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>

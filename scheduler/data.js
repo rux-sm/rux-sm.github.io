@@ -106,15 +106,15 @@
   const gridEl = document.getElementById('scheduler-grid');
   const schEl = document.getElementById('scheduler-week');
   const statusEl = document.getElementById('scheduler-status');
-  // `rangeEl` is the calendar button, and `rangeTextEl` the hidden span in it
-  // that carries the week for a screen reader, which `setRange` writes, with
-  // the week's name beside it, `weekNameEl`.
+  // `rangeEl` is the week button, and `rangeTextEl` and `rangeMonthsEl` the
+  // spans inside it that `setRange` writes, because textContent on the button
+  // would delete its caret.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
-  const weekNameEl = document.getElementById('scheduler-weekname');
   // The arrows either side of Today.
   const stepPrev = document.getElementById('scheduler-prev');
   const stepNext = document.getElementById('scheduler-next');
+  const rangeMonthsEl = document.getElementById('scheduler-range-months');
   // The week picker's hidden input and the guard that tells its `change`
   // events apart: ours, from setRange, or a person's, from the calendar.
   let weekInput = null;
@@ -673,61 +673,6 @@
     if (node && node.nodeType === Node.TEXT_NODE && node === el.lastChild) node.nodeValue = words;
     else el.textContent = words;
   }
-  /* THE WEEK'S NAME, written from Intl's parts so its month and year can be
-     wrapped as the parts a scroll or a key steps: the full week, "Sep 7 –
-     Sep 13, 2026", and where the toolbar is narrow its months and year, "Sep
-     – Oct 2026", because the day header under it numbers the days and a
-     phone's toolbar has no more room. `formatRange` writes a week across New
-     Year as "Dec 2026 – Jan 2027", which is too wide, so that week names its
-     year once. The week's first month and its year are the controls, spin
-     buttons a key can reach; a second month is the same part for the
-     pointer. A name rewritten under the keys keeps their focus. */
-  const nameMonth = new Intl.DateTimeFormat(undefined, { month: 'short' });
-  const nameDay = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
-  const nameMonths = new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' });
-  const nameLong = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
-  function namePart(text, part, live, day) {
-    const span = el('span', 'scheduler-weekname__part', text);
-    span.dataset.part = part;
-    span.title = `Scroll, or press ↑ ↓, to change the ${part}`;
-    if (!live) return span;
-    span.tabIndex = 0;
-    span.setAttribute('role', 'spinbutton');
-    span.setAttribute('aria-label', part === 'month' ? 'Month' : 'Year');
-    span.setAttribute('aria-valuenow', String(part === 'month' ? day.getMonth() + 1 : day.getFullYear()));
-    span.setAttribute('aria-valuetext', part === 'month' ? nameLong.format(day) : String(day.getFullYear()));
-    return span;
-  }
-  // Nodes for a run of Intl parts, its months and years as parts; only the first of each is live.
-  function nameNodes(parts, day, live) {
-    return parts.map(p => {
-      if (p.type !== 'month' && p.type !== 'year') return document.createTextNode(p.value);
-      const first = !live.has(p.type);
-      live.add(p.type);
-      return namePart(p.value, p.type, first, day);
-    });
-  }
-  function nameWeek(weekStart, weekEnd) {
-    if (!weekNameEl) return;
-    const focused = weekNameEl.contains(document.activeElement) ? document.activeElement.dataset.part : null;
-    const week = el('span', 'scheduler-weekname__week');
-    const live = new Set();
-    week.append(...nameNodes(nameDay.formatToParts(weekStart), weekStart, live), ' – ',
-      ...nameNodes(nameDay.formatToParts(weekEnd), weekStart, live), ', ',
-      ...nameNodes([{ type: 'year', value: String(weekEnd.getFullYear()) }], weekStart, live));
-    const months = el('span', 'scheduler-weekname__months');
-    const sameYear = weekStart.getFullYear() === weekEnd.getFullYear();
-    const monthParts = sameYear && typeof nameMonths.formatRangeToParts === 'function'
-      ? nameMonths.formatRangeToParts(weekStart, weekEnd)
-      : weekStart.getMonth() === weekEnd.getMonth() ? nameMonths.formatToParts(weekEnd)
-        : [{ type: 'month', value: nameMonth.format(weekStart) }, { type: 'literal', value: ' – ' }, ...nameMonths.formatToParts(weekEnd)];
-    months.append(...nameNodes(monthParts, weekStart, new Set()));
-    // The month and year a step has reached stay as they are under a redraw of the week.
-    const step = weekNameEl.querySelector('.scheduler-weekname__step') || el('span', 'scheduler-weekname__step');
-    weekNameEl.replaceChildren(week, months, step);
-    if (focused) [...weekNameEl.querySelectorAll(`[data-part="${focused}"][tabindex]`)].find(p => p.offsetParent)?.focus();
-  }
-
   function setRange(weekStart, weekEnd, { quiet = false } = {}) {
     if (!rangeEl) return;
     /* One pattern for every week, "Sep 7 – Sep 13, 2026": both months and the
@@ -742,7 +687,19 @@
     const stretch = daysShown() > 7 ? 'two weeks' : 'week';
     if (stepPrev?.getAttribute('aria-label') !== `Previous ${stretch}`) stepPrev?.setAttribute('aria-label', `Previous ${stretch}`);
     if (stepNext?.getAttribute('aria-label') !== `Next ${stretch}`) stepNext?.setAttribute('aria-label', `Next ${stretch}`);
-    nameWeek(weekStart, weekEnd);
+    /* Below md the label is the week's months and year, "Sep – Oct 2026",
+       because the day header under it numbers the days and a phone's toolbar
+       has no more room beside its four buttons. `formatRange` writes a week
+       across New Year as "Dec 2026 – Jan 2027", which is too wide, so that
+       week names its year once. */
+    if (rangeMonthsEl) {
+      const months = new Intl.DateTimeFormat(undefined, { month: 'short', year: 'numeric' });
+      setText(rangeMonthsEl, weekStart.getFullYear() === weekEnd.getFullYear() && typeof months.formatRange === 'function'
+        ? months.formatRange(weekStart, weekEnd)
+        : weekStart.getMonth() === weekEnd.getMonth()
+          ? months.format(weekEnd)
+          : `${weekStart.toLocaleDateString(undefined, { month: 'short' })} – ${months.format(weekEnd)}`);
+    }
     /* The week picker's hidden input follows the shown week, so the calendar
        opens on it rather than on today. `valueSetBySelf` stops the `change`
        listener from treating this as a person's pick. */
@@ -19278,20 +19235,19 @@
      scroll back without running through every week between; today's weeks
      come from what is held, or from `home`. With motion reduced, or with
      nothing held for today, the week is drawn as before. */
-  function goToday() { glideToWeek(firstDayOf(new Date())); }
-  // The glide Today makes, to any week: the week name's month and year steps take it too.
-  function glideToWeek(to) {
+  function goToday() {
     toast(null);
     stopStripScroll();
+    const today = firstDayOf(new Date());
     if (scrolling() && stripStart && !barsInHand) {
-      // A week with a week of room either side of it in the strip is glided to as it stands.
-      const at = daysBetween(stripStart, to);
+      // Today with a week of room either side of it in the strip is glided to as it stands.
+      const at = daysBetween(stripStart, today);
       const roomy = at >= STRIP_EDGE && at <= stripDays() - inView() - STRIP_EDGE;
-      const side = Math.sign(daysBetween(to, cursor)) || 1;
-      const runUp = addDays(to, side * 7);
-      if (!roomy && !holds(to) && heldBy(home, to)) cached = home;
+      const side = Math.sign(daysBetween(today, cursor)) || 1;
+      const runUp = addDays(today, side * 7);
+      if (!roomy && !holds(today) && heldBy(home, today)) cached = home;
       /* Near enough, the strip moves along with nothing on screen moving, so
-         the week has that room and the glide runs from where the board is; from
+         today has that room and the glide runs from where the board is; from
          further it is drawn at the run-up. */
       if (!roomy && !reducedMotion.matches && holds(runUp) && !growStrip(runUp)) {
         cursor = runUp;
@@ -19302,74 +19258,10 @@
         setTimeout(() => schEl.classList.remove('scheduler-week--arrive'), 400);
       }
     }
-    cursor = to;
+    cursor = today;
     show();
   }
   document.getElementById('scheduler-today')?.addEventListener('click', goToday);
-
-  /* THE WEEK'S NAME STEPS BY MONTH AND YEAR. A scroll over its month, or
-     its year, or the up and down keys on one, steps from the week's first
-     day a month or a year at a time, to the same date where the month has
-     it and its last day where it does not; down is later, as further down a
-     list, and the up key is later, as a spin button's is. While it steps the
-     name is the month and year arrived at, "Dec 2026"; once it rests for
-     STEP_REST_MS, or Enter is pressed, the board glides to the week holding
-     that day, and the name is the week again. Escape goes back. A scroll
-     keeps the part it began on until it stops, since the name narrows under
-     the pointer as it changes. A mouse's notch is a step; a trackpad's
-     steps add up to one every STEP_PX. */
-  const STEP_PX = 60;
-  const STEP_REST_MS = 450;
-  let stepAt = null, stepTimer = 0, stepWheelAt = 0, stepWheelPart = null, stepSum = 0;
-  function stepName(part, n) {
-    const base = stepAt ?? cursor;
-    const year = base.getFullYear() + (part === 'year' ? n : 0);
-    const month = base.getMonth() + (part === 'month' ? n : 0);
-    stepAt = new Date(year, month, Math.min(base.getDate(), new Date(year, month + 1, 0).getDate()));
-    const keys = weekNameEl.contains(document.activeElement);
-    const step = weekNameEl.querySelector('.scheduler-weekname__step');
-    step.replaceChildren(...nameNodes(nameMonths.formatToParts(stepAt), stepAt, new Set()));
-    weekNameEl.dataset.stepping = part;
-    if (keys) step.querySelector(`[data-part="${part}"]`)?.focus();
-    clearTimeout(stepTimer);
-    stepTimer = setTimeout(endStep, STEP_REST_MS);
-  }
-  function endStep() {
-    clearTimeout(stepTimer);
-    if (!stepAt) return;
-    const day = stepAt;
-    stepAt = null;
-    delete weekNameEl.dataset.stepping;
-    glideToWeek(firstDayOf(day));
-  }
-  function dropStep() {
-    clearTimeout(stepTimer);
-    stepAt = null;
-    delete weekNameEl.dataset.stepping;
-    setRange(cursor, viewEnd(cursor), { quiet: true });
-  }
-  weekNameEl?.addEventListener('wheel', e => {
-    if (e.ctrlKey) return;
-    const now = performance.now();
-    if (now - stepWheelAt > 250) { stepWheelPart = null; stepSum = 0; }
-    const part = stepWheelPart ?? e.target.closest?.('[data-part]')?.dataset.part;
-    if (!part || !e.deltaY) return;
-    e.preventDefault();
-    stepWheelAt = now;
-    stepWheelPart = part;
-    if (e.deltaMode !== 0) { stepName(part, Math.sign(e.deltaY)); return; }
-    stepSum += e.deltaY;
-    if (Math.abs(stepSum) < STEP_PX) return;
-    stepName(part, Math.sign(stepSum));
-    stepSum = 0;
-  }, { passive: false });
-  weekNameEl?.addEventListener('keydown', e => {
-    const part = e.target.closest?.('[data-part]')?.dataset.part;
-    if (!part) return;
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); stepName(part, e.key === 'ArrowUp' ? 1 : -1); }
-    else if (e.key === 'Enter' && stepAt) { e.preventDefault(); endStep(); }
-    else if (e.key === 'Escape' && stepAt) { e.preventDefault(); dropStep(); }
-  });
 
   /* The toolbar's row of controls scrolls sideways where it has no room for
      them. A mouse has no swipe, so a wheel turned over the row moves it

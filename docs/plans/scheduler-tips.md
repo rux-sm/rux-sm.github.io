@@ -43,9 +43,12 @@ drivers on a bus out on the road. Those three are one card,
   for a bus's make. The avatars go. Add update is the last row and opens the
   Updates window, as the bar's right-click Add update does.
 - **Live:** the head is the bus, as in the bus tip: its disc, its number and
-  what it is doing now. Then a lamp row for each warning, where it is and
-  when last seen, the next stop and when it gets there, and one row per
-  driver with their duty and drive time left.
+  what it is doing now. Then a lamp row for each warning, a small map, where
+  it is and when last seen, the next stop and when it gets there, and one row
+  per driver with their duty and drive time left.
+- **The live tip's map is small:** the tip's full width and 8rem tall,
+  fitted to the leg, with its map credit and no zoom buttons. Live map and
+  Google Maps are link rows under it, for a bigger look.
 - **The bus tip's live rows and the live tip come from one function,** so a
   bus on the road says the same in both. `bus-head.js` draws the bus tip's
   today.
@@ -57,9 +60,6 @@ drivers on a bus out on the road. Those three are one card,
 
 ## Questions
 
-- **Does the live tip keep a small map?** Recommended: no. The rows say the
-  town and the next stop in words, and Live map and Google Maps are link rows
-  at its foot. The map makes the tip three times as tall as any other.
 - **What does Space on a trip open?** It opens the whole card today, with the
   trip's destination as its head. Recommended: the Updates tip, and the Live
   tip on a bus out on the road, as now.

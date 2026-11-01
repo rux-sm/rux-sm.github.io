@@ -138,34 +138,32 @@
     : weekStart === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
       : (d.getDay() + 6) % 7));
   /* How many days the board moves and reads by: a week. The arrows and a
-     phone's swipe step by it. `twoWeeks` is the paged board's two weeks,
-     which no option turns on any more and which the paged code still reads.
-     The board is a strip of days either side of the week in view, scrolled
-     sideways; a phone pages a week at a time, because its fling and the
-     strip's redraw are the risky pair. `cursor` is the week in view's first
-     day, the leftmost day on screen, and follows the scroll. */
+     phone's swipe step by it. The board is a strip of days either side of
+     the week in view, scrolled sideways; a phone pages a week at a time,
+     because its fling and the strip's redraw are the risky pair. `cursor`
+     is the week in view's first day, the leftmost day on screen, and
+     follows the scroll. */
+  const WEEK = 7;
   const phoneQuery = matchMedia('(max-width: 41.98rem)');
-  let twoWeeks = false;
-  /* From md up the board is always the strip; below it, a phone pages a
-     week at a time. `fitDays` is the View menu's Up to two weeks: the strip
-     shows as many days as fit at their least width, an odd count from seven to thirteen,
-     which app.js measures and writes as `data-days-in-view`. The week the
-     strip moves by, reads around and labels from stays seven days; only
-     the days on screen grow. */
-  let fitDays = false;
   const scrolling = () => !phoneQuery.matches;
-  const daysShown = () => (twoWeeks && !scrolling() && !phoneQuery.matches ? 14 : 7);
-  const MAX_IN_VIEW = 13;
-  const inView = () => (fitDays && scrolling() ? Math.min(MAX_IN_VIEW, Math.max(7, Number(schEl?.dataset.daysInView) || 7)) : 7);
-  const lastShown = start => addDays(start, daysShown() - 1);
+  /* A day on the strip never changes width, so a wider board shows more of
+     them, which only Fill the window gives it room for: app.js counts the
+     whole days in view and writes the count as `data-days-in-view`, which
+     labels the board from a week up to two. The week the strip moves by and
+     reads around stays seven days; only the days on screen grow. */
+  let fillWindow = false;
+  const MAX_IN_VIEW = 14;
+  const inView = () => (scrolling() ? Math.min(MAX_IN_VIEW, Math.max(WEEK, Number(schEl?.dataset.daysInView) || WEEK)) : WEEK);
+  const lastShown = start => addDays(start, WEEK - 1);
   /* The strip's days before and after the week in view. Two weeks either side
      keeps the strip inside the four weeks either side that a read holds, so
      the strip is drawn again around the week in view from what is held, and
-     never waits on the network while it is scrolled. */
+     never waits on the network while it is scrolled. With Fill the window
+     it runs on past the days after the week it can show as well, so a wider
+     board never has the strip drawn again as it is scrolled. */
   const STRIP_BEFORE = 14;
-  // After the week in view, two weeks, and with Up to two weeks the days past the week it can show as well.
-  const stripAfter = () => 14 + (fitDays ? MAX_IN_VIEW - 7 : 0);
-  const stripDays = () => STRIP_BEFORE + 7 + stripAfter();
+  const stripAfter = () => 14 + (fillWindow ? MAX_IN_VIEW - WEEK : 0);
+  const stripDays = () => STRIP_BEFORE + WEEK + stripAfter();
   // The last day on screen from a first: the label's end, which is the week's unless more days fit.
   const viewEnd = start => (scrolling() ? addDays(start, inView() - 1) : lastShown(start));
   // The strip is drawn again around the week in view once that week comes this close to either end.
@@ -690,10 +688,6 @@
        the widest thing in the toolbar does not wrap its row. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
     setText(rangeTextEl, `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`);
-    // The arrows step by what is shown, and say so.
-    const stretch = daysShown() > 7 ? 'two weeks' : 'week';
-    if (stepPrev?.getAttribute('aria-label') !== `Previous ${stretch}`) stepPrev?.setAttribute('aria-label', `Previous ${stretch}`);
-    if (stepNext?.getAttribute('aria-label') !== `Next ${stretch}`) stepNext?.setAttribute('aria-label', `Next ${stretch}`);
     /* Below md the label is the week's months and year, "Sep – Oct 2026",
        because the day header under it numbers the days and a phone's toolbar
        has no more room beside its four buttons. `formatRange` writes a week
@@ -10798,9 +10792,8 @@
   });
   driverMenu?.addEventListener('rux:menu-closed', e => { if (e.target === driverMenu) driverMenu.hidden = true; });
 
-  /* The roster shows every day the board does. With two weeks its day columns
-     narrow and its pane widens a little (see `.scheduler-aside--two`). Under a
-     strip it shows the week in view, and follows the scroll. */
+  /* The roster shows the week the board does. Under a strip it shows the
+     week in view, and follows the scroll. */
   function rosterSlice() {
     if (stripStart && availAll.days > 7) {
       const at = daysBetween(availAll.weekStart, cursor);
@@ -10954,7 +10947,6 @@
   function drawAvailability(rows, weekStart, first, count, days) {
     availGrid.textContent = '';
     availEl.style.setProperty('--scheduler-days', String(count));
-    asideSlot.classList.toggle('scheduler-aside--two', count > 7);
     // Two weeks on the board, so a day's title names its date.
     const two = days > 7;
 
@@ -11930,17 +11922,13 @@
 
      `WEEK_MIN` is 33rem, wide enough to read a week's bars by, which leaves a
      20rem list and the 22rem editor beside it, gaps and all, on a 77rem board,
-     a laptop's; two weeks ask `TWO_WEEKS_MIN`, 56rem, so the same board keeps
-     one list, which comes in front of the week while the editor is open. Both
-     stay well over the 19.5rem the tight toolbar is measured to read at in
-     app.css, the week's own floor. `SCHEDULE_FLOOR` is a different question
+     a laptop's. It stays well over the 19.5rem the tight toolbar is measured
+     to read at in app.css, the week's own floor. `SCHEDULE_FLOOR` is a different question
      -- whether the board can show three readable days, three of app.css's
      10rem day floor and the bus column -- and only the compact week asks it. A toolbar under 30rem is one `Today`
      will not fit in beside its week's months, measured in app.css's terms. */
   const WEEK_MIN = 33;
-  const TWO_WEEKS_MIN = 56;
   const PANELS_MAX = 2;
-  const weekMin = () => (daysShown() === 14 ? TWO_WEEKS_MIN : WEEK_MIN);
   const SCHEDULE_FLOOR = 33;
   const TOOLBAR_TIGHT = 30;
   const boardEl = document.querySelector('.scheduler-board');
@@ -11973,7 +11961,7 @@
      it stands right of the week and the board never closes it. */
   const PANEL_NAMES = { roster: 'Drivers', 'to-do': 'Tasks', prep: 'Departures', forms: 'Forms', calc: 'Quote calculator', doc: 'the document', editor: 'the trip editor' };
   const panels = () => [
-    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth(asideSlot.classList.contains('scheduler-aside--two') ? '--scheduler-roster-two-w' : '--scheduler-list-w'),
+    { name: 'roster', el: asideSlot, open: availOn, width: () => panelWidth('--scheduler-list-w'),
       close: () => { availOn = false; placeAvailability(); } },
     { name: 'to-do', el: toDoPane, open: !!toDoPane && !toDoPane.hidden, width: () => panelWidth('--scheduler-list-w'),
       close: () => window.SchedulerToDoList?.close('tasks') },
@@ -11992,7 +11980,7 @@
     if (matchMedia('(max-width: 41.98rem)').matches) return open.length > 1;
     if (open.length > PANELS_MAX) return true;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
-    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() * remPx() > board;
+    return open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * remPx() > board;
   }
 
   /* ROOM FOR A PANEL ABOUT TO OPEN. Past what fits beside the week, the oldest
@@ -12197,7 +12185,7 @@
      key it replaced, still written beside it so a tab running the older
      script reads a Sunday start, and read when `weekStart` was never saved. */
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
-    fitDays: false, yard: false, fill: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
+    yard: false, fill: false, activity: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
   /* Compact is the rows' own switches set to the destination, the times and
      the drivers, about half a bar's height; it is not saved on its own, but
@@ -12208,12 +12196,12 @@
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
-    for (const k of [...VIEW_ROWS, 'fitDays', 'yard', 'fill', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
+    for (const k of [...VIEW_ROWS, 'yard', 'fill', 'activity']) if (typeof saved[k] === 'boolean') view[k] = saved[k];
     if (MOTIONS.includes(saved.motion)) view.motion = saved.motion;
     view.weekStart = WEEK_STARTS.includes(saved.weekStart) ? saved.weekStart : saved.sunday === true ? 'sunday' : 'monday';
   } catch { /* no storage, or nothing worth reading: the defaults stand */ }
   // Set before the first read for the reason the week start is: it sizes the range.
-  fitDays = view.fitDays;
+  fillWindow = view.fill;
   // Set before `cursor` is first computed below, because `firstDayOf` reads it
   // and the first week drawn must honour a saved start.
   weekStart = view.weekStart;
@@ -12222,8 +12210,8 @@
   const viewTrigger = document.getElementById('scheduler-view-trigger');
 
   /* The week picker starts its calendar's rows on Sunday for a Sunday start
-     and on Monday otherwise, and marks the days the board shows, one week or
-     two, from the week's first day, which on a Today start runs across rows. */
+     and on Monday otherwise, and marks the week the board shows from its
+     first day, which on a Today start runs across rows. */
   function dressWeekPicker() {
     const picker = document.getElementById('scheduler-week-picker');
     if (!picker) return;
@@ -12234,20 +12222,16 @@
   function applyView() {
     weekStart = view.weekStart;
     view.sunday = weekStart === 'sunday';
-    fitDays = view.fitDays;
+    fillWindow = view.fill;
     // The strip's snap and its day widths, which app.css and app.js read from this class.
     schEl.classList.toggle('scheduler-week--scroll', scrolling());
     dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
-    // Fill the window and Up to two weeks, set on the root as view.js sets
-    // them before the first paint: the frame widens to the window, and app.js
-    // counts the days that fit.
+    // Fill the window, set on the root as view.js sets it before the first
+    // paint: the frame widens to the window, and app.js counts the days that fit.
     document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
-    document.documentElement.toggleAttribute('data-scheduler-fit-days', view.fitDays);
-    if (daysShown() === 14) document.documentElement.dataset.schedulerDays = '14';
-    else delete document.documentElement.dataset.schedulerDays;
     // One for the destination, which never goes, plus whatever is left on;
     // the bus heads lay out their parts by the count, from app.css.
     const barRows = String(1 + VIEW_ROWS.filter(r => view[r]).length);
@@ -12324,8 +12308,8 @@
     if (!(key in view)) return;
     view[key] = !view[key];
     applyView();
-    // The row toggles are drawing only and need no fetch; Up to two weeks makes the strip longer, so it is drawn again.
-    if (key === 'fitDays') redrawLayout();
+    // The view's toggles are drawing only and need no fetch; Fill the window makes the strip longer, so it is drawn again.
+    if (key === 'fill') redrawLayout();
   });
   // The menu's caret takes the ⋮'s hover with it while they are attached.
   viewTrigger?.addEventListener('pointerenter', () => { if (viewMenu?.dataset.attached != null) viewMenu.dataset.hover = ''; });
@@ -12472,7 +12456,7 @@
     if (viewTrigger) delete viewTrigger.dataset.attached;
   });
 
-  /* Up to two weeks turned on or off, or a window crossing md, below which a
+  /* Fill the window turned on or off, or a window crossing md, below which a
      phone pages through weeks: the board is drawn again. A paged week starts
      on the week's first day, and a strip keeps the day in view at its left
      edge. */
@@ -14609,7 +14593,7 @@
     const board = boardEl?.getBoundingClientRect().width ?? 0;
     const gap = parseFloat(getComputedStyle(boardEl).columnGap) || 0;
     const open = panels().filter(p => p.open);
-    const used = open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + weekMin() * rem;
+    const used = open.reduce((sum, p) => sum + p.width(), 0) + open.length * gap + WEEK_MIN * rem;
     const max = Math.max(RESIZE_MIN * rem, Math.min(RESIZE_MAX * rem, viewerWidth() + board - used));
     return { min: RESIZE_MIN * rem, max };
   }
@@ -19624,8 +19608,8 @@
     go(days);
   };
   // An arrow moves a week, on from the day the strip is lined up on.
-  stepPrev?.addEventListener('click', () => stepWeek(-daysShown()));
-  stepNext?.addEventListener('click', () => stepWeek(daysShown()));
+  stepPrev?.addEventListener('click', () => stepWeek(-WEEK));
+  stepNext?.addEventListener('click', () => stepWeek(WEEK));
   /* The Left and Right keys move the strip a day, and with Shift a week,
      wherever focus is not taking the keys itself: a field, a menu, a
      dialog, the editor or a slider such as the viewer's edge. */
@@ -19737,7 +19721,7 @@
     /* The week one step away, drawn into a grid of its own. `render` with a
        target draws the rows and nothing else, so the board's label, index and
        roster stay with the week being read until this one is settled on. */
-    const weekBeside = dir => addDays(cursor, dir < 0 ? daysShown() : -daysShown());
+    const weekBeside = dir => addDays(cursor, dir < 0 ? WEEK : -WEEK);
     const drawSpare = (side, week) => {
       const spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
       spare.setAttribute('aria-hidden', 'true');
@@ -19959,7 +19943,7 @@
       const quick = e.timeStamp - start.at < SWIPE_FLICK_MS;
       const far = Math.abs(dx) >= (quick ? SWIPE_FLICK : SWIPE_MIN);
       // The board moves the way the finger went: left brings the next one in.
-      const days = dx < 0 ? daysShown() : -daysShown();
+      const days = dx < 0 ? WEEK : -WEEK;
       if (start.sliding) {
         const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
         if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }

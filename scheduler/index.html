@@ -28,7 +28,7 @@
      window.Rux.customThemes as it loads. -->
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<!-- The saved view's shape, Fill the window and Up to two weeks, before the first paint. -->
+<!-- The saved view's shape, Fill the window, before the first paint. -->
 <script src="view.js"></script>
 <style>
 /* No rule offsets the content for the nav. The nav carries
@@ -798,15 +798,8 @@
       <div class="rux--menu-item__label">Drivers on the bar</div>
     </li>
     <li class="rux--menu-item-divider" role="separator"></li>
-    <!-- Up to two weeks: the strip shows as many days as fit at their least
-         width, seven to thirteen, from md up. See data.js. -->
-    <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="fitDays">
-      <div class="rux--menu-item__selection-icon"></div>
-      <div class="rux--menu-item__icon"></div>
-      <div class="rux--menu-item__label">Up to two weeks</div>
-    </li>
-    <!-- The days share the whole window rather than stopping at their width
-         in app.css. -->
+    <!-- The board takes the whole window, and shows as many of its days as
+         fit. -->
     <li class="rux--menu-item" role="menuitemcheckbox" aria-checked="false" tabindex="0" data-view="fill">
       <div class="rux--menu-item__selection-icon"></div>
       <div class="rux--menu-item__icon"></div>

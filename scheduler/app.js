@@ -144,9 +144,8 @@
      strip is in view, and moves no trip. Nothing is written on the week: a
      custom property set there is inherited by every element on the board,
      and restyling them all cost about 40ms a time, which made each change of
-     width take a tenth of a second. What is counted is the days in view: a
-     week, or with Up to two weeks as many as fit, seven to thirteen, which
-     data.js reads back to label and bound the strip. */
+     width take a tenth of a second. What is counted is the whole days in
+     view, which data.js reads back to label the board by. */
   function fitStrip(sch) {
     for (const name of ['--scheduler-day-track', '--scheduler-day-w', '--scheduler-head-w']) {
       if (sch.style.getPropertyValue(name)) sch.style.removeProperty(name);
@@ -162,8 +161,7 @@
        pane's right edge, which the corner's margin is. */
     const edge = parseFloat(getComputedStyle(corner).marginInlineEnd) || 0;
     const available = sch.clientWidth - corner.offsetWidth - 2 * edge;
-    const fits = document.documentElement.hasAttribute('data-scheduler-fit-days');
-    const days = String(fits ? Math.min(13, Math.max(7, Math.floor(available / day))) : 7);
+    const days = String(Math.max(0, Math.floor(available / day)));
     if (sch.dataset.daysInView !== days) {
       sch.dataset.daysInView = days;
       sch.dispatchEvent(new Event('scheduler:days-in-view'));

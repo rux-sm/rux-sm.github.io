@@ -110,7 +110,9 @@ const scenario = `(async () => {
   const until = async (test, ms, what) => { const t0 = performance.now(); while (performance.now() - t0 < ms) { if (test()) return true; await wait(50); } throw new Error('timed out waiting for ' + what); };
   const label = () => document.getElementById('scheduler-range')?.textContent ?? '';
   const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar').length;
-  await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length === 35, 15000, 'the strip');
+  // The strip: two weeks before the week in view, the week, and two after.
+  const STRIP = 35;
+  await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length === STRIP, 15000, 'the strip');
   await wait(800);
   const w = window.Rux.schedule.day();
   // The week input holds the picker's own format, m/d/yyyy here; a pick is written the same way.
@@ -146,7 +148,7 @@ const scenario = `(async () => {
      by the difference, leaving out a bar either strip's edge cuts. */
   const compare = (name, grown, fresh) => {
     const delta = days(fresh.stripStart, grown.stripStart);
-    const inside = (start, span) => start >= 1 && start + span <= 34;
+    const inside = (start, span) => start >= 1 && start + span <= STRIP - 1;
     const out = { name, delta, sameDays: grown.week === fresh.week, grownBars: grown.bars.length, freshBars: fresh.bars.length, onEdge: Math.abs(grown.at - Math.round(grown.at)) < 0.01, diffs: [], laneDiffs: 0, compared: 0, unsettled: grown.bars.filter(b => Number(b.varStart) !== b.start).length };
     const f = new Map(fresh.bars.filter(b => inside(b.start, b.span) && inside(b.start - delta, b.span)).map(b => [b.key, { ...b, start: b.start - delta }]));
     /* A yard card's mark goes to the bar its next bar shares a lane with, so
@@ -171,8 +173,8 @@ const scenario = `(async () => {
       if (g.lane !== b.lane) out.laneDiffs++; }
     for (const key of f.keys()) out.diffs.push({ key, only: 'fresh' });
     // A card is compared only where both strips hold its day, as a bar is.
-    const yardsOf = (list, move) => list.map(y => { const [track, start, ...rest] = y.split('|'); return [track, Number(start) - move, ...rest]; }).filter(y => y[1] >= 1 && y[1] <= 33 && y[1] + move >= 1 && y[1] + move <= 33).map(y => y.join('|')).sort();
-    const yg = yardsOf(grown.yards, 0).filter(y => { const i = Number(y.split('|')[1]); return i + delta >= 1 && i + delta <= 33; }), yf = yardsOf(fresh.yards, delta);
+    const yardsOf = (list, move) => list.map(y => { const [track, start, ...rest] = y.split('|'); return [track, Number(start) - move, ...rest]; }).filter(y => y[1] >= 1 && y[1] <= STRIP - 2 && y[1] + move >= 1 && y[1] + move <= STRIP - 2).map(y => y.join('|')).sort();
+    const yg = yardsOf(grown.yards, 0).filter(y => { const i = Number(y.split('|')[1]); return i + delta >= 1 && i + delta <= STRIP - 2; }), yf = yardsOf(fresh.yards, delta);
     out.yardsSame = JSON.stringify(yg) === JSON.stringify(yf);
     // A yard card is the pair of bars it stands between; one that only moved lane with its bars is the same card.
     const noLane = y => y.split('|').filter((_, i) => i !== 2).join('|');

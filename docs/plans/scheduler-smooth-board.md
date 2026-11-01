@@ -15,19 +15,12 @@ keeps its seven blocks, sized to its width.
 
 From md up the strip's day and bus column are fixed in `scheduler/app.css`
 and nothing inherited is written on a change of width, so it moves and
-restyles no trip. What is left is the rest of that rule: Fill the window in
-place of Up to two weeks, the last slow frames, and a panel pushing the week
-as Carbon's side panel pushes the page.
+restyles no trip, and Fill the window shows as many days as fit. What is
+left is the last slow frames, and a panel pushing the week as Carbon's side
+panel pushes the page.
 
 ## Decisions
 
-- **Fill the window shows as many days as fit,** the next day's start
-  showing at the right edge as it does beside a panel, up to 21. The strip
-  runs two weeks past the last day in view, as it does now, and at 21 days
-  in view that reaches the edge of the four weeks either side a read holds.
-  Up to two weeks goes, since inside the default width it never showed more
-  than seven, and so do `fitDays`, `MAX_IN_VIEW` and the paged board's two
-  weeks, `twoWeeks` and `TWO_WEEKS_MIN`, which no option turns on.
 - **Every task is measured before and after** in Chrome on :8641 on a real
   week, a full `fit` and the frames of a 240ms change of the week's width,
   with the numbers in the commit message.
@@ -52,8 +45,6 @@ None open.
 
 ## Tasks
 
-- [ ] Make Fill the window show as many days as fit, and delete Up to two
-      weeks and the paged board's two weeks.
 - [ ] Trace and cut what is left of the trip editor's pause on opening, and
       the one frame of 70–85ms a resize of the window still has.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files

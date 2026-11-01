@@ -955,7 +955,6 @@
    this theme sets no gap between its regions. */
 :root[data-theme="rux-dark"] {
   --scheduler-list-w: 22rem;
-  --scheduler-roster-two-w: 36rem;
   --scheduler-viewer-sm-w: 22rem;
 }
 /* RUX-DARK'S ROSTER IS A BOX IN ITS PANE, as GitHub frames a list: 16px in

@@ -18738,6 +18738,19 @@
     weekMotion = releaseWeekMotion = null;
     release?.();
   }
+  /* WHAT IS HELD FOLLOWS THE BOARD: once it comes to rest a week or more
+     from the middle of what was last read, by a swipe, an arrow or a key,
+     the weeks around it are read again, quietly, so about seventeen stay
+     held either side and the strip never meets the end of them. Nothing on
+     screen moves unless the read finds a trip changed. */
+  function readAround() {
+    if (!cached || !holds(cursor) || iso(cached.centre) === stripAskedFrom) return;
+    if (Math.abs(daysBetween(cached.centre, cursor)) < 7) return;
+    stripAskedFrom = iso(cached.centre);
+    stripAhead = true;
+    weekOwed = true;
+    readInTurn();
+  }
   function scrollStopped() {
     if (!weekMotion || !stripStart) { clearTimeout(scrollIdle); aim = null; return; }
     followScroll();
@@ -18756,6 +18769,7 @@
       else if (stale) drawBoard(cached.data);
       else if (roomy) fitLanesInView();
       else return show();
+      readAround();
     });
     if (roomy && liveHeld) liveRefresh();
   }

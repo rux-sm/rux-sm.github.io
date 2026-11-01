@@ -52,8 +52,7 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
   the trip.
 - **Updates:** the head is "Updates" and its count. Each update is one row,
   its words, then who and how long ago in the faded line the bus tip uses
-  for a bus's make. The avatars go. Add update is the last row and opens the
-  Updates window, as the bar's right-click Add update does.
+  for a bus's make. The avatars go. Add update is the last row.
 - **A driver's tip has one head at every stage:** their photo, or their
   initials, their full name, and one faded line under it. Each driver's icon
   opens that driver's own tip, so two drivers on one bus have two.
@@ -100,7 +99,14 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
 
 ## Questions
 
-None open.
+- **Where is an update typed?** The card is the only place an update is
+  added, changed or deleted: Add update opens a box in it, the bar's
+  right-click Add update opens the card at that box, and pressing an update
+  opens it there to change. The Updates window opens only from Save, and
+  lists earlier updates without changing them. Recommended: the box and an
+  opened update stay in the Updates tip, its field in Carbon's colours for a
+  field on the inverse surface, so adding an update stays one press from the
+  board.
 
 ## Tasks
 
@@ -108,7 +114,7 @@ None open.
       no Close, no trip head and no pop.
 - [ ] Draw the Alerts tip from the tip's rows, the badge losing its hover
       label.
-- [ ] Draw the Updates tip, its Add update opening the Updates window.
+- [ ] Draw the Updates tip.
 - [ ] Draw the driver's tip before the trip, every driver's status icon a
       button that opens it, with the photo read from `driver-photos` and the
       driver's hover label gone.

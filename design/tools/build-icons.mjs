@@ -92,6 +92,9 @@ const ICONS = [
   'BPMN-link--fill', 'time--filled', 'asleep--filled', 'subtract--filled',
   // A BUS'S FUEL in the scheduler's bus column, at Carbon's 16px.
   'gas-station',
+  // THE UPDATES BUTTON on a scheduler trip bar, leading the row that opens
+  // them, in the family of the crew's marks under it.
+  'chat',
 ];
 
 /* CARBON COLOURS ONE PATH OF AN ICON, AND A SYMBOL'S PATHS ARE OUT OF REACH.

@@ -720,7 +720,13 @@
     updateRow.setAttribute('aria-expanded', 'false');
     updateRow.setAttribute('aria-label', [nthWords, `Updates: ${latest ? `${updateStamp(latest)}. ${latest.body}` : 'No updates yet'}`]
       .filter(Boolean).join('. '));
-    updateRow.appendChild(runOf(age, news));
+    /* A chat mark leads the row, in the column the crew's marks stand in
+       below it, so the row reads as the button it is, as the alert reads as
+       its own; the whole row stays the one button. */
+    const chat = el('span', 'scheduler-bar__lead scheduler-bar__chat');
+    chat.setAttribute('aria-hidden', 'true');
+    chat.append(svgUse('#i-chat', '16', '0 0 32 32'));
+    updateRow.appendChild(runOf(chat, age, news));
     bar.appendChild(updateRow);
     const road = bar.dataset.busId ? window.SchedulerRoad.span(leg) : null;
     if (road) [bar.dataset.roadFrom, bar.dataset.roadTo] = road;

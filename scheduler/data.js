@@ -11205,6 +11205,8 @@
   let cardSection = '';
   // The part an out trip's card shows: floating, the one asked for; docked, its tab.
   const roadPartOf = bar => floatingCard() ? cardSection || 'road' : roadTabOf(bar);
+  // The openers marked open, the ones whose part of the card shows.
+  let openOpeners = [];
   let cardTrigger = null;
   function cardOrigin(bar) {
     if (cardTrigger?.isConnected && (cardTrigger === bar || cardTrigger.closest('.scheduler-bar') === bar)) return cardTrigger;
@@ -11241,12 +11243,23 @@
       || !!schEl.closest('[inert]') || barKey(bar) === cardAwayFor
       || (!docked && !cardAsked(bar));
     barShortcuts.hidden = none;
-    for (const trigger of gridEl.querySelectorAll('[data-card-opener]')) {
-      trigger.setAttribute('aria-controls', barShortcuts.id);
-      const owner = trigger.closest('.scheduler-bar');
-      const section = window.SchedulerBar.cardSectionOf(trigger);
-      trigger.setAttribute('aria-expanded', String(!none && owner === bar && (bar.dataset.road ? roadPartOf(bar) : cardSection) === section));
+    /* An opener is drawn marked shut. The ones whose part of the card shows
+       are marked open and point at the card, and only an opener whose state
+       changes is written, since this runs on every resize of the board. */
+    const showing = none ? '' : bar.dataset.road ? roadPartOf(bar) : cardSection;
+    const opened = none ? [] : [...bar.querySelectorAll('[data-card-opener]')]
+      .filter(trigger => window.SchedulerBar.cardSectionOf(trigger) === showing);
+    for (const trigger of openOpeners) {
+      if (opened.includes(trigger)) continue;
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.removeAttribute('aria-controls');
     }
+    for (const trigger of opened) {
+      if (openOpeners.includes(trigger)) continue;
+      trigger.setAttribute('aria-expanded', 'true');
+      trigger.setAttribute('aria-controls', barShortcuts.id);
+    }
+    openOpeners = opened;
     // The time line stays lit while the route it opened shows, as an opener's icon stays up.
     const route = !none && (bar.dataset.road ? roadPartOf(bar) : cardSection).startsWith('route:');
     for (const lit of gridEl.querySelectorAll('.scheduler-bar[data-route-open]')) if (!(route && lit === bar)) delete lit.dataset.routeOpen;

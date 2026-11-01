@@ -24,15 +24,11 @@ frames under 25ms except where it crosses one of Carbon's breakpoints.
   1312px, restyles every element,** 51–58ms, because it changes which rules
   apply; the native-strip plan measures it again, since the frame shrinks
   with the elements the board draws.
-- **A trip's `aria-expanded` is set where its card opens and closes,** not
-  worked out again for some 285 trips by `placeBarOpen` on every resize of
-  the grid.
 - **Rows keep one height while the strip moves,** as rux decided, and gain
   or lose a lane only once the board has rested for a set time. The
   native-strip plan carries this out, since it is where the board learns it
   has stopped.
-- **The native-strip plan is written once the three changes above land,**
-  and before the panel motion. It replaces the wheel handling, glides,
+- **The native-strip plan is written next,** before the panel motion. It replaces the wheel handling, glides,
   landings and strip redraws with the browser's own scrolling of one long
   strip, drawing only the trips near the view, and deletes the holds that
   stand in for knowing a scroll has ended: `weekMotion`, the `scrollIdle`
@@ -63,7 +59,6 @@ None open.
 
 ## Tasks
 
-- [ ] Set a trip's `aria-expanded` where its card opens and closes.
 - [ ] Write the native-strip plan.
 - [ ] Add the panel motion, and correct `design/docs/motion.md`, which files
       a panel arriving under expressive motion where Carbon's side panel is

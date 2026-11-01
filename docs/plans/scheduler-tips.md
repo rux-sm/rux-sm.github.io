@@ -111,8 +111,6 @@ None open.
 
 - [ ] Draw the driver's tip on the road, with its small map, in place of the
       live card.
-- [ ] Prove that letting a held Space go on another bus writes what a mouse
-      drop does, by `scheduler/docs/proving-a-save.md`.
 - [ ] Add each tip's classes and words to `tools/check-bar.mjs`, and see
       every tip in Chrome on :8641 on a dark and a light theme, with the
       phone's sheet unchanged.

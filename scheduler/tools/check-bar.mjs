@@ -371,6 +371,56 @@ cardContext.pageEl = { getAttribute: () => 'full' };
 
 expect('a bar being saved says so', drawn('handled', 'Saving').map(b => b.classList.contains('scheduler-bar--saving')), [true]);
 
+// The driver's tip and the route's, drawn by the board's own code from a stand-in seat, bus and leg.
+const between = (from, to) => dataSource.slice(dataSource.indexOf(from), dataSource.indexOf(to));
+const H = RoadBar.HOUR, at = Date.parse('2026-10-27T16:00:00Z');
+const seat = {
+  role: 'driver', driverId: 'd1', label: 'Driver', status: { value: 'confirmed', label: 'Confirmed', icon: '#i-checkmark--outline', indicator: 'x' },
+  row: { source: 'driver', acceptedAt: '2026-10-27T15:54:00Z' }, who: { name: 'Rosa Lima', phone: '9565550142', employment_type: 'part-time', photo_path: null },
+};
+const tipBar = road => { const b = make('div', 'scheduler-bar'); b.dataset.tripId = 't1'; b.dataset.assignmentId = 'a1'; b.dataset.busId = 'b1'; if (road) { b.dataset.road = 'out'; b.road = road; } return b; };
+const driverContext = {
+  ...context, el: make, svgUse: () => make('svg'), client: null, panelIndex: { driversById: new Map(), statuses: new Map(), buses: new Map() },
+  window: { ...window, SchedulerDriverJob: { changesSince: () => ['Stops changed'] } },
+  barSeat: () => ({ trip: { id: 't1' }, assign: { id: 'a1' }, range: { from: '2026-10-27', to: '2026-10-27' } }),
+  crewOf: () => [seat], driverById: () => null, roadBusOf: b => b.road ?? null,
+  ROAD_DUTY: RoadBar.DUTY, LIVE_CLOCKS: [['Drive', 'drive_ms', 10 * H], ['Shift', 'shift_ms', 15 * H], ['Cycle', 'cycle_ms', 70 * H]],
+  roadHours: RoadBar.hours, ROAD_HOUR: H, roadRest: RoadBar.restWords, hhmm: Bar.hhmm, Road: window.SchedulerRoad,
+  roadNext: () => ({ stop: { name: 'Laredo HS', due: at }, at: false, arrival: at + 10 * 60e3, late: 10 }),
+  roadLook: () => ({ warnings: [{ tone: 'warning', title: 'Late to spot', sentence: 'The bus gets there 10 minutes after its spot.' }] }),
+  roadNamed: () => new Set(), liveMapInto: () => {}, hueFor: () => 'blue', legKeyOfVehicle: () => 'outbound', requirementLabel: x => x,
+  standingFor: () => [{ assignmentId: 'a1', driverId: 'd1', what: 'Time off' }],
+  fitFor: () => ({ near: new Map([['d1', ['Back-to-back with Laredo, 6.5h rest']]]), tight: new Set(['d1']) }), boardNearby: {},
+  dial: p => p, showPhone: p => p,
+};
+runInNewContext(between("  /* A DRIVER'S TIP has one head at every stage", '  function drawLiveCard(trip, bar) {') + '\nglobalThis.testDriverTip = drawDriverTip;', driverContext);
+const rowsOf = tip => [...tip.querySelectorAll('.scheduler-tip__row')].map(r => [r.classes().find(c => /^scheduler-tip__(lamp--\w+|answer|call|clocks|map|next|links)$/.test(c))?.slice(15) ?? 'row', r.textContent]);
+const before = driverContext.testDriverTip({ id: 't1' }, tipBar(null), 'driver:d1:driver');
+expect('a driver\'s tip before the trip: their face and seat, their answer, what stands in the way, the rest either side and their phone',
+  [text(before, '.scheduler-tip__name'), text(before, '.scheduler-tip__said > span'), !!before.querySelector('.scheduler-tip__face'),
+    rowsOf(before).map(([kind, words]) => [kind, words.replace(/ · .*$/, '')]), before.querySelector('.scheduler-tip__call')?.href],
+  ['Rosa Lima', 'Driver · Part-time', true, [['answer', 'Confirmed by the driver'], ['lamp--warning', 'Changed since they said yes: Stops changed'],
+    ['lamp--error', 'Time off'], ['lamp--warning', 'Back-to-back with Laredo, 6.5h rest'], ['call', '9565550142']], 'tel:9565550142']);
+const onRoad = driverContext.testDriverTip({ id: 't1' }, tipBar({ drivers: [{ driver_id: 'd1', name: 'Rosa Lima', duty: 'driving', wheel: true, drive_ms: 5 * H, shift_ms: 40 * 60e3, cycle_ms: 40 * H }], lat: 26.2, lng: -98.2 }), 'driver:d1:driver');
+expect('a driver\'s tip on the road: their duty, the three clocks amber under an hour, the road\'s warnings, the map, the next stop and the two links',
+  [text(onRoad, '.scheduler-tip__said > span'), onRoad.querySelectorAll('.scheduler-tip__clock').length, onRoad.querySelectorAll('.scheduler-tip__clock--low').length,
+    rowsOf(onRoad).map(([kind]) => kind), !!onRoad.querySelector('.scheduler-tip__map .scheduler-card__live-map-box'),
+    text(onRoad, '.scheduler-tip__next .scheduler-tip__words'), onRoad.querySelectorAll('.scheduler-tip__link').map(a => a.textContent), onRoad.querySelector('.scheduler-tip__answer')],
+  ['Driving · at the wheel', 3, 1, ['clocks', 'lamp--warning', 'map', 'next', 'links'], true, 'Next: Laredo HS', ['Live map', 'Google Maps'], null]);
+
+const routeStops = [{ key: 's1', type: 'pickup', name: 'Rio HS', due: at }, { key: 's2', type: 'stop', name: 'Alamo', due: at + 3 * H }, { key: 'r', type: 'return', due: at + 6 * H }];
+const routeContext = {
+  ...context, el: make, svgUse: () => make('svg'), hhmm: Bar.hhmm, roadBusOf: () => null, roadNext: () => null,
+  Road: { ...window.SchedulerRoad, stopsOf: () => routeStops, pickupLate: () => 0 },
+  heldTrip: () => ({ id: 't1', trip_assignments: [{ id: 'a1', pickup_at: new Date(at).toISOString(), stop_arrivals: {} }] }),
+};
+runInNewContext(between('  const clockOfMs = ', '  /* A press on the route asks for its part') + '\nglobalThis.testRouteTip = drawRouteTip;', routeContext);
+const route = routeContext.testRouteTip({ id: 't1' }, tipBar(null), ['s2']);
+expect('the route\'s tip: its head, a row for the yard out, the pickup with its arrival judged, each stop and the yard back, the point pressed lit',
+  [text(route, '.scheduler-tip__name'), route.querySelectorAll('.scheduler-route__name').map(n => n.textContent),
+    text(route, '.scheduler-route__row--lit .scheduler-route__name'), route.querySelector('.scheduler-route__row--lit')?.getAttribute('aria-current'), text(route, '.scheduler-route__judged')],
+  ['Route', ['Yard out', 'Pickup · Rio HS', 'Alamo', 'Yard back'], 'Alamo', 'true', 'On time']);
+
 console.log('\n  Out on the road');
 const lit = n => drawn('road', n)[0];
 expect('each light', ['At highway speed', 'At a crawl', 'Idling', 'Resting', 'Engine off', 'No signal'].map(n => lit(n).dataset.light),

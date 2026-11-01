@@ -21,8 +21,10 @@ parts join it.
 - **Its samples join `components-data.js`,** invented like the rest, and
   `components.js` draws each as a section under the page's Motion, board and
   rows.
-- **The sections after the bars, in order:** the trip card and its tabs,
-  with the live card and its map; the Tasks list's rows and the Departures panel;
+- **The sections after the bars, in order:** the trip's tips, Alerts,
+  Updates, a driver's before the trip and on the road, and the route, with
+  the docked sheet's card, its tabs and the live card and its map; the Tasks
+  list's rows and the Departures panel;
   a bus's row head, its tip and the yard card; the editor's route stops,
   quote lines and billing tiles.
 - **`tools/check-bar.mjs` grows a case for each,** the classes and words
@@ -34,8 +36,8 @@ None open.
 
 ## Tasks
 
-- [ ] Move the trip card and its tabs, with the live card and its map, out
-      of `data.js`, and add their section.
+- [ ] Move the trip's tips and the docked sheet's card, its tabs and the
+      live card and its map, out of `data.js`, and add their section.
 - [ ] Add the section for the task rows and the Departures panel, whose
       drawing is already in files of their own.
 - [ ] Move the yard card out of `data.js`, and add the section for it and a

@@ -12117,6 +12117,12 @@
   const view = { client: true, contact: true, time: true, update: true, drivers: true, weekStart: 'monday', sunday: false,
     fitDays: false, yard: false, fill: false, motion: reducedMotion.matches ? 'calm' : 'full' };
   const VIEW_KEY = 'scheduler.view';
+  /* Compact is the rows' own switches set to the destination, the times and
+     the drivers, about half a bar's height; it is not saved on its own, but
+     ticked while the rows stand so, and pressed again it turns every row back
+     on. */
+  const COMPACT = { client: false, contact: false, time: true, update: false, drivers: true };
+  const isCompact = () => VIEW_ROWS.every(r => view[r] === COMPACT[r]);
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
@@ -12173,7 +12179,8 @@
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"]') || []) {
       const key = item.dataset.row || item.dataset.view;
       const on = item.dataset.motion ? view.motion === item.dataset.motion
-        : item.dataset.weekStart ? view.weekStart === item.dataset.weekStart : !!view[key];
+        : item.dataset.weekStart ? view.weekStart === item.dataset.weekStart
+        : key === 'compact' ? isCompact() : !!view[key];
       item.setAttribute('aria-checked', String(on));
       const slot = item.querySelector('.rux--menu-item__selection-icon');
       if (slot) { if (on) slot.replaceChildren(svgUse('#m-check', '16', '0 0 20 20')); else slot.replaceChildren(); }
@@ -12224,6 +12231,12 @@
     const item = e.target.closest('[role="menuitemcheckbox"]');
     if (!item) return;
     const key = item.dataset.row || item.dataset.view;
+    if (key === 'compact') {
+      const on = !isCompact();
+      for (const r of VIEW_ROWS) view[r] = on ? COMPACT[r] : true;
+      applyView();
+      return;
+    }
     if (!(key in view)) return;
     view[key] = !view[key];
     applyView();

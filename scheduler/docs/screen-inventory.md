@@ -136,7 +136,7 @@ Three homes, and one rule for choosing.
 - **History is a page.** It is the detail of nothing, and last in the nav: it is consulted, not
   worked in.
 - **View options go in the toolbar's overflow menu.** The week's first day, Monday, Sunday or
-  Today, each week then starting on today's weekday, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Up to
+  Today, each week then starting on today's weekday, Compact, which in one press leaves a bar its destination, times and drivers, about half its height, ticked while the rows stand so and turning them all back on when pressed again, and the bar-row toggles are there; time-aligned joins when the grid can draw it, then Up to
   two weeks, off until turned on and kept by the browser, for as many days on screen as fit at their least width, seven to fourteen, in the strip that is the board from md up, its arrows moving a week and the Left and Right keys a day, then Fill the window, off
   until turned on and kept by the browser, for a board that takes the whole window rather than Design's 99rem wide frame, in
   which the days share what the open panels leave, down to 160px each, and the week scrolls past it, so opening a panel

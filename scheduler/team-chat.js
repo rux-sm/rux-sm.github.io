@@ -3,7 +3,8 @@
 
    A message is its text, whether it is urgent, the people it names and the
    records it links to, in one `chat_messages` row; the database stamps who
-   sent it, when, and any edit or delete. `chat_reads` holds the newest
+   sent it, when, and any edit, and a deleted message's row is removed.
+   `chat_reads` holds the newest
    message each person has seen and when, so the dot on the header action
    and the faces under the messages are right on every computer. Both tables
    arrive live on the `scheduler-team-chat` channel.
@@ -362,14 +363,12 @@
   }
 
   /* WHO HAS SEEN IT. Each person but this one sits under the newest message
-     shown that they have read, unless it is their own, which says as much; a
-     deleted message holds no one, so its readers sit at the one above. */
+     shown that they have read, unless it is their own, which says as much. */
   function readSpots(all) {
-    const shown = all.filter(m => !m.deleted_at);
     const spots = new Map();
     for (const id of people.keys()) {
       if (id === me.id) continue;
-      const at = shown.findLast(m => m.id <= (reads.get(id) ?? 0));
+      const at = all.findLast(m => m.id <= (reads.get(id) ?? 0));
       if (!at || at.author_id === id) continue;
       if (!spots.has(at.id)) spots.set(at.id, []);
       spots.get(at.id).push(id);
@@ -429,13 +428,13 @@
     item.dataset.id = msg.id;
     const mine = msg.author_id === me.id;
     const when = new Date(msg.created_at);
-    const follows = prev && prev.author_id === msg.author_id && !prev.deleted_at
+    const follows = prev && prev.author_id === msg.author_id
       && dayKey(new Date(prev.created_at)) === dayKey(when)
       && when - new Date(prev.created_at) < 5 * 60 * 1000 && !msg.urgent && !msg.edited_at;
     if (follows) item.dataset.follows = '';
-    if (msg.urgent && !msg.deleted_at) item.dataset.urgent = '';
+    if (msg.urgent) item.dataset.urgent = '';
     if (mine) item.dataset.mine = '';
-    if (forMe(msg) && !msg.deleted_at) item.dataset.named = '';
+    if (forMe(msg)) item.dataset.named = '';
 
     const face = el('span', 'rux--user-avatar rux--user-avatar--sm scheduler-team-msg__face');
     face.setAttribute('aria-hidden', 'true');
@@ -448,25 +447,19 @@
     time.dateTime = msg.created_at;
     time.title = when.toLocaleString();
     meta.appendChild(time);
-    if (msg.edited_at && !msg.deleted_at) meta.appendChild(el('span', 'scheduler-team-msg__edited', 'Edited'));
-    if (msg.urgent && !msg.deleted_at) meta.appendChild(el('span', 'scheduler-team-msg__urgent', 'Urgent'));
-    main.appendChild(meta);
-
-    if (msg.deleted_at) {
-      main.appendChild(el('div', 'scheduler-team-msg__deleted', 'Message deleted'));
-    } else {
-      main.appendChild(bodyOf(msg));
-      if (msg.links?.length) {
-        const links = el('div', 'scheduler-team-msg__links');
-        for (const link of msg.links) links.appendChild(linkOf(link, false));
-        main.appendChild(links);
-      }
-      const seen = seenOf(msg, seenHere);
-      if (seen) main.appendChild(seen);
+    if (msg.edited_at) meta.appendChild(el('span', 'scheduler-team-msg__edited', 'Edited'));
+    if (msg.urgent) meta.appendChild(el('span', 'scheduler-team-msg__urgent', 'Urgent'));
+    main.append(meta, bodyOf(msg));
+    if (msg.links?.length) {
+      const links = el('div', 'scheduler-team-msg__links');
+      for (const link of msg.links) links.appendChild(linkOf(link, false));
+      main.appendChild(links);
     }
+    const seen = seenOf(msg, seenHere);
+    if (seen) main.appendChild(seen);
     item.append(face, main);
 
-    if (!msg.deleted_at && (mine || owner)) {
+    if (mine || owner) {
       const tools = el('div', 'scheduler-team-msg__tools');
       if (mine) {
         const edit = iconButton('#m-edit', 'Edit message');
@@ -515,7 +508,7 @@
      them. */
   function drawDot() {
     const mine = reads.get(me.id) ?? 0;
-    const unread = sorted().filter(m => m.id > mine && m.author_id !== me.id && !m.deleted_at);
+    const unread = sorted().filter(m => m.id > mine && m.author_id !== me.id);
     dot.hidden = !unread.length;
     dot.dataset.tone = unread.some(m => urgentForMe(m) || forMe(m)) ? 'urgent' : '';
     action.setAttribute('aria-label', unread.length ? `Team chat, ${unread.length} unread` : 'Team chat');
@@ -548,7 +541,7 @@
 
   /* READING. The newest page on opening, each earlier page on asking, and
      the newest page again after the page wakes, which also picks up edits
-     made while it slept. */
+     made while it slept and lets go of what was deleted. */
   async function readPage(before = null) {
     let query = client.from('chat_messages').select('*').order('id', { ascending: false }).limit(PAGE);
     if (before) query = query.lt('id', before);
@@ -556,6 +549,11 @@
     if (error) throw error;
     // Whether there is more is known from the first page and each earlier one, not a page read on waking.
     if (before || !Number.isFinite(oldest)) more = data.length === PAGE;
+    if (!before) {
+      const here = new Set(data.map(m => m.id));
+      const floor = data.length === PAGE ? data[data.length - 1].id : -Infinity;
+      for (const id of [...messages.keys()]) if (id >= floor && !here.has(id)) forget(id);
+    }
     for (const msg of data) messages.set(msg.id, msg);
     if (data.length) oldest = Math.min(oldest, data[data.length - 1].id);
     await readRecords(data.flatMap(m => m.links ?? []));
@@ -580,12 +578,27 @@
     scroller.scrollTop = scroller.scrollHeight - top;
   });
 
+  // A message deleted, here or elsewhere: gone from the room, and from the box if it was being edited.
+  function forget(id) {
+    messages.delete(id);
+    if (deleteArmed === id) deleteArmed = null;
+    if (draft.editing === id) resetDraft();
+  }
+
   /* LIVE. A new message from someone else is announced; an edit, a delete or
-     anyone's read mark redraws. A channel that died while the Mac slept is
-     thrown out and opened again, and the room read again. */
+     anyone's read mark redraws. A delete carries only the message's id. A
+     channel that died while the Mac slept is thrown out and opened again, and
+     the room read again. */
   function listen() {
     channel = client.channel('scheduler-team-chat')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, async ({ eventType, new: msg }) => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, async ({ eventType, new: msg, old }) => {
+        if (eventType === 'DELETE') {
+          if (!messages.has(old?.id)) return;
+          forget(old.id);
+          draw();
+          drawDot();
+          return;
+        }
         if (!msg?.id) return;
         const isNew = eventType === 'INSERT' && !messages.has(msg.id);
         messages.set(msg.id, msg);
@@ -626,7 +639,6 @@
 
   // A message from someone else, as it reaches this page.
   function arrive(msg) {
-    if (msg.deleted_at) return;
     if (urgentForMe(msg)) {
       if (!isOpen()) openPanel(false);
       chime();
@@ -741,12 +753,16 @@
       return;
     }
     deleteArmed = null;
-    const { data, error } = await client.from('chat_messages')
-      .update({ deleted_at: new Date().toISOString() }).eq('id', msg.id).select().single();
-    if (error) { window.SchedulerToast?.toast('error', 'Message not deleted', error.message); draw(); return; }
-    messages.set(data.id, data);
-    if (draft.editing === data.id) resetDraft();
+    // A row the database would not let this person delete comes back as no row, not an error.
+    const { data, error } = await client.from('chat_messages').delete().eq('id', msg.id).select('id');
+    if (error || !data?.length) {
+      window.SchedulerToast?.toast('error', 'Message not deleted', error?.message ?? 'Only its sender or an owner can delete it.');
+      draw();
+      return;
+    }
+    forget(msg.id);
     draw();
+    drawDot();
   }
 
   /* THE PICKER. `@` and a few letters lists the staff; `#` and two letters

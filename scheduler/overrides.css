@@ -1220,14 +1220,12 @@ svg.scheduler-status-icon.rux--icon-indicator--failed { fill: var(--rux-status-r
   overflow-wrap: anywhere;
 }
 .scheduler-team-msg__name { font-weight: var(--rux-heading-compact-01-font-weight); color: var(--rux-link-primary); }
-.scheduler-team-msg__deleted,
 .scheduler-team-msg__edited,
 .scheduler-team-msg__read {
   font-size: var(--rux-helper-text-01-font-size);
   line-height: var(--rux-helper-text-01-line-height);
   color: var(--rux-text-secondary);
 }
-.scheduler-team-msg__deleted { font-style: italic; }
 /* Who has seen it, at the message's end: an urgent message's count, then the
    faces of those who stopped reading here and the count of any past three. */
 .scheduler-team-msg__seen {

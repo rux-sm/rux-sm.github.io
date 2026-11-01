@@ -32,8 +32,9 @@ and the office can set the real day beside the planned one.
   `pickup_at` and each seat's miles, fetches them again whenever it is
   pressed, and its answer replaces the night's.
 - **Shown on the editor's Route summary** as Actual yard depart and Actual
-  yard return beside the planned times. The bar does not show them: a trip
-  that is back wears its Paid pill there.
+  yard return beside the planned times, and in the bar's route tip that
+  `scheduler-route-tip.md` plans; the bar's own rows do not show them, since
+  a trip that is back wears its Paid pill there.
 - **Trips since October 1 are filled in,** read first and written on rux's
   yes, by the same nightly path run over those days.
 - **The database change is its own step,** SQL shown to rux and applied on his

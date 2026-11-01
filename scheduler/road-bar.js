@@ -48,7 +48,7 @@
   'use strict';
 
   const Road = window.SchedulerRoad;
-  const { clockEl, hhmm, fitCrew } = window.SchedulerBar;
+  const { clockEl, hhmm, fitCrew, routeMark } = window.SchedulerBar;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -425,19 +425,18 @@
     row.title = tipOf(bar, bus, next, said, at);
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
-    // The times are words, the trip's; the track between them is the button.
+    /* The times and the track between them are the trip's, as a planned
+       bar's are; the clock bar.js leads the row with opens the route tip. */
     const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
     const parts = [];
     const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
+    if (bar.dataset.depart && bar.dataset.back) parts.push(routeMark());
     if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
     if (bar.dataset.depart && bar.dataset.back) {
       const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
       const back = plannedBack(bar);
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
-      // It opens the leg's route tip, data.js's, so it is a button, as the planned bar's track is.
-      const track = el('button', 'scheduler-road__track');
-      track.type = 'button';
-      track.setAttribute('aria-label', 'Route');
+      const track = el('span', 'scheduler-road__track');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
       /* The stops' ticks the time row drew, placed on this track and in the
          strong ink once the bus has reached every stop a tick stands for, so

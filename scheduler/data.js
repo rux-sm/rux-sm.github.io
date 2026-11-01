@@ -11211,7 +11211,7 @@
       : cardTrigger?.closest('.scheduler-bar__drivers')
         ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}${kind}[data-card-opener]`
       : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat'
-      : cardTrigger?.matches(ROUTE_OPENER) ? ':scope > :is(.scheduler-bar__time, .scheduler-road__times)' : null;
+      : cardTrigger?.matches('.scheduler-bar__clock') ? ':scope > :is(.scheduler-bar__time, .scheduler-road__times)' : null;
     return (selector && (bar.querySelector(`:scope > .scheduler-bar__drivers ${selector}`) ?? bar.querySelector(selector))) || bar;
   }
   // Every way in names its part; putting the card away names none.
@@ -11878,8 +11878,8 @@
     // A crew's +1 inside a live bar's drivers opens Contacts, not the card.
     if (!bar || e.detail > 1 || e.target.closest('[data-crew-overflow]')) return;
     const section = window.SchedulerBar.cardSectionOf(opener);
-    // The docked sheet has no driver's tip, so a driver's mark there only selects the trip.
-    if (!floatingCard() && section.startsWith('driver:')) return;
+    // The docked sheet has no driver's tip and no route, so a driver's mark or the clock there only selects the trip.
+    if (!floatingCard() && /^(driver|route):/.test(section)) return;
     cardTrigger = opener;
     askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadPartOf(bar) : cardSection, section), section);
   });
@@ -12318,7 +12318,8 @@
   /* A STOP UNDER THE MOUSE GROWS, as an app does in the Mac's Dock: on the
      time row it is over, each stop's tick takes `--scheduler-stop-grow`, 1 at
      the pointer down to 0 at STOP_REACH from it, which app.css draws as a
-     dot, so the stop aimed at is the easiest to point at. */
+     dot, so the stop aimed at, whose name and time its hover says, is the
+     easiest to point at. */
   const STOP_REACH = 40;
   let stopRow = null;
   const growStops = (row, x) => {
@@ -12338,18 +12339,16 @@
   });
   schEl.addEventListener('pointerleave', () => growStops(null));
 
-  /* THE ROUTE TIP: a press on a bar's time line, a stop's tick or the line
-     between ticks, shows the leg's whole route in a tip
-     beside the trip, as the trip's other tips stand, its caret on the row
-     pressed: the yard out, the pickup, each stop and the yard back, each
-     with its planned time beside what happened, the point pressed lit.
+  /* THE ROUTE TIP: a press on the clock leading a bar's time row shows the
+     leg's whole route in a tip beside the trip, as the trip's other tips
+     stand, its caret on the time row: the yard out, the pickup, each stop
+     and the yard back, each with its planned time beside what happened.
      Planned is the route's own time, the pickup's spot and each stop's
      arrival; Actual is what Samsara recorded on the bus's row, and on a bus
      out on the leg, a stop reached, the one it is at, or the next one's
      estimate, faded. The pickup alone says on time or how late, the only
      stop a bus can be late to. The press selects the trip, as a press on
-     any of its icons does. It is the card's part `route:<points lit>`. */
-  const { ROUTE_OPENER } = window.SchedulerBar;
+     any of its icons does. It is the card's part `route:`. */
   const clockOfMs = ms => hhmm(Road.clockOf(ms), true);
   const OFFICE_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' });
   // A time as the bar writes it, with "+1" after it on a day past the leg's yard-out.
@@ -12398,19 +12397,7 @@
     rows.push(home >= 0 ? said(back, stops[home], home) : back);
     return { rows, out };
   }
-  /* What a press lights: a tick's stops, or on the line the tick nearest
-     the press, or the yard at the end nearer it. */
-  function routePressed(hit, e) {
-    const r = hit.getBoundingClientRect();
-    if (hit.matches('.scheduler-bar__stop')) return hit.dataset.stops.split(' ');
-    const points = [{ lit: ['yard-out'], x: r.left }, { lit: ['yard-back'], x: r.right },
-      ...[...hit.querySelectorAll('.scheduler-bar__stop')].map(t => {
-        const b = t.getBoundingClientRect();
-        return { lit: t.dataset.stops.split(' '), x: b.left + b.width / 2 };
-      })];
-    return points.reduce((a, b) => (Math.abs(b.x - e.clientX) < Math.abs(a.x - e.clientX) ? b : a)).lit;
-  }
-  function drawRouteTip(trip, bar, lit) {
+  function drawRouteTip(trip, bar) {
     const tip = el('div', 'scheduler-tip scheduler-tip--card');
     tip.dataset.tripId = trip.id;
     const head = el('div', 'scheduler-tip__head');
@@ -12424,7 +12411,6 @@
     table.append(names);
     for (const r of route.rows) {
       const row = el('div', 'scheduler-tip__row scheduler-route__row');
-      if (lit.includes(r.key)) { row.classList.add('scheduler-route__row--lit'); row.setAttribute('aria-current', 'true'); }
       const actual = el('span', 'scheduler-route__actual');
       if (r.actual != null) actual.append(routeClock(r.actual, route.out), ...(r.late != null ? [routeJudged(r.late)] : []));
       else if (r.words) actual.append(r.words);
@@ -12436,19 +12422,6 @@
     tip.appendChild(table);
     return tip;
   }
-  /* A press on the route asks for its part, or puts it away when it is the
-     part showing, in the capture, ahead of the bar's own press, which then
-     selects the trip, as a card opener's does. A double-click's second press
-     is the double-click's. The docked sheet has no route part, so there the
-     press only selects the trip. */
-  schEl.addEventListener('click', e => {
-    const hit = e.target.closest?.(ROUTE_OPENER);
-    const bar = hit?.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || !floatingCard() || e.detail > 1) return;
-    const section = `route:${routePressed(hit, e).join(' ')}`;
-    cardTrigger = hit;
-    askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), cardSection, section), section);
-  }, true);
   viewMenu?.addEventListener('rux:menu-closed', () => {
     viewMenu.hidden = true;
     viewTrigger?.setAttribute('aria-expanded', 'false');
@@ -16023,7 +15996,7 @@
       btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '16', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
-    }), ...(carded ? [!docked && cardSection.startsWith('route:') ? drawRouteTip(trip, bar, cardSection.slice(6).split(' '))
+    }), ...(carded ? [!docked && cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
       : !docked && cardSection.startsWith('driver:') ? drawDriverTip(trip, bar, cardSection)
       : !bar.dataset.road ? drawCard(trip, bar, cardSection)
       : docked ? drawRoadCard(trip, bar) : roadPartOf(bar) === 'road' ? drawLiveCard(trip, bar) : drawCard(trip, bar, cardSection)] : []));
@@ -17316,7 +17289,7 @@
       const bar = selectedBar();
       if (!bar) return;
       if (overflow) openContactsFrom(bar, overflow);
-      else if (window.SchedulerBar.cardSectionOf(opener).startsWith('driver:')) return;
+      else if (/^(driver|route):/.test(window.SchedulerBar.cardSectionOf(opener))) return;
       else {
         cardTrigger = opener;
         askCard(bar, true, window.SchedulerBar.cardSectionOf(opener));

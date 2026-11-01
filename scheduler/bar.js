@@ -59,6 +59,18 @@
     svg.appendChild(use);
     return svg;
   };
+  /* The clock that leads a time row and opens the leg's route tip, data.js's,
+     a mark as the chat and crew marks are; road-bar.js leads a live bar's
+     times with one too. */
+  const routeMark = () => {
+    const b = el('button', 'scheduler-bar__lead scheduler-bar__clock');
+    b.type = 'button';
+    b.dataset.cardOpener = '';
+    b.setAttribute('aria-expanded', 'false');
+    b.setAttribute('aria-label', 'Route');
+    b.append(svgUse('#m-schedule', '16', '0 0 32 32'));
+    return b;
+  };
   // A phone number as it is shown, from phone.js.
   const showPhone = n => window.SchedulerPhone.format(n);
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -678,18 +690,18 @@
        it is back, empty before it leaves. The dash and any time left out stay
        inside it, unseen, so the row still reads and copies whole. */
     const when = el('span', none ? 'scheduler-bar__none' : null);
-    // The times are words, the trip's; the track between them is the button.
+    /* The times and the track between them are the trip's, so a press there
+       selects it; a clock leading the row, in the column the chat and crew
+       marks stand in below, is the button that opens the leg's route tip. */
     const timeWords = () => el('span', 'scheduler-bar__when');
+    let clock = null;
     const backAt = timeWords();
     backAt.append(...ret);
     if (dep && back) {
       when.className = 'scheduler-bar__span';
       const unseen = [place.fromPrev ? `${weekday(leg.from)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
-      /* The track opens the leg's route tip, data.js's, so it is a button,
-         a mark as the bar's icons are. */
-      const track = el('button', 'scheduler-bar__track', unseen);
-      track.type = 'button';
-      track.setAttribute('aria-label', 'Route');
+      clock = routeMark();
+      const track = el('span', 'scheduler-bar__track', unseen);
       [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
       track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
       // A leg that runs off the week has its track masked to the line, which would hide them.
@@ -723,7 +735,7 @@
     if (dep) whenDep.append(clockEl(dep));
     else if (back) whenDep.append('Ret ', clockEl(back));
     else whenDep.append('No times');
-    addRow(bar, 'scheduler-bar__time', when, whenDep);
+    addRow(bar, 'scheduler-bar__time', clock, when, whenDep);
 
     // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;
@@ -789,6 +801,7 @@
      `wheel` for a driver at the wheel the bar does not name, or Updates. A
      live bar's mark with no driver Samsara knows opens its live card. */
   const cardSectionOf = opener => {
+    if (opener.matches('.scheduler-bar__clock')) return 'route:';
     if (opener.matches('.scheduler-bar__alert')) return 'needs';
     if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
     const crew = opener.closest('.scheduler-crew');
@@ -797,10 +810,8 @@
       ? `driver:${id}:${crew.dataset.seat ?? 'wheel'}` : 'road';
   };
   const opensSection = (showing, current, requested) => !showing || current !== requested;
-  // What a press on opens the route's tip: the time line and its ticks, on any bar.
-  const ROUTE_OPENER = '.scheduler-bar__stop, .scheduler-bar__track, .scheduler-road__track';
 
   window.SchedulerBar = {
-    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, ROUTE_OPENER, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

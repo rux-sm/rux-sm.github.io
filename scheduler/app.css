@@ -436,7 +436,6 @@ button.scheduler-row-head__num::after {
   font-variant-numeric: tabular-nums;
 }
 .scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); opacity: .75; }
-.scheduler-route__row--lit { background: var(--rux-background-inverse-hover); }
 .scheduler-route__name { min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-route__time { white-space: nowrap; }
 .scheduler-route__day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
@@ -1250,7 +1249,7 @@ button.scheduler-row-head__num::after {
 /* Times in figures of one width, so down the board they line up; the a or
    p after each, and the Route summary's AM or PM, is smaller and dimmer, so
    the figures are what reads. */
-.scheduler-bar__time { font-variant-numeric: tabular-nums; }
+.scheduler-bar__time { gap: calc(1.5 * var(--rux-spacing-02)); font-variant-numeric: tabular-nums; }
 .scheduler-bar__ampm,
 .scheduler-figures__ampm { font-size: .85em; opacity: .75; }
 .scheduler-figures__none { color: var(--rux-text-placeholder); font-weight: var(--rux-body-compact-01-font-weight); }
@@ -1278,11 +1277,11 @@ button.scheduler-row-head__num::after {
 /* THE TRIP'S STRONGEST INK: the theme's own for the bar's colour,
    `--scheduler-strong`, where it gives one, or else black or white, whichever
    stands further from the bar's fill, which the footer shares. The kind chip
-   and the chat mark are drawn in it. The chat mark has no status to colour it, so this is what makes it
-   stand out from the update's words, as the crew's marks stand out from
-   their names. */
+   and the chat mark and the clock are drawn in it. Neither has a status to colour it, so this is what makes
+   each stand out from the words beside it, as the crew's marks stand out
+   from their names. */
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) { --scheduler-ink-strong: var(--scheduler-strong, oklch(from var(--scheduler-bg) calc((0.59 - l) * 100) 0 0)); }
-.scheduler-bar .scheduler-bar__chat[data-card-opener] { color: var(--scheduler-ink-strong); }
+.scheduler-bar :is(.scheduler-bar__chat, .scheduler-bar__clock)[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* The alert badge pairs its count with the warning icon. */
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
 /* The footer spans the trip. */
@@ -1367,14 +1366,18 @@ button.scheduler-row-head__num::after {
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its icon keeps the bar's own. */
 /* MARKS OPEN, WORDS DO NOT. Only a bar's marks are pressed for something
-   of their own -- its icons, the time line and its ticks, and the crew's
-   "+1" -- and each says so under the pointer by lifting; a press on its
-   words only selects the trip, and a driver's name is pulled to move them.
-   A touch screen has no pointer to wait for, so it shows no hover; the open
-   and pressed states show on any screen. The "+1" grows to its left, from
-   the end of the crew it stands at. */
+   of their own -- its icons and the crew's "+1" -- and each says so under
+   the pointer by lifting; a press on its words, the times and the line
+   between them among them, only selects the trip, and a driver's name is
+   pulled to move them. The pointer anywhere on the times row lifts the
+   clock that leads it, so the row shows where its route opens without the
+   wide line taking the press meant for the trip. A touch screen has no
+   pointer to wait for, so it shows no hover; the open and pressed states
+   show on any screen. The "+1" grows to its left, from the end of the crew
+   it stands at. */
 @media (hover: hover) {
-  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover {
+  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover,
+  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
   }
@@ -1384,29 +1387,23 @@ button.scheduler-row-head__num::after {
   filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):active { transform: none; filter: none; }
-/* The time line lifts as a line does: from 2px to 4px, and its part still to
-   go from a fifth of the ink to half, under the pointer on the line or a
-   tick, while it has the keyboard's focus and while the route is open,
-   data.js's `data-route-open`. The times either side are words and stay as
-   they are. The ticks keep a pixel past the line either side. */
+/* The time line lifts as a line does while the route is open, data.js's
+   `data-route-open`: from 2px to 4px, and its part still to go from a fifth
+   of the ink to half. The ticks keep a pixel past the line either side. */
 @property --scheduler-track { syntax: '<length>'; inherits: true; initial-value: 2px; }
 @property --scheduler-track-ink { syntax: '<percentage>'; inherits: true; initial-value: 22%; }
 :is(.scheduler-bar__track, .scheduler-road__track) {
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
-@media (hover: hover) {
-  :is(.scheduler-bar__track, .scheduler-road__track):hover { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-}
-:is(.scheduler-bar__track, .scheduler-road__track):focus-visible,
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
 .scheduler-week[data-motion="off"] :is([data-card-opener], [data-crew-overflow], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
-/* The phone's docked sheet has no driver's tip, so a driver's icon there is
-   drawn plain: it takes no press of its own, which goes to the trip, and
-   does not lift. */
-.scheduler-page[data-board="compact"] :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) .scheduler-crew > .scheduler-crew__mark[data-card-opener] {
+/* The phone's docked sheet has no driver's tip and no route, so a driver's
+   icon and the clock there are drawn plain: they take no press of their
+   own, which goes to the trip, and do not lift. */
+.scheduler-page[data-board="compact"] :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__clock)[data-card-opener] {
   pointer-events: none;
   cursor: default;
 }
@@ -1477,32 +1474,13 @@ button.scheduler-row-head__num::after {
   outline-offset: 2px;
   border-radius: 50%;
 }
-/* A tick and the line under it are pressed for the leg's route tip, so a
-   tick answers to 8px either side and both to the bar's line height, more
-   than their 2px. */
+/* A tick's hover names its stop and time, so a tick answers to 8px either
+   side and to the bar's line height, more than its 2px. */
 .scheduler-bar__stop::before {
   content: "";
   position: absolute;
   inset: -6px -8px;
-  cursor: pointer;
 }
-:is(.scheduler-bar__track, .scheduler-road__track)::before {
-  content: "";
-  position: absolute;
-  inset: -6px 0;
-  cursor: pointer;
-}
-/* The line is the route tip's button, drawn as the line it was. */
-button:is(.scheduler-bar__track, .scheduler-road__track) {
-  appearance: none;
-  padding: 0;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  font-size: 0;
-  cursor: pointer;
-}
-button:is(.scheduler-bar__track, .scheduler-road__track):focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .scheduler-week[data-motion="off"] .scheduler-bar__stop { transition: none; }
 @media (prefers-reduced-motion: reduce) { .scheduler-bar__stop { transition: none; } }
 /* A leg that runs off the week has no time on that side: its track runs on

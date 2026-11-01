@@ -419,12 +419,11 @@ const routeContext = {
   Road: { ...window.SchedulerRoad, stopsOf: () => routeStops, pickupLate: () => 0 },
   heldTrip: () => ({ id: 't1', trip_assignments: [{ id: 'a1', pickup_at: new Date(at).toISOString(), stop_arrivals: {} }] }),
 };
-runInNewContext(between('  const clockOfMs = ', '  /* A press on the route asks for its part') + '\nglobalThis.testRouteTip = drawRouteTip;', routeContext);
-const route = routeContext.testRouteTip({ id: 't1' }, tipBar(null), ['s2']);
-expect('the route\'s tip: its head, a row for the yard out, the pickup with its arrival judged, each stop and the yard back, the point pressed lit',
-  [text(route, '.scheduler-tip__name'), route.querySelectorAll('.scheduler-route__name').map(n => n.textContent),
-    text(route, '.scheduler-route__row--lit .scheduler-route__name'), route.querySelector('.scheduler-route__row--lit')?.getAttribute('aria-current'), text(route, '.scheduler-route__judged')],
-  ['Route', ['Yard out', 'Pickup · Rio HS', 'Alamo', 'Yard back'], 'Alamo', 'true', 'On time']);
+runInNewContext(between('  const clockOfMs = ', "  viewMenu?.addEventListener('rux:menu-closed'") + '\nglobalThis.testRouteTip = drawRouteTip;', routeContext);
+const route = routeContext.testRouteTip({ id: 't1' }, tipBar(null));
+expect('the route\'s tip: its head, a row for the yard out, the pickup with its arrival judged, each stop and the yard back',
+  [text(route, '.scheduler-tip__name'), route.querySelectorAll('.scheduler-route__name').map(n => n.textContent), text(route, '.scheduler-route__judged')],
+  ['Route', ['Yard out', 'Pickup · Rio HS', 'Alamo', 'Yard back'], 'On time']);
 
 console.log('\n  Out on the road');
 const lit = n => drawn('road', n)[0];
@@ -438,16 +437,19 @@ expect('the times follow the time row they stand in for, before the update and t
 expect('the times: out and back either end of a track filled as far as the trip has gone',
   [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
   [2, true]);
-expect('each time on a planned and a live bar is a word, and the line between them is the button that opens the leg\'s route tip',
+const clockOf = c => [c.tagName, c.type, c.getAttribute('aria-label'), c.dataset.cardOpener];
+expect('each time on a planned and a live bar, and the line between them, is the trip\'s, and a clock leading the row is the button that opens the leg\'s route tip',
   [[...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => w.tagName),
-    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__track')].map(t => [t.tagName, t.type, t.getAttribute('aria-label')]),
+    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__track')].map(t => t.tagName),
+    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time > .scheduler-bar__clock')].map(clockOf),
     [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__when')].map(w => w.tagName),
-    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__track')].map(t => [t.tagName, t.type, t.getAttribute('aria-label')])],
-  [['SPAN'], [['BUTTON', 'button', 'Route']], ['SPAN', 'SPAN'], [['BUTTON', 'button', 'Route']]]);
+    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__track')].map(t => t.tagName),
+    [...row(lit('At highway speed')).querySelectorAll(':scope > .scheduler-bar__clock')].map(clockOf)],
+  [['SPAN'], ['SPAN'], [['BUTTON', 'button', 'Route', '']], ['SPAN', 'SPAN'], ['SPAN'], [['BUTTON', 'button', 'Route', '']]]);
 const lateWhens = b => [...row(lit(b)).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late'));
-expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added',
+expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added to the clock, out, the track and back',
   [lateWhens('Late back to the yard'), lateWhens('Past its return'), lateWhens('At highway speed'), row(lit('Past its return')).children.length],
-  [[false, true], [false, true], [false, false], 3]);
+  [[false, true], [false, true], [false, false], 4]);
 expect('the hour the clocks go back: a leg leaves at the first 1:30 and is back at the second',
   [Week.officeInstant('2026-11-01', '01:30'), Week.officeInstant('2026-11-01', '01:30', true),
     Week.backAt({ from: '2026-10-31', to: '2026-10-31', back: '01:30', backDays: 1 }), Week.officeInstant('2026-11-01', '02:30', true)]

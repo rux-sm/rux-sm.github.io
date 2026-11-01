@@ -252,18 +252,18 @@
 
     if (opts.tip) {
       const lines = tipOf(bus, live);
-      let box = opts.tip.querySelector('.scheduler-bus-tip__live');
+      let box = opts.tip.querySelector('.scheduler-tip__live');
       if (!lines.length) box?.remove();
       else {
         if (!box) {
-          box = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__live');
-          opts.tip.querySelector('.scheduler-bus-tip__head')?.after(box);
+          box = el('div', 'scheduler-tip__row scheduler-tip__live');
+          opts.tip.querySelector('.scheduler-tip__head')?.after(box);
         }
         box.replaceChildren(...lines.map(l => el('div', null, l)));
         // The lamp's line is the last, and leads with the lamp in its tone.
         if (lamp) {
           const said = box.lastElementChild;
-          said.className = `scheduler-bus-tip__lamp scheduler-bus-tip__lamp--${lamp.tone}`;
+          said.className = `scheduler-tip__lamp scheduler-tip__lamp--${lamp.tone}`;
           said.prepend(svgUse(lamp.icon, '16', '0 0 32 32'));
         }
       }

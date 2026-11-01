@@ -232,8 +232,8 @@
   const equipmentOf = bus => [bus.ada_lift && ['#m-accessible-fill', 'ADA lift'],
     bus.sleeper && ['#m-airline_seat_flat-fill', 'Sleeper']].filter(Boolean);
   function busTip(bus) {
-    const tip = el('div', 'rux--toggletip-content scheduler-bus-tip');
-    const head = el('div', 'scheduler-bus-tip__head');
+    const tip = el('div', 'rux--toggletip-content scheduler-tip');
+    const head = el('div', 'scheduler-tip__head');
     const disc = el('div', 'scheduler-bus-disc');
     disc.setAttribute('aria-hidden', 'true');
     const ink = window.SchedulerVehicles?.inkOn(bus.color);
@@ -241,8 +241,8 @@
     const icon = window.SchedulerVehicles?.iconOf(bus.type);
     disc.appendChild(icon ? svgUse(icon, '16', '0 0 32 32')
       : el('span', 'scheduler-bus-disc__letter', String(bus.type || 'U').trim().charAt(0).toUpperCase()));
-    const said = el('div', 'scheduler-bus-tip__said');
-    said.appendChild(el('strong', 'scheduler-bus-tip__name', vehicleName(bus)));
+    const said = el('div', 'scheduler-tip__said');
+    said.appendChild(el('strong', 'scheduler-tip__name', vehicleName(bus)));
     const spec = [bus.capacity ? `${bus.capacity} pax` : null,
       [bus.year, bus.make, bus.model].filter(Boolean).join(' ') || null].filter(Boolean).join(' · ');
     if (spec) said.appendChild(el('span', null, spec));
@@ -251,17 +251,17 @@
 
     const marks = equipmentOf(bus);
     if (marks.length) {
-      const row = el('div', 'scheduler-bus-tip__row scheduler-bus-tip__kit');
+      const row = el('div', 'scheduler-tip__row scheduler-tip__kit');
       for (const [href, label] of marks) {
-        const mark = el('span', 'scheduler-bus-tip__mark');
+        const mark = el('span', 'scheduler-tip__mark');
         mark.append(svgUse(href, '16', '0 0 32 32'), el('span', null, label));
         row.appendChild(mark);
       }
       tip.appendChild(row);
     }
-    if (bus.vin) tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__vin', `VIN ${bus.vin}`));
+    if (bus.vin) tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__vin', `VIN ${bus.vin}`));
     if (bus.status && bus.status !== 'active') {
-      tip.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', bus.status.charAt(0).toUpperCase() + bus.status.slice(1)));
+      tip.appendChild(el('div', 'scheduler-tip__row scheduler-tip__status', bus.status.charAt(0).toUpperCase() + bus.status.slice(1)));
     }
     return tip;
   }
@@ -832,7 +832,7 @@
       const bus = panelIndex.buses.get(head.dataset.busId);
       if (!bus) continue;
       const live = roadAnswer?.buses?.find(b => b.bus_id === bus.id) ?? null;
-      BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-bus-tip'), waiting: roadWaiting() });
+      BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-tip'), waiting: roadWaiting() });
     }
     roadBars(gridEl.querySelectorAll('.scheduler-bar[data-bus-id]'));
     // A card showing the live card follows its bus with each answer.
@@ -1250,7 +1250,7 @@
         const words = oosWords(windows);
         flag('#m-report-fill', '0 0 16 16', words, 'scheduler-row-head__oos');
         // The mark takes no press of its own, so the tip says why.
-        head.querySelector('.scheduler-bus-tip')?.appendChild(el('div', 'scheduler-bus-tip__row scheduler-bus-tip__status', words));
+        head.querySelector('.scheduler-tip')?.appendChild(el('div', 'scheduler-tip__row scheduler-tip__status', words));
       }
       if (kit.childElementCount) top.appendChild(kit);
       if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
@@ -12283,7 +12283,7 @@
      on time, the only stop a bus can be late to. A tick that stands for two
      stops close together tells both. Pressing a tick picks no trip. */
   const stopTip = el('span', 'rux--popover-container rux--popover--caret rux--popover--high-contrast rux--popover--drop-shadow rux--popover--top rux--toggletip scheduler-stop-tip');
-  const stopTipBody = el('div', 'rux--toggletip-content scheduler-bus-tip');
+  const stopTipBody = el('div', 'rux--toggletip-content scheduler-tip');
   {
     const pop = el('span', 'rux--popover');
     const content = el('span', 'rux--popover-content');
@@ -12329,9 +12329,9 @@
     const facts = stopFacts(dot);
     if (!facts.length) { closeStopTip(); return; }
     stopTipBody.replaceChildren(...facts.flatMap(f => {
-      const head = el('div', 'scheduler-bus-tip__head');
-      head.append(el('span', 'scheduler-bus-tip__name', f.pickup ? `Pickup · ${f.name}` : f.name));
-      return [head, ...f.lines.map(line => el('div', 'scheduler-bus-tip__row', line))];
+      const head = el('div', 'scheduler-tip__head');
+      head.append(el('span', 'scheduler-tip__name', f.pickup ? `Pickup · ${f.name}` : f.name));
+      return [head, ...f.lines.map(line => el('div', 'scheduler-tip__row', line))];
     }));
     const r = dot.getBoundingClientRect();
     stopTip.style.left = `${r.left + r.width / 2}px`;

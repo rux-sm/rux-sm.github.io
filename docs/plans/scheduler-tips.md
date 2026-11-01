@@ -20,9 +20,9 @@ keyboard's way to move a trip to another bus, which only a drag can do now.
 
 ## Decisions
 
-- **The tip's rows are one family, `scheduler-tip`,** renamed from
-  `scheduler-bus-tip`, because the bus, the stop, the trip's tips and the
-  driver's all draw them. The head, rows, marks and lamp keep their look.
+- **The tip's rows are one family, `scheduler-tip`,** because the bus, the
+  stop, the trip's tips and the driver's all draw them. The head, rows, marks
+  and lamp keep their look.
 - **The card keeps its own placing:** beside the trip's first day, on the
   other side where there is no room, the caret on the pressed part. Design's
   `popover.js` does no placing and the board's placer already does.
@@ -104,10 +104,6 @@ None open.
 
 ## Tasks
 
-- [ ] Rename `scheduler-bus-tip` to `scheduler-tip` in the scheduler's
-      `data.js`, `bus-head.js`, `app.css`, `overrides.css` and
-      `tools/check-bar.mjs`, with the bus and stop tips measured the same
-      before and after.
 - [ ] Make the chat icon and every driver's icon the openers in place of
       their whole rows, in `bar.js` and `road-bar.js`, each a named button
       with a 24px press area, a hover and no hover label.

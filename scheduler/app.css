@@ -1273,18 +1273,19 @@ button.scheduler-row-head__num::after {
 }
 /* The return-after-midnight mark, small and raised so the row keeps its height. */
 .scheduler-bar__next-day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
-/* Out and back at 12px across the row's top, out at the start and back
-   pushed to the end, with the track under them from side to side, as a
-   live bar's times are: 2px, centred 15px down the 18px row, the trip's ink
-   as far as its time has gone and a fifth of it after, the dash inside it
-   unseen. The times are smaller than the other rows' words so the track
-   has the bar's whole width for its dots. */
+/* OUT, THE TRACK, BACK, in one line: out at the start and back at the end,
+   at 12px, and between them the track, 2px, centred on the figures with 6px
+   either side, the trip's ink as far as its time has gone and a fifth of it
+   after, as a live bar's times are. Drawn under the figures it had no room,
+   touching them and the row below; between them it has the row's air above
+   and below, and reads as a span from out to back. */
 .scheduler-bar__time > .scheduler-bar__span {
   position: relative;
   flex: 1 1 auto;
   align-self: stretch;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: calc(1.5 * var(--rux-spacing-02));
   min-inline-size: 0;
   font-size: var(--rux-label-01-font-size);
   line-height: 14px;
@@ -1295,9 +1296,11 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__when { flex: none; }
 .scheduler-bar__span > .scheduler-bar__when:last-child { margin-inline-start: auto; }
 .scheduler-bar__track {
-  position: absolute;
-  inset-inline: 3px;
-  inset-block-end: 2px;
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: var(--rux-spacing-05);
+  /* A pixel down, to the middle of the figures rather than of their line. */
+  margin-block-start: 1px;
   block-size: 2px;
   border-radius: 1px;
   font-size: 0;
@@ -1306,7 +1309,7 @@ button.scheduler-row-head__num::after {
     color-mix(in srgb, currentColor 22%, transparent);
 }
 /* A stop's tick, 2px wide and 4px tall across the line at its time, 1px
-   over it each side, so it takes none of the times' room above: in the
+   over it each side: in the
    trip's strongest ink once the leg has reached it, where its theme gives
    one, so it stands out of the filled line, and the line's ink dimmed
    toward the bar while it is ahead. Under a mouse it grows, as an app does
@@ -1345,7 +1348,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar:is(.scheduler-bar--to-next, .scheduler-bar--from-prev) .scheduler-bar__span > .scheduler-bar__track {
   --scheduler-arrow-on: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m3,2.9806c0-.5692.4772-.979,1-.9806.1628-.0005.3299.0388.4885.1249l23.9867,13.0196c.3435.1865.5248.521.5248.8555s-.1812.6694-.5248.8559L4.4885,29.8754c-.1586.0861-.3257.1251-.4885.1246-.5228-.0016-1-.4111-1-.9803V2.9806Z'/%3E%3C/svg%3E") right center / 8px 8px no-repeat;
   --scheduler-arrow-back: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='m29,29.0194c0,.5692-.4772.979-1,.9806-.1628.0005-.3299-.0388-.4885-.1249L3.5248,16.8556c-.3435-.1865-.5248-.521-.5248-.8555s.1812-.6694.5248-.8559L27.5115,2.1246c.1586-.0861.3257-.1251.4885-.1246.5228.0016,1,.4111,1,.9803v26.0391Z'/%3E%3C/svg%3E") left center / 8px 8px no-repeat;
-  inset-block-end: -1px;
   block-size: 8px;
   border-radius: 0;
 }
@@ -1359,11 +1361,9 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track::after { mask: var(--scheduler-arrow-back); }
 .scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track::after { mask: var(--scheduler-arrow-back), var(--scheduler-arrow-on); }
 .scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
-  inset-inline-end: 0;
   mask: linear-gradient(#000 0 0) left center / calc(100% - 7.25px) 2px no-repeat, var(--scheduler-arrow-on);
 }
 .scheduler-bar--from-prev .scheduler-bar__span > .scheduler-bar__track {
-  inset-inline-start: 0;
   mask: linear-gradient(#000 0 0) right center / calc(100% - 7.25px) 2px no-repeat, var(--scheduler-arrow-back);
 }
 .scheduler-bar--from-prev.scheduler-bar--to-next .scheduler-bar__span > .scheduler-bar__track {
@@ -2384,18 +2384,16 @@ button.scheduler-row-head__num::after {
 .scheduler-bar--road > .scheduler-road__times { margin-inline-start: 0; }
 .scheduler-bar > .scheduler-bar__dest > :not(:first-child):last-child { margin-inline-end: 0; }
 
-/* THE TIMES: out at the start and back at the end, then the minutes late
-   in amber, at 12px across the row's top with the track under them, as a
-   planned bar's are; between them, on a leg whose route is done, a dimmed
-   arrow and when the bus gets to its next stop, centred in the room left.
-   Or a problem's words, at the row's size.
-   The track's dots stand into the row below where the drivers row is
-   lifted, so the row lets them show. */
+/* THE TIMES: out at the start, the track, and back at the end, then the
+   minutes late in amber, at 12px in one line, as a planned bar's are; after
+   the track, on a leg whose route is done, a dimmed arrow and when the bus
+   gets to its next stop. Or a problem's words, at the row's size. */
 .scheduler-bar__row.scheduler-road__times { justify-content: flex-start; gap: var(--rux-spacing-02); }
 .scheduler-bar > .scheduler-bar__row.scheduler-road__times:has(> .scheduler-road__track) {
   position: relative;
   inset: auto;
-  align-items: flex-start;
+  align-items: center;
+  gap: calc(1.5 * var(--rux-spacing-02));
   overflow: visible;
   font-size: var(--rux-label-01-font-size);
   line-height: 14px;
@@ -2404,19 +2402,19 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__row.scheduler-road__times > .scheduler-road__when { flex: none; }
 .scheduler-road__when { flex: none; font-variant-numeric: tabular-nums; }
 .scheduler-road__when ~ .scheduler-road__when { margin-inline-start: auto; }
-.scheduler-road__next { flex: 1 1 auto; min-inline-size: 0; display: flex; justify-content: center; gap: var(--rux-spacing-02); white-space: nowrap; }
+.scheduler-road__next { flex: none; display: flex; gap: var(--rux-spacing-02); white-space: nowrap; }
 .scheduler-road__next-arrow { flex: none; opacity: .85; }
 /* Running late back: the expected return, or the time past the plan, amber. */
 .scheduler-road__when--late, .scheduler-road__over { color: var(--scheduler-age-week); }
 .scheduler-road__over { flex: none; font-variant-numeric: tabular-nums; }
-/* The track under out and back: 2px, centred 15px down the row however
-   tall the lift leaves it, filled as far as the trip has gone, which is
-   now, in the row's ink so it reads as the times do, with its stops' dots
-   on it. */
+/* The track between out and back: 2px, centred on the figures, filled as
+   far as the trip has gone, which is now, in the row's ink so it reads as
+   the times do, with its stops' ticks on it. */
 .scheduler-road__track {
-  position: absolute;
-  inset-inline: 3px;
-  inset-block-end: calc(2px - var(--scheduler-road-lift, 0px));
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: var(--rux-spacing-05);
+  margin-block-start: 1px;
   block-size: 2px;
   border-radius: 1px;
   /* Its stops' dots stand past it either side, which a row's parts would clip. */

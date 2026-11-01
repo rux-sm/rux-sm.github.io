@@ -173,9 +173,9 @@
     if (statusUse && statusMark.dataset.baseIndicator != null) { statusUse.parentElement.setAttribute('class', statusMark.dataset.baseIndicator); delete statusMark.dataset.baseIndicator; }
     item.classList.toggle('scheduler-crew--declined', item.dataset.baseDeclined === 'true');
     delete item.dataset.baseDeclined;
-    if (item.dataset.baseTitle != null) { item.title = item.dataset.baseTitle; delete item.dataset.baseTitle; }
+    // A seat's hover label is only where its driver is away; the live tip says the rest.
+    item.removeAttribute('title');
     if (elsewhere) {
-      item.dataset.baseTitle = item.title;
       const m = el('button', 'scheduler-crew__duty scheduler-crew__duty--away');
       m.type = 'button';
       m.appendChild(svgUse('#m-report-fill', '16', '0 0 16 16'));
@@ -184,11 +184,10 @@
       item.classList.add('scheduler-crew--away', 'scheduler-crew--seat');
       item.append(el('span', 'scheduler-crew__away', `in ${elsewhere.bus}`), leftBar(null, true));
       item.style.setProperty('--scheduler-seat-fill', '100%');
-      item.title = `${item.title}\nSamsara: ${elsewhere.sentence}`;
+      item.title = `Samsara: ${elsewhere.sentence}`;
       return;
     }
     if (!d) return;
-    item.dataset.baseTitle = item.title;
     item.classList.add('scheduler-crew--seat');
     if (statusMark) {
       statusMark.dataset.baseClass = statusMark.className;
@@ -222,7 +221,6 @@
     const fill = resting(d) ? (elapsed == null ? 0 : share(elapsed, REST)) : d.left_ms != null ? share(d.left_ms, DRIVE) : 0;
     item.style.setProperty('--scheduler-seat-fill', `${fill}%`);
     item.toggleAttribute('data-fill-short', fill < 50);
-    item.title = `${item.title}\nSamsara: ${words(d)}`;
   }
   // The bar of driving hours left under a seat; red and full for the wrong bus.
   function leftBar(ms, away) {
@@ -427,8 +425,8 @@
     row.title = tipOf(bar, bus, next, said, at);
     const say = sayOf(bus, worst);
     if (say) { row.replaceChildren(el('span', `scheduler-road__say scheduler-road__say--${worst?.tone ?? 'quiet'}`, say)); return; }
-    // Each time opens the leg's route tip, data.js's, so it is a button.
-    const clock = (at, cls = 'scheduler-road__when') => { const w = el('button', cls); w.type = 'button'; w.append(clockEl(at)); return w; };
+    // The times are words, the trip's; the track between them is the button.
+    const clock = (at, cls = 'scheduler-road__when') => { const w = el('span', cls); w.append(clockEl(at)); return w; };
     const parts = [];
     const expected = bar.dataset.roadTo ? expectedBack(bar, next) : null;
     if (bar.dataset.depart) parts.push(clock(bar.dataset.depart));
@@ -436,7 +434,10 @@
       const out = Number(bar.dataset.roadFrom) + Road.MARGIN;
       const back = plannedBack(bar);
       const done = back > out ? Math.min(1, Math.max(0, (Date.now() - out) / (back - out))) : 0;
-      const track = el('span', 'scheduler-road__track');
+      // It opens the leg's route tip, data.js's, so it is a button, as the planned bar's track is.
+      const track = el('button', 'scheduler-road__track');
+      track.type = 'button';
+      track.setAttribute('aria-label', 'Route');
       track.style.setProperty('--scheduler-done', `${Math.round(done * 1000) / 10}%`);
       /* The stops' ticks the time row drew, placed on this track and in the
          strong ink once the bus has reached every stop a tick stands for, so

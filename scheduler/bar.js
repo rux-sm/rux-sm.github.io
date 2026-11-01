@@ -212,8 +212,9 @@
     m.title = 'Paid in full';
     return m;
   };
-  /* The newest update's age is neutral metadata, without a clock or pill.
-     The row's chat mark opens Updates, including when it has no update. */
+  /* The newest update's age is neutral metadata, without a clock or pill,
+     and no hover label, since Updates says when. The row's chat mark opens
+     Updates, including when it has no update. */
   const ageWords = at => {
     const min = (Date.now() - Date.parse(at)) / 60e3;
     if (min < 60) return `${Math.max(1, Math.floor(min))}m`;
@@ -221,11 +222,7 @@
     if (min < 43200) return `${Math.floor(min / 1440)}d`;
     return formatOf(undefined, { month: 'short', day: 'numeric' }).format(new Date(at));
   };
-  const ageMark = (at, words) => {
-    const m = el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
-    m.title = words;
-    return m;
-  };
+  const ageMark = at => el('span', 'scheduler-bar__age', at ? ageWords(at) : 'No updates');
   /* WHAT IS A PROBLEM ON THE BOARD: a bus that does not fit, more passengers
      than seats, a driver who said no or must be told of a change, and a
      confirmed trip with nothing paid, no PO, deposit or payment, which is
@@ -325,7 +322,7 @@
      fourteen days of departure take Caution minor, the alert badge's yellow
      triangle, so the bar has one warning colour. A seated driver's icon is
      the button that opens their tip, as the alert badge opens Alerts, with
-     no hover label of its own over the name's, since the tip says it; a
+     no hover label, since the tip says it; a
      done trip's drivers have none to press, but one who declined. */
   const RELIEF_ROLES = new Set(['relief-start', 'relief-end']);
   function crewEl(c, due, done) {
@@ -354,7 +351,10 @@
     }
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
-    item.title = crewText(c);
+    /* The crew member in words, for the "+1" that stands for them when they
+       do not fit. No hover label: a seated driver's tip says it, and the bar's
+       own label reads it. */
+    item.dataset.words = crewText(c);
     if (c.driverId != null) item.dataset.driverId = c.driverId;
     // The seat it is: what a press pulls its driver out by, and where a carried one goes in.
     item.dataset.seat = c.role;
@@ -405,7 +405,7 @@
     items[s.shown].style.display = 'none';
     const left = items.slice(s.shown);
     more.textContent = `+${left.length}`;
-    more.title = left.map(item => item.title).join('\n');
+    more.title = left.map(item => item.dataset.words).join('\n');
     more.setAttribute('aria-label', `Show crew: ${more.title}`);
     more.classList.toggle('scheduler-bar__more--attention', left.some(item => item.classList.contains('scheduler-crew--declined')));
     s.shown--;
@@ -678,14 +678,18 @@
        it is back, empty before it leaves. The dash and any time left out stay
        inside it, unseen, so the row still reads and copies whole. */
     const when = el('span', none ? 'scheduler-bar__none' : null);
-    // Each time opens the leg's route tip, data.js's, so it is a button.
-    const timeButton = () => { const b = el('button', 'scheduler-bar__when'); b.type = 'button'; return b; };
-    const backAt = timeButton();
+    // The times are words, the trip's; the track between them is the button.
+    const timeWords = () => el('span', 'scheduler-bar__when');
+    const backAt = timeWords();
     backAt.append(...ret);
     if (dep && back) {
       when.className = 'scheduler-bar__span';
       const unseen = [place.fromPrev ? `${weekday(leg.from)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
-      const track = el('span', 'scheduler-bar__track', unseen);
+      /* The track opens the leg's route tip, data.js's, so it is a button,
+         a mark as the bar's icons are. */
+      const track = el('button', 'scheduler-bar__track', unseen);
+      track.type = 'button';
+      track.setAttribute('aria-label', 'Route');
       [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
       track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
       // A leg that runs off the week has its track masked to the line, which would hide them.
@@ -694,7 +698,7 @@
         markStops(track, tripDone(leg));
       }
       if (!place.fromPrev) {
-        const out = timeButton();
+        const out = timeWords();
         out.append(...depart);
         when.append(out);
       }
@@ -724,9 +728,9 @@
     // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;
     const nthWords = later ? `Bus ${b.nth} of ${count}` : null;
+    // The update's words have no hover label: Updates, which the chat mark opens, has them whole.
     const news = el('span', null, nthWords ?? latest?.body ?? '');
-    if (latest && !later) news.title = `${latest.body}\n${updateStamp(latest)}`;
-    const age = later ? null : ageMark(latest?.created_at, latest ? `Latest update ${updateStamp(latest)}` : 'No updates yet');
+    const age = later ? null : ageMark(latest?.created_at);
     const updateRow = el('div', 'scheduler-bar__row scheduler-bar__update');
     /* A chat mark leads the row, in the column the crew's marks stand in
        below it, and is the button that opens Updates, as the alert badge
@@ -793,8 +797,8 @@
       ? `driver:${id}:${crew.dataset.seat ?? 'wheel'}` : 'road';
   };
   const opensSection = (showing, current, requested) => !showing || current !== requested;
-  // What a press on opens the route's tip: the time line, its ticks and either time, on any bar.
-  const ROUTE_OPENER = '.scheduler-bar__stop, .scheduler-bar__track, .scheduler-road__track, .scheduler-bar__when, .scheduler-road__when';
+  // What a press on opens the route's tip: the time line and its ticks, on any bar.
+  const ROUTE_OPENER = '.scheduler-bar__stop, .scheduler-bar__track, .scheduler-road__track';
 
   window.SchedulerBar = {
     draw, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, ROUTE_OPENER, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,

@@ -12353,8 +12353,8 @@
   });
   schEl.addEventListener('pointerleave', () => growStops(null));
 
-  /* THE ROUTE TIP: a press on a bar's time line, a stop's tick, the line
-     between ticks or either time, shows the leg's whole route in a tip
+  /* THE ROUTE TIP: a press on a bar's time line, a stop's tick or the line
+     between ticks, shows the leg's whole route in a tip
      beside the trip, as the trip's other tips stand, its caret on the row
      pressed: the yard out, the pickup, each stop and the yard back, each
      with its planned time beside what happened, the point pressed lit.
@@ -12413,14 +12413,11 @@
     rows.push(home >= 0 ? said(back, stops[home], home) : back);
     return { rows, out };
   }
-  /* What a press lights: a tick's stops, a time's end of the yard, or on the
-     line the tick nearest the press, or the yard at the end nearer it. */
+  /* What a press lights: a tick's stops, or on the line the tick nearest
+     the press, or the yard at the end nearer it. */
   function routePressed(hit, e) {
     const r = hit.getBoundingClientRect();
     if (hit.matches('.scheduler-bar__stop')) return hit.dataset.stops.split(' ');
-    if (hit.matches('.scheduler-bar__when, .scheduler-road__when')) {
-      return [hit.nextElementSibling?.matches('.scheduler-bar__track, .scheduler-road__track') ? 'yard-out' : 'yard-back'];
-    }
     const points = [{ lit: ['yard-out'], x: r.left }, { lit: ['yard-back'], x: r.right },
       ...[...hit.querySelectorAll('.scheduler-bar__stop')].map(t => {
         const b = t.getBoundingClientRect();

@@ -274,6 +274,11 @@ expect('every update row leads with its chat mark as the button, including a set
   Array.from({ length: 4 }, () => ['DIV', false, 'BUTTON', true, 'false', true]));
 expect('empty updates remain a visible Updates entry point',
   [holder.querySelector('.scheduler-bar__chat').tagName, text(holder, '.scheduler-bar__age')], ['BUTTON', 'No updates']);
+expect('no hover label repeats a tip: a crew member, the update\'s words and its age carry none, and each crew member keeps their words for the "+1"',
+  drawn('trip-bar', 'Update ages').map(b => [
+    [...b.querySelectorAll('.scheduler-crew')].map(c => c.title === '' && !!c.dataset.words).every(Boolean),
+    [...b.querySelectorAll('.scheduler-bar__update .scheduler-bar__run > *')].map(n => n.title === '').every(Boolean)]),
+  Array.from({ length: 4 }, () => [true, true]));
 expect('alert buttons expose their purpose and expansion state',
   alerts.filter(n => mark(drawn('alerts', n)[0])).map(n => {
     const badge = drawn('alerts', n)[0].querySelector('.scheduler-bar__alert');
@@ -433,10 +438,12 @@ expect('the times follow the time row they stand in for, before the update and t
 expect('the times: out and back either end of a track filled as far as the trip has gone',
   [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
   [2, true]);
-expect('each time on a planned and a live bar is a button, which opens the leg\'s route tip',
-  [[...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => [w.tagName, w.type]),
-    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__when')].map(w => [w.tagName, w.type])],
-  [[['BUTTON', 'button']], [['BUTTON', 'button'], ['BUTTON', 'button']]]);
+expect('each time on a planned and a live bar is a word, and the line between them is the button that opens the leg\'s route tip',
+  [[...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => w.tagName),
+    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__track')].map(t => [t.tagName, t.type, t.getAttribute('aria-label')]),
+    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__when')].map(w => w.tagName),
+    [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__track')].map(t => [t.tagName, t.type, t.getAttribute('aria-label')])],
+  [['SPAN'], [['BUTTON', 'button', 'Route']], ['SPAN', 'SPAN'], [['BUTTON', 'button', 'Route']]]);
 const lateWhens = b => [...row(lit(b)).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late'));
 expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added',
   [lateWhens('Late back to the yard'), lateWhens('Past its return'), lateWhens('At highway speed'), row(lit('Past its return')).children.length],

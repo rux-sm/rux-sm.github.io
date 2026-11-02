@@ -32,7 +32,8 @@ function expect(name, got, want) {
 const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 // Days from the office's today, as the rules count them, whatever clock the check runs on.
 const day = n => { const [y, m, d] = window.SchedulerFollowUp.today().split('-').map(Number); return iso(new Date(y, m - 1, d + n)); };
-const ago = n => new Date(Date.now() - n * 864e5).toISOString();
+// A moment n days back on the office's calendar: 18:00 UTC, the office's noon or one o'clock, so a clock change never moves it a day.
+const ago = n => `${day(-n)}T18:00:00.000Z`;
 const said = list => list.map(r => `${r.key} ${r.what}${r.detail ? ` [${r.detail}]` : ''}`);
 // A Departures row: its day from today, its trip, its leg where it names one, and its gaps.
 

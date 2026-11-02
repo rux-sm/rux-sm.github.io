@@ -19,27 +19,54 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
+        "v": "You've chosen a warehouse and written down its on-hand, allocated and blocked."
       }
     ],
-    "text": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
+    "text": "You've chosen a warehouse and written down its on-hand, allocated and blocked."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 3 of "
+        },
+        {
+          "t": "link",
+          "v": "Find the item",
+          "href": "find-the-item.md"
+        },
+        {
+          "t": "text",
+          "v": ": your item's row ticked in "
+        },
+        {
+          "t": "strong",
+          "v": "Inventory 360"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 3 of Find the item: your item's row ticked in Inventory 360."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse the item is known in, with or without stock, so you can choose the warehouse by its figures. "
+        "v": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse that knows the item, with or without stock, so you can choose by the numbers. "
       },
       {
         "t": "field",
@@ -47,10 +74,10 @@
       },
       {
         "t": "text",
-        "v": " on each row is on hand plus on order minus allocated. It goes negative when more is committed than the warehouse has or expects."
+        "v": " on each row is on-hand plus on-order minus allocated. It goes below zero when other orders need more than the warehouse has or expects."
       }
     ],
-    "text": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse the item is known in, with or without stock, so you can choose the warehouse by its figures. Economic Stock on each row is on hand plus on order minus allocated. It goes negative when more is committed than the warehouse has or expects."
+    "text": "Stock is often spread over several warehouses, and a warehouse's name doesn't tell you what it holds. This view shows one row for each warehouse that knows the item, with or without stock, so you can choose by the numbers. Economic Stock on each row is on-hand plus on-order minus allocated. It goes below zero when other orders need more than the warehouse has or expects."
   },
   "blocks": [
     {
@@ -76,7 +103,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the "
+                  "v": "Under "
                 },
                 {
                   "t": "chip",
@@ -84,14 +111,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " group of the header, click "
+                  "v": " at the top, click "
                 },
                 {
                   "t": "button",
                   "label": "Warehouse Inventory"
                 }
               ],
-              "text": "In the Inventory group of the header, click Warehouse Inventory"
+              "text": "Under Inventory at the top, click Warehouse Inventory"
             },
             {
               "tokens": [
@@ -102,10 +129,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens with the item already filled in"
+                  "v": " opens with your item already in it"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with the item already filled in"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with your item already in it"
             }
           ],
           "id": "1",
@@ -127,7 +154,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read each row's "
+                  "v": "Read "
                 },
                 {
                   "t": "field",
@@ -140,18 +167,22 @@
                 {
                   "t": "field",
                   "v": "Inventory on Order"
+                },
+                {
+                  "t": "text",
+                  "v": " on each row"
                 }
               ],
-              "text": "Read each row's Inventory on Hand and Inventory on Order"
+              "text": "Read Inventory on Hand and Inventory on Order on each row"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One row per warehouse the item is known in, including ones that hold nothing"
+                  "v": "One row for each warehouse that knows the item, even ones that hold none"
                 }
               ],
-              "text": "One row per warehouse the item is known in, including ones that hold nothing"
+              "text": "One row for each warehouse that knows the item, even ones that hold none"
             }
           ],
           "id": "2",
@@ -173,7 +204,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read each row's "
+                  "v": "Read "
                 },
                 {
                   "t": "field",
@@ -186,9 +217,13 @@
                 {
                   "t": "field",
                   "v": "Inventory Blocked"
+                },
+                {
+                  "t": "text",
+                  "v": " on each row"
                 }
               ],
-              "text": "Read each row's Inventory Allocated and Inventory Blocked"
+              "text": "Read Inventory Allocated and Inventory Blocked on each row"
             },
             {
               "tokens": [
@@ -219,10 +254,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Choose the warehouse to work from by its figures, not its name"
+                  "v": "Choose the warehouse to work from by its numbers, not its name"
                 }
               ],
-              "text": "Choose the warehouse to work from by its figures, not its name"
+              "text": "Choose the warehouse to work from by its numbers, not its name"
             },
             {
               "tokens": [
@@ -250,7 +285,7 @@
                 },
                 {
                   "t": "value",
-                  "v": "on hand"
+                  "v": "on-hand"
                 },
                 {
                   "t": "text",
@@ -283,7 +318,7 @@
                   "v": "blocked"
                 }
               ],
-              "text": "warehouse, on hand, allocated, blocked"
+              "text": "warehouse, on-hand, allocated, blocked"
             }
           ],
           "id": "4",
@@ -305,10 +340,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the totals beneath the grid"
+                  "v": "Read the totals at the bottom, and compare the on-hand total with the on-hand you wrote down at step 2 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Find the item",
+                  "href": "find-the-item.md"
                 }
               ],
-              "text": "Read the totals beneath the grid"
+              "text": "Read the totals at the bottom, and compare the on-hand total with the on-hand you wrote down at step 2 of Find the item"
             },
             {
               "tokens": [
@@ -321,7 +361,7 @@
                 },
                 {
                   "t": "value",
-                  "v": "total on hand"
+                  "v": "total on-hand"
                 },
                 {
                   "t": "text",
@@ -339,7 +379,7 @@
                   "v": "total allocated"
                 }
               ],
-              "text": "total on hand, total allocated"
+              "text": "total on-hand, total allocated"
             }
           ],
           "id": "5",
@@ -350,7 +390,7 @@
               "task": "find-the-item",
               "step": "2",
               "n": 0,
-              "label": "on hand"
+              "label": "on-hand"
             }
           ]
         }
@@ -364,7 +404,7 @@
   },
   "screenshot": {
     "step": "4",
-    "caption": "Warehouse - Item Inventory, one row per warehouse",
+    "caption": "Warehouse - Item Inventory, one row for each warehouse",
     "path": "read-the-stock-by-warehouse.jpg"
   },
   "problems": {
@@ -380,10 +420,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "On hand looks high enough, but an order won't fill"
+                "v": "On-hand looks high enough, but an order won't fill"
               }
             ],
-            "text": "On hand looks high enough, but an order won't fill"
+            "text": "On-hand looks high enough, but an order won't fill"
           },
           {
             "tokens": [
@@ -397,10 +437,10 @@
               },
               {
                 "t": "text",
-                "v": ": other orders may already have claimed most of the on-hand"
+                "v": ". Other orders may already have taken most of the on-hand"
               }
             ],
-            "text": "Check Inventory Allocated: other orders may already have claimed most of the on-hand"
+            "text": "Check Inventory Allocated. Other orders may already have taken most of the on-hand"
           }
         ]
       },
@@ -414,19 +454,19 @@
               },
               {
                 "t": "text",
-                "v": " is negative"
+                "v": " is below zero"
               }
             ],
-            "text": "Economic Stock is negative"
+            "text": "Economic Stock is below zero"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "More is committed than the warehouse holds and expects"
+                "v": "Other orders need more than the warehouse has and expects"
               }
             ],
-            "text": "More is committed than the warehouse holds and expects"
+            "text": "Other orders need more than the warehouse has and expects"
           }
         ]
       }

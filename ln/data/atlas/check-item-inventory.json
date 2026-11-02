@@ -8,9 +8,9 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-25",
-  "status": "draft",
-  "summary": "find out how much of one item is in stock, where, and how much is already committed.",
+  "updated": "2026-11-01",
+  "status": "review",
+  "summary": "find out how much of one item you have, where it is, and how much other orders already took.",
   "order": 4,
   "sources": [
     "whwmd2515m000",
@@ -21,10 +21,10 @@
       "tokens": [
         {
           "t": "text",
-          "v": "The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+          "v": "You need the code of the item to check. Any item works. One with stock in more than one warehouse shows the most."
         }
       ],
-      "text": "The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+      "text": "You need the code of the item to check. Any item works. One with stock in more than one warehouse shows the most."
     }
   ],
   "tasks": [
@@ -36,13 +36,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The item's on hand, blocked, on order and allocated are written down."
+            "v": "You've written down your item's on-hand, blocked, on-order and allocated."
           }
         ],
-        "text": "The item's on hand, blocked, on order and allocated are written down."
+        "text": "You've written down your item's on-hand, blocked, on-order and allocated."
       },
       "steps": 3,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "read-the-stock-by-warehouse",
@@ -52,13 +52,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
+            "v": "You've chosen a warehouse and written down its on-hand, allocated and blocked."
           }
         ],
-        "text": "A warehouse is chosen, and its on hand, allocated and blocked are written down."
+        "text": "You've chosen a warehouse and written down its on-hand, allocated and blocked."
       },
       "steps": 5,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     }
   ],
   "values": {
@@ -87,10 +87,15 @@
               },
               {
                 "t": "text",
-                "v": " — a test item that Create test items makes"
+                "v": ", a test item from "
+              },
+              {
+                "t": "link",
+                "v": "Create test items",
+                "href": "create-basic-test-items-and-defaults.md"
               }
             ],
-            "text": "BAM-SLEEVE — a test item that Create test items makes"
+            "text": "BAM-SLEEVE, a test item from Create test items"
           }
         ],
         "task": "find-the-item"
@@ -107,10 +112,10 @@
         },
         {
           "t": "text",
-          "v": " find out how much of one item is in stock, where, and how much is already committed."
+          "v": " find out how much of one item you have, where it is, and how much other orders already took."
         }
       ],
-      "text": "Objective: find out how much of one item is in stock, where, and how much is already committed."
+      "text": "Objective: find out how much of one item you have, where it is, and how much other orders already took."
     },
     {
       "kind": "prose",
@@ -125,10 +130,10 @@
         },
         {
           "t": "text",
-          "v": " > The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+          "v": " > You need the code of the item to check. Any item works. One with stock in more than one warehouse shows the most."
         }
       ],
-      "text": "> Prerequisite > The code of the item to check. Any item will do; one with stock in more than one warehouse shows the most."
+      "text": "> Prerequisite > You need the code of the item to check. Any item works. One with stock in more than one warehouse shows the most."
     },
     {
       "kind": "prose",
@@ -151,10 +156,10 @@
         },
         {
           "t": "text",
-          "v": " Both screens only report. The figures you write down are the starting point a later guide compares against."
+          "v": " Both screens only show numbers. Other guides start from the numbers you write down here."
         }
       ],
-      "text": "> Note > This changes nothing in LN. Both screens only report. The figures you write down are the starting point a later guide compares against."
+      "text": "> Note > This changes nothing in LN. Both screens only show numbers. Other guides start from the numbers you write down here."
     },
     {
       "kind": "glance",
@@ -199,10 +204,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item's on hand, blocked, on order and allocated are written down"
+                  "v": "You've written down your item's on-hand, blocked, on-order and allocated"
                 }
               ],
-              "text": "The item's on hand, blocked, on order and allocated are written down"
+              "text": "You've written down your item's on-hand, blocked, on-order and allocated"
             }
           ]
         },
@@ -240,10 +245,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A warehouse is chosen, and its on hand, allocated and blocked are written down"
+                  "v": "You've chosen a warehouse and written down its on-hand, allocated and blocked"
                 }
               ],
-              "text": "A warehouse is chosen, and its on hand, allocated and blocked are written down"
+              "text": "You've chosen a warehouse and written down its on-hand, allocated and blocked"
             }
           ]
         }
@@ -272,7 +277,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Where the stock check is set up, "
+                  "v": "If the stock check AI command is set up, "
                 },
                 {
                   "t": "link",
@@ -281,10 +286,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens"
+                  "v": " gives each warehouse's numbers and every planned receipt and issue in one answer. Check it against these screens"
                 }
               ],
-              "text": "Where the stock check is set up, Use the AI commands gives each warehouse's figures and every planned receipt and issue in one answer, to check against these screens"
+              "text": "If the stock check AI command is set up, Use the AI commands gives each warehouse's numbers and every planned receipt and issue in one answer. Check it against these screens"
             }
           ]
         }

@@ -146,3 +146,6 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__meta, .ln-proc__lead { break
    heading, so a page they continue on repeats their name, set as a heading. */
 .ln-proc__h2--sect { display: none; }
 .ln-proc__sect .ln-proc__table-title th { padding: .5rem 0 .5rem; border-block-start: 2px solid var(--rux-text-primary); font-size: 15pt; font-weight: 400; }
+
+/* An item code or other one-word value is never broken at its hyphen on paper. */
+.ln-t-word { white-space: nowrap; }

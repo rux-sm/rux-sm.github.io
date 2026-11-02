@@ -166,15 +166,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare "
-                },
-                {
-                  "t": "field",
-                  "v": "Order Horizon"
-                },
-                {
-                  "t": "text",
-                  "v": " with the delivery date from step 4 of "
+                  "v": "Compare the horizon date with the delivery date from step 4 of "
                 },
                 {
                   "t": "link",
@@ -186,7 +178,7 @@
                   "v": ". If the horizon is later, this task is done"
                 }
               ],
-              "text": "Compare Order Horizon with the delivery date from step 4 of Create a sales order to plan for. If the horizon is later, this task is done"
+              "text": "Compare the horizon date with the delivery date from step 4 of Create a sales order to plan for. If the horizon is later, this task is done"
             },
             {
               "tokens": [
@@ -201,9 +193,6 @@
           "id": "2",
           "optional": false,
           "produces": false,
-          "example": [
-            0
-          ],
           "uses": [
             {
               "task": "create-demand",

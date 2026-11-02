@@ -1,9 +1,9 @@
-commit   7186080818dff009e1553dca1fb1ae38ff075464
-date     2026-11-02T07:11:26Z
-subject  feat(tasks): Stamp Run order planning walked
+commit   7b33f9a21b0c53ad8ab19e94354ff9183fa7f966
+date     2026-11-02T07:20:39Z
+subject  feat(tasks): Stamp the horizon task walked again
 contract 24 
 tier     export
-sha256   27d2efdec2ea9a47554e8a3a47dac7a9bcd0b365e1a3cdfbafb5ea7c9f2212cb
+sha256   ce142dab7746c94800250ee35fba5bb804e664e220274ad35fab35b3eb8ac760
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

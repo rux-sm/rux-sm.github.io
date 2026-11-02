@@ -113,7 +113,9 @@ const stop = (x, last) => {
 const route = (raw) => `<span class="ln-t-route">${raw.split(ARROW).map((x, i, all) =>
   (i ? '<span class="sep">➔</span>' : '') + stop(x, i === all.length - 1)).join('')}</span>`;
 const named = (v) => `<span class="ln-t-named">${esc(v)}</span>`;
-const exact = (v) => `<span class="ln-t-exact">${esc(v)}</span>`;
+// A value with no space, such as an item code, is one word on paper, never
+// broken at its hyphen.
+const exact = (v) => `<span class="ln-t-exact${/\s/.test(v) ? '' : ' ln-t-word'}">${esc(v)}</span>`;
 // A screen's code beside its name sits in brackets, so the two never run together.
 const coded = (v) => `(${exact(v)})`;
 const screenLink = (code, text) => cards.has(code) ? `<a class="rux--link" href="${hrefScreen(code)}">${text}</a>` : text;
@@ -159,6 +161,14 @@ const refs = (html, to) => {
     });
 };
 
+// A status takes the stop or comma after it, so the two never part at a
+// line's end.
+const glued = (list) => list.map((t, i) => {
+  const prev = list[i - 1];
+  if (t.t === 'status' && list[i + 1]?.t === 'text' && /^[,.;:)]/.test(list[i + 1].v)) return { ...t, after: list[i + 1].v[0] };
+  if (t.t === 'text' && prev?.t === 'status' && /^[,.;:)]/.test(t.v)) return { ...t, v: t.v.slice(1) };
+  return t;
+});
 function token(t) {
   switch (t.t) {
     case 'text': return refs(esc(t.v));
@@ -168,7 +178,10 @@ function token(t) {
     case 'chip': case 'field': return named(t.v);
     case 'value': case 'literal': return exact(t.v);
     case 'button': return `<span class="ln-t-press">${esc(t.label)}</span>`;
-    case 'status': return `<span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">${esc(t.v)}</span></span>`;
+    case 'status': {
+      const tag = `<span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">${esc(t.v)}</span></span>`;
+      return t.after ? `<span class="ln-t-glue">${tag}${esc(t.after)}</span>` : tag;
+    }
     case 'command': case 'path': return route(t.route);
     // The link wraps the name alone: Carbon's link is a flex box, and a space
     // between two things inside one collapses. In a step's headline a screen
@@ -190,8 +203,9 @@ function token(t) {
 // process's, so they are counted and linked there.
 // While a Document is drawn, "step 9 of [Model the dataset]" is numbered as
 // the page numbers it, as docText does for a task's own text.
-const tokens = (list) => {
+const tokens = (given) => {
   let html = '';
+  const list = glued(given);
   for (let i = 0; i < list.length; i++) {
     const t = list[i], next = list[i + 1];
     const task = doc && t.t === 'text' && next?.t === 'link' ? taskById.get(/^(.+)\.md$/.exec(next.href)?.[1]) : null;
@@ -726,10 +740,17 @@ ${signOff()}`;
 
 // ---- a task, as a document and as Guided ------------------------------------------
 // The screens a task uses: its own, and every session its steps name.
+// A screen a step opens by name, as "**Items - Planning** opens", is that
+// screen when exactly one screen has the name.
+const screenByName = new Map();
+for (const c of cards.values()) screenByName.set(c.name, screenByName.has(c.name) ? null : c.code);
 const codesOf = (t) => {
   const codes = new Set(t.sessionCode ? [t.sessionCode] : []);
   (function walk(x) {
-    if (Array.isArray(x)) x.forEach(walk);
+    if (Array.isArray(x)) x.forEach((y, i) => {
+      if (y?.t === 'chip' && /^ opens\b/.test(x[i + 1]?.v ?? '') && screenByName.get(y.v)) codes.add(screenByName.get(y.v));
+      walk(y);
+    });
     else if (x && typeof x === 'object') { if (x.t === 'session') codes.add(x.code); Object.values(x).forEach(walk); }
   })(t.blocks);
   return codes;
@@ -773,6 +794,7 @@ const STEPS = /\b([Ss]teps?) (\d+)(?!\.\d|\d)(?:([–-]| and | to )(\d+)(?!\.\d|
 // bare "step 7" inside the task `here`.
 function docText(list = [], here = null, where = '') {
   if (list.some(isGap)) { if (where) doc.gaps.push(where); list = list.filter((t) => !isGap(t)); }
+  list = glued(list);
   let html = '';
   for (let i = 0; i < list.length; i++) {
     const t = list[i], next = list[i + 1];

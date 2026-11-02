@@ -107,7 +107,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="7186080818dff009e1553dca1fb1ae38ff075464">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="7b33f9a21b0c53ad8ab19e94354ff9183fa7f966">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -118,14 +118,14 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Ship</h1>
-<p class="rux--type-body-long-01">The shipment says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</p>
+<p class="rux--type-body-long-01">The shipment says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</span>.</p>
 </div>
 <dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--filled"/></svg>Verified</span></dd></div><div><dt>Module</dt><dd>Sales, Warehousing</dd></div><div><dt>Length</dt><dd>9 steps</dd></div><div><dt>Updated</dt><dd>1 Nov 2026</dd></div></dl>
 <p class="ln-strip">Task 6 of 7 in <a class="rux--link" href="../follow/ship-from-stock.html">Ship from stock</a> · next: <a class="rux--link" href="../do/verify-it-worked_ship-from-stock.html">Verify it worked</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> Freezing locks what's on the shipment, and confirming takes the stock out of inventory. These two actions are the only way to change the status. If the order type has <span class="ln-t-named">Freeze Mandatory</span> on, you have to freeze before you can confirm. Once a shipment is confirmed you can't change it. To fix it, you need a return shipment.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -134,13 +134,13 @@
 <tbody>
 <tr id="step-1"><td data-k="Step"><b>6.1</b></td><td data-k="Action">Filter <span class="ln-t-named">Shipment</span> on the shipment number from <a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html#step-10">step 5.10</a> (Pick the items)</td><td data-k="You should see">Your shipment's row</td></tr>
 <tr id="step-2"><td data-k="Step"><b>6.2</b></td><td data-k="Action">Tick the row</td><td data-k="You should see"></td></tr>
-<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">Click <span class="ln-t-press">Drill In</span></td><td data-k="You should see"><span class="ln-t-named">Shipment</span> opens. Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>. <span class="ln-t-named">Freeze Mandatory</span> and <span class="ln-t-named">Allow Changes to Shipment</span> are both ticked</td></tr>
-<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Check the <span class="ln-t-named">Shipped Quantity</span>. To ship less than you picked, change it on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a> (<span class="ln-t-exact">whinh4131m000</span>), not here</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipped quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Click <span class="ln-t-press">FREEZE</span> on the toolbar</td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>. <span class="ln-t-named">Allow Changes to Shipment</span> clears and <span class="ln-t-press">CONFIRM</span> turns on. The Bill of Lading and the Packing Slip each open in their own tab</td></tr>
+<tr id="step-3"><td data-k="Step"><b>6.3</b></td><td data-k="Action">Click <span class="ln-t-press">Drill In</span></td><td data-k="You should see"><span class="ln-t-named">Shipment</span> opens. Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>.</span> <span class="ln-t-named">Freeze Mandatory</span> and <span class="ln-t-named">Allow Changes to Shipment</span> are both ticked</td></tr>
+<tr id="step-4"><td data-k="Step"><b>6.4</b></td><td data-k="Action">Check the <span class="ln-t-named">Shipped Quantity</span>. To ship less than you picked, change it on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a> (<span class="ln-t-exact ln-t-word">whinh4131m000</span>), not here</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipped quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-5"><td data-k="Step"><b>6.5</b></td><td data-k="Action">Click <span class="ln-t-press">FREEZE</span> on the toolbar</td><td data-k="You should see">Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>.</span> <span class="ln-t-named">Allow Changes to Shipment</span> clears and <span class="ln-t-press">CONFIRM</span> turns on. The Bill of Lading and the Packing Slip each open in their own tab</td></tr>
 <tr id="step-6"><td data-k="Step"><b>6.6</b></td><td data-k="Action">Open the <span class="ln-t-named">Packing Slips</span> tab</td><td data-k="You should see">The Packing Slip</td></tr>
 <tr id="step-7"><td data-k="Step"><b>6.7</b></td><td data-k="Action">Check the Packing Slip against the order: the customer, the shipment number, the order and line, the item and the shipped quantity</td><td data-k="You should see">Everything matches the order and what you're shipping</td></tr>
 <tr id="step-8"><td data-k="Step"><b>6.8</b></td><td data-k="Action">Go back to the <span class="ln-t-named">Shipment</span> tab</td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
-<tr id="step-9"><td data-k="Step"><b>6.9</b></td><td data-k="Action">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. The stock leaves inventory</td></tr>
+<tr id="step-9"><td data-k="Step"><b>6.9</b></td><td data-k="Action">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</td><td data-k="You should see">Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</span> The stock leaves inventory</td></tr>
 <tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="ship_ship-from-stock.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 6.9 · Shipment toolbar before you click Confirm: Freeze greyed, Confirm available</figcaption></figure></td></tr>
 </tbody>
 </table></div>
@@ -164,7 +164,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Variations</th></tr><tr><th scope="col" style="width:30%"><span class="rux--table-header-label">Case</span></th><th scope="col"><span class="rux--table-header-label">What changes</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Case"><span class="ln-t-named">Shipping less than ordered</span></td><td data-k="What changes"><p>Lower <span class="ln-t-named">Shipped Quantity</span> on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a> (<span class="ln-t-exact">whinh4131m000</span>), see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line <span class="ln-gap">Not documented for this release.</span></p></td></tr>
+<tr><td data-k="Case"><span class="ln-t-named">Shipping less than ordered</span></td><td data-k="What changes"><p>Lower <span class="ln-t-named">Shipped Quantity</span> on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a> (<span class="ln-t-exact ln-t-word">whinh4131m000</span>), see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line <span class="ln-gap">Not documented for this release.</span></p></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -179,15 +179,16 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td data-k="Code"><span class="ln-t-exact">whinh4130m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span></td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4131m000.html">Shipment Lines</a></td><td data-k="Code"><span class="ln-t-exact">whinh4131m000</span></td><td data-k="How to open it"><span class="ln-t-press">Drill In</span> from Shipments (<span class="ln-t-exact">whinh4130m000</span>)</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">whinh4130m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span></td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4630m000.html">Shipment</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">whinh4630m000</span></td><td data-k="How to open it"><span class="ln-t-press">Drill In</span> from a row on Shipments (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4131m000.html">Shipment Lines</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">whinh4131m000</span></td><td data-k="How to open it"><span class="ln-t-press">Drill In</span> from Shipments (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Session</b><p><a class="rux--link" href="../screens/whinh4130m000.html"><span class="ln-t-named">Shipments</span></a> (<span class="ln-t-exact">whinh4130m000</span>)<br><span class="ln-quiet">Shows, changes and confirms shipments.</span></p></li>
+  <li><b>Session</b><p><a class="rux--link" href="../screens/whinh4130m000.html"><span class="ln-t-named">Shipments</span></a> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)<br><span class="ln-quiet">Shows, changes and confirms shipments.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/backorder.html">Backorder</a> · <a class="rux--link" href="../ideas/shipment-and-load.html">Shipment and load</a> · <a class="rux--link" href="../ideas/warehousing-procedure.html">Warehousing procedure</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/verify-it-worked_ship-from-stock.html">Verify it worked</a> in Ship from stock</p></li>
 </ul>
@@ -198,7 +199,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">The shipment says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>6</b></td><td data-k="Expected result">The shipment says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span></span></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -227,7 +228,7 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</p><h1 class="ln-step__do">Filter <span class="ln-t-named">Shipment</span> on the shipment number from step 10 of <a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html">Pick the items</a></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="pick-the-goods_ship-from-stock/10/0"><span class="ln-quiet">Shipment number · 5.10</span><span data-use-missing><a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html?walk=10">Write it down at step 5.10</a></span></div></div></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</p><h1 class="ln-step__do">Filter <span class="ln-t-named">Shipment</span> on the shipment number from step 10 of <a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html">Pick the items</a></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="pick-the-goods_ship-from-stock/10/0"><span class="ln-quiet">Shipment number · 5.10</span><span data-use-missing><a class="rux--link" href="../do/pick-the-goods_ship-from-stock.html?walk=10">Write it down at step 5.10</a></span></div></div></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Your shipment's row</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
@@ -235,7 +236,7 @@
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Drill In</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Shipment</span> opens. Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>. <span class="ln-t-named">Freeze Mandatory</span> and <span class="ln-t-named">Allow Changes to Shipment</span> are both ticked</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Shipment</span> opens. Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span>.</span> <span class="ln-t-named">Freeze Mandatory</span> and <span class="ln-t-named">Allow Changes to Shipment</span> are both ticked</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Check the <span class="ln-t-named">Shipped Quantity</span></h1><p class="ln-step__note">To ship less than you picked, change it on <a class="rux--link" href="../screens/whinh4131m000.html"><span class="ln-t-named">Shipment Lines</span></a>, not here</p></div>
@@ -248,7 +249,7 @@
   </li>
   <li data-k="5" data-ref="5" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">FREEZE</span> on the toolbar</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>. <span class="ln-t-named">Allow Changes to Shipment</span> clears and <span class="ln-t-press">CONFIRM</span> turns on. The Bill of Lading and the Packing Slip each open in their own tab</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span>.</span> <span class="ln-t-named">Allow Changes to Shipment</span> clears and <span class="ln-t-press">CONFIRM</span> turns on. The Bill of Lading and the Packing Slip each open in their own tab</p></div>
   </li>
   <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open the <span class="ln-t-named">Packing Slips</span> tab</h1></div>
@@ -264,7 +265,7 @@
   </li>
   <li data-k="9" data-ref="9" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</h1><figure class="ln-shot" data-shot="ship_ship-from-stock.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 6.9 · Shipment toolbar before you click Confirm: Freeze greyed, Confirm available</figcaption></figure></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. The stock leaves inventory</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</span> The stock leaves inventory</p></div>
   </li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">

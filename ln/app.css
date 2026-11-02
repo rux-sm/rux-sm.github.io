@@ -24,6 +24,7 @@
    its own arrow with the last stop weighted. */
 .ln-t-press { font-weight: 600; border: 1px solid var(--rux-border-strong-01); border-radius: 2px; padding: .05em .4em; white-space: nowrap; }
 .ln-t-named { font-weight: 600; color: var(--rux-text-primary); }
+.ln-t-glue { white-space: nowrap; }
 .ln-t-exact { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: .875em; color: var(--rux-text-primary); overflow-wrap: anywhere; }
 .ln-t-route .sep { color: var(--rux-text-placeholder); padding: 0 .3em; }
 /* On screen a route breaks after an arrow rather than inside a menu's name;

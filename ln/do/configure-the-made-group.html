@@ -108,7 +108,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="7186080818dff009e1553dca1fb1ae38ff075464">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="7b33f9a21b0c53ad8ab19e94354ff9183fa7f966">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -119,7 +119,7 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Configure the made group</h1>
-<p class="rux--type-body-long-01"><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data.</p>
+<p class="rux--type-body-long-01"><span class="ln-t-exact ln-t-word">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data.</p>
 </div>
 <dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Aug 2026</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>18 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div></dl>
 <p class="ln-strip">Task 4 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a> · next: <a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a></p>
@@ -130,14 +130,14 @@
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span> (<span class="ln-t-exact">tcibd0102m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span> (<span class="ln-t-exact ln-t-word">tcibd0102m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> The same mechanism as <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a> with a different supply source and two more packages. Job Shop names manufacture at a production facility as the default source and creates nothing else, and the Production defaults session only opens when Job Shop by Site is active. A Sales default change offers to propagate to existing items, which for an isolated new group is declined.</p>
 <div class="rux--inline-notification rux--inline-notification--warning rux--inline-notification--low-contrast rux--inline-notification--hide-close-button" role="status">
   <div class="rux--inline-notification__details">
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle">The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact">M010</span> finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks.</div>
+      <div class="rux--inline-notification__subtitle">The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact ln-t-word">M010</span> finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks.</div>
     </div>
   </div>
 </div>
@@ -151,17 +151,17 @@
 <tr id="step-4"><td data-k="Step"><b>4.4</b></td><td data-k="Action">On the site row, set <span class="ln-t-named">Supply Source</span> to <span class="ln-t-exact">Job Shop</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made default supply source</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">the Product/BAM-FG combination exists with its site row</span></span></td></tr>
 <tr id="step-5"><td data-k="Step"><b>4.5</b></td><td data-k="Action">Repeat for <span class="ln-t-named">Ordering</span> and <span class="ln-t-named">Warehousing</span>. Follow <a class="rux--link" href="../do/configure-the-purchased-group.html#step-16">steps 3.16–3.21</a> (Configure the purchased group)</td><td data-k="You should see"></td></tr>
 <tr id="step-6"><td data-k="Step"><b>4.6</b></td><td data-k="Action">Compare each with an approved finished Product/Job Shop reference</td><td data-k="You should see">Both indicators active, both Create boxes selected, no unapproved planning value introduced</td></tr>
-<tr id="step-7"><td data-k="Step"><b>4.7</b></td><td data-k="Action">Open the blue <span class="ln-t-press">Production</span> link</td><td data-k="You should see"><a class="rux--link" href="../screens/tiipd0102m100.html"><span class="ln-t-named">Item - Production Defaults</span></a> (<span class="ln-t-exact">tiipd0102m100</span>) opens</td></tr>
+<tr id="step-7"><td data-k="Step"><b>4.7</b></td><td data-k="Action">Open the blue <span class="ln-t-press">Production</span> link</td><td data-k="You should see"><a class="rux--link" href="../screens/tiipd0102m100.html"><span class="ln-t-named">Item - Production Defaults</span></a> (<span class="ln-t-exact ln-t-word">tiipd0102m100</span>) opens</td></tr>
 <tr id="step-8"><td data-k="Step"><b>4.8</b></td><td data-k="Action">Compare every visible field with the family sheet. Its made-group Production values are in §4</td><td data-k="You should see"></td></tr>
 <tr id="step-9"><td data-k="Step"><b>4.9</b></td><td data-k="Action">Select <span class="ln-t-press">OK</span></td><td data-k="You should see">The Production defaults close without an error</td></tr>
 <tr id="step-10"><td data-k="Step"><b>4.10</b></td><td data-k="Action">Confirm the Production indicator is active and select the Create check box beside <span class="ln-t-named">Production</span></td><td data-k="You should see">New items are marked to receive Production data</td></tr>
-<tr id="step-11"><td data-k="Step"><b>4.11</b></td><td data-k="Action">Open the blue <span class="ln-t-press">Sales</span> link</td><td data-k="You should see"><a class="rux--link" href="../screens/tdisa0102s000.html"><span class="ln-t-named">Item - Sales Defaults</span></a> (<span class="ln-t-exact">tdisa0102s000</span>) opens</td></tr>
+<tr id="step-11"><td data-k="Step"><b>4.11</b></td><td data-k="Action">Open the blue <span class="ln-t-press">Sales</span> link</td><td data-k="You should see"><a class="rux--link" href="../screens/tdisa0102s000.html"><span class="ln-t-named">Item - Sales Defaults</span></a> (<span class="ln-t-exact ln-t-word">tdisa0102s000</span>) opens</td></tr>
 <tr id="step-12"><td data-k="Step"><b>4.12</b></td><td data-k="Action">Complete the <span class="ln-t-named">Ordering</span>, <span class="ln-t-named">Price</span> and <span class="ln-t-named">Delivery</span> tabs from the family sheet. Its made-group Sales values are in §4</td><td data-k="You should see"></td></tr>
 <tr id="step-13"><td data-k="Step"><b>4.13</b></td><td data-k="Action">Select <span class="ln-t-press">OK</span></td><td data-k="You should see">The Sales defaults are saved</td></tr>
-<tr id="step-14"><td data-k="Step"><b>4.14</b></td><td data-k="Action">If asked <span class="ln-t-named">Perform Global Update of Sales Items with New Defaults?</span>, select <span class="ln-t-press">No</span>. If <a class="rux--link" href="../screens/tdisa0202m000.html"><span class="ln-t-named">Global Update of Item with Defaults</span></a> (<span class="ln-t-exact">tdisa0202m000</span>) opens, do not select <span class="ln-t-named">Update</span>; select <span class="ln-t-press">Close</span></td><td data-k="You should see">Existing Sales items are not changed</td></tr>
+<tr id="step-14"><td data-k="Step"><b>4.14</b></td><td data-k="Action">If asked <span class="ln-t-named">Perform Global Update of Sales Items with New Defaults?</span>, select <span class="ln-t-press">No</span>. If <a class="rux--link" href="../screens/tdisa0202m000.html"><span class="ln-t-named">Global Update of Item with Defaults</span></a> (<span class="ln-t-exact ln-t-word">tdisa0202m000</span>) opens, do not select <span class="ln-t-named">Update</span>; select <span class="ln-t-press">Close</span></td><td data-k="You should see">Existing Sales items are not changed</td></tr>
 <tr id="step-15"><td data-k="Step"><b>4.15</b></td><td data-k="Action">Confirm the Sales indicator is active and select the Create check box beside <span class="ln-t-named">Sales</span></td><td data-k="You should see">New items are marked to receive Sales data</td></tr>
-<tr id="step-16"><td data-k="Step"><b>4.16</b></td><td data-k="Action">Save <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a> (<span class="ln-t-exact">tcibd0502m000</span>)</td><td data-k="You should see"></td></tr>
-<tr id="step-17"><td data-k="Step"><b>4.17</b></td><td data-k="Action">Close and reopen the Product/<span class="ln-t-exact">BAM-FG</span> default</td><td data-k="You should see"></td></tr>
+<tr id="step-16"><td data-k="Step"><b>4.16</b></td><td data-k="Action">Save <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a> (<span class="ln-t-exact ln-t-word">tcibd0502m000</span>)</td><td data-k="You should see"></td></tr>
+<tr id="step-17"><td data-k="Step"><b>4.17</b></td><td data-k="Action">Close and reopen the Product/<span class="ln-t-exact ln-t-word">BAM-FG</span> default</td><td data-k="You should see"></td></tr>
 <tr id="step-18"><td data-k="Step"><b>4.18</b></td><td data-k="Action">Reopen Sales ➔ <span class="ln-t-named">Price</span></td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">made global subentities</span><span class="ln-proc__write-line"></span></span><span class="ln-proc__write-note">four active indicators, and USD, ea, both S10.10 groups and NOTAX return</span></span></td></tr>
 </tbody>
 </table></div>
@@ -174,18 +174,18 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0102m000.html">Item Defaults</a></td><td data-k="Code"><span class="ln-t-exact">tcibd0102m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span></td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tiipd0102m100.html">Item - Production Defaults</a></td><td data-k="Code"><span class="ln-t-exact">tiipd0102m100</span></td><td data-k="How to open it">The blue [Production] link on Item Defaults (<span class="ln-t-exact">tcibd0502m000</span>)</td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tdisa0102s000.html">Item - Sales Defaults</a></td><td data-k="Code"><span class="ln-t-exact">tdisa0102s000</span></td><td data-k="How to open it">The blue [Sales] link on Item Defaults (<span class="ln-t-exact">tcibd0502m000</span>)</td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tdisa0202m000.html">Global Update of Item with Defaults</a></td><td data-k="Code"><span class="ln-t-exact">tdisa0202m000</span></td><td data-k="How to open it">Starts automatically from Item - Sales Defaults (<span class="ln-t-exact">tdisa0102s000</span>) on answering Yes to the global update question</td></tr>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0502m000.html">Item Defaults</a></td><td data-k="Code"><span class="ln-t-exact">tcibd0502m000</span></td><td data-k="How to open it">From Item Defaults (<span class="ln-t-exact">tcibd0102m000</span>), by specifying or modifying a global item default</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0102m000.html">Item Defaults</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcibd0102m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span></td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tiipd0102m100.html">Item - Production Defaults</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tiipd0102m100</span></td><td data-k="How to open it">The blue [Production] link on Item Defaults (<span class="ln-t-exact ln-t-word">tcibd0502m000</span>)</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tdisa0102s000.html">Item - Sales Defaults</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tdisa0102s000</span></td><td data-k="How to open it">The blue [Sales] link on Item Defaults (<span class="ln-t-exact ln-t-word">tcibd0502m000</span>)</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tdisa0202m000.html">Global Update of Item with Defaults</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tdisa0202m000</span></td><td data-k="How to open it">Starts automatically from Item - Sales Defaults (<span class="ln-t-exact ln-t-word">tdisa0102s000</span>) on answering Yes to the global update question</td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tcibd0502m000.html">Item Defaults</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">tcibd0502m000</span></td><td data-k="How to open it">From Item Defaults (<span class="ln-t-exact ln-t-word">tcibd0102m000</span>), by specifying or modifying a global item default</td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Session</b><p><a class="rux--link" href="../screens/tcibd0102m000.html"><span class="ln-t-named">Item Defaults</span></a> (<span class="ln-t-exact">tcibd0102m000</span>)<br><span class="ln-quiet">Sets the default data a new item is created with.</span></p></li>
+  <li><b>Session</b><p><a class="rux--link" href="../screens/tcibd0102m000.html"><span class="ln-t-named">Item Defaults</span></a> (<span class="ln-t-exact ln-t-word">tcibd0102m000</span>)<br><span class="ln-quiet">Sets the default data a new item is created with.</span></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/verify-site-creation-control.html">Verify site creation control</a> in Create test items</p></li>
 </ul>
 </section>
@@ -195,7 +195,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result"><span class="ln-t-exact">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result"><span class="ln-t-exact ln-t-word">BAM-FG</span> can create Ordering, Production, Warehousing, and Sales data</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -229,11 +229,11 @@
     <svg class="rux--inline-notification__icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-warning--filled"/></svg>
     <div class="rux--inline-notification__text-wrapper">
       <div class="rux--inline-notification__title">Warning</div>
-      <div class="rux--inline-notification__subtitle">The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact">M010</span> finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. </div>
+      <div class="rux--inline-notification__subtitle">The values in the family sheet combine an approved Product/Job Shop reference, the existing <span class="ln-t-exact ln-t-word">M010</span> finished-goods defaults, and the company's reference currency. Do not reuse them in another company without repeating those checks. </div>
     </div>
   </div>
 </div></div>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span> (<span class="ln-t-exact">tcibd0102m000</span>)</p><h1 class="ln-step__do">Repeat for the made group, with the changes below</h1><p class="ln-step__note">Follow steps 1–15 of <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a>; the made group is the one from step 6 of <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></p></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Master Data</span><span class="sep">➔</span><span class="ln-t-whole">Items</span><span class="sep">➔</span><span class="ln-t-whole">Defaults</span><span class="sep">➔</span><span class="dest ln-t-whole">Item Defaults</span></span> (<span class="ln-t-exact ln-t-word">tcibd0102m000</span>)</p><h1 class="ln-step__do">Repeat for the made group, with the changes below</h1><p class="ln-step__note">Follow steps 1–15 of <a class="rux--link" href="../do/configure-the-purchased-group.html">Configure the purchased group</a>; the made group is the one from step 6 of <a class="rux--link" href="../do/create-two-item-groups.html">Create two item groups</a></p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Set <span class="ln-t-named">Default Supply Source</span> to <span class="ln-t-exact">Job Shop</span></h1></div>
@@ -260,7 +260,7 @@
   </li>
   <li data-k="7" data-ref="7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open the blue <span class="ln-t-press">Production</span> link</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tiipd0102m100.html"><span class="ln-t-named">Item - Production Defaults</span></a> (<span class="ln-t-exact">tiipd0102m100</span>) opens</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tiipd0102m100.html"><span class="ln-t-named">Item - Production Defaults</span></a> (<span class="ln-t-exact ln-t-word">tiipd0102m100</span>) opens</p></div>
   </li>
   <li data-k="8" data-ref="8" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Compare every visible field with the family sheet</h1><p class="ln-step__note">Its made-group Production values are in §4</p></div>
@@ -275,7 +275,7 @@
   </li>
   <li data-k="11" data-ref="11" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open the blue <span class="ln-t-press">Sales</span> link</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tdisa0102s000.html"><span class="ln-t-named">Item - Sales Defaults</span></a> (<span class="ln-t-exact">tdisa0102s000</span>) opens</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><a class="rux--link" href="../screens/tdisa0102s000.html"><span class="ln-t-named">Item - Sales Defaults</span></a> (<span class="ln-t-exact ln-t-word">tdisa0102s000</span>) opens</p></div>
   </li>
   <li data-k="12" data-ref="12" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Complete the <span class="ln-t-named">Ordering</span>, <span class="ln-t-named">Price</span> and <span class="ln-t-named">Delivery</span> tabs from the family sheet</h1><p class="ln-step__note">Its made-group Sales values are in §4</p></div>
@@ -296,7 +296,7 @@
     <div class="ln-step__main"><h1 class="ln-step__do">Save <a class="rux--link" href="../screens/tcibd0502m000.html"><span class="ln-t-named">Item Defaults</span></a></h1></div>
   </li>
   <li data-k="17" data-ref="17" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Close and reopen the Product/<span class="ln-t-exact">BAM-FG</span> default</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Close and reopen the Product/<span class="ln-t-exact ln-t-word">BAM-FG</span> default</h1></div>
   </li>
   <li data-k="18" data-ref="18" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Reopen Sales ➔ <span class="ln-t-named">Price</span></h1></div>

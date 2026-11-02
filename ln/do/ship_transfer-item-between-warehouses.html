@@ -107,7 +107,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="7186080818dff009e1553dca1fb1ae38ff075464">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="7b33f9a21b0c53ad8ab19e94354ff9183fa7f966">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -118,14 +118,14 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Ship</h1>
-<p class="rux--type-body-long-01">The shipment says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the outbound line says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span>.</p>
+<p class="rux--type-body-long-01">The shipment says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>,</span> and the outbound line says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span>.</span>.</p>
 </div>
 <dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Nov 2026</span></dd></div><div><dt>Module</dt><dd>Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>1 Nov 2026</dd></div></dl>
 <p class="ln-strip">Task 5 of 7 in <a class="rux--link" href="../follow/transfer-item-between-warehouses.html">Warehouse transfer</a> · next: <a class="rux--link" href="../do/receive-at-the-destination.html">Receive at the destination</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</dd></div></dl>
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</dd></div></dl>
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> A transfer between two warehouses always makes a shipment. Only a transfer inside one warehouse doesn't. Freezing locks what's on the shipment, and confirming takes the stock out of the source warehouse. The activities you read at <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html#step-4">step 3.4</a> (Read the activities and create advice) say whether you do this or LN does.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
@@ -134,11 +134,11 @@
 <tbody>
 <tr id="step-1"><td data-k="Step"><b>5.1</b></td><td data-k="Action">On the <span class="ln-t-named">Warehousing Order</span> for the order from <a class="rux--link" href="../do/create-the-transfer-order.html#step-8">step 2.8</a> (Create the transfer order), open the <span class="ln-t-named">Shipment Lines</span> tab</td><td data-k="You should see"><span class="ln-proc__see">The shipment line for your item. The shipment number is the first part of <span class="ln-t-named">Shipment Line</span>, before the line number:</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">shipment number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 <tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="ship_transfer-item-between-warehouses.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 5.1 · Warehousing Order, Shipment Lines after Process, the shipment confirmed</figcaption></figure></td></tr>
-<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Find the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row in the activities you read at <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html#step-4">step 3.4</a> (Read the activities and create advice)</td><td data-k="You should see">If LN already finished it, the shipment line is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, so stop here. If its <span class="ln-t-named">Automatic</span> is <span class="ln-t-exact">No</span>, carry on</td></tr>
+<tr id="step-2"><td data-k="Step"><b>5.2</b></td><td data-k="Action">Find the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row in the activities you read at <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html#step-4">step 3.4</a> (Read the activities and create advice)</td><td data-k="You should see">If LN already finished it, the shipment line is <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>,</span> so stop here. If its <span class="ln-t-named">Automatic</span> is <span class="ln-t-exact ln-t-word">No</span>, carry on</td></tr>
 <tr id="step-3"><td data-k="Step"><b>5.3</b></td><td data-k="Action">Open <span class="ln-t-named">Shipments</span> and filter <span class="ln-t-named">Shipment</span> on the shipment number from <a class="rux--link" href="#step-1">step 5.1</a></td><td data-k="You should see">Your shipment's row</td></tr>
 <tr id="step-4"><td data-k="Step"><b>5.4</b></td><td data-k="Action">Tick the row and click <span class="ln-t-press">Drill In</span></td><td data-k="You should see"><span class="ln-t-named">Shipment</span> opens. Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Open</span></span></td></tr>
 <tr id="step-5"><td data-k="Step"><b>5.5</b></td><td data-k="Action">If <span class="ln-t-named">Freeze Mandatory</span> is ticked, click <span class="ln-t-press">FREEZE</span> on the toolbar</td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Frozen</span></span></td></tr>
-<tr id="step-6"><td data-k="Step"><b>5.6</b></td><td data-k="Action">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</td><td data-k="You should see">Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. The stock leaves the source warehouse</td></tr>
+<tr id="step-6"><td data-k="Step"><b>5.6</b></td><td data-k="Action">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</td><td data-k="You should see">Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</span> The stock leaves the source warehouse</td></tr>
 </tbody>
 </table></div>
 
@@ -161,14 +161,15 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td data-k="Code"><span class="ln-t-exact">whinh4130m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span></td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4130m000.html">Shipments</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">whinh4130m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span></td></tr>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/whinh4630m000.html">Shipment</a></td><td data-k="Code"><span class="ln-t-exact ln-t-word">whinh4630m000</span></td><td data-k="How to open it"><span class="ln-t-press">Drill In</span> from a row on Shipments (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Session</b><p><a class="rux--link" href="../screens/whinh4130m000.html"><span class="ln-t-named">Shipments</span></a> (<span class="ln-t-exact">whinh4130m000</span>)<br><span class="ln-quiet">Shows, changes and confirms shipments.</span></p></li>
+  <li><b>Session</b><p><a class="rux--link" href="../screens/whinh4130m000.html"><span class="ln-t-named">Shipments</span></a> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)<br><span class="ln-quiet">Shows, changes and confirms shipments.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/shipment-and-load.html">Shipment and load</a> · <a class="rux--link" href="../ideas/warehousing-procedure.html">Warehousing procedure</a></p></li>
   <li><b>Next task</b><p><a class="rux--link" href="../do/receive-at-the-destination.html">Receive at the destination</a> in Warehouse transfer</p></li>
 </ul>
@@ -179,7 +180,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>5</b></td><td data-k="Expected result">The shipment says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, and the outbound line says <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>5</b></td><td data-k="Expected result">The shipment says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>,</span> and the outbound line says <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Shipped</span></span></span></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -208,7 +209,7 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact">whinh4130m000</span>)</p><h1 class="ln-step__do">On the <span class="ln-t-named">Warehousing Order</span> for the order from step 8 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>, open the <span class="ln-t-named">Shipment Lines</span> tab</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="create-the-transfer-order/8/0"><span class="ln-quiet">Transfer order number · 2.8</span><span data-use-missing><a class="rux--link" href="../do/create-the-transfer-order.html?walk=8">Write it down at step 2.8</a></span></div></div><figure class="ln-shot" data-shot="ship_transfer-item-between-warehouses.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 5.1 · Warehousing Order, Shipment Lines after Process, the shipment confirmed</figcaption></figure></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Warehousing</span><span class="sep">➔</span><span class="ln-t-whole">Shipments</span><span class="sep">➔</span><span class="dest ln-t-whole">Shipments</span></span> (<span class="ln-t-exact ln-t-word">whinh4130m000</span>)</p><h1 class="ln-step__do">On the <span class="ln-t-named">Warehousing Order</span> for the order from step 8 of <a class="rux--link" href="../do/create-the-transfer-order.html">Create the transfer order</a>, open the <span class="ln-t-named">Shipment Lines</span> tab</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="create-the-transfer-order/8/0"><span class="ln-quiet">Transfer order number · 2.8</span><span data-use-missing><a class="rux--link" href="../do/create-the-transfer-order.html?walk=8">Write it down at step 2.8</a></span></div></div><figure class="ln-shot" data-shot="ship_transfer-item-between-warehouses.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 5.1 · Warehousing Order, Shipment Lines after Process, the shipment confirmed</figcaption></figure></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The shipment line for your item. The shipment number is the first part of <span class="ln-t-named">Shipment Line</span>, before the line number:</p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
       <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-46">Shipment number</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
@@ -218,7 +219,7 @@
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Find the <span class="ln-t-named">Freeze/Confirm Shipments/Loads</span> row in the activities you read at step 4 of <a class="rux--link" href="../do/confirm-the-processing-path-and-create-advice.html">Read the activities and create advice</a></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>If LN already finished it, the shipment line is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>, so stop here. If its <span class="ln-t-named">Automatic</span> is <span class="ln-t-exact">No</span>, carry on</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>If LN already finished it, the shipment line is <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>,</span> so stop here. If its <span class="ln-t-named">Automatic</span> is <span class="ln-t-exact ln-t-word">No</span>, carry on</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Shipments</span> and filter <span class="ln-t-named">Shipment</span> on the shipment number from step 1</h1></div>
@@ -234,7 +235,7 @@
   </li>
   <li data-k="6" data-ref="6" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">CONFIRM</span> on the toolbar</h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>. The stock leaves the source warehouse</p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Status = <span class="ln-t-glue"><span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Confirmed</span></span>.</span> The stock leaves the source warehouse</p></div>
   </li>
 </ol>
 <ul class="rux--accordion rux--accordion--end rux--layout--size-md">

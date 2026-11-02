@@ -300,8 +300,8 @@ None open.
 - [ ] Purchase to receipt: the same.
 - [ ] Warehouse transfer: the same.
 - [ ] Production order: the same, renamed Production order from stock.
-- [ ] rux approves the five together.
 - [ ] Run order planning for one item: write it to the standard, then walk it.
+- [ ] rux approves the five together.
 - [ ] Demand to shipment via planning: write it to the standard, then walk it.
 - [ ] Create basic test items and defaults: write it to the standard, then
       walk it.

@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-23",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -56,7 +56,7 @@
         },
         {
           "t": "link",
-          "v": "Make the item visible to planning",
+          "v": "Check each item has a plan",
           "href": "make-the-item-visible-to-planning.md"
         },
         {
@@ -64,7 +64,7 @@
           "v": " adds the planning data."
         }
       ],
-      "text": "The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Make the item visible to planning adds the planning data."
+      "text": "The bamboo family as section 2 describes it. If any of it is missing, Create test items builds it and Check each item has a plan adds the planning data."
     }
   ],
   "why": {
@@ -334,15 +334,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "For any item that does not appear, add its cluster row. Follow steps 3–5 of "
+                  "v": "For any item that does not appear, add a row for its planning cluster on the "
                 },
                 {
-                  "t": "link",
-                  "v": "Make the item visible to planning",
-                  "href": "make-the-item-visible-to-planning.md"
+                  "t": "chip",
+                  "v": "Clusters"
+                },
+                {
+                  "t": "text",
+                  "v": " tab of "
+                },
+                {
+                  "t": "session",
+                  "code": "tcibd0501m100",
+                  "name": "Item"
                 }
               ],
-              "text": "For any item that does not appear, add its cluster row. Follow steps 3–5 of Make the item visible to planning"
+              "text": "For any item that does not appear, add a row for its planning cluster on the Clusters tab of Item (tcibd0501m100)"
             },
             {
               "tokens": [

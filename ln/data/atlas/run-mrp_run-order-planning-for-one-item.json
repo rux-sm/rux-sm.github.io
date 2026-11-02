@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "run-mrp_run-order-planning-for-one-item",
-  "title": "Run MRP",
+  "title": "Run planning",
   "process": {
     "id": "run-order-planning-for-one-item",
     "title": "Run order planning",
@@ -12,50 +12,60 @@
   },
   "previous": {
     "id": "put-the-demand-inside-the-horizon",
-    "title": "Put the demand inside the horizon"
+    "title": "Put the order inside the horizon"
   },
   "next": {
     "id": "review-the-result",
-    "title": "Review the result"
+    "title": "Read the planned orders"
   },
   "module": "Enterprise Planning · Sales",
   "modules": [
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": null,
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Planned orders exist covering the shortfall, with pegging relations."
+        "v": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves."
       }
     ],
-    "text": "Planned orders exist covering the shortfall, with pegging relations."
+    "text": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 6 of "
+        },
+        {
+          "t": "link",
+          "v": "Put the order inside the horizon",
+          "href": "put-the-demand-inside-the-horizon.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 6 of Put the order inside the horizon."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what "
-      },
-      {
-        "t": "link",
-        "v": "Read the pegging tree",
-        "href": "read-the-pegging-tree.md"
-      },
-      {
-        "t": "text",
-        "v": " reads."
+        "v": "The run reads every demand inside the horizon, takes off what stock and existing orders already cover, and suggests planned orders for the rest. With child items included, it goes down through the BOM to the components. It also keeps which demand each planned order is for, which is what the pegging tree shows."
       }
     ],
-    "text": "The run reads every demand inside the horizon, nets it against stock and existing supply, and generates planned orders for the shortfall, multi-level through the BOM when child items are included. With pegging relations updated it also records which demand each planned order exists to serve, which is what Read the pegging tree reads."
+    "text": "The run reads every demand inside the horizon, takes off what stock and existing orders already cover, and suggests planned orders for the rest. With child items included, it goes down through the BOM to the components. It also keeps which demand each planned order is for, which is what the pegging tree shows."
   },
   "blocks": [
     {
@@ -81,22 +91,37 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "In the finished item's "
                 },
                 {
-                  "t": "session",
-                  "code": "cprrp1220m000",
-                  "name": "Generate Order Planning (Item)"
+                  "t": "chip",
+                  "v": "Item Order Plan"
                 },
                 {
                   "t": "text",
-                  "v": " for the finished item"
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE ORDERS..."
+                },
+                {
+                  "t": "text",
+                  "v": " at the top"
                 }
               ],
-              "text": "Open Generate Order Planning (Item) (cprrp1220m000) for the finished item"
+              "text": "In the finished item's Item Order Plan, click GENERATE ORDERS... at the top"
             },
             {
               "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Generate Order Planning (Item)"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, with "
+                },
                 {
                   "t": "field",
                   "v": "Scenario"
@@ -111,10 +136,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " are set"
+                  "v": " filled in for your item"
                 }
               ],
-              "text": "Scenario and Plan Item are set"
+              "text": "Generate Order Planning (Item) opens, with Scenario and Plan Item filled in for your item"
             }
           ],
           "id": "1",
@@ -136,23 +161,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Select "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
                   "v": "Include Child Items"
+                },
+                {
+                  "t": "text",
+                  "v": " is selected"
                 }
               ],
-              "text": "Select Include Child Items"
+              "text": "Check Include Child Items is selected"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The run will also plan the BOM components — multi-level, top-down"
+                  "v": "—"
                 }
               ],
-              "text": "The run will also plan the BOM components — multi-level, top-down"
+              "text": "—"
             }
           ],
           "id": "2",
@@ -174,7 +203,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Confirm "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
@@ -182,24 +211,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " is selected, where the field is open"
+                  "v": " is selected"
                 }
               ],
-              "text": "Confirm Update Pegging Relations is selected, where the field is open"
+              "text": "Check Update Pegging Relations is selected"
             },
             {
               "tokens": [
                 {
-                  "t": "link",
-                  "v": "Read the pegging tree",
-                  "href": "read-the-pegging-tree.md"
-                },
-                {
                   "t": "text",
-                  "v": " depends on it — see the notes"
+                  "v": "—"
                 }
               ],
-              "text": "Read the pegging tree depends on it — see the notes"
+              "text": "—"
             }
           ],
           "id": "3",
@@ -221,22 +245,160 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Run the generation"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "GENERATE"
                 }
               ],
-              "text": "Run the generation"
+              "text": "Click GENERATE"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The run completes; exception messages print or store if selected"
+                  "v": "LN asks "
+                },
+                {
+                  "t": "literal",
+                  "v": "Scenario must be rolled. Continue without rolling scenario?"
                 }
               ],
-              "text": "The run completes; exception messages print or store if selected"
+              "text": "LN asks Scenario must be rolled. Continue without rolling scenario?"
             }
           ],
           "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "YES"
+                }
+              ],
+              "text": "Click YES"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Select Device"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, for the exception report"
+                }
+              ],
+              "text": "Select Device opens, for the exception report"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "CONTINUE"
+                }
+              ],
+              "text": "Click CONTINUE"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "LN says "
+                },
+                {
+                  "t": "literal",
+                  "v": "Processing was successful. No report printed."
+                }
+              ],
+              "text": "LN says Processing was successful. No report printed."
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The dialog closes, and the plan shows new "
+                },
+                {
+                  "t": "chip",
+                  "v": "Planned Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " rows"
+                }
+              ],
+              "text": "The dialog closes, and the plan shows new Planned Production Order rows"
+            }
+          ],
+          "id": "7",
           "optional": false,
           "produces": false
         }
@@ -248,7 +410,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Item Order Plan, Generate Order Planning (Item) open over it",
+    "path": "run-mrp_run-order-planning-for-one-item.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -262,28 +428,24 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The run plans the parent but not a component"
+                "v": "The finished item is planned but a component isn't"
               }
             ],
-            "text": "The run plans the parent but not a component"
+            "text": "The finished item is planned but a component isn't"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The component has no planning data of its own. Step 6 of "
+                "v": "The component has no plan, or its order horizon ends too early. Step 5 of "
               },
               {
                 "t": "link",
-                "v": "Make the item visible to planning",
+                "v": "Check each item has a plan",
                 "href": "make-the-item-visible-to-planning.md"
-              },
-              {
-                "t": "text",
-                "v": " — MRP skips it silently"
               }
             ],
-            "text": "The component has no planning data of its own. Step 6 of Make the item visible to planning — MRP skips it silently"
+            "text": "The component has no plan, or its order horizon ends too early. Step 5 of Check each item has a plan"
           }
         ]
       },
@@ -293,19 +455,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The run produces nothing at all, or nothing propagates to the parent"
+                "v": "Nothing is planned for the finished item"
               }
             ],
-            "text": "The run produces nothing at all, or nothing propagates to the parent"
+            "text": "Nothing is planned for the finished item"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 1"
+                "v": "Check which item the run was started on. A run from a component doesn't plan the item above it. Run it again from the finished item"
               }
             ],
-            "text": "Check which item you launched the generation on. Running it from a component does not traverse upward — re-run from the top-level (finished) item, per step 1"
+            "text": "Check which item the run was started on. A run from a component doesn't plan the item above it. Run it again from the finished item"
           }
         ]
       },
@@ -315,27 +477,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A component was given planning data and still does not appear"
+                "v": "A component has a plan and still gets no planned order"
               }
             ],
-            "text": "A component was given planning data and still does not appear"
+            "text": "A component has a plan and still gets no planned order"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own "
+                "v": "That can be right: planning suggests supply only for what stock doesn't cover. Read the component's "
               },
               {
-                "t": "chip",
-                "v": "Item Order Plan"
+                "t": "field",
+                "v": "Inventory on Hand"
               },
               {
                 "t": "text",
-                "v": " and its on-hand before assuming the fix failed. "
+                "v": " before you change anything"
               }
             ],
-            "text": "It may be correctly absent — planning proposes supply only for what stock does not cover. Read the component's own Item Order Plan and its on-hand before assuming the fix failed."
+            "text": "That can be right: planning suggests supply only for what stock doesn't cover. Read the component's Inventory on Hand before you change anything"
           }
         ]
       }

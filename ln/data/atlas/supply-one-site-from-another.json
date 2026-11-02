@@ -279,11 +279,11 @@
                 },
                 {
                   "t": "link",
-                  "v": "Run MRP",
+                  "v": "Run planning",
                   "href": "run-mrp_run-order-planning-for-one-item.md"
                 }
               ],
-              "text": "Run order planning for the item, as in Run MRP"
+              "text": "Run order planning for the item, as in Run planning"
             },
             {
               "tokens": [

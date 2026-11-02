@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "review-the-result",
-  "title": "Review the result",
+  "title": "Read the planned orders",
   "process": {
     "id": "run-order-planning-for-one-item",
     "title": "Run order planning",
@@ -12,7 +12,7 @@
   },
   "previous": {
     "id": "run-mrp_run-order-planning-for-one-item",
-    "title": "Run MRP"
+    "title": "Run planning"
   },
   "next": {
     "id": "read-the-pegging-tree",
@@ -23,49 +23,57 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": null,
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The planned supply is read on both the parent and the component."
+        "v": "The finished item's plan has planned production orders at "
+      },
+      {
+        "t": "status",
+        "v": "Planned"
+      },
+      {
+        "t": "text",
+        "v": ", and each component's plan has them as demand, met by planned purchase orders or stock."
       }
     ],
-    "text": "The planned supply is read on both the parent and the component."
+    "text": "The finished item's plan has planned production orders at Planned, and each component's plan has them as demand, met by planned purchase orders or stock."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 4 of "
+          "v": "You need step 7 of "
         },
         {
           "t": "link",
-          "v": "Make the item visible to planning",
-          "href": "make-the-item-visible-to-planning.md"
+          "v": "Run planning",
+          "href": "run-mrp_run-order-planning-for-one-item.md"
         },
         {
           "t": "text",
           "v": "."
         }
       ],
-      "text": "You need step 4 of Make the item visible to planning."
+      "text": "You need step 7 of Run planning."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+        "v": "One planned order plays two parts. On the finished item's plan it is supply. On each component's plan it is demand, and the component's plan has already answered it. A planned quantity can differ from the shortfall if the item's ordering data rounds it, to a minimum or a multiple."
       }
     ],
-    "text": "One planned order plays two roles: it is supply on the parent's plan and demand on the component's, and the component's own plan has already answered it. Planned quantities equal the raw shortfall only when the item's ordering data imposes no lot-size rule; a minimum or a multiple changes the number before you see it."
+    "text": "One planned order plays two parts. On the finished item's plan it is supply. On each component's plan it is demand, and the component's plan has already answered it. A planned quantity can differ from the shortfall if the item's ordering data rounds it, to a minimum or a multiple."
   },
   "blocks": [
     {
@@ -91,28 +99,67 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Reopen the finished item's "
+                  "v": "In the finished item's "
                 },
                 {
                   "t": "chip",
                   "v": "Item Order Plan"
+                },
+                {
+                  "t": "text",
+                  "v": ", click "
+                },
+                {
+                  "t": "button",
+                  "label": "Refresh"
                 }
               ],
-              "text": "Reopen the finished item's Item Order Plan"
+              "text": "In the finished item's Item Order Plan, click Refresh"
             },
             {
               "tokens": [
                 {
+                  "t": "chip",
+                  "v": "Planned Production Order"
+                },
+                {
                   "t": "text",
-                  "v": "The sales order row now has a companion"
+                  "v": " rows at "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                },
+                {
+                  "t": "text",
+                  "v": ", each with its quantity under "
+                },
+                {
+                  "t": "field",
+                  "v": "Supply"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "planned production orders"
                 }
               ],
-              "text": "The sales order row now has a companion"
+              "text": "Planned Production Order rows at Planned, each with its quantity under Supply — planned production orders"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -129,164 +176,29 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the planned supply row"
+                  "v": "Open each component's plan, as in steps 2 to 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Check each item has a plan",
+                  "href": "make-the-item-visible-to-planning.md"
                 }
               ],
-              "text": "Read the planned supply row"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "planned production order number"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "planned production quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " — a "
-                },
-                {
-                  "t": "chip",
-                  "v": "Planned Production Order"
-                },
-                {
-                  "t": "text",
-                  "v": " whose "
-                },
-                {
-                  "t": "field",
-                  "v": "Supply"
-                },
-                {
-                  "t": "text",
-                  "v": " equals ordered quantity minus on-hand"
-                }
-              ],
-              "text": "planned production order number and planned production quantity — a Planned Production Order whose Supply equals ordered quantity minus on-hand"
-            }
-          ],
-          "id": "2",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "3"
-                }
-              ],
-              "text": "3"
+              "text": "Open each component's plan, as in steps 2 to 4 of Check each item has a plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the "
-                },
-                {
-                  "t": "chip",
-                  "v": "component's"
-                },
-                {
-                  "t": "text",
-                  "v": " Item Order Plan"
-                }
-              ],
-              "text": "Open the component's Item Order Plan"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The same planned production order appears — as "
+                  "v": "Each planned production order from step 1 is a row, with what it needs under "
                 },
                 {
                   "t": "field",
                   "v": "Demand"
-                }
-              ],
-              "text": "The same planned production order appears — as Demand"
-            }
-          ],
-          "id": "3",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "4"
-                }
-              ],
-              "text": "4"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Read the component's planned supply row"
-                }
-              ],
-              "text": "Read the component's planned supply row"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "component planned purchase order"
-                },
-                {
-                  "t": "text",
-                  "v": " and "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "component planned quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " — a "
+                  "v": ", and a "
                 },
                 {
                   "t": "chip",
@@ -294,73 +206,13 @@
                 },
                 {
                   "t": "text",
-                  "v": " covering what stock does not"
+                  "v": " row or stock covers it"
                 }
               ],
-              "text": "component planned purchase order and component planned quantity — a Planned Purchase Order covering what stock does not"
+              "text": "Each planned production order from step 1 is a row, with what it needs under Demand, and a Planned Purchase Order row or stock covers it"
             }
           ],
-          "id": "4",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Open "
-                },
-                {
-                  "t": "session",
-                  "code": "cprrp1100m000",
-                  "name": "Planned Orders"
-                },
-                {
-                  "t": "text",
-                  "v": " for the cluster and site. They are the ones from step 4 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Make the item visible to planning",
-                  "href": "make-the-item-visible-to-planning.md"
-                }
-              ],
-              "text": "Open Planned Orders (cprrp1100m000) for the cluster and site. They are the ones from step 4 of Make the item visible to planning"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Both planned orders listed, "
-                },
-                {
-                  "t": "field",
-                  "v": "Order Status"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "status",
-                  "v": "Planned"
-                }
-              ],
-              "text": "Both planned orders listed, Order Status Planned"
-            }
-          ],
-          "id": "5",
+          "id": "2",
           "optional": false,
           "produces": false
         }
@@ -372,7 +224,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "1",
+    "caption": "Item Order Plan, the planned production orders",
+    "path": "review-the-result.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -386,10 +242,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A planned quantity does not equal the raw shortfall"
+                "v": "A planned quantity isn't the shortfall"
               }
             ],
-            "text": "A planned quantity does not equal the raw shortfall"
+            "text": "A planned quantity isn't the shortfall"
           },
           {
             "tokens": [
@@ -417,27 +273,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "An expected planned purchase order is missing entirely"
+                "v": "A component has no planned purchase order you expected"
               }
             ],
-            "text": "An expected planned purchase order is missing entirely"
+            "text": "A component has no planned purchase order you expected"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — "
-              },
-              {
-                "t": "session",
-                "code": "cprrp1100m000"
-              },
-              {
-                "t": "text",
-                "v": " help"
+                "v": "If it is a purchase schedule item, supply goes straight to Purchase Control. Otherwise its stock may cover the need"
               }
             ],
-            "text": "If the item is a purchase schedule item, supply transfers straight to Purchase Control and no planned purchase order is created — cprrp1100m000 help"
+            "text": "If it is a purchase schedule item, supply goes straight to Purchase Control. Otherwise its stock may cover the need"
           }
         ]
       }

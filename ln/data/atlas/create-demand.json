@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "create-demand",
-  "title": "Create demand",
+  "title": "Create a sales order to plan for",
   "process": {
     "id": "run-order-planning-for-one-item",
     "title": "Run order planning",
@@ -12,41 +12,68 @@
   },
   "previous": {
     "id": "make-the-item-visible-to-planning",
-    "title": "Make the item visible to planning"
+    "title": "Check each item has a plan"
   },
   "next": {
     "id": "put-the-demand-inside-the-horizon",
-    "title": "Put the demand inside the horizon"
+    "title": "Put the order inside the horizon"
   },
   "module": "Enterprise Planning · Sales",
   "modules": [
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
+  "status": "review",
+  "updated": "2026-11-02",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": null,
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A sales order exists for more than is on hand."
+        "v": "A sales order for more of the finished item than you have is saved, at "
+      },
+      {
+        "t": "status",
+        "v": "Free"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "A sales order exists for more than is on hand."
+    "text": "A sales order for more of the finished item than you have is saved, at Free."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need step 4 of "
+        },
+        {
+          "t": "link",
+          "v": "Check each item has a plan",
+          "href": "make-the-item-visible-to-planning.md"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need step 4 of Check each item has a plan."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+        "v": "Planning only acts on demand that stock doesn't cover. A sales order for more than you have on hand makes a shortfall, and planning should suggest orders for it. The order doesn't need approving for planning to see it."
       }
     ],
-    "text": "Planning acts on uncovered demand. A sales order for more than is on hand creates a shortfall, and that shortfall is exactly the quantity MRP should propose, which is what makes the run checkable. Planning sees the demand without the order being approved."
+    "text": "Planning only acts on demand that stock doesn't cover. A sales order for more than you have on hand makes a shortfall, and planning should suggest orders for it. The order doesn't need approving for planning to see it."
   },
   "blocks": [
     {
@@ -72,44 +99,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In "
+                  "v": "Open "
                 },
                 {
-                  "t": "session",
-                  "code": "whwmd4300m000",
-                  "name": "Inventory 360"
-                },
-                {
-                  "t": "text",
-                  "v": ", read the finished item's on-hand at its warehouse"
+                  "t": "chip",
+                  "v": "Sales Order Intake Workbench"
                 }
               ],
-              "text": "In Inventory 360 (whwmd4300m000), read the finished item's on-hand at its warehouse"
+              "text": "Open Sales Order Intake Workbench"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "finished item on-hand before"
-                },
-                {
-                  "t": "text",
-                  "v": " — the demand must exceed this"
+                  "v": "The list of sales orders"
                 }
               ],
-              "text": "finished item on-hand before — the demand must exceed this"
+              "text": "The list of sales orders"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -126,28 +137,28 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Create a sales order for the finished item. Follow steps 1–11 of "
+                  "v": "At the top, click "
                 },
                 {
-                  "t": "link",
-                  "v": "Create and approve the sales order",
-                  "href": "create-and-approve-the-sales-order.md"
+                  "t": "button",
+                  "label": "New",
+                  "location": "header"
                 }
               ],
-              "text": "Create a sales order for the finished item. Follow steps 1–11 of Create and approve the sales order"
+              "text": "At the top, click New"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "An order exists at "
+                  "t": "chip",
+                  "v": "Sales Order"
                 },
                 {
-                  "t": "status",
-                  "v": "Free"
+                  "t": "text",
+                  "v": " opens, empty"
                 }
               ],
-              "text": "An order exists at Free"
+              "text": "Sales Order opens, empty"
             }
           ],
           "id": "2",
@@ -169,82 +180,36 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Enter your customer in "
                 },
                 {
                   "t": "field",
-                  "v": "Ordered Quantity"
+                  "v": "Sold-to Business Partner"
                 },
                 {
                   "t": "text",
-                  "v": " above the on-hand from step 1"
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Set Ordered Quantity above the on-hand from step 1"
+              "text": "Enter your customer in Sold-to Business Partner and press Tab"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "field",
+                  "v": "Address"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "sales order number"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "ordered quantity"
-                },
-                {
-                  "t": "text",
-                  "v": " — the observed run booked "
-                },
-                {
-                  "t": "literal",
-                  "v": "5"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "literal",
-                  "v": "ea"
-                },
-                {
-                  "t": "text",
-                  "v": " against "
-                },
-                {
-                  "t": "literal",
-                  "v": "1"
-                },
-                {
-                  "t": "text",
-                  "v": " on hand"
+                  "v": " fills in"
                 }
               ],
-              "text": "sales order number, ordered quantity — the observed run booked 5 ea against 1 on hand"
+              "text": "Address fills in"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -269,10 +234,233 @@
                 },
                 {
                   "t": "text",
-                  "v": " no more than a few days out"
+                  "v": " to a week from today"
                 }
               ],
-              "text": "Set Planned Delivery Date no more than a few days out"
+              "text": "Set Planned Delivery Date to a week from today"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "— "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "delivery date"
+                }
+              ],
+              "text": "— delivery date"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": true,
+          "example": [
+            0
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "sales order number"
+                }
+              ],
+              "text": "Status = Free — sales order number"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "In the lines, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New",
+                  "location": "line"
+                }
+              ],
+              "text": "In the lines, click New"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "A new line"
+                }
+              ],
+              "text": "A new line"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the finished item from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Check each item has a plan",
+                  "href": "make-the-item-visible-to-planning.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
+                }
+              ],
+              "text": "Type the finished item from step 4 of Check each item has a plan in Item and press Tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item's description fills in"
+                }
+              ],
+              "text": "The item's description fills in"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false,
+          "example": [
+            1
+          ],
+          "uses": [
+            {
+              "task": "make-the-item-visible-to-planning",
+              "step": "4",
+              "n": 0,
+              "label": "finished item"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Enter an "
+                },
+                {
+                  "t": "field",
+                  "v": "Ordered Quantity"
+                },
+                {
+                  "t": "text",
+                  "v": " larger than the on-hand from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Check each item has a plan",
+                  "href": "make-the-item-visible-to-planning.md"
+                }
+              ],
+              "text": "Enter an Ordered Quantity larger than the on-hand from step 4 of Check each item has a plan"
             },
             {
               "tokens": [
@@ -285,25 +473,148 @@
                 },
                 {
                   "t": "value",
-                  "v": "planned delivery date"
+                  "v": "ordered quantity"
                 }
               ],
-              "text": "planned delivery date"
+              "text": "ordered quantity"
             }
           ],
-          "id": "4",
+          "id": "8",
           "optional": false,
-          "produces": true
+          "produces": true,
+          "example": [
+            2
+          ],
+          "uses": [
+            {
+              "task": "make-the-item-visible-to-planning",
+              "step": "4",
+              "n": 1,
+              "label": "on-hand"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
+                }
+              ],
+              "text": "Click Save"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "9",
+          "optional": false,
+          "produces": false
         }
       ]
     }
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Planned Delivery Date"
+              }
+            ],
+            "text": "Planned Delivery Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "7 days after the order date"
+              }
+            ],
+            "text": "7 days after the order date"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              }
+            ],
+            "text": "BAM-CHOP-PAIR"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "30"
+              }
+            ],
+            "text": "30"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "4",
+    "caption": "Sales Order, Planned Delivery Date",
+    "path": "create-demand.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -317,16 +628,20 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+                "v": "LN refuses the item: "
+              },
+              {
+                "t": "literal",
+                "v": "item sales by sales office not present"
               }
             ],
-            "text": "LN refuses the item on the sales order — \"item sales by sales office not present\""
+            "text": "LN refuses the item: item sales by sales office not present"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The item has no row for the order's sales office. Add it on the "
+                "v": "The item has no row for the order's sales office. Add one on the "
               },
               {
                 "t": "chip",
@@ -343,10 +658,10 @@
               },
               {
                 "t": "text",
-                "v": ", then close and reopen the order session"
+                "v": ", then close the order and open it again"
               }
             ],
-            "text": "The item has no row for the order's sales office. Add it on the Sales Offices tab of Item (tcibd0501m100), then close and reopen the order session"
+            "text": "The item has no row for the order's sales office. Add one on the Sales Offices tab of Item (tcibd0501m100), then close the order and open it again"
           }
         ]
       },
@@ -356,19 +671,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "A master-data fix appears to have no effect"
+                "v": "A change to the item has no effect"
               }
             ],
-            "text": "A master-data fix appears to have no effect"
+            "text": "A change to the item has no effect"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The session was already open when the data changed. Close it and reopen"
+                "v": "The order was already open when the item changed. Close it and open it again"
               }
             ],
-            "text": "The session was already open when the data changed. Close it and reopen"
+            "text": "The order was already open when the item changed. Close it and open it again"
           }
         ]
       }

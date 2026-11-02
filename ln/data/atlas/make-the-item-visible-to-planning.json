@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "make-the-item-visible-to-planning",
-  "title": "Make the item visible to planning",
+  "title": "Check each item has a plan",
   "process": {
     "id": "run-order-planning-for-one-item",
     "title": "Run order planning",
@@ -13,88 +13,45 @@
   "previous": null,
   "next": {
     "id": "create-demand",
-    "title": "Create demand"
+    "title": "Create a sales order to plan for"
   },
   "module": "Enterprise Planning · Sales",
   "modules": [
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
+  "status": "review",
+  "updated": "2026-11-02",
   "route": "Planning ➔ Order Planning ➔ Item Order Plan",
   "session": "Item Order Plan",
   "sessionCode": "cprrp0520m000",
-  "walked": null,
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The finished item and every BOM component have planning data."
+        "v": "The finished item and each of its components opens in "
+      },
+      {
+        "t": "strong",
+        "v": "Item Order Plan"
+      },
+      {
+        "t": "text",
+        "v": "."
       }
     ],
-    "text": "The finished item and every BOM component have planning data."
+    "text": "The finished item and each of its components opens in Item Order Plan."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "A finished item with an "
-        },
-        {
-          "t": "strong",
-          "v": "Approved"
-        },
-        {
-          "t": "text",
-          "v": " BOM and routing, components, and stock data — the qualified training case from "
-        },
-        {
-          "t": "link",
-          "v": "Create test items",
-          "href": "create-basic-test-items-and-defaults.md"
-        },
-        {
-          "t": "text",
-          "v": ", such as "
-        },
-        {
-          "t": "literal",
-          "v": "BAM-CHOP-PAIR"
-        },
-        {
-          "t": "text",
-          "v": " with components "
-        },
-        {
-          "t": "literal",
-          "v": "BAM-ROD"
-        },
-        {
-          "t": "text",
-          "v": " and "
-        },
-        {
-          "t": "literal",
-          "v": "BAM-SLEEVE"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "A finished item with an Approved BOM and routing, components, and stock data — the qualified training case from Create test items, such as BAM-CHOP-PAIR with components BAM-ROD and BAM-SLEEVE."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this task checks every item in the structure, not just the parent."
+        "v": "Planning only works on an item that has a plan. An item without one isn't refused, it just isn't there, and nothing tells you why. A component needs a plan of its own too, or planning skips it without a word."
       }
     ],
-    "text": "The planning screens read an item's planning data, and an item that has none is not refused; it is absent, with nothing to explain why. The link is a row for the planning cluster on the item, and MRP plans a BOM component only if the component has planning data of its own, so this task checks every item in the structure, not just the parent."
+    "text": "Planning only works on an item that has a plan. An item without one isn't refused, it just isn't there, and nothing tells you why. A component needs a plan of its own too, or planning skips it without a word."
   },
   "blocks": [
     {
@@ -123,21 +80,36 @@
                   "v": "Open "
                 },
                 {
-                  "t": "session",
-                  "code": "cprrp0520m000",
-                  "name": "Item Order Plan"
+                  "t": "chip",
+                  "v": "Item Order Plan"
                 }
               ],
-              "text": "Open Item Order Plan (cprrp0520m000)"
+              "text": "Open Item Order Plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The plan selection screen"
+                  "v": "A plan opens, often another item's, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Scenario"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Plan Item"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top"
                 }
               ],
-              "text": "The plan selection screen"
+              "text": "A plan opens, often another item's, with Scenario and Plan Item at the top"
             }
           ],
           "id": "1",
@@ -159,35 +131,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Search for the finished item"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Find"
                 }
               ],
-              "text": "Search for the finished item"
+              "text": "Click Find"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "chip",
+                  "v": "Item Order Plan - Find"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "finished item"
-                },
-                {
-                  "t": "text",
-                  "v": " — if it appears, planning data exists: go to step 6. If it does not, the item is invisible to planning: continue"
+                  "v": " opens"
                 }
               ],
-              "text": "finished item — if it appears, planning data exists: go to step 6. If it does not, the item is invisible to planning: continue"
+              "text": "Item Order Plan - Find opens"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -203,47 +172,32 @@
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "Open "
-                },
-                {
-                  "t": "session",
-                  "code": "tcibd0501m000",
-                  "name": "Items"
+                  "t": "field",
+                  "v": "Plan Item"
                 },
                 {
                   "t": "text",
-                  "v": " via "
-                },
-                {
-                  "t": "path",
-                  "route": "Master Data ➔ Items ➔ Items"
-                },
-                {
-                  "t": "text",
-                  "v": " and drill into the finished item"
+                  "v": " has three boxes. Leave the first two as they are. Type the finished item in the third and press Tab"
                 }
               ],
-              "text": "Open Items (tcibd0501m000) via Master Data ➔ Items ➔ Items and drill into the finished item"
+              "text": "Plan Item has three boxes. Leave the first two as they are. Type the finished item in the third and press Tab"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "tcibd0501m100",
-                  "name": "Item"
-                },
-                {
                   "t": "text",
-                  "v": " opens"
+                  "v": "—"
                 }
               ],
-              "text": "Item (tcibd0501m100) opens"
+              "text": "—"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            0
+          ]
         },
         {
           "cells": [
@@ -260,22 +214,38 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the "
+                  "v": "Click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Clusters"
-                },
-                {
-                  "t": "text",
-                  "v": " tab, add a row with the environment's planning cluster"
+                  "t": "button",
+                  "label": "OK"
                 }
               ],
-              "text": "On the Clusters tab, add a row with the environment's planning cluster"
+              "text": "Click OK"
             },
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "The finished item's plan opens, with "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory on Hand"
+                },
+                {
+                  "t": "text",
+                  "v": " under "
+                },
+                {
+                  "t": "chip",
+                  "v": "General"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
+                {
                   "t": "pencil"
                 },
                 {
@@ -284,11 +254,11 @@
                 },
                 {
                   "t": "value",
-                  "v": "planning cluster"
+                  "v": "finished item"
                 },
                 {
                   "t": "text",
-                  "v": " and "
+                  "v": ", "
                 },
                 {
                   "t": "pencil"
@@ -299,14 +269,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "site"
-                },
-                {
-                  "t": "text",
-                  "v": " "
+                  "v": "on-hand"
                 }
               ],
-              "text": "planning cluster and site"
+              "text": "The finished item's plan opens, with Inventory on Hand under General — finished item, on-hand"
             }
           ],
           "id": "4",
@@ -328,59 +294,17 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save, then reopen "
-                },
-                {
-                  "t": "chip",
-                  "v": "Item Order Plan"
-                },
-                {
-                  "t": "text",
-                  "v": " and search again"
+                  "v": "Do steps 2 to 4 for each component in the item's BOM"
                 }
               ],
-              "text": "Save, then reopen Item Order Plan and search again"
+              "text": "Do steps 2 to 4 for each component in the item's BOM"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item now appears — an empty plan, but a plan"
-                }
-              ],
-              "text": "The item now appears — an empty plan, but a plan"
-            }
-          ],
-          "id": "5",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "6"
-                }
-              ],
-              "text": "6"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Repeat steps 2–5 for "
+                  "v": "Each component's plan opens — "
                 },
-                {
-                  "t": "chip",
-                  "v": "every component in the BOM"
-                }
-              ],
-              "text": "Repeat steps 2–5 for every component in the BOM"
-            },
-            {
-              "tokens": [
                 {
                   "t": "pencil"
                 },
@@ -390,17 +314,13 @@
                 },
                 {
                   "t": "value",
-                  "v": "components given plan data"
-                },
-                {
-                  "t": "text",
-                  "v": " — each appears in its own Item Order Plan"
+                  "v": "components"
                 }
               ],
-              "text": "components given plan data — each appears in its own Item Order Plan"
+              "text": "Each component's plan opens — components"
             }
           ],
-          "id": "6",
+          "id": "5",
           "optional": false,
           "produces": true
         }
@@ -409,10 +329,56 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Plan Item"
+              }
+            ],
+            "text": "Plan Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "BAM-CHOP-PAIR, then BAM-ROD and BAM-SLEEVE"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "3",
+    "caption": "Item Order Plan - Find, the item box",
+    "path": "make-the-item-visible-to-planning.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -426,19 +392,62 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The item is not in the Item Order Plan"
+                "v": "A row you expect isn't in the grid"
               }
             ],
-            "text": "The item is not in the Item Order Plan"
+            "text": "A row you expect isn't in the grid"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "It has no planning data — no cluster row, no plan. Steps 3–5. Not an error state; nothing will tell you"
+                "v": "The grid can open scrolled to its last rows. Scroll up"
               }
             ],
-            "text": "It has no planning data — no cluster row, no plan. Steps 3–5. Not an error state; nothing will tell you"
+            "text": "The grid can open scrolled to its last rows. Scroll up"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item's plan doesn't open"
+              }
+            ],
+            "text": "The item's plan doesn't open"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The item has no plan. Add a row for your planning cluster on the "
+              },
+              {
+                "t": "chip",
+                "v": "Clusters"
+              },
+              {
+                "t": "text",
+                "v": " tab of "
+              },
+              {
+                "t": "session",
+                "code": "tcibd0501m100",
+                "name": "Item"
+              },
+              {
+                "t": "text",
+                "v": ", save, and look again "
+              },
+              {
+                "t": "strong",
+                "v": "Not documented for this release."
+              }
+            ],
+            "text": "The item has no plan. Add a row for your planning cluster on the Clusters tab of Item (tcibd0501m100), save, and look again Not documented for this release."
           }
         ]
       }

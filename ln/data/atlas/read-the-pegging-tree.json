@@ -12,7 +12,7 @@
   },
   "previous": {
     "id": "review-the-result",
-    "title": "Review the result"
+    "title": "Read the planned orders"
   },
   "next": null,
   "module": "Enterprise Planning · Sales",
@@ -20,31 +20,31 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": null,
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The whole chain reconciles: demand, stock, planned make, planned buy."
+        "v": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM."
       }
     ],
-    "text": "The whole chain reconciles: demand, stock, planned make, planned buy."
+    "text": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need step 5 of "
+          "v": "You need step 1 of "
         },
         {
           "t": "link",
-          "v": "Review the result",
+          "v": "Read the planned orders",
           "href": "review-the-result.md"
         },
         {
@@ -52,17 +52,17 @@
           "v": "."
         }
       ],
-      "text": "You need step 5 of Review the result."
+      "text": "You need step 1 of Read the planned orders."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated; where the option is locked on, every run generates them."
+        "v": "The pegging tree follows the links the run kept. Upstream answers what will supply this demand; downstream answers what demand this order is for. There is a tree only if the run kept the links."
       }
     ],
-    "text": "The pegging tree walks the relations the run recorded: upstream, what will supply this demand; downstream, what demand caused this order. The tree exists only if pegging relations were generated; where the option is locked on, every run generates them."
+    "text": "The pegging tree follows the links the run kept. Upstream answers what will supply this demand; downstream answers what demand this order is for. There is a tree only if the run kept the links."
   },
   "blocks": [
     {
@@ -88,23 +88,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In "
+                  "v": "In the finished item's "
                 },
                 {
                   "t": "chip",
-                  "v": "Planned Orders"
+                  "v": "Item Order Plan"
                 },
                 {
                   "t": "text",
-                  "v": ", select the planned production order from step 5 of "
+                  "v": ", tick the row for the sales order from step 5 of "
                 },
                 {
                   "t": "link",
-                  "v": "Review the result",
-                  "href": "review-the-result.md"
+                  "v": "Create a sales order to plan for",
+                  "href": "create-demand.md"
                 }
               ],
-              "text": "In Planned Orders, select the planned production order from step 5 of Review the result"
+              "text": "In the finished item's Item Order Plan, tick the row for the sales order from step 5 of Create a sales order to plan for"
             },
             {
               "tokens": [
@@ -118,7 +118,15 @@
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-demand",
+              "step": "5",
+              "n": 0,
+              "label": "sales order number"
+            }
+          ]
         },
         {
           "cells": [
@@ -135,28 +143,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Run "
+                  "v": "At the top, click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Pegging - Upstream"
+                  "t": "command",
+                  "route": "References ➔ Pegging Browser ➔ Pegging - Upstream"
                 }
               ],
-              "text": "Run Pegging - Upstream"
+              "text": "At the top, click References ➔ Pegging Browser ➔ Pegging - Upstream"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "cprrp0740m200",
-                  "name": "Order Pegging"
+                  "t": "chip",
+                  "v": "Order Pegging"
                 },
                 {
                   "t": "text",
-                  "v": " opens as a tree"
+                  "v": " opens in a new tab, with your sales order at the top"
                 }
               ],
-              "text": "Order Pegging (cprrp0740m200) opens as a tree"
+              "text": "Order Pegging opens in a new tab, with your sales order at the top"
             }
           ],
           "id": "2",
@@ -178,19 +185,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the tree from the top"
+                  "v": "Read the rows under the sales order"
                 }
               ],
-              "text": "Read the tree from the top"
+              "text": "Read the rows under the sales order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The sales order, then each level of stock and planned supply beneath it"
+                  "v": "Planned production orders, stock or both, adding up to the order's quantity"
                 }
               ],
-              "text": "The sales order, then each level of stock and planned supply beneath it"
+              "text": "Planned production orders, stock or both, adding up to the order's quantity"
             }
           ],
           "id": "3",
@@ -212,35 +219,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check the arithmetic at every level against the BOM and the stock figures"
+                  "v": "Read the rows under each planned production order"
                 }
               ],
-              "text": "Check the arithmetic at every level against the BOM and the stock figures"
+              "text": "Read the rows under each planned production order"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "pegging arithmetic check"
-                },
-                {
-                  "t": "text",
-                  "v": " — each level's children sum to its requirement"
+                  "v": "A row for each component, and under it planned purchase orders, stock or both, adding up to that row's quantity"
                 }
               ],
-              "text": "pegging arithmetic check — each level's children sum to its requirement"
+              "text": "A row for each component, and under it planned purchase orders, stock or both, adding up to that row's quantity"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": true
+          "produces": false
         }
       ]
     }
@@ -250,7 +246,11 @@
     "columns": [],
     "rows": []
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "2",
+    "caption": "Item Order Plan, References menu",
+    "path": "read-the-pegging-tree.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -264,16 +264,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The pegging tree is empty"
+                "v": "The tree is empty"
               }
             ],
-            "text": "The pegging tree is empty"
+            "text": "The tree is empty"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Pegging relations were not generated, or the demand lies beyond the "
+                "v": "The run didn't keep the links, or the demand is after the "
               },
               {
                 "t": "session",
@@ -282,10 +282,15 @@
               },
               {
                 "t": "text",
-                "v": ". See what this task needs before you start"
+                "v": ". Check step 3 of "
+              },
+              {
+                "t": "link",
+                "v": "Run planning",
+                "href": "run-mrp_run-order-planning-for-one-item.md"
               }
             ],
-            "text": "Pegging relations were not generated, or the demand lies beyond the Pegging Horizon (cprpd0100m000). See what this task needs before you start"
+            "text": "The run didn't keep the links, or the demand is after the Pegging Horizon (cprpd0100m000). Check step 3 of Run planning"
           }
         ]
       }

@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "put-the-demand-inside-the-horizon",
-  "title": "Put the demand inside the horizon",
+  "title": "Put the order inside the horizon",
   "process": {
     "id": "run-order-planning-for-one-item",
     "title": "Run order planning",
@@ -12,31 +12,39 @@
   },
   "previous": {
     "id": "create-demand",
-    "title": "Create demand"
+    "title": "Create a sales order to plan for"
   },
   "next": {
     "id": "run-mrp_run-order-planning-for-one-item",
-    "title": "Run MRP"
+    "title": "Run planning"
   },
   "module": "Enterprise Planning · Sales",
   "modules": [
     "Enterprise Planning",
     "Sales"
   ],
-  "status": "draft",
-  "updated": "2026-10-22",
-  "route": "Planning ➔ Master Data ➔ Items ➔ Items - Planning",
-  "session": "Items - Planning",
-  "sessionCode": "cprpd1100m000",
-  "walked": null,
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Planning ➔ Order Planning ➔ Item Order Plan",
+  "session": "Item Order Plan",
+  "sessionCode": "cprrp0520m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Planning can see the demand."
+        "v": "The finished item's "
+      },
+      {
+        "t": "field",
+        "v": "Order Horizon"
+      },
+      {
+        "t": "text",
+        "v": " date is after your sales order's delivery date."
       }
     ],
-    "text": "Planning can see the demand."
+    "text": "The finished item's Order Horizon date is after your sales order's delivery date."
   },
   "before": [
     {
@@ -47,7 +55,7 @@
         },
         {
           "t": "link",
-          "v": "Create demand",
+          "v": "Create a sales order to plan for",
           "href": "create-demand.md"
         },
         {
@@ -55,17 +63,17 @@
           "v": "."
         }
       ],
-      "text": "You need step 4 of Create demand."
+      "text": "You need step 4 of Create a sales order to plan for."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+        "v": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN works out the date by counting working days on the calendar of the item's warehouse, so trust the date it shows."
       }
     ],
-    "text": "The order horizon decides which demand planning sees at all: demand beyond it is not late or flagged, it does not exist to planning. LN turns the number of days you enter into a date by counting workdays on the calendar of the item's warehouse, so the date it shows is the one to trust."
+    "text": "The run makes planned orders only inside the order horizon. Your sales order can show in the plan after it, and still get nothing. You set the horizon as a number of days, and LN works out the date by counting working days on the calendar of the item's warehouse, so trust the date it shows."
   },
   "blocks": [
     {
@@ -91,27 +99,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
-                },
-                {
-                  "t": "session",
-                  "code": "cprpd1100m000",
-                  "name": "Items - Planning"
-                },
-                {
-                  "t": "text",
-                  "v": " for the finished item, "
+                  "v": "In "
                 },
                 {
                   "t": "chip",
-                  "v": "Horizons"
+                  "v": "Item Order Plan"
                 },
                 {
                   "t": "text",
-                  "v": " tab"
+                  "v": ", open the finished item's plan, as in steps 2 to 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Check each item has a plan",
+                  "href": "make-the-item-visible-to-planning.md"
                 }
               ],
-              "text": "Open Items - Planning (cprpd1100m000) for the finished item, Horizons tab"
+              "text": "In Item Order Plan, open the finished item's plan, as in steps 2 to 4 of Check each item has a plan"
             },
             {
               "tokens": [
@@ -121,15 +125,31 @@
                 },
                 {
                   "t": "text",
-                  "v": " as a number of days, with the resulting date beside it"
+                  "v": " under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Horizons"
+                },
+                {
+                  "t": "text",
+                  "v": ", and your sales order as a row in the grid"
                 }
               ],
-              "text": "Order Horizon as a number of days, with the resulting date beside it"
+              "text": "Order Horizon under Horizons, and your sales order as a row in the grid"
             }
           ],
           "id": "1",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "uses": [
+            {
+              "task": "make-the-item-visible-to-planning",
+              "step": "4",
+              "n": 0,
+              "label": "finished item"
+            }
+          ]
         },
         {
           "cells": [
@@ -146,15 +166,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare the delivery date with the horizon date. The delivery date is from step 4 of "
+                  "v": "Compare "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " with the delivery date from step 4 of "
                 },
                 {
                   "t": "link",
-                  "v": "Create demand",
+                  "v": "Create a sales order to plan for",
                   "href": "create-demand.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". If the horizon is later, this task is done"
                 }
               ],
-              "text": "Compare the delivery date with the horizon date. The delivery date is from step 4 of Create demand"
+              "text": "Compare Order Horizon with the delivery date from step 4 of Create a sales order to plan for. If the horizon is later, this task is done"
             },
             {
               "tokens": [
@@ -168,7 +200,18 @@
           ],
           "id": "2",
           "optional": false,
-          "produces": false
+          "produces": false,
+          "example": [
+            0
+          ],
+          "uses": [
+            {
+              "task": "create-demand",
+              "step": "4",
+              "n": 0,
+              "label": "delivery date"
+            }
+          ]
         },
         {
           "cells": [
@@ -185,43 +228,32 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If it falls beyond, raise the "
+                  "v": "At the top, click "
                 },
                 {
-                  "t": "field",
-                  "v": "Order Horizon"
-                },
-                {
-                  "t": "text",
-                  "v": " days until it falls inside"
+                  "t": "command",
+                  "route": "References ➔ Item Details ➔ Items - Planning"
                 }
               ],
-              "text": "If it falls beyond, raise the Order Horizon days until it falls inside"
+              "text": "At the top, click References ➔ Item Details ➔ Items - Planning"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
+                  "t": "chip",
+                  "v": "Items - Planning"
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "order horizon"
-                },
-                {
-                  "t": "text",
-                  "v": " — record both the days entered and the date displayed"
+                  "v": " opens for the same item"
                 }
               ],
-              "text": "order horizon — record both the days entered and the date displayed"
+              "text": "Items - Planning opens for the same item"
             }
           ],
           "id": "3",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -238,25 +270,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save, and reopen "
-                },
-                {
-                  "t": "session",
-                  "code": "cprrp0520m000",
-                  "name": "Item Order Plan"
-                },
-                {
-                  "t": "text",
-                  "v": " for the item"
-                }
-              ],
-              "text": "Save, and reopen Item Order Plan (cprrp0520m000) for the item"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "The "
+                  "v": "Click the "
                 },
                 {
                   "t": "chip",
@@ -264,18 +278,23 @@
                 },
                 {
                   "t": "text",
-                  "v": " block shows the new "
-                },
+                  "v": " tab"
+                }
+              ],
+              "text": "Click the Horizons tab"
+            },
+            {
+              "tokens": [
                 {
                   "t": "field",
                   "v": "Order Horizon"
                 },
                 {
                   "t": "text",
-                  "v": " date"
+                  "v": " as a number of days, with its date beside it"
                 }
               ],
-              "text": "The Horizons block shows the new Order Horizon date"
+              "text": "Order Horizon as a number of days, with its date beside it"
             }
           ],
           "id": "4",
@@ -297,34 +316,141 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the demand in the grid"
+                  "v": "Type a larger number of days in "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Find the demand in the grid"
+              "text": "Type a larger number of days in Order Horizon and press Tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A "
-                },
-                {
-                  "t": "chip",
-                  "v": "Sales Order"
-                },
-                {
-                  "t": "text",
-                  "v": " row with your order number and quantity as "
-                },
-                {
-                  "t": "field",
-                  "v": "Demand"
+                  "v": "The date beside it moves"
                 }
               ],
-              "text": "A Sales Order row with your order number and quantity as Demand"
+              "text": "The date beside it moves"
             }
           ],
           "id": "5",
+          "optional": false,
+          "produces": false,
+          "example": [
+            0
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Check the new date is after the delivery date from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create a sales order to plan for",
+                  "href": "create-demand.md"
+                }
+              ],
+              "text": "Check the new date is after the delivery date from step 4 of Create a sales order to plan for"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "— "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "order horizon"
+                }
+              ],
+              "text": "— order horizon"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": true,
+          "uses": [
+            {
+              "task": "create-demand",
+              "step": "4",
+              "n": 0,
+              "label": "delivery date"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "OK"
+                }
+              ],
+              "text": "Click OK"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Items - Planning"
+                },
+                {
+                  "t": "text",
+                  "v": " closes, and "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " in the plan shows the new date"
+                }
+              ],
+              "text": "Items - Planning closes, and Order Horizon in the plan shows the new date"
+            }
+          ],
+          "id": "7",
           "optional": false,
           "produces": false
         }
@@ -333,10 +459,44 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Horizon"
+              }
+            ],
+            "text": "Order Horizon"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "30"
+              },
+              {
+                "t": "text",
+                "v": " days"
+              }
+            ],
+            "text": "30 days"
+          }
+        ]
+      }
+    ]
   },
-  "screenshot": null,
+  "screenshot": {
+    "step": "5",
+    "caption": "Items - Planning, Horizons tab",
+    "path": "put-the-demand-inside-the-horizon.jpg"
+  },
   "problems": {
     "kind": "troubleshooting",
     "columns": [
@@ -350,16 +510,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The demand does not appear in the Item Order Plan"
+                "v": "Planning makes nothing for your sales order"
               }
             ],
-            "text": "The demand does not appear in the Item Order Plan"
+            "text": "Planning makes nothing for your sales order"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The delivery date is beyond the "
+                "v": "The delivery date is after the "
               },
               {
                 "t": "field",
@@ -367,10 +527,10 @@
               },
               {
                 "t": "text",
-                "v": " date. Step 2 — and remember the date is not today plus your days "
+                "v": " date. Raise the days again from step 3, and read the date LN shows rather than counting "
               }
             ],
-            "text": "The delivery date is beyond the Order Horizon date. Step 2 — and remember the date is not today plus your days"
+            "text": "The delivery date is after the Order Horizon date. Raise the days again from step 3, and read the date LN shows rather than counting"
           }
         ]
       }

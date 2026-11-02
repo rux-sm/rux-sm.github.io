@@ -9,10 +9,10 @@
     "Enterprise Planning",
     "Sales"
   ],
-  "updated": "2026-10-22",
-  "status": "draft",
-  "summary": "give one item a demand stock cannot cover, run MRP, and read the plan it makes.",
-  "order": 2,
+  "updated": "2026-11-02",
+  "status": "review",
+  "summary": "give one item more demand than its stock covers, run planning on it, and read the orders LN suggests.",
+  "order": 3,
   "sources": [
     "cppat1210m000",
     "cprpd0100m000",
@@ -33,87 +33,138 @@
     "tdsls4601m200",
     "whwmd4300m000"
   ],
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need a finished item with a BOM, its components, and a customer set up as a sold-to business partner. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " makes the items."
+        }
+      ],
+      "text": "You need a finished item with a BOM, its components, and a customer set up as a sold-to business partner. Create test items makes the items."
+    }
+  ],
   "tasks": [
     {
       "id": "make-the-item-visible-to-planning",
       "n": 0,
-      "title": "Make the item visible to planning",
+      "title": "Check each item has a plan",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The finished item and every BOM component have planning data."
+            "v": "The finished item and each of its components opens in "
+          },
+          {
+            "t": "strong",
+            "v": "Item Order Plan"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "The finished item and every BOM component have planning data."
+        "text": "The finished item and each of its components opens in Item Order Plan."
       },
-      "steps": 6,
-      "walked": null
+      "steps": 5,
+      "walked": "2026-11-02"
     },
     {
       "id": "create-demand",
       "n": 1,
-      "title": "Create demand",
+      "title": "Create a sales order to plan for",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "A sales order exists for more than is on hand."
+            "v": "A sales order for more of the finished item than you have is saved, at "
+          },
+          {
+            "t": "status",
+            "v": "Free"
+          },
+          {
+            "t": "text",
+            "v": "."
           }
         ],
-        "text": "A sales order exists for more than is on hand."
+        "text": "A sales order for more of the finished item than you have is saved, at Free."
       },
-      "steps": 4,
-      "walked": null
+      "steps": 9,
+      "walked": "2026-11-02"
     },
     {
       "id": "put-the-demand-inside-the-horizon",
       "n": 2,
-      "title": "Put the demand inside the horizon",
+      "title": "Put the order inside the horizon",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "Planning can see the demand."
+            "v": "The finished item's "
+          },
+          {
+            "t": "field",
+            "v": "Order Horizon"
+          },
+          {
+            "t": "text",
+            "v": " date is after your sales order's delivery date."
           }
         ],
-        "text": "Planning can see the demand."
+        "text": "The finished item's Order Horizon date is after your sales order's delivery date."
       },
-      "steps": 5,
-      "walked": null
+      "steps": 7,
+      "walked": "2026-11-02"
     },
     {
       "id": "run-mrp_run-order-planning-for-one-item",
       "n": 3,
-      "title": "Run MRP",
+      "title": "Run planning",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "Planned orders exist covering the shortfall, with pegging relations."
+            "v": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves."
           }
         ],
-        "text": "Planned orders exist covering the shortfall, with pegging relations."
+        "text": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves."
       },
-      "steps": 4,
-      "walked": null
+      "steps": 7,
+      "walked": "2026-11-02"
     },
     {
       "id": "review-the-result",
       "n": 4,
-      "title": "Review the result",
+      "title": "Read the planned orders",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The planned supply is read on both the parent and the component."
+            "v": "The finished item's plan has planned production orders at "
+          },
+          {
+            "t": "status",
+            "v": "Planned"
+          },
+          {
+            "t": "text",
+            "v": ", and each component's plan has them as demand, met by planned purchase orders or stock."
           }
         ],
-        "text": "The planned supply is read on both the parent and the component."
+        "text": "The finished item's plan has planned production orders at Planned, and each component's plan has them as demand, met by planned purchase orders or stock."
       },
-      "steps": 5,
-      "walked": null
+      "steps": 2,
+      "walked": "2026-11-02"
     },
     {
       "id": "read-the-pegging-tree",
@@ -123,19 +174,158 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The whole chain reconciles: demand, stock, planned make, planned buy."
+            "v": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM."
           }
         ],
-        "text": "The whole chain reconciles: demand, stock, planned make, planned buy."
+        "text": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM."
       },
       "steps": 4,
-      "walked": null
+      "walked": "2026-11-02"
     }
   ],
   "values": {
     "kind": "example",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "What",
+      "Value"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Plan Item"
+              }
+            ],
+            "text": "Plan Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              },
+              {
+                "t": "text",
+                "v": ", then "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-ROD"
+              },
+              {
+                "t": "text",
+                "v": " and "
+              },
+              {
+                "t": "literal",
+                "v": "BAM-SLEEVE"
+              }
+            ],
+            "text": "BAM-CHOP-PAIR, then BAM-ROD and BAM-SLEEVE"
+          }
+        ],
+        "task": "make-the-item-visible-to-planning"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Planned Delivery Date"
+              }
+            ],
+            "text": "Planned Delivery Date"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "7 days after the order date"
+              }
+            ],
+            "text": "7 days after the order date"
+          }
+        ],
+        "task": "create-demand"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Item"
+              }
+            ],
+            "text": "Item"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "BAM-CHOP-PAIR"
+              }
+            ],
+            "text": "BAM-CHOP-PAIR"
+          }
+        ],
+        "task": "create-demand"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Ordered Quantity"
+              }
+            ],
+            "text": "Ordered Quantity"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "30"
+              }
+            ],
+            "text": "30"
+          }
+        ],
+        "task": "create-demand"
+      },
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "field",
+                "v": "Order Horizon"
+              }
+            ],
+            "text": "Order Horizon"
+          },
+          {
+            "tokens": [
+              {
+                "t": "literal",
+                "v": "30"
+              },
+              {
+                "t": "text",
+                "v": " days"
+              }
+            ],
+            "text": "30 days"
+          }
+        ],
+        "task": "put-the-demand-inside-the-horizon"
+      }
+    ]
   },
   "sections": [
     {
@@ -147,18 +337,37 @@
         },
         {
           "t": "text",
-          "v": " give one item a demand stock cannot cover, run MRP, and read the plan it makes. "
+          "v": " give one item more demand than its stock covers, run planning on it, and read the orders LN suggests."
+        }
+      ],
+      "text": "Objective: give one item more demand than its stock covers, run planning on it, and read the orders LN suggests."
+    },
+    {
+      "kind": "prose",
+      "tokens": [
+        {
+          "t": "text",
+          "v": "> "
         },
         {
           "t": "strong",
-          "v": "Base walkthrough"
+          "v": "Prerequisite"
         },
         {
           "t": "text",
-          "v": " — the first Enterprise Planning walkthrough in the library. Everything before this created supply by hand; this is where the system proposes it."
+          "v": " > You need a finished item with a BOM, its components, and a customer set up as a sold-to business partner. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " makes the items."
         }
       ],
-      "text": "Objective: give one item a demand stock cannot cover, run MRP, and read the plan it makes. Base walkthrough — the first Enterprise Planning walkthrough in the library. Everything before this created supply by hand; this is where the system proposes it."
+      "text": "> Prerequisite > You need a finished item with a BOM, its components, and a customer set up as a sold-to business partner. Create test items makes the items."
     },
     {
       "kind": "prose",
@@ -177,30 +386,14 @@
         },
         {
           "t": "strong",
-          "v": "This walkthrough ends at reviewed planned orders."
+          "v": "This guide ends when the pegging tree adds up."
         },
         {
           "t": "text",
-          "v": " Its completion boundary is a planned supply chain that covers the shortfall "
-        },
-        {
-          "t": "strong",
-          "v": "and reconciles arithmetically"
-        },
-        {
-          "t": "text",
-          "v": " against the BOM and stock in the pegging tree. "
-        },
-        {
-          "t": "strong",
-          "v": "Transferring a planned order to execution is out of scope"
-        },
-        {
-          "t": "text",
-          "v": " — that is the opening move of the planned-production-order walkthrough, which does not exist yet. A planned order is a suggestion; nothing in this walkthrough creates a real order. "
+          "v": " It suggests orders and creates none. Turning a planned order into a real one is not part of it. "
         }
       ],
-      "text": "> Warning > This walkthrough ends at reviewed planned orders. Its completion boundary is a planned supply chain that covers the shortfall and reconciles arithmetically against the BOM and stock in the pegging tree. Transferring a planned order to execution is out of scope — that is the opening move of the planned-production-order walkthrough, which does not exist yet. A planned order is a suggestion; nothing in this walkthrough creates a real order."
+      "text": "> Warning > This guide ends when the pegging tree adds up. It suggests orders and creates none. Turning a planned order into a real one is not part of it."
     },
     {
       "kind": "glance",
@@ -226,29 +419,33 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Make the item visible to planning",
+                  "v": "Check each item has a plan",
                   "href": "make-the-item-visible-to-planning.md"
                 }
               ],
-              "text": "Make the item visible to planning"
+              "text": "Check each item has a plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Item Order Plan; Item"
+                  "v": "Item Order Plan"
                 }
               ],
-              "text": "Item Order Plan; Item"
+              "text": "Item Order Plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The finished item and every BOM component have planning data"
+                  "v": "The finished item and each of its components opens in "
+                },
+                {
+                  "t": "chip",
+                  "v": "Item Order Plan"
                 }
               ],
-              "text": "The finished item and every BOM component have planning data"
+              "text": "The finished item and each of its components opens in Item Order Plan"
             }
           ]
         },
@@ -267,29 +464,33 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Create demand",
+                  "v": "Create a sales order to plan for",
                   "href": "create-demand.md"
                 }
               ],
-              "text": "Create demand"
+              "text": "Create a sales order to plan for"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Inventory 360; SO Intake Workbench"
+                  "v": "SO Intake Workbench"
                 }
               ],
-              "text": "Inventory 360; SO Intake Workbench"
+              "text": "SO Intake Workbench"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A sales order exists for more than is on hand"
+                  "v": "A sales order for more of the finished item than you have is saved, at "
+                },
+                {
+                  "t": "status",
+                  "v": "Free"
                 }
               ],
-              "text": "A sales order exists for more than is on hand"
+              "text": "A sales order for more of the finished item than you have is saved, at Free"
             }
           ]
         },
@@ -308,29 +509,37 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Put the demand inside the horizon",
+                  "v": "Put the order inside the horizon",
                   "href": "put-the-demand-inside-the-horizon.md"
                 }
               ],
-              "text": "Put the demand inside the horizon"
+              "text": "Put the order inside the horizon"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Items - Planning; Item Order Plan"
+                  "v": "Item Order Plan; Items - Planning"
                 }
               ],
-              "text": "Items - Planning; Item Order Plan"
+              "text": "Item Order Plan; Items - Planning"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Planning can see the demand"
+                  "v": "The finished item's "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Horizon"
+                },
+                {
+                  "t": "text",
+                  "v": " date is after your sales order's delivery date"
                 }
               ],
-              "text": "Planning can see the demand"
+              "text": "The finished item's Order Horizon date is after your sales order's delivery date"
             }
           ]
         },
@@ -349,11 +558,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Run MRP",
+                  "v": "Run planning",
                   "href": "run-mrp_run-order-planning-for-one-item.md"
                 }
               ],
-              "text": "Run MRP"
+              "text": "Run planning"
             },
             {
               "tokens": [
@@ -368,10 +577,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Planned orders exist covering the shortfall, with pegging relations"
+                  "v": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves"
                 }
               ],
-              "text": "Planned orders exist covering the shortfall, with pegging relations"
+              "text": "LN has planned the finished item and its components, and kept the links between each order and the demand it serves"
             }
           ]
         },
@@ -390,29 +599,37 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Review the result",
+                  "v": "Read the planned orders",
                   "href": "review-the-result.md"
                 }
               ],
-              "text": "Review the result"
+              "text": "Read the planned orders"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Item Order Plan; Planned Orders"
+                  "v": "Item Order Plan"
                 }
               ],
-              "text": "Item Order Plan; Planned Orders"
+              "text": "Item Order Plan"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The planned supply is read on both the parent and the component"
+                  "v": "The finished item's plan has planned production orders at "
+                },
+                {
+                  "t": "status",
+                  "v": "Planned"
+                },
+                {
+                  "t": "text",
+                  "v": ", and each component's plan has them as demand, met by planned purchase orders or stock"
                 }
               ],
-              "text": "The planned supply is read on both the parent and the component"
+              "text": "The finished item's plan has planned production orders at Planned, and each component's plan has them as demand, met by planned purchase orders or stock"
             }
           ]
         },
@@ -441,19 +658,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Planned Orders ➔ Order Pegging"
+                  "v": "Order Pegging"
                 }
               ],
-              "text": "Planned Orders ➔ Order Pegging"
+              "text": "Order Pegging"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The whole chain reconciles: demand, stock, planned make, planned buy"
+                  "v": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM"
                 }
               ],
-              "text": "The whole chain reconciles: demand, stock, planned make, planned buy"
+              "text": "Under your sales order, the stock and planned orders add up to its quantity, at every level of the BOM"
             }
           ]
         }
@@ -465,41 +682,41 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "The Item Order Plan is the progress indicator."
+          "v": "Item Order Plan shows how far you are."
         },
         {
           "t": "text",
-          "v": " "
+          "v": " After step 4 of "
         },
         {
           "t": "link",
-          "v": "Make the item visible to planning",
+          "v": "Check each item has a plan",
           "href": "make-the-item-visible-to-planning.md"
         },
         {
           "t": "text",
-          "v": " ends when the item appears in it at all; "
+          "v": " the item is there; after step 9 of "
         },
         {
           "t": "link",
-          "v": "Put the demand inside the horizon",
-          "href": "put-the-demand-inside-the-horizon.md"
+          "v": "Create a sales order to plan for",
+          "href": "create-demand.md"
         },
         {
           "t": "text",
-          "v": " ends when the demand row appears; "
+          "v": " your sales order is a row; after step 7 of "
         },
         {
           "t": "link",
-          "v": "Run MRP",
+          "v": "Run planning",
           "href": "run-mrp_run-order-planning-for-one-item.md"
         },
         {
           "t": "text",
-          "v": " ends when a planned supply row appears beside it. If a phase did not change what that session shows, the phase did not work."
+          "v": " planned orders are beside it. If a task didn't change what that screen shows, it didn't work."
         }
       ],
-      "text": "The Item Order Plan is the progress indicator. Make the item visible to planning ends when the item appears in it at all; Put the demand inside the horizon ends when the demand row appears; Run MRP ends when a planned supply row appears beside it. If a phase did not change what that session shows, the phase did not work.",
+      "text": "Item Order Plan shows how far you are. After step 4 of Check each item has a plan the item is there; after step 9 of Create a sales order to plan for your sales order is a row; after step 7 of Run planning planned orders are beside it. If a task didn't change what that screen shows, it didn't work.",
       "under": "At a glance"
     },
     {
@@ -515,10 +732,10 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Run planning for all items"
+                  "v": "Planning every item"
                 }
               ],
-              "text": "Run planning for all items"
+              "text": "Planning every item"
             },
             {
               "tokens": [
@@ -537,18 +754,18 @@
                 },
                 {
                   "t": "text",
-                  "v": ", runs ranges instead of one item — the production habit. No help is filed for it, so its options are not assumed to match "
+                  "v": ", plans ranges of items instead of one, as a planner does every day. Its options are not assumed to match "
                 },
                 {
-                  "t": "session",
-                  "code": "cprrp1220m000"
+                  "t": "chip",
+                  "v": "Generate Order Planning (Item)"
                 },
                 {
                   "t": "text",
-                  "v": "'s "
+                  "v": " "
                 }
               ],
-              "text": "Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning, runs ranges instead of one item — the production habit. No help is filed for it, so its options are not assumed to match cprrp1220m000's"
+              "text": "Generate Order Planning (cprrp1210m000), Planning ➔ Order Planning ➔ Generate Order Planning, plans ranges of items instead of one, as a planner does every day. Its options are not assumed to match Generate Order Planning (Item)"
             }
           ]
         },
@@ -558,23 +775,36 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Net change instead of regenerative"
+                  "v": "Net change"
                 }
               ],
-              "text": "Net change instead of regenerative"
+              "text": "Net change"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "Select "
+                },
                 {
                   "t": "field",
                   "v": "Run a Net Change Planning"
                 },
                 {
                   "t": "text",
-                  "v": " in the generate session — simulates only from the first net-change date. A value change inside one step, not a different task"
+                  "v": " before step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Run planning",
+                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and LN plans only from the first net-change date"
                 }
               ],
-              "text": "Run a Net Change Planning in the generate session — simulates only from the first net-change date. A value change inside one step, not a different task"
+              "text": "Select Run a Net Change Planning before step 4 of Run planning, and LN plans only from the first net-change date"
             }
           ]
         },
@@ -593,7 +823,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A different mechanism, not a value change: enabling "
+                  "v": "With "
                 },
                 {
                   "t": "field",
@@ -601,42 +831,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " on "
+                  "v": " selected on "
                 },
                 {
                   "t": "session",
-                  "code": "cprpd1100m000"
+                  "code": "cprpd1100m000",
+                  "name": "Items - Planning"
                 },
                 {
                   "t": "text",
-                  "v": " splits the horizons, and the item master plan must be initialized before it exists. "
-                },
-                {
-                  "t": "chip",
-                  "v": "Its own process when written"
-                },
-                {
-                  "t": "text",
-                  "v": " — it needs "
-                },
-                {
-                  "t": "literal",
-                  "v": "cprpd"
-                },
-                {
-                  "t": "text",
-                  "v": "/"
-                },
-                {
-                  "t": "literal",
-                  "v": "cprmp"
-                },
-                {
-                  "t": "text",
-                  "v": " session help first "
+                  "v": ", the item also has a master plan, beyond the order horizon. That is its own guide, not written yet "
                 }
               ],
-              "text": "A different mechanism, not a value change: enabling Master Plan on cprpd1100m000 splits the horizons, and the item master plan must be initialized before it exists. Its own process when written — it needs cprpd/cprmp session help first"
+              "text": "With Master Plan selected on Items - Planning (cprpd1100m000), the item also has a master plan, beyond the order horizon. That is its own guide, not written yet"
             }
           ]
         }
@@ -657,10 +864,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Planned orders cover the shortfall and reconcile in the pegging tree"
+                  "v": "The pegging tree adds up"
                 }
               ],
-              "text": "Planned orders cover the shortfall and reconcile in the pegging tree"
+              "text": "The pegging tree adds up"
             },
             {
               "tokens": [
@@ -688,16 +895,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The planned quantities look wrong against supplier reality"
+                  "v": "A planned quantity looks wrong for the supplier"
                 }
               ],
-              "text": "The planned quantities look wrong against supplier reality"
+              "text": "A planned quantity looks wrong for the supplier"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Adjust order-quantity rules in "
+                  "v": "Change the order-quantity rules in "
                 },
                 {
                   "t": "session",
@@ -706,25 +913,24 @@
                 },
                 {
                   "t": "text",
-                  "v": " and rerun "
-                },
-                {
-                  "t": "link",
-                  "v": "Run MRP",
-                  "href": "run-mrp_run-order-planning-for-one-item.md"
+                  "v": ", then run planning again"
                 }
               ],
-              "text": "Adjust order-quantity rules in Items - Ordering (tcibd2100m000) and rerun Run MRP"
+              "text": "Change the order-quantity rules in Items - Ordering (tcibd2100m000), then run planning again"
             },
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "step 1 of "
+                },
+                {
                   "t": "link",
-                  "v": "Run MRP",
+                  "v": "Run planning",
                   "href": "run-mrp_run-order-planning-for-one-item.md"
                 }
               ],
-              "text": "Run MRP"
+              "text": "step 1 of Run planning"
             }
           ]
         }
@@ -736,11 +942,11 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "What is known about the step after this walkthrough"
+          "v": "What is known about the next step."
         },
         {
           "t": "text",
-          "v": ", so the boundary is a handover rather than a cliff. "
+          "v": " "
         },
         {
           "t": "session",
@@ -749,15 +955,7 @@
         },
         {
           "t": "text",
-          "v": " turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the "
-        },
-        {
-          "t": "strong",
-          "v": "purchase"
-        },
-        {
-          "t": "text",
-          "v": " half was walked on 2026-08-25: two planned purchase orders for "
+          "v": " turns planned orders into real ones: production orders in Job Shop Control, purchase orders in Procurement. Two planned purchase orders for "
         },
         {
           "t": "literal",
@@ -765,7 +963,7 @@
         },
         {
           "t": "text",
-          "v": " became one purchase order. Full reference in "
+          "v": " were transferred on 2026-08-25 and became one purchase order — "
         },
         {
           "t": "literal",
@@ -773,10 +971,10 @@
         },
         {
           "t": "text",
-          "v": ". Three things from that walk matter to anyone leaving this walkthrough:"
+          "v": ". Two things from that walk:"
         }
       ],
-      "text": "What is known about the step after this walkthrough, so the boundary is a handover rather than a cliff. Transfer Order Planning (cppat1210m000) turns a planned order into a real one — production orders into Job Shop Control, purchase orders into Procurement — and the purchase half was walked on 2026-08-25: two planned purchase orders for BAM-ROD became one purchase order. Full reference in the source on file. Three things from that walk matter to anyone leaving this walkthrough:",
+      "text": "What is known about the next step. Transfer Order Planning (cppat1210m000) turns planned orders into real ones: production orders in Job Shop Control, purchase orders in Procurement. Two planned purchase orders for BAM-ROD were transferred on 2026-08-25 and became one purchase order — the source on file. Two things from that walk:",
       "under": "Downstream actions"
     },
     {
@@ -788,19 +986,11 @@
         },
         {
           "t": "strong",
-          "v": "A purchased component will not transfer without buy-from business partner data."
+          "v": "A bought component needs buy-from business partner data to transfer."
         },
         {
           "t": "text",
-          "v": " The transfer fails and prints "
-        },
-        {
-          "t": "em",
-          "v": "\"Buy-from BP cannot be determined for item … ; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data.\""
-        },
-        {
-          "t": "text",
-          "v": " The fix is a row on the "
+          "v": " Without a row on the "
         },
         {
           "t": "strong",
@@ -808,25 +998,25 @@
         },
         {
           "t": "text",
-          "v": " tab of the item's purchase data. "
+          "v": " tab of its purchase data, the transfer fails with "
         },
         {
-          "t": "strong",
-          "v": "Nothing in this walkthrough's phases surfaces this"
+          "t": "literal",
+          "v": "Buy-from BP cannot be determined for item"
         },
         {
           "t": "text",
-          "v": ", because a planned purchase order is generated happily without it — the gap only appears at transfer. "
+          "v": ". Planning makes the planned purchase order without it. "
         },
         {
           "t": "strong",
           "v": "Not documented for this release."
         }
       ],
-      "text": "- A purchased component will not transfer without buy-from business partner data. The transfer fails and prints \"Buy-from BP cannot be determined for item … ; neither valid Item - BP data is present, nor a BP is linked to Item Purchase Data.\" The fix is a row on the Item - Business Partner tab of the item's purchase data. Nothing in this walkthrough's phases surfaces this, because a planned purchase order is generated happily without it — the gap only appears at transfer. Not documented for this release.",
+      "text": "- A bought component needs buy-from business partner data to transfer. Without a row on the Item - Business Partner tab of its purchase data, the transfer fails with Buy-from BP cannot be determined for item. Planning makes the planned purchase order without it. Not documented for this release.",
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
+  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
   "openIssues": 4
 }

@@ -61,7 +61,7 @@
       "code": "cprrp0740m200",
       "name": "Order Pegging",
       "purpose": "Shows the pegging relations between orders as a tree, one branch for each order.",
-      "route": "the Browse option in Select for Order Pegging (cprrp0740m000)"
+      "route": "References, Pegging Browser, Pegging - Upstream on a ticked row of Item Order Plan (cprrp0520m000), or the Browse option in Select for Order Pegging (cprrp0740m000)"
     },
     {
       "code": "cprrp1100m000",
@@ -85,7 +85,7 @@
       "code": "cprrp1220m000",
       "name": "Generate Order Planning (Item)",
       "purpose": "Runs order planning for one item.",
-      "route": "no menu entry; the range-based Generate Order Planning (cprrp1210m000) sits at Planning - Order Planning - Generate Order Planning"
+      "route": "Generate Orders... at the top of Item Order Plan (cprrp0520m000), which fills in its item"
     },
     {
       "code": "cprrp1600m000",

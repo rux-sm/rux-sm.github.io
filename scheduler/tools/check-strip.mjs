@@ -1,7 +1,8 @@
 // Proves the strip draws near the view what a whole draw draws. Serves the
 // site on a free port, opens the scheduler in headless Chrome with the
 // account and the database stood in by invented trips, scrolls the strip
-// two weeks on and four weeks back, and compares every bar and yard card
+// two weeks on and four weeks back with the browser's own wheel, as a
+// trackpad does, timing its frames, and compares every bar and yard card
 // within two weeks of the view with those of the page loaded again and
 // brought to the same day: the bar's row, trip, leg, assignment, slot,
 // days, lane, classes and words, and the out-of-service marks and stripes.
@@ -105,24 +106,20 @@ const stub = data => `(() => {
   try { localStorage.setItem('scheduler.view', JSON.stringify({ scroll: true })); } catch {}
 })();`;
 
-/* What runs in the page, in two parts. The first waits for the strip,
-   scrolls it on by two weeks and back by four, and takes what is drawn; the
-   second, in the page loaded again, picks the week of that day, scrolls to
-   the day itself and takes what is drawn there. Both answer the day in view
-   and every bar and yard card drawn. */
-const common = `
+/* What runs in the page: `window.__strip`, put there once the page has
+   loaded, which waits for the strip, says where it stands and what it has
+   drawn, picks a week, and times the frames while a scroll runs. The scroll
+   itself is sent from outside the page, as the trackpad's would be. */
+const helpers = `window.__strip = (() => {
   const sch = document.getElementById('scheduler-week');
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const until = async (test, ms, what) => { const t0 = performance.now(); while (performance.now() - t0 < ms) { if (test()) return true; await wait(50); } throw new Error('timed out waiting for ' + what); };
   const label = () => document.getElementById('scheduler-range-text')?.textContent ?? '';
   const bars = () => document.querySelectorAll('.scheduler-track > .scheduler-bar').length;
-  // The strip runs a year and more, so its day header has more than a year of days.
-  await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length > 365, 15000, 'the strip');
-  await wait(800);
-  const w = window.Rux.schedule.day();
+  const w = () => window.Rux.schedule.day();
   const toIso = v => { const m = /^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/.exec(v || ''); return m ? m[3] + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0') : (v || ''); };
   const snap = () => ({
-    at: Math.round(sch.scrollLeft / w * 100) / 100, week: toIso(document.getElementById('scheduler-week-date').value), inView: Number(sch.dataset.daysInView) || 7,
+    at: Math.round(sch.scrollLeft / w() * 100) / 100, week: toIso(document.getElementById('scheduler-week-date').value), inView: Number(sch.dataset.daysInView) || 7,
     bars: [...document.querySelectorAll('.scheduler-track > .scheduler-bar')].map(b => ({
       key: (b.parentElement.dataset.busId ?? 'u') + '|' + b.dataset.tripId + '|' + b.dataset.legKey + '|' + (b.dataset.assignmentId || '') + '|' + b.dataset.slot,
       start: Number(b.dataset.start), span: Number(b.dataset.span), lane: b.style.getPropertyValue('--scheduler-lane'), varStart: b.style.getPropertyValue('--scheduler-start'),
@@ -133,31 +130,41 @@ const common = `
     marks: [...document.querySelectorAll('.scheduler-row-head[data-bus-id]')].filter(h => h.querySelector('.scheduler-row-head__oos')).map(h => h.dataset.busId),
     stripes: [...document.querySelectorAll('.scheduler-track > .scheduler-oos')].map(o => (o.parentElement.dataset.busId ?? 'u') + '|' + o.style.getPropertyValue('--scheduler-start') + '|' + o.style.getPropertyValue('--scheduler-span')),
   });
-  const swipe = async (dx, n) => { for (let i = 0; i < n; i++) { sch.dispatchEvent(new WheelEvent('wheel', { deltaX: dx, deltaY: 1, deltaMode: 0, bubbles: true, cancelable: true })); await wait(16); } };
-  const settled = async () => { await wait(1800); };
-`;
-const scrolled = `(async () => {${common}
-  const before = snap();
-  await swipe(30, 110); await settled();
-  await swipe(-30, 200); await settled();
-  return { ...snap(), marksBefore: before.marks };
-})()`;
-// The day to come back to is the first one's, in days from the strip's first.
-const broughtTo = at => `(async () => {${common}
-  const input = document.getElementById('scheduler-week-date');
-  const was = label();
-  // The strip's first day, from the week in view and how far into the strip it stands.
-  const strip = new Date(toIso(input.value) + 'T12:00:00'); strip.setDate(strip.getDate() - Math.round(sch.scrollLeft / w));
-  const target = new Date(strip); target.setDate(target.getDate() + ${at});
-  // Written back in the input's own format, m/d/yyyy or ISO.
-  const pick = target.toISOString().slice(0, 10);
-  input.value = input.value.includes('/') ? pick.split('-').map(Number).slice(1).join('/') + '/' + pick.slice(0, 4) : pick;
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  await until(() => label() !== was, 8000, 'the week picked'); await settled();
-  const on = ${at} - Math.round(sch.scrollLeft / w);
-  if (on) { await swipe(on > 0 ? 30 : -30, Math.round(Math.abs(on) * w / 30)); await settled(); }
-  return snap();
-})()`;
+  // Once the strip has stood still for half a second, and the trips owed near it have had their frames.
+  const rest = async () => { let last = NaN, still = 0; while (still < 10) { await wait(50); still = sch.scrollLeft === last ? still + 1 : 0; last = sch.scrollLeft; } await wait(1200); };
+  // Each frame's work, from its start to after it is drawn.
+  let frames = [], on = false, t0 = 0;
+  const ch = new MessageChannel();
+  ch.port1.onmessage = () => frames.push(performance.now() - t0);
+  const tick = () => { if (!on) return; t0 = performance.now(); ch.port2.postMessage(0); requestAnimationFrame(tick); };
+  return {
+    ready: async () => {
+      // The strip runs a year and more, so its day header has more than a year of days.
+      await until(() => bars() > 0 && document.querySelectorAll('.scheduler-day').length > 365, 15000, 'the strip');
+      await wait(800);
+      // A point over the first rows, inside the window whatever the board's height.
+      const box = sch.getBoundingClientRect();
+      return { x: Math.round(box.left + Math.min(box.width, innerWidth - box.left) / 2), y: Math.round(box.top + 120), w: w() };
+    },
+    snap, rest,
+    // Picks the week of a day, as many days from the strip's first, and answers how many days on it still is.
+    pick: async at => {
+      const input = document.getElementById('scheduler-week-date');
+      const was = label();
+      const strip = new Date(toIso(input.value) + 'T12:00:00'); strip.setDate(strip.getDate() - Math.round(sch.scrollLeft / w()));
+      const target = new Date(strip); target.setDate(target.getDate() + at);
+      // Written back in the input's own format, m/d/yyyy or ISO.
+      const day = target.toISOString().slice(0, 10);
+      input.value = input.value.includes('/') ? day.split('-').map(Number).slice(1).join('/') + '/' + day.slice(0, 4) : day;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      await until(() => label() !== was, 8000, 'the week picked');
+      await rest();
+      return at - Math.round(sch.scrollLeft / w());
+    },
+    framesOn: () => { frames = []; on = true; requestAnimationFrame(tick); },
+    framesOff: () => { on = false; const f = [...frames].sort((a, b) => a - b); const q = p => Math.round(f[Math.min(f.length - 1, Math.floor(p * f.length))] * 10) / 10; return { n: f.length, p50: q(0.5), p90: q(0.9), max: q(1) }; },
+  };
+})(); 'ok'`;
 
 /* Compares what the two drew within NEAR days of the first's view, a day
    inside the two weeks either side where both have drawn every trip; past
@@ -234,7 +241,9 @@ async function main() {
     const errors = [];
     page.on('Runtime.exceptionThrown', p => errors.push(p.exceptionDetails?.exception?.description?.split('\n')[0] ?? p.exceptionDetails?.text));
     page.on('Runtime.consoleAPICalled', p => { if (p.type === 'error') errors.push(p.args.map(a => a.value ?? a.description).join(' ').slice(0, 160)); });
-    page.on('Fetch.requestPaused', p => page.send('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from('/* stood in by check-strip */').toString('base64') }));
+    // funnel.js shows the page once the log-in lets it; its stand-in shows it at once, so the browser's wheel can reach the board.
+    const standIn = url => (/\/funnel\.js/.test(url) ? "document.documentElement.setAttribute('data-rux-unlocked', '');" : '/* stood in by check-strip */');
+    page.on('Fetch.requestPaused', p => page.send('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: [{ name: 'Content-Type', value: 'text/javascript' }], body: Buffer.from(standIn(p.request.url)).toString('base64') }));
     await page.send('Runtime.enable');
     await page.send('Page.enable');
     await page.send('Fetch.enable', { patterns: [{ urlPattern: '*/funnel.js' }, { urlPattern: '*/account.js' }, { urlPattern: '*turnstile*' }] });
@@ -249,15 +258,34 @@ async function main() {
       if (exceptionDetails) throw new Error(exceptionDetails.exception?.description ?? exceptionDetails.text);
       return result.value;
     };
-    const first = await run(scrolled);
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    // A trackpad's swipe sideways: steps of the browser's own wheel, which it scrolls and snaps itself.
+    const swipe = async (at, dx, steps) => {
+      for (let i = 0; i < steps; i++) { await page.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: at.x, y: at.y, deltaX: dx, deltaY: 0 }); await sleep(16); }
+      await run('window.__strip.rest()');
+    };
+    await run(helpers);
+    const at = await run('window.__strip.ready()');
+    const before = await run('window.__strip.snap()');
+    await run('window.__strip.framesOn()');
+    await swipe(at, 30, 110);
+    await swipe(at, -30, 200);
+    const frames = await run('window.__strip.framesOff()');
+    const first = { ...await run('window.__strip.snap()'), marksBefore: before.marks };
     const again = new Promise(r => page.on('Page.loadEventFired', r));
     await page.send('Page.reload');
     await Promise.race([again, new Promise((_, f) => setTimeout(() => f(new Error('the page never loaded again')), 20000))]);
-    const second = await run(broughtTo(Math.round(first.at)));
+    await run(helpers);
+    const there = await run('window.__strip.ready()');
+    const on = await run(`window.__strip.pick(${Math.round(first.at)})`);
+    if (on) await swipe(there, Math.sign(on) * 25, Math.round(Math.abs(on) * there.w / 25));
+    const second = await run('window.__strip.snap()');
     page.close();
     const seconds = ((Date.now() - t0) / 1000).toFixed(1);
     const r = compare('on two weeks and back four', first, second);
     let bad = false;
+    // Two weeks on and four back leave it two weeks back; a wheel that moved nothing would compare a page with itself.
+    if (Math.abs(first.at - before.at) < 7) { fail('strip', `the browser's wheel did not scroll the strip (${before.at} to ${first.at})`); bad = true; }
     if (!r.onEdge) { fail('strip', `${r.name}: the strip settled off a day edge`); bad = true; }
     if (!r.sameDay) { fail('strip', `${r.name}: the page loaded again could not be brought to the same day (${first.at}, ${second.at})`); bad = true; }
     if (r.twice.length) { fail('strip', `${r.name}: ${r.twice.length} bars drawn twice`); for (const k of r.twice.slice(0, 6)) console.log(`          ${k}`); bad = true; }
@@ -269,7 +297,7 @@ async function main() {
     if (!bad) ok('strip', `${r.name}: ${r.compared} bars and ${r.yards} yard cards near the view the same as a whole draw`);
     const noise = errors.filter(e => e && !/Samsara|presence|turnstile|favicon/i.test(e));
     if (noise.length) { fail('strip', `${noise.length} page errors`); for (const e of noise.slice(0, 6)) console.log(`          ${e}`); }
-    if (!bad && !noise.length) ok('strip', `scrolled and drawn whole in ${seconds}s`);
+    if (!bad && !noise.length) ok('strip', `scrolled by the browser and drawn whole in ${seconds}s; frames while scrolling, headless: p50 ${frames.p50}ms, p90 ${frames.p90}ms, worst ${frames.max}ms of ${frames.n}`);
   } catch (e) {
     fail('strip', e.message);
   } finally {

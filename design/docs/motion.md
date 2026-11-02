@@ -42,13 +42,12 @@ this scale; productive motion sits toward the short end of it.
 ## Where Carbon has no answer
 
 A motion Carbon does not cover says so in a comment beside it, with what it
-uses instead. Two exist now, both in `scheduler/data.js`:
+uses instead. One exists now:
 
-- **Following a hand.** A trackpad gesture moves the board one to one, and its
-  landing eases out from the hand's own speed, so its time comes from that
-  speed rather than the scale.
-- **A move whose end changes on the way.** A second arrow press while the board
-  is still gliding carries the glide's speed into a critically damped spring,
-  rather than starting a Carbon curve again from rest.
+- **A scroll.** The scheduler's board is scrolled by the browser, a
+  trackpad's gesture with its own momentum and an arrow's press by the
+  browser's own smooth scroll, which carries on to a new end when pressed
+  again, so the board moves as every other scrolled thing on the computer
+  does; `scheduler/app.css` and `scheduler/data.js` say so beside it.
 
 Where the computer asks for reduced motion, a move happens at once.

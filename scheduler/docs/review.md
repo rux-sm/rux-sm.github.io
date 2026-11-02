@@ -34,11 +34,12 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    board stands, keeping each bar drawn on days that read the same in both.
    `tools/check-strip.mjs` proves the bars near the view after a scroll are
    those of the page loaded again at the same day, on invented trips in
-   headless Chrome, two weeks on and four weeks back, comparing every bar's
+   headless Chrome scrolled by its own wheel, two weeks on and four weeks
+   back, comparing every bar's
    row, trip, leg, assignment, slot, days, lane, classes, words and fold,
    every yard card and the out-of-service marks and stripes, and fails
-   where a bar is drawn twice. It takes twenty seconds and runs in
-   `npm run check`.
+   where a bar is drawn twice or the wheel moved nothing. It takes half a
+   minute and runs in `npm run check`.
 
 3. **A jump past what is held waits for its read.** The board holds
    seventeen weeks either side of where it last read, so scrolling and
@@ -71,11 +72,11 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    draws, which is why `OWED_DRAWS_PER_FRAME` is one, and a scroll forward
    over trips not yet drawn costs more than one back over trips drawn.
 
-7. **The frame a scroll stops in is 50 to 90ms**: the roster drawn for the
-   week in view, the trips more than a month off taken out, and the layout
-   both leave, most after a far move. Nothing moves in it but the rows
-   beginning to fit. Fix: the rows fitted a moment after the browser's
-   `scrollend`, in a frame of their own.
+7. **The frame a scroll stops in costs up to 50ms**: the roster drawn for
+   the week in view and the trips more than a month off taken out, most
+   after a far move; the rows fit their trips in a frame of their own half a
+   second later. Nothing moves in it, and the browser scrolls on its own
+   thread, so a new gesture is not held up by it. Fix: none now.
 
 ## Where the file could be cut
 

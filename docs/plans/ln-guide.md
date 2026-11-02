@@ -49,7 +49,7 @@ tutorial, reference and explanation.
 | :--- | :--- | :--- |
 | **Task**, the main unit | How do I do this one thing in LN? | A task file, one per action |
 | **Process** | What do I do, in what order, end to end? | A walkthrough, rewritten as tasks in order |
-| **Screen** | What is this LN screen, and how do I reach it? | A `sessions/` file |
+| **Session** | What is this LN session, and how do I reach it? | A `sessions/` file |
 | **Idea** | What does this mean, and why does LN work this way? | A `concepts/` file |
 
 - **A task is one action on one or two screens**, named as a verb and its
@@ -103,7 +103,7 @@ tutorial, reference and explanation.
   decisions the map puts between two tasks as rows of its Summary and one
   Start button, which opens the first task in Guided.
 
-- **A screen page** gives the screen's purpose, code, menu route or how it is
+- **A session page** gives the session's purpose, code, menu route or how it is
   reached, and the tasks that use it. The owner sees its fields after log-in.
 
 - **An idea page** gives a short explanation written for it in atlas, its other
@@ -134,7 +134,7 @@ tutorial, reference and explanation.
   the AI commands last, with Tools as their tag and no area of their own.
 
 - **On a wide screen, a left menu of the processes** in the Start here order,
-  then Screens and Ideas, one flat entry each. A learner thinks in what they
+  then Sessions and Ideas, one flat entry each. A learner thinks in what they
   are doing, not in LN's modules, so the module is a tag on a task and the
   grouping of the task index. The content is one column, no wider than a
   comfortable line, with no On this page list, because the Summary already
@@ -144,7 +144,7 @@ tutorial, reference and explanation.
   opens the same menu and its search action opens search, so the only fixed
   thing on a phone is Guided's Back and Next.
 
-- **Search covers tasks, processes, screens, ideas and problems**, grouped by
+- **Search covers tasks, processes, sessions, ideas and problems**, grouped by
   kind. A query that names a page puts it first, and a problem is one of the
   library's "something went wrong" rows, so typing a symptom finds its fix.
 
@@ -192,7 +192,7 @@ tutorial, reference and explanation.
 
 ### Private detail
 
-- **A screen's fields and an idea's full account show after log-in**, for the
+- **A session's fields and an idea's full account show after log-in**, for the
   owner alone. They rest on Infor's help, so they are read from the database and
   never built into the public page; the opening lines show, and each section
   waits behind its heading.
@@ -263,7 +263,7 @@ with Ship from stock as the finished example of both.
   training company, even where it creates master data there.
 - **rux approves each guide after its walk.** Ship from stock is approved;
   the six walked since are drafts.
-- **What no walk covers is rewritten freely**: the ideas pages, each screen's
+- **What no walk covers is rewritten freely**: the ideas pages, each session's
   purpose line, and side tasks with no steps. LN's labels stay exact.
 - **The real records and the screenshots wait for the team's page** in
   [ln-guide-document.md](ln-guide-document.md), because neither can go on the
@@ -296,5 +296,5 @@ None open.
 - [ ] Side tasks with steps: write each to the standard and walk it with the
       guide nearest it.
 - [ ] Ideas' full text, which only the owner sees, in atlas's concepts.
-- [ ] In atlas, write a screen file for the four screens still without one, once
+- [ ] In atlas, write a session file for the four sessions still without one, once
       a source says how each is opened.

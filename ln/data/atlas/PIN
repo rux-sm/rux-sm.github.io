@@ -1,9 +1,9 @@
-commit   7d74b332135ae4e1b9a075ed29a7d03da48cc992
-date     2026-11-02T00:42:33Z
-subject  fix(walks): Align ship-from-stock reference
+commit   586a5422d52f7c9846cfc6bf2b1ebfae1f32f458
+date     2026-11-02T01:40:59Z
+subject  feat(tasks): Call Pick the goods Pick the items
 contract 24 
 tier     export
-sha256   eccbf4ca6ed0fd0ae1e5fe218fef8193af9aec0a0af8b05fb153dbbad6f9ed87
+sha256   24f0d9f78eebc80d0963353452b9475fbffc99a0d36ecff7c4bcfb4c076c9182
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

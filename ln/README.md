@@ -15,14 +15,14 @@ A documentation site, one file per page, with a walked mode inside it:
 - **A process**, `follow/<id>.html`, is its Document: a procedure to read,
   print and share, with every task's steps numbered 2.3, Why before them,
   troubleshooting under them, the decisions between tasks in its Summary, and
-  the screens it opens at the end.
+  the sessions it opens at the end.
 - **A task**, `do/<id>.html`, is the same Document for one task. **Walk it**
   turns it into Guided, one step at a time; a phone opens Guided and a wide
   screen the Document.
-- **A screen**, `screens/<code>.html`, and **an idea**, `ideas/<id>.html`,
+- **A session**, `screens/<code>.html`, and **an idea**, `ideas/<id>.html`,
   each have a page, and `do/`, `screens/` and `ideas/` each have an index.
 - **Search**, `search.html`, reads `search.json`, the one file that indexes
-  every task, problem, process, screen and idea.
+  every task, problem, process, session and idea.
 - **A task's screenshot** shows under its step, in the Document and Guided,
   to an account that can open LN Guide; `data.js` reads it from the private
   `ln-screens` bucket, which atlas's `tools/sync.py` fills.
@@ -73,7 +73,7 @@ vendor document. The fix is upstream in atlas, never a filter here.
 Two things come from the database after log-in, through `data.js`, and row
 security gives both to the owner alone:
 
-- **A card's whole text.** A screen's fields and an idea's full account rest on
+- **A card's whole text.** A session's fields and an idea's full account rest on
   Infor's help, so they are never built into this page. Atlas sends them to
   `platform.ln_private` with its `tools/sync.py`, and a card reads its row
   when it opens.

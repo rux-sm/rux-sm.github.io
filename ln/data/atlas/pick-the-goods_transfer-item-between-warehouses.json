@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_transfer-item-between-warehouses",
-  "title": "Pick the goods",
+  "title": "Pick the items",
   "process": {
     "id": "transfer-item-between-warehouses",
     "title": "Warehouse transfer",
@@ -23,7 +23,7 @@
     "Warehousing"
   ],
   "status": "draft",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",

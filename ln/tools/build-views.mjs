@@ -402,7 +402,7 @@ const searchBox = (id) => `<form class="ln-find" action="${at('search.html')}" m
   <div class="rux--search rux--layout--size-lg">
     <div class="rux--search-magnifier"><svg class="rux--search-magnifier-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-search"/></svg></div>
     <label class="rux--label" for="${id}">Search</label>
-    <input id="${id}" class="rux--search-input" type="text" name="q" role="searchbox" placeholder="A task, a screen or a problem" autocomplete="off" data-search>
+    <input id="${id}" class="rux--search-input" type="text" name="q" role="searchbox" placeholder="A task, a session or a problem" autocomplete="off" data-search>
     <button type="button" class="rux--search-close rux--search-close--hidden" aria-label="Clear" data-clear>
       <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-close"/></svg>
     </button>
@@ -419,7 +419,7 @@ const navItem = (href, label, current) => `<li class="rux--side-nav__item${curre
 const nav = (active) => `<ul class="rux--side-nav__items">
       ${navItem(hrefHome(), 'Home', active === 'home')}${processes.map((s) => `
       ${navItem(hrefProcess(s.id), s.title, active === s.id)}`).join('')}
-      ${navItem(at('screens/index.html'), 'Screens', active === 'screens')}
+      ${navItem(at('screens/index.html'), 'Sessions', active === 'screens')}
       ${navItem(at('ideas/index.html'), 'Ideas', active === 'ideas')}
     </ul>`;
 
@@ -662,7 +662,7 @@ function processPage(s) {
       const wrong = wrongTable(s, t, k, `${esc(t.title)}: if something goes wrong`);
       return `<section class="ln-proc__task" id="task-${k}">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">${k}</span><a class="rux--link" href="${hrefTask(t.id)}">${esc(t.title)}</a></h3>
-<dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
+<dl class="ln-proc__meta">${t.achieves ? `<div><dt>Result</dt><dd>${docText(t.achieves.tokens, t)}</dd></div>` : ''}${t.route ? `<div><dt>Session</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div>` : ''}</dl>${lead ? `
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
 ${ups}
 ${stepsHtml}
@@ -714,14 +714,14 @@ ${docTable(next[0].cells.length === 3 ? [['When', '28%'], ['Then'], ['Start at',
 ${reference}
 ${gapsSection()}
 <section class="ln-proc__screens">
-${docH2('screens', 'Screens used', 'ln-proc__h2--sect')}
+${docH2('screens', 'Sessions used', 'ln-proc__h2--sect')}
 ${screensTable(ts)}
 </section>
 ${checkSection(ts.map((t) => [K.get(t.id), t.achieves ? docText(t.achieves.tokens, t) : '']))}
 ${signOff()}`;
     return html;
   });
-  return page(`${s.title} — LN Guide`, s.id, column(body, 'full'), updated ? paper(s.title, updated, s.tasks.map((x) => x.walked)) : '');
+  return page(`${s.title} — LN Guide`, s.id, column(body, 'full'), updated ? paper(s.title, updated) : '');
 }
 
 // ---- a task, as a document and as Guided ------------------------------------------
@@ -841,7 +841,7 @@ const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]
 // version, module and product, and lines to write the client and Prepared by
 // on, because no client's name goes on a public page.
 const brandBlock = (updated, modules) => `<div class="ln-paper-only ln-brand">
-<div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span><span class="ln-brand__kind">Work instruction</span></div>
+<div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
 <dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
 </div>`;
@@ -861,12 +861,10 @@ const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as writ
 // handed on as the procedure; ln-unwalked is what print.css hides.
 const statusFact = (status) => ['Status', quiet(status), status[0] === 'Not walked yet' ? 'ln-unwalked' : ''];
 const unwalked = (html) => `<div class="ln-unwalked">${html}</div>`;
-// The footer each printed page carries: what it is, when its content last
-// changed, and, once every task has been walked, when it was last walked in LN.
-const paper = (title, updated, walked = []) => {
-  const last = walked.length && walked.every(Boolean) ? ` · Walked in LN ${day([...walked].sort().at(-1))}` : '';
-  return `\n<style>@page { @bottom-left { content: "${`${title} · LN Notes · Updated ${day(updated)}${last}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
-};
+// The footer each printed page carries: what it is and when its content last
+// changed.
+const paper = (title, updated) =>
+  `\n<style>@page { @bottom-left { content: "${`${title} · LN Notes · Updated ${day(updated)}`.replace(/[\\"]/g, '\\$&')}"; } }</style>`;
 const lastChanged = (list) => list.map((x) => x.updated).filter(Boolean).sort().at(-1);
 
 // One task's steps, every task in the same three columns: the example values the
@@ -918,7 +916,7 @@ function valuesTable(rows, owner) {
 function screensTable(ts) {
   const codes = [...new Set(ts.flatMap((t) => [...codesOf(t)]))].filter((c) => cards.has(c));
   const how = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r) : esc(cap(r ?? '—'));
-  return docTable([['Screen', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })), 'ln-proc__sect', 'Screens used');
+  return docTable([['Session', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })), 'ln-proc__sect', 'Sessions used');
 }
 const gapsSection = () => doc.gaps.length ? `<section class="ln-proc__gaps">
 ${docH2('gaps', 'Known gaps')}
@@ -943,7 +941,7 @@ function task(s, t) {
   const why = t.why ? `<p>${tokens(t.why.tokens)}</p>` : '';
   const stuck = (id, label) => wrong.length && [id, `${label} · ${wrong.length}`, list(wrong)];
   const related = ['related', 'Related', list([
-    screen && { title: 'Screen', body: `<p>${screenLink(t.sessionCode, named(t.session))} ${coded(t.sessionCode)}<br><span class="ln-quiet">${esc(screen.purpose)}</span></p>` },
+    screen && { title: 'Session', body: `<p>${screenLink(t.sessionCode, named(t.session))} ${coded(t.sessionCode)}<br><span class="ln-quiet">${esc(screen.purpose)}</span></p>` },
     ideas.length && { title: 'Ideas', body: `<p>${ideas.map((c) => `<a class="rux--link" href="${hrefIdea(c.id)}">${esc(c.name)}</a>`).join(' · ')}</p>` },
     t.next && { title: 'Next task', body: `<p><a class="rux--link" href="${hrefTask(t.next.id)}">${esc(t.next.title)}</a> in ${esc(s.title)}</p>` },
   ].filter(Boolean))];
@@ -988,7 +986,7 @@ ${values}
 </section>` : ''}
 <section>
 ${docH2('steps', 'Steps')}${t.route ? `
-<dl class="ln-proc__meta"><div><dt>Screen</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div></dl>` : ''}${lead ? `
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd>${route(t.route)}${t.sessionCode ? ` ${coded(t.sessionCode)}` : ''}</dd></div></dl>` : ''}${lead ? `
 <p class="ln-proc__lead"><strong>Why LN works this way.</strong> ${lead}</p>` : ''}
 ${ups}
 ${stepsHtml}
@@ -1004,7 +1002,7 @@ ${docTable([['Case', '30%'], ['What changes']], caseRows, 'ln-proc__sect', 'Vari
 </section>` : ''}
 ${gapsSection()}
 <section class="ln-proc__screens">
-${docH2('screens', 'Screens used', 'ln-proc__h2--sect')}
+${docH2('screens', 'Sessions used', 'ln-proc__h2--sect')}
 ${screensTable([t])}
 </section>
 <section class="ln-proc__related">
@@ -1047,7 +1045,7 @@ ${accordion([['your-values', 'Your values', `<p class="ln-quiet">Kept in this br
   <a class="rux--btn rux--btn--primary" href="?walk=2" data-next>Next</a>
 </div>`;
   return page(`${t.title} — LN Guide`, s.id, column(full, 'full', '', 'data-view="full"')
-    + '\n' + column(guided, 'full', '', 'data-view="guided" hidden'), updated ? paper(t.title, updated, [t.walked]) : '');
+    + '\n' + column(guided, 'full', '', 'data-view="guided" hidden'), updated ? paper(t.title, updated) : '');
 }
 
 // ---- the task index ---------------------------------------------------------------
@@ -1092,7 +1090,7 @@ const isRoute = (r) => r.includes(ARROW.trim());
 function screenPage(c) {
   const ideas = concepts.filter((x) => x.sources.includes(c.code));
   const body = `<div>
-<p class="ln-quiet">Screen</p>
+<p class="ln-quiet">Session</p>
 <h1 class="rux--type-productive-heading-05">${esc(c.name)}</h1>
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
 </div>
@@ -1109,7 +1107,7 @@ function ideaPage(c) {
 <p class="rux--type-body-long-01">${esc(c.purpose)}</p>
 </div>${c.explanation ? `
 <p>${esc(c.explanation)}</p>` : ''}
-<dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Screens', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>
+<dl class="ln-card__facts">${fact('Also called', esc(c.terms.filter((x) => x !== c.name.toLowerCase()).join(', ')))}${fact('Sessions', c.sources.map((code) => screenLink(code, esc(cards.get(code)?.name ?? code))).join('<br>'))}${fact('Where it matters', taskLinks(uses))}</dl>
 <div class="ln-full" data-full="${esc(c.id)}" hidden></div>`;
   return page(`${c.name} — LN Guide`, 'ideas', column(body, 'full'));
 }
@@ -1171,7 +1169,7 @@ const indexPage = (title, intro, active, rows) => page(`${title} — LN Guide`, 
 <ul class="ln-list">${rows.join('')}
 </ul>`, 'full'));
 const byName = (a, b) => a.name.localeCompare(b.name);
-const screenIndex = () => indexPage('Screens', 'Every LN screen the tasks open, by name. One the library has not described yet says so.', 'screens', [
+const screenIndex = () => indexPage('Sessions', 'Every LN session the tasks open, by name. One the library has not described yet says so.', 'screens', [
   ...[...cards.values()].sort(byName).map((c) => `<li><b><a class="rux--link" href="${hrefScreen(c.code)}"><span>${esc(c.name)}</span></a></b><p>${exact(c.code)} <span class="ln-quiet">${esc(c.purpose)}</span></p></li>`),
   ...noCard.sort(byName).map((c) => `<li><b>${esc(c.name)}</b><p>${exact(c.code)} <span class="ln-quiet">Not documented yet.</span></p></li>`)]);
 const ideaIndex = () => indexPage('Ideas', 'What a word means in LN, and why LN works that way.', 'ideas', [
@@ -1194,7 +1192,7 @@ const searchIndex = () => [
   ...processes.map((s) => hit('Process', s.title, `${s.title} ${s.summary ?? ''} ${s.modules.join(' ')}`, hrefProcess(s.id), esc(s.title), sentence(esc(s.summary ?? '')))),
   ...loose.map((t) => hit('Task', t.title, `${t.title} ${t.sessionCode ?? ''} ${t.achieves?.text ?? ''} ${rowsOf(t).map((r) => r.cells.map((c) => c.text).join(' ')).join(' ')}`, hrefTask(t.id), esc(t.title), 'A task on its own')),
   ...side.filter((n) => !taskById.has(n.id)).map((n) => hit('Task', n.session, `${n.session} ${n.code ?? ''} ${n.does.text} ${n.steps.map((x) => x.text).join(' ')}`, `${at('do/index.html')}#${n.id}`, esc(n.session), sentence(tokens(n.does.tokens)))),
-  ...[...cards.values()].map((c) => hit('Screen', `${c.name} ${c.code}`, `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
+  ...[...cards.values()].map((c) => hit('Session', `${c.name} ${c.code}`, `${c.name} ${c.code} ${c.route ?? ''} ${c.purpose}`, hrefScreen(c.code), esc(c.name), esc(c.purpose))),
   ...concepts.map((c) => hit('Idea', `${c.name} ${c.terms.join(' ')}`, `${c.name} ${c.terms.join(' ')} ${c.purpose}`, hrefIdea(c.id), esc(c.name), esc(c.purpose))),
   hit('Idea', overviewTitle, `${overviewTitle} ${overview.intro.map((b) => b.text).join(' ')} ${diagram.nodes.map((n) => n.session).join(' ')}`, hrefIdea(MAP), esc(overviewTitle), esc(overviewPurpose) + '.'),
 ];

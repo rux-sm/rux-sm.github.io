@@ -12,7 +12,7 @@
     "Warehousing"
   ],
   "status": null,
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory Planning & Analysis ➔ Planning ➔ Generate Orders (OCB)",
   "session": "Generate Orders (OCB)",
   "sessionCode": "whinh2205m000",
@@ -254,7 +254,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Pick the goods",
+                  "v": "Pick the items",
                   "href": "pick-the-goods_transfer-item-between-warehouses.md"
                 },
                 {
@@ -267,7 +267,7 @@
                   "href": "receive-at-the-destination.md"
                 }
               ],
-              "text": "Ship and receive the transfer, as in Pick the goods and Receive at the destination"
+              "text": "Ship and receive the transfer, as in Pick the items and Receive at the destination"
             },
             {
               "tokens": [

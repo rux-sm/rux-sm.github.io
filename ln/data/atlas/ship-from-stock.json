@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "approved",
+  "status": "review",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
   "sources": [
@@ -128,7 +128,7 @@
     {
       "id": "pick-the-goods_ship-from-stock",
       "n": 4,
-      "title": "Pick the goods",
+      "title": "Pick the items",
       "achieves": {
         "tokens": [
           {
@@ -171,7 +171,7 @@
         "text": "The shipment reads Confirmed."
       },
       "steps": 9,
-      "walked": "2026-10-24"
+      "walked": null
     },
     {
       "id": "verify-it-worked_ship-from-stock",
@@ -625,11 +625,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Pick the goods",
+                  "v": "Pick the items",
                   "href": "pick-the-goods_ship-from-stock.md"
                 }
               ],
-              "text": "Pick the goods"
+              "text": "Pick the items"
             },
             {
               "tokens": [
@@ -1192,6 +1192,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Note Every phase of this procedure has been performed against a live system and its result confirmed.",
+  "verification": "Warning Partly verified. Phases 0, 1, 2, 3, 4, 6 have been performed against a live system and confirmed. Phase 5 has not. Follow that one as a plan, not as a record.",
   "openIssues": 1
 }

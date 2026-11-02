@@ -11,8 +11,8 @@ follows. A guide that misses a part is unfinished; the work to close it is in
 ## The parts, in order
 
 1. **Brand block**, on the first page only: the Rux mark and LN Notes, the
-   words Work instruction, the version, the module, Applies to Infor LN, and
-   empty Client and Prepared by lines to write on. No client's name or logo is
+   version, the module, Applies to Infor LN, and empty Client and Prepared by
+   lines to write on. No client's name or logo is
    printed, because the site is public.
 2. **Title and purpose**: one sentence saying what the guide achieves.
 3. **Summary**: one row per task with what you do, its result and its number
@@ -21,17 +21,17 @@ follows. A guide that misses a part is unfinished; the work to close it is in
    the step that uses it.
 5. **Before you start**: what must exist before the first step, such as a
    customer, an item with stock and a warehouse that holds it.
-6. **Procedure**, task by task: its result, its screen and how to open it,
+6. **Procedure**, task by task: its result, its session and how to open it,
    Why LN works this way, the steps, and If something goes wrong.
 7. **Variations**: the cases that change a step or a task.
-8. **Screens used**: each screen with its code and how to open it.
+8. **Sessions used**: each session with its code and how to open it.
 9. **Check the result**: one row per task, its result as a fact a tester can
    tick, and boxes for Pass and Fail.
 10. **Sign-off**: Prepared by a consultant, Reviewed by a key user and
     Approved by a process owner, each with name, signature and date lines.
 
-Every page's footer gives the title, LN Notes, the Updated date, the walked
-date when every task is walked, and Page N of M. The version is the Updated
+Every page's footer gives the title, LN Notes, the Updated date and Page N
+of M. The version is the Updated
 date, the day the content last changed. Paper is Letter at 10 point, divided
 by rules rather than fills. What comes next, Reference and Known gaps stay on
 screen, because a printed copy stands on its own and says only what is known.

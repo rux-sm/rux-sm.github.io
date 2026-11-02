@@ -24,7 +24,7 @@ html { font-size: 10pt; }
    Guided and its bar, the buttons, the search, the owner's box and a task's
    Related links. So do What comes next, Reference and Known gaps, which
    serve the screen: a printed copy is the tasks and stands on its own and
-   says only what is known. Screens used prints, as the list a reviewer of
+   says only what is known. Sessions used prints, as the list a reviewer of
    the procedure looks for. A step that names a section of the Reference says where it
    is, and its link opens it on the guide's page. */
 .rux--header, [data-view="guided"], .ln-nav, .ln-go, .ln-find,
@@ -96,7 +96,7 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
 /* A warning or a note keeps its border and its icon. */
 .ln-pages .rux--inline-notification.rux--inline-notification--low-contrast { background: none; break-inside: avoid; }
 
-/* A row, a task's heading with its number, its Result and Screen, or its Why does not break
+/* A row, a task's heading with its number, its Result and Session, or its Why does not break
    across pages, and a heading stays with what follows. */
 .ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div, .ln-proc__lead,
 .ln-proc__task-title, .ln-proc__n, .ln-proc__meta { break-inside: avoid; }
@@ -116,7 +116,6 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
 /* The mark is Design's frame-mark, sized from the 14pt the name takes here. */
 .ln-brand__top { display: flex; align-items: center; padding-block-end: 3mm; font-size: 14pt; border-block-end: 1.5px solid var(--rux-text-primary); }
 .ln-brand__name { flex: 1; font-weight: 600; }
-.ln-brand__kind { font-size: 9pt; letter-spacing: .08em; text-transform: uppercase; color: var(--rux-text-secondary); }
 .ln-brand__facts { display: flex; gap: 10mm; margin: 2.5mm 0 0; font-size: 9pt; }
 .ln-brand__facts + .ln-brand__facts { margin-block-start: 3.5mm; }
 .ln-brand__facts > div { display: flex; gap: 2mm; align-items: baseline; }
@@ -142,7 +141,7 @@ h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__h4, .ln-proc__meta, .ln-proc
    under a header row with no step beside it. */
 .ln-proc__steps tr:has(+ .ln-proc__shot:not([hidden])) { break-after: avoid; }
 
-/* Variations and Screens used head their table's title row instead of a
+/* Variations and Sessions used head their table's title row instead of a
    heading, so a page they continue on repeats their name, set as a heading. */
 .ln-proc__h2--sect { display: none; }
 .ln-proc__sect .ln-proc__table-title th { padding: .5rem 0 .5rem; border-block-start: 2px solid var(--rux-text-primary); font-size: 15pt; font-weight: 400; }

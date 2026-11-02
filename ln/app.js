@@ -250,7 +250,7 @@
   const results = document.getElementById('results');
   if (results) {
     const input = document.querySelector('[data-search]'), heading = document.querySelector('[data-count]');
-    const KINDS = [['Task', 'Tasks'], ['Process', 'Processes'], ['Problem', 'Problems'], ['Screen', 'Screens'], ['Idea', 'Ideas']];
+    const KINDS = [['Task', 'Tasks'], ['Process', 'Processes'], ['Problem', 'Problems'], ['Session', 'Sessions'], ['Idea', 'Ideas']];
     let index = [];
     const row = (e, k) => `<li${k >= 10 ? ' hidden' : ''}><span class="ln-quiet">${esc(e.k)}</span><b><a class="rux--link" href="${esc(e.h)}"><span>${e.t}</span></a></b>${e.r ? `<p>${e.r}</p>` : ''}</li>`;
     const more = (n) => n > 10 ? `<button type="button" class="rux--btn rux--btn--ghost rux--btn--sm rux--layout--size-sm" data-more>Show all ${n}</button>` : '';

@@ -8,7 +8,7 @@
   "modules": [
     "Warehousing"
   ],
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "status": "draft",
   "summary": "move a quantity of one item from one warehouse to another in the same company, and check the stock at both.",
   "order": 8,
@@ -117,7 +117,7 @@
     {
       "id": "pick-the-goods_transfer-item-between-warehouses",
       "n": 3,
-      "title": "Pick the goods",
+      "title": "Pick the items",
       "achieves": {
         "tokens": [
           {
@@ -503,11 +503,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Pick the goods",
+                  "v": "Pick the items",
                   "href": "pick-the-goods_transfer-item-between-warehouses.md"
                 }
               ],
-              "text": "Pick the goods"
+              "text": "Pick the items"
             },
             {
               "tokens": [

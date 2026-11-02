@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "pick-the-goods_ship-from-stock",
-  "title": "Pick the goods",
+  "title": "Pick the items",
   "process": {
     "id": "ship-from-stock",
     "title": "Ship from stock",
@@ -23,8 +23,8 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",

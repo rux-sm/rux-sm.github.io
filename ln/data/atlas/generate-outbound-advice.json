@@ -16,14 +16,14 @@
   },
   "next": {
     "id": "pick-the-goods_ship-from-stock",
-    "title": "Pick the goods"
+    "title": "Pick the items"
   },
   "module": "Sales · Warehousing",
   "modules": [
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-10-25",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",

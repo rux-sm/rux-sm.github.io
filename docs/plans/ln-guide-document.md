@@ -33,10 +33,10 @@ And a team, after log-in, sees what the public page cannot carry.
   words, module, length, updated, applies to), with a Note when nobody has walked it; then Summary, the tasks
   with their result and step count and the values the run uses, each naming
   the step that uses it; Before you start, only what lies outside the
-  procedure; Procedure, each task with its result and screen, Why LN works
+  procedure; Procedure, each task with its result and session, Why LN works
   this way, its notices, one table of Step · Action · Value · You should see,
   and its own If something goes wrong; then Variations, What comes next,
-  Reference, Known gaps, and Screens used with how to open each.
+  Reference, Known gaps, and Sessions used with how to open each.
 
 - **A step is numbered by its task and its place, 2.3,** in its table and
   wherever the Document points at it, so "see step 1.4" needs no task name and
@@ -98,7 +98,7 @@ And a team, after log-in, sees what the public page cannot carry.
   too, so it fetches them, and it waits until every picture has loaded before
   the print dialog opens, so none prints blank.
 
-- **A screen's whole field reference stays the owner's**, because it rests on
+- **A session's whole field reference stays the owner's**, because it rests on
   Infor's help, which the permission given covers only for captures of LN.
 
 - **The team's screenshots and real test records follow

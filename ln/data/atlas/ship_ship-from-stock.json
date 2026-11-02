@@ -12,7 +12,7 @@
   },
   "previous": {
     "id": "pick-the-goods_ship-from-stock",
-    "title": "Pick the goods"
+    "title": "Pick the items"
   },
   "next": {
     "id": "verify-it-worked_ship-from-stock",
@@ -23,12 +23,12 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-24",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
@@ -100,11 +100,11 @@
                 },
                 {
                   "t": "link",
-                  "v": "Pick the goods",
+                  "v": "Pick the items",
                   "href": "pick-the-goods_ship-from-stock.md"
                 }
               ],
-              "text": "Filter Shipment on the shipment number from step 10 of Pick the goods"
+              "text": "Filter Shipment on the shipment number from step 10 of Pick the items"
             },
             {
               "tokens": [
@@ -619,11 +619,11 @@
               },
               {
                 "t": "link",
-                "v": "Pick the goods",
+                "v": "Pick the items",
                 "href": "pick-the-goods_ship-from-stock.md"
               }
             ],
-            "text": "The line may not be picked. Check the Picked column on Outbound Lines, then do Pick the goods"
+            "text": "The line may not be picked. Check the Picked column on Outbound Lines, then do Pick the items"
           }
         ]
       },

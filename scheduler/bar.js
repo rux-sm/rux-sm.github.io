@@ -708,15 +708,7 @@
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
       (dep ? backAt : when).appendChild(mark);
     }
-    /* A second form, for the compact board: one line has room for one time, and
-       the one worth reading at a glance is when the bus leaves. A leg with only
-       a return says so, and a leg with neither says the times are still to come,
-       rather than leaving the row empty. */
-    const whenDep = el('span', none ? 'scheduler-bar__time-dep scheduler-bar__none' : 'scheduler-bar__time-dep');
-    if (dep) whenDep.append(clockEl(dep));
-    else if (back) whenDep.append('Ret ', clockEl(back));
-    else whenDep.append('No times');
-    addRow(bar, 'scheduler-bar__time', clock, when, whenDep);
+    addRow(bar, 'scheduler-bar__time', clock, when);
 
     // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;

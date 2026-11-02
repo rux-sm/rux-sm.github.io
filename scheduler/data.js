@@ -1518,6 +1518,7 @@
   function drawItem(item, row) {
     const node = item.make();
     if (item.lane >= Number(row.track.style.getPropertyValue('--scheduler-lanes'))) node.toggleAttribute('data-folded', true);
+    if (leads(item, leadDay)) node.toggleAttribute('data-lead', true);
     row.track.appendChild(node);
     item.el = node;
     return node;
@@ -1709,6 +1710,22 @@
     return true;
   }
 
+  /* THE TRIPS THAT RUN IN FROM THE LEFT on a compact board, a phone's: a
+     trip that began before the first day on screen keeps its words at the
+     days' left edge, app.css's `data-lead`, so a bar two days wide never
+     shows its colour alone. Only the bars across that edge are marked,
+     because each line that stays put while the strip moves is a layer of
+     the browser's own: every bar's made the first swipe after a load take
+     80ms a frame. They are marked again as each day crosses the edge, and as
+     they are drawn. */
+  let leadDay = null;
+  const leadEdge = days => (days && pageEl?.getAttribute('data-board') === 'compact' ? Math.floor(days[0]) : null);
+  const leads = (item, edge) => edge != null && item.start <= edge && item.end > edge;
+  function markLeads(days = viewDays()) {
+    leadDay = leadEdge(days);
+    for (const row of stripRows) for (const item of row.items) item.el?.toggleAttribute('data-lead', leads(item, leadDay));
+  }
+
   // The marks beside the bus numbers, for the out-of-service days in view.
   function markHeads() {
     if (!stripStart) return;
@@ -1767,6 +1784,7 @@
     unreadPrint = null;
     const days = viewDays();
     drawNear(days);
+    markLeads(days);
     markHeads();
     markUnread(days);
     fitLanesInView({ days });
@@ -12121,8 +12139,9 @@
     if (compact !== (pageEl.getAttribute('data-board') === 'compact')) {
       if (compact) pageEl.setAttribute('data-board', 'compact');
       else pageEl.removeAttribute('data-board');
-      // Its days are fitted again, two to the pane on a compact board.
-      window.Rux?.schedule?.fit?.();
+      // Its rows are drawn again, three on a compact board, and its days
+      // fitted again, two to the pane there.
+      applyView();
     }
     // The menus the view menu holds stand outside the page, so they read it from the root.
     if (compact) document.documentElement.setAttribute('data-scheduler-board', 'compact');
@@ -12243,6 +12262,10 @@
      on. */
   const COMPACT = { client: false, contact: false, time: true, update: false, drivers: true };
   const isCompact = () => VIEW_ROWS.every(r => view[r] === COMPACT[r]);
+  /* A compact board, a phone's, draws those three rows whatever the view
+     holds, since the rest of what a trip says is its sheet's: the view keeps
+     its rows for a wider board, and app.css hides their switches here. */
+  const rowShown = r => (pageEl?.getAttribute('data-board') === 'compact' ? COMPACT[r] : view[r]);
 
   try {
     const saved = JSON.parse(localStorage.getItem(VIEW_KEY) || '{}');
@@ -12270,7 +12293,7 @@
     weekStart = view.weekStart;
     view.sunday = weekStart === 'sunday';
     dressWeekPicker();
-    for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
+    for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !rowShown(r));
     // Time at the yard: the cards between trips, and the bar ends that part for them.
     schEl.classList.toggle('scheduler-week--yard', view.yard);
     // Fill the window, set on the root as view.js sets it before the first
@@ -12278,9 +12301,10 @@
     document.documentElement.toggleAttribute('data-scheduler-fill', view.fill);
     // One for the destination, which never goes, plus whatever is left on;
     // the bus heads lay out their parts by the count, from app.css.
-    const barRows = String(1 + VIEW_ROWS.filter(r => view[r]).length);
+    const barRows = String(1 + VIEW_ROWS.filter(rowShown).length);
     schEl.style.setProperty('--scheduler-bar-rows', barRows);
     schEl.dataset.barRows = barRows;
+    markLeads();
     // The bars change height and lane, which the scroll pane may not report as
     // a resize, so the trip tabs follow here.
     placeBarOpen();
@@ -19122,6 +19146,7 @@
     if (!w || !stripStart) return;
     const days = viewDays();
     drawNear(days);
+    if (leadEdge(days) !== leadDay) markLeads(days);
     if (days && (unreadAt == null || Math.abs(Math.floor(days[0]) - unreadAt) >= WEEK)) markUnread(days);
     readAhead();
     const length = daysBetween(stripStart, stripEnd) + 1;

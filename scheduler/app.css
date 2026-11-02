@@ -1271,8 +1271,6 @@ button.scheduler-row-head__num::after {
 .scheduler-bar__ampm,
 .scheduler-figures__ampm { font-size: .85em; opacity: .75; }
 .scheduler-figures__none { color: var(--rux-text-placeholder); font-weight: var(--rux-body-compact-01-font-weight); }
-/* The departure-only form is the compact board's; the full board hides it. */
-.scheduler-bar__time > .scheduler-bar__time-dep { display: none; }
 .scheduler-bar__phone { flex: none; }
 /* The phone sits straight after the name rather than at the bar's far end.
    The row wraps, and only its first line shows, so a phone with no room beside
@@ -1420,8 +1418,9 @@ button.scheduler-row-head__num::after {
 }
 /* The phone's docked sheet has no driver's tip and no route, so a driver's
    icon and the clock there are drawn plain: they take no press of their
-   own, which goes to the trip, and do not lift. */
-.scheduler-page[data-board="compact"] :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__clock)[data-card-opener] {
+   own, which goes to the trip, and do not lift. On the board itself nothing
+   inside a bar takes a press; see the compact board's bars. */
+.scheduler-page[data-board="compact"] .scheduler-bar-shortcuts__trip :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__clock)[data-card-opener] {
   pointer-events: none;
   cursor: default;
 }
@@ -4198,6 +4197,59 @@ a.scheduler-tip__go { text-decoration: none; }
 /* A swipe moves it a day: the strip stops at the next day's edge however
    hard the flick, as a phone's own pages do. */
 .scheduler-page[data-board="compact"] .scheduler-week--scroll .scheduler-day { scroll-snap-stop: always; }
+
+/* A TRIP BAR HERE IS THREE LINES, data.js's `rowShown`: the destination with
+   its bus count, its mark and its colour, the times out and back, and the
+   drivers. The customer, the contact, the update, the trip's kind and a
+   driver's rest are its sheet's. */
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__kind, .scheduler-crew__rest) { display: none; }
+/* A tap anywhere on a trip is the trip's, and opens its sheet: nothing
+   inside a bar takes a press of its own, its marks being too small for a
+   thumb. */
+.scheduler-page[data-board="compact"] .scheduler-bar > * { pointer-events: none; }
+/* Its words stay in view: a trip that began before the first day on screen,
+   which data.js marks `data-lead`, has them at the days' left edge, as far
+   as the trip's last day, and its times keep to a day's width, as its other
+   lines do, so they read with them. */
+.scheduler-page[data-board="compact"] .scheduler-bar[data-lead] > .scheduler-bar__row {
+  position: sticky;
+  inset-inline-start: calc(var(--scheduler-head-w) + var(--scheduler-gap-clear) + var(--scheduler-bar-pad-inline));
+}
+.scheduler-page[data-board="compact"] .scheduler-bar > :is(.scheduler-bar__time, .scheduler-road__times) {
+  max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
+}
+.scheduler-page[data-board="compact"] .scheduler-bar--road > .scheduler-road__times {
+  margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
+}
+/* Its times are words, out and back with a dash between, a planned trip's
+   and a live one's alike: no clock, no line and no stops, which its sheet
+   has room for. */
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__clock, .scheduler-bar__stop) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__track, .scheduler-road__track) {
+  flex: none;
+  min-inline-size: 0;
+  block-size: auto;
+  margin: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 0;
+}
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__track, .scheduler-road__track)::before {
+  content: "\2013";
+  font-size: var(--rux-label-01-font-size);
+}
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__span > .scheduler-bar__when:last-child, .scheduler-road__when ~ .scheduler-road__when) { margin-inline-start: 0; }
+/* A trip whose bus is on the road has a line along its foot in its own
+   ink, the bus column being too narrow here to say more than the bus. */
+.scheduler-page[data-board="compact"] .scheduler-bar--road::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  block-size: 2px;
+  background: currentColor;
+}
+/* The view's rows are a wider board's, so their switches are not offered here. */
+:root[data-scheduler-board="compact"] .scheduler-menu-item--rows { display: none; }
 
 /* ── The Contacts window ────────────────────────────────────────────────────
    A Carbon modal from the Contacts slot holding one contained list: the

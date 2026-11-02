@@ -13,9 +13,9 @@ wide, swiped with the iPhone's own fling. A trip bar says only what a row
 is scanned for, and a tap opens the rest in a sheet with its actions in
 thumb reach.
 
-Today the phone shows the strip two days wide, a flick a day, with the
-Mac's full trip bars under a bus column of numbers and dots; the editor
-opens over the board as the Mac's form.
+Today the phone shows the strip two days wide, a flick a day, its trips
+three lines under a bus column of numbers and dots, a tap opening the
+Mac's docked card; the editor opens over the board as the Mac's form.
 
 ## Decisions
 
@@ -60,8 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] Draw the phone's trip bars in three lines, opening the sheet on a
-      tap.
 - [ ] Narrow the bus column, and give a bus its sheet.
 - [ ] Give the trip's sheet its actions and its lines.
 - [ ] Put the month, Today and search above the board, with the week under

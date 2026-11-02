@@ -4431,32 +4431,34 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 /* No arrow: from the bottom edge it points at nothing. */
 .scheduler-bar-shortcuts[data-docked]::after { content: none; }
-/* Its slots take the ink of the shell they now sit on, as the header's own
-   actions do, and the ring and the hover with them. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--scheduler-shell-icon-primary, var(--rux-icon-primary)); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--scheduler-shell-background-hover, var(--rux-background-hover)); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:focus-visible { outline-color: var(--scheduler-shell-focus, var(--rux-focus)); }
-/* The slots share the width rather than sitting in a clump at one end, at
-   least the 48px token, which is what a phone asks of a target and what the
-   block above them already is. The height is set on the slot and never on
-   `--scheduler-slot-w`: in compact that token is also the day column's floor,
-   and widening the week to suit a button would be the tail wagging the dog.
-   They come last, under the trip, where a thumb rests, and each carries its
-   word under its icon, because a phone has no hover to name it. The trip's
-   fill above them parts them, so they take no rule. */
+/* Its slots stand on the raised layer, below, so they take the page's own ink. */
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut { color: var(--rux-icon-primary); }
+/* THE SLOTS ARE ONE ROW OF FIVE, Contacts, Route, Bus, Driver and Open, a
+   fifth of the width each and 64px tall, the size a thumb finds without
+   looking: a 20px icon over a 14px word, on the raised layer and 1px apart,
+   as Carbon's button set is. The height is set on the slot and never on
+   `--scheduler-slot-w`: in compact that token is also the day column's
+   floor, and widening the week to suit a button would be the tail wagging
+   the dog. They come last, under the trip, where a thumb rests, each with
+   its word, because a phone has no hover to name it. */
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut {
-  /* A basis of the target size, not zero, so they cannot squeeze in beside
-     the full-width card and wrap to a line of their own, where they share it
-     equally. */
-  flex: 1 1 var(--rux-layout-size-height-lg);
+  /* A fifth with no shrinking, so the row breaks from the full-width card
+     above it and never shares a line. */
+  flex: 1 0 20%;
   order: 1;
   flex-direction: column;
-  gap: var(--rux-spacing-01);
+  gap: var(--rux-spacing-02);
   min-inline-size: 0;
+  box-sizing: border-box;
   block-size: auto;
-  min-block-size: var(--rux-layout-size-height-lg);
+  min-block-size: var(--rux-spacing-10, 4rem);
   padding-block: var(--rux-spacing-03);
+  background: var(--rux-layer-02);
+  box-shadow: inset 1px 0 0 var(--scheduler-shell-background, var(--rux-background));
 }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:hover { background: var(--rux-layer-hover-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-pressed="true"] { background: var(--rux-layer-selected-02); }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-disabled="true"] { color: var(--rux-icon-disabled); }
 .scheduler-bar-shortcut__label { display: none; }
 .scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut__label {
   display: block;
@@ -4464,37 +4466,12 @@ a.scheduler-tip__go { text-decoration: none; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--scheduler-shell-text-secondary, var(--rux-text-secondary));
-  font-size: var(--rux-label-01-font-size);
-  line-height: var(--rux-label-01-line-height);
-  letter-spacing: var(--rux-label-01-letter-spacing);
-}
-/* THE SHEET'S TWO ROWS: Call, Text, Route and Open, a quarter of the width
-   each and 64px tall, their 20px icons over a 14px word, on the raised
-   layer and 1px apart as Carbon's button set is; then Itinerary, Forms,
-   Contacts, Move bus and Driver, a fifth each, as the slots have always
-   been. Each row's share is its whole width, so the rows break where they
-   should and never share a line. */
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big {
-  flex: 1 0 25%;
-  order: 1;
-  box-sizing: border-box;
-  min-block-size: var(--rux-spacing-10, 4rem);
-  gap: var(--rux-spacing-02);
-  background: var(--rux-layer-02);
-  box-shadow: inset 1px 0 0 var(--scheduler-shell-background, var(--rux-background));
-}
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big:hover { background: var(--rux-layer-hover-02); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-pressed="true"] { background: var(--rux-layer-selected-02); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-disabled="true"] { color: var(--rux-icon-disabled); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big > .scheduler-bar-shortcut__label {
   color: var(--rux-text-primary);
   font-size: var(--rux-body-compact-01-font-size);
   line-height: var(--rux-body-compact-01-line-height);
   letter-spacing: var(--rux-body-compact-01-letter-spacing);
 }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut--big[aria-disabled="true"] > .scheduler-bar-shortcut__label { color: var(--rux-text-disabled); }
-.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut:not(.scheduler-bar-shortcut--big) { flex: 1 0 20%; order: 2; }
+.scheduler-bar-shortcuts[data-docked] .scheduler-bar-shortcut[aria-disabled="true"] > .scheduler-bar-shortcut__label { color: var(--rux-text-disabled); }
 /* The route, Route's, stands where the card stood, on the page's raised
    surface and in its inks rather than the floating tip's inverse ones. */
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card {

@@ -31,14 +31,14 @@ form.
   and a thin line along a bar's foot says its bus is on the road.
 - **A tap anywhere on a trip opens its sheet;** nothing inside a bar is a
   target of its own on a phone, since its marks are too small for a thumb.
-- **The trip's sheet** rises from the foot: Call, Text, Route and Open as
-  large buttons; the customer, the contact with the number, the drivers and
-  the latest update; and Move to bus and Change driver, so a trip changes
-  bus or driver with no drag. A drag still works. As rux decided, Call and
-  Text reach the booking contact, Route shows the stops and times in the
-  sheet, Itinerary, Forms and Contacts stand in a smaller row with Move to
-  bus and Change driver, and Move to bus lists the free buses first and the
-  busy ones greyed.
+- **The trip's sheet** rises from the foot: the customer, the contact with
+  the number, the drivers and the latest update, then one row of large
+  buttons, as rux decided: Contacts, whose window calls and texts the
+  booking contact, the trip contacts and the drivers; Route, the stops and
+  times in the sheet; Bus, the free buses first and the busy ones greyed;
+  Driver; and Open. A trip changes bus or driver with no drag, and a drag
+  still works. The itinerary is in Open, and Forms on the toolbar and in
+  the ☰ menu.
 - **The bus column is about 62px:** the number, running or off with the
   speed, and the fuel; the seats, the sleeper and the lift go to the bus's
   sheet, which a tap on the bus opens.

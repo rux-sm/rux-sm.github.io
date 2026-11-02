@@ -13813,12 +13813,13 @@
     return svg;
   }
 
-  function assignItem(label, { id, icon, note, title, checked, disabled } = {}) {
+  // A row of a list dropped from the board, its `data` the dataset a pick reads.
+  function menuItem(label, { data, icon, note, title, checked, disabled } = {}) {
     const item = el('li', disabled ? 'rux--menu-item rux--menu-item--disabled' : 'rux--menu-item');
     item.setAttribute('role', 'menuitem');
     item.tabIndex = -1;
     if (disabled) item.setAttribute('aria-disabled', 'true');
-    if (id != null) item.dataset.assignDriver = id;
+    Object.assign(item.dataset, data);
     if (title) item.title = title;
     const check = el('div', 'rux--menu-item__selection-icon');
     if (checked) check.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
@@ -13828,6 +13829,7 @@
     if (note) item.appendChild(el('div', 'rux--menu-item__shortcut', note));
     return item;
   }
+  const assignItem = (label, { id, ...rest } = {}) => menuItem(label, { ...rest, data: id != null ? { assignDriver: id } : null });
 
   // A pick from a list of drivers, the bar menu's or the trip sheet's: answers whether it was one.
   async function pickDriverItem(item, bar) {
@@ -15986,20 +15988,9 @@
     toast('success', 'The file was deleted.');
   });
 
-  // The booking contact, where the trip has one with a number, whom the sheet's Call and Text reach.
-  const bookerOf = bar => {
-    const c = tripContact(panelIndex.trips.get(bar.dataset.tripId), 0);
-    return c?.phone ? c : null;
-  };
-  const reach = (did, href) => bar => {
-    const c = bookerOf(bar);
-    if (!c) return;
-    window.location.href = href(dial(c.phone));
-    offerUpdate(bar.dataset.tripId, `${did} ${c.name}`);
-  };
-
   /* THE SELECTED TRIP'S SHORTCUTS, the phone's sheet's, the same on every
-     trip; on a wider board every action is on the right-click menu. A slot whose
+     trip, and Itinerary, which the card's alerts open; on a wider board
+     every action is on the right-click menu. A slot whose
      action cannot act on the trip shows disabled, with the reason as its
      label, so the slots keep their places from trip to trip. `short` is the
      word under the slot on the docked sheet, where a phone has no hover to
@@ -16007,20 +15998,11 @@
   const SHORTCUT_ACTIONS = [
     { id: 'open', label: 'Open trip', icon: '#m-open_in_new', short: 'Open', keeps: true,
       blocked: bar => (isEditorBar(bar) ? 'Already open' : null), run: () => openSelected() },
-    /* Call and Text reach the booking contact, the person the trip is for,
-       and offer to add what was done to the updates, as Contacts does; the
-       drivers are in Contacts. */
-    { id: 'call', label: 'Call the booking contact', icon: '#m-call', short: 'Call', keeps: true,
-      label_for: bar => `Call ${bookerOf(bar).name}`,
-      blocked: bar => (bookerOf(bar) ? null : 'No contact number'), run: reach('Called', n => `tel:${n}`) },
-    { id: 'text', label: 'Text the booking contact', icon: '#m-chat', short: 'Text', keeps: true,
-      label_for: bar => `Text ${bookerOf(bar).name}`,
-      blocked: bar => (bookerOf(bar) ? null : 'No contact number'), run: reach('Texted', n => `sms:${n}`) },
     // The leg's stops and times in the sheet in place of its card, and the card back.
     { id: 'route', label: 'Route', icon: '#m-route', short: 'Route', keeps: true,
       blocked: () => null, run: bar => askCard(bar, !cardSection.startsWith('route:'), 'route:') },
     // A bus or a driver from a list, since a phone has no drag to spare and no right-click.
-    { id: 'move', label: 'Move to bus', icon: '#m-directions_bus', short: 'Move bus', keeps: true,
+    { id: 'move', label: 'Move to bus', icon: '#m-directions_bus', short: 'Bus', keeps: true,
       blocked: () => null, run: (bar, slot) => openPick('bus', bar, slot) },
     { id: 'driver', label: 'Change driver', icon: '#m-person', short: 'Driver', keeps: true,
       label_for: bar => (seatToFill(bar).seat?.driver_id ? 'Change driver' : 'Assign driver'),
@@ -16033,14 +16015,12 @@
       blocked: bar => (bar.dataset.itineraryId || client ? null : 'No itinerary yet'),
       run: bar => (bar.dataset.itineraryId ? openItinerary(bar)
         : pickFile(file => uploadFrom(bar.dataset.tripId, 'Itinerary', file, null, barLeg(bar)))) },
-    // The trip's list of forms.
-    { id: 'forms', label: 'Forms', icon: '#m-description', short: 'Forms',
-      blocked: () => null, run: bar => openForms(bar) },
   ];
-  /* The phone's sheet, the only place the slots show: the four a trip is
-     most often opened for, large, and the rest in a row under them. */
-  const SHORTCUT_BIG = ['call', 'text', 'route', 'open'];
-  const SHORTCUT_ROW = ['itinerary', 'forms', 'contacts', 'move', 'driver'];
+  /* The phone's sheet, the only place the slots show, as rux chose them:
+     Contacts, whose window calls and texts everyone on the trip, Route, Bus,
+     Driver and Open. The itinerary is in Open, and Forms on the toolbar and
+     in the ☰ menu. */
+  const SHORTCUT_ROW = ['contacts', 'route', 'move', 'driver', 'open'];
 
   /* THE SHEET'S LISTS, Move to bus and Change driver: a menu dropped from the
      slot, holding what the drag and the bar menu's Assign driver hold on a
@@ -16078,18 +16058,12 @@
   function fillBusItems(bar, list) {
     const start = +bar.dataset.start, span = +bar.dataset.span;
     const rows = stripRows.filter(r => r.bus && r.bus.status === 'active' && String(r.bus.id) !== (bar.dataset.busId || ''));
-    const item = (row, busy) => {
-      const li = el('li', busy ? 'rux--menu-item rux--menu-item--disabled' : 'rux--menu-item');
-      li.setAttribute('role', 'menuitem');
-      li.tabIndex = -1;
-      if (busy) li.setAttribute('aria-disabled', 'true'); else li.dataset.moveBus = row.bus.id;
-      const mark = el('div', 'rux--menu-item__icon');
-      mark.appendChild(svgUse(busy ? '#m-do_not_disturb_on-fill' : '#m-directions_bus', '16', '0 0 32 32'));
-      li.append(el('div', 'rux--menu-item__selection-icon'), mark, el('div', 'rux--menu-item__label', vehicleName(row.bus)));
-      const note = busy ?? (row.bus.capacity ? `${row.bus.capacity} pax` : null);
-      if (note) li.appendChild(el('div', 'rux--menu-item__shortcut', note));
-      return li;
-    };
+    const item = (row, busy) => menuItem(vehicleName(row.bus), {
+      data: busy ? null : { moveBus: row.bus.id },
+      icon: busy ? '#m-do_not_disturb_on-fill' : '#m-directions_bus',
+      note: busy ?? (row.bus.capacity ? `${row.bus.capacity} pax` : null),
+      disabled: !!busy,
+    });
     const busyOf = row => {
       const way = inTheWay(row.track, start, span);
       return !way ? null : way.classList.contains('scheduler-oos') ? 'Out of service'
@@ -16106,7 +16080,7 @@
      zone of its own in theme.js, g100 under Carbon's four whatever the page
      is, so its colours are read off it rather than named, and a saved theme's
      bar is matched as well as a built-in one. */
-  const SHELL_TOKENS = ['background', 'background-hover', 'icon-primary', 'text-secondary', 'focus'];
+  const SHELL_TOKENS = ['background'];
   function wearShell() {
     const shell = document.querySelector('.rux--header[data-theme]');
     if (!shell) return;
@@ -16354,7 +16328,7 @@
      bar's own menu holds what the slots do. */
   function drawShortcuts(bar) {
     const docked = pageEl?.getAttribute('data-board') === 'compact';
-    const slots = docked ? [...SHORTCUT_BIG, ...SHORTCUT_ROW] : [];
+    const slots = docked ? SHORTCUT_ROW : [];
     const trip = panelIndex.trips.get(bar.dataset.tripId);
     const carded = !!trip;
     const key = [docked, bar.dataset.tripId, bar.dataset.legKey, bar.dataset.itineraryId,
@@ -16373,8 +16347,7 @@
     const selection = focusQuick ? [active.selectionStart, active.selectionEnd] : null;
     const head = barShortcuts.querySelector('.scheduler-bar-shortcuts__trip');
     barShortcuts.replaceChildren(...(head ? [head] : []), ...slots.map((id, i) => {
-      const big = SHORTCUT_BIG.includes(id);
-      const btn = el('button', big ? 'scheduler-bar-shortcut scheduler-bar-shortcut--big' : 'scheduler-bar-shortcut');
+      const btn = el('button', 'scheduler-bar-shortcut');
       btn.type = 'button';
       btn.dataset.slot = String(i + 1);
       const action = FIXED_SHORTCUTS[id] ?? SHORTCUT_ACTIONS.find(a => a.id === id);
@@ -16387,7 +16360,7 @@
       btn.setAttribute('aria-label', label);
       btn.title = label;
       if (why) btn.setAttribute('aria-disabled', 'true');
-      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, big ? '20' : '16', '0 0 32 32'),
+      btn.append(svgUse(action.icon_for ? action.icon_for(bar) : action.icon, '20', '0 0 32 32'),
         el('span', 'scheduler-bar-shortcut__label', action.short));
       return btn;
     }), ...(carded ? [cardSection.startsWith('route:') ? drawRouteTip(trip, bar)
@@ -16427,19 +16400,6 @@
 
      It is a Carbon modal centred on the screen, as the Updates window is,
      which Design closes on Escape, a press outside or its close button. */
-  /* The offer, after a call, a text or an email to the customer's people, to
-     add what was done to the trip's updates; ignored, nothing is written.
-     `after` draws whatever shows the updates once one is added. */
-  function offerUpdate(tripId, body, after, title = body, subtitle = 'Add it to the updates?') {
-    toast('info', title, subtitle, {
-      label: 'Add update',
-      onClick: async () => {
-        toast(null);
-        if (await writeUpdate(tripId, { kind: 'update', body, keys: null })) { await after?.(); toast('success', 'Update added', body); }
-        else toast('warning', 'The update was not added.', 'Add it from the card.');
-      },
-    });
-  }
   const contactsModal = document.getElementById('scheduler-contacts-modal');
   const contactsList = document.getElementById('scheduler-contacts-list');
   const contactsMenu = document.getElementById('scheduler-contacts-menu');
@@ -16642,7 +16602,17 @@
       if (await setInfoSent(true)) await show();
     };
     // The offer to record a call or text to the customer's people.
-    const offer = (did, name, title, subtitle) => () => offerUpdate(trip.id, `${did} ${name}`, show, title, subtitle);
+    const offer = (did, name, title, subtitle) => () => {
+      const body = `${did} ${name}`;
+      toast('info', title ?? body, subtitle ?? 'Add it to the updates?', {
+        label: 'Add update',
+        onClick: async () => {
+          toast(null);
+          if (await writeUpdate(trip.id, { kind: 'update', body, keys: null })) { await show(); toast('success', 'Update added', body); }
+          else toast('warning', 'The update was not added.', 'Add it from the card.');
+        },
+      });
+    };
     const copyText = async text => {
       try { await navigator.clipboard.writeText(text); return true; } catch {
         toast('error', 'Could not copy that', 'The browser would not reach the clipboard.');
@@ -17746,7 +17716,7 @@
     /* A shortcut that leaves for a panel or a file puts the card away. One
        that `keeps` it does not: Contacts, whose window opens over it and
        hands focus back to its slot on closing, Open, whose editor opens
-       beside the board, and the sheet's calls, route and lists. */
+       beside the board, and the sheet's route and lists. */
     const shortcut = FIXED_SHORTCUTS[btn.dataset.shortcut] ?? SHORTCUT_ACTIONS.find(a => a.id === btn.dataset.shortcut);
     if (!shortcut?.keeps) putCardAway(bar);
     shortcut?.run(bar, btn);

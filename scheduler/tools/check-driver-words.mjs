@@ -1,7 +1,7 @@
 // Holds the driver's words to one shape in both languages: every key the
 // English table has, the Spanish has, of the same kind, a line that takes
 // something from the trip taking as much in both, and every word driver.js
-// asks for is in them. The page's words are share/driver-words.js and the
+// and sign.js ask for is in them. The page's words are share/driver-words.js and the
 // texts' are driver-text.js. A line added in English and not in Spanish would
 // reach a Spanish driver as nothing, so it fails here first.
 import { readFileSync } from 'node:fs';
@@ -40,5 +40,12 @@ const asked = new Set([...page.matchAll(/\bw\.([a-zA-Z]+)/g)].map(m => m[1]));
 for (const key of ['notYours', 'notLoaded', 'yard', 'destination']) asked.add(key);
 for (const key of asked) if (!(key in en)) fail(`driver.js asks for w.${key}, which is not in the words`);
 
-console.log(`   ${failed ? 'FAIL' : 'ok  '}  words  ${Object.keys(en).length} lines on the page and ${Object.keys(texts.en).length} in the texts, in English and Spanish, ${asked.size} asked for by driver.js`);
+// Every forms word sign.js asks for, by name, is there.
+const signPage = readFileSync(new URL('../share/sign.js', import.meta.url), 'utf8');
+const signAsked = new Set([...signPage.matchAll(/\bw\.([a-zA-Z]+)/g)].map(m => m[1]));
+// Yes and No are named by the choice's value.
+for (const key of ['yes', 'no']) signAsked.add(key);
+for (const key of signAsked) if (!(key in en.forms)) fail(`sign.js asks for w.${key}, which is not in the forms words`);
+
+console.log(`   ${failed ? 'FAIL' : 'ok  '}  words  ${Object.keys(en).length} lines on the page and ${Object.keys(texts.en).length} in the texts, in English and Spanish, ${asked.size} asked for by driver.js and ${signAsked.size} by sign.js`);
 process.exit(failed ? 1 : 0);

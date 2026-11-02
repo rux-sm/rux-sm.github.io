@@ -5214,6 +5214,85 @@ html[data-scheduler-takeover] {
   box-shadow: inset 0 0 0 3px var(--rux-focus-inset);
 }
 
+/* ── Driver forms ────────────────────────────────────────────────────────
+   The Forms to sign card at the top of a driver's link, and share/sign.html,
+   where one form is filled in and signed. A form is a tile for each heading
+   with its questions parted by a rule; what sits inside a tile is on the
+   second layer, so Yes and No, the lines and the pad stand off it. */
+.scheduler-forms-card { display: grid; gap: var(--rux-spacing-05); }
+.scheduler-forms-card__head { display: grid; gap: var(--rux-spacing-02); }
+.scheduler-forms-card__head > * { margin: 0; }
+.scheduler-forms-row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--rux-spacing-04);
+  padding-block-start: var(--rux-spacing-05);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-forms-row > div:first-child { flex: 1 1 12rem; min-inline-size: 0; display: grid; gap: var(--rux-spacing-01); }
+.scheduler-forms-row p { margin: 0; }
+.scheduler-forms-row > .rux--btn { flex: 1 1 100%; max-inline-size: none; }
+.scheduler-sign-muted { color: var(--rux-text-secondary); }
+#scheduler-sign-form[hidden], #scheduler-sign-done[hidden], .scheduler-sign-error[hidden] { display: none; }
+.scheduler-sign-section { display: grid; gap: var(--rux-spacing-06); }
+.scheduler-sign-section > h2, .scheduler-sign-section > p { margin: 0; }
+.scheduler-sign-section > .rux--form-item[hidden] { display: none; }
+.scheduler-sign-question {
+  display: grid; gap: var(--rux-spacing-04);
+  margin: 0; padding: var(--rux-spacing-06) 0 0; border: 0; min-inline-size: 0;
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+/* A legend sits in its fieldset's border unless floated into the flow. */
+.scheduler-sign-question > legend { float: left; inline-size: 100%; padding: 0; margin: 0 0 var(--rux-spacing-03); }
+.scheduler-sign-question > legend + * { clear: both; }
+.scheduler-sign-question ul { margin: 0; padding-inline-start: var(--rux-spacing-06); list-style: disc; display: grid; gap: var(--rux-spacing-02); }
+.scheduler-sign-note { margin: 0; color: var(--rux-text-secondary); font-style: italic; }
+/* The Spanish under each English line. */
+.scheduler-sign-es { display: block; margin-block-start: var(--rux-spacing-02); color: var(--rux-text-secondary); font-style: normal; }
+/* Yes and No, two big tiles side by side. */
+.scheduler-sign-choices { display: grid; grid-template-columns: 1fr 1fr; gap: var(--rux-spacing-03); }
+.scheduler-sign-choices .rux--tile { min-block-size: 3.5rem; display: flex; align-items: center; }
+.scheduler-sign-question--invalid .rux--tile { outline: 2px solid var(--rux-support-error); outline-offset: -2px; }
+.scheduler-sign-error { margin: 0; color: var(--rux-text-error); }
+.scheduler-sign-fields { display: grid; gap: var(--rux-spacing-05); }
+@media (min-width: 42rem) {
+  .scheduler-sign-fields { grid-template-columns: 2fr 1fr; }
+  .scheduler-sign-fields > .scheduler-sign-wide { grid-column: 1 / -1; }
+}
+/* The signature pad: a field-coloured box with a line to sign on. */
+.scheduler-sign-pad-wrap { display: grid; gap: var(--rux-spacing-03); }
+.scheduler-sign-pad {
+  position: relative; block-size: 11rem;
+  background: var(--rux-field);
+  border-block-end: 1px solid var(--rux-border-strong-01);
+  touch-action: none; cursor: crosshair;
+}
+.scheduler-sign-pad--invalid { outline: 2px solid var(--rux-support-error); outline-offset: -2px; }
+.scheduler-sign-pad canvas { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+.scheduler-sign-pad__line {
+  position: absolute; inset-inline: var(--rux-spacing-06); inset-block-end: 2.5rem;
+  border-block-end: 1px dashed var(--rux-border-strong-01); pointer-events: none;
+}
+.scheduler-sign-pad__x { position: absolute; inset-inline-start: var(--rux-spacing-05); inset-block-end: 2.6rem; color: var(--rux-text-secondary); pointer-events: none; }
+.scheduler-sign-pad__hint { position: absolute; inset-inline: 0; inset-block-end: var(--rux-spacing-04); text-align: center; color: var(--rux-text-placeholder); pointer-events: none; }
+.scheduler-sign-pad--signed .scheduler-sign-pad__hint { display: none; }
+.scheduler-sign-pad-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--rux-spacing-04); }
+.scheduler-sign-submit { inline-size: 100%; max-inline-size: none; }
+/* The Drivers page's Forms tab: a cell's tag, its day and its actions on one
+   wrapping row, and the Send window's row for each driver. */
+.scheduler-form-cell { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rux-spacing-03); }
+.scheduler-form-cell__when { color: var(--rux-text-secondary); }
+.scheduler-forms-send-row {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--rux-spacing-03) var(--rux-spacing-04);
+  padding-block-end: var(--rux-spacing-04); border-block-end: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-forms-send-row p { margin: 0; }
+.scheduler-forms-send-row > div { display: grid; gap: var(--rux-spacing-01); min-inline-size: 0; }
+.scheduler-forms-message {
+  grid-column: 1 / -1; padding: var(--rux-spacing-04);
+  background: var(--rux-field); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.scheduler-forms-message[hidden] { display: none; }
+
 /* A driver's sheet (share/form.html): the way back over the paper, which
    keeps its own width and is taken down whole to the phone's by print.css. */
 .scheduler-sheet-head { display: grid; justify-items: start; gap: var(--rux-spacing-03); }

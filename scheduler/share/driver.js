@@ -15,6 +15,7 @@
      get_driver_assignment_statuses  each answer
      get_driver_accepted_views       what each accepted card showed
      confirm_ / decline_trip_assignment, record_driver_accepted_view
+     get_driver_forms                the forms to sign, and the signed ones
    A leg is named by its id, as trip-shape.js reads the trips, and the
    functions take it so; a link's older rows name it by its old word too.
 
@@ -535,11 +536,14 @@
     const s = share.data;
     // The profile's language, unless the driver chose another on this phone.
     if (!chosen) setLanguage(s.driver.language);
-    const [trips, answers, kept] = await Promise.all([
+    const [trips, answers, kept, waiting] = await Promise.all([
       client.rpc('get_driver_share_trips', { p_token: token }),
       client.rpc('get_driver_assignment_statuses', { p_token: token }),
       client.rpc('get_driver_accepted_views', { p_token: token }),
+      client.rpc('get_driver_forms', { p_token: token }),
     ]);
+    // A form that will not load leaves the trips to show.
+    forms = waiting.error ? [] : waiting.data || [];
     if (trips.error || !trips.data) { clear(); say('error', w.cannotLoad, w.checkConnection, load); return; }
     requirementNames = new Map((Array.isArray(trips.data.requirements) ? trips.data.requirements : []).map(r => [r.id, r.label]));
     /* Each answer and kept view under its leg's id, which a card names its
@@ -568,6 +572,7 @@
   // The greeting and the cards, drawn again in the other language when the
   // driver switches.
   let items = null;
+  let forms = [];
   let driverName = '';
   function draw() {
     if (!items) return;
@@ -575,9 +580,48 @@
     shown = items.filter(i => !i.error && !i.cancelled);
     summarize();
     introEl.hidden = false;
+    drawForms();
     listEl.replaceChildren(...items.map(i => (i.error ? problemCard(i.error) : i.cancelled ? cancelledCard(i) : cardOf(i))));
     say(null);
     if (!items.length) say('info', w.noTrips, w.noTripsText);
+  }
+
+  /* THE FORMS TO SIGN, above the trips while any is set up: each current
+     form, the ones waiting first with Fill out and sign, which opens it on
+     sign.html, and the signed ones with their day. The staff page has no
+     place for it; the office reads forms on the Drivers page. */
+  function drawForms() {
+    const place = $('scheduler-forms');
+    if (!place) return;
+    const f = w.forms;
+    const day = v => new Date(String(v).length === 10 ? `${v}T12:00:00` : v)
+      .toLocaleDateString(WORDS.LOCALE[lang], { month: 'short', day: 'numeric', year: 'numeric' });
+    const card = el('article', 'rux--tile scheduler-forms-card');
+    card.setAttribute('aria-labelledby', 'scheduler-forms-h');
+    const head = el('header', 'scheduler-forms-card__head');
+    const title = el('h2', 'rux--type-productive-heading-03', f.cardTitle);
+    title.id = 'scheduler-forms-h';
+    head.append(title, el('p', 'rux--type-body-compact-01 scheduler-leg-card__muted', f.cardText));
+    card.appendChild(head);
+    for (const form of [...forms].sort((a, b) => b.waiting - a.waiting)) {
+      const row = el('div', 'scheduler-forms-row');
+      const words = el('div');
+      words.appendChild(el('p', 'rux--type-heading-compact-02', lang === 'es' ? form.titleEs : form.title));
+      if (!form.waiting && form.signedAt) {
+        words.appendChild(el('p', 'rux--type-body-compact-01 scheduler-leg-card__muted',
+          form.endsOn ? f.signedUntil(day(form.signedAt), day(form.endsOn)) : f.signedOn(day(form.signedAt))));
+      }
+      row.append(words, form.waiting ? tag(f.toSign, 'gray', '#m-pending-fill') : tag(f.signed, 'green', '#m-check_circle-fill'));
+      if (form.waiting) {
+        const open = el('a', 'rux--btn rux--btn--primary rux--layout--size-lg', f.fillOut);
+        open.href = `sign.html?${new URLSearchParams({ s: token, form: form.id })}`;
+        const i = icon('#m-edit'); i.setAttribute('class', 'rux--btn__icon'); open.appendChild(i);
+        row.appendChild(open);
+      }
+      card.appendChild(row);
+    }
+    place.replaceChildren(...(forms.length ? [card] : []));
+    place.hidden = !forms.length;
   }
 
   /* THE SWITCH, under the greeting, written in the language it switches to,

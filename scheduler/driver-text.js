@@ -6,7 +6,8 @@
    driver's legs over their link, and the Contacts window's reminder sends one
    leg on its own, as its Tell does a leg that changed. One wording, so a
    reminder and the week's message never describe the same leg two ways. The Drivers page loads it for the address
-   of a driver's link alone, so the link it copies is the one sent.
+   of a driver's link, so the link it copies is the one sent, and for the
+   text its Forms tab sends a driver their forms with.
 
    IT TAKES A LEG, NOT A PAGE. Each page reads its own rows and hands in the
    same shape: { trip, inbound, role, start, end, bus, spot, swap,
@@ -95,6 +96,7 @@
       week:(name, range) => `Hi ${name}, here are your assignments for ${range}:`,
       noneTicked: name => `Hi ${name}, no trips are ticked yet.`,
       details: 'Trip details and itineraries:',
+      forms: (name, list, link) => `Hi ${name}, please fill out and sign ${list} for Escamilla Tour Buses. It takes a few minutes on your phone: ${link}`,
     },
     es: {
       role: { 'driver': 'Chofer', 'co-driver': 'Segundo chofer', 'relief': 'Chofer de relevo' },
@@ -131,6 +133,7 @@
       week:(name, range) => `Hola ${name}, estos son tus viajes del ${range}:`,
       noneTicked: name => `Hola ${name}, todavía no hay viajes marcados.`,
       details: 'Detalles e itinerarios de tus viajes:',
+      forms: (name, list, link) => `Hola ${name}, por favor llena y firma ${list} para Escamilla Tour Buses. Toma unos minutos desde tu teléfono: ${link}`,
     },
   };
   const wordsFor = lang => WORDS[lang === 'es' ? 'es' : 'en'];
@@ -230,8 +233,17 @@
       ...(link ? ['', w.details, link] : [])].join('\n');
   }
 
+  /* The text that sends a driver their forms: each title in their language,
+     joined as a sentence joins them, and their link, which opens with the
+     forms at the top. */
+  const forms = (name, titles, token, lang = 'en') => {
+    const w = wordsFor(lang);
+    const list = titles.length > 1 ? `${titles.slice(0, -1).join(', ')} ${w.and} ${titles.at(-1)}` : titles[0] ?? '';
+    return w.forms(name, list, `${DRIVER_LINK}${token}`);
+  };
+
   window.SchedulerDriverText = {
-    SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor,
+    SITE, DRIVER_LINK, DOCUMENT_LINK, WORDS, wordsFor, forms,
     messageDate, messageRange, timeText, town, roleLabel, isRelief, legLines, reminder, change,
   };
 })();

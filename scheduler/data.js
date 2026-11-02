@@ -18926,7 +18926,7 @@
        stand in a line. A pick moves to the week holding the month's first
        day, so the board starts on the week's first day as the arrows leave
        it; the day header names the month's first day. The years run from
-       the first the scheduler holds trips in to next year, and an item's
+       the first the scheduler holds trips in to two years ahead, and an item's
        value counts months, so it finds its day alone. */
     const monthMenu = document.getElementById('scheduler-month-menu');
     const choice = (month, year, value, on) => {
@@ -18943,7 +18943,7 @@
     const months = () => {
       const now = new Date().getFullYear(), at = viewDay.getFullYear();
       const items = [];
-      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) {
+      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 2, at); y++) {
         for (let m = 0; m < 12; m++) {
           items.push(choice(new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long' }), y, y * 12 + m, y === at && m === viewDay.getMonth()));
         }

@@ -50,7 +50,7 @@
   };
   /* An outline icon's solid one, which a bar's mark is drawn in as well, so
      app.css can turn the mark solid while it lifts. */
-  const SOLID = { '#m-schedule': '#m-schedule-fill', '#m-chat': '#m-chat-fill', '#i-checkmark--outline': '#i-checkmark--filled' };
+  const SOLID = { '#m-route': '#m-route-fill', '#m-chat': '#m-chat-fill', '#i-checkmark--outline': '#i-checkmark--filled' };
   // Draws `href` in an icon's svg, with its solid icon over it where it has one.
   const glyphTo = (svg, href) => {
     svg.replaceChildren();
@@ -70,16 +70,16 @@
     glyphTo(svg, href);
     return svg;
   };
-  /* The clock that leads a time row and opens the leg's route tip, data.js's,
+  /* The route mark that leads a time row and opens the leg's route tip, data.js's,
      a mark as the chat and crew marks are; road-bar.js leads a live bar's
      times with one too. */
   const routeMark = () => {
-    const b = el('button', 'scheduler-bar__lead scheduler-bar__clock');
+    const b = el('button', 'scheduler-bar__lead scheduler-bar__route');
     b.type = 'button';
     b.dataset.cardOpener = '';
     b.setAttribute('aria-expanded', 'false');
     b.setAttribute('aria-label', 'Route');
-    b.append(svgUse('#m-schedule', '16', '0 0 32 32'));
+    b.append(svgUse('#m-route', '16', '0 0 32 32'));
     return b;
   };
   // A phone number as it is shown, from phone.js.
@@ -608,16 +608,16 @@
        inside it, unseen, so the row still reads and copies whole. */
     const when = el('span', none ? 'scheduler-bar__none' : null);
     /* The times and the track between them are the trip's, so a press there
-       selects it; a clock leading the row, in the column the chat and crew
+       selects it; the route mark leading the row, in the column the chat and crew
        marks stand in below, is the button that opens the leg's route tip. */
     const timeWords = () => el('span', 'scheduler-bar__when');
-    let clock = null;
+    let route = null;
     const backAt = timeWords();
     backAt.append(...ret);
     if (dep && back) {
       when.className = 'scheduler-bar__span';
       const unseen = [place.fromPrev ? `${weekday(leg.from)} ${dep}` : '', '\u2009\u2013\u2009', place.toNext ? `${weekday(backDay)} ${back}` : ''].join('');
-      clock = routeMark();
+      route = routeMark();
       const track = el('span', 'scheduler-bar__track', unseen);
       [track.dataset.out, track.dataset.back] = legSpan(leg).map(String);
       track.style.setProperty('--scheduler-done', `${tripDone(leg)}%`);
@@ -644,7 +644,7 @@
       mark.title = daysBack(leg) > 1 ? `Returns ${daysBack(leg)} days later` : 'Returns the next day';
       (dep ? backAt : when).appendChild(mark);
     }
-    addRow(bar, 'scheduler-bar__time', clock, when);
+    addRow(bar, 'scheduler-bar__time', route, when);
 
     // The update and crew share a footer.
     const latest = updatesOf(trip)[0] ?? null;
@@ -705,7 +705,7 @@
      `wheel` for a driver at the wheel the bar does not name, or Updates. A
      live bar's mark with no driver Samsara knows opens its live card. */
   const cardSectionOf = opener => {
-    if (opener.matches('.scheduler-bar__clock')) return 'route:';
+    if (opener.matches('.scheduler-bar__route')) return 'route:';
     if (opener.matches('.scheduler-bar__alert')) return 'needs';
     if (!opener.closest('.scheduler-bar__drivers')) return 'updates';
     const crew = opener.closest('.scheduler-crew');

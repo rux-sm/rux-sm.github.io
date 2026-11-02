@@ -307,8 +307,8 @@ marks and never its words. A 16px icon, with no fill behind it, lifts under the 
 Carbon's next icon size, a little lighter and over a tight shadow, stays up while its tip is open and settles flat under a
 press: the alert badge opens Alerts, the chat mark leading the update line, in the trip's strongest
 ink, opens Updates, and a driver's status mark, or on a bus out on the road their duty mark, opens that
-driver's tip, and a clock leading the times row opens the route; the pointer anywhere on that row lifts
-the clock, so the row shows where its route opens while the wide line between the times takes no press of
+driver's tip, and Material's route icon leading the times row opens the route; the pointer anywhere on that row lifts
+the route icon, so the row shows where its route opens while the wide line between the times takes no press of
 its own. The line grows from 2px to 4px and its part still to go brightens while the route is open. Each press selects the trip as well. A
 press on the bar's words, the times, the line and its stops' ticks and a driver's name among them, only
 selects it, and a driver's name is pulled to move them. No hover

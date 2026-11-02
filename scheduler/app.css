@@ -1296,7 +1296,7 @@ button.scheduler-row-head__num::after {
    each stand out from the words beside it, as the crew's marks stand out
    from their names. */
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) { --scheduler-ink-strong: var(--scheduler-strong, oklch(from var(--scheduler-bg) calc((0.59 - l) * 100) 0 0)); }
-.scheduler-bar :is(.scheduler-bar__chat, .scheduler-bar__clock)[data-card-opener] { color: var(--scheduler-ink-strong); }
+.scheduler-bar :is(.scheduler-bar__chat, .scheduler-bar__route)[data-card-opener] { color: var(--scheduler-ink-strong); }
 /* The alert badge pairs its count with the warning icon. */
 .scheduler-bar__msg.scheduler-bar__paid { display: inline-flex; align-items: center; }
 /* The footer spans the trip. */
@@ -1385,7 +1385,7 @@ button.scheduler-row-head__num::after {
    the pointer by lifting; a press on its words, the times and the line
    between them among them, only selects the trip, and a driver's name is
    pulled to move them. The pointer anywhere on the times row lifts the
-   clock that leads it, so the row shows where its route opens without the
+   route mark that leads it, so the row shows where its route opens without the
    wide line taking the press meant for the trip. A touch screen has no
    pointer to wait for, so it shows no hover; the open and pressed states
    show on any screen. The pointer anywhere on a board's bar lifts all its marks
@@ -1396,7 +1396,7 @@ button.scheduler-row-head__num::after {
     transform: scale(1.12);
   }
   :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
-  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock {
+  :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
   }
@@ -1413,10 +1413,10 @@ button.scheduler-row-head__num::after {
 @media (hover: hover) {
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
     :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
-    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock) .scheduler-bar__line { opacity: 0; }
+    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__line { opacity: 0; }
   :is(:where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener],
     :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
-    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock) .scheduler-bar__solid { opacity: 1; }
+    :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__route) .scheduler-bar__solid { opacity: 1; }
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
@@ -1437,7 +1437,7 @@ button.scheduler-row-head__num::after {
    icon and the clock there are drawn plain: they take no press of their
    own, which goes to the trip, and do not lift. On the board itself nothing
    inside a bar takes a press; see the compact board's bars. */
-.scheduler-page[data-board="compact"] .scheduler-bar-shortcuts__trip :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__clock)[data-card-opener] {
+.scheduler-page[data-board="compact"] .scheduler-bar-shortcuts__trip :is(.scheduler-crew > .scheduler-crew__mark, .scheduler-bar__route)[data-card-opener] {
   pointer-events: none;
   cursor: default;
 }
@@ -4347,7 +4347,7 @@ a.scheduler-tip__go { text-decoration: none; }
 /* Its times are words, out and back with a dash between, a planned trip's
    and a live one's alike: no clock, no line and no stops, which its sheet
    has room for. */
-.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__clock, .scheduler-bar__stop) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__route, .scheduler-bar__stop) { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-bar :is(.scheduler-bar__track, .scheduler-road__track) {
   flex: none;
   min-inline-size: 0;

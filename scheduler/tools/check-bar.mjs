@@ -437,14 +437,14 @@ expect('the times follow the time row they stand in for, before the update and t
 expect('the times: out and back either end of a track filled as far as the trip has gone',
   [row(lit('At highway speed')).querySelectorAll('.scheduler-road__when').length, /^\d+(\.\d)?%$/.test(row(lit('At highway speed')).querySelector('.scheduler-road__track')?.style.getPropertyValue('--scheduler-done') ?? '')],
   [2, true]);
-const clockOf = c => [c.tagName, c.type, c.getAttribute('aria-label'), c.dataset.cardOpener];
-expect('each time on a planned and a live bar, and the line between them, is the trip\'s, and a clock leading the row is the button that opens the leg\'s route tip',
+const markOf = c => [c.tagName, c.type, c.getAttribute('aria-label'), c.dataset.cardOpener];
+expect('each time on a planned and a live bar, and the line between them, is the trip\'s, and a route mark leading the row is the button that opens the leg\'s route tip',
   [[...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__when')].map(w => w.tagName),
     [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time .scheduler-bar__track')].map(t => t.tagName),
-    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time > .scheduler-bar__clock')].map(clockOf),
+    [...drawn('trip-bar', 'Either side of the week')[0].querySelectorAll('.scheduler-bar__time > .scheduler-bar__route')].map(markOf),
     [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__when')].map(w => w.tagName),
     [...row(lit('At highway speed')).querySelectorAll('.scheduler-road__track')].map(t => t.tagName),
-    [...row(lit('At highway speed')).querySelectorAll(':scope > .scheduler-bar__clock')].map(clockOf)],
+    [...row(lit('At highway speed')).querySelectorAll(':scope > .scheduler-bar__route')].map(markOf)],
   [['SPAN'], ['SPAN'], [['BUTTON', 'button', 'Route', '']], ['SPAN', 'SPAN'], ['SPAN'], [['BUTTON', 'button', 'Route', '']]]);
 const lateWhens = b => [...row(lit(b)).querySelectorAll('.scheduler-road__when')].map(w => w.classList.contains('scheduler-road__when--late'));
 expect('late back: the expected return in amber in place of the plan, or the plan in amber once passed, and nothing added to the clock, out, the track and back',

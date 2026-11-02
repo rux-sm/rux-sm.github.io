@@ -11371,7 +11371,7 @@
       : cardTrigger?.closest('.scheduler-bar__drivers')
         ? `${driver ? `.scheduler-crew[data-driver-id="${CSS.escape(driver)}"] > ` : ''}${kind}[data-card-opener]`
       : cardTrigger?.matches('.scheduler-bar__chat') ? '.scheduler-bar__chat'
-      : cardTrigger?.matches('.scheduler-bar__clock') ? ':scope > :is(.scheduler-bar__time, .scheduler-road__times)' : null;
+      : cardTrigger?.matches('.scheduler-bar__route') ? ':scope > :is(.scheduler-bar__time, .scheduler-road__times)' : null;
     return (selector && (bar.querySelector(`:scope > .scheduler-bar__drivers ${selector}`) ?? bar.querySelector(selector))) || bar;
   }
   // Every way in names its part; putting the card away names none.
@@ -12651,7 +12651,7 @@
   });
   schEl.addEventListener('pointerleave', () => growStops(null));
 
-  /* THE ROUTE TIP: a press on the clock leading a bar's time row shows the
+  /* THE ROUTE TIP: a press on the route mark leading a bar's time row shows the
      leg's whole route in a tip beside the trip, as the trip's other tips
      stand, its caret on the time row: the yard out, the pickup, each stop
      and the yard back, each with its planned time beside what happened.

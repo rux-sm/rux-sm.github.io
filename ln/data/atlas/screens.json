@@ -563,7 +563,7 @@
       "code": "tdsls4247m000",
       "name": "Release Sales Orders/Schedules to Invoicing",
       "purpose": "Releases delivered sales orders and schedules to invoicing.",
-      "route": "Actions - Release - Release to Invoicing on Sales Order Intake Workbench (tdsls4601m200)"
+      "route": "Release to Invoicing, under Actions ➔ Release on Sales Order Intake Workbench (tdsls4601m200)"
     },
     {
       "code": "tdsls4501m140",
@@ -955,7 +955,7 @@
       "code": "whinh3512m000",
       "name": "Warehouse Receipt",
       "purpose": "Creates and confirms receipts, where incoming goods become inventory.",
-      "route": "Actions - Receive from the inbound order line, or Drill In from the receipt list"
+      "route": "Receive… on the Actions menu of an inbound order line, or Drill In from the receipt list"
     },
     {
       "code": "whinh3530m000",

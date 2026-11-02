@@ -20,58 +20,49 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each material's on-hand at the receiving warehouse is written down."
+        "v": "You've written down each material's on-hand in the warehouse you're buying into."
       }
     ],
-    "text": "Each material's on-hand at the receiving warehouse is written down."
+    "text": "You've written down each material's on-hand in the warehouse you're buying into."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "The materials exist as items you can buy, and the warehouse you're buying into exists. "
+          "v": "You need items you can buy and a warehouse to buy them into. "
         },
         {
           "t": "link",
-          "v": "Configure the purchased group",
-          "href": "configure-the-purchased-group.md"
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
         },
         {
           "t": "text",
-          "v": " and "
-        },
-        {
-          "t": "link",
-          "v": "Create the three items",
-          "href": "create-the-three-items.md"
-        },
-        {
-          "t": "text",
-          "v": " make both."
+          "v": " makes both."
         }
       ],
-      "text": "The materials exist as items you can buy, and the warehouse you're buying into exists. Configure the purchased group and Create the three items make both."
+      "text": "You need items you can buy and a warehouse to buy them into. Create test items makes both."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing changes yet. A confirmed receipt only tells you a document changed status. The proof that stock arrived is the on-hand figure at the receiving warehouse going up, and that needs the figure from before. A new item isn't always at zero."
+        "v": "Nothing changes yet. A confirmed receipt only shows that a status changed. The proof that stock arrived is the on-hand going up, so you need the number from before. A new item isn't always at zero."
       }
     ],
-    "text": "Nothing changes yet. A confirmed receipt only tells you a document changed status. The proof that stock arrived is the on-hand figure at the receiving warehouse going up, and that needs the figure from before. A new item isn't always at zero."
+    "text": "Nothing changes yet. A confirmed receipt only shows that a status changed. The proof that stock arrived is the on-hand going up, so you need the number from before. A new item isn't always at zero."
   },
   "blocks": [
     {
@@ -192,12 +183,13 @@
             {
               "tokens": [
                 {
-                  "t": "chip",
-                  "v": "Warehouse - Item Inventory"
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
                 },
                 {
                   "t": "text",
-                  "v": " opens, one row per warehouse — "
+                  "v": " opens, one row for each warehouse — "
                 },
                 {
                   "t": "pencil"
@@ -241,7 +233,7 @@
                   "v": "material 1 on-hand before"
                 }
               ],
-              "text": "Warehouse - Item Inventory opens, one row per warehouse — material 1, receiving warehouse, material 1 on-hand before"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, one row for each warehouse — material 1, receiving warehouse, material 1 on-hand before"
             }
           ],
           "id": "3",
@@ -341,10 +333,10 @@
               },
               {
                 "t": "text",
-                "v": " — test items that Create test items makes"
+                "v": ", test items from Create test items"
               }
             ],
-            "text": "BAM-ROD, then BAM-SLEEVE — test items that Create test items makes"
+            "text": "BAM-ROD, then BAM-SLEEVE, test items from Create test items"
           }
         ]
       }

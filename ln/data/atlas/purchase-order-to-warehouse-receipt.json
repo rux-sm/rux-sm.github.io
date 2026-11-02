@@ -9,9 +9,9 @@
     "Procurement",
     "Warehousing"
   ],
-  "updated": "2026-10-25",
-  "status": "draft",
-  "summary": "buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received.",
+  "updated": "2026-11-01",
+  "status": "review",
+  "summary": "buy materials on a purchase order, receive them into a warehouse, and check that on-hand went up by what you received.",
   "order": 5,
   "sources": [
     "tccom4120s000",
@@ -39,7 +39,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow "
+          "v": "You need a supplier set up as a buy-from business partner. To see where an item's stock is first, follow "
         },
         {
           "t": "link",
@@ -51,7 +51,7 @@
           "v": "."
         }
       ],
-      "text": "A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow Check an item's inventory."
+      "text": "You need a supplier set up as a buy-from business partner. To see where an item's stock is first, follow Check an item's inventory."
     }
   ],
   "tasks": [
@@ -63,13 +63,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Each material's on-hand at the receiving warehouse is written down."
+            "v": "You've written down each material's on-hand in the warehouse you're buying into."
           }
         ],
-        "text": "Each material's on-hand at the receiving warehouse is written down."
+        "text": "You've written down each material's on-hand in the warehouse you're buying into."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "create-the-purchase-order",
@@ -79,10 +79,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The purchase order is saved for your buy-from business partner, with status "
+            "v": "The purchase order is saved with its number, and its status is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Created"
           },
           {
@@ -90,10 +90,10 @@
             "v": "."
           }
         ],
-        "text": "The purchase order is saved for your buy-from business partner, with status Created."
+        "text": "The purchase order is saved with its number, and its status is Created."
       },
       "steps": 6,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "book-the-lines",
@@ -103,13 +103,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Each material is a line of the order, in its quantity, to the receiving warehouse."
+            "v": "Each material is a line on the order, with its quantity and the warehouse you're buying into."
           }
         ],
-        "text": "Each material is a line of the order, in its quantity, to the receiving warehouse."
+        "text": "Each material is a line on the order, with its quantity and the warehouse you're buying into."
       },
       "steps": 8,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "approve-the-purchase-order",
@@ -119,21 +119,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The purchase order reads "
+            "v": "The purchase order is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "In Process"
           },
           {
             "t": "text",
-            "v": ", and a warehousing order with its number is listed."
+            "v": ", and there's a warehousing order with the same number."
           }
         ],
-        "text": "The purchase order reads In Process, and a warehousing order with its number is listed."
+        "text": "The purchase order is In Process, and there's a warehousing order with the same number."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "receive-against-the-order",
@@ -147,13 +147,13 @@
           },
           {
             "t": "text",
-            "v": " is open with a line for each purchase order line."
+            "v": " is open, with a line for each purchase order line."
           }
         ],
-        "text": "Warehouse Receipt is open with a line for each purchase order line."
+        "text": "Warehouse Receipt is open, with a line for each purchase order line."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "confirm-the-receipt",
@@ -163,15 +163,15 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The receipt reads "
+            "v": "The receipt is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Confirmed"
           },
           {
             "t": "text",
-            "v": ", with "
+            "v": ". "
           },
           {
             "t": "field",
@@ -187,7 +187,7 @@
           },
           {
             "t": "text",
-            "v": " set and "
+            "v": " are ticked, and "
           },
           {
             "t": "field",
@@ -195,13 +195,13 @@
           },
           {
             "t": "text",
-            "v": " clear."
+            "v": " is clear."
           }
         ],
-        "text": "The receipt reads Confirmed, with All Lines Final and All Lines Complete set and Errors Logged clear."
+        "text": "The receipt is Confirmed. All Lines Final and All Lines Complete are ticked, and Errors Logged is clear."
       },
-      "steps": 5,
-      "walked": "2026-10-25"
+      "steps": 6,
+      "walked": "2026-11-01"
     },
     {
       "id": "verify-the-inventory-increase",
@@ -211,13 +211,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
+            "v": "Each material's on-hand went up by the quantity you received."
           }
         ],
-        "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
+        "text": "Each material's on-hand went up by the quantity you received."
       },
       "steps": 2,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     }
   ],
   "values": {
@@ -254,40 +254,13 @@
               },
               {
                 "t": "text",
-                "v": " — test items that Create test items makes"
+                "v": ", test items from Create test items"
               }
             ],
-            "text": "BAM-ROD, then BAM-SLEEVE — test items that Create test items makes"
+            "text": "BAM-ROD, then BAM-SLEEVE, test items from Create test items"
           }
         ],
         "task": "read-the-baseline"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Order Type"
-              }
-            ],
-            "text": "Order Type"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "IPO"
-              },
-              {
-                "t": "text",
-                "v": " — Inventory Purchase Order, which LN fills in"
-              }
-            ],
-            "text": "IPO — Inventory Purchase Order, which LN fills in"
-          }
-        ],
-        "task": "create-the-purchase-order"
       },
       {
         "cells": [
@@ -316,7 +289,7 @@
               },
               {
                 "t": "text",
-                "v": " and "
+                "v": ", "
               },
               {
                 "t": "literal",
@@ -329,13 +302,9 @@
               {
                 "t": "literal",
                 "v": "BAM-SLEEVE"
-              },
-              {
-                "t": "text",
-                "v": ", one pair's bill of material"
               }
             ],
-            "text": "2 for BAM-ROD and 1 for BAM-SLEEVE, one pair's bill of material"
+            "text": "2 for BAM-ROD, 1 for BAM-SLEEVE"
           }
         ],
         "task": "book-the-lines"
@@ -352,10 +321,10 @@
         },
         {
           "t": "text",
-          "v": " buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received."
+          "v": " buy materials on a purchase order, receive them into a warehouse, and check that on-hand went up by what you received."
         }
       ],
-      "text": "Objective: buy materials on a purchase order, receive them into a warehouse, and check that on-hand rose by what you received."
+      "text": "Objective: buy materials on a purchase order, receive them into a warehouse, and check that on-hand went up by what you received."
     },
     {
       "kind": "prose",
@@ -370,7 +339,7 @@
         },
         {
           "t": "text",
-          "v": " > A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow "
+          "v": " > You need a supplier set up as a buy-from business partner. To see where an item's stock is first, follow "
         },
         {
           "t": "link",
@@ -382,7 +351,7 @@
           "v": "."
         }
       ],
-      "text": "> Prerequisite > A buy-from business partner, materials you can buy, and a warehouse to receive them into. To see where an item's stock is first, follow Check an item's inventory."
+      "text": "> Prerequisite > You need a supplier set up as a buy-from business partner. To see where an item's stock is first, follow Check an item's inventory."
     },
     {
       "kind": "prose",
@@ -401,22 +370,22 @@
         },
         {
           "t": "strong",
-          "v": "This guide ends when on-hand has risen by the quantity received."
+          "v": "This guide ends when on-hand has gone up by what you received."
         },
         {
           "t": "text",
-          "v": " A receipt reading "
+          "v": " A receipt that says "
         },
         {
-          "t": "strong",
+          "t": "status",
           "v": "Confirmed"
         },
         {
           "t": "text",
-          "v": " is a status; the stock figure is the proof."
+          "v": " is only a status. The stock number is the proof."
         }
       ],
-      "text": "> Warning > This guide ends when on-hand has risen by the quantity received. A receipt reading Confirmed is a status; the stock figure is the proof."
+      "text": "> Warning > This guide ends when on-hand has gone up by what you received. A receipt that says Confirmed is only a status. The stock number is the proof."
     },
     {
       "kind": "glance",
@@ -461,10 +430,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each material's on-hand at the receiving warehouse is written down"
+                  "v": "You've written down each material's on-hand in the warehouse you're buying into"
                 }
               ],
-              "text": "Each material's on-hand at the receiving warehouse is written down"
+              "text": "You've written down each material's on-hand in the warehouse you're buying into"
             }
           ]
         },
@@ -502,14 +471,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The purchase order is saved for your buy-from business partner, with status "
+                  "v": "The purchase order is saved with its number, and its status is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Created"
                 }
               ],
-              "text": "The purchase order is saved for your buy-from business partner, with status Created"
+              "text": "The purchase order is saved with its number, and its status is Created"
             }
           ]
         },
@@ -547,10 +516,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each material is a line of the order, in its quantity, to the receiving warehouse"
+                  "v": "Each material is a line on the order, with its quantity and the warehouse you're buying into"
                 }
               ],
-              "text": "Each material is a line of the order, in its quantity, to the receiving warehouse"
+              "text": "Each material is a line on the order, with its quantity and the warehouse you're buying into"
             }
           ]
         },
@@ -579,27 +548,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Purchase Order; Warehousing Orders"
+                  "v": "Purchase Order"
                 }
               ],
-              "text": "Purchase Order; Warehousing Orders"
+              "text": "Purchase Order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The purchase order reads "
+                  "v": "The purchase order is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "In Process"
                 },
                 {
                   "t": "text",
-                  "v": ", and a warehousing order with its number is listed"
+                  "v": ", and there's a warehousing order with the same number"
                 }
               ],
-              "text": "The purchase order reads In Process, and a warehousing order with its number is listed"
+              "text": "The purchase order is In Process, and there's a warehousing order with the same number"
             }
           ]
         },
@@ -641,10 +610,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " is open with a line for each purchase order line"
+                  "v": " is open, with a line for each purchase order line"
                 }
               ],
-              "text": "Warehouse Receipt is open with a line for each purchase order line"
+              "text": "Warehouse Receipt is open, with a line for each purchase order line"
             }
           ]
         },
@@ -682,15 +651,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receipt reads "
+                  "v": "The receipt is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Confirmed"
                 },
                 {
                   "t": "text",
-                  "v": ", with "
+                  "v": ". "
                 },
                 {
                   "t": "field",
@@ -706,7 +675,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " set and "
+                  "v": " are ticked, and "
                 },
                 {
                   "t": "field",
@@ -714,10 +683,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " clear"
+                  "v": " is clear"
                 }
               ],
-              "text": "The receipt reads Confirmed, with All Lines Final and All Lines Complete set and Errors Logged clear"
+              "text": "The receipt is Confirmed. All Lines Final and All Lines Complete are ticked, and Errors Logged is clear"
             }
           ]
         },
@@ -755,10 +724,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for"
+                  "v": "Each material's on-hand went up by the quantity you received"
                 }
               ],
-              "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for"
+              "text": "Each material's on-hand went up by the quantity you received"
             }
           ]
         }
@@ -774,10 +743,10 @@
         },
         {
           "t": "text",
-          "v": " A purchase order at any status is a promise from the supplier, not stock."
+          "v": " A purchase order, whatever its status, is a promise from the supplier, not stock."
         }
       ],
-      "text": "Nothing is in the warehouse until the receipt is confirmed. A purchase order at any status is a promise from the supplier, not stock.",
+      "text": "Nothing is in the warehouse until the receipt is confirmed. A purchase order, whatever its status, is a promise from the supplier, not stock.",
       "under": "At a glance"
     },
     {
@@ -802,7 +771,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "An inspection activity sits between receipt and put-away. "
+                  "v": "An inspection comes between the receipt and putting the goods away. You inspect the receipt in "
                 },
                 {
                   "t": "session",
@@ -811,10 +780,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " runs against the receipt. This adds a task and would earn its own process. "
+                  "v": ". That adds a task, so it would be a guide of its own "
                 }
               ],
-              "text": "An inspection activity sits between receipt and put-away. Warehouse Inspections (whinh3122m000) runs against the receipt. This adds a task and would earn its own process."
+              "text": "An inspection comes between the receipt and putting the goods away. You inspect the receipt in Warehouse Inspections (whinh3122m000). That adds a task, so it would be a guide of its own"
             }
           ]
         },
@@ -833,10 +802,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Goods ship from the supplier to a customer without entering your warehouse. That removes receiving, confirming and the inventory check entirely, so it is a different process, not a variant of this one"
+                  "v": "The supplier ships straight to your customer, and the goods never enter your warehouse. There's nothing to receive, confirm or check, so it's a different guide"
                 }
               ],
-              "text": "Goods ship from the supplier to a customer without entering your warehouse. That removes receiving, confirming and the inventory check entirely, so it is a different process, not a variant of this one"
+              "text": "The supplier ships straight to your customer, and the goods never enter your warehouse. There's nothing to receive, confirm or check, so it's a different guide"
             }
           ]
         },
@@ -855,19 +824,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The adjustment route the notes of "
-                },
-                {
-                  "t": "link",
-                  "v": "Stock the components",
-                  "href": "stock-the-components.md"
-                },
-                {
-                  "t": "text",
-                  "v": " describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured "
+                  "v": "An adjustment order puts stock in without buying it. It's faster, but it skips the purchase defaults and leaves no purchase price history "
                 }
               ],
-              "text": "The adjustment route the notes of Stock the components describe — a cycle counting/adjustment order. Faster, but it bypasses purchase defaults and leaves no purchase price history. Its entry session was never captured"
+              "text": "An adjustment order puts stock in without buying it. It's faster, but it skips the purchase defaults and leaves no purchase price history"
             }
           ]
         }
@@ -888,10 +848,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The raw materials are on hand at the receiving warehouse"
+                  "v": "The materials are in the warehouse you need them in"
                 }
               ],
-              "text": "The raw materials are on hand at the receiving warehouse"
+              "text": "The materials are in the warehouse you need them in"
             },
             {
               "tokens": [
@@ -902,20 +862,20 @@
                 },
                 {
                   "t": "text",
-                  "v": " — consume them into a build"
+                  "v": ", to use them in a build"
                 }
               ],
-              "text": "Production order — consume them into a build"
+              "text": "Production order, to use them in a build"
             },
             {
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Read the baseline",
-                  "href": "read-the-baseline.md"
+                  "v": "Confirm the existing foundation",
+                  "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "Read the baseline"
+              "text": "Confirm the existing foundation"
             }
           ]
         },
@@ -925,10 +885,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The materials are on hand but in the wrong warehouse"
+                  "v": "The materials are in the wrong warehouse"
                 }
               ],
-              "text": "The materials are on hand but in the wrong warehouse"
+              "text": "The materials are in the wrong warehouse"
             },
             {
               "tokens": [
@@ -944,11 +904,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Read the baseline",
-                  "href": "read-the-baseline.md"
+                  "v": "Confirm stock, destination, and expected order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Read the baseline"
+              "text": "Confirm stock, destination, and expected order type"
             }
           ]
         }

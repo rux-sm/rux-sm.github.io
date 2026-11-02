@@ -1,9 +1,9 @@
-commit   ff7ea18011ae625fdfed1d053a0e1ea4c81ad0c3
-date     2026-11-02T04:30:59Z
-subject  feat(tasks): Stamp item inventory tasks walked
+commit   928d41a67734261c045f39da978542f96bfa2160
+date     2026-11-02T05:09:36Z
+subject  docs(walks): Fix Purchase to receipt print read
 contract 24 
 tier     export
-sha256   66b7c1c77069ee7c42579822333cd57ac31f0fbad702176543db8ffccba54e01
+sha256   75f24fab70666926afec928883b923bc7de1e904c2b3a7963f718ee740cd6b89
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

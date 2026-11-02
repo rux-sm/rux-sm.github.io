@@ -23,27 +23,27 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each material is a line of the order, in its quantity, to the receiving warehouse."
+        "v": "Each material is a line on the order, with its quantity and the warehouse you're buying into."
       }
     ],
-    "text": "Each material is a line of the order, in its quantity, to the receiving warehouse."
+    "text": "Each material is a line on the order, with its quantity and the warehouse you're buying into."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need the materials and the receiving warehouse from "
+          "v": "You need the materials and the warehouse from steps 3 and 4 of "
         },
         {
           "t": "link",
@@ -52,7 +52,7 @@
         },
         {
           "t": "text",
-          "v": ", and the order from "
+          "v": ", and the order from step 6 of "
         },
         {
           "t": "link",
@@ -64,17 +64,17 @@
           "v": "."
         }
       ],
-      "text": "You need the materials and the receiving warehouse from Read the baseline, and the order from Create the purchase order."
+      "text": "You need the materials and the warehouse from steps 3 and 4 of Read the baseline, and the order from step 6 of Create the purchase order."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each line names an item, a quantity and a warehouse. The warehouse on the line decides where the goods are received, so a line to the wrong warehouse puts the stock somewhere you didn't mean."
+        "v": "Each line has an item, a quantity and a warehouse. The warehouse on the line decides where the goods arrive. A line with the wrong warehouse puts the stock somewhere you didn't mean."
       }
     ],
-    "text": "Each line names an item, a quantity and a warehouse. The warehouse on the line decides where the goods are received, so a line to the wrong warehouse puts the stock somewhere you didn't mean."
+    "text": "Each line has an item, a quantity and a warehouse. The warehouse on the line decides where the goods arrive. A line with the wrong warehouse puts the stock somewhere you didn't mean."
   },
   "blocks": [
     {
@@ -108,20 +108,20 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab under the header, click "
+                  "v": " tab below the header, click "
                 },
                 {
                   "t": "button",
                   "label": "New"
                 }
               ],
-              "text": "On the Order Lines tab under the header, click New"
+              "text": "On the Order Lines tab below the header, click New"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A new line, with "
+                  "v": "A new line. "
                 },
                 {
                   "t": "field",
@@ -129,7 +129,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = "
                 },
                 {
                   "t": "literal",
@@ -137,10 +137,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " and the site filled in"
+                  "v": ", and the site is filled in"
                 }
               ],
-              "text": "A new line, with Line 10 and the site filled in"
+              "text": "A new line. Line = 10, and the site is filled in"
             }
           ],
           "id": "1",
@@ -162,7 +162,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the first material as "
+                  "v": "Enter the first material in "
                 },
                 {
                   "t": "field",
@@ -173,7 +173,7 @@
                   "v": " and press Tab"
                 }
               ],
-              "text": "Enter the first material as Item and press Tab"
+              "text": "Enter the first material in Item and press Tab"
             },
             {
               "tokens": [
@@ -187,14 +187,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " reads "
+                  "v": " = "
                 },
                 {
                   "t": "literal",
                   "v": "1"
                 }
               ],
-              "text": "Its description fills in, and Ordered Quantity reads 1"
+              "text": "Its description fills in, and Ordered Quantity = 1"
             }
           ],
           "id": "2",
@@ -292,14 +292,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A second line, "
+                  "v": "A second line. "
+                },
+                {
+                  "t": "field",
+                  "v": "Line"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
                 },
                 {
                   "t": "literal",
                   "v": "20"
                 }
               ],
-              "text": "A second line, 20"
+              "text": "A second line. Line = 20"
             }
           ],
           "id": "4",
@@ -321,7 +329,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the second material as "
+                  "v": "Enter the second material in "
                 },
                 {
                   "t": "field",
@@ -332,7 +340,7 @@
                   "v": " and press Tab"
                 }
               ],
-              "text": "Enter the second material as Item and press Tab"
+              "text": "Enter the second material in Item and press Tab"
             },
             {
               "tokens": [
@@ -468,19 +476,32 @@
                 },
                 {
                   "t": "text",
-                  "v": " on each line"
+                  "v": " on each line. If it isn't the warehouse you wrote down at step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", change it and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Check Warehouse on each line"
+              "text": "Check Warehouse on each line. If it isn't the warehouse you wrote down at step 3 of Read the baseline, change it and click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN fills in the item's default warehouse. It should be the receiving warehouse; if it isn't, change it and save"
+                  "v": "Both lines show the warehouse you're buying into"
                 }
               ],
-              "text": "LN fills in the item's default warehouse. It should be the receiving warehouse; if it isn't, change it and save"
+              "text": "Both lines show the warehouse you're buying into"
             }
           ],
           "id": "8",
@@ -524,14 +545,18 @@
               },
               {
                 "t": "text",
-                "v": ", then "
+                "v": " on line 10, "
               },
               {
                 "t": "literal",
                 "v": "BAM-SLEEVE"
+              },
+              {
+                "t": "text",
+                "v": " on line 20"
               }
             ],
-            "text": "BAM-ROD, then BAM-SLEEVE"
+            "text": "BAM-ROD on line 10, BAM-SLEEVE on line 20"
           }
         ]
       },
@@ -562,7 +587,7 @@
               },
               {
                 "t": "text",
-                "v": " and "
+                "v": ", "
               },
               {
                 "t": "literal",
@@ -575,13 +600,9 @@
               {
                 "t": "literal",
                 "v": "BAM-SLEEVE"
-              },
-              {
-                "t": "text",
-                "v": ", one pair's bill of material"
               }
             ],
-            "text": "2 for BAM-ROD and 1 for BAM-SLEEVE, one pair's bill of material"
+            "text": "2 for BAM-ROD, 1 for BAM-SLEEVE"
           }
         ]
       }

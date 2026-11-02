@@ -23,12 +23,12 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
@@ -37,10 +37,10 @@
       },
       {
         "t": "text",
-        "v": " is open with a line for each purchase order line."
+        "v": " is open, with a line for each purchase order line."
       }
     ],
-    "text": "Warehouse Receipt is open with a line for each purchase order line."
+    "text": "Warehouse Receipt is open, with a line for each purchase order line."
   },
   "before": [
     {
@@ -66,10 +66,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "You don't create this order. Approving the purchase order made it, with the same number, and its inbound lines are the purchase order lines waiting to be received. Receiving them opens a receipt with the lines already on it."
+        "v": "You don't create this order. Approving the purchase order made it, with the same number. Its inbound lines are the purchase order lines waiting to arrive. Receiving them opens a receipt with the lines already on it."
       }
     ],
-    "text": "You don't create this order. Approving the purchase order made it, with the same number, and its inbound lines are the purchase order lines waiting to be received. Receiving them opens a receipt with the lines already on it."
+    "text": "You don't create this order. Approving the purchase order made it, with the same number. Its inbound lines are the purchase order lines waiting to arrive. Receiving them opens a receipt with the lines already on it."
   },
   "blocks": [
     {
@@ -95,7 +95,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On the warehousing order's row, click "
+                  "v": "Tick the warehousing order's row and click "
                 },
                 {
                   "t": "button",
@@ -103,13 +103,14 @@
                   "location": "line"
                 }
               ],
-              "text": "On the warehousing order's row, click Drill In"
+              "text": "Tick the warehousing order's row and click Drill In"
             },
             {
               "tokens": [
                 {
-                  "t": "chip",
-                  "v": "Warehousing Order"
+                  "t": "session",
+                  "code": "whinh2100m100",
+                  "name": "Warehousing Order"
                 },
                 {
                   "t": "text",
@@ -124,7 +125,7 @@
                   "v": " below"
                 }
               ],
-              "text": "Warehousing Order opens, with Inbound Lines below"
+              "text": "Warehousing Order (whinh2100m100) opens, with Inbound Lines below"
             }
           ],
           "id": "1",
@@ -154,10 +155,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " and the two warehouses"
+                  "v": ", ship-from and ship-to"
                 }
               ],
-              "text": "Check Order Type and the two warehouses"
+              "text": "Check Order Type, ship-from and ship-to"
             },
             {
               "tokens": [
@@ -167,7 +168,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = "
                 },
                 {
                   "t": "literal",
@@ -175,10 +176,15 @@
                 },
                 {
                   "t": "text",
-                  "v": ", ship-from your business partner, ship-to the receiving warehouse"
+                  "v": ". Ship-from is your supplier, and ship-to is the warehouse you wrote down at step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the baseline",
+                  "href": "read-the-baseline.md"
                 }
               ],
-              "text": "Order Type PUI, ship-from your business partner, ship-to the receiving warehouse"
+              "text": "Order Type = PUI. Ship-from is your supplier, and ship-to is the warehouse you wrote down at step 3 of Read the baseline"
             }
           ],
           "id": "2",
@@ -354,16 +360,16 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The ship-to isn't the receiving warehouse"
+                "v": "The ship-to isn't the warehouse you're buying into"
               }
             ],
-            "text": "The ship-to isn't the receiving warehouse"
+            "text": "The ship-to isn't the warehouse you're buying into"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "A purchase order line went to another warehouse. Check "
+                "v": "A purchase order line has another warehouse. Check "
               },
               {
                 "t": "field",
@@ -379,7 +385,7 @@
                 "href": "book-the-lines.md"
               }
             ],
-            "text": "A purchase order line went to another warehouse. Check Warehouse at step 8 of Book the lines"
+            "text": "A purchase order line has another warehouse. Check Warehouse at step 8 of Book the lines"
           }
         ]
       }

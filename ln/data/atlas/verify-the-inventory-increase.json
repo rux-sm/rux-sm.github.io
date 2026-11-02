@@ -20,30 +20,30 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
+        "v": "Each material's on-hand went up by the quantity you received."
       }
     ],
-    "text": "Each material's on-hand at the receiving warehouse rose by its quantity received, once anything else that moved the item is allowed for."
+    "text": "Each material's on-hand went up by the quantity you received."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. A confirmed receipt is a status. The proof is the on-hand figure at the receiving warehouse going up by what you received."
+        "v": "Nothing changes. A confirmed receipt is only a status. The proof is the on-hand going up by what you received."
       }
     ],
-    "text": "Nothing new. A confirmed receipt is a status. The proof is the on-hand figure at the receiving warehouse going up by what you received."
+    "text": "Nothing changes. A confirmed receipt is only a status. The proof is the on-hand going up by what you received."
   },
   "blocks": [
     {
@@ -69,18 +69,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the first material's on-hand at the receiving warehouse, in the same view as step 3 of "
+                  "v": "Open the first material's warehouse rows the same way as steps 2 and 3 of "
                 },
                 {
                   "t": "link",
                   "v": "Read the baseline",
                   "href": "read-the-baseline.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and read its on-hand in your warehouse"
                 }
               ],
-              "text": "Read the first material's on-hand at the receiving warehouse, in the same view as step 3 of Read the baseline"
+              "text": "Open the first material's warehouse rows the same way as steps 2 and 3 of Read the baseline, and read its on-hand in your warehouse"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand is up by the quantity you ordered at step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Book the lines",
+                  "href": "book-the-lines.md"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -91,13 +108,9 @@
                 {
                   "t": "value",
                   "v": "material 1 on-hand after"
-                },
-                {
-                  "t": "text",
-                  "v": " — up by its quantity ordered"
                 }
               ],
-              "text": "material 1 on-hand after — up by its quantity ordered"
+              "text": "On-hand is up by the quantity you ordered at step 3 of Book the lines — material 1 on-hand after"
             }
           ],
           "id": "1",
@@ -133,13 +146,26 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Do the same for the second material"
+                  "v": "Close that tab, untick the row, and do the same for the second material"
                 }
               ],
-              "text": "Do the same for the second material"
+              "text": "Close that tab, untick the row, and do the same for the second material"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "On-hand is up by the quantity you ordered at step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Book the lines",
+                  "href": "book-the-lines.md"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -150,13 +176,9 @@
                 {
                   "t": "value",
                   "v": "material 2 on-hand after"
-                },
-                {
-                  "t": "text",
-                  "v": " — up by its quantity ordered"
                 }
               ],
-              "text": "material 2 on-hand after — up by its quantity ordered"
+              "text": "On-hand is up by the quantity you ordered at step 6 of Book the lines — material 2 on-hand after"
             }
           ],
           "id": "2",
@@ -212,7 +234,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The receipt may not be confirmed. Check step 3 of "
+                "v": "The receipt may not be confirmed. Check step 4 of "
               },
               {
                 "t": "link",
@@ -220,7 +242,7 @@
                 "href": "confirm-the-receipt.md"
               }
             ],
-            "text": "The receipt may not be confirmed. Check step 3 of Confirm the receipt"
+            "text": "The receipt may not be confirmed. Check step 4 of Confirm the receipt"
           }
         ]
       },
@@ -239,10 +261,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Something else may have moved the item in between. Look for other movements of the item before trusting the result"
+                "v": "Something else may have moved the item in between. Look for its other movements before you trust the result"
               }
             ],
-            "text": "Something else may have moved the item in between. Look for other movements of the item before trusting the result"
+            "text": "Something else may have moved the item in between. Look for its other movements before you trust the result"
           }
         ]
       }

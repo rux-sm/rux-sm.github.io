@@ -23,38 +23,65 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
+  "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
+  "session": "Purchase Order Intake Workbench",
+  "sessionCode": "tdpur4601m200",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The purchase order reads "
+        "v": "The purchase order is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "In Process"
       },
       {
         "t": "text",
-        "v": ", and a warehousing order with its number is listed."
+        "v": ", and there's a warehousing order with the same number."
       }
     ],
-    "text": "The purchase order reads In Process, and a warehousing order with its number is listed."
+    "text": "The purchase order is In Process, and there's a warehousing order with the same number."
   },
-  "before": [],
+  "before": [
+    {
+      "tokens": [
+        {
+          "t": "text",
+          "v": "You need the order from step 7 of "
+        },
+        {
+          "t": "link",
+          "v": "Book the lines",
+          "href": "book-the-lines.md"
+        },
+        {
+          "t": "text",
+          "v": ", still open in "
+        },
+        {
+          "t": "strong",
+          "v": "Purchase Order"
+        },
+        {
+          "t": "text",
+          "v": "."
+        }
+      ],
+      "text": "You need the order from step 7 of Book the lines, still open in Purchase Order."
+    }
+  ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Only an approved order goes to Warehousing. Approving prints the purchase order, and in the example it also released the order to Warehousing at once, so a warehousing order with the same number appeared without a separate release. That warehousing order is what you receive against."
+        "v": "Only an approved order goes to Warehousing. Approving prints the purchase order. Here it also sends the order to Warehousing straight away, so a warehousing order with the same number appears by itself. You receive the goods against that warehousing order."
       }
     ],
-    "text": "Only an approved order goes to Warehousing. Approving prints the purchase order, and in the example it also released the order to Warehousing at once, so a warehousing order with the same number appeared without a separate release. That warehousing order is what you receive against."
+    "text": "Only an approved order goes to Warehousing. Approving prints the purchase order. Here it also sends the order to Warehousing straight away, so a warehousing order with the same number appears by itself. You receive the goods against that warehousing order."
   },
   "blocks": [
     {
@@ -93,10 +120,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The purchase order prints in a tab of its own, sometimes with an annex"
+                  "v": "The purchase order prints in its own tab, sometimes with an annex"
                 }
               ],
-              "text": "The purchase order prints in a tab of its own, sometimes with an annex"
+              "text": "The purchase order prints in its own tab, sometimes with an annex"
             }
           ],
           "id": "1",
@@ -163,11 +190,12 @@
                   "v": "Open "
                 },
                 {
-                  "t": "chip",
-                  "v": "Warehousing Orders"
+                  "t": "session",
+                  "code": "whinh2100m000",
+                  "name": "Warehousing Orders"
                 }
               ],
-              "text": "Open Warehousing Orders"
+              "text": "Open Warehousing Orders (whinh2100m000)"
             },
             {
               "tokens": [
@@ -198,7 +226,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Type the purchase order number in the filter box above the "
+                  "v": "Type the purchase order number from step 6 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the purchase order",
+                  "href": "create-the-purchase-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in the filter box above the "
                 },
                 {
                   "t": "field",
@@ -209,7 +246,7 @@
                   "v": " column and press Enter"
                 }
               ],
-              "text": "Type the purchase order number in the filter box above the Order column and press Enter"
+              "text": "Type the purchase order number from step 6 of Create the purchase order in the filter box above the Order column and press Enter"
             },
             {
               "tokens": [
@@ -223,23 +260,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "chip",
-                  "v": "Purchase"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
-                },
-                {
-                  "t": "chip",
-                  "v": "Receipt"
-                },
-                {
-                  "t": "text",
-                  "v": ", "
+                  "v": " Purchase, Receipt, "
                 },
                 {
                   "t": "status",
@@ -316,7 +337,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The order may have no lines yet, or they aren't saved. Go back to "
+                "v": "The order may have no lines yet, or they aren't saved. Go back to step 1 of "
               },
               {
                 "t": "link",
@@ -324,7 +345,7 @@
                 "href": "book-the-lines.md"
               }
             ],
-            "text": "The order may have no lines yet, or they aren't saved. Go back to Book the lines"
+            "text": "The order may have no lines yet, or they aren't saved. Go back to step 1 of Book the lines"
           }
         ]
       },
@@ -351,7 +372,7 @@
               },
               {
                 "t": "text",
-                "v": " tab: a line still listed there is waiting, and the workbench's "
+                "v": " tab. A line still listed there is waiting. Click "
               },
               {
                 "t": "button",
@@ -359,10 +380,10 @@
               },
               {
                 "t": "text",
-                "v": " releases it"
+                "v": " on the workbench to release it"
               }
             ],
-            "text": "The lines may not be released yet. Open the purchase order's Release to Warehousing tab: a line still listed there is waiting, and the workbench's Release to Warehousing releases it"
+            "text": "The lines may not be released yet. Open the purchase order's Release to Warehousing tab. A line still listed there is waiting. Click Release to Warehousing on the workbench to release it"
           }
         ]
       }

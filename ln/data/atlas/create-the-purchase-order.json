@@ -23,20 +23,20 @@
     "Procurement",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Procurement ➔ Orders ➔ Order Intake Workbench",
   "session": "Purchase Order Intake Workbench",
   "sessionCode": "tdpur4601m200",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The purchase order is saved for your buy-from business partner, with status "
+        "v": "The purchase order is saved with its number, and its status is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Created"
       },
       {
@@ -44,17 +44,17 @@
         "v": "."
       }
     ],
-    "text": "The purchase order is saved for your buy-from business partner, with status Created."
+    "text": "The purchase order is saved with its number, and its status is Created."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The buy-from business partner fills in most of the header: the order type, the purchase office and the buyer come from the partner's record. The partner has to exist already; this guide picks one and doesn't create one."
+        "v": "The supplier you buy from is a buy-from business partner. Its record fills in most of the header for you: the order type, the purchase office and the buyer. The partner has to exist already. This guide picks one and doesn't create one."
       }
     ],
-    "text": "The buy-from business partner fills in most of the header: the order type, the purchase office and the buyer come from the partner's record. The partner has to exist already; this guide picks one and doesn't create one."
+    "text": "The supplier you buy from is a buy-from business partner. Its record fills in most of the header for you: the order type, the purchase office and the buyer. The partner has to exist already. This guide picks one and doesn't create one."
   },
   "blocks": [
     {
@@ -146,12 +146,13 @@
             {
               "tokens": [
                 {
-                  "t": "chip",
-                  "v": "Purchase Order"
+                  "t": "session",
+                  "code": "tdpur4100m900",
+                  "name": "Purchase Order"
                 },
                 {
                   "t": "text",
-                  "v": " opens, empty, with "
+                  "v": " opens, empty. "
                 },
                 {
                   "t": "field",
@@ -159,14 +160,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = "
                 },
                 {
                   "t": "status",
                   "v": "Created"
                 }
               ],
-              "text": "Purchase Order opens, empty, with Status Created"
+              "text": "Purchase Order (tdpur4100m900) opens, empty. Status = Created"
             }
           ],
           "id": "2",
@@ -188,7 +189,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the buy-from "
+                  "v": "Enter your supplier in "
                 },
                 {
                   "t": "field",
@@ -199,16 +200,16 @@
                   "v": " and press Tab"
                 }
               ],
-              "text": "Enter the buy-from Business Partner and press Tab"
+              "text": "Enter your supplier in Business Partner and press Tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Its name and address fill in, and the ship-from with them"
+                  "v": "Its name, address and ship-from fill in"
                 }
               ],
-              "text": "Its name and address fill in, and the ship-from with them"
+              "text": "Its name, address and ship-from fill in"
             }
           ],
           "id": "3",
@@ -238,27 +239,28 @@
                 },
                 {
                   "t": "text",
-                  "v": " LN fills in"
+                  "v": " LN puts in"
                 }
               ],
-              "text": "Check the Order Type LN fills in"
+              "text": "Check the Order Type LN puts in"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The partner's default order type"
+                  "v": "The partner's own order type, such as "
+                },
+                {
+                  "t": "literal",
+                  "v": "IPO"
                 }
               ],
-              "text": "The partner's default order type"
+              "text": "The partner's own order type, such as IPO"
             }
           ],
           "id": "4",
           "optional": false,
-          "produces": false,
-          "example": [
-            0
-          ]
+          "produces": false
         },
         {
           "cells": [
@@ -283,10 +285,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " LN fills in"
+                  "v": " LN puts in"
                 }
               ],
-              "text": "Check the Purchase Office LN fills in"
+              "text": "Check the Purchase Office LN puts in"
             },
             {
               "tokens": [
@@ -368,38 +370,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Order Type"
-              }
-            ],
-            "text": "Order Type"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "IPO"
-              },
-              {
-                "t": "text",
-                "v": " — Inventory Purchase Order, which LN fills in"
-              }
-            ],
-            "text": "IPO — Inventory Purchase Order, which LN fills in"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "6",
@@ -440,10 +412,10 @@
               },
               {
                 "t": "text",
-                "v": " is what the example used"
+                "v": " is the one this guide was walked with"
               }
             ],
-            "text": "Nothing, if it's the type your partner uses. IPO is what the example used"
+            "text": "Nothing, if it's the type your partner uses. IPO is the one this guide was walked with"
           }
         ]
       },

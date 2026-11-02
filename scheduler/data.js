@@ -267,6 +267,99 @@
     return tip;
   }
 
+  /* A BUS'S SHEET: on a compact board, a phone's, a press on a bus opens what
+     its number's toggletip says as a sheet across the foot of the screen, as
+     a trip's card opens, since a phone has no room to float the tip beside
+     the column, and under it the bus's trips in view, a tap on one opening
+     that trip's card in its place. The sheet is the page's own element and
+     the tip is copied into it, kept current with each answer from Samsara:
+     Safari clips anything fixed inside the sticky column to the board. A
+     trip's card and a bus's sheet are never open together, and the board is
+     given the sheet's height to scroll, as it is the card's, so the bus
+     pressed stands clear of it. */
+  const busSheet = document.getElementById('scheduler-bus-sheet');
+  let busSheetFor = null;
+  const sheetHead = () => (busSheetFor ? gridEl.querySelector(`.scheduler-row-head[data-bus-id="${CSS.escape(busSheetFor)}"]`) : null);
+  function openBusSheet(head) {
+    for (const bar of gridEl.querySelectorAll('.scheduler-bar[aria-current="true"]')) bar.setAttribute('aria-current', 'false');
+    busSheetFor = head.dataset.busId;
+    head.toggleAttribute('data-sheet', true);
+    head.querySelector('.scheduler-row-head__num')?.setAttribute('aria-expanded', 'true');
+    drawBusSheet();
+    busSheet.hidden = false;
+    /* After the card the selection closed has given its room back. Up and
+       down only: the head is sticky, and scrolled into view it would move
+       the days as well. */
+    requestAnimationFrame(() => {
+      const top = busSheet.getBoundingClientRect().top;
+      const sheet = Math.max(0, Math.round(innerHeight - top));
+      schEl.style.paddingBlockEnd = `${sheet}px`;
+      schEl.style.scrollPaddingBlockEnd = `calc(${sheet}px + var(--rux-spacing-03))`;
+      const under = head.getBoundingClientRect().bottom - top;
+      if (under > 0) schEl.scrollBy({ top: under, behavior: 'smooth' });
+    });
+  }
+  function drawBusSheet() {
+    const head = sheetHead();
+    if (!head || !busSheet) { closeBusSheet(); return; }
+    const at = busSheet.scrollTop;
+    head.toggleAttribute('data-sheet', true);
+    const tip = head.querySelector('.scheduler-tip')?.cloneNode(true);
+    tip?.appendChild(busTrips(head));
+    busSheet.replaceChildren(...[tip].filter(Boolean));
+    busSheet.scrollTop = at;
+  }
+  function closeBusSheet() {
+    if (!busSheet || busSheet.hidden) return;
+    const head = sheetHead();
+    head?.removeAttribute('data-sheet');
+    head?.querySelector('.scheduler-row-head__num')?.setAttribute('aria-expanded', 'false');
+    busSheetFor = null;
+    busSheet.hidden = true;
+    busSheet.replaceChildren();
+    if (!selectedBar()) clearDocked();
+  }
+  // The press is the sheet's here, so the number's toggletip, the wider board's, never opens.
+  gridEl.addEventListener('click', e => {
+    const head = e.target.closest('.scheduler-row-head[data-bus-id]');
+    if (!head || pageEl?.getAttribute('data-board') !== 'compact') return;
+    e.stopPropagation();
+    const again = busSheetFor === head.dataset.busId;
+    closeBusSheet();
+    if (!again) openBusSheet(head);
+  });
+  // A press anywhere else puts it away, as Escape does.
+  document.addEventListener('pointerdown', e => {
+    if (busSheetFor && !busSheet.contains(e.target) && !sheetHead()?.contains(e.target)) closeBusSheet();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBusSheet(); });
+  // The bus's trips in view, each a button saying where, when and who, as its bar does.
+  function busTrips(head) {
+    const box = el('div', 'scheduler-tip__row scheduler-tip__trips');
+    const row = stripRows.find(r => r.head === head);
+    const days = viewDays();
+    const items = row && days ? row.items.filter(i => i.el?.classList.contains('scheduler-bar') && i.end > days[0] && i.start < days[1]) : [];
+    items.sort((a, b) => a.start - b.start || a.lane - b.lane);
+    box.appendChild(el('div', 'scheduler-tip__trips-head', items.length ? 'Trips in view' : 'No trips in view'));
+    for (const { el: bar } of items) {
+      const go = el('button', 'scheduler-tip__trip');
+      go.type = 'button';
+      const times = bar.querySelector(':scope > .scheduler-bar__time')?.textContent.trim();
+      // The drivers by name alone: a live seat also writes its hours.
+      const drivers = bar.querySelector(':scope > .scheduler-bar__drivers');
+      const names = [...drivers?.querySelectorAll('.scheduler-crew__name') ?? []].map(n => n.textContent.trim()).join(', ')
+        || drivers?.textContent.trim();
+      go.append(el('strong', null, panelIndex.trips.get(bar.dataset.tripId)?.destination || 'No destination'),
+        ...[times, names].filter(Boolean).map(w => el('span', null, w)));
+      go.addEventListener('click', () => {
+        closeBusSheet();
+        bar.click();
+      });
+      box.appendChild(go);
+    }
+    return box;
+  }
+
   // Carbon's small loading spinner, the inline loading's and the file item's.
   function loadingSpinner(extra = '') {
     const spin = el('div', `rux--loading rux--loading--small${extra}`);
@@ -832,6 +925,7 @@
       BusHead.draw(head, bus, live, { tip: head.querySelector('.scheduler-tip'), waiting: roadWaiting() });
     }
     roadBars(gridEl.querySelectorAll('.scheduler-bar[data-bus-id]'));
+    if (busSheetFor) drawBusSheet();
     // A card showing the live card follows its bus with each answer.
     const shown = selectedBar();
     if (shown?.dataset.road && roadPartOf(shown) === 'road') placeBarOpen(shown);
@@ -12140,7 +12234,8 @@
       if (compact) pageEl.setAttribute('data-board', 'compact');
       else pageEl.removeAttribute('data-board');
       // Its rows are drawn again, three on a compact board, and its days
-      // fitted again, two to the pane there.
+      // fitted again, two to the pane there; a bus's sheet is the phone's alone.
+      closeBusSheet();
       applyView();
     }
     // The menus the view menu holds stand outside the page, so they read it from the root.

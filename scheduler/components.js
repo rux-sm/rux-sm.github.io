@@ -85,9 +85,12 @@
   }
 
   // The rows the view shows, on one sample's board.
+  // A compact board draws the destination, the times and the drivers whatever the view holds, as data.js's `rowShown` does.
+  const COMPACT = { client: false, contact: false, time: true, update: false, drivers: true };
+  const shows = r => (view.compact ? COMPACT[r] : view[r]);
   function showRows(board) {
-    for (const r of ROWS) board.classList.toggle(HIDE_ROW[r], !view[r]);
-    board.style.setProperty('--scheduler-bar-rows', String(1 + ROWS.filter(r => view[r]).length));
+    for (const r of ROWS) board.classList.toggle(HIDE_ROW[r], !shows(r));
+    board.style.setProperty('--scheduler-bar-rows', String(1 + ROWS.filter(shows).length));
   }
 
   function boardOf(sample, data) {

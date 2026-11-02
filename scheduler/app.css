@@ -55,6 +55,10 @@
      its 1px rule. */
   --scheduler-kit-w: calc(3 * 16px + 2 * var(--rux-spacing-01));
   --scheduler-kit-pad: var(--rux-spacing-03);
+  /* The bus column's least width, which the corner holds it to: the kit row
+     8px clear either side and its 1px rule, 69px. A compact board's is its
+     state's display instead. */
+  --scheduler-head-min: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px);
   --scheduler-kit-clear: calc((var(--scheduler-head-w) - var(--scheduler-edge, 0px) - 1px - var(--scheduler-kit-w)) / 2);
   /* The narrowest a day column gets; past it the grid scrolls rather than
      squeezing. A one-day bar holds two drivers side by side, each in a 70px
@@ -278,11 +282,10 @@
   z-index: 5;
   padding-inline: var(--rux-spacing-02);
   /* The column's width, set on the corner alone: the heads below are sized
-     by their row and add nothing, so their gauges never widen it. 69px holds
-     the 52px kit row 8px clear either side and its 1px rule, and the 48px
-     speedometer within it; app.js measures this cell, so its arithmetic
-     includes it. */
-  min-inline-size: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px);
+     by their row and add nothing, so their gauges never widen it. Its floor,
+     69px, holds the 52px kit row and the 48px speedometer within it; app.js
+     measures this cell, so its arithmetic includes it. */
+  min-inline-size: var(--scheduler-head-min);
   justify-content: center;
 }
 .scheduler-day__num { font-variant-numeric: tabular-nums; }
@@ -364,7 +367,7 @@
 /* The state on one row: its reading beside its unit, and the inspection its date alone. */
 .scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__speed { flex-direction: row; align-items: baseline; gap: 3px; padding-block-end: 0; font-size: var(--rux-label-01-font-size); line-height: var(--scheduler-row-h); }
 .scheduler-week:not([data-bar-rows="6"], [data-bar-rows="5"]) .scheduler-row-head__insp-word { display: none; }
-/* On one row the number and its dot, as the compact board's, and "No bus" on one line. */
+/* On one row the number and its dot, and "No bus" on one line. */
 .scheduler-week[data-bar-rows="1"] .scheduler-row-head__dot { display: block; }
 .scheduler-week[data-bar-rows="1"] .scheduler-row--unassigned .scheduler-row-head__num { white-space: nowrap; }
 /* Below the last row the board's own sheet carries that rule on to its foot,
@@ -725,13 +728,6 @@ button.scheduler-row-head__num::after {
    tank keeps its strength. */
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__arc-track { stroke-dasharray: 3 6; stroke-linecap: butt; }
 .scheduler-row-head[data-signal-lost] .scheduler-row-head__arc:not([data-level="low"], [data-level="critical"]) { opacity: .45; }
-/* The compact board has no room for the dial: the number and the dot. */
-.scheduler-page[data-board="compact"] .scheduler-corner { min-inline-size: 2rem; }
-.scheduler-page[data-board="compact"] .scheduler-row-head__top { flex-wrap: wrap; }
-/* Its 2rem column holds a number at the label size, not the full board's 16px. */
-.scheduler-page[data-board="compact"] .scheduler-row-head__num { font-size: var(--rux-label-01-font-size); line-height: var(--rux-label-01-line-height); }
-.scheduler-page[data-board="compact"] .scheduler-row-head :is(.scheduler-row-head__body, .scheduler-row-head__equip) { display: none; }
-.scheduler-page[data-board="compact"] .scheduler-row-head__dot { display: block; }
 
 /* The whole head opens the tip, so the whole head answers the pointer, and
    stays marked while its tip is open. */
@@ -4194,6 +4190,14 @@ a.scheduler-tip__go { text-decoration: none; }
    `placeRoom` in data.js turns it on from the whole board's width, panels
    and all, not from the room they leave the week, so opening a panel never
    turns it on. */
+/* ITS BUS COLUMN IS NARROW: the number, the engine's state and the fuel on
+   the bar's three rows, the state's 40px display 8px clear of the column's
+   sides and its 1px rule; the seats, the sleeper and the lift are the bus's
+   sheet's. */
+.scheduler-page[data-board="compact"] :is(.scheduler-week--scroll, .scheduler-components__board) {
+  --scheduler-head-min: calc(2.5rem + 2 * var(--rux-spacing-03) + 1px);
+  --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge, 0px));
+}
 /* A swipe moves it a day: the strip stops at the next day's edge however
    hard the flick, as a phone's own pages do. */
 .scheduler-page[data-board="compact"] .scheduler-week--scroll .scheduler-day { scroll-snap-stop: always; }
@@ -4248,6 +4252,60 @@ a.scheduler-tip__go { text-decoration: none; }
   block-size: 2px;
   background: currentColor;
 }
+/* A BUS'S SHEET, data.js's, across the foot of the screen as a trip's card
+   is: at most 60% of the screen and scrolling inside, over the home bar's
+   inset, on the page's raised surface. It holds a copy of the bus number's
+   tip in the page's own inks rather than the tip's inverse ones, a trip's
+   card being the same, at the phone's 14px. The bus whose sheet is open is
+   marked as an open tip's is. */
+.scheduler-bus-sheet {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 997;
+  max-block-size: 60dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block-end: var(--scheduler-safe-bottom, 0px);
+  background: var(--rux-layer-01);
+  color: var(--rux-text-primary);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+  box-shadow: 0 -2px 8px rgb(0 0 0 / .4);
+}
+.scheduler-row-head[data-sheet] { background: var(--rux-layer-selected); }
+.scheduler-bus-sheet > .scheduler-tip {
+  --tip-rule: var(--rux-border-subtle-01);
+  font-size: var(--rux-body-compact-01-font-size);
+  line-height: var(--rux-body-compact-01-line-height);
+  letter-spacing: var(--rux-body-compact-01-letter-spacing);
+}
+.scheduler-bus-sheet .scheduler-tip__mark > svg { color: var(--rux-icon-primary); }
+.scheduler-bus-sheet .scheduler-bus-disc:not([style]) {
+  background: var(--rux-layer-accent-01);
+  color: var(--rux-icon-primary);
+}
+.scheduler-bus-sheet .scheduler-tip__lamp--warning > svg { color: var(--rux-support-warning); }
+.scheduler-bus-sheet .scheduler-tip__lamp--error > svg { color: var(--rux-support-error); }
+/* Its trips in view, data.js's `busTrips`: each a tile that opens the trip,
+   where it goes in bold over its times and its drivers, 48px at least, what
+   a thumb asks of a target. */
+.scheduler-tip__trips { display: grid; gap: var(--rux-spacing-02); padding-block-end: var(--rux-spacing-04); }
+.scheduler-tip__trips-head { padding-block: var(--rux-spacing-02); color: var(--rux-text-secondary); }
+.scheduler-tip__trip {
+  appearance: none;
+  display: grid;
+  gap: var(--rux-spacing-01);
+  min-block-size: var(--rux-layout-size-height-lg, 3rem);
+  padding: var(--rux-spacing-03) var(--rux-spacing-04);
+  border: 0;
+  background: var(--rux-layer-02);
+  color: var(--rux-text-primary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.scheduler-tip__trip:hover { background: var(--rux-layer-hover-02); }
+.scheduler-tip__trip:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-tip__trip > span { color: var(--rux-text-secondary); }
 /* The view's rows are a wider board's, so their switches are not offered here. */
 :root[data-scheduler-board="compact"] .scheduler-menu-item--rows { display: none; }
 
@@ -6481,9 +6539,8 @@ html[data-scheduler-takeover] {
 .scheduler-components__board { max-block-size: none; }
 /* A sample has no day band, so no corner sets its bus column, and the heads
    size to nothing: the column takes the corner's own floor instead, 69px,
-   or the compact board's 2rem. */
-.scheduler-components__board { --scheduler-head-w: calc(var(--scheduler-kit-w) + 2 * var(--scheduler-kit-pad) + 1px); }
-.scheduler-page[data-board="compact"] .scheduler-components__board { --scheduler-head-w: 2rem; }
+   or the compact board's narrow column. */
+.scheduler-components__board { --scheduler-head-w: var(--scheduler-head-min); }
 
 
 /* THE CREW'S "+1" IS A CHIP, a mark and not a word, since a press on it

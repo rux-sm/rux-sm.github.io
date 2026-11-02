@@ -215,7 +215,7 @@
     if (state) head.dataset.engine = state.engine; else delete head.dataset.engine;
     const levels = shown ? [levelOf(shown.fuel, FUEL), levelOf(shown.def, DEF)] : [];
 
-    // The one state dot the compact board draws: the worst tone the head shows.
+    // The one state dot a one-row head draws: the worst tone the head shows.
     const tone = lamp?.tone === 'error' || levels.includes('critical') ? 'error'
       : lamp || state?.tone === 'warning' || levels.includes('low') ? 'warning'
       : state?.tone === 'quiet' && noSignal(shown) ? 'quiet' : live ? 'normal' : null;

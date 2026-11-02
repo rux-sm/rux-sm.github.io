@@ -14,8 +14,9 @@ is scanned for, and a tap opens the rest in a sheet with its actions in
 thumb reach.
 
 Today the phone shows the strip two days wide, a flick a day, its trips
-three lines under a bus column of numbers and dots, a tap opening the
-Mac's docked card; the editor opens over the board as the Mac's form.
+three lines beside a narrow bus column, a tap on a trip opening the Mac's
+docked card and a tap on a bus its sheet; the editor opens over the board
+as the Mac's form.
 
 ## Decisions
 
@@ -60,7 +61,6 @@ None open.
 
 ## Tasks
 
-- [ ] Narrow the bus column, and give a bus its sheet.
 - [ ] Give the trip's sheet its actions and its lines.
 - [ ] Put the month, Today and search above the board, with the week under
       them.

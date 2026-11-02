@@ -12,30 +12,30 @@
   },
   "previous": {
     "id": "confirm-stock-destination-and-expected-order-type",
-    "title": "Confirm stock, destination, and expected order type"
+    "title": "Read the stock and the order type"
   },
   "next": {
     "id": "confirm-the-processing-path-and-create-advice",
-    "title": "Confirm the processing path and create advice"
+    "title": "Read the activities and create advice"
   },
   "module": "Warehousing",
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Orders ➔ Orders",
   "session": "Warehousing Orders",
   "sessionCode": "whinh2100m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The transfer order is saved with transaction type "
+        "v": "The transfer order is saved, with transaction type "
       },
       {
-        "t": "strong",
+        "t": "literal",
         "v": "Transfer"
       },
       {
@@ -43,36 +43,45 @@
         "v": " and one line for the item."
       }
     ],
-    "text": "The transfer order is saved with transaction type Transfer and one line for the item."
+    "text": "The transfer order is saved, with transaction type Transfer and one line for the item."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need the item and both warehouses from step 3 and step 4 of "
+          "v": "You need the item and both warehouses from steps 3 and 4 of "
         },
         {
           "t": "link",
-          "v": "Confirm stock, destination, and expected order type",
+          "v": "Read the stock and the order type",
           "href": "confirm-stock-destination-and-expected-order-type.md"
         },
         {
           "t": "text",
-          "v": ", and the expected order type from step 6."
+          "v": ", and the expected order type from step 7 of "
+        },
+        {
+          "t": "link",
+          "v": "Read the stock and the order type",
+          "href": "confirm-stock-destination-and-expected-order-type.md"
+        },
+        {
+          "t": "text",
+          "v": "."
         }
       ],
-      "text": "You need the item and both warehouses from step 3 and step 4 of Confirm stock, destination, and expected order type, and the expected order type from step 6."
+      "text": "You need the item and both warehouses from steps 3 and 4 of Read the stock and the order type, and the expected order type from step 7 of Read the stock and the order type."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A warehousing order you enter by hand has no sales or purchase order behind it, so its number comes from Warehousing's own number group. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, LN puts both halves of the move on this one order: the outbound and shipment steps, then the inbound and inspection steps."
+        "v": "A warehousing order you enter by hand has no sales or purchase order behind it, so Warehousing gives it its own number. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, this one order carries the whole move: first shipping out of the source, then receiving into the destination."
       }
     ],
-    "text": "A warehousing order you enter by hand has no sales or purchase order behind it, so its number comes from Warehousing's own number group. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, LN puts both halves of the move on this one order: the outbound and shipment steps, then the inbound and inspection steps."
+    "text": "A warehousing order you enter by hand has no sales or purchase order behind it, so Warehousing gives it its own number. LN fills in the origin, the transaction type and the order type, and you check them. For a transfer inside one company, this one order carries the whole move: first shipping out of the source, then receiving into the destination."
   },
   "blocks": [
     {
@@ -184,23 +193,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check that the order's origin reads "
+                  "v": "Check the first box beside "
+                },
+                {
+                  "t": "field",
+                  "v": "Order"
+                }
+              ],
+              "text": "Check the first box beside Order"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "It reads "
                 },
                 {
                   "t": "literal",
                   "v": "Transfer (Manual)"
                 }
               ],
-              "text": "Check that the order's origin reads Transfer (Manual)"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
+              "text": "It reads Transfer (Manual)"
             }
           ],
           "id": "3",
@@ -222,31 +235,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check that "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
                   "v": "Transaction Type"
-                },
+                }
+              ],
+              "text": "Check Transaction Type"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": " reads "
+                  "v": "It reads "
                 },
                 {
                   "t": "literal",
                   "v": "Transfer"
                 }
               ],
-              "text": "Check that Transaction Type reads Transfer"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "—"
-                }
-              ],
-              "text": "—"
+              "text": "It reads Transfer"
             }
           ],
           "id": "4",
@@ -268,23 +277,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Under "
                 },
                 {
-                  "t": "field",
-                  "v": "Ship-From Code"
+                  "t": "chip",
+                  "v": "Ship-From"
                 },
                 {
                   "t": "text",
-                  "v": " to the source warehouse from step 3 of "
+                  "v": ", enter the source warehouse from step 3 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Code"
                 }
               ],
-              "text": "Set Ship-From Code to the source warehouse from step 3 of Confirm stock, destination, and expected order type"
+              "text": "Under Ship-From, enter the source warehouse from step 3 of Read the stock and the order type in Code"
             },
             {
               "tokens": [
@@ -323,23 +340,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Set "
+                  "v": "Under "
                 },
                 {
-                  "t": "field",
-                  "v": "Ship-To Code"
+                  "t": "chip",
+                  "v": "Ship-To"
                 },
                 {
                   "t": "text",
-                  "v": " to the destination warehouse from step 4 of "
+                  "v": ", enter the destination warehouse from step 4 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Code"
                 }
               ],
-              "text": "Set Ship-To Code to the destination warehouse from step 4 of Confirm stock, destination, and expected order type"
+              "text": "Under Ship-To, enter the destination warehouse from step 4 of Read the stock and the order type in Code"
             },
             {
               "tokens": [
@@ -353,10 +378,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", which a Transfer needs"
+                  "v": ", which a transfer needs"
                 }
               ],
-              "text": "Both types read Warehouse, which a Transfer needs"
+              "text": "Both types read Warehouse, which a transfer needs"
             }
           ],
           "id": "6",
@@ -386,44 +411,56 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Compare the "
+                  "v": "Under "
                 },
                 {
-                  "t": "field",
-                  "v": "Warehousing Order Type"
+                  "t": "chip",
+                  "v": "Order Information"
                 },
                 {
                   "t": "text",
-                  "v": " LN filled in with the one from step 6 of "
+                  "v": ", compare "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " with the one from step 7 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Compare the Warehousing Order Type LN filled in with the one from step 6 of Confirm stock, destination, and expected order type"
+              "text": "Under Order Information, compare Order Type with the one from step 7 of Read the stock and the order type"
             },
             {
               "tokens": [
                 {
+                  "t": "pencil"
+                },
+                {
                   "t": "text",
-                  "v": "—"
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "actual warehousing order type"
                 }
               ],
-              "text": "—"
+              "text": "actual warehousing order type"
             }
           ],
           "id": "7",
           "optional": false,
-          "produces": false,
-          "example": [
-            0
-          ],
+          "produces": true,
           "uses": [
             {
               "task": "confirm-stock-destination-and-expected-order-type",
-              "step": "6",
+              "step": "7",
               "n": 0,
               "label": "expected warehousing order type"
             }
@@ -444,10 +481,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Write down the order type the order actually has"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Write down the order type the order actually has"
+              "text": "Click Save"
             },
             {
               "tokens": [
@@ -460,10 +501,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "actual warehousing order type"
+                  "v": "transfer order number"
                 }
               ],
-              "text": "actual warehousing order type"
+              "text": "transfer order number"
             }
           ],
           "id": "8",
@@ -485,31 +526,36 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the header"
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar, click "
+                },
+                {
+                  "t": "button",
+                  "label": "New"
                 }
               ],
-              "text": "Save the header"
+              "text": "On the Outbound Lines toolbar, click New"
             },
             {
               "tokens": [
                 {
-                  "t": "pencil"
-                },
-                {
                   "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "transfer order number"
+                  "v": "A new line, numbered 10"
                 }
               ],
-              "text": "transfer order number"
+              "text": "A new line, numbered 10"
             }
           ],
           "id": "9",
           "optional": false,
-          "produces": true
+          "produces": false
         },
         {
           "cells": [
@@ -526,15 +572,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Add an order line with the item from step 3 of "
+                  "v": "Enter the item from step 3 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in "
+                },
+                {
+                  "t": "field",
+                  "v": "Item"
                 }
               ],
-              "text": "Add an order line with the item from step 3 of Confirm stock, destination, and expected order type"
+              "text": "Enter the item from step 3 of Read the stock and the order type in Item"
             },
             {
               "tokens": [
@@ -573,14 +627,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter the quantity to move as "
+                  "v": "Enter the quantity to move in "
                 },
                 {
                   "t": "field",
                   "v": "Ordered Quantity"
                 }
               ],
-              "text": "Enter the quantity to move as Ordered Quantity"
+              "text": "Enter the quantity to move in Ordered Quantity"
             },
             {
               "tokens": [
@@ -603,7 +657,7 @@
           "optional": false,
           "produces": true,
           "example": [
-            1
+            0
           ]
         },
         {
@@ -621,19 +675,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Save the line"
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Save"
                 }
               ],
-              "text": "Save the line"
+              "text": "Click Save"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The line says "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
                 }
               ],
-              "text": "—"
+              "text": "The line says Open"
             }
           ],
           "id": "12",
@@ -650,32 +712,6 @@
       "Value"
     ],
     "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Warehousing Order Type"
-              }
-            ],
-            "text": "Warehousing Order Type"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "45="
-              },
-              {
-                "t": "text",
-                "v": " — Transfer (Internal), which LN fills in"
-              }
-            ],
-            "text": "45= — Transfer (Internal), which LN fills in"
-          }
-        ]
-      },
       {
         "cells": [
           {
@@ -701,7 +737,7 @@
     ]
   },
   "screenshot": {
-    "step": "9",
+    "step": "8",
     "caption": "Warehousing Order, the transfer header saved",
     "path": "create-the-transfer-order.jpg"
   },
@@ -727,10 +763,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The header isn't saved, or a required field is still empty. Check steps 3 to 8 again"
+                "v": "The header isn't saved, or a box is still empty. Check steps 3 to 7 again"
               }
             ],
-            "text": "The header isn't saved, or a required field is still empty. Check steps 3 to 8 again"
+            "text": "The header isn't saved, or a box is still empty. Check steps 3 to 7 again"
           }
         ]
       },

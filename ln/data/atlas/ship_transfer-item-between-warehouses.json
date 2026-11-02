@@ -22,20 +22,28 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The outbound line reads "
+        "v": "The shipment says "
       },
       {
-        "t": "strong",
+        "t": "status",
+        "v": "Confirmed"
+      },
+      {
+        "t": "text",
+        "v": ", and the outbound line says "
+      },
+      {
+        "t": "status",
         "v": "Shipped"
       },
       {
@@ -43,26 +51,26 @@
         "v": "."
       }
     ],
-    "text": "The outbound line reads Shipped."
+    "text": "The shipment says Confirmed, and the outbound line says Shipped."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse doesn't. Whether you freeze and confirm the shipment, or the procedure does, is in the activity table you read in "
+        "v": "A transfer between two warehouses always makes a shipment. Only a transfer inside one warehouse doesn't. Freezing locks what's on the shipment, and confirming takes the stock out of the source warehouse. The activities you read at step 4 of "
       },
       {
         "t": "link",
-        "v": "Confirm the processing path and create advice",
+        "v": "Read the activities and create advice",
         "href": "confirm-the-processing-path-and-create-advice.md"
       },
       {
         "t": "text",
-        "v": "."
+        "v": " say whether you do this or LN does."
       }
     ],
-    "text": "A transfer between two different warehouses always creates a shipment; only a transfer within one warehouse doesn't. Whether you freeze and confirm the shipment, or the procedure does, is in the activity table you read in Confirm the processing path and create advice."
+    "text": "A transfer between two warehouses always makes a shipment. Only a transfer inside one warehouse doesn't. Freezing locks what's on the shipment, and confirming takes the stock out of the source warehouse. The activities you read at step 4 of Read the activities and create advice say whether you do this or LN does."
   },
   "blocks": [
     {
@@ -88,6 +96,92 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": " for the order from step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", open the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Shipment Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
+                }
+              ],
+              "text": "On the Warehousing Order for the order from step 8 of Create the transfer order, open the Shipment Lines tab"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The shipment line for your item. The shipment number is the first part of "
+                },
+                {
+                  "t": "field",
+                  "v": "Shipment Line"
+                },
+                {
+                  "t": "text",
+                  "v": ", before the line number: "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "shipment number"
+                }
+              ],
+              "text": "The shipment line for your item. The shipment number is the first part of Shipment Line, before the line number: shipment number"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": true,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "8",
+              "n": 0,
+              "label": "transfer order number"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "Find the "
                 },
                 {
@@ -96,29 +190,29 @@
                 },
                 {
                   "t": "text",
-                  "v": " row you read at step 3 of "
+                  "v": " row in the activities you read at step 4 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm the processing path and create advice",
+                  "v": "Read the activities and create advice",
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Find the Freeze/Confirm Shipments/Loads row you read at step 3 of Confirm the processing path and create advice"
+              "text": "Find the Freeze/Confirm Shipments/Loads row in the activities you read at step 4 of Read the activities and create advice"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If LN already finished it, write down "
+                  "v": "If LN already finished it, the shipment line is "
                 },
                 {
-                  "t": "literal",
-                  "v": "Automatic / not observed"
+                  "t": "status",
+                  "v": "Confirmed"
                 },
                 {
                   "t": "text",
-                  "v": " and skip steps 2 to 4. If its "
+                  "v": ", so stop here. If its "
                 },
                 {
                   "t": "field",
@@ -137,66 +231,12 @@
                   "v": ", carry on"
                 }
               ],
-              "text": "If LN already finished it, write down Automatic / not observed and skip steps 2 to 4. If its Automatic is No, carry on"
-            }
-          ],
-          "id": "1",
-          "optional": false,
-          "produces": false
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "2"
-                }
-              ],
-              "text": "2"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Find the shipment for this order and click "
-                },
-                {
-                  "t": "button",
-                  "label": "Drill In",
-                  "location": "line"
-                }
-              ],
-              "text": "Find the shipment for this order and click Drill In"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "pencil"
-                },
-                {
-                  "t": "text",
-                  "v": " "
-                },
-                {
-                  "t": "value",
-                  "v": "shipment number"
-                }
-              ],
-              "text": "shipment number"
+              "text": "If LN already finished it, the shipment line is Confirmed, so stop here. If its Automatic is No, carry on"
             }
           ],
           "id": "2",
           "optional": false,
-          "produces": true,
-          "uses": [
-            {
-              "task": "create-the-transfer-order",
-              "step": "9",
-              "n": 0,
-              "label": "transfer order number"
-            }
-          ]
+          "produces": false
         },
         {
           "cells": [
@@ -213,35 +253,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If "
+                  "v": "Open "
                 },
                 {
-                  "t": "field",
-                  "v": "Freeze Mandatory"
+                  "t": "chip",
+                  "v": "Shipments"
                 },
                 {
                   "t": "text",
-                  "v": " is ticked, choose "
+                  "v": " and filter "
                 },
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Freeze"
+                  "t": "field",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " on the shipment number from step 1"
                 }
               ],
-              "text": "If Freeze Mandatory is ticked, choose Actions ➔ Freeze"
+              "text": "Open Shipments and filter Shipment on the shipment number from step 1"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Status = "
-                },
-                {
-                  "t": "status",
-                  "v": "Frozen"
+                  "v": "Your shipment's row"
                 }
               ],
-              "text": "Status = Frozen"
+              "text": "Your shipment's row"
             }
           ],
           "id": "3",
@@ -263,14 +303,119 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Choose "
+                  "v": "Tick the row and click "
                 },
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Confirm"
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
                 }
               ],
-              "text": "Choose Actions ➔ Confirm"
+              "text": "Tick the row and click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " opens. Status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
+                }
+              ],
+              "text": "Shipment opens. Status = Open"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "If "
+                },
+                {
+                  "t": "field",
+                  "v": "Freeze Mandatory"
+                },
+                {
+                  "t": "text",
+                  "v": " is ticked, click "
+                },
+                {
+                  "t": "button",
+                  "label": "FREEZE"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
+                }
+              ],
+              "text": "If Freeze Mandatory is ticked, click FREEZE on the toolbar"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Status = "
+                },
+                {
+                  "t": "status",
+                  "v": "Frozen"
+                }
+              ],
+              "text": "Status = Frozen"
+            }
+          ],
+          "id": "5",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "6"
+                }
+              ],
+              "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "CONFIRM"
+                },
+                {
+                  "t": "text",
+                  "v": " on the toolbar"
+                }
+              ],
+              "text": "Click CONFIRM on the toolbar"
             },
             {
               "tokens": [
@@ -284,13 +429,13 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and the goods leave the source warehouse"
+                  "v": ". The stock leaves the source warehouse"
                 }
               ],
-              "text": "Status = Confirmed, and the goods leave the source warehouse"
+              "text": "Status = Confirmed. The stock leaves the source warehouse"
             }
           ],
-          "id": "4",
+          "id": "6",
           "optional": false,
           "produces": false
         }
@@ -304,7 +449,7 @@
   },
   "screenshot": {
     "step": "1",
-    "caption": "Warehousing Order, Shipment Lines after Process: the shipment Confirmed",
+    "caption": "Warehousing Order, Shipment Lines after Process, the shipment confirmed",
     "path": "ship_transfer-item-between-warehouses.jpg"
   },
   "problems": {
@@ -320,44 +465,28 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "No shipment shows for a transfer between two warehouses"
+                "v": "No shipment line shows"
               }
             ],
-            "text": "No shipment shows for a transfer between two warehouses"
+            "text": "No shipment line shows"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Infor's help says "
-              },
-              {
-                "t": "field",
-                "v": "Create Shipment"
-              },
-              {
-                "t": "text",
-                "v": " is "
-              },
-              {
-                "t": "literal",
-                "v": "Always"
-              },
-              {
-                "t": "text",
-                "v": ". Check Shipment Lines and the activity table from "
+                "v": "Between two warehouses there should always be one. Check the activities from step 4 of "
               },
               {
                 "t": "link",
-                "v": "Confirm the processing path and create advice",
+                "v": "Read the activities and create advice",
                 "href": "confirm-the-processing-path-and-create-advice.md"
               },
               {
                 "t": "text",
-                "v": " before going on"
+                "v": ", and whether the line is picked yet"
               }
             ],
-            "text": "Infor's help says Create Shipment is Always. Check Shipment Lines and the activity table from Confirm the processing path and create advice before going on"
+            "text": "Between two warehouses there should always be one. Check the activities from step 4 of Read the activities and create advice, and whether the line is picked yet"
           }
         ]
       },
@@ -366,24 +495,24 @@
           {
             "tokens": [
               {
-                "t": "chip",
-                "v": "Confirm"
+                "t": "button",
+                "label": "CONFIRM"
               },
               {
                 "t": "text",
                 "v": " is greyed out"
               }
             ],
-            "text": "Confirm is greyed out"
+            "text": "CONFIRM is greyed out"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The shipment may not be frozen yet. Run step 3 first"
+                "v": "The shipment isn't frozen yet. Do step 5 first"
               }
             ],
-            "text": "The shipment may not be frozen yet. Run step 3 first"
+            "text": "The shipment isn't frozen yet. Do step 5 first"
           }
         ]
       }

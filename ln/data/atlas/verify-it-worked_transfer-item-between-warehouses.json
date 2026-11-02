@@ -19,30 +19,30 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
+        "v": "The source is down and the destination is up by the quantity you moved."
       }
     ],
-    "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
+    "text": "The source is down and the destination is up by the quantity you moved."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. A transfer is checked twice: the source down and the destination up by the same quantity. One half can hold while the other doesn't, so this task reads both."
+        "v": "Nothing changes. A confirmed receipt is only a status. The proof is the stock: down at the source and up at the destination by the same quantity. One can be right while the other isn't, so you read both."
       }
     ],
-    "text": "Nothing new. A transfer is checked twice: the source down and the destination up by the same quantity. One half can hold while the other doesn't, so this task reads both."
+    "text": "Nothing changes. A confirmed receipt is only a status. The proof is the stock: down at the source and up at the destination by the same quantity. One can be right while the other isn't, so you read both."
   },
   "blocks": [
     {
@@ -68,18 +68,128 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the item's on-hand at both warehouses, in the same view as step 3 of "
+                  "v": "Type the item in the filter box above the grid's "
                 },
                 {
-                  "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
-                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                  "t": "field",
+                  "v": "Item"
+                },
+                {
+                  "t": "text",
+                  "v": " column and press Enter"
                 }
               ],
-              "text": "Read the item's on-hand at both warehouses, in the same view as step 3 of Confirm stock, destination, and expected order type"
+              "text": "Type the item in the filter box above the grid's Item column and press Enter"
             },
             {
               "tokens": [
+                {
+                  "t": "text",
+                  "v": "The item's row"
+                }
+              ],
+              "text": "The item's row"
+            }
+          ],
+          "id": "1",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "2"
+                }
+              ],
+              "text": "2"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the item's own row and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Warehouse Inventory"
+                }
+              ],
+              "text": "Tick the item's own row and click Warehouse Inventory"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whwmd2515m000",
+                  "name": "Warehouse - Item Inventory"
+                },
+                {
+                  "t": "text",
+                  "v": " opens, one row for each warehouse"
+                }
+              ],
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens, one row for each warehouse"
+            }
+          ],
+          "id": "2",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "3"
+                }
+              ],
+              "text": "3"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Inventory on Hand"
+                },
+                {
+                  "t": "text",
+                  "v": " in the source's row and the destination's row"
+                }
+              ],
+              "text": "Read Inventory on Hand in the source's row and the destination's row"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Against steps 3 and 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the stock and the order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", the source is down by the quantity from step 11 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the destination is up by the same — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -107,10 +217,10 @@
                   "v": "destination on-hand after"
                 }
               ],
-              "text": "source on-hand after, destination on-hand after"
+              "text": "Against steps 3 and 4 of Read the stock and the order type, the source is down by the quantity from step 11 of Create the transfer order, and the destination is up by the same — source on-hand after, destination on-hand after"
             }
           ],
-          "id": "1",
+          "id": "3",
           "optional": false,
           "produces": true,
           "uses": [
@@ -135,20 +245,6 @@
           ]
         }
       ]
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "strong",
-          "v": "The source should be down by the transferred quantity, and the destination up by the same quantity"
-        },
-        {
-          "t": "text",
-          "v": ", as long as nothing else moved the item in either warehouse. The transfer is done only when both hold."
-        }
-      ],
-      "text": "The source should be down by the transferred quantity, and the destination up by the same quantity, as long as nothing else moved the item in either warehouse. The transfer is done only when both hold."
     }
   ],
   "example": {
@@ -157,7 +253,7 @@
     "rows": []
   },
   "screenshot": {
-    "step": "1",
+    "step": "3",
     "caption": "Warehouse - Item Inventory after the transfer",
     "path": "verify-it-worked_transfer-item-between-warehouses.jpg"
   },
@@ -183,19 +279,15 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The receipt in "
+                "v": "The receipt may not be confirmed. Go back to step 5 of "
               },
               {
                 "t": "link",
                 "v": "Receive at the destination",
                 "href": "receive-at-the-destination.md"
-              },
-              {
-                "t": "text",
-                "v": " may not be confirmed. Go back to the inbound line and Warehouse Receipt"
               }
             ],
-            "text": "The receipt in Receive at the destination may not be confirmed. Go back to the inbound line and Warehouse Receipt"
+            "text": "The receipt may not be confirmed. Go back to step 5 of Receive at the destination"
           }
         ]
       },
@@ -205,28 +297,19 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The two changes don't both equal the transferred quantity"
+                "v": "The two changes aren't both the quantity you moved"
               }
             ],
-            "text": "The two changes don't both equal the transferred quantity"
+            "text": "The two changes aren't both the quantity you moved"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "Something else may have moved the item. Check the figures from "
-              },
-              {
-                "t": "link",
-                "v": "Confirm stock, destination, and expected order type",
-                "href": "confirm-stock-destination-and-expected-order-type.md"
-              },
-              {
-                "t": "text",
-                "v": " and look for other movements of the item before trusting the result "
+                "v": "Something else may have moved the item in one of the warehouses. Look for other orders on the item before you trust the result "
               }
             ],
-            "text": "Something else may have moved the item. Check the figures from Confirm stock, destination, and expected order type and look for other movements of the item before trusting the result"
+            "text": "Something else may have moved the item in one of the warehouses. Look for other orders on the item before you trust the result"
           }
         ]
       }

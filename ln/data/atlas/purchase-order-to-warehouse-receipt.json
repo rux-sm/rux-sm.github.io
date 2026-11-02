@@ -904,11 +904,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Confirm stock, destination, and expected order type"
+              "text": "Read the stock and the order type"
             }
           ]
         }

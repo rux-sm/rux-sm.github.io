@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "confirm-stock-destination-and-expected-order-type",
-  "title": "Confirm stock, destination, and expected order type",
+  "title": "Read the stock and the order type",
   "process": {
     "id": "transfer-item-between-warehouses",
     "title": "Warehouse transfer",
@@ -19,27 +19,27 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The on-hand at both warehouses and the expected order type are written down."
+        "v": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer."
       }
     ],
-    "text": "The on-hand at both warehouses and the expected order type are written down."
+    "text": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing changes yet. A transfer is checked at both ends, so you need the stock at both warehouses before you start. The order type a transfer gets comes from "
+        "v": "Nothing changes yet. You check a transfer at both ends, so you need the stock in both warehouses before you start. LN picks the transfer's order type from "
       },
       {
         "t": "strong",
@@ -47,10 +47,10 @@
       },
       {
         "t": "text",
-        "v": ", and that type's warehousing procedure decides which later steps LN runs by itself."
+        "v": ". That order type decides which later steps LN does by itself."
       }
     ],
-    "text": "Nothing changes yet. A transfer is checked at both ends, so you need the stock at both warehouses before you start. The order type a transfer gets comes from Default Order Types by Origin, and that type's warehousing procedure decides which later steps LN runs by itself."
+    "text": "Nothing changes yet. You check a transfer at both ends, so you need the stock in both warehouses before you start. LN picks the transfer's order type from Default Order Types by Origin. That order type decides which later steps LN does by itself."
   },
   "blocks": [
     {
@@ -127,10 +127,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The header links become available"
+                  "v": "The links at the top turn on"
                 }
               ],
-              "text": "The header links become available"
+              "text": "The links at the top turn on"
             }
           ],
           "id": "2",
@@ -152,7 +152,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the "
+                  "v": "Under "
                 },
                 {
                   "t": "chip",
@@ -160,14 +160,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " group, click "
+                  "v": " at the top, click "
                 },
                 {
                   "t": "button",
                   "label": "Warehouse Inventory"
                 }
               ],
-              "text": "In the Inventory group, click Warehouse Inventory"
+              "text": "Under Inventory at the top, click Warehouse Inventory"
             },
             {
               "tokens": [
@@ -178,7 +178,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens with the item already filled in — "
+                  "v": " opens with your item already in it — "
                 },
                 {
                   "t": "pencil"
@@ -222,7 +222,7 @@
                   "v": "source on-hand before"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with the item already filled in — item, source warehouse, source on-hand before"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with your item already in it — item, source warehouse, source on-hand before"
             }
           ],
           "id": "3",
@@ -244,10 +244,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the same grid, find the row for the warehouse you're moving the goods to"
+                  "v": "In the same grid, find the row for the warehouse you're moving the items to"
                 }
               ],
-              "text": "In the same grid, find the row for the warehouse you're moving the goods to"
+              "text": "In the same grid, find the row for the warehouse you're moving the items to"
             },
             {
               "tokens": [
@@ -350,7 +350,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Use the toolbar's next and previous arrows until "
+                  "v": "Click the arrows on the toolbar until "
                 },
                 {
                   "t": "field",
@@ -363,10 +363,40 @@
                 {
                   "t": "literal",
                   "v": "Transfer (Manual)"
-                },
+                }
+              ],
+              "text": "Click the arrows on the toolbar until Order Origin reads Transfer (Manual)"
+            },
+            {
+              "tokens": [
                 {
                   "t": "text",
-                  "v": ". Then find the row with transaction type "
+                  "v": "The rows for a transfer you enter by hand"
+                }
+              ],
+              "text": "The rows for a transfer you enter by hand"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Find the row with transaction type "
                 },
                 {
                   "t": "literal",
@@ -389,10 +419,42 @@
                   "v": "Warehouse"
                 }
               ],
-              "text": "Use the toolbar's next and previous arrows until Order Origin reads Transfer (Manual). Then find the row with transaction type Transfer, ship-from Warehouse and ship-to Warehouse"
+              "text": "Find the row with transaction type Transfer, ship-from Warehouse and ship-to Warehouse"
             },
             {
               "tokens": [
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " and "
+                },
+                {
+                  "t": "field",
+                  "v": "Create Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " are at the right end of the row. Between two warehouses, "
+                },
+                {
+                  "t": "field",
+                  "v": "Create Shipment"
+                },
+                {
+                  "t": "text",
+                  "v": " should read "
+                },
+                {
+                  "t": "literal",
+                  "v": "Always"
+                },
+                {
+                  "t": "text",
+                  "v": " — "
+                },
                 {
                   "t": "pencil"
                 },
@@ -417,29 +479,13 @@
                 },
                 {
                   "t": "value",
-                  "v": "Create Shipment"
-                },
-                {
-                  "t": "text",
-                  "v": ". Between two different warehouses, Infor's help says "
-                },
-                {
-                  "t": "field",
-                  "v": "Create Shipment"
-                },
-                {
-                  "t": "text",
-                  "v": " is "
-                },
-                {
-                  "t": "literal",
-                  "v": "Always"
+                  "v": "create shipment"
                 }
               ],
-              "text": "expected warehousing order type, Create Shipment. Between two different warehouses, Infor's help says Create Shipment is Always"
+              "text": "Order Type and Create Shipment are at the right end of the row. Between two warehouses, Create Shipment should read Always — expected warehousing order type, create shipment"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": true
         }
@@ -452,7 +498,7 @@
     "rows": []
   },
   "screenshot": {
-    "step": "6",
+    "step": "7",
     "caption": "Default Order Types by Origin, the Transfer (Manual) row",
     "path": "confirm-stock-destination-and-expected-order-type.jpg"
   },

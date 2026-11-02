@@ -3,7 +3,7 @@
   "tier": "export",
   "kind": "task",
   "id": "confirm-the-processing-path-and-create-advice",
-  "title": "Confirm the processing path and create advice",
+  "title": "Read the activities and create advice",
   "process": {
     "id": "transfer-item-between-warehouses",
     "title": "Warehouse transfer",
@@ -22,35 +22,35 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview",
   "session": "Outbound Line Status Overview",
   "sessionCode": "whinh2129m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The outbound line reads "
+        "v": "You've written down the activities that are yours, and the outbound line is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Released"
       },
       {
         "t": "text",
-        "v": " or later, and the activities that are yours are written down."
+        "v": " or further on."
       }
     ],
-    "text": "The outbound line reads Released or later, and the activities that are yours are written down."
+    "text": "You've written down the activities that are yours, and the outbound line is Released or further on."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need the order type from step 8 of "
+          "v": "You need the order type and the order number from steps 7 and 8 of "
         },
         {
           "t": "link",
@@ -62,17 +62,25 @@
           "v": "."
         }
       ],
-      "text": "You need the order type from step 8 of Create the transfer order."
+      "text": "You need the order type and the order number from steps 7 and 8 of Create the transfer order."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The order type brought a default procedure, and the order or its line may have changed it. The activity table on the line is the only place that says which steps LN runs by itself and which are yours. Read it before you generate advice: guessing from the item is how a step gets done twice or missed."
+        "v": "The order type brings a list of activities, and the order or its line can change it. The line's "
+      },
+      {
+        "t": "strong",
+        "v": "Activities"
+      },
+      {
+        "t": "text",
+        "v": " table is the only place that says which steps LN does by itself and which are yours. Read it before you go on. If you guess, you may do a step twice or miss one."
       }
     ],
-    "text": "The order type brought a default procedure, and the order or its line may have changed it. The activity table on the line is the only place that says which steps LN runs by itself and which are yours. Read it before you generate advice: guessing from the item is how a step gets done twice or missed."
+    "text": "The order type brings a list of activities, and the order or its line can change it. The line's Activities table is the only place that says which steps LN does by itself and which are yours. Read it before you go on. If you guess, you may do a step twice or miss one."
   },
   "blocks": [
     {
@@ -101,21 +109,25 @@
                   "v": "Open "
                 },
                 {
-                  "t": "session",
-                  "code": "whinh2129m000",
-                  "name": "Outbound Line Status Overview"
+                  "t": "command",
+                  "route": "Warehousing ➔ Orders ➔ Outbound Line Status Overview"
                 }
               ],
-              "text": "Open Outbound Line Status Overview (whinh2129m000)"
+              "text": "Open Warehousing ➔ Orders ➔ Outbound Line Status Overview"
             },
             {
               "tokens": [
                 {
+                  "t": "session",
+                  "code": "whinh2129m000",
+                  "name": "Outbound Line Status Overview"
+                },
+                {
                   "t": "text",
-                  "v": "The overview of outbound lines opens"
+                  "v": " opens"
                 }
               ],
-              "text": "The overview of outbound lines opens"
+              "text": "Outbound Line Status Overview (whinh2129m000) opens"
             }
           ],
           "id": "1",
@@ -145,46 +157,28 @@
                 },
                 {
                   "t": "text",
-                  "v": " on the order from "
+                  "v": " on the order number from step 8 of "
                 },
                 {
                   "t": "link",
                   "v": "Create the transfer order",
                   "href": "create-the-transfer-order.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", tick its line and click "
-                },
-                {
-                  "t": "button",
-                  "label": "Drill In",
-                  "location": "line"
                 }
               ],
-              "text": "Filter Order on the order from Create the transfer order, tick its line and click Drill In"
+              "text": "Filter Order on the order number from step 8 of Create the transfer order"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The line's detail opens. The item and order line match, and "
+                  "v": "The transfer's line. If the order has other lines, the transfer's is the one whose origin reads "
                 },
                 {
-                  "t": "field",
-                  "v": "Order Type"
-                },
-                {
-                  "t": "text",
-                  "v": " matches the one from step 8 of "
-                },
-                {
-                  "t": "link",
-                  "v": "Create the transfer order",
-                  "href": "create-the-transfer-order.md"
+                  "t": "literal",
+                  "v": "Transfer (Manual)"
                 }
               ],
-              "text": "The line's detail opens. The item and order line match, and Order Type matches the one from step 8 of Create the transfer order"
+              "text": "The transfer's line. If the order has other lines, the transfer's is the one whose origin reads Transfer (Manual)"
             }
           ],
           "id": "2",
@@ -193,15 +187,9 @@
           "uses": [
             {
               "task": "create-the-transfer-order",
-              "step": "9",
-              "n": 0,
-              "label": "transfer order number"
-            },
-            {
-              "task": "create-the-transfer-order",
               "step": "8",
               "n": 0,
-              "label": "actual warehousing order type"
+              "label": "transfer order number"
             }
           ]
         },
@@ -220,7 +208,67 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read every row in the "
+                  "v": "Tick the line and click "
+                },
+                {
+                  "t": "button",
+                  "label": "Drill In",
+                  "location": "line"
+                }
+              ],
+              "text": "Tick the line and click Drill In"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "The line's detail opens. "
+                },
+                {
+                  "t": "field",
+                  "v": "Order Type"
+                },
+                {
+                  "t": "text",
+                  "v": " matches the one from step 7 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                }
+              ],
+              "text": "The line's detail opens. Order Type matches the one from step 7 of Create the transfer order"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": false,
+          "uses": [
+            {
+              "task": "create-the-transfer-order",
+              "step": "7",
+              "n": 0,
+              "label": "actual warehousing order type"
+            }
+          ]
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Read each row in the "
                 },
                 {
                   "t": "chip",
@@ -243,7 +291,7 @@
                   "v": "Automatic"
                 }
               ],
-              "text": "Read every row in the Activities table, above all Finished and Automatic"
+              "text": "Read each row in the Activities table, above all Finished and Automatic"
             },
             {
               "tokens": [
@@ -261,7 +309,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " means LN runs it; "
+                  "v": " means LN does it. "
                 },
                 {
                   "t": "literal",
@@ -272,10 +320,10 @@
                   "v": " means you do"
                 }
               ],
-              "text": "Automatic Yes means LN runs it; No means you do"
+              "text": "Automatic Yes means LN does it. No means you do"
             }
           ],
-          "id": "3",
+          "id": "4",
           "optional": false,
           "produces": false
         },
@@ -285,10 +333,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "4"
+                  "v": "5"
                 }
               ],
-              "text": "4"
+              "text": "5"
             },
             {
               "tokens": [
@@ -314,6 +362,10 @@
             {
               "tokens": [
                 {
+                  "t": "text",
+                  "v": "You'll do these in the next tasks — "
+                },
+                {
                   "t": "pencil"
                 },
                 {
@@ -323,60 +375,14 @@
                 {
                   "t": "value",
                   "v": "manual outbound activities"
-                },
-                {
-                  "t": "text",
-                  "v": ". These are the later steps you'll carry out"
                 }
               ],
-              "text": "manual outbound activities. These are the later steps you'll carry out"
-            }
-          ],
-          "id": "4",
-          "optional": false,
-          "produces": true
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "5"
-                }
-              ],
-              "text": "5"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "If the next activity is automatic, choose "
-                },
-                {
-                  "t": "button",
-                  "label": "Process"
-                },
-                {
-                  "t": "text",
-                  "v": " on the warehousing order"
-                }
-              ],
-              "text": "If the next activity is automatic, choose Process on the warehousing order"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "LN runs the automatic activities in a row and stops at the next one that's yours"
-                }
-              ],
-              "text": "LN runs the automatic activities in a row and stops at the next one that's yours"
+              "text": "You'll do these in the next tasks — manual outbound activities"
             }
           ],
           "id": "5",
           "optional": false,
-          "produces": false
+          "produces": true
         },
         {
           "cells": [
@@ -393,35 +399,31 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If "
+                  "v": "Go back to the "
                 },
                 {
                   "t": "chip",
-                  "v": "Generate Outbound Advice"
+                  "v": "Warehousing Order"
                 },
                 {
                   "t": "text",
-                  "v": " is yours, open "
+                  "v": " tab and click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Outbound Lines"
-                },
-                {
-                  "t": "text",
-                  "v": " and select the line"
+                  "t": "button",
+                  "label": "Process"
                 }
               ],
-              "text": "If Generate Outbound Advice is yours, open Outbound Lines and select the line"
+              "text": "Go back to the Warehousing Order tab and click Process"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "LN does the automatic activities in order, and stops at the next one that's yours"
                 }
               ],
-              "text": "—"
+              "text": "LN does the automatic activities in order, and stops at the next one that's yours"
             }
           ],
           "id": "6",
@@ -443,27 +445,35 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Choose "
+                  "v": "If "
                 },
                 {
-                  "t": "command",
-                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                  "t": "chip",
+                  "v": "Generate Outbound Advice"
+                },
+                {
+                  "t": "text",
+                  "v": " is yours, tick the line on the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " tab"
                 }
               ],
-              "text": "Choose Actions ➔ Advice ➔ Generate Advice"
+              "text": "If Generate Outbound Advice is yours, tick the line on the Outbound Lines tab"
             },
             {
               "tokens": [
                 {
-                  "t": "status",
-                  "v": "Advised"
-                },
-                {
                   "t": "text",
-                  "v": " fills in. Automatic steps after it may finish too"
+                  "v": "—"
                 }
               ],
-              "text": "Advised fills in. Automatic steps after it may finish too"
+              "text": "—"
             }
           ],
           "id": "7",
@@ -485,6 +495,48 @@
               "tokens": [
                 {
                   "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Advice ➔ Generate Advice"
+                }
+              ],
+              "text": "Choose Actions ➔ Advice ➔ Generate Advice"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "field",
+                  "v": "Advised Quantity in Inventory Unit"
+                },
+                {
+                  "t": "text",
+                  "v": " fills in. Automatic steps after it may finish too"
+                }
+              ],
+              "text": "Advised Quantity in Inventory Unit fills in. Automatic steps after it may finish too"
+            }
+          ],
+          "id": "8",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "9"
+                }
+              ],
+              "text": "9"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
                   "v": "If "
                 },
                 {
@@ -497,7 +549,7 @@
                 },
                 {
                   "t": "field",
-                  "v": "Released"
+                  "v": "Released Quantity in Inventory Unit"
                 },
                 {
                   "t": "text",
@@ -508,23 +560,23 @@
                   "route": "Actions ➔ Advice ➔ Release Advice"
                 }
               ],
-              "text": "If Release Outbound Advice is yours and Released is still empty, choose Actions ➔ Advice ➔ Release Advice"
+              "text": "If Release Outbound Advice is yours and Released Quantity in Inventory Unit is still empty, choose Actions ➔ Advice ➔ Release Advice"
             },
             {
               "tokens": [
                 {
-                  "t": "status",
-                  "v": "Released"
+                  "t": "field",
+                  "v": "Released Quantity in Inventory Unit"
                 },
                 {
                   "t": "text",
                   "v": " fills in"
                 }
               ],
-              "text": "Released fills in"
+              "text": "Released Quantity in Inventory Unit fills in"
             }
           ],
-          "id": "8",
+          "id": "9",
           "optional": false,
           "produces": false
         }
@@ -537,7 +589,7 @@
     "rows": []
   },
   "screenshot": {
-    "step": "3",
+    "step": "4",
     "caption": "Outbound Line Status, the line's activities",
     "path": "confirm-the-processing-path-and-create-advice.jpg"
   },
@@ -575,10 +627,10 @@
               },
               {
                 "t": "text",
-                "v": " toolbar. See step 6"
+                "v": " toolbar. See step 7"
               }
             ],
-            "text": "You may be on the screen's own toolbar, not the Outbound Lines toolbar. See step 6"
+            "text": "You may be on the screen's own toolbar, not the Outbound Lines toolbar. See step 7"
           }
         ]
       }

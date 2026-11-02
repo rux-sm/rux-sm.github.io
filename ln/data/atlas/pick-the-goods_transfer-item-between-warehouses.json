@@ -12,7 +12,7 @@
   },
   "previous": {
     "id": "confirm-the-processing-path-and-create-advice",
-    "title": "Confirm the processing path and create advice"
+    "title": "Read the activities and create advice"
   },
   "next": {
     "id": "ship_transfer-item-between-warehouses",
@@ -22,46 +22,46 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
   "sessionCode": "whinh4525m100",
-  "walked": "2026-10-25",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The outbound line reads "
+        "v": "The outbound line's "
       },
       {
-        "t": "strong",
-        "v": "Picked"
+        "t": "field",
+        "v": "Picked Quantity in Inventory Unit"
       },
       {
         "t": "text",
-        "v": " or later."
+        "v": " is filled in."
       }
     ],
-    "text": "The outbound line reads Picked or later."
+    "text": "The outbound line's Picked Quantity in Inventory Unit is filled in."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Picking is an activity only in a location-controlled warehouse, and a step of yours only where the procedure says so. Otherwise "
+        "v": "Picking is a step only in a warehouse that uses locations, and it's yours only if the "
       },
       {
-        "t": "field",
-        "v": "Picked"
+        "t": "strong",
+        "v": "Activities"
       },
       {
         "t": "text",
-        "v": " fills in without you. It works the same way as picking for a sale, on the transfer's own outbound line."
+        "v": " table says so. Otherwise LN fills it in for you. It works like picking for a sale, on the transfer's outbound line."
       }
     ],
-    "text": "Picking is an activity only in a location-controlled warehouse, and a step of yours only where the procedure says so. Otherwise Picked fills in without you. It works the same way as picking for a sale, on the transfer's own outbound line."
+    "text": "Picking is a step only in a warehouse that uses locations, and it's yours only if the Activities table says so. Otherwise LN fills it in for you. It works like picking for a sale, on the transfer's outbound line."
   },
   "blocks": [
     {
@@ -95,15 +95,15 @@
                 },
                 {
                   "t": "text",
-                  "v": " row you read at step 3 of "
+                  "v": " row in the activities you read at step 4 of "
                 },
                 {
                   "t": "link",
-                  "v": "Confirm the processing path and create advice",
+                  "v": "Read the activities and create advice",
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Find the Picking List row you read at step 3 of Confirm the processing path and create advice"
+              "text": "Find the Picking List row in the activities you read at step 4 of Read the activities and create advice"
             },
             {
               "tokens": [
@@ -113,11 +113,11 @@
                 },
                 {
                   "t": "literal",
-                  "v": "Automatic / not applicable"
+                  "v": "Automatic"
                 },
                 {
                   "t": "text",
-                  "v": " and skip steps 2 to 5. If its "
+                  "v": " and stop here. If its "
                 },
                 {
                   "t": "field",
@@ -136,7 +136,7 @@
                   "v": ", carry on"
                 }
               ],
-              "text": "If it isn't there, or LN already finished it, write down Automatic / not applicable and skip steps 2 to 5. If its Automatic is No, carry on"
+              "text": "If it isn't there, or LN already finished it, write down Automatic and stop here. If its Automatic is No, carry on"
             }
           ],
           "id": "1",
@@ -158,10 +158,23 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Find the run for this order"
+                  "v": "Open "
+                },
+                {
+                  "t": "chip",
+                  "v": "Picking List"
+                },
+                {
+                  "t": "text",
+                  "v": " and find the run for the order from step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
                 }
               ],
-              "text": "Find the run for this order"
+              "text": "Open Picking List and find the run for the order from step 8 of Create the transfer order"
             },
             {
               "tokens": [
@@ -179,7 +192,7 @@
           "uses": [
             {
               "task": "create-the-transfer-order",
-              "step": "9",
+              "step": "8",
               "n": 0,
               "label": "transfer order number"
             }
@@ -250,15 +263,19 @@
                   "v": "The stock moves from its location to staging, and "
                 },
                 {
-                  "t": "status",
-                  "v": "Picked"
+                  "t": "field",
+                  "v": "Picked Quantity in Inventory Unit"
                 },
                 {
                   "t": "text",
-                  "v": " fills in on Outbound Lines"
+                  "v": " fills in on "
+                },
+                {
+                  "t": "chip",
+                  "v": "Outbound Lines"
                 }
               ],
-              "text": "The stock moves from its location to staging, and Picked fills in on Outbound Lines"
+              "text": "The stock moves from its location to staging, and Picked Quantity in Inventory Unit fills in on Outbound Lines"
             }
           ],
           "id": "4",
@@ -280,10 +297,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Write down the run number from the header"
+                  "v": "Read "
+                },
+                {
+                  "t": "field",
+                  "v": "Run"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top"
                 }
               ],
-              "text": "Write down the run number from the header"
+              "text": "Read Run at the top"
             },
             {
               "tokens": [
@@ -296,10 +321,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "picking list run number"
+                  "v": "picking list run"
                 }
               ],
-              "text": "picking list run number"
+              "text": "picking list run"
             }
           ],
           "id": "5",
@@ -316,7 +341,7 @@
   },
   "screenshot": {
     "step": "1",
-    "caption": "Warehousing Order, Outbound Lines after Process: Picked already filled in",
+    "caption": "Warehousing Order, Outbound Lines after Process, the picked quantity filled in",
     "path": "pick-the-goods_transfer-item-between-warehouses.jpg"
   },
   "problems": {
@@ -341,23 +366,27 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "If the order has already moved on, write down "
+                "v": "If the order has already moved on, LN picked it. Write down "
               },
               {
                 "t": "literal",
-                "v": "Automatic / not observed"
+                "v": "Automatic"
               },
               {
                 "t": "text",
-                "v": ". Otherwise picking may not apply, or advice wasn't generated. Go back to "
+                "v": ". Otherwise go back to step 7 of "
               },
               {
                 "t": "link",
-                "v": "Confirm the processing path and create advice",
+                "v": "Read the activities and create advice",
                 "href": "confirm-the-processing-path-and-create-advice.md"
+              },
+              {
+                "t": "text",
+                "v": " and generate the advice"
               }
             ],
-            "text": "If the order has already moved on, write down Automatic / not observed. Otherwise picking may not apply, or advice wasn't generated. Go back to Confirm the processing path and create advice"
+            "text": "If the order has already moved on, LN picked it. Write down Automatic. Otherwise go back to step 7 of Read the activities and create advice and generate the advice"
           }
         ]
       }

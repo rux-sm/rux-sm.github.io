@@ -195,7 +195,7 @@ const tokens = (list) => {
   for (let i = 0; i < list.length; i++) {
     const t = list[i], next = list[i + 1];
     const task = doc && t.t === 'text' && next?.t === 'link' ? taskById.get(/^(.+)\.md$/.exec(next.href)?.[1]) : null;
-    const m = task ? /\b([Ss]teps?) (\d+)(?:([–-]| and )(\d+))? of\s*$/.exec(t.v) : null;
+    const m = task ? /\b([Ss]teps?) (\d+)(?:([–-]| and | to )(\d+))? of\s*$/.exec(t.v) : null;
     if (m) { html += refs(esc(t.v.slice(0, m.index))) + stepRef(task, m[2], m[4], m[1], m[3]); i++; continue; }
     const other = t.t === 'text' && list[i - 1]?.t === 'link' && processById.get(/^(.+)\.md$/.exec(list[i - 1].href)?.[1]);
     html += other ? refs(esc(t.v), other) : token(t);
@@ -767,7 +767,7 @@ function stepRef(t, a, b, word, sep = '–') {
   const named = doc.whole || t === doc.here ? '' : ` (${esc(t.title)})`;
   return `<a class="rux--link" href="${href}">${word} ${n(a)}${b ? `${sep}${n(b)}` : ''}</a>${named}`;
 }
-const STEPS = /\b([Ss]teps?) (\d+)(?!\.\d|\d)(?:([–-]| and )(\d+)(?!\.\d|\d))?(?! of)/g;
+const STEPS = /\b([Ss]teps?) (\d+)(?!\.\d|\d)(?:([–-]| and | to )(\d+)(?!\.\d|\d))?(?! of)/g;
 // Atlas's words, with a gap taken out to Known gaps under `where` and every
 // step it names numbered: "step 4 of [Confirm there is stock]" anywhere, and a
 // bare "step 7" inside the task `here`.
@@ -777,7 +777,7 @@ function docText(list = [], here = null, where = '') {
   for (let i = 0; i < list.length; i++) {
     const t = list[i], next = list[i + 1];
     const other = next?.t === 'link' ? taskById.get(/^(.+)\.md$/.exec(next.href)?.[1]) : null;
-    const m = t.t === 'text' && other ? /\b([Ss]teps?) (\d+)(?:([–-]| and )(\d+))? of\s*$/.exec(t.v) : null;
+    const m = t.t === 'text' && other ? /\b([Ss]teps?) (\d+)(?:([–-]| and | to )(\d+))? of\s*$/.exec(t.v) : null;
     if (m) {
       html += (here ? esc(t.v.slice(0, m.index)).replace(STEPS, (x, w, a, sep, b) => stepRef(here, a, b, w, sep)) : refs(esc(t.v.slice(0, m.index))))
         + stepRef(other, m[2], m[4], m[1], m[3]);

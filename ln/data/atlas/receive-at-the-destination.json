@@ -22,38 +22,38 @@
   "modules": [
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-01",
+  "route": "Warehousing ➔ Orders ➔ Orders",
+  "session": "Warehousing Orders",
+  "sessionCode": "whinh2100m000",
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The receipt reads "
+        "v": "The receipt says "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Confirmed"
       },
       {
         "t": "text",
-        "v": "."
+        "v": ", and the stock is in the destination warehouse."
       }
     ],
-    "text": "The receipt reads Confirmed."
+    "text": "The receipt says Confirmed, and the stock is in the destination warehouse."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "The same order now runs its inbound half. Every inbound line needs a receipt and inbound advice, and a transfer's inbound lines are received and confirmed on the same receipt screen a purchase uses. Confirming the receipt is what puts the goods into the destination warehouse."
+        "v": "The same order now does its second half, receiving into the destination. A transfer is received on the same receipt screen a purchase uses. Confirming the receipt is what puts the stock into the destination warehouse."
       }
     ],
-    "text": "The same order now runs its inbound half. Every inbound line needs a receipt and inbound advice, and a transfer's inbound lines are received and confirmed on the same receipt screen a purchase uses. Confirming the receipt is what puts the goods into the destination warehouse."
+    "text": "The same order now does its second half, receiving into the destination. A transfer is received on the same receipt screen a purchase uses. Confirming the receipt is what puts the stock into the destination warehouse."
   },
   "blocks": [
     {
@@ -79,7 +79,24 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open the "
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Warehousing Order"
+                },
+                {
+                  "t": "text",
+                  "v": " for the order from step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the transfer order",
+                  "href": "create-the-transfer-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", open the "
                 },
                 {
                   "t": "chip",
@@ -87,19 +104,35 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab on the transfer order"
+                  "v": " tab"
                 }
               ],
-              "text": "Open the Inbound Lines tab on the transfer order"
+              "text": "On the Warehousing Order for the order from step 8 of Create the transfer order, open the Inbound Lines tab"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The inbound side of the same order, with the destination warehouse as ship-to"
+                  "v": "The inbound line, "
+                },
+                {
+                  "t": "status",
+                  "v": "Open"
+                },
+                {
+                  "t": "text",
+                  "v": ". The destination warehouse is under "
+                },
+                {
+                  "t": "chip",
+                  "v": "Ship-To"
+                },
+                {
+                  "t": "text",
+                  "v": " at the top"
                 }
               ],
-              "text": "The inbound side of the same order, with the destination warehouse as ship-to"
+              "text": "The inbound line, Open. The destination warehouse is under Ship-To at the top"
             }
           ],
           "id": "1",
@@ -108,7 +141,7 @@
           "uses": [
             {
               "task": "create-the-transfer-order",
-              "step": "9",
+              "step": "8",
               "n": 0,
               "label": "transfer order number"
             }
@@ -129,28 +162,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the inbound line and choose "
-                },
-                {
-                  "t": "command",
-                  "route": "Actions ➔ Receive…"
+                  "v": "Tick the inbound line"
                 }
               ],
-              "text": "Tick the inbound line and choose Actions ➔ Receive…"
+              "text": "Tick the inbound line"
             },
             {
               "tokens": [
                 {
-                  "t": "session",
-                  "code": "whinh3512m000",
-                  "name": "Warehouse Receipt"
-                },
-                {
                   "t": "text",
-                  "v": " opens with a receipt for the destination warehouse, and the line's full quantity already received"
+                  "v": "—"
                 }
               ],
-              "text": "Warehouse Receipt (whinh3512m000) opens with a receipt for the destination warehouse, and the line's full quantity already received"
+              "text": "—"
             }
           ],
           "id": "2",
@@ -172,34 +196,126 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the receipt line and choose "
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Inbound Lines"
+                },
+                {
+                  "t": "text",
+                  "v": " toolbar, choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Receive…"
+                }
+              ],
+              "text": "On the Inbound Lines toolbar, choose Actions ➔ Receive…"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "session",
+                  "code": "whinh3512m000",
+                  "name": "Warehouse Receipt"
+                },
+                {
+                  "t": "text",
+                  "v": " opens for the destination warehouse, with the line's full quantity received — "
+                },
+                {
+                  "t": "pencil"
+                },
+                {
+                  "t": "text",
+                  "v": " "
+                },
+                {
+                  "t": "value",
+                  "v": "receipt number"
+                }
+              ],
+              "text": "Warehouse Receipt (whinh3512m000) opens for the destination warehouse, with the line's full quantity received — receipt number"
+            }
+          ],
+          "id": "3",
+          "optional": false,
+          "produces": true
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "4"
+                }
+              ],
+              "text": "4"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Tick the receipt line"
+                }
+              ],
+              "text": "Tick the receipt line"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "—"
+                }
+              ],
+              "text": "—"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Confirm"
                 }
               ],
-              "text": "Tick the receipt line and choose Actions ➔ Confirm"
+              "text": "Choose Actions ➔ Confirm"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receipt reads "
+                  "v": "The receipt says "
                 },
                 {
                   "t": "status",
                   "v": "Confirmed"
-                },
-                {
-                  "t": "text",
-                  "v": ", and the destination's stock goes up"
                 }
               ],
-              "text": "The receipt reads Confirmed, and the destination's stock goes up"
+              "text": "The receipt says Confirmed"
             }
           ],
-          "id": "3",
+          "id": "5",
           "optional": false,
           "produces": false
         }
@@ -212,14 +328,45 @@
     "rows": []
   },
   "screenshot": {
-    "step": "3",
+    "step": "5",
     "caption": "Warehouse Receipt, confirmed",
     "path": "receive-at-the-destination.jpg"
   },
   "problems": {
     "kind": "troubleshooting",
-    "columns": [],
-    "rows": []
+    "columns": [
+      "Symptom",
+      "What to check or do"
+    ],
+    "rows": [
+      {
+        "cells": [
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The inbound line isn't there yet"
+              }
+            ],
+            "text": "The inbound line isn't there yet"
+          },
+          {
+            "tokens": [
+              {
+                "t": "text",
+                "v": "The shipment isn't confirmed. Go back to step 2 of "
+              },
+              {
+                "t": "link",
+                "v": "Ship",
+                "href": "ship_transfer-item-between-warehouses.md"
+              }
+            ],
+            "text": "The shipment isn't confirmed. Go back to step 2 of Ship"
+          }
+        ]
+      }
+    ]
   },
   "variants": {
     "kind": "variants",

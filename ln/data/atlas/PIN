@@ -1,9 +1,9 @@
-commit   928d41a67734261c045f39da978542f96bfa2160
-date     2026-11-02T05:09:36Z
-subject  docs(walks): Fix Purchase to receipt print read
+commit   73e801cab9374188dbe6cc2d5e9e2dbcc434c472
+date     2026-11-02T05:40:39Z
+subject  feat(tasks): Stamp Warehouse transfer walked
 contract 24 
 tier     export
-sha256   75f24fab70666926afec928883b923bc7de1e904c2b3a7963f718ee740cd6b89
+sha256   65b5e014c93d646f505730ec08bb415f89262d7bc9b9dacd2c639444cb61e782
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

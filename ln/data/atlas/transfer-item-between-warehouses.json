@@ -9,8 +9,8 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "draft",
-  "summary": "move a quantity of one item from one warehouse to another in the same company, and check the stock at both.",
+  "status": "review",
+  "summary": "move some of one item from one warehouse to another in the same company, and check the stock at both.",
   "order": 8,
   "sources": [
     "cppat1210m000",
@@ -34,7 +34,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow "
+          "v": "You need an item with stock in one warehouse, and a second warehouse in the same company to move it to. To find where the item has stock, follow "
         },
         {
           "t": "link",
@@ -46,25 +46,25 @@
           "v": "."
         }
       ],
-      "text": "An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow Check an item's inventory."
+      "text": "You need an item with stock in one warehouse, and a second warehouse in the same company to move it to. To find where the item has stock, follow Check an item's inventory."
     }
   ],
   "tasks": [
     {
       "id": "confirm-stock-destination-and-expected-order-type",
       "n": 0,
-      "title": "Confirm stock, destination, and expected order type",
+      "title": "Read the stock and the order type",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The on-hand at both warehouses and the expected order type are written down."
+            "v": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer."
           }
         ],
-        "text": "The on-hand at both warehouses and the expected order type are written down."
+        "text": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer."
       },
-      "steps": 6,
-      "walked": "2026-10-25"
+      "steps": 7,
+      "walked": "2026-11-01"
     },
     {
       "id": "create-the-transfer-order",
@@ -74,10 +74,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The transfer order is saved with transaction type "
+            "v": "The transfer order is saved, with transaction type "
           },
           {
-            "t": "strong",
+            "t": "literal",
             "v": "Transfer"
           },
           {
@@ -85,34 +85,34 @@
             "v": " and one line for the item."
           }
         ],
-        "text": "The transfer order is saved with transaction type Transfer and one line for the item."
+        "text": "The transfer order is saved, with transaction type Transfer and one line for the item."
       },
       "steps": 12,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "confirm-the-processing-path-and-create-advice",
       "n": 2,
-      "title": "Confirm the processing path and create advice",
+      "title": "Read the activities and create advice",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The outbound line reads "
+            "v": "You've written down the activities that are yours, and the outbound line is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Released"
           },
           {
             "t": "text",
-            "v": " or later, and the activities that are yours are written down."
+            "v": " or further on."
           }
         ],
-        "text": "The outbound line reads Released or later, and the activities that are yours are written down."
+        "text": "You've written down the activities that are yours, and the outbound line is Released or further on."
       },
-      "steps": 8,
-      "walked": "2026-10-25"
+      "steps": 9,
+      "walked": "2026-11-01"
     },
     {
       "id": "pick-the-goods_transfer-item-between-warehouses",
@@ -122,21 +122,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The outbound line reads "
+            "v": "The outbound line's "
           },
           {
-            "t": "strong",
-            "v": "Picked"
+            "t": "field",
+            "v": "Picked Quantity in Inventory Unit"
           },
           {
             "t": "text",
-            "v": " or later."
+            "v": " is filled in."
           }
         ],
-        "text": "The outbound line reads Picked or later."
+        "text": "The outbound line's Picked Quantity in Inventory Unit is filled in."
       },
       "steps": 5,
-      "walked": "2026-10-25"
+      "walked": "2026-11-01"
     },
     {
       "id": "ship_transfer-item-between-warehouses",
@@ -146,10 +146,18 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The outbound line reads "
+            "v": "The shipment says "
           },
           {
-            "t": "strong",
+            "t": "status",
+            "v": "Confirmed"
+          },
+          {
+            "t": "text",
+            "v": ", and the outbound line says "
+          },
+          {
+            "t": "status",
             "v": "Shipped"
           },
           {
@@ -157,10 +165,10 @@
             "v": "."
           }
         ],
-        "text": "The outbound line reads Shipped."
+        "text": "The shipment says Confirmed, and the outbound line says Shipped."
       },
-      "steps": 4,
-      "walked": "2026-10-25"
+      "steps": 6,
+      "walked": "2026-11-01"
     },
     {
       "id": "receive-at-the-destination",
@@ -170,21 +178,21 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The receipt reads "
+            "v": "The receipt says "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Confirmed"
           },
           {
             "t": "text",
-            "v": "."
+            "v": ", and the stock is in the destination warehouse."
           }
         ],
-        "text": "The receipt reads Confirmed."
+        "text": "The receipt says Confirmed, and the stock is in the destination warehouse."
       },
-      "steps": 3,
-      "walked": "2026-10-25"
+      "steps": 5,
+      "walked": "2026-11-01"
     },
     {
       "id": "verify-it-worked_transfer-item-between-warehouses",
@@ -194,13 +202,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
+            "v": "The source is down and the destination is up by the quantity you moved."
           }
         ],
-        "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for."
+        "text": "The source is down and the destination is up by the quantity you moved."
       },
-      "steps": 1,
-      "walked": "2026-10-25"
+      "steps": 3,
+      "walked": "2026-11-01"
     }
   ],
   "values": {
@@ -210,33 +218,6 @@
       "Value"
     ],
     "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "Warehousing Order Type"
-              }
-            ],
-            "text": "Warehousing Order Type"
-          },
-          {
-            "tokens": [
-              {
-                "t": "literal",
-                "v": "45="
-              },
-              {
-                "t": "text",
-                "v": " — Transfer (Internal), which LN fills in"
-              }
-            ],
-            "text": "45= — Transfer (Internal), which LN fills in"
-          }
-        ],
-        "task": "create-the-transfer-order"
-      },
       {
         "cells": [
           {
@@ -272,20 +253,37 @@
         },
         {
           "t": "text",
-          "v": " move a quantity of one item from one warehouse to another in the same company, and check the stock at both."
+          "v": " move some of one item from one warehouse to another in the same company, and check the stock at both."
         }
       ],
-      "text": "Objective: move a quantity of one item from one warehouse to another in the same company, and check the stock at both."
+      "text": "Objective: move some of one item from one warehouse to another in the same company, and check the stock at both."
     },
     {
       "kind": "prose",
       "tokens": [
         {
+          "t": "text",
+          "v": "> "
+        },
+        {
           "t": "strong",
-          "v": "A transfer between two companies is a variant below."
+          "v": "Prerequisite"
+        },
+        {
+          "t": "text",
+          "v": " > You need an item with stock in one warehouse, and a second warehouse in the same company to move it to. To find where the item has stock, follow "
+        },
+        {
+          "t": "link",
+          "v": "Check an item's inventory",
+          "href": "check-item-inventory.md"
+        },
+        {
+          "t": "text",
+          "v": "."
         }
       ],
-      "text": "A transfer between two companies is a variant below."
+      "text": "> Prerequisite > You need an item with stock in one warehouse, and a second warehouse in the same company to move it to. To find where the item has stock, follow Check an item's inventory."
     },
     {
       "kind": "prose",
@@ -304,41 +302,14 @@
         },
         {
           "t": "strong",
-          "v": "This guide is done when both warehouses check out:"
+          "v": "This guide ends when the stock has moved at both ends:"
         },
         {
           "t": "text",
-          "v": " the source down and the destination up by the same quantity."
+          "v": " the source down and the destination up by the same quantity. A confirmed receipt is only a status."
         }
       ],
-      "text": "> Warning > This guide is done when both warehouses check out: the source down and the destination up by the same quantity."
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "> "
-        },
-        {
-          "t": "strong",
-          "v": "Prerequisite"
-        },
-        {
-          "t": "text",
-          "v": " > An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow "
-        },
-        {
-          "t": "link",
-          "v": "Check an item's inventory",
-          "href": "check-item-inventory.md"
-        },
-        {
-          "t": "text",
-          "v": "."
-        }
-      ],
-      "text": "> Prerequisite > An item with stock in one warehouse, and a second warehouse of the same company to move it to. To find where the item has stock, follow Check an item's inventory."
+      "text": "> Warning > This guide ends when the stock has moved at both ends: the source down and the destination up by the same quantity. A confirmed receipt is only a status."
     },
     {
       "kind": "glance",
@@ -364,11 +335,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
+                  "v": "Read the stock and the order type",
                   "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "Confirm stock, destination, and expected order type"
+              "text": "Read the stock and the order type"
             },
             {
               "tokens": [
@@ -383,10 +354,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The on-hand at both warehouses and the expected order type are written down"
+                  "v": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer"
                 }
               ],
-              "text": "The on-hand at both warehouses and the expected order type are written down"
+              "text": "You've written down the on-hand at both warehouses, and the order type LN should give the transfer"
             }
           ]
         },
@@ -424,10 +395,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The transfer order is saved with transaction type "
+                  "v": "The transfer order is saved, with transaction type "
                 },
                 {
-                  "t": "chip",
+                  "t": "literal",
                   "v": "Transfer"
                 },
                 {
@@ -435,7 +406,7 @@
                   "v": " and one line for the item"
                 }
               ],
-              "text": "The transfer order is saved with transaction type Transfer and one line for the item"
+              "text": "The transfer order is saved, with transaction type Transfer and one line for the item"
             }
           ]
         },
@@ -454,11 +425,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm the processing path and create advice",
+                  "v": "Read the activities and create advice",
                   "href": "confirm-the-processing-path-and-create-advice.md"
                 }
               ],
-              "text": "Confirm the processing path and create advice"
+              "text": "Read the activities and create advice"
             },
             {
               "tokens": [
@@ -473,18 +444,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound line reads "
+                  "v": "You've written down the activities that are yours, and the outbound line is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Released"
                 },
                 {
                   "t": "text",
-                  "v": " or later, and the activities that are yours are written down"
+                  "v": " or further on"
                 }
               ],
-              "text": "The outbound line reads Released or later, and the activities that are yours are written down"
+              "text": "You've written down the activities that are yours, and the outbound line is Released or further on"
             }
           ]
         },
@@ -522,18 +493,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound line reads "
+                  "v": "The outbound line's "
                 },
                 {
-                  "t": "chip",
-                  "v": "Picked"
+                  "t": "field",
+                  "v": "Picked Quantity in Inventory Unit"
                 },
                 {
                   "t": "text",
-                  "v": " or later"
+                  "v": " is filled in"
                 }
               ],
-              "text": "The outbound line reads Picked or later"
+              "text": "The outbound line's Picked Quantity in Inventory Unit is filled in"
             }
           ]
         },
@@ -571,14 +542,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound line reads "
+                  "v": "The shipment says "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
+                  "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the outbound line says "
+                },
+                {
+                  "t": "status",
                   "v": "Shipped"
                 }
               ],
-              "text": "The outbound line reads Shipped"
+              "text": "The shipment says Confirmed, and the outbound line says Shipped"
             }
           ]
         },
@@ -607,23 +586,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Warehousing Order — Inbound Lines"
+                  "v": "Warehousing Order; Warehouse Receipt"
                 }
               ],
-              "text": "Warehousing Order — Inbound Lines"
+              "text": "Warehousing Order; Warehouse Receipt"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receipt reads "
+                  "v": "The receipt says "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Confirmed"
+                },
+                {
+                  "t": "text",
+                  "v": ", and the stock is in the destination warehouse"
                 }
               ],
-              "text": "The receipt reads Confirmed"
+              "text": "The receipt says Confirmed, and the stock is in the destination warehouse"
             }
           ]
         },
@@ -661,10 +644,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for"
+                  "v": "The source is down and the destination is up by the quantity you moved"
                 }
               ],
-              "text": "The source fell and the destination rose by the transferred quantity, once anything else that moved the item is allowed for"
+              "text": "The source is down and the destination is up by the quantity you moved"
             }
           ]
         }
@@ -680,7 +663,7 @@
         },
         {
           "t": "text",
-          "v": " Unlike a sale, a transfer inside one company doesn't hand over to a second order at the destination. So every task from "
+          "v": " A sale hands over to a second order, but a transfer inside one company doesn't. Every task from step 8 of "
         },
         {
           "t": "link",
@@ -689,10 +672,10 @@
         },
         {
           "t": "text",
-          "v": " on works on the one order number you write down there, and its notes say why."
+          "v": " on works on the one order number you write down there."
         }
       ],
-      "text": "One warehousing order carries the whole move. Unlike a sale, a transfer inside one company doesn't hand over to a second order at the destination. So every task from Create the transfer order on works on the one order number you write down there, and its notes say why.",
+      "text": "One warehousing order carries the whole move. A sale hands over to a second order, but a transfer inside one company doesn't. Every task from step 8 of Create the transfer order on works on the one order number you write down there.",
       "under": "At a glance"
     },
     {
@@ -708,39 +691,23 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Multicompany warehouse transfer"
+                  "v": "Between two companies"
                 },
                 {
                   "t": "text",
-                  "v": " — source and destination warehouses in different logistic companies"
+                  "v": " — the warehouses belong to different logistic companies"
                 }
               ],
-              "text": "Multicompany warehouse transfer — source and destination warehouses in different logistic companies"
+              "text": "Between two companies — the warehouses belong to different logistic companies"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "LN generates "
-                },
-                {
-                  "t": "chip",
-                  "v": "two"
-                },
-                {
-                  "t": "text",
-                  "v": " warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. "
-                },
-                {
-                  "t": "field",
-                  "v": "Ship-to Code"
-                },
-                {
-                  "t": "text",
-                  "v": " becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here"
+                  "v": "LN makes two warehousing orders instead of one. The shipping company's order ships the items, and the receiving company's order receives them. That changes the tasks, so it would be a guide of its own"
                 }
               ],
-              "text": "LN generates two warehousing orders instead of one: the ship-from company's order carries the outbound and shipment activities, the ship-to company's carries inbound and inspection. Ship-to Code becomes meaningful. This changes the tasks (an order handoff is needed) and earns its own process rather than a row here"
+              "text": "LN makes two warehousing orders instead of one. The shipping company's order ships the items, and the receiving company's order receives them. That changes the tasks, so it would be a guide of its own"
             }
           ]
         },
@@ -750,10 +717,14 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Planned/automated transfer, driven by Order Planning"
+                  "v": "Planned by LN"
+                },
+                {
+                  "t": "text",
+                  "v": " — the transfer comes from order planning"
                 }
               ],
-              "text": "Planned/automated transfer, driven by Order Planning"
+              "text": "Planned by LN — the transfer comes from order planning"
             },
             {
               "tokens": [
@@ -764,7 +735,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", reached via "
+                  "v": ", under "
                 },
                 {
                   "t": "command",
@@ -772,10 +743,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process. "
+                  "v": ", makes transfer orders from planning, so nobody enters one by hand. It's a different guide "
                 }
               ],
-              "text": "Transfer Order Planning (cppat1210m000), reached via Planning ➔ Plan Transfer ➔ Transfer Order Planning, generates transfer orders from planned inventory transactions rather than a person entering one by hand. Out of scope for this process."
+              "text": "Transfer Order Planning (cppat1210m000), under Planning ➔ Plan Transfer ➔ Transfer Order Planning, makes transfer orders from planning, so nobody enters one by hand. It's a different guide"
             }
           ]
         },
@@ -785,10 +756,14 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "Serialized or lot-controlled item"
+                  "v": "Serial or lot numbers"
+                },
+                {
+                  "t": "text",
+                  "v": " — the item is tracked by serial or lot"
                 }
               ],
-              "text": "Serialized or lot-controlled item"
+              "text": "Serial or lot numbers — the item is tracked by serial or lot"
             },
             {
               "tokens": [
@@ -802,33 +777,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process"
+                  "v": " tab matters for these items. This guide doesn't cover them"
                 }
               ],
-              "text": "The order header's Reclassification tab applies to rental and serialized transfers specifically. This variant is outside the scope of this process"
+              "text": "The order header's Reclassification tab matters for these items. This guide doesn't cover them"
             }
           ]
         }
       ],
-      "under": "Variants"
-    },
-    {
-      "kind": "prose",
-      "tokens": [
-        {
-          "t": "text",
-          "v": "A variant earns its own walkthrough only when it "
-        },
-        {
-          "t": "strong",
-          "v": "changes the phase structure"
-        },
-        {
-          "t": "text",
-          "v": ". Multicompany transfer does; the other two rows do not change this walkthrough's phases, only which sessions and fields matter within them."
-        }
-      ],
-      "text": "A variant earns its own walkthrough only when it changes the phase structure. Multicompany transfer does; the other two rows do not change this walkthrough's phases, only which sessions and fields matter within them.",
       "under": "Variants"
     },
     {
@@ -845,10 +801,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The quantity is on hand at the destination warehouse"
+                  "v": "The stock is in the destination warehouse"
                 }
               ],
-              "text": "The quantity is on hand at the destination warehouse"
+              "text": "The stock is in the destination warehouse"
             },
             {
               "tokens": [
@@ -859,24 +815,20 @@
                 },
                 {
                   "t": "text",
-                  "v": " — ship from the destination"
+                  "v": ", to ship it from there"
                 }
               ],
-              "text": "Ship from stock — ship from the destination"
+              "text": "Ship from stock, to ship it from there"
             },
             {
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm stock, destination, and expected order type",
-                  "href": "confirm-stock-destination-and-expected-order-type.md"
-                },
-                {
-                  "t": "text",
-                  "v": ", reading the destination's on-hand"
+                  "v": "Confirm there is stock",
+                  "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "Confirm stock, destination, and expected order type, reading the destination's on-hand"
+              "text": "Confirm there is stock"
             }
           ]
         }

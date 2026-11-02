@@ -15,8 +15,10 @@ opening beside the week pushes it as Carbon's side panel pushes the page.
 
 Today the board from md up is that strip: `scheduler/app.css` has the
 browser scroll and snap it, and `drawNear` in `scheduler/data.js` draws its
-trips near the view. The phone still pages a week at a time with a swipe of
-its own, and a panel beside the week appears at once.
+trips near the view, and a panel opening keeps the first day in view,
+moving the strip only to show the trip it opens for. The phone still pages
+a week at a time with a swipe of its own, and a panel beside the week
+appears at once.
 
 ## Decisions
 
@@ -27,10 +29,6 @@ its own, and a panel beside the week appears at once.
   nothing open; a list left of the week; the editor right of it; a list and
   the editor together; a panel in front of a week at its 33rem least; Fill
   the window; and the phone, turned both ways.
-- **A panel opening keeps the strip's first day.** The browser keeps the
-  scroll position as the view narrows, and the strip moves only where the
-  trip a panel opens for would leave view, by the least distance; closing
-  the panel returns it.
 - **A panel pushes the week, as Carbon's side panel pushes the page.** Beside
   the week the panel slides 320px in and fades up over 150ms on the
   productive entrance curve, and leaves on the exit curve, Carbon's own
@@ -51,7 +49,6 @@ None open.
 
 ## Tasks
 
-- [ ] Keep the strip's first day as a panel opens and closes.
 - [ ] Bring the phone's week onto the strip, resting on a week's first day,
       checked in the iPhone simulator.
 - [ ] Add the panel motion.

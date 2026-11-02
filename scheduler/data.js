@@ -4078,6 +4078,9 @@
     // editor comes forward first.
     placeRoom();
     window.Rux?.schedule?.fit?.();
+    // A strip the editor moved to show its trip goes back where it stood, unless it has been scrolled since.
+    if (panelMoved && Math.abs(schEl.scrollLeft - panelMoved.to) < 1) schEl.scrollLeft = panelMoved.from;
+    panelMoved = null;
     if (returnFocus && opener?.isConnected) opener.focus();
   }
 
@@ -10113,11 +10116,23 @@
     window.Rux?.schedule?.fit?.();
     document.getElementById('scheduler-panel-close')?.focus();
     // The narrower board can leave the trip half under its edge.
-    if (!creating) requestAnimationFrame(() => revealBar(panelArgs?.ref && findBar(panelArgs.ref)));
+    if (!creating) requestAnimationFrame(() => {
+      const before = schEl.scrollLeft;
+      // A scroll since the last move leaves the strip where the person put it.
+      if (panelMoved && Math.abs(before - panelMoved.to) >= 1) panelMoved = null;
+      revealBar(panelArgs?.ref && findBar(panelArgs.ref));
+      if (stripStart && schEl.scrollLeft !== before) panelMoved = { from: panelMoved?.from ?? before, to: schEl.scrollLeft };
+    });
   }
+  /* Where the strip stood before the editor moved it to show its trip, and
+     where it moved it to, so closing the editor puts it back, unless it has
+     been scrolled since. */
+  let panelMoved = null;
 
   /* Scrolls the board across just far enough to show a bar whole, clear of
-     the sticky bus column, or its start when it is wider than the board. */
+     the sticky bus column, or its start when it is wider than the board; on
+     the strip by the fewest whole days that do, so it still stands on a
+     day's edge, where its snap would leave it. */
   function revealBar(bar) {
     if (!bar?.isConnected) return;
     const pane = schEl.getBoundingClientRect();
@@ -10125,8 +10140,11 @@
     const box = bar.getBoundingClientRect();
     const first = (head ? head.right : pane.left) + TIP_GAP;
     const last = pane.left + schEl.clientWidth - TIP_GAP;
-    const by = box.left < first ? box.left - first
+    let by = box.left < first ? box.left - first
       : box.right > last ? Math.min(box.right - last, box.left - first) : 0;
+    const w = stripStart ? dayWidth() : 0;
+    if (w && by < 0) by = Math.floor(by / w) * w;
+    else if (w && by > 0) by = Math.min(Math.ceil(by / w), Math.floor((box.left - first) / w)) * w;
     // At once, as the editor itself appears.
     if (by) schEl.scrollLeft += by;
   }

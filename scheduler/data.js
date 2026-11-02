@@ -4078,10 +4078,14 @@
     // editor comes forward first.
     placeRoom();
     window.Rux?.schedule?.fit?.();
-    // A strip the editor moved to show its trip goes back where it stood, unless it has been scrolled since.
-    if (panelMoved && Math.abs(schEl.scrollLeft - panelMoved.to) < 1) schEl.scrollLeft = panelMoved.from;
+    /* A strip the editor moved to show its trip goes back where it stood, as
+       the week widens, unless it has been scrolled since. Focus goes back to
+       the trip first, where it stood in view, since focusing it would stop
+       the scroll. */
+    const back = panelMoved && Math.abs(schEl.scrollLeft - panelMoved.to) < 1 ? panelMoved.from : null;
     panelMoved = null;
-    if (returnFocus && opener?.isConnected) opener.focus();
+    if (returnFocus && opener?.isConnected) opener.focus({ preventScroll: back != null });
+    if (back != null) schEl.scrollTo({ left: back, behavior: boardStill() ? 'instant' : 'smooth' });
   }
 
   /* ── The trip editor ──
@@ -10120,8 +10124,8 @@
       const before = schEl.scrollLeft;
       // A scroll since the last move leaves the strip where the person put it.
       if (panelMoved && Math.abs(before - panelMoved.to) >= 1) panelMoved = null;
-      revealBar(panelArgs?.ref && findBar(panelArgs.ref));
-      if (stripStart && schEl.scrollLeft !== before) panelMoved = { from: panelMoved?.from ?? before, to: schEl.scrollLeft };
+      const to = revealBar(panelArgs?.ref && findBar(panelArgs.ref));
+      if (stripStart && to != null) panelMoved = { from: panelMoved?.from ?? before, to };
     });
   }
   /* Where the strip stood before the editor moved it to show its trip, and
@@ -10132,22 +10136,31 @@
   /* Scrolls the board across just far enough to show a bar whole, clear of
      the sticky bus column, or its start when it is wider than the board; on
      the strip by the fewest whole days that do, so it still stands on a
-     day's edge, where its snap would leave it. */
+     day's edge, where its snap would leave it. It measures against the week
+     as wide as it will be once the panels beside it have opened, which
+     app.css's push reaches over 240ms, and scrolls as the week narrows. It
+     answers where it scrolls to, or null where the bar is in view. */
   function revealBar(bar) {
-    if (!bar?.isConnected) return;
+    if (!bar?.isConnected) return null;
     const pane = schEl.getBoundingClientRect();
     const head = gridEl.querySelector('.scheduler-row-head')?.getBoundingClientRect();
     const box = bar.getBoundingClientRect();
     const first = (head ? head.right : pane.left) + TIP_GAP;
-    const last = pane.left + schEl.clientWidth - TIP_GAP;
+    const room = parseFloat(frameEl.style.getPropertyValue('--scheduler-room'));
+    const grows = Number.isFinite(room) ? room - frameEl.getBoundingClientRect().width : 0;
+    const last = pane.left + schEl.clientWidth + grows - TIP_GAP;
     let by = box.left < first ? box.left - first
       : box.right > last ? Math.min(box.right - last, box.left - first) : 0;
     const w = stripStart ? dayWidth() : 0;
     if (w && by < 0) by = Math.floor(by / w) * w;
     else if (w && by > 0) by = Math.min(Math.ceil(by / w), Math.floor((box.left - first) / w)) * w;
-    // At once, as the editor itself appears.
-    if (by) schEl.scrollLeft += by;
+    if (!by) return null;
+    const to = schEl.scrollLeft + by;
+    schEl.scrollTo({ left: to, behavior: boardStill() ? 'instant' : 'smooth' });
+    return to;
   }
+  // Whether the board moves nothing: less motion asked for, or the view menu's Motion off.
+  const boardStill = () => reducedMotion.matches || view.motion === 'off';
 
   /* ── Drivers ───────────────────────────────────────────────────────────────
      Busy is derived, not stored: a driver is busy on a day an assignment of
@@ -12090,7 +12103,7 @@
       const p = open.find(x => x.name === name);
       if (p?.el && !p.editor) p.el.style.order = String(place++ - 100);
     }
-    for (const p of all) if (!p.open && p.el) p.el.style.removeProperty('order');
+    // A panel closing keeps its place left of the week while app.css closes its column; a shut one is not laid out, so its place waits for its next opening.
 
     /* Below md nothing is laid out beside the week at all: Carbon's own fixed
        panel stands there, and the one open is in front of the board. From md
@@ -12155,6 +12168,35 @@
      rule writes, so it reports no change once that binds. */
   if (boardEl && 'ResizeObserver' in window) {
     new ResizeObserver(() => placeRoom()).observe(boardEl);
+  }
+  /* A PANEL'S COLUMN OPENING OR CLOSING, app.css's 240ms push, is marked on
+     the page as `data-pushing` while it runs, from the moment its `hidden`
+     changes, before the frame that starts it, so the columns cut their
+     panels and the week's frame stands on its own layer from its first
+     frame. Once every column has stopped, app.js fits the board to where it
+     now stands, which it leaves be while the columns move, and the trip
+     card, fixed to the window, is placed again where its trip now stands. A
+     column turned back half way is followed by its new move, the old one's
+     end let pass. */
+  const pushing = new Map();
+  if (boardEl) {
+    new MutationObserver(records => {
+      for (const target of new Set(records.map(r => r.target))) {
+        if (target.parentElement !== boardEl) continue;
+        const move = target.getAnimations().find(a => a.transitionProperty === 'flex-basis');
+        if (!move || pushing.get(target) === move) continue;
+        pushing.set(target, move);
+        pageEl.setAttribute('data-pushing', '');
+        move.finished.catch(() => {}).then(() => {
+          if (pushing.get(target) !== move) return;
+          pushing.delete(target);
+          if (pushing.size) return;
+          pageEl.removeAttribute('data-pushing');
+          window.Rux?.schedule?.fit?.();
+          placeBarOpen();
+        });
+      }
+    }).observe(boardEl, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
   }
   // to-do-list.js says when it has shown or hidden one of the lists' panes.
   document.addEventListener('scheduler:to-do-pane', () => {
@@ -12271,7 +12313,8 @@
     // a resize, so the trip tabs follow here.
     placeBarOpen();
     markTripBars();
-    schEl.dataset.motion = view.motion;
+    // On the page, which holds the panels beside the week as well as the week.
+    pageEl.dataset.motion = view.motion;
     // Activity: what the page loads and holds, in the header.
     window.SchedulerActivity?.show(view.activity);
     for (const item of viewMenu?.querySelectorAll('[role="menuitemcheckbox"], [role="menuitemradio"]') || []) {

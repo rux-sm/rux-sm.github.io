@@ -15,10 +15,9 @@ opening beside the week pushes it as Carbon's side panel pushes the page.
 
 Today the board from md up is that strip: `scheduler/app.css` has the
 browser scroll and snap it, and `drawNear` in `scheduler/data.js` draws its
-trips near the view, and a panel opening keeps the first day in view,
-moving the strip only to show the trip it opens for. The phone still pages
-a week at a time with a swipe of its own, and a panel beside the week
-appears at once.
+trips near the view; a panel beside the week pushes it as Carbon's side
+panel does, keeping its first day in view. The phone still pages a week at
+a time with a swipe of its own.
 
 ## Decisions
 
@@ -29,15 +28,6 @@ appears at once.
   nothing open; a list left of the week; the editor right of it; a list and
   the editor together; a panel in front of a week at its 33rem least; Fill
   the window; and the phone, turned both ways.
-- **A panel pushes the week, as Carbon's side panel pushes the page.** Beside
-  the week the panel slides 320px in and fades up over 150ms on the
-  productive entrance curve, and leaves on the exit curve, Carbon's own
-  keyframes in `design/css/rux.css`; the week narrows and widens over 240ms
-  at the same moment, on the productive standard curve, since Carbon's code
-  names the 240ms and no curve, and the strip's day snap does not catch it
-  half way. In front of the board, on the phone or a week at its least, the
-  panel slides over the week as it dims, with Carbon's overlay fade. With
-  reduced motion the panel only fades and the week moves at once.
 - **The phone's compact week is the same strip,** as rux decided, swiped
   with the iPhone's own fling and resting on a week's first day, so its own
   swipe code goes; paging was kept only because a fling while the strip was
@@ -51,6 +41,3 @@ None open.
 
 - [ ] Bring the phone's week onto the strip, resting on a week's first day,
       checked in the iPhone simulator.
-- [ ] Add the panel motion.
-- [ ] Correct `design/docs/motion.md`: a panel arriving is productive
-      motion, as Carbon's side panel is, where it is filed under expressive.

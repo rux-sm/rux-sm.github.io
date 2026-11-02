@@ -91,7 +91,9 @@
        edge. The computed position is the test, so the width that decides it
        stays in app.css. */
     const floats = aside && getComputedStyle(aside).position === 'fixed';
-    if (aside && avail && !aside.hidden && aside.contains(avail) && !floats) {
+    /* A shut roster keeps its height: its column closing, app.css's push,
+       still shows it for 240ms, and once shut it is not laid out. */
+    if (aside && avail && aside.contains(avail) && !floats) {
       if (aside.style.blockSize !== panelNext) { aside.style.blockSize = panelNext; aside.style.maxBlockSize = panelNext; }
     } else if (aside && aside.style.blockSize) {
       aside.style.removeProperty('block-size');
@@ -100,10 +102,10 @@
     if (avail && avail.style.maxBlockSize) avail.style.removeProperty('max-block-size');
 
     /* The lists' panes, Tasks and Departures, take the same height and scroll
-       inside it, and give it up in front of the board, where their own insets
-       are their height. */
+       inside it, shut or not, as the roster does, and give it up in front of
+       the board, where their own insets are their height. */
     for (const toDo of document.querySelectorAll('.scheduler-to-do--pane')) {
-      if (!toDo.hidden && getComputedStyle(toDo).position !== 'fixed') {
+      if (getComputedStyle(toDo).position !== 'fixed') {
         if (toDo.style.blockSize !== panelNext) toDo.style.blockSize = panelNext;
       } else if (toDo.style.blockSize) {
         toDo.style.removeProperty('block-size');
@@ -113,13 +115,10 @@
     /* The trip editor and the document panels get a definite `block-size`, not
        a cap: the side panel inside each resolves `block-size: 100%` against
        this box, and a percentage against a parent with only a maximum resolves
-       to auto, which leaves the form unscrollable and the Save bar unpinned. */
+       to auto, which leaves the form unscrollable and the Save bar unpinned.
+       Shut or not, as the roster's, so a column closing keeps its height. */
     for (const column of document.querySelectorAll('#scheduler-trip, .scheduler-viewer')) {
-      if (!column.hidden) {
-        if (column.style.blockSize !== panelNext) column.style.blockSize = panelNext;
-      } else if (column.style.blockSize) {
-        column.style.removeProperty('block-size');
-      }
+      if (column.style.blockSize !== panelNext) column.style.blockSize = panelNext;
     }
   }
 
@@ -240,6 +239,7 @@
   if (sch && 'ResizeObserver' in window) {
     // The pane is observed, not the grid: the grid's width is what this
     // changes, so observing it would feed its own output back in.
+    const page = sch.closest('.scheduler-page');
     const fit = () => {
       fitHeight(sch);
       if (sch.classList.contains('scheduler-week--scroll')) fitStrip(sch);
@@ -250,7 +250,11 @@
     // window did not cause; and `Rux.schedule.fit`, which data.js calls after
     // a render that changes what sits above the grid, such as the status
     // notification.
-    const watch = new ResizeObserver(fit);
+    /* While a panel's column opens or closes beside the week, data.js's
+       `data-pushing`, the sizes are on their way and none is fitted: data.js
+       calls `fit` once the column has stopped, which the panel's first frame
+       has already been given its height by. */
+    const watch = new ResizeObserver(() => { if (!page?.hasAttribute('data-pushing')) fit(); });
     watch.observe(sch);
     if (sch.parentElement) watch.observe(sch.parentElement);
     // A panel opening or closing beside the week changes the shell a fixed

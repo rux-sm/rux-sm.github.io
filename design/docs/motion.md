@@ -12,9 +12,11 @@ the gitignored quarry at `carbon-website/src/pages/elements/motion/`.
 ## Two styles
 
 - **Productive** is for frequent working moves the person is busy around:
-  moving through weeks, opening a row, a menu, a hover. Most motion here is
-  productive.
-- **Expressive** is for rare moments that should be noticed: a page or panel
+  moving through weeks, opening a row, a menu, a side panel, a hover. Most
+  motion here is productive, Carbon's side panel among it: it slides its
+  320px in and fades over 150ms on the productive entrance curve, and leaves
+  on the exit curve.
+- **Expressive** is for rare moments that should be noticed: a page
   arriving, an alert, the primary action.
 
 ## Curves

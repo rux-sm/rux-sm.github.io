@@ -130,6 +130,73 @@
   inline-size: min(var(--scheduler-viewer-w), calc(100% - var(--scheduler-editor-w) - 3 * var(--rux-spacing-05)));
 }
 
+/* A PANEL COMES AND GOES AS CARBON'S SIDE PANEL DOES, app.css's panels
+   coming and going: it slides its --panel-transform, 320px, in from its side
+   and fades up over 150ms on the productive entrance curve, and leaves on the
+   exit curve, the values of Carbon's own side-panel keyframes, as a
+   transition, since the board shows and hides it by `hidden`. Beside the
+   week each keeps its own width whatever its column's, so the column opening
+   or closing cuts it at its edge and lays nothing in it out again; the editor
+   stands against the column's far end. With less motion asked for it only
+   fades; with the view menu's Motion off, nothing moves. */
+@media (min-width: 42rem) {
+  .scheduler-trip:not([hidden]) { display: flex; justify-content: flex-end; }
+  .scheduler-viewer:not([hidden]) { display: flex; }
+  .scheduler-trip > .rux--side-panel { flex: none; inline-size: var(--scheduler-editor-w); }
+  .scheduler-viewer > .rux--side-panel { flex: none; inline-size: var(--scheduler-viewer-w); }
+}
+@media (min-width: 42rem) and (prefers-reduced-motion: no-preference) {
+  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-trip, .scheduler-viewer) > .rux--side-panel {
+    transition: opacity 150ms cubic-bezier(0, 0, .38, .9), transform 150ms cubic-bezier(0, 0, .38, .9), display 150ms allow-discrete;
+  }
+  .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-trip > .rux--side-panel[hidden] {
+    opacity: 0;
+    transform: translateX(var(--panel-transform, 320px));
+    transition-timing-function: cubic-bezier(.2, 0, 1, .9);
+  }
+  .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-viewer[hidden] > .rux--side-panel {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--panel-transform, 320px)));
+    transition-timing-function: cubic-bezier(.2, 0, 1, .9);
+  }
+  @starting-style {
+    .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-trip > .rux--side-panel {
+      opacity: 0;
+      transform: translateX(var(--panel-transform, 320px));
+    }
+    .scheduler-page:not([data-takeover], [data-motion="off"]) .scheduler-viewer > .rux--side-panel {
+      opacity: 0;
+      transform: translateX(calc(-1 * var(--panel-transform, 320px)));
+    }
+  }
+}
+/* In front of the board it slides in over the scrim by Carbon's own
+   keyframes, which start when the page is marked as having it in front, as
+   app.css's panels coming and going says. */
+@media (prefers-reduced-motion: no-preference) {
+  .scheduler-page[data-takeover="editor"]:not([data-motion="off"]) .scheduler-trip .rux--side-panel {
+    animation: side-panel-entrance-right 150ms cubic-bezier(0, 0, .38, .9) both;
+  }
+  .scheduler-page[data-takeover="viewer"]:not([data-motion="off"]) .scheduler-viewer .rux--side-panel {
+    animation: side-panel-entrance-left 150ms cubic-bezier(0, 0, .38, .9) both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scheduler-page[data-takeover="editor"]:not([data-motion="off"]) .scheduler-trip .rux--side-panel,
+  .scheduler-page[data-takeover="viewer"]:not([data-motion="off"]) .scheduler-viewer .rux--side-panel {
+    animation: side-panel-entrance-reduced 150ms cubic-bezier(0, 0, .38, .9) both;
+  }
+}
+@media (min-width: 42rem) and (prefers-reduced-motion: reduce) {
+  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-trip, .scheduler-viewer) > .rux--side-panel {
+    transition: opacity 150ms cubic-bezier(0, 0, .38, .9), display 150ms allow-discrete;
+  }
+  .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-trip > .rux--side-panel[hidden], .scheduler-viewer[hidden] > .rux--side-panel) { opacity: 0; }
+  @starting-style {
+    .scheduler-page:not([data-takeover], [data-motion="off"]) :is(.scheduler-trip, .scheduler-viewer) > .rux--side-panel { opacity: 0; }
+  }
+}
+
 /* A panel that is open but not the one in front is not drawn. Behind the one in
    front the board is the week alone, so there is no place beside it for a
    second panel to wait in -- and below md Carbon's fixed panel would otherwise

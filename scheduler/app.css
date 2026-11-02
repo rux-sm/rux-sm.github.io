@@ -4631,6 +4631,8 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-page[data-takeover] .scheduler-to-do--pane[hidden] { display: none; }
 /* The head sticks at the top of the card, above the grid's highest layer, the
    corner cell at 4, and the day row sticks 48px under it. */
+  /* What they hold is the pane's width inside the theme's region edge, so it
+     never runs over that line. */
 .scheduler-page[data-takeover="roster"] .scheduler-aside__head {
   position: sticky;
   inset-block-start: 0;
@@ -4725,7 +4727,7 @@ html[data-scheduler-takeover] {
     min-inline-size: 0;
   }
   .scheduler-page:not([data-takeover]) :is(.scheduler-aside, .scheduler-to-do--pane) > * {
-    min-inline-size: var(--scheduler-pane-w);
+    min-inline-size: calc(var(--scheduler-pane-w) - 2 * var(--scheduler-region-edge-width, 0px));
   }
   /* While a column moves, data.js's `data-pushing`, each column cuts its
      panel at its edges, and the week's frame stands on a layer of its own,

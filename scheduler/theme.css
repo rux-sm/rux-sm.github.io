@@ -1422,6 +1422,7 @@
   --scheduler-band-surface: var(--scheduler-region);
   --scheduler-band-rule: 1px solid var(--rux-border-subtle-01);
   --scheduler-region-edge: 1px solid var(--rux-border-subtle-01);
+  --scheduler-region-edge-width: 1px;
   --scheduler-last-rule: 0;
 }
 /* Its panels are the board's sheet too, the to-do list, the trip editor

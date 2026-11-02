@@ -65,6 +65,9 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 // An account atlas ends without a full stop gets one, unless its last
 // sentence is one the export wrote in place of a gap.
 const sentence = (html) => cap(html).replace(/\.?(<\/strong>)?$/, (m, close) => (close ? '.' + close : '.'));
+// A table cell closes without a full stop, as every cell atlas writes does,
+// so a sentence the build moves into one loses its stop.
+const unstop = (html) => html.replace(/\.((?:<\/[a-z]+>)*)$/, '$1');
 const count = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const report = [];
 
@@ -635,11 +638,11 @@ function processPage(s) {
   const body = documenting(numberOf(s), true, () => {
     const K = doc.K;
     const summary = ts.flatMap((t) => [
-      { cells: [`<b>${K.get(t.id)}</b>`, `<a class="rux--link" href="#task-${K.get(t.id)}">${esc(t.title)}</a>`, t.achieves ? docText(t.achieves.tokens, t) : '', `${rowsOf(t).length}`] },
+      { cells: [`<b>${K.get(t.id)}</b>`, `<a class="rux--link" href="#task-${K.get(t.id)}">${esc(t.title)}</a>`, t.achieves ? unstop(docText(t.achieves.tokens, t)) : '', `${rowsOf(t).length}`] },
       ...extrasOf(s, t).forks.map((n) => {
         const screen = firstScreen(n.read);
         const name = screen && cards.has(screen.code) ? `<a class="rux--link" href="${hrefScreen(screen.code)}">${esc(n.session)}</a>` : esc(n.session);
-        return { quiet: true, cells: ['', `Decision: ${name}`, sentence(tokens(n.does.tokens)), ''] };
+        return { quiet: true, cells: ['', `Decision: ${name}`, unstop(sentence(tokens(n.does.tokens))), ''] };
       })]);
     // A task's prerequisite that only names tasks of this process is the
     // process's own order, so only one that reaches outside it is listed.
@@ -714,7 +717,7 @@ ${gapsSection()}
 ${docH2('screens', 'Sessions used', 'ln-proc__h2--sect')}
 ${screensTable(ts)}
 </section>
-${checkSection(ts.map((t) => [K.get(t.id), t.achieves ? docText(t.achieves.tokens, t) : '']))}
+${checkSection(ts.map((t) => [K.get(t.id), t.achieves ? unstop(docText(t.achieves.tokens, t)) : '']))}
 ${signOff()}`;
     return html;
   });
@@ -997,7 +1000,7 @@ ${screensTable([t])}
 ${docH2('related', 'Related')}
 ${related[2]}
 </section>
-${checkSection([[k || '', t.achieves ? docText(t.achieves.tokens, t) : '']])}
+${checkSection([[k || '', t.achieves ? unstop(docText(t.achieves.tokens, t)) : '']])}
 ${signOff()}`;
     return body;
   });

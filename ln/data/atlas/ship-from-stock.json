@@ -9,7 +9,7 @@
     "Sales",
     "Warehousing"
   ],
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "status": "approved",
   "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
   "order": 7,
@@ -802,19 +802,19 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "20 — SO/SC Out"
+                  "v": "20- SO/SC Out"
                 }
               ],
-              "text": "20 — SO/SC Out"
+              "text": "20- SO/SC Out"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "30 — Production (Out)"
+                  "v": "30- Production (Out)"
                 }
               ],
-              "text": "30 — Production (Out)"
+              "text": "30- Production (Out)"
             }
           ]
         },
@@ -1171,15 +1171,10 @@
                 },
                 {
                   "t": "text",
-                  "v": "; then start again at "
-                },
-                {
-                  "t": "link",
-                  "v": "Create and approve the sales order",
-                  "href": "create-and-approve-the-sales-order.md"
+                  "v": "; then start again"
                 }
               ],
-              "text": "Replenish first: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt; then start again at Create and approve the sales order"
+              "text": "Replenish first: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt; then start again"
             },
             {
               "tokens": [

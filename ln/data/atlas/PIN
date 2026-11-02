@@ -1,9 +1,9 @@
-commit   d01b4255c668abce5837038aa02c10457ae4168d
-date     2026-10-26T03:28:39Z
-subject  feat(walks): Walk the reworded production tasks
+commit   7d74b332135ae4e1b9a075ed29a7d03da48cc992
+date     2026-11-02T00:42:33Z
+subject  fix(walks): Align ship-from-stock reference
 contract 24 
 tier     export
-sha256   d30e9016bd66547a8dec92ebd08aec0e2f2c826640e27131e08a1c26ac1e7703
+sha256   eccbf4ca6ed0fd0ae1e5fe218fef8193af9aec0a0af8b05fb153dbbad6f9ed87
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

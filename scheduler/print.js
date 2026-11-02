@@ -3353,6 +3353,16 @@
       row.append(check, make('div', 'rux--menu-item__label', text));
       return row;
     }));
+    const cell = make('button', 'scheduler-print__cell scheduler-print__pick');
+    cell.type = 'button';
+    cell.dataset.ruxOpen = id;
+    cell.setAttribute('aria-haspopup', 'menu');
+    cell.setAttribute('aria-expanded', 'false');
+    cell.setAttribute('aria-label', `${label}: ${names[chosen] ?? ''}`);
+    cell.title = names[chosen] ?? '';
+    // The choice in a span of its own, so a name longer than the cell ends in an ellipsis.
+    cell.append(make('span', 'scheduler-print__value', face ?? ''), sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
+
     let picked = null;
     menu.addEventListener('click', e => {
       const row = e.target.closest('[data-pick]');
@@ -3382,16 +3392,6 @@
       choose(picked);
       doc.querySelector(`[data-rux-open="${id}"]`)?.focus();
     });
-
-    const cell = make('button', 'scheduler-print__cell scheduler-print__pick');
-    cell.type = 'button';
-    cell.dataset.ruxOpen = id;
-    cell.setAttribute('aria-haspopup', 'menu');
-    cell.setAttribute('aria-expanded', 'false');
-    cell.setAttribute('aria-label', `${label}: ${names[chosen] ?? ''}`);
-    cell.title = names[chosen] ?? '';
-    // The choice in a span of its own, so a name longer than the cell ends in an ellipsis.
-    cell.append(make('span', 'scheduler-print__value', face ?? ''), sprite('#m-keyboard_arrow_down', 'scheduler-print__cell-arrow', doc));
     return [menu, cell];
   }
 

@@ -1,9 +1,9 @@
-commit   8c370a25317c1404b404b5832402bd22f7c5ffad
-date     2026-11-02T02:04:31Z
-subject  docs(tasks): Reword Ship from stock plainly
+commit   1dcf1fc51349883b6e3e1db965f758037fc8891f
+date     2026-11-02T02:26:54Z
+subject  feat(tasks): Stamp Ship from stock walked
 contract 24 
 tier     export
-sha256   c96d4bc68e52d9cacc0ac914a1bdf173c7744a0afa9e1e7e8a19bd618b58e59a
+sha256   d249bce67dbdd8e5b8b14f7dccd071082d9d83bffec0e86bf4580302f3d631cc
 
 Emitted by tools/sync-export.sh via atlas tools/emit.py --all --references --screens --glossary.
 These files are INPUTS, not source. Do not hand-edit them -- the next sync

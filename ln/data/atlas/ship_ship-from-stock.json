@@ -28,7 +28,7 @@
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
   "sessionCode": "whinh4130m000",
-  "walked": null,
+  "walked": "2026-11-01",
   "achieves": {
     "tokens": [
       {

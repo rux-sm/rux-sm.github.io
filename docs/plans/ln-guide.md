@@ -289,8 +289,7 @@ two processes to compare them; and landings for old page addresses.
 
 ## Questions
 
-- Production order: keep the name, or rename it to Make an item or
-  Production order from stock?
+None open.
 
 ## Tasks
 
@@ -298,7 +297,7 @@ two processes to compare them; and landings for old page addresses.
       printed, for rux's approval.
 - [ ] Purchase to receipt: the same.
 - [ ] Warehouse transfer: the same.
-- [ ] Production order: the same, under the name rux picks.
+- [ ] Production order: the same, renamed Production order from stock.
 - [ ] Run order planning for one item: write it to the standard, then walk it.
 - [ ] Demand to shipment via planning: write it to the standard, then walk it.
 - [ ] Create basic test items and defaults: write it to the standard, then

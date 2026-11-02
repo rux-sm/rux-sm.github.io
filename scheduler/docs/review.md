@@ -78,16 +78,6 @@ cloud preview or by `tools/check-strip.mjs`; what could not be checked says so.
    second later. Nothing moves in it, and the browser scrolls on its own
    thread, so a new gesture is not held up by it. Fix: none now.
 
-8. **A panel opening left of the week costs 9ms a frame of its 240ms push**
-   on the office's week, against 4ms closing and 1 to 2ms for the same
-   change of width made by hand: its layout is under 1ms, and hiding the
-   trips' bars takes the rest away, about 4ms of their paint and 3ms in the
-   phase where resize observers run, though no bar changes size and no
-   script runs there each frame. Headless Chrome with invented trips does
-   not show it, so what the browser redoes for the bars is not known. The
-   editor's push could not be timed in Chrome, which the extension pauses
-   while the editor loads. Fix: none known yet.
-
 ## Where the file could be cut
 
 `data.js` is one closure of 18,800 lines because every part reads the same

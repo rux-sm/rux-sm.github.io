@@ -12172,22 +12172,115 @@
      column turned back half way is followed by its new move, the old one's
      end let pass. */
   const pushing = new Map();
+  const pushEnded = () => {
+    pageEl.removeAttribute('data-pushing');
+    window.Rux?.schedule?.fit?.();
+    placeBarOpen();
+  };
+  function trackPush(target) {
+    const move = target.getAnimations().find(a => a.transitionProperty === 'flex-basis');
+    if (!move || pushing.get(target) === move) return;
+    pushing.set(target, move);
+    pageEl.setAttribute('data-pushing', '');
+    move.finished.catch(() => {}).then(() => {
+      if (pushing.get(target) !== move) return;
+      pushing.delete(target);
+      if (!pushing.size && !slide) pushEnded();
+    });
+  }
+
+  /* A PANEL LEFT OF THE WEEK SLIDES THE WEEK, where a column growing would
+     move every trip bar a little each frame and the bars' repaint cost more
+     than a frame at 120Hz: 3 to 5 of a push's 26 frames came late, against
+     none for the editor, whose push moves no bar. The board takes its new
+     shape at once, and what the frame holds, the toolbar and the week, is
+     put back where it stood by a transform and slid to its place over the
+     push's 240ms on its curve, which the compositor alone draws. Opening,
+     the panel's column is full at once, under the frame, which paints over
+     it and is cut only at its own right edge, so the panel is uncovered as
+     the week moves off it, the week held at the width it had so no gap opens
+     at its end; closing, the panel stays where it stood, out of the flow and
+     under the frame, while its contents leave, and the week slides over it.
+     Once the slide ends the frame lets its contents take their width, which
+     moves only what its right edge already cut, and the board is fitted. A
+     panel replacing another moves no bar, so the two columns keep app.css's
+     push; so does the editor, right of the week. */
+  const SLIDE_MS = 240;
+  const SLIDE_EASE = 'cubic-bezier(.2, 0, .38, .9)';
+  const leftColumn = el => el.parentElement === boardEl && !el.classList.contains('scheduler-trip');
+  const slides = () => pageEl.dataset.motion !== 'off' && !pageEl.hasAttribute('data-takeover')
+    && matchMedia('(min-width: 42rem) and (prefers-reduced-motion: no-preference)').matches;
+  let changedLeft = new Set();
+  let slideAsked = false;
+  let slide = null;
+  function endSlide() {
+    if (!slide) return;
+    const { set, held } = slide;
+    slide = null;
+    // Held columns keep `transition: none` until their own styles are back, so none starts a push of its own.
+    for (const [el, prop] of set) el.style.removeProperty(prop);
+    boardEl.getBoundingClientRect();
+    for (const el of held) el.style.removeProperty('transition');
+    if (!pushing.size) pushEnded();
+  }
+  function slideOrPush() {
+    slideAsked = false;
+    const targets = [...changedLeft];
+    changedLeft = new Set();
+    endSlide();
+    const opens = targets.filter(t => !t.hidden);
+    const closes = targets.filter(t => t.hidden);
+    if (!slides() || (opens.length && closes.length)) { targets.forEach(trackPush); return; }
+    const set = [];
+    const put = (el, prop, value) => { el.style.setProperty(prop, value); set.push([el, prop]); };
+    const before = frameEl.getBoundingClientRect().left;
+    const widths = [...frameEl.children].map(c => c.getBoundingClientRect().width);
+    for (const c of targets) c.style.setProperty('transition', 'none');
+    if (closes.length) {
+      const host = boardEl.getBoundingClientRect();
+      for (const c of closes) {
+        const r = c.getBoundingClientRect();
+        for (const [prop, value] of [['display', 'flex'], ['position', 'absolute'], ['margin', '0'], ['flex', 'none'],
+          ['left', `${r.left - host.left}px`], ['top', `${r.top - host.top}px`], ['inline-size', `${r.width}px`], ['block-size', `${r.height}px`]]) put(c, prop, value);
+      }
+      put(boardEl, 'position', 'relative');
+    }
+    const dx = before - frameEl.getBoundingClientRect().left;
+    if (Math.abs(dx) < 1) {
+      for (const [el, prop] of set) el.style.removeProperty(prop);
+      for (const c of targets) c.style.removeProperty('transition');
+      return;
+    }
+    put(frameEl, 'position', 'relative');
+    put(frameEl, 'z-index', '1');
+    put(frameEl, 'clip-path', 'inset(0 0 0 -100vw)');
+    [...frameEl.children].forEach((child, i) => {
+      if (opens.length) put(child, 'inline-size', `${widths[i]}px`);
+      put(child, 'transform', `translateX(${dx}px)`);
+      put(child, 'will-change', 'transform');
+    });
+    pageEl.setAttribute('data-pushing', '');
+    frameEl.getBoundingClientRect();
+    const run = slide = { set, held: targets };
+    requestAnimationFrame(() => {
+      if (slide !== run) return;
+      for (const child of frameEl.children) {
+        put(child, 'transition', `transform ${SLIDE_MS}ms ${SLIDE_EASE}`);
+        child.style.setProperty('transform', 'translateX(0)');
+      }
+      setTimeout(() => { if (slide === run) endSlide(); }, SLIDE_MS + 20);
+    });
+  }
   if (boardEl) {
     new MutationObserver(records => {
       for (const target of new Set(records.map(r => r.target))) {
         if (target.parentElement !== boardEl) continue;
-        const move = target.getAnimations().find(a => a.transitionProperty === 'flex-basis');
-        if (!move || pushing.get(target) === move) continue;
-        pushing.set(target, move);
-        pageEl.setAttribute('data-pushing', '');
-        move.finished.catch(() => {}).then(() => {
-          if (pushing.get(target) !== move) return;
-          pushing.delete(target);
-          if (pushing.size) return;
-          pageEl.removeAttribute('data-pushing');
-          window.Rux?.schedule?.fit?.();
-          placeBarOpen();
-        });
+        /* A left panel's change waits for the frame, so a panel opened in
+           place of another one closed a moment before is seen with it. */
+        if (leftColumn(target) && slides()) {
+          changedLeft.add(target);
+          if (!slideAsked) { slideAsked = true; requestAnimationFrame(slideOrPush); }
+        } else trackPush(target);
       }
     }).observe(boardEl, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
   }

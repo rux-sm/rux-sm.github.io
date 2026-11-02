@@ -4652,7 +4652,10 @@ html[data-scheduler-takeover] {
    side and fades up over moderate-01, 150ms, on the productive entrance
    curve, and leaves on the exit curve; the panels' own rules are in
    overrides.css, these are the columns'. The 16px between the column and the
-   week opens with it. A panel IN FRONT of the board slides in over the scrim
+   week opens with it. A panel left of the week opening or closing on its own
+   turns its column's move off and slides the week instead, data.js's
+   `slideOrPush`, so no trip bar is drawn again each frame; the editor and a
+   panel replacing another keep these moves. A panel IN FRONT of the board slides in over the scrim
    as the scrim fades up, Carbon's overlay fade. With the computer asking for
    less motion only the fades are kept and the week moves at once; with the
    view menu's Motion off, `data-motion` on the page, nothing moves. Nothing

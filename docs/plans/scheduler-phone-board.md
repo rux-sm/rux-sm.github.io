@@ -38,27 +38,26 @@ and dots; the editor opens over the board as the Mac's form.
 - **The bus column is about 62px:** the number, running or off with the
   speed, and the fuel; the seats, the sleeper and the lift go to the bus's
   sheet, which a tap on the bus opens.
+- **The bus's sheet holds everything about the bus,** as rux decided:
+  running or off with the speed and where it is, fuel and DEF, seats,
+  sleeper and lift, its trips for the two days, and any time out of
+  service.
 - **Above the board,** the month, which picks a month, Today and search,
   with no arrows, a swipe being the step; under them the week, the two days
-  in view marked and a dot under each day that needs attention, a tap on a
-  day going to it.
-- **At the foot, a bar of places,** built from Design's `frame-bar`, and a
-  round + at the bottom right for a new trip, which is the scheduler's own,
-  Carbon having no floating button.
+  in view marked and a dot under each day with a trip carrying a warning
+  mark, as rux decided, a tap on a day going to it.
+- **At the foot, a bar of places: Board, Drivers, Live map and Search,** as
+  rux decided, built from Design's `frame-bar`; Tasks, Departures, Forms,
+  Contacts and the settings are in the ☰ menu. A round + at the bottom
+  right starts a new trip, the scheduler's own, Carbon having no floating
+  button.
 - **Every task is measured before and after** in Chrome on :8641 on a real
   week, a swipe's frames and a sheet's opening, with the numbers in the
   commit message, **and checked in the iPhone simulator,** held both ways.
 
 ## Questions
 
-- Which places go in the bar at the foot? Proposed: Board, Tasks, Drivers
-  and Search, with Departures, Forms, Contacts and the settings in the ☰
-  menu.
-- What puts a dot under a day in the week? Proposed: a trip that day
-  carries a warning mark, as no driver, no bus or not confirmed.
-- What does the bus's sheet hold? Proposed: running or off with the speed
-  and where, fuel and DEF, seats, sleeper and lift, its trips for the two
-  days, and any time out of service.
+None open.
 
 ## Tasks
 

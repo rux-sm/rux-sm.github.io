@@ -668,7 +668,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receiving warehouse's on-hand is up by the production quantity from the on-hand before — "
+                  "v": "On-hand at the receiving warehouse = the on-hand before from step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the items and their stock",
+                  "href": "confirm-the-existing-foundation.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", plus the production quantity — "
                 },
                 {
                   "t": "pencil"
@@ -682,7 +691,7 @@
                   "v": "finished item on-hand after"
                 }
               ],
-              "text": "The receiving warehouse's on-hand is up by the production quantity from the on-hand before — finished item on-hand after"
+              "text": "On-hand at the receiving warehouse = the on-hand before from step 3 of Read the items and their stock, plus the production quantity — finished item on-hand after"
             }
           ],
           "id": "12",

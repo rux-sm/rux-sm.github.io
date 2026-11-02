@@ -108,10 +108,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One line per operation, with its work center"
+                  "v": "One line for each operation, with its work center"
                 }
               ],
-              "text": "One line per operation, with its work center"
+              "text": "One line for each operation, with its work center"
             }
           ],
           "id": "1",
@@ -150,10 +150,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "One line per component, with its estimated quantity and warehouse"
+                  "v": "One line for each component, with its estimated quantity and warehouse"
                 }
               ],
-              "text": "One line per component, with its estimated quantity and warehouse"
+              "text": "One line for each component, with its estimated quantity and warehouse"
             }
           ],
           "id": "2",

@@ -3194,6 +3194,13 @@ a.scheduler-tip__go { text-decoration: none; }
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+/* The calendar's is a square at the toolbar's height, its glyph centred,
+   as an icon-only button is. */
+.scheduler-weekbtn--calendar {
+  inline-size: var(--rux-layout-size-height-md);
+  padding-inline: 0;
+  justify-content: center;
+}
 /* The month takes the row's width the calendar leaves. */
 .scheduler-weekbtn--month { flex: 1 1 auto; min-inline-size: 0; }
 /* A rule between the two, the one the toolbar's buttons draw on their

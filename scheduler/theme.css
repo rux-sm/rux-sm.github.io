@@ -1311,11 +1311,14 @@
   --rux-layer-hover: #1a1a1a;
   box-shadow: 0 0 0 1px #2e2e2e, 0 2px 6px var(--rux-shadow);
 }
-/* The week's calendar hangs from the week's name as the ⋮'s menu does from
-   the ⋮: the name takes the calendar's outline and shadow up its sides and
-   over its top, stopping at its foot, and the calendar's outline and shadow
-   stop at its top, where the name stands on it, so one line goes round the
-   two. */
+/* The week's calendar hangs from the calendar's button and the month's
+   list from the month's, as the ⋮'s menu does from the ⋮: the button takes
+   the surface's outline and shadow up its sides and over its top, stopping
+   at its foot, and stands over the surface's top, so one line goes round the
+   two. The calendar is wider than its button, so its own top line stays,
+   the button covering it where it stands on it, and only its shadow stops
+   there. The open month's ring stands in for the rule on its leading edge,
+   which would otherwise draw a second line beside it. */
 /* Rux Dark's calendar floats clear of the week's name, as its menus float
    clear of the ⋮, so the open name keeps the toolbar's own look, as the open
    ⋮ does there, rather than the joined surface. */
@@ -1327,9 +1330,10 @@
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
   clip-path: inset(-6px -6px 0 -6px);
 }
+[data-theme="rux-100"] .scheduler-weekbtn--month[aria-expanded="true"] { border-inline-start-color: transparent; }
 [data-theme="rux-100"] #scheduler-week-picker .rux--date-picker__calendar {
   box-shadow: 0 0 0 1px var(--rux-border-subtle-01), 0 2px 6px var(--rux-shadow);
-  clip-path: inset(0 -6px -6px -6px);
+  clip-path: inset(-1px -6px -6px -6px);
 }
 
 /* The footer's grey and ink outside a bar, and the status colours a

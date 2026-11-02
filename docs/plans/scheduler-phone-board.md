@@ -13,17 +13,16 @@ wide, swiped with the iPhone's own fling. A trip bar says only what a row
 is scanned for, and a tap opens the rest in a sheet with its actions in
 thumb reach.
 
-Today the phone pages a week at a time with a swipe of its own, and shows
-the week as small blocks named by a code, under a bus column of numbers
-and dots; the editor opens over the board as the Mac's form.
+Today the phone shows the strip two days wide, a flick a day, with the
+Mac's full trip bars under a bus column of numbers and dots; the editor
+opens over the board as the Mac's form.
 
 ## Decisions
 
 - **The phone's board is the strip, two days wide,** as rux decided from
-  the mockups: the bus column and two days fill the 402px screen, about 170px
-  a day. It is swiped a day at a time and rests on a day's edge; its own
-  swipe code and the paging go, since the strip is never drawn again.
-  Turned sideways, it shows as many days as fit.
+  the mockups: the bus column and two days fill the board, about 150px a
+  day beside the narrow bus column. It is swiped a day at a time and rests
+  on a day's edge. Turned sideways, it shows as many days as fit.
 - **A trip bar is three lines,** as rux decided: the destination, with its
   bus count, its warning mark and its colour; its times out and back; and
   its driver, or the words for none. The customer, the contact, the latest
@@ -61,8 +60,6 @@ None open.
 
 ## Tasks
 
-- [ ] Put the phone on the strip, two days wide, a day a swipe, and delete
-      its paging and swipe code.
 - [ ] Draw the phone's trip bars in three lines, opening the sheet on a
       tap.
 - [ ] Narrow the bus column, and give a bus its sheet.

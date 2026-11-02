@@ -144,13 +144,11 @@
   const firstDayOf = d => addDays(d, -(weekStart === 'sunday' ? d.getDay()
     : weekStart === 'today' ? (d.getDay() - new Date().getDay() + 7) % 7
       : (d.getDay() + 6) % 7));
-  /* How many days the board moves and reads by: a week. The arrows and a
-     phone's swipe step by it. The board is one strip of days, scrolled
-     sideways; a phone pages a week at a time. `cursor` is the first day in
-     view, the leftmost day on screen, and follows the scroll. */
+  /* How many days the board moves and reads by: a week, which the arrows
+     step by. The board is one strip of days, scrolled sideways, on a phone
+     as on the Mac. `cursor` is the first day in view, the leftmost day on
+     screen, and follows the scroll. */
   const WEEK = 7;
-  const phoneQuery = matchMedia('(max-width: 41.98rem)');
-  const scrolling = () => !phoneQuery.matches;
   /* A day on the strip never changes width, so a wider board shows more of
      them, which only Fill the window gives it room for: app.js counts the
      whole days in view and writes the count as `data-days-in-view`, which
@@ -158,10 +156,10 @@
      reads around stays seven days; only the days on screen grow. */
   const MAX_IN_VIEW = 14;
   const daysOnScreen = () => Math.max(WEEK, Number(schEl?.dataset.daysInView) || WEEK);
-  const inView = () => (scrolling() ? Math.min(MAX_IN_VIEW, daysOnScreen()) : WEEK);
+  const inView = () => Math.min(MAX_IN_VIEW, daysOnScreen());
   const lastShown = start => addDays(start, WEEK - 1);
   // The last day on screen from a first: the label's end, which is the week's unless more days fit.
-  const viewEnd = start => (scrolling() ? addDays(start, inView() - 1) : lastShown(start));
+  const viewEnd = start => addDays(start, inView() - 1);
   /* THE STRIP is every day from the first week of the year the scheduler
      first holds trips in to the last week of next year, as the year list
      runs, and on to the whole year of a day the calendar picks past either
@@ -175,10 +173,8 @@
     const to = Math.max(new Date().getFullYear() + 1, addDays(viewEnd(start), NEAR_VIEW).getFullYear());
     return [firstDayOf(new Date(from, 0, 1)), addDays(firstDayOf(new Date(to, 11, 31)), WEEK - 1)];
   };
-  // The days a view starting on `start` draws the trips of: NEAR_VIEW days either side on a strip, or the week.
-  const drawnRange = start => (scrolling()
-    ? [addDays(start, -NEAR_VIEW), addDays(viewEnd(start), NEAR_VIEW)]
-    : [start, lastShown(start)]);
+  // The days a view starting on `start` draws the trips of: NEAR_VIEW days either side.
+  const drawnRange = start => [addDays(start, -NEAR_VIEW), addDays(viewEnd(start), NEAR_VIEW)];
   // The weekend is read from the date, not the column, because a Sunday-first
   // week puts it at both ends. The board and the driver roster share it.
   const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
@@ -1036,15 +1032,6 @@
     return bar;
   }
 
-  /* Draws a week's rows. With a target it draws into that grid and stops
-     there: a spare grid is a week waiting to slide in beside the one being
-     read, so the board's index, its label, its roster, its notices and its
-     scroll all still belong to the week on screen. Without one it draws into
-     the board's own grid and everything that follows a week change follows. */
-  /* The week the board last drew. A read of that same week -- a save, a live
-     change from someone else, an update -- keeps the selected trip selected, so
-     its card stays open; moving to another week starts with nothing picked. */
-  let renderedWeek = null;
   /* What a board from `weekStart` to `weekEnd` draws, worked out from a payload
      and no element: each row's bars, placed and clipped to those days, the
      rows in the office's order, which of its leg's buses each bar is, and
@@ -1069,13 +1056,11 @@
       }
     }
 
-    /* Rows: every active bus, plus any bus no longer active that a trip uses,
-       so a trip on a retired bus is visible rather than silently dropped. On
-       the strip, every bus, so the rows stay the same whatever is read and
-       wherever the strip goes: one no longer active stands shut until one of
+    /* Rows: every bus, so the rows stay the same whatever is read and
+       wherever the strip goes, and a trip on a retired bus is visible rather
+       than silently dropped: one no longer active stands shut until one of
        its trips is on screen, `fitLanesInView`, and below every active bus,
        so its opening moves no active row. */
-    const used = new Set([...tracks.keys()]);
     const retired = b => b.status !== 'active';
     /* Grouped by type in the order of the office's vehicle-types list, fleet
        order kept within a type, so a van never reads as the next coach down.
@@ -1088,7 +1073,6 @@
       return i < 0 ? typeList.length : i;
     };
     const rows = buses
-      .filter(b => scrolling() || b.status === 'active' || used.has(b.id))
       .map(b => ({ id: b.id, bus: b }))
       .sort((a, b) => retired(a.bus) - retired(b.bus) || typeRank(a.bus) - typeRank(b.bus) || typeKey(a.bus).localeCompare(typeKey(b.bus)));
     // Always present, hidden when empty, and on a strip shut like a bus no
@@ -1182,52 +1166,41 @@
     last?.classList.add('scheduler-row--last');
   }
 
-  function render(data, target) {
+  /* Draws the strip's rows, from `weekStart` to `weekEnd`, its day band and
+     every bus, and leaves the trips to be drawn as they come near the view. */
+  function render(data) {
     const { trips, timeOff, oos, statuses, weekStart, weekEnd } = data;
     boardNearby = { trips, off: timeOff, oos };
     standingOf.clear();
     // A strip drawn again is the same board, so its selection stays.
-    const strip = !target && scrolling();
-    const kept = !target && (strip || renderedWeek === iso(weekStart)) ? selectedBar() : null;
+    const kept = selectedBar();
     const keepRef = kept ? barRef(kept) : null;
-    // One week or two, from the range asked for. The board's columns follow
-    // it; a spare week inherits the count from the pane.
+    // The board's columns follow the days asked for.
     const days = Math.round((weekEnd - weekStart) / DAY) + 1;
-    if (!target) {
-      schEl.style.setProperty('--scheduler-days', String(days));
-      schEl.classList.toggle('scheduler-week--two', days === 14);
-    }
+    schEl.style.setProperty('--scheduler-days', String(days));
     const { tracks, rows, driversById, busesById, windowsOf } = layOutBoard(data, weekStart, weekEnd);
     // What the panel reads when a bar is clicked: the bar carries ids, not
     // objects, and re-fetching a trip already in hand would be a round trip
     // for nothing.
-    const into = target || gridEl;
-    if (!target) panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
-                                contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
+    panelIndex = { trips: new Map(trips.map(t => [t.id, t])), buses: busesById, driversById, statuses,
+                   contacts: lists.contacts, customers: lists.customers, locations: lists.locations };
 
-    if (!target) {
-      forgetOwed();
-      stripRows = [];
-      into.removeAttribute('data-animate');
-      into.classList.remove('scheduler-grid--skeleton');
-    }
-    into.replaceChildren();
+    forgetOwed();
+    stripRows = [];
+    gridEl.removeAttribute('data-animate');
+    gridEl.classList.remove('scheduler-grid--skeleton');
+    gridEl.replaceChildren();
     // The corner over the bus numbers is empty: each head draws its own type.
-    into.appendChild(el('div', 'scheduler-corner'));
+    gridEl.appendChild(el('div', 'scheduler-corner'));
 
     const today = iso(new Date());
-    let todayCell = null;
     const band = el('div', 'scheduler-days');
-    for (let i = 0; i < days; i++) {
-      const cell = dayCell(addDays(weekStart, i), today);
-      if (cell.hasAttribute('aria-current')) todayCell = cell;
-      band.appendChild(cell);
-    }
-    into.appendChild(band);
+    for (let i = 0; i < days; i++) band.appendChild(dayCell(addDays(weekStart, i), today));
+    gridEl.appendChild(band);
 
     for (const r of rows) {
       const bars = tracks.get(r.id) ?? [];
-      const lanes = bars.length ? assignLanes(bars) : 1;
+      if (bars.length) assignLanes(bars);
       const rowEl = el('div', 'scheduler-row' + (r.id === UNASSIGNED ? ' scheduler-row--unassigned' : ''));
       if (r.empty) rowEl.hidden = true;
 
@@ -1275,9 +1248,8 @@
         ].filter(Boolean).join(' · ');
       }
 
-      // A strip marks the days in view once it is placed, in `markHeads`.
+      // The days in view are marked once the strip is placed, in `markHeads`.
       const windows = windowsOf(r);
-      if (!strip) markOutOfService(head, windows);
       if (r.bus) BusHead.draw(head, r.bus, null, { waiting: roadWaiting() });
 
       /* The bus's kit on the head's last row: one band of three cells, its
@@ -1309,30 +1281,22 @@
       if (r.bus && r.bus.status !== 'active') track.dataset.retired = '';
       for (const w of windows) track.appendChild(oosEl(w, clip(w.start_date, w.end_date, weekStart, weekEnd)));
       const items = rowItems(bars, r.bus ? yardGaps(bars) : [], { driversById, busesById, statuses });
-      /* A strip's row starts with the fewest lanes it takes, which
-         `fitLanesInView` grows for the trips in view once it is placed. */
+      /* A row starts with the fewest lanes it takes, which `fitLanesInView`
+         grows for the trips in view once the strip is placed. */
       const least = track.dataset.retired != null || track.dataset.unassigned ? 0 : 1;
-      track.style.setProperty('--scheduler-lanes', strip ? least : lanes);
-      if (strip) stripRows.push({ track, head, bus: r.bus, items, least, windows });
-      else for (const item of items) track.appendChild(item.make());
+      track.style.setProperty('--scheduler-lanes', least);
+      stripRows.push({ track, head, bus: r.bus, items, least, windows });
 
       rowEl.append(head, track);
-      into.appendChild(rowEl);
+      gridEl.appendChild(rowEl);
     }
 
-    markLastRow(into);
-
-    // A spare grid is drawn and nothing else: what follows belongs to the week
-    // the board is actually reading.
-    if (target) return;
+    markLastRow(gridEl);
 
     // The editor keeps its trip across a render. Its opener becomes the new bar
     // for that trip when this week has one, so focus can go back to it.
     if (!panelEl.hidden && panelArgs?.ref) panelOpener = findBar(panelArgs.ref);
-    if (!target) {
-      if (keepRef) findBar(keepRef)?.setAttribute('aria-current', 'true');
-      renderedWeek = iso(weekStart);
-    }
+    if (keepRef) findBar(keepRef)?.setAttribute('aria-current', 'true');
 
     schEl.hidden = false;
     // The roster reads the board's whole range and draws the part it shows.
@@ -1344,27 +1308,11 @@
     // Every bar is new, so the faces on them are drawn again.
     presenceDraw();
 
-    // The only mark for today is its header cell, so the grid brings that cell
-    // into view rather than leaving it past the right edge -- which is where a
-    // Sunday sits on a narrow window. Only when it is actually out of view, and
-    // never past the sticky bus column, which covers the pane's left edge. A
-    // strip is scrolled to the week in view by `drawBoard` instead.
-    if (todayCell && !strip) {
-      const sticky = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
-      const visible = schEl.clientWidth;
-      const left = todayCell.offsetLeft;
-      const right = left + todayCell.offsetWidth;
-      if (right > schEl.scrollLeft + visible) schEl.scrollLeft = right - visible;
-      else if (left < schEl.scrollLeft + sticky) schEl.scrollLeft = Math.max(0, left - sticky);
-    }
-
-    // A strip's label is the week in view, which the scroll moves.
-    if (strip) setRange(cursor, viewEnd(cursor));
-    else setRange(weekStart, weekEnd);
+    // The label is the week in view, which the scroll moves; `drawBoard` scrolls the strip to it.
+    setRange(cursor, viewEnd(cursor));
 
     const barCount = [...tracks.values()].reduce((n, list) => n + list.length, 0);
-    if (!barCount) sayQuietly(strip ? 'No trip touches the weeks around this one.'
-      : `No trip touches these ${days > 7 ? 'fourteen' : 'seven'} days.`);
+    if (!barCount) sayQuietly('No trip touches the weeks around this one.');
     else say(null);
 
     // The new bars and heads take what Samsara last said, and ask again if it is old.
@@ -1374,10 +1322,7 @@
     // The notice above changes how much height is left for the grid. app.js
     // owns that sum, so this asks it to refit.
     window.Rux?.schedule?.fit?.();
-    afterBoard?.();
   }
-  // Told after each board is drawn: the swipe draws the weeks either side then.
-  let afterBoard = null;
 
   /* ── Moving a trip to another bus ──
      A drag writes one assignment's `bus_id`, or inserts the row for an empty
@@ -1525,24 +1470,19 @@
     return [schEl.scrollLeft / w, (schEl.scrollLeft + schEl.clientWidth - head) / w];
   }
 
-  /* Draws the board from a payload: the week `cursor` starts, or the strip
-     scrolled so that week is in view. The same strip drawn again keeps its
-     place to the pixel, so a redraw under a gesture moves nothing on screen. */
+  /* Draws the board from a payload: the strip scrolled so the week `cursor`
+     starts is in view. The same strip drawn again keeps its place to the
+     pixel, so a redraw under a gesture moves nothing on screen. */
   function drawBoard(data) {
-    if (scrolling()) {
-      const [first, last] = stripSpan(cursor);
-      const same = !!stripStart && iso(first) === iso(stripStart) && iso(last) === iso(stripEnd);
-      const left = same ? schEl.scrollLeft : null;
-      stripStart = first;
-      stripEnd = last;
-      stripData = data;
-      render({ ...data, weekStart: first, weekEnd: last });
-      placeStrip(left);
-      window.SchedulerActivity?.note('Drew the board again');
-    } else {
-      stripStart = stripEnd = stripData = null;
-      render({ ...data, weekStart: cursor, weekEnd: lastShown(cursor) });
-    }
+    const [first, last] = stripSpan(cursor);
+    const same = !!stripStart && iso(first) === iso(stripStart) && iso(last) === iso(stripEnd);
+    const left = same ? schEl.scrollLeft : null;
+    stripStart = first;
+    stripEnd = last;
+    stripData = data;
+    render({ ...data, weekStart: first, weekEnd: last });
+    placeStrip(left);
+    window.SchedulerActivity?.note('Drew the board again');
     shown = cursor;
   }
 
@@ -1834,10 +1774,10 @@
     requestAnimationFrame(() => requestAnimationFrame(() => gridEl.setAttribute('data-animate', '')));
   }
 
-  /* A strip's rows grow only where their trips stack in view, as a paged
-     week's do. Lanes are given across the whole strip, so a bar keeps its lane
-     as it scrolls, and each track is as tall as the most lanes among its bars
-     that reach the days on screen, a part day included. A drag sets the lanes
+  /* A strip's rows grow only where their trips stack in view. Lanes are
+     given across the whole strip, so a bar keeps its lane as it scrolls, and
+     each track is as tall as the most lanes among its bars that reach the
+     days on screen, a part day included. A drag sets the lanes
      of the row it is over, so nothing here runs under a bar in hand. A bar
      off screen in a lane below that is marked `data-folded`, which app.css
      stands in the first lane, so the board ends at its last row. The rows
@@ -11306,6 +11246,11 @@
     // Focus that was on a slot goes back to the trip, until the action takes it.
     if (focused) bar.focus();
   }
+  // The room the docked sheet takes at the board's foot, given back once it goes.
+  const clearDocked = () => {
+    schEl.style.paddingBlockEnd = '';
+    schEl.style.scrollPaddingBlockEnd = '';
+  };
   function placeBarOpen(bar = selectedBar()) {
     if (!barShortcuts) return;
     const docked = !floatingCard();
@@ -11337,7 +11282,7 @@
     if (route) bar.dataset.routeOpen = '';
     if (cardSection && !(docked && bar?.dataset.road)) barShortcuts.dataset.section = cardSection; else delete barShortcuts.dataset.section;
     // The Contacts window goes with its trip when it is put down.
-    if (none) { poppedFor = null; schEl.style.removeProperty('--scheduler-docked-h'); return; }
+    if (none) { poppedFor = null; clearDocked(); return; }
     if (barShortcuts.previousElementSibling !== bar) bar.after(barShortcuts);
     // A card that comes to a trip afresh starts compact, its note and updates
     // closed, however they were left the last time it showed.
@@ -11366,8 +11311,8 @@
       barShortcuts.setAttribute('data-pop', '');
     };
 
-    /* Compact: a block one slot wide has nothing to float beside, so the bar
-       docks to the bottom edge and takes the trip's rows with it. It stays
+    /* Compact: a day too narrow to float beside, so the bar docks to the
+       bottom edge and takes the trip's rows with it. It stays
        where it was put in the track, because app.css fixes it to the window
        from there and that is what keeps the board's tokens inherited. None of
        the placing below applies to a bar that is not pointing at anything. */
@@ -11379,20 +11324,24 @@
       barShortcuts.removeAttribute('data-out');
       barShortcuts.removeAttribute('data-side');
       /* The sheet stands over the foot of the board, so the pane is given that
-         much more to scroll and the last bus can still be brought out from
-         under it. The height is measured because the rows a bar draws are the
-         view's to choose. */
-      schEl.style.setProperty('--scheduler-docked-h',
-        `${Math.round(barShortcuts.getBoundingClientRect().height)}px`);
+         much more to scroll, as its own padding, and the last bus can still be
+         brought out from under it; the home bar is the page's foot padding to
+         clear. The height is measured because the rows a bar draws are the
+         view's to choose. Both are the pane's own properties, which nothing
+         inherits: a custom property set there restyled every element on the
+         strip, about 45ms on a phone. */
+      const sheet = Math.round(barShortcuts.getBoundingClientRect().height);
+      schEl.style.paddingBlockEnd = `${sheet}px`;
+      schEl.style.scrollPaddingBlockEnd = `calc(${sheet}px + var(--rux-spacing-03))`;
       /* A trip the sheet has just come up over is scrolled clear of it, once:
-         the bar's scroll margin is the sheet's height, so `nearest` moves the
+         the pane's scroll padding is the sheet's height, so `nearest` moves the
          board only as far as that takes and not at all when it is clear. */
       const fresh = target !== poppedFor;
       pop();
       if (fresh) bar.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
       return;
     }
-    schEl.style.removeProperty('--scheduler-docked-h');
+    clearDocked();
     dockedDrawn = '';
     barShortcuts.querySelector('.scheduler-bar-shortcuts__trip')?.remove();
     /* The room is measured on screen, against the pane and the two bands that
@@ -12165,13 +12114,18 @@
     else document.documentElement.removeAttribute('data-scheduler-room');
 
     /* Compact is the board's own answer, not a panel's: a board that cannot
-       show three readable days shows all seven as blocks instead. It asks the
-       board rather than the room, because a panel over the week never makes
-       the week itself a different week. */
-    if (board < SCHEDULE_FLOOR * rem) pageEl.setAttribute('data-board', 'compact');
-    else pageEl.removeAttribute('data-board');
+       show three readable days shows two, which app.js fits to the pane. It
+       asks the board rather than the room, because a panel over the week
+       never makes the week itself a different week. */
+    const compact = board < SCHEDULE_FLOOR * rem;
+    if (compact !== (pageEl.getAttribute('data-board') === 'compact')) {
+      if (compact) pageEl.setAttribute('data-board', 'compact');
+      else pageEl.removeAttribute('data-board');
+      // Its days are fitted again, two to the pane on a compact board.
+      window.Rux?.schedule?.fit?.();
+    }
     // The menus the view menu holds stand outside the page, so they read it from the root.
-    if (board < SCHEDULE_FLOOR * rem) document.documentElement.setAttribute('data-scheduler-board', 'compact');
+    if (compact) document.documentElement.setAttribute('data-scheduler-board', 'compact');
     else document.documentElement.removeAttribute('data-scheduler-board');
 
     /* A panel opening or closing moves the board without always resizing its
@@ -12315,8 +12269,6 @@
   function applyView() {
     weekStart = view.weekStart;
     view.sunday = weekStart === 'sunday';
-    // The strip's snap and its day widths, which app.css and app.js read from this class.
-    schEl.classList.toggle('scheduler-week--scroll', scrolling());
     dressWeekPicker();
     for (const r of VIEW_ROWS) schEl.classList.toggle(HIDE_ROW[r], !view[r]);
     // Time at the yard: the cards between trips, and the bar ends that part for them.
@@ -12521,24 +12473,6 @@
     if (viewTrigger) delete viewTrigger.dataset.attached;
   });
 
-  /* Fill the window turned on or off, or a window crossing md, below which a
-     phone pages through weeks: the board is drawn again. A paged week starts
-     on the week's first day, and a strip keeps the day in view at its left
-     edge. */
-  function redrawLayout() {
-    // A hold the strip's scroll began ends with the strip, or no read would ever draw again.
-    if (stripStart) endStripHold();
-    schEl.classList.toggle('scheduler-week--scroll', scrolling());
-    dressWeekPicker();
-    if (!scrolling()) cursor = firstDayOf(cursor);
-    shown = null;
-    stripStart = stripEnd = stripData = null;
-    show();
-    placeRoom();
-  }
-
-  // Crossing md changes whether the strip scrolls, so the board redraws.
-  phoneQuery.addEventListener('change', redrawLayout);
   // A window that widens or narrows changes how many days fit: the label says what is on screen, and their trips are drawn.
   schEl?.addEventListener('scheduler:days-in-view', () => {
     if (!stripStart) return;
@@ -13102,8 +13036,7 @@
      bounded the way a bar's hold is. iOS sends no `contextmenu` for a hold, so
      this is the only way in there; Android sends one as its own hold
      completes, after this has opened the menu, and opening an open menu again
-     changes nothing. Travel past the slop is a scroll or a week swipe, and
-     ends the hold. */
+     changes nothing. Travel past the slop is a scroll, and ends the hold. */
   gridEl.addEventListener('pointerdown', down => {
     if (down.pointerType !== 'touch' || !down.isPrimary) return;
     const track = cellTrack(down.target);
@@ -15820,10 +15753,9 @@
     for (const t of SHELL_TOKENS) barShortcuts.style.setProperty(`--scheduler-shell-${t}`, cs.getPropertyValue(`--rux-${t}`).trim());
   }
 
-  /* The docked bar's head: the rows the compact block gave up, cloned from the
-     bar itself rather than built again, so a row has one builder and one set of
-     rules. The bar's colour class comes with them, which the head's stripe
-     reads. `aria-label` is in the key because it is the whole trip written out,
+  /* The docked bar's head: the trip's rows, cloned from the bar itself
+     rather than built again, so a row has one builder and one set of rules.
+     The bar's colour class comes with them, which the head's stripe reads. `aria-label` is in the key because it is the whole trip written out,
      so any change to what a row says redraws this. */
   let dockedDrawn = '';
   function drawDockedTrip(bar) {
@@ -16360,7 +16292,7 @@
        copies the driver details, and Email, which opens a message to paste
        them in. On a phone, where a row has room for two buttons, they stay
        in the menu. */
-    const roomy = !phoneQuery.matches;
+    const roomy = matchMedia('(min-width: 42rem)').matches;
     const tasks = new Map();
     const task = it => {
       const b = el('button', 'rux--btn rux--btn--secondary rux--layout--size-md scheduler-contact__task', it.words || it.label);
@@ -18067,7 +17999,7 @@
      waiting on the network -- `render` decides the overlap per leg, so one
      payload draws nine weeks at nine different starts. */
   let cached = null;
-  // Whether a payload covers every day whose trips a view from this first day draws: the week, or on the strip the days around the view.
+  // Whether a payload covers every day whose trips a view from this first day draws: the days around the view.
   const heldBy = (payload, start) => {
     if (!payload) return false;
     const [from, to] = drawnRange(start);
@@ -18139,8 +18071,8 @@
     // Cached navigation paints synchronously even while a refresh is in flight,
     // but never under a bar in hand, whose drag is measuring the rows. A strip
     // that runs to the week asked for scrolls to it instead.
-    if (!weekMotion && scrolling() && stripData && stripHas(cursor)) scrollToCursor();
-    else if (!weekMotion && holds(cursor) && (scrolling() || !shown || iso(shown) !== iso(cursor))) {
+    if (!weekMotion && stripData && stripHas(cursor)) scrollToCursor();
+    else if (!weekMotion && holds(cursor)) {
       if (barsInHand) drawOwed = true;
       else drawBoard(cached.data);
     }
@@ -18280,11 +18212,10 @@
       return;
     }
     if (!data) return;
-    if (scrolling() && stripData) { takeRead(data, data.weekStart); return; }
+    if (stripData) { takeRead(data, data.weekStart); return; }
     cached = { data, centre: data.weekStart };
     keepHome();
     if (!holds(cursor)) return;
-    if (!scrolling() && weekPrint(data, cursor) === weekPrint(before, cursor)) { afterBoard?.(); return; }
     if (barsInHand) { drawOwed = true; return; }
     drawBoard(data);
   }
@@ -18554,7 +18485,7 @@
        which the drag's ending pays through `drawHeld`. */
     const held = holds(asked);
     // A strip that runs to the week in view is left as it is; a read ahead of the hand never draws.
-    const inStrip = scrolling() && !!stripData && stripHas(asked);
+    const inStrip = !!stripData && stripHas(asked);
     if (held && !ahead && !inStrip) {
       if (barsInHand) drawOwed = true;
       else drawBoard(cached.data);
@@ -18570,10 +18501,10 @@
       // This read covers the live changes waiting.
       liveTrips.clear();
       liveWindows = liveListsAsked = false;
-      const wide = scrolling() && (ahead || held);
+      const wide = ahead || held;
       const data = await read(asked, wide ? STRIP_REACH : NEAR_DAYS);
       // A narrow read is followed by a wide one, unless a newer ask is waiting, which will be.
-      if (scrolling() && !wide && !readAgain) { stripAhead = true; weekOwed = true; }
+      if (!wide && !readAgain) { stripAhead = true; weekOwed = true; }
       if (weekMotion && !ahead) await weekMotion;
       // A newer ask for a different week is queued: this one is not drawn.
       if (readAgain && iso(cursor) !== iso(asked)) return;
@@ -18581,29 +18512,15 @@
          since the ask, takes the read in where it stands; one that does not
          is drawn, once the hand stops. A read that does not reach the week in
          view asks again around it. */
-      if (scrolling()) {
-        if (stripData && stripHas(cursor)) takeRead(data, asked);
-        else {
-          cached = { data, centre: asked };
-          keepHome();
-          if (weekMotion) stripStale = true;
-          else if (barsInHand) drawOwed = true;
-          else if (holds(cursor)) drawBoard(data);
-        }
-        if (!holds(cursor)) { stripAhead = ahead; weekOwed = true; readAgain = true; }
-        return;
+      if (stripData && stripHas(cursor)) takeRead(data, asked);
+      else {
+        cached = { data, centre: asked };
+        keepHome();
+        if (weekMotion) stripStale = true;
+        else if (barsInHand) drawOwed = true;
+        else if (holds(cursor)) drawBoard(data);
       }
-      /* A week drawn from what was held is redrawn only if the read came back
-         different, so the common case costs no second render and nothing on
-         screen moves. */
-      const same = held && cached && weekPrint(data, asked) === weekPrint(cached.data, asked);
-      cached = { data, centre: asked };
-      keepHome();
-      // The weeks drawn ahead were drawn from the payload this replaces.
-      if (same) { afterBoard?.(); return; }
-      if (barsInHand) { drawOwed = true; return; }
-      render(data);
-      shown = asked;
+      if (!holds(cursor)) { stripAhead = ahead; weekOwed = true; readAgain = true; }
     } catch (e) {
       // A queued read follows and reports for itself; a read ahead of the hand asked for nothing to show, and the next growth asks again.
       if (readAgain || ahead) return;
@@ -19123,9 +19040,8 @@
       cursor = firstDayOf(parseISO(day));
       const held = holds(cursor);
       const read = show();
-      // A week held is drawn at once, unless a bar in hand or a swipe holds the drawing back.
-      const drawn = held && (scrolling() || (shown && iso(shown) === iso(cursor)));
-      if (!drawn || !bars().length) await read;
+      // A week held is drawn at once, unless a bar in hand holds the drawing back.
+      if (!held || !bars().length) await read;
       bar = legBar() || bars()[0];
     }
     if (!bar) {
@@ -19192,8 +19108,8 @@
      The browser scrolls the strip both ways, a trackpad's gesture with its
      own momentum and an arrow's or a pick's by its own smooth scroll, and
      app.css's snapping brings it to rest on a day's edge and on a row's or a
-     stacked trip's top. A scroll sideways holds the board still as a swipe
-     does, through `weekMotion`: no read draws and no live change redraws
+     stacked trip's top. A scroll sideways holds the board still, through
+     `weekMotion`: no read draws and no live change redraws
      until the browser says it has stopped, `scrollend`. While it runs the
      trips near the view are drawn and the label follows the week in view;
      the rest follows once it stops. */
@@ -19275,7 +19191,7 @@
     endStripHold();
   }
   schEl?.addEventListener('scroll', () => {
-    if (!scrolling() || !stripStart) return;
+    if (!stripStart) return;
     // This script's own placing, and a scroll up or down, leave the week as it is.
     if (!weekMotion && Math.abs(schEl.scrollLeft - placedLeft) < 1) return;
     if (!weekMotion) weekMotion = new Promise(resolve => { releaseWeekMotion = resolve; });
@@ -19352,7 +19268,7 @@
   let aimDay = null;
   const stepWeek = days => {
     const w = dayWidth();
-    if (stripStart && scrolling() && w && !barsInHand) {
+    if (stripStart && w && !barsInHand) {
       toast(null);
       const length = daysBetween(stripStart, stripEnd) + 1;
       const from = aimDay ?? addDays(stripStart, Math.round(schEl.scrollLeft / w));
@@ -19370,7 +19286,7 @@
      dialog, the editor or a slider such as the viewer's edge. */
   document.addEventListener('keydown', e => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !stripStart || !scrolling() || barsInHand) return;
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !stripStart || barsInHand) return;
     const at = e.target;
     if (at?.closest?.('input, textarea, select, [contenteditable=""], [contenteditable="true"], [role="menu"], [role="listbox"], [role="dialog"], [role="slider"], [role="tablist"], [role="separator"], #scheduler-panel, .scheduler-viewer')) return;
     e.preventDefault();
@@ -19383,7 +19299,7 @@
     toast(null);
     stopStripScroll();
     const today = firstDayOf(new Date());
-    if (scrolling() && stripData && stripHas(today) && !barsInHand && !holds(today) && heldBy(home, today)) takeRead(home.data, home.centre);
+    if (stripData && stripHas(today) && !barsInHand && !holds(today) && heldBy(home, today)) takeRead(home.data, home.centre);
     cursor = today;
     show();
   }
@@ -19398,297 +19314,6 @@
     toolbarStrip.scrollLeft += e.deltaY;
     e.preventDefault();
   }, { passive: false });
-
-  /* Compact weeks slide only their trip tracks. The date and bus headers
-     stay in place until a completed gesture commits one adjacent week. */
-  const SWIPE_LOCK = 6;
-  /* How much rise a swipe may carry and still be a swipe: the vertical may
-     reach 1.73 times the horizontal, which is 60 degrees off the horizontal.
-     Wide, because a thumb arcs and the board's own scrolling is steeper than
-     that; anything a finger means as a scroll is near vertical. */
-  const SWIPE_CONE = 1.73;
-  const SWIPE_MIN = 40;
-  const SWIPE_FLICK = 24;
-  const SWIPE_FLICK_MS = 300;
-  const SWIPE_EDGE = 24;
-  const SLIDE_MS = 200;
-
-  if (schEl) {
-    const calmly = matchMedia('(prefers-reduced-motion: reduce)');
-    let g = null;
-    let settling = false;
-    let loadingAdjacent = false;
-    const loadingStatus = document.getElementById('scheduler-week-loading');
-    const loadingRow = document.getElementById('scheduler-weekrow');
-    const stopLoading = () => {
-      loadingStatus?.replaceChildren();
-      loadingRow?.classList.remove('scheduler-toolbar__weekrow--loading');
-    };
-    const beginMotion = () => {
-      if (!weekMotion) weekMotion = new Promise(resolve => { releaseWeekMotion = resolve; });
-    };
-
-    // Clip against stationary day-cell boxes, not the moving tracks themselves.
-    const clipTracks = grid => {
-      for (const track of grid.querySelectorAll('.scheduler-track')) {
-        const viewport = el('div', 'scheduler-track-viewport');
-        track.before(viewport);
-        viewport.appendChild(track);
-      }
-    };
-
-    const teardown = () => {
-      for (const spare of schEl.querySelectorAll('.scheduler-grid--spare')) spare.remove();
-      for (const viewport of gridEl.querySelectorAll('.scheduler-track-viewport')) {
-        viewport.replaceWith(...viewport.childNodes);
-      }
-      schEl.classList.remove('scheduler-week--sliding', 'scheduler-week--settling');
-      schEl.style.removeProperty('--scheduler-slide');
-      schEl.style.removeProperty('--scheduler-pane-w');
-      schEl.style.removeProperty('--scheduler-slide-w');
-      releaseWeekMotion?.();
-      weekMotion = releaseWeekMotion = null;
-    };
-
-    /* The week one step away, drawn into a grid of its own. `render` with a
-       target draws the rows and nothing else, so the board's label, index and
-       roster stay with the week being read until this one is settled on. */
-    const weekBeside = dir => addDays(cursor, dir < 0 ? WEEK : -WEEK);
-    const drawSpare = (side, week) => {
-      const spare = el('div', `scheduler-grid scheduler-grid--spare scheduler-grid--${side}`);
-      spare.setAttribute('aria-hidden', 'true');
-      render({ ...cached.data, weekStart: week, weekEnd: lastShown(week) }, spare);
-      return spare;
-    };
-
-    /* THE WEEKS EITHER SIDE ARE DRAWN AHEAD, while the page is idle after a
-       draw of the compact board, which is the one a finger swipes, so the
-       first sideways move only puts one in. Each is kept with the payload and
-       week it was drawn from and used only while both still hold. */
-    const ahead = { next: null, prev: null };
-    let aheadAsked = false;
-    const idle = window.requestIdleCallback ?? (fn => setTimeout(fn, 200));
-    afterBoard = () => {
-      ahead.next = ahead.prev = null;
-      if (aheadAsked) return;
-      aheadAsked = true;
-      idle(() => {
-        aheadAsked = false;
-        // A board drawn as a swipe settles is drawn ahead of once the week stands still.
-        if (weekMotion) { weekMotion.then(() => afterBoard()); return; }
-        if (scrolling() || document.hidden || pageEl?.getAttribute('data-board') !== 'compact' || !cached) return;
-        for (const [side, dir] of [['next', -1], ['prev', 1]]) {
-          const week = weekBeside(dir);
-          if (holds(week)) ahead[side] = { data: cached.data, edits: heldEdits, week: iso(week), spare: drawSpare(side, week) };
-        }
-      });
-    };
-
-    /* The week one step away, in a grid of its own: the one drawn ahead, or
-       drawn now. `render` with a target draws the rows and nothing else, so
-       the board's label, index and roster stay with the week being read until
-       this one is settled on. */
-    const spareFor = dir => {
-      const side = dir < 0 ? 'next' : 'prev';
-      let spare = schEl.querySelector(`.scheduler-grid--${side}`);
-      if (spare) return spare;
-      const week = weekBeside(dir);
-      if (!holds(week)) return null;
-      const kept = ahead[side];
-      ahead[side] = null;
-      spare = kept && kept.data === cached.data && kept.edits === heldEdits && kept.week === iso(week) ? kept.spare : drawSpare(side, week);
-      /* Keep incoming buses aligned with the stationary row headers. Every
-         row's height is read before the spare goes in and anything is
-         written, so the rows cost one layout rather than one each. */
-      const rows = [...gridEl.querySelectorAll('.scheduler-row')];
-      const heights = rows.map(row => row.querySelector('.scheduler-track').getBoundingClientRect().height);
-      schEl.appendChild(spare);
-      [...spare.querySelectorAll('.scheduler-row')].forEach((row, i) => {
-        const source = rows[i];
-        if (!source) return;
-        row.hidden = source.hidden;
-        const track = row.querySelector('.scheduler-track');
-        track.style.blockSize = `${heights[i]}px`;
-        track.style.minBlockSize = '0';
-        track.style.overflow = 'hidden';
-      });
-      clipTracks(spare);
-      return spare;
-    };
-
-    const canSlide = start => !touchDragging
-      && pageEl?.getAttribute('data-board') === 'compact'
-      && schEl.scrollWidth <= schEl.clientWidth
-      && start.x >= SWIPE_EDGE;
-
-    schEl.addEventListener('pointerdown', e => {
-      // A strip is scrolled by the browser; the swipe, and its hold, stay out of it.
-      if (scrolling()) { g = null; return; }
-      // Background refreshes do not block cached navigation; gestures never queue.
-      if (settling || loadingAdjacent || !shown || iso(shown) !== iso(cursor)) return;
-      const mine = e.pointerType === 'touch' && e.isPrimary;
-      /* A second finger ends the gesture -- it is a pinch, not a swipe -- and
-         the week has to come back with it. Nothing else would bring it: the
-         release that follows reads a gesture already gone and leaves teardown
-         undone, so the week would stay parked where the finger left it. */
-      if (!mine && g?.sliding) settle(0, 0);
-      else if (!mine && g?.allowed) teardown();
-      g = mine
-        ? { pointer: e.pointerId, x: e.clientX, y: e.clientY, at: e.timeStamp, axis: null, sliding: false, allowed: false }
-        : null;
-    });
-
-    schEl.addEventListener('pointermove', e => {
-      if (!g || e.pointerId !== g.pointer) return;
-      const dx = e.clientX - g.x;
-      const dy = e.clientY - g.y;
-      if (!g.axis) {
-        if (Math.hypot(dx, dy) < SWIPE_LOCK) return;
-        /* Sideways unless the gesture is plainly up or down. A thumb travels
-           in an arc, so an even split between the axes reads as a swipe with a
-           rise in it, not as scrolling; only past about 60 degrees off the
-           horizontal does it become a scroll. The board still scrolls, because
-           a scroll is nowhere near that shallow. */
-        g.axis = Math.abs(dx) * SWIPE_CONE >= Math.abs(dy) ? 'x' : 'y';
-        /* Whether this gesture may change the week is settled here, once, and
-           never asked again at release: a trip being carried clears its own
-           flag on the way up, and the bar's handler runs first, so a check on
-           release would find a clean slate and step the week at the end of
-           every drag. */
-        if (g.axis === 'x') g.allowed = canSlide(g);
-        if (g.allowed) beginMotion();
-        if (g.allowed && !calmly.matches) {
-          /* The days are what travels, so the step is the pane less the bus
-             column: the arriving week's first day lands where the leaving
-             week's last one was. */
-          const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
-          g.travel = Math.max(1, schEl.clientWidth - head);
-          schEl.style.setProperty('--scheduler-pane-w', `${schEl.clientWidth}px`);
-          schEl.style.setProperty('--scheduler-slide-w', `${g.travel}px`);
-          clipTracks(gridEl);
-          schEl.classList.add('scheduler-week--sliding');
-          g.sliding = true;
-        }
-      }
-      if (g.axis !== 'x' || !g.sliding) return;
-      // The week one step away is drawn the first time the finger asks for it.
-      const spare = spareFor(dx < 0 ? -1 : 1);
-      if (spare) schEl.style.setProperty('--scheduler-slide', `${Math.max(-g.travel, Math.min(g.travel, dx))}px`);
-      // With nothing to come in, the week holds still rather than baring the pane.
-      else schEl.style.setProperty('--scheduler-slide', '0px');
-    });
-
-    /* `touch-action: pan-y` hands the browser the up-and-down axis, and it
-       takes any gesture that drifts into it -- scrolling the board and
-       cancelling the pointer part-way through a swipe, which is what made a
-       swipe with a little rise in it scroll instead of turning the week. Once
-       the axis is locked sideways the browser is told to keep off, and it obeys
-       that only from a listener declared not passive. The board still scrolls:
-       a gesture locked up-and-down never reaches this. */
-    schEl.addEventListener('touchmove', e => {
-      if (g?.axis === 'x' && g.sliding && e.cancelable) e.preventDefault();
-    }, { passive: false });
-
-    schEl.addEventListener('pointercancel', () => {
-      if (g?.sliding) settle(0, 0);
-      else teardown();
-      g = null;
-    });
-
-    /* Eases to `to` and then steps the week by `days`, or back to nothing. The
-       step is drawn from what is held, which is synchronous, so the spare comes
-       away in the same frame the real grid arrives in and no gap is painted. */
-    function settle(to, days) {
-      settling = true;
-      schEl.classList.add('scheduler-week--settling');
-      schEl.style.setProperty('--scheduler-slide', `${to}px`);
-      const track = gridEl.querySelector('.scheduler-track');
-      let timer;
-      const done = () => {
-        clearTimeout(timer);
-        track?.removeEventListener('transitionend', ended);
-        teardown();
-        if (days) go(days);
-        settling = false;
-        loadingAdjacent = false;
-        stopLoading();
-      };
-      const ended = e => {
-        if (e.target === track && e.propertyName === 'transform') done();
-      };
-      track?.addEventListener('transitionend', ended);
-      timer = setTimeout(done, SLIDE_MS + 60);
-    }
-
-    async function loadAdjacent(days) {
-      loadingAdjacent = true;
-      const from = cursor;
-      const target = addDays(from, days);
-      const timer = setTimeout(() => {
-        const box = el('div', 'rux--inline-loading');
-        const animation = el('div', 'rux--inline-loading__animation');
-        animation.appendChild(loadingSpinner());
-        box.append(animation, el('div', 'rux--inline-loading__text',
-          `Loading ${days > 0 ? 'next' : 'previous'} ${Math.abs(days) > 7 ? 'two weeks' : 'week'}…`));
-        loadingStatus?.replaceChildren(box);
-        loadingRow?.classList.add('scheduler-toolbar__weekrow--loading');
-      }, 200);
-      let sliding = false;
-      try {
-        // Reuse any refresh already in flight before asking for more data.
-        if (reading) await reading;
-        if (iso(cursor) !== iso(from)) return;
-        if (!holds(target)) {
-          const data = await read(target);
-          if (iso(cursor) !== iso(from)) return;
-          cached = { data, centre: target };
-        }
-        if (calmly.matches) { go(days); return; }
-        beginMotion();
-        const head = gridEl.querySelector('.scheduler-corner')?.offsetWidth ?? 0;
-        const travel = Math.max(1, schEl.clientWidth - head);
-        schEl.style.setProperty('--scheduler-pane-w', `${schEl.clientWidth}px`);
-        schEl.style.setProperty('--scheduler-slide-w', `${travel}px`);
-        schEl.style.setProperty('--scheduler-slide', '0px');
-        clipTracks(gridEl);
-        schEl.classList.add('scheduler-week--sliding');
-        spareFor(days > 0 ? -1 : 1);
-        // Commit the starting position before enabling the settle transition.
-        void schEl.offsetWidth;
-        sliding = true;
-        settle(days > 0 ? -travel : travel, days);
-      } catch (error) {
-        teardown();
-        say('error', 'Could not load that week', `${error.message || error} Still showing the current week. Swipe to try again.`);
-      } finally {
-        clearTimeout(timer);
-        if (!sliding) { loadingAdjacent = false; stopLoading(); }
-      }
-    }
-
-    schEl.addEventListener('pointerup', e => {
-      if (!g || e.pointerId !== g.pointer) return;
-      const start = g;
-      g = null;
-      if (!start || start.axis !== 'x') { if (start?.sliding) teardown(); return; }
-      const dx = e.clientX - start.x;
-      const quick = e.timeStamp - start.at < SWIPE_FLICK_MS;
-      const far = Math.abs(dx) >= (quick ? SWIPE_FLICK : SWIPE_MIN);
-      // The board moves the way the finger went: left brings the next one in.
-      const days = dx < 0 ? WEEK : -WEEK;
-      if (start.sliding) {
-        const arriving = schEl.querySelector(dx < 0 ? '.scheduler-grid--next' : '.scheduler-grid--prev');
-        if (far && arriving) { settle(dx < 0 ? -start.travel : start.travel, days); return; }
-        if (far) { teardown(); loadAdjacent(days); return; }
-        settle(0, 0);
-        return;
-      }
-      teardown();
-      if (!far || !start.allowed) return;
-      if (holds(addDays(cursor, days))) go(days);
-      else loadAdjacent(days);
-    });
-  }
 
   /* The schedule needs a staff account. /funnel.js opens this page only for an
      account with Scheduler, and /account.js sends a log-in that ends to the

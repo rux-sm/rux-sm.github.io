@@ -115,7 +115,7 @@ urgent messages and names while the tab is behind others.
 | Open email thread | keep | In the trip editor rather than on the bar: an Email thread link after the Booking contact's Email label once the trip has a thread, and Add email thread there until it has one, which opens a small box; the Booking contact title line's menu changes or removes it through the same box. The field itself never shows. |
 | Saved record mark | keep | In the trip editor, a small Saved contact, Saved customer or Saved location link right after the label of a field picked from the saved lists, opening that record in a new tab; one typed by hand has none. Under a linked contact's phone or email that differs from the saved one, a grey line says the saved value. |
 | Realtime refresh | keep | The board's `scheduler-board` channel reads again only what a change touched: its trip, the one list or the time off and out-of-service days. It reads the week in full when a change cannot be told, on coming back to the tab and when the channel joins again. The to-do list and Departures hear their changes on it and read again only the trip a change is to; `database-inventory.md` lists the channels. |
-| Compact board | keep | Where the board itself cannot show three readable days, which is a phone, it draws all seven instead of scrolling to about two. A trip is a 44px block in its colour carrying a code of up to three letters for its destination and nothing else, the same on every block however long; the day band numbers the days; the shortcut bar docks to the bottom edge with the rows the block gave up. `placeRoom` turns it on from the board's own width, never from what the panels leave. |
+| Compact board | keep | Where the board itself cannot show three readable days, which is a phone, the strip shows two, fitted to the pane on whole pixels, and a flick moves it one day; turned sideways, a phone is wide enough not to be compact. The shortcut bar docks to the bottom edge with the trip's rows. `placeRoom` turns it on from the board's own width, never from what the panels leave. |
 
 View preferences stay in `localStorage`, read with a try-catch; none goes to
 the database. Dropped: the day column width slider, the second bar size, the
@@ -286,9 +286,8 @@ days are too narrow to give up room, so it shows none.
 
 A bar growing on click re-stacks the lanes beside it. Its information is the
 panel's job; its actions go in the panel header and on the bar's right-click
-menu. On the compact board a block has no writing to grow into either: the
-docked shortcut bar carries it at the bottom edge, and the block itself is the
-same size selected or not.
+menu. On the compact board the docked shortcut bar carries the trip's rows at
+the bottom edge, and the bar on the board is the same size selected or not.
 
 ### Selecting is not opening
 

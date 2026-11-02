@@ -1393,10 +1393,10 @@ button.scheduler-row-head__num::after {
    a little, so they read as buttons before one is reached; the compact
    board's and a static week's bars hold none that open. */
 @media (hover: hover) {
-  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover,
   :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover :is([data-card-opener], [data-crew-overflow]) {
     transform: scale(1.12);
   }
+  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover,
   :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
@@ -1407,7 +1407,6 @@ button.scheduler-row-head__num::after {
   filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):active { transform: none; filter: none; }
-/* The time line lifts as a line does while the route is open, data.js's
 /* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
    `glyphTo`: the outline fades out as the solid fades in. */
 .scheduler-bar__solid { opacity: 0; }
@@ -1422,6 +1421,7 @@ button.scheduler-row-head__num::after {
 }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__line { opacity: 0; }
 :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener][aria-expanded="true"] .scheduler-bar__solid { opacity: 1; }
+/* The time line lifts as a line does while the route is open, data.js's
    `data-route-open`: from 2px to 4px, and its part still to go from a fifth
    of the ink to half. The ticks keep a pixel past the line either side. */
 @property --scheduler-track { syntax: '<length>'; inherits: true; initial-value: 2px; }

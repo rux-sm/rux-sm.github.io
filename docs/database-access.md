@@ -63,7 +63,7 @@ definer function reaches them, which is the tightest arrangement there is.
 
 **Live channels are closed the same way.** The scheduler's presence channel is
 private, so joining it is a read of `realtime.messages`, which carries the same
-`staff_all` rule as a table. A channel that is not private is joinable by
+`staff_all` rule as a table, and sending on it, as Settings' reload of every open page does, a write to it under the same rule. A channel that is not private is joinable by
 anyone holding the publishable key, whatever the tables say, because no rule is
 consulted at all.
 

@@ -8,7 +8,8 @@
 
    The schedule's board says more on the same channel -- which trip is
    selected or open -- through `window.SchedulerPeople`, so one connection
-   carries both the header faces and the faces on its trip bars. */
+   carries both the header faces and the faces on its trip bars. Settings
+   sends a reload on it too, which every other tab takes. */
 (() => {
   const account = window.Rux?.account;
   const client = account?.client;
@@ -21,6 +22,7 @@
      realtime.messages; without that rule nobody joins and no face is drawn,
      which is the safe way to fail. */
   const TOPIC = 'scheduler-presence';
+  const RELOAD = 'reload';
   const FACES = 3;
   const phone = window.matchMedia('(max-width: 41.98rem)');
 
@@ -59,6 +61,8 @@
       draw();
       for (const fn of syncHandlers) fn();
     });
+    // A tab with unsaved changes has its own before-unload guard, so the browser asks there first.
+    channel.on('broadcast', { event: RELOAD }, () => location.reload());
     channel.subscribe(status => {
       if (status === 'CHANNEL_ERROR') {
         console.info('scheduler: presence is off -- realtime.messages has no rule letting staff join.');
@@ -86,6 +90,17 @@
     if (channel.state === 'joining') return;
     client.removeChannel(channel);
     open();
+  }
+
+  /* Asks every other Scheduler tab, on any computer, to reload, so each runs
+     what was last published; a broadcast never comes back to the tab that
+     sent it. The answer is how many tabs it went to, or null when this tab
+     is not on the channel or the server did not take it. */
+  async function reloadAll() {
+    if (channel?.state !== 'joined') return null;
+    const tabs = Object.keys(channel.presenceState()).filter(k => k !== key).length;
+    const sent = await channel.send({ type: 'broadcast', event: RELOAD, payload: {} }).catch(() => 'error');
+    return sent === 'ok' ? tabs : null;
   }
 
   // Everyone but me, one each, at the page they touched last.
@@ -171,5 +186,6 @@
     state: () => channel?.presenceState?.() ?? {},
     onSync: fn => { syncHandlers.push(fn); },
     onJoin: fn => { joinHandlers.push(fn); },
+    reloadAll,
   };
 })();

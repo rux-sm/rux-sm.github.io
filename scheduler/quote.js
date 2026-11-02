@@ -873,6 +873,12 @@
         checkField(`scheduler-settings-confirm-${key}`, label, confirms.includes(key))));
     };
     $('scheduler-settings-add-need').addEventListener('click', () => addNeedRow().querySelector('input').focus());
+    // Every other open Scheduler tab reloads, people.js's; the toast says how many it went to.
+    $('scheduler-settings-reload-all').addEventListener('click', async () => {
+      const tabs = await window.SchedulerPeople?.reloadAll();
+      if (tabs == null) showResult('error', 'The open pages could not be reached. Try again in a moment.');
+      else showResult('success', tabs ? `Reloading ${tabs} open ${tabs === 1 ? 'page' : 'pages'}.` : 'No other pages are open.');
+    });
 
     // A new need's id, from its name in camel case, unlike any other: Wi-Fi is wiFi.
     const needId = (label, taken) => {

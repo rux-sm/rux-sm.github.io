@@ -186,7 +186,9 @@ Three homes, and one rule for choosing.
 - **Every panel is its own, two at most beside the week, the editor counted.** Tasks, Departures,
   Drivers, Forms, the quote calculator and the stored file each
   have a panel, none replacing another, and stand left of the week in the order
-  they opened, oldest farthest left; the trip editor stands right of it. While
+  they opened, oldest farthest left, except that one opened in place of a panel
+  closed for room takes that panel's place and slides in from the left there,
+  nothing else moving; the trip editor stands right of it. While
   the board holds the open panels and the week's minimum, 33rem for one week
   and 56rem for two, up to two of them show, so with the editor open one list
   stands left of the week. Opening one past either closes the

@@ -11984,6 +11984,14 @@
      rather than pushed to by the openers, so no path can forget to say it
      opened something. */
   let openOrder = [];
+  /* Where each panel left of the week stands, farthest left first, shut ones
+     too: a panel keeps its place while its column closes, so no two share
+     one and the page's own order never decides between them. One that opens
+     goes nearest the week, or into the place of the panel `makeRoom` closed
+     for it, `replacing`, so it slides in from the left where that one was. */
+  let leftOrder = [];
+  let leftShown = new Set();
+  let replacing = null;
   // The panel in front of the board, where one is: below md, the one open.
   let frontPanel = null;
   // The three document panels, which their block further down makes.
@@ -12039,6 +12047,7 @@
      panel may open. */
   async function makeRoom(name) {
     placeRoom();
+    replacing = null;
     const kept = new Set();
     const desk = !matchMedia('(max-width: 41.98rem)').matches;
     // Beside the editor one panel stays, over the week: the new one, or for the editor itself the newest open.
@@ -12052,6 +12061,7 @@
         kept.add(oldest.name);
         continue;
       }
+      if (name !== 'editor') replacing ??= { name, place: oldest.name };
       oldest.close();
     }
     if (name === 'editor' || !overRoom(name)) return true;
@@ -12060,6 +12070,7 @@
        named instead, since that was the answer just given. */
     const editorOpen = panels().find(p => p.editor)?.open;
     if (editorOpen && !kept.size) return true;
+    replacing = null;
     const inWay = [...kept].map(n => PANEL_NAMES[n]);
     toast('info', `No room for ${PANEL_NAMES[name]}`,
       inWay.length ? `Close ${inWay.join(' or ')} to make room for it.` : 'Close a panel to make room for it.');
@@ -12095,15 +12106,24 @@
       if (oldest) { oldest.close(); return; }
     }
 
-    /* Oldest farthest left: the panels left of the week stand in the order
-       they were opened, the newest nearest the week. The editor keeps its own
-       place right of it. */
-    let place = 0;
-    for (const name of openOrder) {
-      const p = open.find(x => x.name === name);
-      if (p?.el && !p.editor) p.el.style.order = String(place++ - 100);
+    /* The panels left of the week stand in `leftOrder`: one just opened goes
+       nearest the week, or where the panel closed for it stands, just left of
+       it while that one's column closes, so it grows from a still left edge and
+       slides in from the left. Every other panel keeps its place, a closing one
+       included. The editor keeps its own place right of the week. */
+    const lefts = open.filter(p => !p.editor).map(p => p.name);
+    for (const name of lefts.filter(n => !leftShown.has(n))) {
+      leftOrder = leftOrder.filter(n => n !== name);
+      const at = replacing?.name === name ? leftOrder.indexOf(replacing.place) : -1;
+      if (at >= 0) leftOrder.splice(at, 0, name);
+      else leftOrder.push(name);
+      if (replacing?.name === name) replacing = null;
     }
-    // A panel closing keeps its place left of the week while app.css closes its column; a shut one is not laid out, so its place waits for its next opening.
+    leftShown = new Set(lefts);
+    leftOrder.forEach((name, i) => {
+      const p = all.find(x => x.name === name);
+      if (p?.el) p.el.style.order = String(i - 100);
+    });
 
     /* Below md nothing is laid out beside the week at all: Carbon's own fixed
        panel stands there, and the one open is in front of the board. From md

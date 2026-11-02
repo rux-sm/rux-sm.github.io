@@ -23,8 +23,7 @@
 
    `alertsOf(trip, facts)` is every alert the trip's card lists, which the
    bar counts. `crewEl(c, due, back)` is one crew member as the drivers row draws
-   them, `crewText(c)` and `crewName(c)` the same in words, and `fitCrew`
-   gives a crew row's names way when they do not fit. `fitKind(bar)` drops
+   them, and `crewText(c)` and `crewName(c)` the same in words. `fitKind(bar)` drops
    nothing, since leg kinds always use an unboxed arrow. `hhmm(t, short)`,
    `clockEl(short)`, `setAt(at)` and `updateStamp(u)` are times as the bar
    and its card say them, `tripDone(leg, now)` how much of a leg's time has
@@ -356,89 +355,14 @@
     }
     item.appendChild(el('span', c.needed ? 'scheduler-crew__name scheduler-bar__none' : 'scheduler-crew__name',
       c.needed ? (dot ? `No ${c.label.toLowerCase()}` : 'No relief') : crewName(c)));
-    /* The crew member in words, for the "+1" that stands for them when they
-       do not fit. No hover label: a seated driver's tip says it, and the bar's
-       own label reads it. */
-    item.dataset.words = crewText(c);
     if (c.driverId != null) item.dataset.driverId = c.driverId;
     // The seat it is: what a press pulls its driver out by, and where a carried one goes in.
     item.dataset.seat = c.role;
     return item;
   }
 
-  /* THE CREW GIVES WAY A WHOLE NAME AT A TIME, from the end, and says how
-     many it left out: "Raul +1". Only a first name that does not fit alone is
-     cut short. It is measured, so it runs again whenever the bar's width
-     changes; the bar is watched rather than the crew, whose own width is what
-     this sets. Two seats on a live bar share the row and each cuts its own
-     name short instead, so both drivers stay on it; a third gives way.
-
-     FITTING IS IN THREE STEPS, so many crews are fitted with one layout:
-     every crew is put back to all its names, then every one is read, then
-     only those cut short give names up. */
-  // Puts a crew back to every name showing; `seats` is two seats on a live bar, which are never fitted.
-  const crewReset = crew => {
-    const items = [...crew.children].filter(n => n.classList.contains('scheduler-crew'));
-    const oldMore = crew.querySelector(':scope > .scheduler-bar__more');
-    const hadFocus = oldMore && document.activeElement === oldMore;
-    oldMore?.remove();
-    for (const item of items) item.style.removeProperty('display');
-    const seats = items.length <= 2 && items.every(item => item.classList.contains('scheduler-crew--seat'));
-    return { crew, items, oldMore, hadFocus, seats };
-  };
-  // Whether a name showing is cut short.
-  const crewCut = items => items.some(item => {
-    const name = item.style.display ? null : item.querySelector('.scheduler-crew__name');
-    return name && name.scrollWidth > name.clientWidth;
-  });
-  // Whether a crew put back still has names cut short, and so names to give up.
-  const crewOver = s => !s.seats && s.items.length >= 2 && crewCut(s.items);
-  // A crew that fits keeps the focus its "+1" had on the bar.
-  const crewKeep = s => { if (!s.seats && s.hadFocus) s.crew.closest('.scheduler-bar')?.focus(); };
-  /* Names are given up from the end, behind a "+N", until the rest fit or
-     one is left: `shedStart` puts the "+N" in, `shedStep` gives up one
-     name, and `shedEnd` hands the "+N" back the focus it had. */
-  const shedStart = s => {
-    s.more = s.oldMore ?? el('button', 'scheduler-bar__more');
-    s.more.type = 'button';
-    s.more.dataset.crewOverflow = '';
-    s.crew.appendChild(s.more);
-    s.shown = s.items.length - 1;
-  };
-  const shedStep = s => {
-    const { items, more } = s;
-    items[s.shown].style.display = 'none';
-    const left = items.slice(s.shown);
-    more.textContent = `+${left.length}`;
-    more.title = left.map(item => item.dataset.words).join('\n');
-    more.setAttribute('aria-label', `Show crew: ${more.title}`);
-    more.classList.toggle('scheduler-bar__more--attention', left.some(item => item.classList.contains('scheduler-crew--declined')));
-    s.shown--;
-  };
-  const shedMore = s => s.shown >= 1 && crewCut(s.items);
-  const shedEnd = s => { if (s.hadFocus) s.more.focus({ preventScroll: true }); };
-  // Every crew given, fitted in rounds: each round gives up one name from each crew still cut short, then reads them all.
-  function fitCrews(crews) {
-    const over = crews.map(crewOver);
-    crews.forEach((s, i) => { if (!over[i]) crewKeep(s); });
-    let shedding = crews.filter((s, i) => over[i]);
-    shedding.forEach(shedStart);
-    while (shedding.length) {
-      shedding.forEach(shedStep);
-      const more = shedding.map(shedMore);
-      shedding.forEach((s, i) => { if (!more[i]) shedEnd(s); });
-      shedding = shedding.filter((s, i) => more[i]);
-    }
-  }
-  const fitCrew = crew => fitCrews([crewReset(crew)]);
-  const crewObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
-    const crews = [];
-    for (const { target } of entries) {
-      const crew = target.querySelector(':scope > .scheduler-bar__drivers > .scheduler-bar__crew');
-      if (crew) crews.push(crewReset(crew));
-      fitKind(target);
-    }
-    fitCrews(crews);
+  const kindObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
+    for (const { target } of entries) fitKind(target);
   }) : null;
 
   /* The warning a need still to be done shows. EVERY ALERT NAMES ITS THING
@@ -761,7 +685,7 @@
     bar.dataset.drivers = crew.filter(c => c.driverId != null).map(c => c.driverId).join(' ');
     // An empty seat, which app.css outlines while a driver is carried.
     if (crew.some(c => c.needed)) bar.dataset.wantsCrew = 'true';
-    crewObserver?.observe(bar);
+    kindObserver?.observe(bar);
     addRow(bar, 'scheduler-bar__drivers', crewBox);
 
     bar.setAttribute('aria-label', [
@@ -792,6 +716,6 @@
   const opensSection = (showing, current, requested) => !showing || current !== requested;
 
   window.SchedulerBar = {
-    draw, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
+    draw, glyphTo, staffingDue, alertsOf, problemsOf, cardSectionOf, opensSection, routeMark, crewEl, crewText, crewName, fitKind, hhmm, clockEl, setAt, updateStamp, tripDone, fillTracks,
   };
 })();

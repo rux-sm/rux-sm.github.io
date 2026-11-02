@@ -48,7 +48,7 @@
   'use strict';
 
   const Road = window.SchedulerRoad;
-  const { clockEl, hhmm, fitCrew, routeMark, glyphTo } = window.SchedulerBar;
+  const { clockEl, hhmm, routeMark, glyphTo } = window.SchedulerBar;
 
   const el = (tag, cls, text) => {
     const n = document.createElement(tag);
@@ -320,7 +320,6 @@
       crewOn(item, bus?.drivers.find(d => d.driver_id && d.driver_id === id) ?? null, away && away.driver === id ? away : null);
     }
     wheelOn(bar, bus, named);
-    if (crewBox) fitCrew(crewBox);
     liveOpener(bar, bus);
     times(bar, bus, next, said, worst, live.at);
   }

@@ -198,7 +198,7 @@
   /* A trip's bar, its crew and its alerts, and the times as they say them:
      bar.js, which the components page draws its samples with too. */
   const Bar = window.SchedulerBar;
-  const { alertsOf, crewEl, crewName, fitCrew, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
+  const { alertsOf, crewEl, crewName, fitKind, hhmm, clockEl, setAt, updateStamp } = Bar;
 
   const UNASSIGNED = ' unassigned';
 
@@ -2080,7 +2080,7 @@
   function installDrag(bar) {
     if (!bar.dataset.tripId) return;
     bar.addEventListener('pointerdown', down => {
-      if (down.button !== 0 || down.target.closest('[data-card-opener], [data-crew-overflow]')) return;
+      if (down.button !== 0 || down.target.closest('[data-card-opener]')) return;
       // A press on the driver's name lifts the driver, not the trip.
       if (liftsFrom(down)) return;
       carryTrip(bar, down);
@@ -10740,8 +10740,7 @@
         return box && (box.width || box.height) ? box : null;
       };
       const crew = bar.querySelector(`.scheduler-bar__crew > .scheduler-crew[data-seat="${planted.ref.role}"]`);
-      const box = drawn(crew?.querySelector('.scheduler-crew__dot') ?? crew?.querySelector('.scheduler-crew__mark'))
-        ?? drawn(bar.querySelector('.scheduler-bar__crew > .scheduler-bar__more'));
+      const box = drawn(crew?.querySelector('.scheduler-crew__dot') ?? crew?.querySelector('.scheduler-crew__mark'));
       const ground = bar.getBoundingClientRect();
       planted.anchor = box ? { x: box.left + box.width / 2, y: box.top + box.height / 2 }
         : { x: Math.min(ground.right, ground.left + planted.foot), y: ground.bottom - 12 };
@@ -12014,23 +12013,17 @@
   gridEl.addEventListener('click', e => {
     const opener = e.target.closest('[data-card-opener]');
     const bar = opener?.closest('.scheduler-bar[data-trip-id]');
-    // A crew's +1 inside a live bar's drivers opens Contacts, not the card.
-    if (!bar || e.detail > 1 || e.target.closest('[data-crew-overflow]')) return;
+    if (!bar || e.detail > 1) return;
     const section = window.SchedulerBar.cardSectionOf(opener);
     // The docked sheet has no driver's tip and no route, so a driver's mark or the clock there only selects the trip.
     if (!floatingCard() && /^(driver|route):/.test(section)) return;
     cardTrigger = opener;
     askCard(bar, window.SchedulerBar.opensSection(cardShowing(bar), bar.dataset.road ? roadPartOf(bar) : cardSection, section), section);
   });
-  gridEl.addEventListener('click', e => {
-    const trigger = e.target.closest('[data-crew-overflow]');
-    const bar = trigger?.closest('.scheduler-bar[data-trip-id]');
-    if (bar && e.detail <= 1) openContactsFrom(bar, trigger);
-  });
   // A double-click on a trip opens it, as Enter does; its first click selected it.
   gridEl.addEventListener('dblclick', e => {
     const bar = e.target.closest('.scheduler-bar[data-trip-id]');
-    if (!bar || bar !== selectedBar() || e.target.closest('[data-card-opener], [data-crew-overflow]')) return;
+    if (!bar || bar !== selectedBar() || e.target.closest('[data-card-opener]')) return;
     window.getSelection?.()?.removeAllRanges();
     openSelected();
   });
@@ -16136,7 +16129,6 @@
     }
     barShortcuts.prepend(head);
     // The copy is fitted to the sheet's width, not the bar's.
-    for (const crew of head.querySelectorAll('.scheduler-bar__crew')) fitCrew(crew);
     fitKind(head);
   }
 
@@ -17676,13 +17668,11 @@
   barShortcuts?.addEventListener('click', e => {
     // Compact sheets copy the bar's rows; their controls act on the selected bar.
     const head = e.target.closest('.scheduler-bar-shortcuts__trip');
-    const overflow = head && e.target.closest('[data-crew-overflow]');
-    const opener = head && !overflow && e.target.closest('[data-card-opener]');
-    if (opener || overflow) {
+    const opener = head && e.target.closest('[data-card-opener]');
+    if (opener) {
       const bar = selectedBar();
       if (!bar) return;
-      if (overflow) openContactsFrom(bar, overflow);
-      else if (/^(driver|route):/.test(window.SchedulerBar.cardSectionOf(opener))) return;
+      if (/^(driver|route):/.test(window.SchedulerBar.cardSectionOf(opener))) return;
       else {
         cardTrigger = opener;
         askCard(bar, true, window.SchedulerBar.cardSectionOf(opener));

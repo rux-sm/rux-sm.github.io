@@ -14,9 +14,8 @@
     const bar = e.target.closest('.scheduler-bar');
     if (!bar || e.detail > 1) return;
     const on = bar.getAttribute('aria-current') === 'true';
-    // A press that opens or switches a tip, or the crew's "+1", leaves a selected trip selected.
-    const openers = '[data-card-opener], [data-crew-overflow]';
-    if (on && e.target.closest(openers)) return;
+    // A press that opens or switches a tip leaves a selected trip selected.
+    if (on && e.target.closest('[data-card-opener]')) return;
     for (const b of document.querySelectorAll('.scheduler-bar[aria-current="true"]')) b.setAttribute('aria-current', 'false');
     bar.setAttribute('aria-current', on ? 'false' : 'true');
   });

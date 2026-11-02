@@ -1320,9 +1320,9 @@ button.scheduler-row-head__num::after {
 /* A live bar's times are the times row's size too, so the trip on the road
    reads as every other. */
 .scheduler-bar__dest, .scheduler-bar__time, .scheduler-road__times { font-size: var(--rux-body-compact-01-font-size); }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]) { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update [data-card-opener], .scheduler-bar__drivers [data-card-opener], [data-crew-overflow]):focus-visible { outline-color: var(--scheduler-footer-fg); }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener] { border: 0; font-family: inherit; letter-spacing: inherit; cursor: pointer; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:focus-visible { outline: 2px solid var(--scheduler-fg); outline-offset: -2px; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is(.scheduler-bar__update, .scheduler-bar__drivers) [data-card-opener]:focus-visible { outline-color: var(--scheduler-footer-fg); }
 /* THE ICONS THAT OPEN A TIP LIFT, with no fill behind them: under the
    pointer the 16px icon grows a quarter, to 20px, Carbon's next icon size
    and a bigger mark to press, standing a pixel past the 18px row above and
@@ -1381,22 +1381,21 @@ button.scheduler-row-head__num::after {
 /* The amber bar is the warning colour itself in a dark theme, and none of
    the inks reads on it, so its icon keeps the bar's own. */
 /* MARKS OPEN, WORDS DO NOT. Only a bar's marks are pressed for something
-   of their own -- its icons and the crew's "+1" -- and each says so under
+   of their own -- its icons -- and each says so under
    the pointer by lifting; a press on its words, the times and the line
    between them among them, only selects the trip, and a driver's name is
    pulled to move them. The pointer anywhere on the times row lifts the
    clock that leads it, so the row shows where its route opens without the
    wide line taking the press meant for the trip. A touch screen has no
    pointer to wait for, so it shows no hover; the open and pressed states
-   show on any screen. The "+1" grows to its left, from the end of the crew
-   it stands at. The pointer anywhere on a board's bar lifts all its marks
+   show on any screen. The pointer anywhere on a board's bar lifts all its marks
    a little, so they read as buttons before one is reached; the compact
    board's and a static week's bars hold none that open. */
 @media (hover: hover) {
-  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover :is([data-card-opener], [data-crew-overflow]) {
+  :where(.scheduler-page:not([data-board="compact"]) .scheduler-week:not(.scheduler-week--static)) .scheduler-bar:hover [data-card-opener] {
     transform: scale(1.12);
   }
-  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):hover,
+  :is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:hover,
   :is(.scheduler-bar__time, .scheduler-road__times):hover > .scheduler-bar__clock {
     transform: scale(1.25);
     filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
@@ -1406,7 +1405,7 @@ button.scheduler-row-head__num::after {
   transform: scale(1.25);
   filter: brightness(1.2) drop-shadow(0 2px 2px var(--rux-shadow));
 }
-:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) :is([data-card-opener], [data-crew-overflow]):active { transform: none; filter: none; }
+:is(.scheduler-bar, .scheduler-bar-shortcuts__trip) [data-card-opener]:active { transform: none; filter: none; }
 /* A mark drawn in an outline icon turns solid whenever it lifts, bar.js's
    `glyphTo`: the outline fades out as the solid fades in. */
 .scheduler-bar__solid { opacity: 0; }
@@ -1430,9 +1429,9 @@ button.scheduler-row-head__num::after {
   transition: --scheduler-track 150ms cubic-bezier(0.2, 0, 0.38, 0.9), --scheduler-track-ink 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 .scheduler-bar[data-route-open] :is(.scheduler-bar__track, .scheduler-road__track) { --scheduler-track: 4px; --scheduler-track-ink: 50%; }
-[data-motion="off"] .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+[data-motion="off"] .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .scheduler-week :is([data-card-opener], [data-crew-overflow], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
+  .scheduler-week :is([data-card-opener], .scheduler-bar__line, .scheduler-bar__solid, .scheduler-bar__track, .scheduler-road__track) { transition: none; }
 }
 /* The phone's docked sheet has no driver's tip and no route, so a driver's
    icon and the clock there are drawn plain: they take no press of their
@@ -2391,12 +2390,13 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-tab-done { display: inline-flex; align-items: center; margin-inline-start: var(--rux-spacing-02); }
 
 /* The drivers row's crew: each driver's role icon and short name, in role
-   order. The row gives way from the end, a whole name at a time, and "+1"
-   says how many it left out; `fitCrew` in data.js measures it. */
+   order. Every name keeps its width and the row cuts at its end, so a
+   second seat, filled or empty, is never folded away; a lone name too long
+   for the row ends in "…". */
 /* Six pixels between crew members, a step under the row's usual eight, so a
    driver and a relief read as one crew rather than a list. */
 .scheduler-bar__crew { display: flex; align-items: center; gap: calc(var(--rux-spacing-02) + var(--rux-spacing-01)); min-inline-size: 0; overflow: hidden; }
-.scheduler-bar__more { flex: none; opacity: .85; }
+.scheduler-bar__crew > .scheduler-crew:not(:only-child, .scheduler-crew--seat) { flex: none; }
 
 /* WHO ELSE IS ON THIS TRIP: a 16px face for each person at the end of the
    destination row, before the live dot and the alert count, the count's own
@@ -2570,10 +2570,12 @@ a.scheduler-tip__go { text-decoration: none; }
 .scheduler-bar > .scheduler-bar__row {
   max-inline-size: calc(var(--scheduler-live-day) - var(--scheduler-gap) - var(--scheduler-gap-clear) - 2 * var(--scheduler-bar-pad-inline));
 }
-/* The customer and the update run to the trip's end and end in "…" there,
-   since a day is too short for most of them; the empty update still opens
-   the card from the whole line. */
-.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update) { max-inline-size: none; }
+/* The customer, the update and the crew run to the trip's end, since a
+   day is too short for most of them; the empty update still opens the card
+   from the whole line. A live bar's seats keep to today's column, as their
+   rest meters are a day's. */
+.scheduler-bar > :is(.scheduler-bar__client, .scheduler-bar__update),
+.scheduler-bar:not(.scheduler-bar--road) > .scheduler-bar__drivers { max-inline-size: none; }
 .scheduler-bar--road > .scheduler-bar__row {
   margin-inline-start: max(0px, calc(var(--scheduler-today, 0) * var(--scheduler-live-day) - var(--scheduler-cut-start, 0px)));
 }
@@ -6680,26 +6682,6 @@ html[data-scheduler-takeover] {
 .scheduler-components__board { --scheduler-head-w: var(--scheduler-head-min); }
 
 
-/* THE CREW'S "+1" IS A CHIP, a mark and not a word, since a press on it
-   opens Contacts: a 16px counting pill washed in the row's ink, which lifts
-   under the pointer as the bar's icons do, to its left. Its padding is 2px,
-   so it takes as little of the crew's room from the names as it can. */
-.scheduler-bar__more[data-crew-overflow] {
-  flex: none;
-  align-self: center;
-  block-size: 16px;
-  padding: 0 var(--rux-spacing-01);
-  border-radius: 8px;
-  background: color-mix(in srgb, currentColor 18%, transparent);
-  color: inherit;
-  font: inherit;
-  font-size: var(--rux-label-01-font-size);
-  line-height: 16px;
-  font-variant-numeric: tabular-nums;
-  transform-origin: right center;
-  transition: transform 150ms cubic-bezier(0.2, 0, 0.38, 0.9), filter 150ms cubic-bezier(0.2, 0, 0.38, 0.9);
-}
-.scheduler-bar .scheduler-bar__more--attention { color: var(--scheduler-driver-error); }
 .scheduler-page[data-board="compact"] .scheduler-bar { --scheduler-footer-paint: none; }
 .scheduler-week--no-update.scheduler-week--no-drivers .scheduler-bar { --scheduler-footer-paint: none; }
 .scheduler-bar__msg.scheduler-bar__paid { block-size: 18px; min-inline-size: 18px; line-height: 18px; border-radius: 9px; font-size: var(--rux-label-01-font-size); }

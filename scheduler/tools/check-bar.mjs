@@ -274,9 +274,9 @@ expect('every update row leads with its chat mark as the button, including a set
   Array.from({ length: 4 }, () => ['DIV', false, 'BUTTON', true, 'false', true]));
 expect('empty updates remain a visible Updates entry point',
   [holder.querySelector('.scheduler-bar__chat').tagName, text(holder, '.scheduler-bar__age')], ['BUTTON', 'No updates']);
-expect('no hover label repeats a tip: a crew member, the update\'s words and its age carry none, and each crew member keeps their words for the "+1"',
+expect('no hover label repeats a tip: a crew member, the update\'s words and its age carry none',
   drawn('trip-bar', 'Update ages').map(b => [
-    [...b.querySelectorAll('.scheduler-crew')].map(c => c.title === '' && !!c.dataset.words).every(Boolean),
+    [...b.querySelectorAll('.scheduler-crew')].map(c => c.title === '').every(Boolean),
     [...b.querySelectorAll('.scheduler-bar__update .scheduler-bar__run > *')].map(n => n.title === '').every(Boolean)]),
   Array.from({ length: 4 }, () => [true, true]));
 expect('alert buttons expose their purpose and expansion state',
@@ -558,9 +558,9 @@ expect('every state the bus icon says has a specimen',
   ['At highway speed', 'Idling', 'Engine off', 'Stopped', 'No signal']
     .map(name => RoadBar.vehicleState(data.sections.find(s => s.id === 'icons').samples.find(s => s.name === name).rows[0].bars[0].live.bus)),
   ['moving', 'idle', 'off', 'on', 'unknown']);
-expect('relief specimens expose the role icon without crew overflow', window.SchedulerLegFacts.ROLES.filter(r => r.role.startsWith('relief-')).map(({ label, icon: href }) => {
+expect('relief specimens expose the role icon', window.SchedulerLegFacts.ROLES.filter(r => r.role.startsWith('relief-')).map(({ label, icon: href }) => {
   const [b] = drawn('icons', `${label} icon`);
-  return has(b, `.scheduler-crew__mark use[href="${href}"]`) && !has(b, '.scheduler-bar__more');
+  return has(b, `.scheduler-crew__mark use[href="${href}"]`);
 }), [true, true]);
 
 console.log('\n  The bus column');

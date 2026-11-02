@@ -457,7 +457,8 @@ button.scheduler-row-head__num::after {
   align-items: baseline;
   font-variant-numeric: tabular-nums;
 }
-.scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); opacity: .75; }
+.scheduler-route__row--head { padding: 0 var(--rux-spacing-04) var(--rux-spacing-02); }
+.scheduler-route__row--head > * { opacity: .75; }
 .scheduler-route__name { min-inline-size: 0; overflow-wrap: anywhere; }
 .scheduler-route__time { white-space: nowrap; }
 .scheduler-route__day { font-size: .75em; line-height: 0; vertical-align: .4em; margin-inline-start: .1em; }
@@ -1784,12 +1785,42 @@ button.scheduler-row-head__num::after {
    12px by 6px caret, with no ring and none of the theme's inset; theme.css
    gives it the inverse surface and ink. The card's own placing stands it
    beside the trip, as tall as what it holds; past the board's room it
-   scrolls inside, so the caret outside it is never cut. */
+   scrolls inside, so the caret outside it is never cut. Its head stays put
+   while what is under it scrolls: an update's list or the route's table
+   scroll on their own, so Add update stays under the list and the route's
+   column names stay over its rows, and a tip of loose rows scrolls whole
+   under its head. */
 .scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) {
   padding: 0;
   border-radius: 2px;
 }
-.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > * { flex: none; }
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > .scheduler-tip__head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--card-surface);
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) > .scheduler-tip--card > :is(.scheduler-tip__list, .scheduler-route) {
+  flex: 0 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked]) .scheduler-route__row--head {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background: var(--card-surface);
+}
 .scheduler-bar-shortcuts[data-card][data-tip]:not([data-docked])::after {
   inline-size: 0;
   block-size: 0;

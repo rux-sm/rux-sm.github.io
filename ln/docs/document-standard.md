@@ -11,7 +11,7 @@ follows. A guide that misses a part is unfinished; the work to close it is in
 ## The parts, in order
 
 1. **Brand block**, on the first page only: the Rux mark and LN Notes, the
-   version, the module, Applies to Infor LN, and Client and Prepared by lines.
+   module, and Client and Prepared by lines.
    The page builds them empty, because the site is public. On the owner's
    own copy, after log-in, Prepared by carries the account's name and Client
    reads LN training environment; anyone else's stays empty to write on.
@@ -31,9 +31,9 @@ follows. A guide that misses a part is unfinished; the work to close it is in
    Approved by a process owner, each with name, signature and date lines.
    The owner's own copy fills the Prepared by name, as on the first page.
 
-Every page's footer gives the title, LN Notes, the Updated date and Page N
-of M. The version is the Updated date, the day the content last changed. Paper is Letter at 10 point, divided
-by rules rather than fills. What comes next, Reference and Known gaps stay on
+Every page's footer gives the title, LN Notes, the Updated date, the day the
+content last changed, and Page N of M. Paper is Letter at 10 point, divided by
+rules rather than fills. What comes next, Reference and Known gaps stay on
 screen, because a printed copy stands on its own and says only what is known.
 
 ## Steps
@@ -73,8 +73,8 @@ too.
 ## Left out, and why
 
 - **Several actions in one step**, because a reader skips the middle one.
-- **A revision log**, because git records every change and the version is the
-  Updated date.
+- **A revision log**, because git records every change and the footer gives
+  the Updated date.
 - **Fields left blank to fill in later**, because a blank ID reads as
   unfinished.
 - **A screenshot for every step**, because it triples the length and every LN

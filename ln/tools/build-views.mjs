@@ -680,12 +680,12 @@ ${wrong}` : ''}
 ${docH2('reference', 'Reference')}
 ${accordion(groups.map((g, i) => [`ref-${i + 1}`, esc(g.title), g.blocks.map((x) => x.kind === 'reference' ? looking(x) : x.text?.trim() ? `<p>${said(x.tokens)}</p>` : '').join('')]))}
 </section>` : '';
-    const html = `${brandBlock(updated, s.modules)}
+    const html = `${brandBlock(s.modules)}
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(s.title)}</h1>
 <p class="rux--type-body-long-01">${sentence(esc(s.summary ?? ''))}</p>
 </div>
-${docFacts([statusFact(status), ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}${status[0] === 'Not walked yet' ? `
+${docFacts([statusFact(status), ['Module', esc(s.modules.join(', '))], ['Length', `${count(ts.length, 'task')}, ${count(steps, 'step')}`], ['Updated', updated ? day(updated) : '—']])}${status[0] === 'Not walked yet' ? `
 ${unwalked(notice({ kind: 'Note' }, esc(NOT_WALKED)))}` : ''}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="${hrefTask(ts[0].id)}?walk=1">Start</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
@@ -834,13 +834,13 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 // is; the screen keeps the heading, and paper the title row.
 const docH2 = (id, title, cls = '') => `<h2 class="rux--type-productive-heading-04 ln-proc__h2${cls ? ` ${cls}` : ''}" id="${id}">${esc(title)}</h2>`;
 const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
-// Paper opens with the Rux mark and LN Notes, its version, module and
-// product, and lines for the client and Prepared by. They are empty here,
+// Paper opens with the Rux mark and LN Notes, the module, and lines for the
+// client and Prepared by; the footer carries the date. They are empty here,
 // because no person's or client's name goes on a public page; app.js fills
 // them on the owner's own copy.
-const brandBlock = (updated, modules) => `<div class="ln-paper-only ln-brand">
+const brandBlock = (modules) => `<div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
-<dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
+<dl class="ln-brand__facts"><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div></dl>
 <dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>`;
 // Paper ends with each task's result to tick and a sign-off,
@@ -953,12 +953,12 @@ function task(s, t) {
     const lead = t.why ? docText(t.why.tokens, t, 'Why LN works this way') : '';
     const stepsHtml = stepTable(t, k);
     const ups = proseHtml(above), downs = proseHtml(below);
-    const body = `${brandBlock(updated, t.modules)}
+    const body = `${brandBlock(t.modules)}
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">${esc(t.title)}</h1>${t.achieves ? `
 <p class="rux--type-body-long-01">${sentence(docText(t.achieves.tokens, t))}</p>` : ''}
 </div>
-${docFacts([statusFact(taskStatus(t)), ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—'], ['Applies to', 'Infor LN']])}
+${docFacts([statusFact(taskStatus(t)), ['Module', esc(t.modules.join(', '))], ['Length', count(rows.length, 'step')], ['Updated', updated ? day(updated) : '—']])}
 <p class="ln-strip">${strip}</p>${t.walked ? '' : `
 ${unwalked(notice({ kind: 'Note' }, `${esc(NOT_WALKED)}<span data-owner hidden> Walk it to say, at each step, whether it matched.</span>`))}`}
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>${need.length ? `

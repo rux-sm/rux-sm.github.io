@@ -6,37 +6,45 @@
   "title": "Create the production order",
   "process": {
     "id": "manual-production-order-existing-master-data",
-    "title": "Production order",
+    "title": "Production order from stock",
     "n": 1,
     "of": 6
   },
   "previous": {
     "id": "confirm-the-existing-foundation",
-    "title": "Confirm the existing foundation"
+    "title": "Read the items and their stock"
   },
   "next": {
     "id": "verify-the-generated-foundation",
-    "title": "Verify the generated foundation"
+    "title": "Check the operations and materials"
   },
   "module": "Manufacturing · Warehousing",
   "modules": [
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A production order for the finished item is saved, with status "
+        "v": "The production order is saved, and "
       },
       {
-        "t": "strong",
+        "t": "field",
+        "v": "Order Status"
+      },
+      {
+        "t": "text",
+        "v": " = "
+      },
+      {
+        "t": "status",
         "v": "Created"
       },
       {
@@ -44,17 +52,17 @@
         "v": "."
       }
     ],
-    "text": "A production order for the finished item is saved, with status Created."
+    "text": "The production order is saved, and Order Status = Created."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet."
+        "v": "LN fills most of the order in from the item. It adds the BOM and the receiving warehouse when you enter the item, and the routing when you enter the quantity. When you save, it builds the order's operations and materials from them. Nothing moves yet."
       }
     ],
-    "text": "LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet."
+    "text": "LN fills most of the order in from the item. It adds the BOM and the receiving warehouse when you enter the item, and the routing when you enter the quantity. When you save, it builds the order's operations and materials from them. Nothing moves yet."
   },
   "blocks": [
     {
@@ -172,10 +180,19 @@
                 },
                 {
                   "t": "text",
-                  "v": " has two boxes. Leave the first, for a project, empty. Type the finished item in the second and press Tab"
+                  "v": " has two boxes. Leave the first, for a project, empty. Type the finished item from step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the items and their stock",
+                  "href": "confirm-the-existing-foundation.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in the second and press Tab"
                 }
               ],
-              "text": "Item has two boxes. Leave the first, for a project, empty. Type the finished item in the second and press Tab"
+              "text": "Item has two boxes. Leave the first, for a project, empty. Type the finished item from step 3 of Read the items and their stock in the second and press Tab"
             },
             {
               "tokens": [
@@ -229,18 +246,48 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Press Tab to reach "
-                },
+                  "v": "Press Tab again"
+                }
+              ],
+              "text": "Press Tab again"
+            },
+            {
+              "tokens": [
                 {
                   "t": "field",
                   "v": "Quantity Ordered"
                 },
                 {
                   "t": "text",
-                  "v": ", type the quantity to make, and press Tab"
+                  "v": " is selected"
                 }
               ],
-              "text": "Press Tab to reach Quantity Ordered, type the quantity to make, and press Tab"
+              "text": "Quantity Ordered is selected"
+            }
+          ],
+          "id": "4",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "5"
+                }
+              ],
+              "text": "5"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Type the quantity to make and press Tab"
+                }
+              ],
+              "text": "Type the quantity to make and press Tab"
             },
             {
               "tokens": [
@@ -267,12 +314,9 @@
               "text": "Routing and its revision fill in — production quantity"
             }
           ],
-          "id": "4",
+          "id": "5",
           "optional": false,
-          "produces": true,
-          "example": [
-            1
-          ]
+          "produces": true
         },
         {
           "cells": [
@@ -280,10 +324,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "5"
+                  "v": "6"
                 }
               ],
-              "text": "5"
+              "text": "6"
             },
             {
               "tokens": [
@@ -302,13 +346,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The receiving warehouse"
+                  "v": "The receiving warehouse from step 3 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the items and their stock",
+                  "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "The receiving warehouse"
+              "text": "The receiving warehouse from step 3 of Read the items and their stock"
             }
           ],
-          "id": "5",
+          "id": "6",
           "optional": false,
           "produces": false,
           "uses": [
@@ -326,10 +375,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "6"
+                  "v": "7"
                 }
               ],
-              "text": "6"
+              "text": "7"
             },
             {
               "tokens": [
@@ -352,7 +401,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " shows the new number, "
+                  "v": " shows the new number, and "
                 },
                 {
                   "t": "field",
@@ -360,7 +409,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " "
+                  "v": " = "
                 },
                 {
                   "t": "status",
@@ -382,10 +431,10 @@
                   "v": "production order number"
                 }
               ],
-              "text": "Production Order shows the new number, Order Status Created — production order number"
+              "text": "Production Order shows the new number, and Order Status = Created — production order number"
             }
           ],
-          "id": "6",
+          "id": "7",
           "optional": false,
           "produces": true
         }
@@ -532,10 +581,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab"
+                "v": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again. Reach the field with Tab, as in step 4"
               }
             ],
-            "text": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab"
+            "text": "The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again. Reach the field with Tab, as in step 4"
           }
         ]
       },

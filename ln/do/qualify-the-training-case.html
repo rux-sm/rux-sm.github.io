@@ -97,7 +97,7 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
       <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/create-basic-test-items-and-defaults.html" aria-current="page"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order from stock</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
@@ -108,7 +108,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="73e801cab9374188dbe6cc2d5e9e2dbcc434c472">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="01e5483f35a26e0fa5ccad0bff880dd86e93bca2">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -119,7 +119,7 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Qualify the training case</h1>
-<p class="rux--type-body-long-01">The family is qualified to start Production order.</p>
+<p class="rux--type-body-long-01">The family is qualified to start Production order from stock.</p>
 </div>
 <dl class="ln-proc__facts"><div class="ln-unwalked"><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-circle-dash"/></svg>Not walked yet</span></dd></div><div><dt>Module</dt><dd>Common, Procurement, Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>12 steps</dd></div><div><dt>Updated</dt><dd>22 Oct 2026</dd></div></dl>
 <p class="ln-strip">Task 11 of 11 in <a class="rux--link" href="../follow/create-basic-test-items-and-defaults.html">Create test items</a></p>
@@ -139,8 +139,8 @@
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. This task checks the family against what Production order's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order.</p>
-<p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, and hands over.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. This task checks the family against what Production order from stock's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order from stock.</p>
+<p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a>, and hands over.</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
@@ -155,8 +155,8 @@
 <tr id="step-8"><td data-k="Step"><b>11.8</b></td><td data-k="Action">Confirm both components are on hand at the raw-material warehouse. It is the one from <a class="rux--link" href="../do/stock-the-components.html#step-12">step 10.12</a> (Stock the components)</td><td data-k="You should see">There is material to issue</td></tr>
 <tr id="step-9"><td data-k="Step"><b>11.9</b></td><td data-k="Action">Confirm the pair should be received into the finished-item warehouse. It is the one from <a class="rux--link" href="../do/confirm-the-test-design.html#step-6">step 1.6</a> (Confirm the test design)</td><td data-k="You should see">The receiving warehouse is a decision, not a discovery made mid-order</td></tr>
 <tr id="step-10"><td data-k="Step"><b>11.10</b></td><td data-k="Action">Confirm the costing figures from <a class="rux--link" href="../do/confirm-costing-data.html#step-2">steps 9.2–9.4</a> (Confirm costing data) are still present</td><td data-k="You should see">The estimate calculation has what it reads</td></tr>
-<tr id="step-11"><td data-k="Step"><b>11.11</b></td><td data-k="Action">Take the values from <a class="rux--link" href="#step-1">steps 11.1–11.10</a> to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></td><td data-k="You should see"></td></tr>
-<tr id="step-12"><td data-k="Step"><b>11.12</b></td><td data-k="Action">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> with them</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training case qualified</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-11"><td data-k="Step"><b>11.11</b></td><td data-k="Action">Take the values from <a class="rux--link" href="#step-1">steps 11.1–11.10</a> to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a></td><td data-k="You should see"></td></tr>
+<tr id="step-12"><td data-k="Step"><b>11.12</b></td><td data-k="Action">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> with them</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training case qualified</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -168,7 +168,7 @@
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Symptom">The production order opens with no BOM or routing</td><td data-k="What to do">Compare the order's reference date with the effective dates from <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html#step-7">step 7.7</a> (Build the job shop bill of material) and <a class="rux--link" href="../do/build-the-job-shop-routing.html#step-7">step 8.7</a> (Build the job shop routing). A revision effective after the reference date is not selected</td></tr>
-<tr><td data-k="Symptom">The production order has no operation to report complete</td><td data-k="What to do">Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> reports against</td></tr>
+<tr><td data-k="Symptom">The production order has no operation to report complete</td><td data-k="What to do">Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the order complete and check the stock</a> reports against</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -193,7 +193,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>11</b></td><td data-k="Expected result">The family is qualified to start Production order</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>11</b></td><td data-k="Expected result">The family is qualified to start Production order from stock</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -222,7 +222,7 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__prose"><p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, and hands over.</p></div>
+    <div class="ln-step__prose"><p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a>, and hands over.</p></div>
     <div class="ln-step__main"><h1 class="ln-step__do">Confirm all three items and their site rows show the right supply sources</h1><p class="ln-step__note">They were verified at step 9 of <a class="rux--link" href="../do/create-the-three-items.html">Create the three items</a></p></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The family is intact</p></div>
   </li>
@@ -259,10 +259,10 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The estimate calculation has what it reads</p></div>
   </li>
   <li data-k="11" data-ref="11" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Take the values from steps 1–10 to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Take the values from steps 1–10 to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a></h1></div>
   </li>
   <li data-k="12" data-ref="12" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> with them</h1></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> with them</h1></div>
     <div class="ln-step__see"><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
       <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-79">Training case qualified</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
@@ -303,7 +303,7 @@
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b>The production order opens with no BOM or routing</b><p>Compare the order's reference date with the effective dates from step 7 of <a class="rux--link" href="../do/build-the-job-shop-bill-of-material.html">Build the job shop bill of material</a> and step 7 of <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a>. A revision effective after the reference date is not selected</p></li>
-  <li><b>The production order has no operation to report complete</b><p>Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> reports against</p></li>
+  <li><b>The production order has no operation to report complete</b><p>Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the order complete and check the stock</a> reports against</p></li>
 </ul></div></div>
   </li>
   <li class="rux--accordion__item" id="why-guided">
@@ -311,7 +311,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. This task checks the family against what Production order's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Nothing new. This task checks the family against what Production order from stock's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order from stock.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

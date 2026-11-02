@@ -857,7 +857,7 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -865,17 +865,17 @@
                   "v": ", to use them in a build"
                 }
               ],
-              "text": "Production order, to use them in a build"
+              "text": "Production order from stock, to use them in a build"
             },
             {
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm the existing foundation",
+                  "v": "Read the items and their stock",
                   "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "Confirm the existing foundation"
+              "text": "Read the items and their stock"
             }
           ]
         },

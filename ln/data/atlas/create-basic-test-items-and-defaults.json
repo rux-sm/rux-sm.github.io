@@ -251,10 +251,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The family is qualified to start Production order."
+            "v": "The family is qualified to start Production order from stock."
           }
         ],
-        "text": "The family is qualified to start Production order."
+        "text": "The family is qualified to start Production order from stock."
       },
       "steps": 12,
       "walked": null
@@ -301,7 +301,7 @@
         },
         {
           "t": "link",
-          "v": "Production order",
+          "v": "Production order from stock",
           "href": "manual-production-order-existing-master-data.md"
         },
         {
@@ -318,7 +318,7 @@
           "v": " hands off to. Do not restate its steps here."
         }
       ],
-      "text": "Scope note: this walkthrough builds and qualifies the training case; it does not run the production order. The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is Production order, which Qualify the training case hands off to. Do not restate its steps here."
+      "text": "Scope note: this walkthrough builds and qualifies the training case; it does not run the production order. The order itself — create, release, issue material, report complete, confirm the finished-goods receipt — is Production order from stock, which Qualify the training case hands off to. Do not restate its steps here."
     },
     {
       "kind": "prose",
@@ -890,7 +890,7 @@
         },
         {
           "t": "link",
-          "v": "Production order",
+          "v": "Production order from stock",
           "href": "manual-production-order-existing-master-data.md"
         },
         {
@@ -898,7 +898,7 @@
           "v": ". Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here."
         }
       ],
-      "text": "Where this walkthrough stops. Qualify the training case hands a qualified training case to Production order. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.",
+      "text": "Where this walkthrough stops. Qualify the training case hands a qualified training case to Production order from stock. Producing the pair and confirming the on-hand increase at the finished-goods warehouse happens there, not here.",
       "under": "At a glance"
     },
     {
@@ -1090,11 +1090,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 }
               ],
-              "text": "Production order"
+              "text": "Production order from stock"
             },
             {
               "tokens": [

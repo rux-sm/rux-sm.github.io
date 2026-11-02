@@ -1024,7 +1024,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -1066,7 +1066,7 @@
                   "v": "; then start again"
                 }
               ],
-              "text": "Get more stock first: make it with Production order, move it with Warehouse transfer, or buy it with Purchase to receipt; then start again"
+              "text": "Get more stock first: make it with Production order from stock, move it with Warehouse transfer, or buy it with Purchase to receipt; then start again"
             },
             {
               "tokens": [

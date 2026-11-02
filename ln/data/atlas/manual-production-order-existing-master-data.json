@@ -3,14 +3,14 @@
   "tier": "export",
   "kind": "process",
   "id": "manual-production-order-existing-master-data",
-  "title": "Production order",
+  "title": "Production order from stock",
   "module": "Manufacturing · Warehousing",
   "modules": [
     "Manufacturing",
     "Warehousing"
   ],
-  "updated": "2026-10-25",
-  "status": "draft",
+  "updated": "2026-11-02",
+  "status": "review",
   "summary": "make a finished item on a production order from stock you already hold, and check that on-hand rose by what you made.",
   "order": 6,
   "sources": [
@@ -40,7 +40,16 @@
       "tokens": [
         {
           "t": "text",
-          "v": "A finished item with a BOM and a routing, and its components in stock. "
+          "v": "You need a finished item with a BOM and a routing, and stock of each of its components. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " makes them, and "
         },
         {
           "t": "link",
@@ -52,25 +61,25 @@
           "v": " buys components in."
         }
       ],
-      "text": "A finished item with a BOM and a routing, and its components in stock. Purchase to receipt buys components in."
+      "text": "You need a finished item with a BOM and a routing, and stock of each of its components. Create test items makes them, and Purchase to receipt buys components in."
     }
   ],
   "tasks": [
     {
       "id": "confirm-the-existing-foundation",
       "n": 0,
-      "title": "Confirm the existing foundation",
+      "title": "Read the items and their stock",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The finished item, its components and their on-hand are written down."
+            "v": "You've written down the finished item, its components and the on-hand of each."
           }
         ],
-        "text": "The finished item, its components and their on-hand are written down."
+        "text": "You've written down the finished item, its components and the on-hand of each."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-02"
     },
     {
       "id": "create-the-production-order",
@@ -80,10 +89,18 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A production order for the finished item is saved, with status "
+            "v": "The production order is saved, and "
           },
           {
-            "t": "strong",
+            "t": "field",
+            "v": "Order Status"
+          },
+          {
+            "t": "text",
+            "v": " = "
+          },
+          {
+            "t": "status",
             "v": "Created"
           },
           {
@@ -91,26 +108,26 @@
             "v": "."
           }
         ],
-        "text": "A production order for the finished item is saved, with status Created."
+        "text": "The production order is saved, and Order Status = Created."
       },
-      "steps": 6,
-      "walked": "2026-10-25"
+      "steps": 7,
+      "walked": "2026-11-02"
     },
     {
       "id": "verify-the-generated-foundation",
       "n": 2,
-      "title": "Verify the generated foundation",
+      "title": "Check the operations and materials",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The order's operations and materials are the ones you expect."
+            "v": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect."
           }
         ],
-        "text": "The order's operations and materials are the ones you expect."
+        "text": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-02"
     },
     {
       "id": "release-the-order",
@@ -123,23 +140,23 @@
             "v": "The order is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Released"
           },
           {
             "t": "text",
-            "v": ", with a warehousing order to issue the materials and one to receive the finished item."
+            "v": ", and it has two warehousing orders: one to issue the materials, one to receive the finished item."
           }
         ],
-        "text": "The order is Released, with a warehousing order to issue the materials and one to receive the finished item."
+        "text": "The order is Released, and it has two warehousing orders: one to issue the materials, one to receive the finished item."
       },
       "steps": 4,
-      "walked": "2026-10-25"
+      "walked": "2026-11-02"
     },
     {
       "id": "issue-material-to-the-job-shop",
       "n": 4,
-      "title": "Issue material to the job shop",
+      "title": "Issue the materials",
       "achieves": {
         "tokens": [
           {
@@ -147,7 +164,7 @@
             "v": "The materials are shipped to the work center, and the order is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Active"
           },
           {
@@ -157,32 +174,32 @@
         ],
         "text": "The materials are shipped to the work center, and the order is Active."
       },
-      "steps": 10,
-      "walked": "2026-10-25"
+      "steps": 12,
+      "walked": "2026-11-02"
     },
     {
       "id": "report-the-operation-complete-and-confirm-warehouse-receipt",
       "n": 5,
-      "title": "Report the operation complete and confirm warehouse receipt",
+      "title": "Report the order complete and check the stock",
       "achieves": {
         "tokens": [
           {
             "t": "text",
-            "v": "The order reads "
+            "v": "The order is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Production Completed"
           },
           {
             "t": "text",
-            "v": ", and the finished item's on-hand rose by the quantity made."
+            "v": ", and the finished item's on-hand is up by the quantity made."
           }
         ],
-        "text": "The order reads Production Completed, and the finished item's on-hand rose by the quantity made."
+        "text": "The order is Production Completed, and the finished item's on-hand is up by the quantity made."
       },
-      "steps": 10,
-      "walked": "2026-10-25"
+      "steps": 12,
+      "walked": "2026-11-02"
     }
   ],
   "values": {
@@ -305,204 +322,6 @@
           {
             "tokens": [
               {
-                "t": "text",
-                "v": "Operations"
-              }
-            ],
-            "text": "Operations"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "One: operation 10, Cutting - shear"
-              }
-            ],
-            "text": "One: operation 10, Cutting - shear"
-          }
-        ],
-        "task": "verify-the-generated-foundation"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Materials"
-              }
-            ],
-            "text": "Materials"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "2 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-ROD"
-              },
-              {
-                "t": "text",
-                "v": " and 1 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-SLEEVE"
-              },
-              {
-                "t": "text",
-                "v": " for one pair"
-              }
-            ],
-            "text": "2 BAM-ROD and 1 BAM-SLEEVE for one pair"
-          }
-        ],
-        "task": "verify-the-generated-foundation"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Issue order"
-              }
-            ],
-            "text": "Issue order"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Sequence 2, "
-              },
-              {
-                "t": "field",
-                "v": "Order Type"
-              },
-              {
-                "t": "text",
-                "v": " "
-              },
-              {
-                "t": "literal",
-                "v": "30-"
-              },
-              {
-                "t": "text",
-                "v": " Production (Out)"
-              }
-            ],
-            "text": "Sequence 2, Order Type 30- Production (Out)"
-          }
-        ],
-        "task": "release-the-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Receipt order"
-              }
-            ],
-            "text": "Receipt order"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Sequence 1, "
-              },
-              {
-                "t": "field",
-                "v": "Order Type"
-              },
-              {
-                "t": "text",
-                "v": " "
-              },
-              {
-                "t": "literal",
-                "v": "30+"
-              },
-              {
-                "t": "text",
-                "v": " Production (In)"
-              }
-            ],
-            "text": "Sequence 1, Order Type 30+ Production (In)"
-          }
-        ],
-        "task": "release-the-order"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "To Date/Time"
-              }
-            ],
-            "text": "To Date/Time"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "The day after the production start"
-              }
-            ],
-            "text": "The day after the production start"
-          }
-        ],
-        "task": "issue-material-to-the-job-shop"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Materials shipped"
-              }
-            ],
-            "text": "Materials shipped"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "2 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-ROD"
-              },
-              {
-                "t": "text",
-                "v": " and 1 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-SLEEVE"
-              }
-            ],
-            "text": "2 BAM-ROD and 1 BAM-SLEEVE"
-          }
-        ],
-        "task": "issue-material-to-the-job-shop"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
                 "t": "field",
                 "v": "Additional Completed"
               }
@@ -543,29 +362,6 @@
           }
         ],
         "task": "report-the-operation-complete-and-confirm-warehouse-receipt"
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "The receipt question"
-              }
-            ],
-            "text": "The receipt question"
-          },
-          {
-            "tokens": [
-              {
-                "t": "button",
-                "label": "Yes"
-              }
-            ],
-            "text": "Yes"
-          }
-        ],
-        "task": "report-the-operation-complete-and-confirm-warehouse-receipt"
       }
     ]
   },
@@ -597,7 +393,16 @@
         },
         {
           "t": "text",
-          "v": " > A finished item with a BOM and a routing, and its components in stock. "
+          "v": " > You need a finished item with a BOM and a routing, and stock of each of its components. "
+        },
+        {
+          "t": "link",
+          "v": "Create test items",
+          "href": "create-basic-test-items-and-defaults.md"
+        },
+        {
+          "t": "text",
+          "v": " makes them, and "
         },
         {
           "t": "link",
@@ -609,7 +414,7 @@
           "v": " buys components in."
         }
       ],
-      "text": "> Prerequisite > A finished item with a BOM and a routing, and its components in stock. Purchase to receipt buys components in."
+      "text": "> Prerequisite > You need a finished item with a BOM and a routing, and stock of each of its components. Create test items makes them, and Purchase to receipt buys components in."
     },
     {
       "kind": "prose",
@@ -670,11 +475,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Confirm the existing foundation",
+                  "v": "Read the items and their stock",
                   "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "Confirm the existing foundation"
+              "text": "Read the items and their stock"
             },
             {
               "tokens": [
@@ -689,10 +494,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The finished item, its components and their on-hand are written down"
+                  "v": "You've written down the finished item, its components and the on-hand of each"
                 }
               ],
-              "text": "The finished item, its components and their on-hand are written down"
+              "text": "You've written down the finished item, its components and the on-hand of each"
             }
           ]
         },
@@ -730,14 +535,22 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A production order for the finished item is saved, with status "
+                  "v": "The production order is saved, and "
                 },
                 {
-                  "t": "chip",
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
+                  "t": "status",
                   "v": "Created"
                 }
               ],
-              "text": "A production order for the finished item is saved, with status Created"
+              "text": "The production order is saved, and Order Status = Created"
             }
           ]
         },
@@ -756,11 +569,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Verify the generated foundation",
+                  "v": "Check the operations and materials",
                   "href": "verify-the-generated-foundation.md"
                 }
               ],
-              "text": "Verify the generated foundation"
+              "text": "Check the operations and materials"
             },
             {
               "tokens": [
@@ -775,10 +588,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The order's operations and materials are the ones you expect"
+                  "v": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect"
                 }
               ],
-              "text": "The order's operations and materials are the ones you expect"
+              "text": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect"
             }
           ]
         },
@@ -819,15 +632,15 @@
                   "v": "The order is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Released"
                 },
                 {
                   "t": "text",
-                  "v": ", with a warehousing order to issue the materials and one to receive the finished item"
+                  "v": ", and it has two warehousing orders: one to issue the materials, one to receive the finished item"
                 }
               ],
-              "text": "The order is Released, with a warehousing order to issue the materials and one to receive the finished item"
+              "text": "The order is Released, and it has two warehousing orders: one to issue the materials, one to receive the finished item"
             }
           ]
         },
@@ -846,11 +659,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Issue material to the job shop",
+                  "v": "Issue the materials",
                   "href": "issue-material-to-the-job-shop.md"
                 }
               ],
-              "text": "Issue material to the job shop"
+              "text": "Issue the materials"
             },
             {
               "tokens": [
@@ -868,7 +681,7 @@
                   "v": "The materials are shipped to the work center, and the order is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Active"
                 }
               ],
@@ -891,11 +704,11 @@
               "tokens": [
                 {
                   "t": "link",
-                  "v": "Report the operation complete and confirm warehouse receipt",
+                  "v": "Report the order complete and check the stock",
                   "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
                 }
               ],
-              "text": "Report the operation complete and confirm warehouse receipt"
+              "text": "Report the order complete and check the stock"
             },
             {
               "tokens": [
@@ -910,18 +723,18 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The order reads "
+                  "v": "The order is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Production Completed"
                 },
                 {
                   "t": "text",
-                  "v": ", and the finished item's on-hand rose by the quantity made"
+                  "v": ", and the finished item's on-hand is up by the quantity made"
                 }
               ],
-              "text": "The order reads Production Completed, and the finished item's on-hand rose by the quantity made"
+              "text": "The order is Production Completed, and the finished item's on-hand is up by the quantity made"
             }
           ]
         }
@@ -937,10 +750,10 @@
         },
         {
           "t": "text",
-          "v": " Nothing leaves the warehouse until the issue is started and shipped, and nothing arrives until the order is reported complete."
+          "v": " Nothing leaves the warehouse until you ship the materials, and nothing arrives until you report the order complete."
         }
       ],
-      "text": "Release doesn't move anything. Nothing leaves the warehouse until the issue is started and shipped, and nothing arrives until the order is reported complete.",
+      "text": "Release doesn't move anything. Nothing leaves the warehouse until you ship the materials, and nothing arrives until you report the order complete.",
       "under": "At a glance"
     },
     {
@@ -956,43 +769,11 @@
               "tokens": [
                 {
                   "t": "chip",
-                  "v": "More than one operation"
-                }
-              ],
-              "text": "More than one operation"
-            },
-            {
-              "tokens": [
-                {
-                  "t": "text",
-                  "v": "Each operation is reported complete in turn, in "
+                  "v": "Materials set to issue by themselves"
                 },
                 {
-                  "t": "link",
-                  "v": "Report the operation complete and confirm warehouse receipt",
-                  "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
-                }
-              ],
-              "text": "Each operation is reported complete in turn, in Report the operation complete and confirm warehouse receipt"
-            }
-          ]
-        },
-        {
-          "cells": [
-            {
-              "tokens": [
-                {
-                  "t": "chip",
-                  "v": "Materials set to issue by themselves"
-                }
-              ],
-              "text": "Materials set to issue by themselves"
-            },
-            {
-              "tokens": [
-                {
                   "t": "text",
-                  "v": "With "
+                  "v": " — the materials have "
                 },
                 {
                   "t": "field",
@@ -1008,19 +789,37 @@
                 },
                 {
                   "t": "text",
-                  "v": " set, release ships the materials, and most of "
+                  "v": " set"
+                }
+              ],
+              "text": "Materials set to issue by themselves — the materials have Direct Initiate Inventory Issue and Direct Process Warehouse Order Line set"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Release ships the materials, so steps 2 to 5 of "
                 },
                 {
                   "t": "link",
-                  "v": "Issue material to the job shop",
+                  "v": "Issue the materials",
                   "href": "issue-material-to-the-job-shop.md"
                 },
                 {
                   "t": "text",
-                  "v": " is already done"
+                  "v": " and steps 8 to 11 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Issue the materials",
+                  "href": "issue-material-to-the-job-shop.md"
+                },
+                {
+                  "t": "text",
+                  "v": " are already done"
                 }
               ],
-              "text": "With Direct Initiate Inventory Issue and Direct Process Warehouse Order Line set, release ships the materials, and most of Issue material to the job shop is already done"
+              "text": "Release ships the materials, so steps 2 to 5 of Issue the materials and steps 8 to 11 of Issue the materials are already done"
             }
           ]
         },
@@ -1039,18 +838,27 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Answering "
+                  "v": "Click "
                 },
                 {
-                  "t": "chip",
-                  "v": "No"
+                  "t": "button",
+                  "label": "No"
                 },
                 {
                   "t": "text",
-                  "v": " to the receipt question leaves the finished item for Warehousing to receive on the receipt order"
+                  "v": " at step 8 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Report the order complete and check the stock",
+                  "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
+                },
+                {
+                  "t": "text",
+                  "v": ". The finished item then waits for Warehousing to receive it on the receipt order"
                 }
               ],
-              "text": "Answering No to the receipt question leaves the finished item for Warehousing to receive on the receipt order"
+              "text": "Click No at step 8 of Report the order complete and check the stock. The finished item then waits for Warehousing to receive it on the receipt order"
             }
           ]
         },
@@ -1061,18 +869,22 @@
                 {
                   "t": "chip",
                   "v": "No routing"
+                },
+                {
+                  "t": "text",
+                  "v": " — the item has a BOM but no routing"
                 }
               ],
-              "text": "No routing"
+              "text": "No routing — the item has a BOM but no routing"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Outside this guide. Without a routing, no estimated production costs are defined"
+                  "v": "This guide doesn't cover it. Without a routing, the order has no estimated production costs"
                 }
               ],
-              "text": "Outside this guide. Without a routing, no estimated production costs are defined"
+              "text": "This guide doesn't cover it. Without a routing, the order has no estimated production costs"
             }
           ]
         }
@@ -1107,19 +919,20 @@
                 },
                 {
                   "t": "text",
-                  "v": " — sell and ship what was made"
+                  "v": ", to sell and ship what you made"
                 }
               ],
-              "text": "Ship from stock — sell and ship what was made"
+              "text": "Ship from stock, to sell and ship what you made"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "its first task, reading the new on-hand"
+                  "t": "link",
+                  "v": "Confirm there is stock",
+                  "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "its first task, reading the new on-hand"
+              "text": "Confirm there is stock"
             }
           ]
         },
@@ -1129,10 +942,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The finished item is on hand but belongs in another warehouse"
+                  "v": "The finished item is on hand, but it belongs in another warehouse"
                 }
               ],
-              "text": "The finished item is on hand but belongs in another warehouse"
+              "text": "The finished item is on hand, but it belongs in another warehouse"
             },
             {
               "tokens": [
@@ -1140,18 +953,23 @@
                   "t": "link",
                   "v": "Warehouse transfer",
                   "href": "transfer-item-between-warehouses.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", to move it there"
                 }
               ],
-              "text": "Warehouse transfer"
+              "text": "Warehouse transfer, to move it there"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "its first task"
+                  "t": "link",
+                  "v": "Read the stock and the order type",
+                  "href": "confirm-stock-destination-and-expected-order-type.md"
                 }
               ],
-              "text": "its first task"
+              "text": "Read the stock and the order type"
             }
           ]
         },

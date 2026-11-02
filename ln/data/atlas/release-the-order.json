@@ -6,29 +6,29 @@
   "title": "Release the order",
   "process": {
     "id": "manual-production-order-existing-master-data",
-    "title": "Production order",
+    "title": "Production order from stock",
     "n": 3,
     "of": 6
   },
   "previous": {
     "id": "verify-the-generated-foundation",
-    "title": "Verify the generated foundation"
+    "title": "Check the operations and materials"
   },
   "next": {
     "id": "issue-material-to-the-job-shop",
-    "title": "Issue material to the job shop"
+    "title": "Issue the materials"
   },
   "module": "Manufacturing · Warehousing",
   "modules": [
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
@@ -36,22 +36,22 @@
         "v": "The order is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Released"
       },
       {
         "t": "text",
-        "v": ", with a warehousing order to issue the materials and one to receive the finished item."
+        "v": ", and it has two warehousing orders: one to issue the materials, one to receive the finished item."
       }
     ],
-    "text": "The order is Released, with a warehousing order to issue the materials and one to receive the finished item."
+    "text": "The order is Released, and it has two warehousing orders: one to issue the materials, one to receive the finished item."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need the production order from step 6 of "
+          "v": "You need the production order from step 7 of "
         },
         {
           "t": "link",
@@ -63,17 +63,17 @@
           "v": ", still open."
         }
       ],
-      "text": "You need the production order from step 6 of Create the production order, still open."
+      "text": "You need the production order from step 7 of Create the production order, still open."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them."
+        "v": "Release lets production start. At the same time LN makes two warehousing orders with the production order's number. The issue order moves the materials to the work center. The receipt order brings the finished item into its warehouse. Both wait until you start them."
       }
     ],
-    "text": "Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them."
+    "text": "Release lets production start. At the same time LN makes two warehousing orders with the production order's number. The issue order moves the materials to the work center. The receipt order brings the finished item into its warehouse. Both wait until you start them."
   },
   "blocks": [
     {
@@ -102,8 +102,8 @@
                   "v": "On the order's toolbar, click "
                 },
                 {
-                  "t": "chip",
-                  "v": "Release Order…"
+                  "t": "button",
+                  "label": "Release Order…"
                 }
               ],
               "text": "On the order's toolbar, click Release Order…"
@@ -154,7 +154,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The dialog closes. "
+                  "v": "The dialog closes, and "
                 },
                 {
                   "t": "field",
@@ -169,7 +169,7 @@
                   "v": "Released"
                 }
               ],
-              "text": "The dialog closes. Order Status = Released"
+              "text": "The dialog closes, and Order Status = Released"
             }
           ],
           "id": "2",
@@ -204,10 +204,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "The list of warehousing orders"
                 }
               ],
-              "text": "—"
+              "text": "The list of warehousing orders"
             }
           ],
           "id": "3",
@@ -229,7 +229,16 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Type the production order number in the filter box above the "
+                  "v": "Type the production order number from step 7 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the production order",
+                  "href": "create-the-production-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": " in the filter box above the "
                 },
                 {
                   "t": "field",
@@ -237,10 +246,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " column and press Enter"
+                  "v": " column, and press Enter"
                 }
               ],
-              "text": "Type the production order number in the filter box above the Order column and press Enter"
+              "text": "Type the production order number from step 7 of Create the production order in the filter box above the Order column, and press Enter"
             },
             {
               "tokens": [
@@ -282,7 +291,7 @@
           "uses": [
             {
               "task": "create-the-production-order",
-              "step": "6",
+              "step": "7",
               "n": 0,
               "label": "production order number"
             }
@@ -293,88 +302,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Issue order"
-              }
-            ],
-            "text": "Issue order"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Sequence 2, "
-              },
-              {
-                "t": "field",
-                "v": "Order Type"
-              },
-              {
-                "t": "text",
-                "v": " "
-              },
-              {
-                "t": "literal",
-                "v": "30-"
-              },
-              {
-                "t": "text",
-                "v": " Production (Out)"
-              }
-            ],
-            "text": "Sequence 2, Order Type 30- Production (Out)"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Receipt order"
-              }
-            ],
-            "text": "Receipt order"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Sequence 1, "
-              },
-              {
-                "t": "field",
-                "v": "Order Type"
-              },
-              {
-                "t": "text",
-                "v": " "
-              },
-              {
-                "t": "literal",
-                "v": "30+"
-              },
-              {
-                "t": "text",
-                "v": " Production (In)"
-              }
-            ],
-            "text": "Sequence 1, Order Type 30+ Production (In)"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "4",
@@ -407,10 +336,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Read the message. Release may need the documents printed first; see the note"
+                "v": "Read LN's message. Release can wait until the order's documents are printed"
               }
             ],
-            "text": "Read the message. Release may need the documents printed first; see the note"
+            "text": "Read LN's message. Release can wait until the order's documents are printed"
           }
         ]
       },

@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Create the production order · LN Notes · Updated 25 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Create the production order · LN Notes · Updated 2 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -96,7 +96,7 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-      <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html" aria-current="page"><span class="rux--side-nav__link-text">Production order</span></a></li>
+      <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html" aria-current="page"><span class="rux--side-nav__link-text">Production order from stock</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
@@ -107,7 +107,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="73e801cab9374188dbe6cc2d5e9e2dbcc434c472">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="01e5483f35a26e0fa5ccad0bff880dd86e93bca2">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -118,15 +118,15 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Create the production order</h1>
-<p class="rux--type-body-long-01">A production order for the finished item is saved, with status <strong>Created</strong>.</p>
+<p class="rux--type-body-long-01">The production order is saved, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span>.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>6 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div></dl>
-<p class="ln-strip">Task 2 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a></p>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Nov 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>7 steps</dd></div><div><dt>Updated</dt><dd>2 Nov 2026</dd></div></dl>
+<p class="ln-strip">Task 2 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> · next: <a class="rux--link" href="../do/verify-the-generated-foundation.html">Check the operations and materials</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
 <dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet.</p>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> LN fills most of the order in from the item. It adds the BOM and the receiving warehouse when you enter the item, and the routing when you enter the quantity. When you save, it builds the order's operations and materials from them. Nothing moves yet.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
@@ -134,11 +134,12 @@
 <tbody>
 <tr id="step-1"><td data-k="Step"><b>2.1</b></td><td data-k="Action">Open <span class="ln-t-named">Production Orders</span></td><td data-k="You should see">The list of production orders</td></tr>
 <tr id="step-2"><td data-k="Step"><b>2.2</b></td><td data-k="Action">Click <span class="ln-t-press">New</span></td><td data-k="You should see"><span class="ln-t-named">Production Order</span> opens, empty, with <span class="ln-t-named">Site</span> filled in</td></tr>
-<tr id="step-3"><td data-k="Step"><b>2.3</b></td><td data-k="Action"><span class="ln-t-named">Item</span> has two boxes. Leave the first, for a project, empty. Type the finished item in the second and press Tab<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Item</span> <span class="ln-t-exact">BAM-CHOP-PAIR</span></span></span></td><td data-k="You should see">The item's description fills in, with <span class="ln-t-named">BOM</span>, its revision and <span class="ln-t-named">Warehouse</span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>2.3</b></td><td data-k="Action"><span class="ln-t-named">Item</span> has two boxes. Leave the first, for a project, empty. Type the finished item from <a class="rux--link" href="../do/confirm-the-existing-foundation.html#step-3">step 1.3</a> (Read the items and their stock) in the second and press Tab<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Item</span> <span class="ln-t-exact">BAM-CHOP-PAIR</span></span></span></td><td data-k="You should see">The item's description fills in, with <span class="ln-t-named">BOM</span>, its revision and <span class="ln-t-named">Warehouse</span></td></tr>
 <tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="create-the-production-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 2.3 · Production Order, the item and what LN filled in</figcaption></figure></td></tr>
-<tr id="step-4"><td data-k="Step"><b>2.4</b></td><td data-k="Action">Press Tab to reach <span class="ln-t-named">Quantity Ordered</span>, type the quantity to make, and press Tab<span class="ln-proc__value"><span class="ln-proc__value-k">Example</span><span class="ln-proc__value-row"><span class="ln-t-named">Quantity Ordered</span> 1</span></span></td><td data-k="You should see"><span class="ln-proc__see"><span class="ln-t-named">Routing</span> and its revision fill in</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
-<tr id="step-5"><td data-k="Step"><b>2.5</b></td><td data-k="Action">Check <span class="ln-t-named">Warehouse</span></td><td data-k="You should see">The receiving warehouse</td></tr>
-<tr id="step-6"><td data-k="Step"><b>2.6</b></td><td data-k="Action">Click <span class="ln-t-press">Save</span></td><td data-k="You should see"><span class="ln-proc__see"><span class="ln-t-named">Production Order</span> shows the new number, <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production order number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-4"><td data-k="Step"><b>2.4</b></td><td data-k="Action">Press Tab again</td><td data-k="You should see"><span class="ln-t-named">Quantity Ordered</span> is selected</td></tr>
+<tr id="step-5"><td data-k="Step"><b>2.5</b></td><td data-k="Action">Type the quantity to make and press Tab</td><td data-k="You should see"><span class="ln-proc__see"><span class="ln-t-named">Routing</span> and its revision fill in</span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production quantity</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-6"><td data-k="Step"><b>2.6</b></td><td data-k="Action">Check <span class="ln-t-named">Warehouse</span></td><td data-k="You should see">The receiving warehouse from <a class="rux--link" href="../do/confirm-the-existing-foundation.html#step-3">step 1.3</a> (Read the items and their stock)</td></tr>
+<tr id="step-7"><td data-k="Step"><b>2.7</b></td><td data-k="Action">Click <span class="ln-t-press">Save</span></td><td data-k="You should see"><span class="ln-proc__see"><span class="ln-t-named">Production Order</span> shows the new number, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></span><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">production order number</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -151,7 +152,7 @@
 <tbody>
 <tr><td data-k="Symptom"><span class="ln-t-named">BOM</span> or <span class="ln-t-named">Routing</span> stays empty</td><td data-k="What to do">The item may have no BOM or routing valid today. Stop, and check them with whoever maintains the item</td></tr>
 <tr><td data-k="Symptom">The item code is cut short</td><td data-k="What to do">It went into the project box. Clear both boxes and type it in the second</td></tr>
-<tr><td data-k="Symptom">LN says <span class="ln-t-exact">Enter a value for the Quantity Ordered field.</span></td><td data-k="What to do">The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab</td></tr>
+<tr><td data-k="Symptom">LN says <span class="ln-t-exact">Enter a value for the Quantity Ordered field.</span></td><td data-k="What to do">The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again. Reach the field with Tab, as in <a class="rux--link" href="#step-4">step 2.4</a></td></tr>
 <tr><td data-k="Symptom">The form stops responding</td><td data-k="What to do">Discard the order and reload LN</td></tr>
 </tbody>
 </table></div>
@@ -172,7 +173,7 @@
 <ul class="ln-list">
   <li><b>Session</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>)<br><span class="ln-quiet">Lists production orders with their item, dates, status, warehouse and main quantities.</span></p></li>
   <li><b>Ideas</b><p><a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
-  <li><b>Next task</b><p><a class="rux--link" href="../do/verify-the-generated-foundation.html">Verify the generated foundation</a> in Production order</p></li>
+  <li><b>Next task</b><p><a class="rux--link" href="../do/verify-the-generated-foundation.html">Check the operations and materials</a> in Production order from stock</p></li>
 </ul>
 </section>
 <section class="ln-paper-only">
@@ -181,7 +182,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>2</b></td><td data-k="Expected result">A production order for the finished item is saved, with status <strong>Created</strong></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>2</b></td><td data-k="Expected result">The production order is saved, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -201,8 +202,8 @@
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="guided" hidden>
 <div class="rux--stack-vertical rux--stack-scale-6">
-<section class="ln-guided" data-run="manual-production-order-existing-master-data" data-task="create-the-production-order" data-title="Create the production order" data-process="Production order" data-process-href="../follow/manual-production-order-existing-master-data.html" data-next-href="../do/verify-the-generated-foundation.html?walk=1">
-<a class="rux--link ln-back" href="../follow/manual-production-order-existing-master-data.html"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Production order</a>
+<section class="ln-guided" data-run="manual-production-order-existing-master-data" data-task="create-the-production-order" data-title="Create the production order" data-process="Production order from stock" data-process-href="../follow/manual-production-order-existing-master-data.html" data-next-href="../do/verify-the-generated-foundation.html?walk=1">
+<a class="rux--link ln-back" href="../follow/manual-production-order-existing-master-data.html"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Production order from stock</a>
 <div class="rux--progress-bar rux--progress-bar--small">
   <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">Create the production order</span></div>
   <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
@@ -218,28 +219,32 @@
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Production Order</span> opens, empty, with <span class="ln-t-named">Site</span> filled in</p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do"><span class="ln-t-named">Item</span> has two boxes</h1><p class="ln-step__note">Leave the first, for a project, empty. Type the finished item in the second and press Tab</p><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Item</span> <span class="ln-copy"><code class="ln-task__code">BAM-CHOP-PAIR</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-CHOP-PAIR" aria-label="Copy BAM-CHOP-PAIR"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span></div></div><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="confirm-the-existing-foundation/3/0"><span class="ln-quiet">Finished item · 1.3</span><span data-use-missing><a class="rux--link" href="../do/confirm-the-existing-foundation.html?walk=3">Write it down at step 1.3</a></span></div></div><figure class="ln-shot" data-shot="create-the-production-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 2.3 · Production Order, the item and what LN filled in</figcaption></figure></div>
+    <div class="ln-step__main"><h1 class="ln-step__do"><span class="ln-t-named">Item</span> has two boxes</h1><p class="ln-step__note">Leave the first, for a project, empty. Type the finished item from step 3 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a> in the second and press Tab</p><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Item</span> <span class="ln-copy"><code class="ln-task__code">BAM-CHOP-PAIR</code><span class="rux--tooltip rux--icon-tooltip rux--popover-container rux--popover--bottom rux--popover--caret rux--popover--high-contrast"><div class="rux--tooltip-trigger__wrapper"><button type="button" class="rux--copy-btn rux--copy rux--btn rux--btn--md rux--layout--size-md rux--btn--primary rux--btn--icon-only" data-rux-copy="BAM-CHOP-PAIR" aria-label="Copy BAM-CHOP-PAIR"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-copy"/></svg></button></div><span class="rux--popover"><span class="rux--popover-content rux--tooltip-content">Copy</span><span class="rux--popover-caret"></span></span></span></span></div></div><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="confirm-the-existing-foundation/3/0"><span class="ln-quiet">Finished item · 1.3</span><span data-use-missing><a class="rux--link" href="../do/confirm-the-existing-foundation.html?walk=3">Write it down at step 1.3</a></span></div></div><figure class="ln-shot" data-shot="create-the-production-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 2.3 · Production Order, the item and what LN filled in</figcaption></figure></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The item's description fills in, with <span class="ln-t-named">BOM</span>, its revision and <span class="ln-t-named">Warehouse</span></p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Press Tab to reach <span class="ln-t-named">Quantity Ordered</span>, type the quantity to make, and press Tab</h1><div class="ln-step__example"><span class="ln-quiet">Example</span><div><span class="ln-t-named">Quantity Ordered</span> 1</div></div></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Press Tab again</h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Quantity Ordered</span> is selected</p></div>
+  </li>
+  <li data-k="5" data-ref="5" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Type the quantity to make and press Tab</h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Routing</span> and its revision fill in</p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
       <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-85">Production quantity</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-85" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="4/0" data-at="2.4" data-label="Production quantity">
+        <input id="write-85" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="5/0" data-at="2.5" data-label="Production quantity">
       </div></div>
     </div></div></div>
   </li>
-  <li data-k="5" data-ref="5" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Warehouse</span></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="confirm-the-existing-foundation/3/1"><span class="ln-quiet">Receiving warehouse · 1.3</span><span data-use-missing><a class="rux--link" href="../do/confirm-the-existing-foundation.html?walk=3">Write it down at step 1.3</a></span></div></div></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The receiving warehouse</p></div>
-  </li>
   <li data-k="6" data-ref="6" hidden>
+    <div class="ln-step__main"><h1 class="ln-step__do">Check <span class="ln-t-named">Warehouse</span></h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="confirm-the-existing-foundation/3/1"><span class="ln-quiet">Receiving warehouse · 1.3</span><span data-use-missing><a class="rux--link" href="../do/confirm-the-existing-foundation.html?walk=3">Write it down at step 1.3</a></span></div></div></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The receiving warehouse from step 3 of <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a></p></div>
+  </li>
+  <li data-k="7" data-ref="7" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Save</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Production Order</span> shows the new number, <span class="ln-t-named">Order Status</span> <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Production Order</span> shows the new number, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Created</span></span></p><span class="ln-quiet ln-step__write">Write down</span><div class="ln-step__writes"><div class="rux--form-item rux--text-input-wrapper rux--layer-two">
       <div class="rux--text-input__label-wrapper"><label class="rux--label" for="write-86">Production order number</label></div>
       <div class="rux--text-input__field-outer-wrapper"><div class="rux--text-input__field-wrapper">
-        <input id="write-86" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="6/0" data-at="2.6" data-label="Production order number">
+        <input id="write-86" class="rux--text-input rux--layout--size-md" type="text" autocomplete="off" spellcheck="false" data-write="7/0" data-at="2.7" data-label="Production order number">
       </div></div>
     </div></div></div>
   </li>
@@ -260,7 +265,7 @@
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
   <li><b><span class="ln-t-named">BOM</span> or <span class="ln-t-named">Routing</span> stays empty</b><p>The item may have no BOM or routing valid today. Stop, and check them with whoever maintains the item</p></li>
   <li><b>The item code is cut short</b><p>It went into the project box. Clear both boxes and type it in the second</p></li>
-  <li><b>LN says <span class="ln-t-exact">Enter a value for the Quantity Ordered field.</span></b><p>The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again, reaching the field by Tab</p></li>
+  <li><b>LN says <span class="ln-t-exact">Enter a value for the Quantity Ordered field.</span></b><p>The typing didn't reach the field, and the form may stop responding. Discard the order, reload LN and start again. Reach the field with Tab, as in step 4</p></li>
   <li><b>The form stops responding</b><p>Discard the order and reload LN</p></li>
 </ul></div></div>
   </li>
@@ -269,7 +274,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>LN fills most of the order in from the item: the BOM and the receiving warehouse when you enter it, and the routing when you enter the quantity. On save it builds the order's operations and materials from them. Nothing moves yet.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>LN fills most of the order in from the item. It adds the BOM and the receiving warehouse when you enter the item, and the routing when you enter the quantity. When you save, it builds the order's operations and materials from them. Nothing moves yet.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

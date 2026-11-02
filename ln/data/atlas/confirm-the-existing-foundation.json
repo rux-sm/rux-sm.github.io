@@ -3,10 +3,10 @@
   "tier": "export",
   "kind": "task",
   "id": "confirm-the-existing-foundation",
-  "title": "Confirm the existing foundation",
+  "title": "Read the items and their stock",
   "process": {
     "id": "manual-production-order-existing-master-data",
-    "title": "Production order",
+    "title": "Production order from stock",
     "n": 0,
     "of": 6
   },
@@ -20,67 +20,30 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-02",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The finished item, its components and their on-hand are written down."
+        "v": "You've written down the finished item, its components and the on-hand of each."
       }
     ],
-    "text": "The finished item, its components and their on-hand are written down."
+    "text": "You've written down the finished item, its components and the on-hand of each."
   },
-  "before": [
-    {
-      "tokens": [
-        {
-          "t": "text",
-          "v": "The finished item has a BOM and a routing, and each component has stock in a warehouse. "
-        },
-        {
-          "t": "link",
-          "v": "Build the job shop bill of material",
-          "href": "build-the-job-shop-bill-of-material.md"
-        },
-        {
-          "t": "text",
-          "v": ", "
-        },
-        {
-          "t": "link",
-          "v": "Build the job shop routing",
-          "href": "build-the-job-shop-routing.md"
-        },
-        {
-          "t": "text",
-          "v": " and "
-        },
-        {
-          "t": "link",
-          "v": "Stock the components",
-          "href": "stock-the-components.md"
-        },
-        {
-          "t": "text",
-          "v": " make them."
-        }
-      ],
-      "text": "The finished item has a BOM and a routing, and each component has stock in a warehouse. Build the job shop bill of material, Build the job shop routing and Stock the components make them."
-    }
-  ],
+  "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before."
+        "v": "Nothing changes yet. A production order takes its BOM, routing and warehouse from the item, so they must exist first. At the end you check that the finished item's on-hand went up, and for that you need the figure from before."
       }
     ],
-    "text": "Nothing changes yet. A production order uses master data that must already exist, and LN fills the BOM, routing and warehouse in from it. The proof at the end is the finished item's on-hand going up, and that needs the figure from before."
+    "text": "Nothing changes yet. A production order takes its BOM, routing and warehouse from the item, so they must exist first. At the end you check that the finished item's on-hand went up, and for that you need the figure from before."
   },
   "blocks": [
     {
@@ -152,10 +115,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " column are two filter boxes; the first, small one is for a project. Type the finished item in the second and press Enter"
+                  "v": " column are two filter boxes. Leave the first, for a project, empty. Type the finished item in the second and press Enter"
                 }
               ],
-              "text": "Above the grid's Item column are two filter boxes; the first, small one is for a project. Type the finished item in the second and press Enter"
+              "text": "Above the grid's Item column are two filter boxes. Leave the first, for a project, empty. Type the finished item in the second and press Enter"
             },
             {
               "tokens": [
@@ -203,7 +166,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens, one row per warehouse — "
+                  "v": " opens, one row for each warehouse — "
                 },
                 {
                   "t": "pencil"
@@ -247,7 +210,7 @@
                   "v": "finished item on-hand before"
                 }
               ],
-              "text": "Warehouse - Item Inventory opens, one row per warehouse — finished item, receiving warehouse, finished item on-hand before"
+              "text": "Warehouse - Item Inventory opens, one row for each warehouse — finished item, receiving warehouse, finished item on-hand before"
             }
           ],
           "id": "3",
@@ -269,10 +232,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Close that tab, untick the row, and do the same for each component"
+                  "v": "Close that tab, untick the row, and do steps 2 and 3 for each component"
                 }
               ],
-              "text": "Close that tab, untick the row, and do the same for each component"
+              "text": "Close that tab, untick the row, and do steps 2 and 3 for each component"
             },
             {
               "tokens": [

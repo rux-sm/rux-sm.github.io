@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="../print.css" media="print">
 <script src="/design/js/custom-themes.js"></script>
 <script src="/design/js/theme.js"></script>
-<style>@page { @bottom-left { content: "Release the order · LN Notes · Updated 25 Oct 2026"; } }</style>
+<style>@page { @bottom-left { content: "Release the order · LN Notes · Updated 2 Nov 2026"; } }</style>
 </head>
 <body>
 <!-- SPRITE:BEGIN -->
@@ -96,7 +96,7 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/create-basic-test-items-and-defaults.html"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-      <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html" aria-current="page"><span class="rux--side-nav__link-text">Production order</span></a></li>
+      <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html" aria-current="page"><span class="rux--side-nav__link-text">Production order from stock</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
@@ -107,7 +107,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="73e801cab9374188dbe6cc2d5e9e2dbcc434c472">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="01e5483f35a26e0fa5ccad0bff880dd86e93bca2">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="full">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -118,27 +118,28 @@
 </div>
 <div class="ln-proc__head">
 <h1 class="rux--type-productive-heading-05">Release the order</h1>
-<p class="rux--type-body-long-01">The order is <strong>Released</strong>, with a warehousing order to issue the materials and one to receive the finished item.</p>
+<p class="rux--type-body-long-01">The order is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span>, and it has two warehousing orders: one to issue the materials, one to receive the finished item.</p>
 </div>
-<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Oct 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>4 steps</dd></div><div><dt>Updated</dt><dd>25 Oct 2026</dd></div></dl>
-<p class="ln-strip">Task 4 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> · next: <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a></p>
+<dl class="ln-proc__facts"><div><dt>Status</dt><dd><span class="ln-status"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-checkmark--outline"/></svg>Walked Nov 2026</span></dd></div><div><dt>Module</dt><dd>Manufacturing, Warehousing</dd></div><div><dt>Length</dt><dd>4 steps</dd></div><div><dt>Updated</dt><dd>2 Nov 2026</dd></div></dl>
+<p class="ln-strip">Task 4 of 6 in <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> · next: <a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue the materials</a></p>
 <p class="ln-go"><a class="rux--btn rux--btn--primary" href="?walk=1">Walk it</a><button type="button" class="rux--btn rux--btn--secondary" data-print>Print</button></p>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="before">Before you start</h2>
-<ul class="ln-proc__list"><li>You need the production order from <a class="rux--link" href="../do/create-the-production-order.html#step-6">step 2.6</a> (Create the production order), still open.</li></ul>
+<ul class="ln-proc__list"><li>You need the production order from <a class="rux--link" href="../do/create-the-production-order.html#step-7">step 2.7</a> (Create the production order), still open.</li></ul>
 </section>
 <section>
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="steps">Steps</h2>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them.</p>
+<dl class="ln-proc__meta"><div><dt>Session</dt><dd><span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Release lets production start. At the same time LN makes two warehousing orders with the production order's number. The issue order moves the materials to the work center. The receipt order brings the finished item into its warehouse. Both wait until you start them.</p>
 
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
 <tbody>
-<tr id="step-1"><td data-k="Step"><b>4.1</b></td><td data-k="Action">On the order's toolbar, click <span class="ln-t-named">Release Order…</span></td><td data-k="You should see"><span class="ln-t-named">Release Production Orders</span> opens for this order</td></tr>
-<tr id="step-2"><td data-k="Step"><b>4.2</b></td><td data-k="Action">Click <span class="ln-t-press">Release</span></td><td data-k="You should see">The dialog closes. <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
-<tr id="step-3"><td data-k="Step"><b>4.3</b></td><td data-k="Action">Open <span class="ln-t-named">Warehousing Orders</span></td><td data-k="You should see"></td></tr>
-<tr id="step-4"><td data-k="Step"><b>4.4</b></td><td data-k="Action">Type the production order number in the filter box above the <span class="ln-t-named">Order</span> column and press Enter</td><td data-k="You should see">Two rows, both <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>: a <span class="ln-t-named">Receipt</span> to the receiving warehouse, and an <span class="ln-t-named">Issue</span> from the component warehouse to a work center</td></tr>
+<tr id="step-1"><td data-k="Step"><b>4.1</b></td><td data-k="Action">On the order's toolbar, click <span class="ln-t-press">Release Order…</span></td><td data-k="You should see"><span class="ln-t-named">Release Production Orders</span> opens for this order</td></tr>
+<tr id="step-2"><td data-k="Step"><b>4.2</b></td><td data-k="Action">Click <span class="ln-t-press">Release</span></td><td data-k="You should see">The dialog closes, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
+<tr id="step-3"><td data-k="Step"><b>4.3</b></td><td data-k="Action">Open <span class="ln-t-named">Warehousing Orders</span></td><td data-k="You should see">The list of warehousing orders</td></tr>
+<tr id="step-4"><td data-k="Step"><b>4.4</b></td><td data-k="Action">Type the production order number from <a class="rux--link" href="../do/create-the-production-order.html#step-7">step 2.7</a> (Create the production order) in the filter box above the <span class="ln-t-named">Order</span> column, and press Enter</td><td data-k="You should see">Two rows, both <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>: a <span class="ln-t-named">Receipt</span> to the receiving warehouse, and an <span class="ln-t-named">Issue</span> from the component warehouse to a work center</td></tr>
 <tr class="ln-proc__shot" hidden><td></td><td colspan="2"><figure class="ln-shot" data-shot="release-the-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 4.4 · Warehousing Orders, the two orders release made</figcaption></figure></td></tr>
 </tbody>
 </table></div>
@@ -150,7 +151,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Symptom">The order doesn't reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td><td data-k="What to do">Read the message. Release may need the documents printed first; see the note</td></tr>
+<tr><td data-k="Symptom">The order doesn't reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td><td data-k="What to do">Read LN's message. Release can wait until the order's documents are printed</td></tr>
 <tr><td data-k="Symptom">No warehousing orders are listed</td><td data-k="What to do">Check the number in the filter, and that the order reads <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></td></tr>
 </tbody>
 </table></div>
@@ -162,13 +163,16 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="3">Sessions used</th></tr><tr><th scope="col" style="width:34%"><span class="rux--table-header-label">Session</span></th><th scope="col" style="width:9rem"><span class="rux--table-header-label">Code</span></th><th scope="col"><span class="rux--table-header-label">How to open it</span></th></tr></thead>
 <tbody>
+<tr><td data-k="Session"><a class="rux--link" href="../screens/tisfc0501m000.html">Production Orders</a></td><td data-k="Code"><span class="ln-t-exact">tisfc0501m000</span></td><td data-k="How to open it"><span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span></td></tr>
 </tbody>
 </table></div>
 </section>
 <section class="ln-proc__related">
 <h2 class="rux--type-productive-heading-04 ln-proc__h2" id="related">Related</h2>
 <ul class="ln-list">
-  <li><b>Next task</b><p><a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue material to the job shop</a> in Production order</p></li>
+  <li><b>Session</b><p><a class="rux--link" href="../screens/tisfc0501m000.html"><span class="ln-t-named">Production Orders</span></a> (<span class="ln-t-exact">tisfc0501m000</span>)<br><span class="ln-quiet">Lists production orders with their item, dates, status, warehouse and main quantities.</span></p></li>
+  <li><b>Ideas</b><p><a class="rux--link" href="../ideas/wip.html">WIP</a></p></li>
+  <li><b>Next task</b><p><a class="rux--link" href="../do/issue-material-to-the-job-shop.html">Issue the materials</a> in Production order from stock</p></li>
 </ul>
 </section>
 <section class="ln-paper-only">
@@ -177,7 +181,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Task</span></th><th scope="col"><span class="rux--table-header-label">Expected result</span></th><th scope="col" style="width:10rem"><span class="rux--table-header-label">Pass or fail</span></th></tr></thead>
 <tbody>
-<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result">The order is <strong>Released</strong>, with a warehousing order to issue the materials and one to receive the finished item</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>4</b></td><td data-k="Expected result">The order is <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span>, and it has two warehousing orders: one to issue the materials, one to receive the finished item</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -197,8 +201,8 @@
 </div>
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16" data-view="guided" hidden>
 <div class="rux--stack-vertical rux--stack-scale-6">
-<section class="ln-guided" data-run="manual-production-order-existing-master-data" data-task="release-the-order" data-title="Release the order" data-process="Production order" data-process-href="../follow/manual-production-order-existing-master-data.html" data-next-href="../do/issue-material-to-the-job-shop.html?walk=1">
-<a class="rux--link ln-back" href="../follow/manual-production-order-existing-master-data.html"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Production order</a>
+<section class="ln-guided" data-run="manual-production-order-existing-master-data" data-task="release-the-order" data-title="Release the order" data-process="Production order from stock" data-process-href="../follow/manual-production-order-existing-master-data.html" data-next-href="../do/issue-material-to-the-job-shop.html?walk=1">
+<a class="rux--link ln-back" href="../follow/manual-production-order-existing-master-data.html"><svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--left"/></svg>Production order from stock</a>
 <div class="rux--progress-bar rux--progress-bar--small">
   <div class="rux--progress-bar__label"><span class="rux--progress-bar__label-text">Release the order</span></div>
   <div class="rux--progress-bar__track"><div class="rux--progress-bar__bar" data-bar></div></div>
@@ -206,18 +210,19 @@
 </div>
 <ol class="ln-steps">
   <li data-k="1" data-ref="1" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">On the order's toolbar, click <span class="ln-t-named">Release Order…</span></h1></div>
+    <div class="ln-step__main"><p class="ln-step__route">This task starts at <span class="ln-t-route"><span class="ln-t-whole">Manufacturing</span><span class="sep">➔</span><span class="ln-t-whole">Job Shop</span><span class="sep">➔</span><span class="dest ln-t-whole">Production Orders</span></span> (<span class="ln-t-exact">tisfc0501m000</span>)</p><h1 class="ln-step__do">On the order's toolbar, click <span class="ln-t-press">Release Order…</span></h1></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p><span class="ln-t-named">Release Production Orders</span> opens for this order</p></div>
   </li>
   <li data-k="2" data-ref="2" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Click <span class="ln-t-press">Release</span></h1></div>
-    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The dialog closes. <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The dialog closes, and <span class="ln-t-named">Order Status</span> = <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></div>
   </li>
   <li data-k="3" data-ref="3" hidden>
     <div class="ln-step__main"><h1 class="ln-step__do">Open <span class="ln-t-named">Warehousing Orders</span></h1></div>
+    <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>The list of warehousing orders</p></div>
   </li>
   <li data-k="4" data-ref="4" hidden>
-    <div class="ln-step__main"><h1 class="ln-step__do">Type the production order number in the filter box above the <span class="ln-t-named">Order</span> column and press Enter</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="create-the-production-order/6/0"><span class="ln-quiet">Production order number · 2.6</span><span data-use-missing><a class="rux--link" href="../do/create-the-production-order.html?walk=6">Write it down at step 2.6</a></span></div></div><figure class="ln-shot" data-shot="release-the-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 4.4 · Warehousing Orders, the two orders release made</figcaption></figure></div>
+    <div class="ln-step__main"><h1 class="ln-step__do">Type the production order number from step 7 of <a class="rux--link" href="../do/create-the-production-order.html">Create the production order</a> in the filter box above the <span class="ln-t-named">Order</span> column, and press Enter</h1><div class="ln-step__uses"><span class="ln-quiet">Your values</span><div class="ln-values__row" data-use="create-the-production-order/7/0"><span class="ln-quiet">Production order number · 2.7</span><span data-use-missing><a class="rux--link" href="../do/create-the-production-order.html?walk=7">Write it down at step 2.7</a></span></div></div><figure class="ln-shot" data-shot="release-the-order.jpg" hidden><img alt="" decoding="async"><figcaption class="ln-quiet">Step 4.4 · Warehousing Orders, the two orders release made</figcaption></figure></div>
     <div class="ln-step__see"><span class="ln-quiet">You should see</span><p>Two rows, both <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Planned</span></span>: a <span class="ln-t-named">Receipt</span> to the receiving warehouse, and an <span class="ln-t-named">Issue</span> from the component warehouse to a work center</p></div>
   </li>
 </ol>
@@ -235,7 +240,7 @@
       <div class="rux--accordion__title">Stuck? · 2</div>
     </button>
     <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><ul class="ln-list">
-  <li><b>The order doesn't reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></b><p>Read the message. Release may need the documents printed first; see the note</p></li>
+  <li><b>The order doesn't reach <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></b><p>Read LN's message. Release can wait until the order's documents are printed</p></li>
   <li><b>No warehousing orders are listed</b><p>Check the number in the filter, and that the order reads <span class="rux--tag rux--tag--teal rux--layout--size-sm"><span class="rux--tag__label">Released</span></span></p></li>
 </ul></div></div>
   </li>
@@ -244,7 +249,7 @@
       <svg class="rux--accordion__arrow" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#i-chevron--right"/></svg>
       <div class="rux--accordion__title">Why LN works this way</div>
     </button>
-    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Release lets production start. At the same moment LN makes two warehousing orders under the production order's number: an issue order to move the materials to the work center, and a receipt order to bring the finished item into its warehouse. Both wait until you start them.</p></div></div>
+    <div class="rux--accordion__wrapper"><div class="rux--accordion__content ln-fold"><p>Release lets production start. At the same time LN makes two warehousing orders with the production order's number. The issue order moves the materials to the work center. The receipt order brings the finished item into its warehouse. Both wait until you start them.</p></div></div>
   </li>
 </ul>
 <div class="ln-step__more"><a class="rux--link" href="?full">Document</a><a class="rux--link" href="#main-content" data-listen>Read it to me</a></div>

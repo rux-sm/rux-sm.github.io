@@ -3,10 +3,10 @@
   "tier": "export",
   "kind": "task",
   "id": "verify-the-generated-foundation",
-  "title": "Verify the generated foundation",
+  "title": "Check the operations and materials",
   "process": {
     "id": "manual-production-order-existing-master-data",
-    "title": "Production order",
+    "title": "Production order from stock",
     "n": 2,
     "of": 6
   },
@@ -23,27 +23,27 @@
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
-  "route": null,
-  "session": null,
-  "sessionCode": null,
-  "walked": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-02",
+  "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
+  "session": "Production Orders",
+  "sessionCode": "tisfc0501m000",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The order's operations and materials are the ones you expect."
+        "v": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect."
       }
     ],
-    "text": "The order's operations and materials are the ones you expect."
+    "text": "The order has the routing's operations and the BOM's materials, each from the warehouse you expect."
   },
   "before": [
     {
       "tokens": [
         {
           "t": "text",
-          "v": "You need the production order from step 6 of "
+          "v": "You need the production order from step 7 of "
         },
         {
           "t": "link",
@@ -55,17 +55,17 @@
           "v": ", still open."
         }
       ],
-      "text": "You need the production order from step 6 of Create the production order, still open."
+      "text": "You need the production order from step 7 of Create the production order, still open."
     }
   ],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order."
+        "v": "When you saved, LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. If an operation or a material is missing, stop. Don't fix it in the order."
       }
     ],
-    "text": "On save LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. A missing operation or material here is a reason to stop, not something to fix in the order."
+    "text": "When you saved, LN copied the routing's operations and the BOM's materials onto the order, scaled to its quantity. If an operation or a material is missing, stop. Don't fix it in the order."
   },
   "blocks": [
     {
@@ -184,10 +184,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The component warehouse"
+                  "v": "The component warehouse from step 4 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Read the items and their stock",
+                  "href": "confirm-the-existing-foundation.md"
                 }
               ],
-              "text": "The component warehouse"
+              "text": "The component warehouse from step 4 of Read the items and their stock"
             }
           ],
           "id": "3",
@@ -229,6 +234,14 @@
             {
               "tokens": [
                 {
+                  "t": "field",
+                  "v": "Order Status"
+                },
+                {
+                  "t": "text",
+                  "v": " = "
+                },
+                {
                   "t": "status",
                   "v": "Created"
                 },
@@ -237,7 +250,7 @@
                   "v": ". Nothing is released or issued yet"
                 }
               ],
-              "text": "Created. Nothing is released or issued yet"
+              "text": "Order Status = Created. Nothing is released or issued yet"
             }
           ],
           "id": "4",
@@ -249,72 +262,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Operations"
-              }
-            ],
-            "text": "Operations"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "One: operation 10, Cutting - shear"
-              }
-            ],
-            "text": "One: operation 10, Cutting - shear"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Materials"
-              }
-            ],
-            "text": "Materials"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "2 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-ROD"
-              },
-              {
-                "t": "text",
-                "v": " and 1 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-SLEEVE"
-              },
-              {
-                "t": "text",
-                "v": " for one pair"
-              }
-            ],
-            "text": "2 BAM-ROD and 1 BAM-SLEEVE for one pair"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "2",
@@ -384,42 +333,7 @@
   },
   "variants": {
     "kind": "variants",
-    "columns": [
-      "Variant",
-      "What changes"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "chip",
-                "v": "More than one operation"
-              }
-            ],
-            "text": "More than one operation"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Each one is reported in "
-              },
-              {
-                "t": "link",
-                "v": "Report the operation complete and confirm warehouse receipt",
-                "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
-              },
-              {
-                "t": "text",
-                "v": ", in sequence"
-              }
-            ],
-            "text": "Each one is reported in Report the operation complete and confirm warehouse receipt, in sequence"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   }
 }

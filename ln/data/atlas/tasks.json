@@ -3112,7 +3112,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -3120,7 +3120,7 @@
                   "v": " phases 1, 2, 3"
                 }
               ],
-              "text": "Opens — Production order phases 1, 2, 3"
+              "text": "Opens — Production order from stock phases 1, 2, 3"
             },
             {
               "tokens": [
@@ -3242,7 +3242,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -3250,7 +3250,7 @@
                   "v": " phases 4, 5"
                 }
               ],
-              "text": "Opens — Production order phases 4, 5"
+              "text": "Opens — Production order from stock phases 4, 5"
             },
             {
               "tokens": [

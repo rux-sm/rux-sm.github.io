@@ -369,15 +369,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Issue the materials. Follow steps 2–9 of "
+                  "v": "Issue the materials. Follow steps 2–11 of "
                 },
                 {
                   "t": "link",
-                  "v": "Issue material to the job shop",
+                  "v": "Issue the materials",
                   "href": "issue-material-to-the-job-shop.md"
                 }
               ],
-              "text": "Issue the materials. Follow steps 2–9 of Issue material to the job shop"
+              "text": "Issue the materials. Follow steps 2–11 of Issue the materials"
             },
             {
               "tokens": [

@@ -32,10 +32,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The family is qualified to start Production order."
+        "v": "The family is qualified to start Production order from stock."
       }
     ],
-    "text": "The family is qualified to start Production order."
+    "text": "The family is qualified to start Production order from stock."
   },
   "before": [
     {
@@ -115,19 +115,19 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Nothing new. This task checks the family against what Production order's "
+        "v": "Nothing new. This task checks the family against what Production order from stock's "
       },
       {
         "t": "link",
-        "v": "Confirm the existing foundation",
+        "v": "Read the items and their stock",
         "href": "confirm-the-existing-foundation.md"
       },
       {
         "t": "text",
-        "v": " asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order."
+        "v": " asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order from stock."
       }
     ],
-    "text": "Nothing new. This task checks the family against what Production order's Confirm the existing foundation asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order."
+    "text": "Nothing new. This task checks the family against what Production order from stock's Read the items and their stock asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order from stock."
   },
   "blocks": [
     {
@@ -139,7 +139,7 @@
         },
         {
           "t": "link",
-          "v": "Production order",
+          "v": "Production order from stock",
           "href": "manual-production-order-existing-master-data.md"
         },
         {
@@ -148,7 +148,7 @@
         },
         {
           "t": "link",
-          "v": "Confirm the existing foundation",
+          "v": "Read the items and their stock",
           "href": "confirm-the-existing-foundation.md"
         },
         {
@@ -156,7 +156,7 @@
           "v": ", and hands over."
         }
       ],
-      "text": "This task creates nothing. It checks the family against what Production order asks for in its Confirm the existing foundation, and hands over."
+      "text": "This task creates nothing. It checks the family against what Production order from stock asks for in its Read the items and their stock, and hands over."
     },
     {
       "kind": "steps",
@@ -575,11 +575,11 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 }
               ],
-              "text": "Take the values from steps 1–10 to Production order"
+              "text": "Take the values from steps 1–10 to Production order from stock"
             },
             {
               "tokens": [
@@ -614,7 +614,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -622,7 +622,7 @@
                   "v": " with them"
                 }
               ],
-              "text": "Run Production order with them"
+              "text": "Run Production order from stock with them"
             },
             {
               "tokens": [
@@ -729,7 +729,7 @@
               },
               {
                 "t": "link",
-                "v": "Report the operation complete and confirm warehouse receipt",
+                "v": "Report the order complete and check the stock",
                 "href": "report-the-operation-complete-and-confirm-warehouse-receipt.md"
               },
               {
@@ -737,7 +737,7 @@
                 "v": " reports against"
               }
             ],
-            "text": "Recheck Build the job shop routing — an approved routing with at least one operation is what Report the operation complete and confirm warehouse receipt reports against"
+            "text": "Recheck Build the job shop routing — an approved routing with at least one operation is what Report the order complete and check the stock reports against"
           }
         ]
       }

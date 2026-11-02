@@ -3806,7 +3806,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -3814,7 +3814,7 @@
                   "v": " 4.2–4.7"
                 }
               ],
-              "text": "Walkthrough — 5.4 · owned by Production order 4.2–4.7"
+              "text": "Walkthrough — 5.4 · owned by Production order from stock 4.2–4.7"
             }
           ]
         },
@@ -8901,7 +8901,7 @@
             },
             {
               "t": "link",
-              "v": "Production order",
+              "v": "Production order from stock",
               "href": "manual-production-order-existing-master-data.md"
             },
             {
@@ -8909,7 +8909,7 @@
               "v": " 4.2–4.7"
             }
           ],
-          "text": "5.4 · owned by Production order 4.2–4.7"
+          "text": "5.4 · owned by Production order from stock 4.2–4.7"
         },
         "do": {
           "tokens": [

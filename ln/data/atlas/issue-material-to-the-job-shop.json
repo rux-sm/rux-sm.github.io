@@ -3,10 +3,10 @@
   "tier": "export",
   "kind": "task",
   "id": "issue-material-to-the-job-shop",
-  "title": "Issue material to the job shop",
+  "title": "Issue the materials",
   "process": {
     "id": "manual-production-order-existing-master-data",
-    "title": "Production order",
+    "title": "Production order from stock",
     "n": 4,
     "of": 6
   },
@@ -16,19 +16,19 @@
   },
   "next": {
     "id": "report-the-operation-complete-and-confirm-warehouse-receipt",
-    "title": "Report the operation complete and confirm warehouse receipt"
+    "title": "Report the order complete and check the stock"
   },
   "module": "Manufacturing · Warehousing",
   "modules": [
     "Manufacturing",
     "Warehousing"
   ],
-  "status": "draft",
-  "updated": "2026-10-25",
+  "status": "review",
+  "updated": "2026-11-02",
   "route": "Manufacturing ➔ Job Shop ➔ Production Orders",
   "session": "Production Orders",
   "sessionCode": "tisfc0501m000",
-  "walked": "2026-10-25",
+  "walked": "2026-11-02",
   "achieves": {
     "tokens": [
       {
@@ -36,7 +36,7 @@
         "v": "The materials are shipped to the work center, and the order is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Active"
       },
       {
@@ -70,18 +70,18 @@
     "tokens": [
       {
         "t": "text",
-        "v": "The issue order waits until you start the issue. Starting it opens the issue order's lines, and shipping them takes the materials out of their warehouse. The first material shipped makes the order "
+        "v": "The issue order waits until you start the issue. Starting it opens the issue order's lines. Shipping them takes the materials out of their warehouse. The first material shipped makes the order "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Active"
       },
       {
         "t": "text",
-        "v": "; release alone doesn't."
+        "v": ". Release alone doesn't."
       }
     ],
-    "text": "The issue order waits until you start the issue. Starting it opens the issue order's lines, and shipping them takes the materials out of their warehouse. The first material shipped makes the order Active; release alone doesn't."
+    "text": "The issue order waits until you start the issue. Starting it opens the issue order's lines. Shipping them takes the materials out of their warehouse. The first material shipped makes the order Active. Release alone doesn't."
   },
   "blocks": [
     {
@@ -107,7 +107,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Open "
+                  "v": "On "
                 },
                 {
                   "t": "chip",
@@ -115,19 +115,36 @@
                 },
                 {
                   "t": "text",
-                  "v": " and tick the order"
+                  "v": ", filter "
+                },
+                {
+                  "t": "field",
+                  "v": "Production Order"
+                },
+                {
+                  "t": "text",
+                  "v": " on the order number from step 7 of "
+                },
+                {
+                  "t": "link",
+                  "v": "Create the production order",
+                  "href": "create-the-production-order.md"
+                },
+                {
+                  "t": "text",
+                  "v": ", and tick its row"
                 }
               ],
-              "text": "Open Production Orders and tick the order"
+              "text": "On Production Orders, filter Production Order on the order number from step 7 of Create the production order, and tick its row"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "—"
+                  "v": "Your order's row, ticked"
                 }
               ],
-              "text": "—"
+              "text": "Your order's row, ticked"
             }
           ],
           "id": "1",
@@ -136,7 +153,7 @@
           "uses": [
             {
               "task": "create-the-production-order",
-              "step": "6",
+              "step": "7",
               "n": 0,
               "label": "production order number"
             }
@@ -207,10 +224,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", pick a day after the order's production start with the calendar"
+                  "v": ", use the calendar to pick the day after the production start"
                 }
               ],
-              "text": "In To Date/Time, pick a day after the order's production start with the calendar"
+              "text": "In To Date/Time, use the calendar to pick the day after the production start"
             },
             {
               "tokens": [
@@ -224,10 +241,7 @@
           ],
           "id": "3",
           "optional": false,
-          "produces": false,
-          "example": [
-            0
-          ]
+          "produces": false
         },
         {
           "cells": [
@@ -249,30 +263,22 @@
                 {
                   "t": "button",
                   "label": "Initiate"
-                },
-                {
-                  "t": "text",
-                  "v": ", then "
-                },
-                {
-                  "t": "button",
-                  "label": "Continue"
                 }
               ],
-              "text": "Click Initiate, then Continue"
+              "text": "Click Initiate"
             },
             {
               "tokens": [
                 {
-                  "t": "field",
-                  "v": "Process completed."
+                  "t": "chip",
+                  "v": "Select Device"
                 },
                 {
                   "t": "text",
-                  "v": " in the status bar. The dialog stays open"
+                  "v": " opens, for a messages report"
                 }
               ],
-              "text": "Process completed. in the status bar. The dialog stays open"
+              "text": "Select Device opens, for a messages report"
             }
           ],
           "id": "4",
@@ -298,43 +304,23 @@
                 },
                 {
                   "t": "button",
-                  "label": "Close"
-                },
-                {
-                  "t": "text",
-                  "v": ", and on "
-                },
-                {
-                  "t": "chip",
-                  "v": "Production Orders"
-                },
-                {
-                  "t": "text",
-                  "v": " choose "
-                },
-                {
-                  "t": "command",
-                  "route": "Actions ➔ Materials ➔ Material to Issue for Production Orders"
+                  "label": "Continue"
                 }
               ],
-              "text": "Click Close, and on Production Orders choose Actions ➔ Materials ➔ Material to Issue for Production Orders"
+              "text": "Click Continue"
             },
             {
               "tokens": [
                 {
-                  "t": "text",
-                  "v": "One line per component. "
-                },
-                {
-                  "t": "field",
-                  "v": "To Issue by Warehouse"
+                  "t": "literal",
+                  "v": "Process completed."
                 },
                 {
                   "t": "text",
-                  "v": " = its estimated quantity"
+                  "v": " in the status bar. The dialog stays open"
                 }
               ],
-              "text": "One line per component. To Issue by Warehouse = its estimated quantity"
+              "text": "Process completed. in the status bar. The dialog stays open"
             }
           ],
           "id": "5",
@@ -351,6 +337,94 @@
                 }
               ],
               "text": "6"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Click "
+                },
+                {
+                  "t": "button",
+                  "label": "Close"
+                }
+              ],
+              "text": "Click Close"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "chip",
+                  "v": "Production Orders"
+                },
+                {
+                  "t": "text",
+                  "v": ", with the order still ticked"
+                }
+              ],
+              "text": "Production Orders, with the order still ticked"
+            }
+          ],
+          "id": "6",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "7"
+                }
+              ],
+              "text": "7"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "Choose "
+                },
+                {
+                  "t": "command",
+                  "route": "Actions ➔ Materials ➔ Material to Issue for Production Orders"
+                }
+              ],
+              "text": "Choose Actions ➔ Materials ➔ Material to Issue for Production Orders"
+            },
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "One line for each component. "
+                },
+                {
+                  "t": "field",
+                  "v": "To Issue by Warehouse"
+                },
+                {
+                  "t": "text",
+                  "v": " = its estimated quantity"
+                }
+              ],
+              "text": "One line for each component. To Issue by Warehouse = its estimated quantity"
+            }
+          ],
+          "id": "7",
+          "optional": false,
+          "produces": false
+        },
+        {
+          "cells": [
+            {
+              "tokens": [
+                {
+                  "t": "text",
+                  "v": "8"
+                }
+              ],
+              "text": "8"
             },
             {
               "tokens": [
@@ -373,17 +447,17 @@
                 },
                 {
                   "t": "text",
-                  "v": ". The issue order reads "
+                  "v": " opens. The issue order is "
                 },
                 {
                   "t": "status",
                   "v": "Open"
                 }
               ],
-              "text": "Warehousing Orders. The issue order reads Open"
+              "text": "Warehousing Orders opens. The issue order is Open"
             }
           ],
-          "id": "6",
+          "id": "8",
           "optional": false,
           "produces": false
         },
@@ -393,10 +467,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "7"
+                  "v": "9"
                 }
               ],
-              "text": "7"
+              "text": "9"
             },
             {
               "tokens": [
@@ -420,17 +494,17 @@
                 },
                 {
                   "t": "text",
-                  "v": ", with one outbound line per component, each "
+                  "v": " opens, with one outbound line for each component, each "
                 },
                 {
                   "t": "status",
                   "v": "Open"
                 }
               ],
-              "text": "Warehousing Order, with one outbound line per component, each Open"
+              "text": "Warehousing Order opens, with one outbound line for each component, each Open"
             }
           ],
-          "id": "7",
+          "id": "9",
           "optional": false,
           "produces": false
         },
@@ -440,10 +514,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "8"
+                  "v": "10"
                 }
               ],
-              "text": "8"
+              "text": "10"
             },
             {
               "tokens": [
@@ -470,17 +544,17 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each line reads "
+                  "v": "Each line is "
                 },
                 {
                   "t": "status",
                   "v": "Advised"
                 }
               ],
-              "text": "Each line reads Advised"
+              "text": "Each line is Advised"
             }
           ],
-          "id": "8",
+          "id": "10",
           "optional": false,
           "produces": false
         },
@@ -490,10 +564,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "9"
+                  "v": "11"
                 }
               ],
-              "text": "9"
+              "text": "11"
             },
             {
               "tokens": [
@@ -512,17 +586,17 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Each line, and the order, reads "
+                  "v": "Each line, and the order, is "
                 },
                 {
                   "t": "status",
                   "v": "Shipped"
                 }
               ],
-              "text": "Each line, and the order, reads Shipped"
+              "text": "Each line, and the order, is Shipped"
             }
           ],
-          "id": "9",
+          "id": "11",
           "optional": false,
           "produces": false
         },
@@ -532,10 +606,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "10"
+                  "v": "12"
                 }
               ],
-              "text": "10"
+              "text": "12"
             },
             {
               "tokens": [
@@ -566,7 +640,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " = the estimated quantity, "
+                  "v": " = the estimated quantity, and "
                 },
                 {
                   "t": "field",
@@ -574,17 +648,17 @@
                 },
                 {
                   "t": "text",
-                  "v": " = 0. The order reads "
+                  "v": " = 0. The order is "
                 },
                 {
                   "t": "status",
                   "v": "Active"
                 }
               ],
-              "text": "Actual Quantity = the estimated quantity, To Issue by Warehouse = 0. The order reads Active"
+              "text": "Actual Quantity = the estimated quantity, and To Issue by Warehouse = 0. The order is Active"
             }
           ],
-          "id": "10",
+          "id": "12",
           "optional": false,
           "produces": false
         }
@@ -593,68 +667,8 @@
   ],
   "example": {
     "kind": "example",
-    "columns": [
-      "What",
-      "Value"
-    ],
-    "rows": [
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "field",
-                "v": "To Date/Time"
-              }
-            ],
-            "text": "To Date/Time"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "The day after the production start"
-              }
-            ],
-            "text": "The day after the production start"
-          }
-        ]
-      },
-      {
-        "cells": [
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "Materials shipped"
-              }
-            ],
-            "text": "Materials shipped"
-          },
-          {
-            "tokens": [
-              {
-                "t": "text",
-                "v": "2 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-ROD"
-              },
-              {
-                "t": "text",
-                "v": " and 1 "
-              },
-              {
-                "t": "literal",
-                "v": "BAM-SLEEVE"
-              }
-            ],
-            "text": "2 BAM-ROD and 1 BAM-SLEEVE"
-          }
-        ]
-      }
-    ]
+    "columns": [],
+    "rows": []
   },
   "screenshot": {
     "step": "2",
@@ -678,10 +692,10 @@
               },
               {
                 "t": "text",
-                "v": " stays 0 after step 4"
+                "v": " stays 0 at step 7"
               }
             ],
-            "text": "To Issue by Warehouse stays 0 after step 4"
+            "text": "To Issue by Warehouse stays 0 at step 7"
           },
           {
             "tokens": [
@@ -691,10 +705,10 @@
               },
               {
                 "t": "text",
-                "v": " may be before the materials are due. Run step 2 again with a later date"
+                "v": " may be before the materials are due. Do steps 2 to 6 again with a later date"
               }
             ],
-            "text": "To Date/Time may be before the materials are due. Run step 2 again with a later date"
+            "text": "To Date/Time may be before the materials are due. Do steps 2 to 6 again with a later date"
           }
         ]
       },
@@ -721,10 +735,10 @@
               },
               {
                 "t": "text",
-                "v": "; restock it, then go on from step 6"
+                "v": "; restock it, then go on from step 8"
               }
             ],
-            "text": "A component is short and negative stock isn't allowed. The quantity waits in To Issue by Warehouse; restock it, then go on from step 6"
+            "text": "A component is short and negative stock isn't allowed. The quantity waits in To Issue by Warehouse; restock it, then go on from step 8"
           }
         ]
       },
@@ -780,19 +794,31 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Lines are already Advised or Shipped"
+                "v": "The lines are already "
+              },
+              {
+                "t": "status",
+                "v": "Advised"
+              },
+              {
+                "t": "text",
+                "v": " or "
+              },
+              {
+                "t": "status",
+                "v": "Shipped"
               }
             ],
-            "text": "Lines are already Advised or Shipped"
+            "text": "The lines are already Advised or Shipped"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "The material is set to process by itself. Go on to step 10"
+                "v": "The material is set to process by itself. Go on to step 12"
               }
             ],
-            "text": "The material is set to process by itself. Go on to step 10"
+            "text": "The material is set to process by itself. Go on to step 12"
           }
         ]
       }

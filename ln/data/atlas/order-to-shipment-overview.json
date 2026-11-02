@@ -2245,7 +2245,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -2253,7 +2253,7 @@
                   "v": " phases 1, 2, 3, 4, 5"
                 }
               ],
-              "text": "Opens — Plan to shipment phase 5; Production order phases 1, 2, 3, 4, 5"
+              "text": "Opens — Plan to shipment phase 5; Production order from stock phases 1, 2, 3, 4, 5"
             }
           ]
         },
@@ -2566,7 +2566,7 @@
                 },
                 {
                   "t": "link",
-                  "v": "Production order",
+                  "v": "Production order from stock",
                   "href": "manual-production-order-existing-master-data.md"
                 },
                 {
@@ -2592,7 +2592,7 @@
                   "v": " phases 0, 6"
                 }
               ],
-              "text": "Opens — Check an item's inventory phases 0, 1; Ship from stock phases 0, 6; Plan to shipment phase 0; Production order phase 0; Purchase to receipt phases 0, 5; Warehouse transfer phases 0, 6"
+              "text": "Opens — Check an item's inventory phases 0, 1; Ship from stock phases 0, 6; Plan to shipment phase 0; Production order from stock phase 0; Purchase to receipt phases 0, 5; Warehouse transfer phases 0, 6"
             }
           ]
         },

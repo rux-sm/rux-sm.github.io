@@ -97,7 +97,7 @@
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/purchase-order-to-warehouse-receipt.html"><span class="rux--side-nav__link-text">Purchase to receipt</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/transfer-item-between-warehouses.html"><span class="rux--side-nav__link-text">Warehouse transfer</span></a></li>
       <li class="rux--side-nav__item rux--side-nav__item--active"><a class="rux--side-nav__link" href="../follow/create-basic-test-items-and-defaults.html" aria-current="page"><span class="rux--side-nav__link-text">Create test items</span></a></li>
-      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order</span></a></li>
+      <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/manual-production-order-existing-master-data.html"><span class="rux--side-nav__link-text">Production order from stock</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/run-order-planning-for-one-item.html"><span class="rux--side-nav__link-text">Run order planning</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/demand-to-shipment-via-planning.html"><span class="rux--side-nav__link-text">Plan to shipment</span></a></li>
       <li class="rux--side-nav__item"><a class="rux--side-nav__link" href="../follow/set-up-a-genai-prompt.html"><span class="rux--side-nav__link-text">Set up a GenAI prompt</span></a></li>
@@ -108,7 +108,7 @@
   </nav>
 </header>
 
-<main id="main-content" class="rux--content ln-pages" data-ln-commit="73e801cab9374188dbe6cc2d5e9e2dbcc434c472">
+<main id="main-content" class="rux--content ln-pages" data-ln-commit="01e5483f35a26e0fa5ccad0bff880dd86e93bca2">
 <div class="rux--css-grid">
 <div class="rux--css-grid-column rux--sm:col-span-4 rux--md:col-span-8 rux--lg:col-span-16">
 <div class="rux--stack-vertical rux--stack-scale-6">
@@ -139,7 +139,7 @@
 <tr><td data-k="Task"><b>8</b></td><td data-k="What you do"><a class="rux--link" href="#task-8">Build the job shop routing</a></td><td data-k="Result">The pair has an Approved routing with an operation at a work center</td><td data-k="Steps">21</td></tr>
 <tr><td data-k="Task"><b>9</b></td><td data-k="What you do"><a class="rux--link" href="#task-9">Confirm costing data</a></td><td data-k="Result">Every item in the family carries the standard cost the estimate calculation reads</td><td data-k="Steps">6</td></tr>
 <tr><td data-k="Task"><b>10</b></td><td data-k="What you do"><a class="rux--link" href="#task-10">Stock the components</a></td><td data-k="Result">The rod and sleeve are on hand at the raw-material warehouse</td><td data-k="Steps">12</td></tr>
-<tr><td data-k="Task"><b>11</b></td><td data-k="What you do"><a class="rux--link" href="#task-11">Qualify the training case</a></td><td data-k="Result">The family is qualified to start Production order</td><td data-k="Steps">12</td></tr>
+<tr><td data-k="Task"><b>11</b></td><td data-k="What you do"><a class="rux--link" href="#task-11">Qualify the training case</a></td><td data-k="Result">The family is qualified to start Production order from stock</td><td data-k="Steps">12</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -510,9 +510,9 @@
 </section>
 <section class="ln-proc__task" id="task-11">
 <h3 class="ln-proc__task-title"><span class="ln-proc__n">11</span><a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a></h3>
-<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The family is qualified to start Production order.</dd></div></dl>
-<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. This task checks the family against what Production order's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order.</p>
-<p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Confirm the existing foundation</a>, and hands over.</p>
+<dl class="ln-proc__meta"><div><dt>Result</dt><dd>The family is qualified to start Production order from stock.</dd></div></dl>
+<p class="ln-proc__lead"><strong>Why LN works this way.</strong> Nothing new. This task checks the family against what Production order from stock's <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a> asks for and hands the values over. The boundary is here because a fact lives in one file, and the order itself belongs to Production order from stock.</p>
+<p>This task creates nothing. It checks the family against what <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> asks for in its <a class="rux--link" href="../do/confirm-the-existing-foundation.html">Read the items and their stock</a>, and hands over.</p>
 <div class="rux--data-table-container ln-proc__table ln-proc__steps">
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:4rem"><span class="rux--table-header-label">Step</span></th><th scope="col"><span class="rux--table-header-label">Action</span></th><th scope="col" style="width:40%"><span class="rux--table-header-label">You should see</span></th></tr></thead>
@@ -527,8 +527,8 @@
 <tr id="step-11-8"><td data-k="Step"><b>11.8</b></td><td data-k="Action">Confirm both components are on hand at the raw-material warehouse. It is the one from <a class="rux--link" href="#step-10-12">step 10.12</a></td><td data-k="You should see">There is material to issue</td></tr>
 <tr id="step-11-9"><td data-k="Step"><b>11.9</b></td><td data-k="Action">Confirm the pair should be received into the finished-item warehouse. It is the one from <a class="rux--link" href="#step-1-6">step 1.6</a></td><td data-k="You should see">The receiving warehouse is a decision, not a discovery made mid-order</td></tr>
 <tr id="step-11-10"><td data-k="Step"><b>11.10</b></td><td data-k="Action">Confirm the costing figures from <a class="rux--link" href="#step-9-2">steps 9.2–9.4</a> are still present</td><td data-k="You should see">The estimate calculation has what it reads</td></tr>
-<tr id="step-11-11"><td data-k="Step"><b>11.11</b></td><td data-k="Action">Take the values from <a class="rux--link" href="#step-11-1">steps 11.1–11.10</a> to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></td><td data-k="You should see"></td></tr>
-<tr id="step-11-12"><td data-k="Step"><b>11.12</b></td><td data-k="Action">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a> with them</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training case qualified</span><span class="ln-proc__write-line"></span></span></span></td></tr>
+<tr id="step-11-11"><td data-k="Step"><b>11.11</b></td><td data-k="Action">Take the values from <a class="rux--link" href="#step-11-1">steps 11.1–11.10</a> to <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a></td><td data-k="You should see"></td></tr>
+<tr id="step-11-12"><td data-k="Step"><b>11.12</b></td><td data-k="Action">Run <a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a> with them</td><td data-k="You should see"><span class="ln-proc__writes"><span class="ln-proc__writes-k">Write down</span><span class="ln-proc__write"><span class="ln-proc__write-label">training case qualified</span><span class="ln-proc__write-line"></span></span></span></td></tr>
 </tbody>
 </table></div>
 
@@ -537,7 +537,7 @@
 <thead><tr class="ln-proc__table-title"><th scope="colgroup" colspan="2">Qualify the training case: if something goes wrong</th></tr><tr><th scope="col" style="width:36%"><span class="rux--table-header-label">Symptom</span></th><th scope="col"><span class="rux--table-header-label">What to do</span></th></tr></thead>
 <tbody>
 <tr><td data-k="Symptom">The production order opens with no BOM or routing</td><td data-k="What to do">Compare the order's reference date with the effective dates from <a class="rux--link" href="#step-7-7">step 7.7</a> and <a class="rux--link" href="#step-8-7">step 8.7</a>. A revision effective after the reference date is not selected</td></tr>
-<tr><td data-k="Symptom">The production order has no operation to report complete</td><td data-k="What to do">Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the operation complete and confirm warehouse receipt</a> reports against</td></tr>
+<tr><td data-k="Symptom">The production order has no operation to report complete</td><td data-k="What to do">Recheck <a class="rux--link" href="../do/build-the-job-shop-routing.html">Build the job shop routing</a> — an approved routing with at least one operation is what <a class="rux--link" href="../do/report-the-operation-complete-and-confirm-warehouse-receipt.html">Report the order complete and check the stock</a> reports against</td></tr>
 </tbody>
 </table></div>
 </section>
@@ -563,7 +563,7 @@
 <table class="rux--data-table rux--data-table--sm rux--data-table--static rux--data-table--top-aligned-body">
 <thead><tr><th scope="col" style="width:28%"><span class="rux--table-header-label">When</span></th><th scope="col"><span class="rux--table-header-label">Then</span></th><th scope="col" style="width:24%"><span class="rux--table-header-label">Start at</span></th></tr></thead>
 <tbody>
-<tr><td data-k="When">The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand</td><td data-k="Then"><a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order</a></td><td data-k="Start at"><a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>, using the handoff table in <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a></td></tr>
+<tr><td data-k="When">The bamboo family is qualified — items, site rows, an approved BOM and routing, costing, and component stock on hand</td><td data-k="Then"><a class="rux--link" href="../follow/manual-production-order-existing-master-data.html">Production order from stock</a></td><td data-k="Start at"><a class="rux--link" href="../do/confirm-the-test-design.html">Confirm the test design</a>, using the handoff table in <a class="rux--link" href="../do/qualify-the-training-case.html">Qualify the training case</a></td></tr>
 </tbody>
 </table></div>
 </section>
@@ -619,7 +619,7 @@
 <tr><td data-k="Task"><b>8</b></td><td data-k="Expected result">The pair has an Approved routing with an operation at a work center</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 <tr><td data-k="Task"><b>9</b></td><td data-k="Expected result">Every item in the family carries the standard cost the estimate calculation reads</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 <tr><td data-k="Task"><b>10</b></td><td data-k="Expected result">The rod and sleeve are on hand at the raw-material warehouse</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
-<tr><td data-k="Task"><b>11</b></td><td data-k="Expected result">The family is qualified to start Production order</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
+<tr><td data-k="Task"><b>11</b></td><td data-k="Expected result">The family is qualified to start Production order from stock</td><td data-k="Pass or fail"><span class="ln-tick"></span>Pass <span class="ln-tick"></span>Fail</td></tr>
 </tbody>
 </table></div>
 </section>

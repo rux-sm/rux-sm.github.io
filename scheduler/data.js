@@ -108,17 +108,13 @@
   const statusEl = document.getElementById('scheduler-status');
   // `rangeEl` is the calendar's button, and `rangeTextEl` the hidden span
   // inside it that `setRange` writes with the week in view, because
-  // textContent on the button would delete its glyph. The month's and the
-  // year's buttons beside it carry the spans it writes their names in.
+  // textContent on the button would delete its glyph. The month's button
+  // beside it carries the spans it writes the month and year in.
   const rangeEl = document.getElementById('scheduler-range');
   const rangeTextEl = document.getElementById('scheduler-range-text') || rangeEl;
   const monthBtn = document.getElementById('scheduler-month');
   const monthLongEl = document.getElementById('scheduler-month-long');
   const monthShortEl = document.getElementById('scheduler-month-short');
-  const yearBtn = document.getElementById('scheduler-year');
-  const yearTextEl = document.getElementById('scheduler-year-text');
-  // The year inside the month's button, which a phone's shows in the year button's place.
-  const monthYearEl = document.getElementById('scheduler-month-year');
   // The day the month and year are named from, the middle one in view.
   let viewDay = null;
   // The arrows either side of Today.
@@ -793,10 +789,8 @@
        most of the days seen are in, since a week that starts the month can
        begin a day or two before it. */
     viewDay = addDays(weekStart, Math.floor((Math.min(daysBetween(weekStart, weekEnd) + 1, daysSeen()) - 1) / 2));
-    setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long' }));
-    setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short' }));
-    setText(yearTextEl, String(viewDay.getFullYear()));
-    setText(monthYearEl, String(viewDay.getFullYear()));
+    setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }));
+    setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short', year: 'numeric' }));
     drawWeekStrip();
     // The calendar marks the days in view from the first.
     const picker = document.getElementById('scheduler-week-picker');
@@ -18920,15 +18914,15 @@
       if (day) goToWeekOf(parseISO(day));
     });
 
-    /* THE MONTH AND THE YEAR, each a list beside the calendar. A month moves
-       to the week holding its first day in the year in view, and a year to
-       the month in view in that year, so the board starts on the week's first
-       day as the arrows leave it; the day header names the month's first day.
-       The years run from the first the scheduler holds trips in to next
-       year. */
+    /* THE MONTH, one list beside the calendar of every month of every year
+       held, each with its year in the item's shortcut column so the years
+       stand in a line. A pick moves to the week holding the month's first
+       day, so the board starts on the week's first day as the arrows leave
+       it; the day header names the month's first day. The years run from
+       the first the scheduler holds trips in to next year, and an item's
+       value counts months, so it finds its day alone. */
     const monthMenu = document.getElementById('scheduler-month-menu');
-    const yearMenu = document.getElementById('scheduler-year-menu');
-    const choice = (label, value, on) => {
+    const choice = (month, year, value, on) => {
       const item = el('li', 'rux--menu-item');
       item.setAttribute('role', 'menuitemradio');
       item.setAttribute('aria-checked', String(on));
@@ -18936,30 +18930,20 @@
       item.dataset.value = String(value);
       const slot = el('div', 'rux--menu-item__selection-icon');
       if (on) slot.appendChild(svgUse('#m-check', '16', '0 0 20 20'));
-      item.append(slot, el('div', 'rux--menu-item__label', label));
+      item.append(slot, el('div', 'rux--menu-item__label', month), el('div', 'rux--menu-item__shortcut', String(year)));
       return item;
     };
-    const yearsHeld = () => {
-      const now = new Date().getFullYear(), at = viewDay.getFullYear();
-      const years = [];
-      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) years.push(y);
-      return years;
-    };
-    /* A month is its year's twelve, or on a compact board, whose month's
-       button stands in for the year's too, every month of every year held,
-       each named with its year. Its value counts months, so one list of
-       either kind finds its day. */
     const months = () => {
-      const compact = pageEl?.getAttribute('data-board') === 'compact';
-      const name = compact ? { month: 'long', year: 'numeric' } : { month: 'long' };
-      return (compact ? yearsHeld() : [viewDay.getFullYear()]).flatMap(y => Array.from({ length: 12 }, (_, m) =>
-        choice(new Date(y, m, 1).toLocaleDateString(undefined, name), y * 12 + m, y === viewDay.getFullYear() && m === viewDay.getMonth())));
+      const now = new Date().getFullYear(), at = viewDay.getFullYear();
+      const items = [];
+      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) {
+        for (let m = 0; m < 12; m++) {
+          items.push(choice(new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long' }), y, y * 12 + m, y === at && m === viewDay.getMonth()));
+        }
+      }
+      return items;
     };
-    const lists = [
-      [monthBtn, monthMenu, months, v => new Date(Math.floor(v / 12), v % 12, 1)],
-      [yearBtn, yearMenu, () => yearsHeld().map(y => choice(String(y), y, y === viewDay.getFullYear())),
-        y => new Date(y, viewDay.getMonth(), 1)],
-    ];
+    const lists = [[monthBtn, monthMenu, months, v => new Date(Math.floor(v / 12), v % 12, 1)]];
     for (const [btn, menu, items, dayOf] of lists) {
       if (!btn || !menu) continue;
       btn.addEventListener('click', () => {
@@ -18970,7 +18954,7 @@
         const r = btn.getBoundingClientRect();
         popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn);
         btn.setAttribute('aria-expanded', 'true');
-        /* A list that scrolls opens on the month or year in view, the list
+        /* A list that scrolls opens on the month in view, the list
            alone moving: focus goes to it once the menu has put it on its first. */
         const on = menu.querySelector('[aria-checked="true"]');
         if (on) queueMicrotask(() => {

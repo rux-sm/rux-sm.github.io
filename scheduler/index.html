@@ -368,10 +368,10 @@
                      hidden input holds. -->
                 <button type="button" class="scheduler-weekbtn scheduler-weekbtn--calendar" id="scheduler-range" aria-haspopup="dialog" aria-expanded="false"><span class="rux--visually-hidden" id="scheduler-range-text">&nbsp;</span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><use href="#m-calendar_month"/></svg></button>
               </h2>
-              <!-- The month and the year in view, each a list a pick from moves
-                   the board to; data.js writes them and builds the lists. -->
-              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><span class="scheduler-weekbtn__year" id="scheduler-month-year"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
-              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--year" id="scheduler-year" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Year, </span><span id="scheduler-year-text">&nbsp;</span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
+              <!-- The month in view with its year, a list of every month held
+                   a pick from moves the board to; data.js writes it and
+                   builds the list. -->
+              <button type="button" class="scheduler-weekbtn scheduler-weekbtn--month" id="scheduler-month" aria-haspopup="menu" aria-expanded="false"><span class="rux--visually-hidden">Month, </span><span class="scheduler-weekbtn__long" id="scheduler-month-long">&nbsp;</span><span class="scheduler-weekbtn__short" id="scheduler-month-short" aria-hidden="true"></span><svg class="scheduler-weekbtn__icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><use href="#m-keyboard_arrow_down"/></svg></button>
               </div>
               <div id="scheduler-week-loading" class="scheduler-week-loading" role="status" aria-live="polite"></div>
             </div>
@@ -788,7 +788,6 @@
   <!-- The toolbar's month and year lists, filled by data.js each time one
        opens, the one in view ticked. -->
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-selectable-items scheduler-long-menu" id="scheduler-month-menu" role="menu" tabindex="-1" aria-label="Month" hidden></ul>
-  <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-selectable-items" id="scheduler-year-menu" role="menu" tabindex="-1" aria-label="Year" hidden></ul>
 
   <ul class="rux--menu rux--menu--sm rux--menu--open rux--menu--shown rux--menu--with-icons rux--menu--with-selectable-items scheduler-view-menu" id="scheduler-view-menu" role="menu" tabindex="-1" hidden>
     <!-- New trip opens a blank editor. Right-clicking or holding an empty cell

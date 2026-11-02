@@ -3167,11 +3167,11 @@ a.scheduler-tip__go { text-decoration: none; }
   flex: none;
   margin: 0;
 }
-/* The calendar's button, a heading that is also a trigger, and the month and
-   the year, each a list's. Carbon ships no such control, so it is the app's
+/* The calendar's button, a heading that is also a trigger, and the month
+   with its year, a list's. Carbon ships no such control, so it is the app's
    own and every value is a --rux-* token. Its type is
    `rux--type-heading-compact-02`, which `.scheduler-toolbar__range` carries
-   and the row gives the two lists' buttons. */
+   and the row gives the list's button. */
 .scheduler-toolbar__when { font-size: var(--rux-heading-compact-02-font-size); font-weight: var(--rux-heading-compact-02-font-weight); line-height: var(--rux-heading-compact-02-line-height); letter-spacing: var(--rux-heading-compact-02-letter-spacing); font-variant-numeric: tabular-nums; }
 .scheduler-weekbtn {
   display: flex;
@@ -3194,12 +3194,11 @@ a.scheduler-tip__go { text-decoration: none; }
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-/* The month takes the row's width the calendar and the year leave. */
+/* The month takes the row's width the calendar leaves. */
 .scheduler-weekbtn--month { flex: 1 1 auto; min-inline-size: 0; }
-/* A rule between the three, the one the toolbar's buttons draw on their
+/* A rule between the two, the one the toolbar's buttons draw on their
    leading edge (see overrides.css). */
-.scheduler-weekbtn--month,
-.scheduler-weekbtn--year { border-inline-start: 1px solid var(--rux-border-subtle-01); }
+.scheduler-weekbtn--month { border-inline-start: 1px solid var(--rux-border-subtle-01); }
 /* Carbon's own ghost-button feedback, by token rather than by borrowing the
    class: `--rux-background-hover` is what a ghost button takes on hover and
    `--rux-focus` is the 2px inset ring every control on this page draws. */
@@ -3214,7 +3213,7 @@ a.scheduler-tip__go { text-decoration: none; }
    `rux--layer-two` in data.js. After the hover rule, so the pointer still
    resting on it does not take the surface back, and above the calendar,
    whose shadow would otherwise fall across the button's foot. The month's
-   and the year's take it too while their list is open. */
+   takes it too while its list is open. */
 .scheduler-weekbtn[aria-expanded="true"] {
   position: relative;
   z-index: 100000;
@@ -4246,13 +4245,10 @@ a.scheduler-tip__go { text-decoration: none; }
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge, 0px));
 }
 /* ITS TOP IS THE MONTH, TODAY AND SEARCH, as rux decided, with no arrows,
-   a swipe being the step: the month's button names the year too and lists
-   every month held, so the calendar's and the year's give way, and the
-   month is written in full. */
-.scheduler-weekbtn__year { display: none; }
-.scheduler-page[data-board="compact"] :is(.scheduler-toolbar__range, .scheduler-weekbtn--year) { display: none; }
+   a swipe being the step: the calendar's button gives way, and the month is
+   written in full. */
+.scheduler-page[data-board="compact"] .scheduler-toolbar__range { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn--month { border-inline-start: 0; }
-.scheduler-page[data-board="compact"] .scheduler-weekbtn__year { display: block; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__short { display: none; }
 .scheduler-page[data-board="compact"] .scheduler-weekbtn__long { position: static; inline-size: auto; block-size: auto; clip-path: none; }
 /* UNDER THEM THE WEEK, data.js's `drawWeekStrip`: seven days sharing the

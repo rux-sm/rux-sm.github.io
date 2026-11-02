@@ -12207,13 +12207,15 @@
      push; so does the editor, right of the week. */
   const SLIDE_MS = 240;
   const SLIDE_EASE = 'cubic-bezier(.2, 0, .38, .9)';
-  const leftColumn = el => el.parentElement === boardEl && !el.classList.contains('scheduler-trip');
+  const leftColumn = el => el.parentElement === boardEl && el !== frameEl && !el.classList.contains('scheduler-trip');
   const slides = () => pageEl.dataset.motion !== 'off' && !pageEl.hasAttribute('data-takeover')
     && matchMedia('(min-width: 42rem) and (prefers-reduced-motion: no-preference)').matches;
+  // Where the frame's contents stand on screen, read off the first of them drawn.
+  const contentsLeft = () => ([...frameEl.children].find(c => c.getClientRects().length) ?? frameEl).getBoundingClientRect().left;
   let changedLeft = new Set();
   let slideAsked = false;
   let slide = null;
-  function endSlide() {
+  function endSlide(settle = true) {
     if (!slide) return;
     const { set, held } = slide;
     slide = null;
@@ -12221,52 +12223,81 @@
     for (const [el, prop] of set) el.style.removeProperty(prop);
     boardEl.getBoundingClientRect();
     for (const el of held) el.style.removeProperty('transition');
-    if (!pushing.size) pushEnded();
+    if (settle && !pushing.size) pushEnded();
   }
   function slideOrPush() {
     slideAsked = false;
     const targets = [...changedLeft];
     changedLeft = new Set();
-    endSlide();
     const opens = targets.filter(t => !t.hidden);
     const closes = targets.filter(t => t.hidden);
-    if (!slides() || (opens.length && closes.length)) { targets.forEach(trackPush); return; }
+    /* A panel replacing another moves no bar, so the two keep app.css's push,
+       unless the change comes during a slide, which it then carries on. */
+    const interrupted = !!slide;
+    if (!slides() || (opens.length && closes.length && !interrupted)) { endSlide(); targets.forEach(trackPush); return; }
+    // Where everything stands on screen now, a slide still running included: each move starts there.
+    const contentsAt = contentsLeft();
+    const widths = [...frameEl.children].map(c => c.getBoundingClientRect().width);
+    const columns = [...boardEl.children].filter(leftColumn);
+    const columnAt = new Map(columns.map(c => [c, c.getBoundingClientRect()]));
+    endSlide(false);
     const set = [];
     const put = (el, prop, value) => { el.style.setProperty(prop, value); set.push([el, prop]); };
-    const before = frameEl.getBoundingClientRect().left;
-    const widths = [...frameEl.children].map(c => c.getBoundingClientRect().width);
+    // The other panels left of the week, which a closing one left of them moves along.
+    const others = columns.filter(c => !c.hidden && !targets.includes(c));
     for (const c of targets) c.style.setProperty('transition', 'none');
+    // One opened during a slide stands over any that slide had brought in.
+    if (interrupted) for (const c of opens) { put(c, 'position', 'relative'); put(c, 'z-index', '1'); }
     if (closes.length) {
       const host = boardEl.getBoundingClientRect();
       for (const c of closes) {
-        const r = c.getBoundingClientRect();
-        for (const [prop, value] of [['display', 'flex'], ['position', 'absolute'], ['margin', '0'], ['flex', 'none'],
+        const r = columnAt.get(c);
+        for (const [prop, value] of [['display', 'flex'], ['position', 'absolute'], ['z-index', '0'], ['margin', '0'], ['flex', 'none'],
           ['left', `${r.left - host.left}px`], ['top', `${r.top - host.top}px`], ['inline-size', `${r.width}px`], ['block-size', `${r.height}px`]]) put(c, prop, value);
       }
       put(boardEl, 'position', 'relative');
     }
-    const dx = before - frameEl.getBoundingClientRect().left;
-    if (Math.abs(dx) < 1) {
+    const dx = contentsAt - contentsLeft();
+    const moved = others.map(c => [c, columnAt.get(c).left - c.getBoundingClientRect().left]).filter(([, d]) => Math.abs(d) >= 1);
+    /* An opened column has its width now, so its own move is let back at
+       once: closed again before the slide ends, it starts to close as any
+       column does rather than going in one frame, and the next slide takes
+       it from there. A closing one keeps none while it is held. */
+    for (const c of opens) c.style.removeProperty('transition');
+    if (Math.abs(dx) < 1 && !moved.length) {
       for (const [el, prop] of set) el.style.removeProperty(prop);
-      for (const c of targets) c.style.removeProperty('transition');
+      for (const c of closes) c.style.removeProperty('transition');
+      if (!pushing.size) pushEnded();
       return;
     }
+    /* What slides: the frame's contents, and any other panel the change moved,
+       each from where it stood. A moving panel stands over a closing one and
+       the frame over both, so what slides covers what leaves. */
     put(frameEl, 'position', 'relative');
-    put(frameEl, 'z-index', '1');
+    put(frameEl, 'z-index', '2');
     put(frameEl, 'clip-path', 'inset(0 0 0 -100vw)');
+    const sliding = [];
     [...frameEl.children].forEach((child, i) => {
       if (opens.length) put(child, 'inline-size', `${widths[i]}px`);
-      put(child, 'transform', `translateX(${dx}px)`);
-      put(child, 'will-change', 'transform');
+      sliding.push([child, dx]);
     });
+    for (const [c, d] of moved) {
+      put(c, 'position', 'relative');
+      put(c, 'z-index', '1');
+      sliding.push([c, d]);
+    }
+    for (const [el, d] of sliding) {
+      put(el, 'transform', `translateX(${d}px)`);
+      put(el, 'will-change', 'transform');
+    }
     pageEl.setAttribute('data-pushing', '');
     frameEl.getBoundingClientRect();
-    const run = slide = { set, held: targets };
+    const run = slide = { set, held: closes };
     requestAnimationFrame(() => {
       if (slide !== run) return;
-      for (const child of frameEl.children) {
-        put(child, 'transition', `transform ${SLIDE_MS}ms ${SLIDE_EASE}`);
-        child.style.setProperty('transform', 'translateX(0)');
+      for (const [el] of sliding) {
+        put(el, 'transition', `transform ${SLIDE_MS}ms ${SLIDE_EASE}`);
+        el.style.setProperty('transform', 'translateX(0)');
       }
       setTimeout(() => { if (slide === run) endSlide(); }, SLIDE_MS + 20);
     });

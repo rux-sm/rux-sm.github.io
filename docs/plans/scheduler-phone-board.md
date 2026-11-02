@@ -15,8 +15,8 @@ thumb reach.
 
 Today the phone shows the strip two days wide, a flick a day, its trips
 three lines beside a narrow bus column, a tap on a trip opening its sheet
-and a tap on a bus the bus's; the editor opens over the board as the Mac's
-form.
+and a tap on a bus the bus's, and above it the month, Today and search
+over the week; the editor opens over the board as the Mac's form.
 
 ## Decisions
 
@@ -65,7 +65,5 @@ None open.
 
 ## Tasks
 
-- [ ] Put the month, Today and search above the board, with the week under
-      them.
 - [ ] Add the bar of places at the foot and the + for a new trip.
 - [ ] Show as many days as fit with the phone turned sideways.

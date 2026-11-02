@@ -177,9 +177,14 @@ Three homes, and one rule for choosing.
 - **The board's title is a calendar button, the month and the year.** A permanent mini calendar
   spends standing space on an occasional action, so the calendar opens from its glyph and marks the
   days in view; the month and the year are each a list, a pick moving to the week holding that
-  month's first day, the years from 2026 to next year. They name the month most of the days in view
-  are in, "Nov" on a phone, and the day header names a month's first day, "Dec 1". The arrows step a
-  week at any width.
+  month's first day, the years from 2026 to next year. They name the month most of the days on
+  screen are in, and the day header names a month's first day, "Dec 1". The arrows step a week.
+  On the compact board the month button alone names the month and the year, "November 2026", and
+  its list holds every month of those years, a pick going to the month's first day itself; there
+  are no arrows, a swipe being the step, and Today goes to today itself. Under the toolbar the
+  week the first day in view falls in, a day a button, its letter over its date, the days in view
+  marked as one, today in the day band's colour and a dot under a day with a trip carrying a
+  warning mark, red for an error; a tap on a day scrolls the board to it.
 - **A trip's file reads in its own panel left of the board,** beside the trip
   panel, because it is read while the trip is edited. Any stored file opens
   there under its type, and a form `print.html` draws opens in the Forms panel.

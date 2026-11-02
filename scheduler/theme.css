@@ -1645,9 +1645,11 @@
 
 /* RUX 100'S TODAY IS A PILL, since its accent is white and white words alone
    would not part today from the other days: the date on the board's header
-   is set in the inverse ink on a capsule of the primary text, as a
-   calendar marks today, and the roster's letter on a disc of it. */
+   and in a phone's week is set in the inverse ink on a capsule of the
+   primary text, as a calendar marks today, and the roster's letter on a
+   disc of it. */
 [data-theme="rux-100"] .scheduler-day--today { color: var(--rux-text-primary); }
+[data-theme="rux-100"] .scheduler-weekstrip__day[data-today] .scheduler-weekstrip__num,
 [data-theme="rux-100"] .scheduler-day--today .scheduler-day__num {
   padding-inline: var(--rux-spacing-03);
   border-radius: 999px;

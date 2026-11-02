@@ -4198,6 +4198,71 @@ a.scheduler-tip__go { text-decoration: none; }
   --scheduler-head-min: calc(2.5rem + 2 * var(--rux-spacing-03) + 1px);
   --scheduler-head-w: calc(var(--scheduler-head-min) + var(--scheduler-edge, 0px));
 }
+/* ITS TOP IS THE MONTH, TODAY AND SEARCH, as rux decided, with no arrows,
+   a swipe being the step: the month's button names the year too and lists
+   every month held, so the calendar's and the year's give way, and the
+   month is written in full. */
+.scheduler-weekbtn__year { display: none; }
+.scheduler-page[data-board="compact"] :is(.scheduler-toolbar__range, .scheduler-weekbtn--year) { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn--month { border-inline-start: 0; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn__year { display: block; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn__short { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-weekbtn__long { position: static; inline-size: auto; block-size: auto; clip-path: none; }
+/* UNDER THEM THE WEEK, data.js's `drawWeekStrip`: seven days sharing the
+   width on the toolbar's own surface, each its weekday's letter at the
+   label size over its date at the heading size and a 4px dot, the space for
+   which every day keeps so none moves when one shows. The days in view are
+   one selected block, square unless the theme rounds its bars; today's date
+   is in the day band's colour; the dot is the warning's or the error's. */
+.scheduler-weekstrip { display: none; }
+.scheduler-page[data-board="compact"] .scheduler-weekstrip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: var(--rux-spacing-02) var(--rux-spacing-03);
+  background: var(--rux-layer);
+  border-block-start: 1px solid var(--rux-border-subtle-01);
+}
+.scheduler-weekstrip__day {
+  appearance: none;
+  display: grid;
+  justify-items: center;
+  gap: var(--rux-spacing-01);
+  padding-block: var(--rux-spacing-02);
+  border: 0;
+  background: none;
+  color: var(--rux-text-primary);
+  font: inherit;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .scheduler-weekstrip__day:hover { background: var(--rux-background-hover); }
+}
+.scheduler-weekstrip__day:focus-visible { outline: 2px solid var(--rux-focus); outline-offset: -2px; }
+.scheduler-weekstrip__day[data-in-view] { background: var(--rux-layer-selected); }
+.scheduler-weekstrip__day[data-in-view]:not([data-in-view] + [data-in-view]) {
+  border-start-start-radius: var(--scheduler-bar-radius, 0);
+  border-end-start-radius: var(--scheduler-bar-radius, 0);
+}
+.scheduler-weekstrip__day[data-in-view]:not(:has(+ [data-in-view])) {
+  border-start-end-radius: var(--scheduler-bar-radius, 0);
+  border-end-end-radius: var(--scheduler-bar-radius, 0);
+}
+.scheduler-weekstrip__name {
+  color: var(--rux-text-secondary);
+  font-size: var(--rux-label-01-font-size);
+  line-height: var(--rux-label-01-line-height);
+  letter-spacing: var(--rux-label-01-letter-spacing);
+}
+.scheduler-weekstrip__num {
+  font-size: var(--rux-heading-compact-01-font-size);
+  font-weight: var(--rux-heading-compact-01-font-weight);
+  line-height: var(--rux-heading-compact-01-line-height);
+  font-variant-numeric: tabular-nums;
+}
+.scheduler-weekstrip__day[data-today] .scheduler-weekstrip__num { color: var(--rux-link-primary-hover); }
+.scheduler-weekstrip__dot { inline-size: 4px; block-size: 4px; border-radius: 50%; }
+.scheduler-weekstrip__day[data-mark="warning"] .scheduler-weekstrip__dot { background: var(--rux-support-warning); }
+.scheduler-weekstrip__day[data-mark="error"] .scheduler-weekstrip__dot { background: var(--rux-support-error); }
 /* A swipe moves it a day: the strip stops at the next day's edge however
    hard the flick, as a phone's own pages do. */
 .scheduler-page[data-board="compact"] .scheduler-week--scroll .scheduler-day { scroll-snap-stop: always; }
@@ -4485,8 +4550,9 @@ a.scheduler-tip__go { text-decoration: none; }
 }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--on-time > svg { color: var(--rux-support-success); }
 .scheduler-bar-shortcuts[data-docked] > .scheduler-tip--card .scheduler-route__judged--late > svg { color: var(--rux-support-warning); }
-/* The sheet's lists hold every bus or driver, so they scroll inside. */
-.scheduler-pick-menu { max-block-size: 60dvh; overflow-y: auto; }
+/* A list that can run past the screen, every bus or driver on the sheet's
+   or every month on a phone's, scrolls inside. */
+.scheduler-long-menu { max-block-size: 60dvh; overflow-y: auto; }
 /* The card's rows join the sheet's own flow and stand above the trip: the
    needs, then the updates. What changes size from trip to trip is all up
    there, so the sheet grows upward and the trip and its slots keep one place

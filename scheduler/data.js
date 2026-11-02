@@ -117,6 +117,8 @@
   const monthShortEl = document.getElementById('scheduler-month-short');
   const yearBtn = document.getElementById('scheduler-year');
   const yearTextEl = document.getElementById('scheduler-year-text');
+  // The year inside the month's button, which a phone's shows in the year button's place.
+  const monthYearEl = document.getElementById('scheduler-month-year');
   // The day the month and year are named from, the middle one in view.
   let viewDay = null;
   // The arrows either side of Today.
@@ -181,6 +183,13 @@
   // Math.round, because a span crossing a daylight-saving change is 23 or 25
   // hours and integer division would drop or add a day.
   const daysBetween = (a, b) => Math.round((b - a) / DAY);
+  // The whole days on screen, which on a phone are two.
+  const daysSeen = () => Number(schEl?.dataset.daysInView) || WEEK;
+  /* The first day in view the board goes to for a day it is sent to: the
+     day's week's first, which keeps every week lined up, or on a board
+     showing less than a week, as a phone's two days, the day itself, at
+     its midnight as every day the board counts from is. */
+  const cursorFor = d => (daysSeen() < WEEK ? addDays(d, 0) : firstDayOf(d));
 
   // -- the palette ----------------------------------------------------------
   // The trip colours and what a trip paints as, shared with the printed week.
@@ -780,13 +789,15 @@
        button's name and the board's title; the day header shows each day. */
     const fmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
     setText(rangeTextEl, `${fmt.format(weekStart)} – ${fmt.format(weekEnd)}, ${weekEnd.getFullYear()}`);
-    /* The month and the year are the middle day's, the month most of the
-       days in view are in, since a week that starts the month can begin a
-       day or two before it. */
-    viewDay = addDays(weekStart, Math.floor(daysBetween(weekStart, weekEnd) / 2));
+    /* The month and the year are the middle day's on screen, the month
+       most of the days seen are in, since a week that starts the month can
+       begin a day or two before it. */
+    viewDay = addDays(weekStart, Math.floor((Math.min(daysBetween(weekStart, weekEnd) + 1, daysSeen()) - 1) / 2));
     setText(monthLongEl, viewDay.toLocaleDateString(undefined, { month: 'long' }));
     setText(monthShortEl, viewDay.toLocaleDateString(undefined, { month: 'short' }));
     setText(yearTextEl, String(viewDay.getFullYear()));
+    setText(monthYearEl, String(viewDay.getFullYear()));
+    drawWeekStrip();
     // The calendar marks the days in view from the first.
     const picker = document.getElementById('scheduler-week-picker');
     if (picker) picker.dataset.ruxSpan = String(daysBetween(weekStart, weekEnd) + 1);
@@ -1625,6 +1636,7 @@
   function afterDrawn(nodes) {
     const bars = nodes.filter(node => node.classList.contains('scheduler-bar'));
     if (!bars.length) return;
+    askWeekStrip();
     roadBars(bars.filter(bar => bar.dataset.busId != null));
     const opener = !panelEl.hidden && panelArgs?.ref ? bars.find(isEditorBar) : null;
     if (opener) panelOpener = opener;
@@ -11893,7 +11905,7 @@
     if (!ref || !trip) return;
     const from = legByKey(trip, refLegKey(ref))?.from ?? trip.start_date;
     stopStripScroll();
-    if (from) cursor = firstDayOf(parseISO(from));
+    if (from) cursor = cursorFor(parseISO(from));
     await show();
     const bar = findBar(ref);
     if (bar) { selectBar(bar); openPanel(bar); }
@@ -12600,7 +12612,7 @@
       stopStripScroll();
       view.weekStart = start.dataset.weekStart;
       applyView();
-      cursor = firstDayOf(hadToday ? now : cursor);
+      cursor = cursorFor(hadToday ? now : cursor);
       show();
       return;
     }
@@ -18325,7 +18337,7 @@
   });
 
   // -- the week, and moving between them ------------------------------------
-  let cursor = firstDayOf(new Date());
+  let cursor = cursorFor(new Date());
   let shown = null;   // the week actually on screen, which is not `cursor` mid-fetch
   // The read in flight, and whether anything asked for another while it ran.
   let reading = null;
@@ -18878,12 +18890,12 @@
   }
 
   /* Moves the board to the week containing `day`, which `firstDayOf` finds
-     from the week-start preference: the calendar's pick, a month's or a
-     year's. The same week is not drawn again; a strip's week is the one
-     scrolled to. */
+     from the week-start preference, or to the day on a phone, as
+     `cursorFor` says: the calendar's pick, a month's or a year's. The same
+     week is not drawn again; a strip's week is the one scrolled to. */
   function goToWeekOf(day) {
     stopStripScroll();
-    const next = firstDayOf(day);
+    const next = cursorFor(day);
     if (shown && iso(next) === iso(stripStart ? cursor : shown)) return;
     toast(null);
     cursor = next;
@@ -18947,15 +18959,26 @@
       item.append(slot, el('div', 'rux--menu-item__label', label));
       return item;
     };
+    const yearsHeld = () => {
+      const now = new Date().getFullYear(), at = viewDay.getFullYear();
+      const years = [];
+      for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) years.push(y);
+      return years;
+    };
+    /* A month is its year's twelve, or on a compact board, whose month's
+       button stands in for the year's too, every month of every year held,
+       each named with its year. Its value counts months, so one list of
+       either kind finds its day. */
+    const months = () => {
+      const compact = pageEl?.getAttribute('data-board') === 'compact';
+      const name = compact ? { month: 'long', year: 'numeric' } : { month: 'long' };
+      return (compact ? yearsHeld() : [viewDay.getFullYear()]).flatMap(y => Array.from({ length: 12 }, (_, m) =>
+        choice(new Date(y, m, 1).toLocaleDateString(undefined, name), y * 12 + m, y === viewDay.getFullYear() && m === viewDay.getMonth())));
+    };
     const lists = [
-      [monthBtn, monthMenu, () => Array.from({ length: 12 }, (_, m) => choice(new Date(2000, m, 1).toLocaleDateString(undefined, { month: 'long' }), m, m === viewDay.getMonth())),
-        m => new Date(viewDay.getFullYear(), m, 1)],
-      [yearBtn, yearMenu, () => {
-        const now = new Date().getFullYear(), at = viewDay.getFullYear();
-        const years = [];
-        for (let y = Math.min(FIRST_YEAR, at); y <= Math.max(now + 1, at); y++) years.push(choice(String(y), y, y === at));
-        return years;
-      }, y => new Date(y, viewDay.getMonth(), 1)],
+      [monthBtn, monthMenu, months, v => new Date(Math.floor(v / 12), v % 12, 1)],
+      [yearBtn, yearMenu, () => yearsHeld().map(y => choice(String(y), y, y === viewDay.getFullYear())),
+        y => new Date(y, viewDay.getMonth(), 1)],
     ];
     for (const [btn, menu, items, dayOf] of lists) {
       if (!btn || !menu) continue;
@@ -18967,6 +18990,13 @@
         const r = btn.getBoundingClientRect();
         popMenuAt(menu, { clientX: r.left, clientY: r.bottom }, btn);
         btn.setAttribute('aria-expanded', 'true');
+        /* A list that scrolls opens on the month or year in view, the list
+           alone moving: focus goes to it once the menu has put it on its first. */
+        const on = menu.querySelector('[aria-checked="true"]');
+        if (on) queueMicrotask(() => {
+          on.focus({ preventScroll: true });
+          menu.scrollTop = on.offsetTop - (menu.clientHeight - on.offsetHeight) / 2;
+        });
       });
       menu.addEventListener('click', e => {
         const item = e.target.closest('[role="menuitemradio"]');
@@ -19376,7 +19406,7 @@
     const legBar = () => (leg ? bars().find(b => barOnLeg(b, leg)) : bars()[0]);
     let bar = legBar();
     if (!bar) {
-      cursor = firstDayOf(parseISO(day));
+      cursor = cursorFor(parseISO(day));
       const held = holds(cursor);
       const read = show();
       // A week held is drawn at once, unless a bar in hand holds the drawing back.
@@ -19583,6 +19613,68 @@
     if (!w) return;
     schEl.scrollTo({ left: at * w, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   }
+  /* THE WEEK UNDER THE MONTH, on a compact board, a phone's: the seven days
+     of the week the first day in view falls in, each its weekday's letter
+     over its date, the days in view marked as one, today in the day band's
+     colour, and under each day a dot where a trip on it carries a warning
+     mark, red where one is an error, as rux decided. A tap on a day scrolls
+     the strip to it. Drawn with every day the view crosses and every bar
+     drawn, so it writes only what changed: seven buttons, made once. */
+  const weekStripEl = document.getElementById('scheduler-weekstrip');
+  let weekStripKey = '';
+  let weekStripFrame = 0;
+  function drawWeekStrip() {
+    // The strip first: nothing is drawn before it is, and by then this script has run to its end.
+    if (!stripStart || !weekStripEl || pageEl?.getAttribute('data-board') !== 'compact') return;
+    const first = firstDayOf(cursor);
+    const from = daysBetween(stripStart, first);
+    const shown = Math.max(1, Number(schEl.dataset.daysInView) || 1);
+    const at = daysBetween(stripStart, cursor);
+    // The worst mark on each day: 2 an error, 1 a warning.
+    const marks = Array(7).fill(0);
+    for (const bar of gridEl.querySelectorAll('.scheduler-track > .scheduler-bar')) {
+      const start = +bar.dataset.start, end = start + +bar.dataset.span;
+      if (end <= from || start >= from + 7) continue;
+      const alert = bar.querySelector(':scope > .scheduler-bar__dest .scheduler-bar__alert');
+      if (!alert) continue;
+      const tone = alert.classList.contains('scheduler-bar__msg--error') ? 2 : 1;
+      for (let d = Math.max(start, from); d < Math.min(end, from + 7); d++) marks[d - from] = Math.max(marks[d - from], tone);
+    }
+    const today = iso(new Date());
+    const key = [iso(first), at, shown, today, marks.join('')].join('|');
+    if (key === weekStripKey) return;
+    weekStripKey = key;
+    if (weekStripEl.childElementCount !== 7) {
+      weekStripEl.replaceChildren(...Array.from({ length: 7 }, () => {
+        const b = el('button', 'scheduler-weekstrip__day');
+        b.type = 'button';
+        b.append(el('span', 'scheduler-weekstrip__name'), el('span', 'scheduler-weekstrip__num'), el('span', 'scheduler-weekstrip__dot'));
+        return b;
+      }));
+    }
+    [...weekStripEl.children].forEach((b, i) => {
+      const day = addDays(first, i);
+      const inView = from + i >= at && from + i < at + shown;
+      b.dataset.day = iso(day);
+      setText(b.children[0], day.toLocaleDateString(undefined, { weekday: 'narrow' }));
+      setText(b.children[1], String(day.getDate()));
+      b.toggleAttribute('data-in-view', inView);
+      b.toggleAttribute('data-today', iso(day) === today);
+      if (marks[i]) b.dataset.mark = marks[i] === 2 ? 'error' : 'warning'; else delete b.dataset.mark;
+      b.setAttribute('aria-pressed', String(inView));
+      b.setAttribute('aria-label', [day.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }),
+        marks[i] ? (marks[i] === 2 ? 'a trip with an error' : 'a trip with a warning') : null].filter(Boolean).join(', '));
+    });
+  }
+  // Bars drawn change the dots, so the strip is drawn again once a frame's bars are in.
+  const askWeekStrip = () => { if (!weekStripFrame) weekStripFrame = requestAnimationFrame(() => { weekStripFrame = 0; drawWeekStrip(); }); };
+  weekStripEl?.addEventListener('click', e => {
+    const b = e.target.closest('[data-day]');
+    if (!b || !stripStart) return;
+    stopStripScroll();
+    scrollStripTo(daysBetween(stripStart, parseISO(b.dataset.day)));
+  });
+
   /* SCROLLS THE STRIP TO THE WEEK `cursor` STARTS, when it is not there
      already, a pick's, a list's or Today's. Within two weeks it scrolls
      there as an arrow does. From further the strip is put at once a week
@@ -19638,7 +19730,7 @@
   function goToday() {
     toast(null);
     stopStripScroll();
-    const today = firstDayOf(new Date());
+    const today = cursorFor(new Date());
     if (stripData && stripHas(today) && !barsInHand && !holds(today) && heldBy(home, today)) takeRead(home.data, home.centre);
     cursor = today;
     show();

@@ -269,8 +269,6 @@ with Ship from stock as the finished example of both.
   name; no full stop closing a table cell; write-down labels lowercase.
 - **Each guide is read as printed, logged in, after its walk**, and fixed
   until a read finds nothing.
-- **The five are done back to back, one session each, and rux approves them
-  together** once all are walked, so no guide waits on another's approval.
 - **What no walk covers is rewritten freely**: the ideas pages, each session's
   purpose line, and side tasks with no steps. LN's labels stay exact.
 - **The real records and the screenshots wait for the team's page** in
@@ -295,13 +293,8 @@ None open.
 
 ## Tasks
 
-- [ ] Check an item's inventory: bring it to the standard, walk it, read it
-      printed.
-- [ ] Purchase to receipt: the same.
-- [ ] Warehouse transfer: the same.
-- [ ] Production order: the same, renamed Production order from stock.
-- [ ] Run order planning for one item: write it to the standard, then walk it.
-- [ ] rux approves the five together.
+- [ ] Purchase to receipt: capture the adjustment-order session its variant
+      names, or drop the variant, so its open gap stops blocking approval.
 - [ ] Demand to shipment via planning: write it to the standard, then walk it.
 - [ ] Create basic test items and defaults: write it to the standard, then
       walk it.

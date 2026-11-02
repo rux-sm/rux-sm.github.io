@@ -11,7 +11,7 @@
   ],
   "updated": "2026-11-01",
   "status": "review",
-  "summary": "ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped.",
+  "summary": "ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped.",
   "order": 7,
   "sources": [
     "tdsls4246m000",
@@ -37,7 +37,7 @@
       "tokens": [
         {
           "t": "text",
-          "v": "A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow "
+          "v": "You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow "
         },
         {
           "t": "link",
@@ -49,7 +49,7 @@
           "v": "."
         }
       ],
-      "text": "A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
+      "text": "You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
     }
   ],
   "tasks": [
@@ -61,13 +61,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
+            "v": "You've found a warehouse with enough free stock to ship."
           }
         ],
-        "text": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
+        "text": "You've found a warehouse with enough free stock to ship."
       },
       "steps": 4,
-      "walked": "2026-10-24"
+      "walked": null
     },
     {
       "id": "create-and-approve-the-sales-order",
@@ -77,7 +77,7 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The order status is "
+            "v": "The order is "
           },
           {
             "t": "strong",
@@ -88,10 +88,10 @@
             "v": "."
           }
         ],
-        "text": "The order status is In Process."
+        "text": "The order is In Process."
       },
       "steps": 12,
-      "walked": "2026-10-24"
+      "walked": null
     },
     {
       "id": "release-to-warehousing",
@@ -101,13 +101,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "A warehousing order exists with the sales order's number."
+            "v": "There's a warehousing order with the same number as your sales order."
           }
         ],
-        "text": "A warehousing order exists with the sales order's number."
+        "text": "There's a warehousing order with the same number as your sales order."
       },
       "steps": 8,
-      "walked": "2026-10-25"
+      "walked": null
     },
     {
       "id": "generate-outbound-advice",
@@ -117,13 +117,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Advised and Released both show the ordered quantity, and the picking list prints."
+            "v": "Advised and Released both match the ordered quantity, and the picking list prints."
           }
         ],
-        "text": "Advised and Released both show the ordered quantity, and the picking list prints."
+        "text": "Advised and Released both match the ordered quantity, and the picking list prints."
       },
       "steps": 13,
-      "walked": "2026-10-25"
+      "walked": null
     },
     {
       "id": "pick-the-goods_ship-from-stock",
@@ -133,7 +133,7 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The outbound line reads "
+            "v": "The outbound line says "
           },
           {
             "t": "strong",
@@ -141,13 +141,13 @@
           },
           {
             "t": "text",
-            "v": ", and a shipment line exists."
+            "v": ", and there's a shipment line."
           }
         ],
-        "text": "The outbound line reads Staged, and a shipment line exists."
+        "text": "The outbound line says Staged, and there's a shipment line."
       },
       "steps": 10,
-      "walked": "2026-10-25"
+      "walked": null
     },
     {
       "id": "ship_ship-from-stock",
@@ -157,7 +157,7 @@
         "tokens": [
           {
             "t": "text",
-            "v": "The shipment reads "
+            "v": "The shipment says "
           },
           {
             "t": "strong",
@@ -168,7 +168,7 @@
             "v": "."
           }
         ],
-        "text": "The shipment reads Confirmed."
+        "text": "The shipment says Confirmed."
       },
       "steps": 9,
       "walked": null
@@ -181,13 +181,13 @@
         "tokens": [
           {
             "t": "text",
-            "v": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
+            "v": "On-hand in that warehouse went down by the quantity you shipped."
           }
         ],
-        "text": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
+        "text": "On-hand in that warehouse went down by the quantity you shipped."
       },
       "steps": 4,
-      "walked": "2026-10-24"
+      "walked": null
     }
   ],
   "values": {
@@ -320,10 +320,10 @@
               },
               {
                 "t": "text",
-                "v": " — the date used in this example; LN offers the day you release"
+                "v": " — the day of the test run. LN puts in today's date"
               }
             ],
-            "text": "2026-10-24 — the date used in this example; LN offers the day you release"
+            "text": "2026-10-24 — the day of the test run. LN puts in today's date"
           }
         ],
         "task": "release-to-warehousing"
@@ -347,10 +347,10 @@
               },
               {
                 "t": "text",
-                "v": " — the ordered quantity, all picked"
+                "v": " — the whole order"
               }
             ],
-            "text": "5 — the ordered quantity, all picked"
+            "text": "5 — the whole order"
           }
         ],
         "task": "ship_ship-from-stock"
@@ -367,7 +367,7 @@
         },
         {
           "t": "text",
-          "v": " ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped. "
+          "v": " ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped. "
         },
         {
           "t": "strong",
@@ -378,7 +378,7 @@
           "v": " — situational variants build on this one. See Variants."
         }
       ],
-      "text": "Objective: ship a sales order for an item already in stock, and check that inventory went down by the quantity shipped. Base walkthrough — situational variants build on this one. See Variants."
+      "text": "Objective: ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped. Base walkthrough — situational variants build on this one. See Variants."
     },
     {
       "kind": "prose",
@@ -393,7 +393,7 @@
         },
         {
           "t": "text",
-          "v": " > A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow "
+          "v": " > You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow "
         },
         {
           "t": "link",
@@ -405,7 +405,7 @@
           "v": "."
         }
       ],
-      "text": "> Prerequisite > A customer set up as a sold-to business partner, and an item with stock in a warehouse of your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
+      "text": "> Prerequisite > You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
     },
     {
       "kind": "prose",
@@ -428,10 +428,10 @@
         },
         {
           "t": "text",
-          "v": " and on-hand has gone down by the quantity shipped. Invoicing and Financials aren't covered; other shipping guides end at the same point."
+          "v": " and on-hand has gone down by what you shipped. It doesn't cover invoicing or Financials. The other shipping guides end at the same point."
         }
       ],
-      "text": "> Warning > This guide ends when the shipment is Confirmed and on-hand has gone down by the quantity shipped. Invoicing and Financials aren't covered; other shipping guides end at the same point."
+      "text": "> Warning > This guide ends when the shipment is Confirmed and on-hand has gone down by what you shipped. It doesn't cover invoicing or Financials. The other shipping guides end at the same point."
     },
     {
       "kind": "glance",
@@ -476,10 +476,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship"
+                  "v": "You've found a warehouse with enough free stock to ship"
                 }
               ],
-              "text": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship"
+              "text": "You've found a warehouse with enough free stock to ship"
             }
           ]
         },
@@ -517,14 +517,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The order status is "
+                  "v": "The order is "
                 },
                 {
                   "t": "chip",
                   "v": "In Process"
                 }
               ],
-              "text": "The order status is In Process"
+              "text": "The order is In Process"
             }
           ]
         },
@@ -562,10 +562,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "A warehousing order exists with the sales order's number"
+                  "v": "There's a warehousing order with the same number as your sales order"
                 }
               ],
-              "text": "A warehousing order exists with the sales order's number"
+              "text": "There's a warehousing order with the same number as your sales order"
             }
           ]
         },
@@ -603,10 +603,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Advised and Released both show the ordered quantity, and the picking list prints"
+                  "v": "Advised and Released both match the ordered quantity, and the picking list prints"
                 }
               ],
-              "text": "Advised and Released both show the ordered quantity, and the picking list prints"
+              "text": "Advised and Released both match the ordered quantity, and the picking list prints"
             }
           ]
         },
@@ -644,7 +644,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound line reads "
+                  "v": "The outbound line says "
                 },
                 {
                   "t": "chip",
@@ -652,10 +652,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and a shipment line exists"
+                  "v": ", and there's a shipment line"
                 }
               ],
-              "text": "The outbound line reads Staged, and a shipment line exists"
+              "text": "The outbound line says Staged, and there's a shipment line"
             }
           ]
         },
@@ -693,14 +693,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The shipment reads "
+                  "v": "The shipment says "
                 },
                 {
                   "t": "chip",
                   "v": "Confirmed"
                 }
               ],
-              "text": "The shipment reads Confirmed"
+              "text": "The shipment says Confirmed"
             }
           ]
         },
@@ -738,10 +738,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for"
+                  "v": "On-hand in that warehouse went down by the quantity you shipped"
                 }
               ],
-              "text": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for"
+              "text": "On-hand in that warehouse went down by the quantity you shipped"
             }
           ]
         }
@@ -913,7 +913,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " holds "
+                  "v": " has "
                 },
                 {
                   "t": "chip",
@@ -929,10 +929,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " as their own sessions. Use them for a batch of orders rather than one"
+                  "v": " as separate sessions. Use them when you have a batch of orders, not just one"
                 }
               ],
-              "text": "Warehousing ➔ Outbound/Inspections holds Generate Outbound Advice and Release Outbound Advice as their own sessions. Use them for a batch of orders rather than one"
+              "text": "Warehousing ➔ Outbound/Inspections has Generate Outbound Advice and Release Outbound Advice as separate sessions. Use them when you have a batch of orders, not just one"
             }
           ]
         },
@@ -955,7 +955,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " sits beside "
+                  "v": " is right next to "
                 },
                 {
                   "t": "chip",
@@ -963,14 +963,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ". This guide doesn't use it: where release is automatic, Generate Advice already releases. "
+                  "v": ". This guide doesn't use it, because when release is automatic, Generate Advice already releases. "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Actions ➔ Advice ➔ Direct Release sits beside Generate Advice. This guide doesn't use it: where release is automatic, Generate Advice already releases. Not documented for this release."
+              "text": "Actions ➔ Advice ➔ Direct Release is right next to Generate Advice. This guide doesn't use it, because when release is automatic, Generate Advice already releases. Not documented for this release."
             }
           ]
         },
@@ -989,7 +989,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Before picking, to start an outbound line over: "
+                  "v": "Before picking, you can start an outbound line over. "
                 },
                 {
                   "t": "chip",
@@ -997,7 +997,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " removes its advice so it can be generated again, and "
+                  "v": " removes the advice so you can generate it again. "
                 },
                 {
                   "t": "chip",
@@ -1005,7 +1005,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " (Shift+Z) takes back the release too and removes the picking list. All are on "
+                  "v": " (Shift+Z) also takes back the release and removes the picking list. They're all under "
                 },
                 {
                   "t": "command",
@@ -1024,7 +1024,7 @@
                   "v": " toolbar"
                 }
               ],
-              "text": "Before picking, to start an outbound line over: Undo Advice removes its advice so it can be generated again, and Undo Advice/Release (Shift+Z) takes back the release too and removes the picking list. All are on Actions ➔ Advice on the Outbound Lines toolbar"
+              "text": "Before picking, you can start an outbound line over. Undo Advice removes the advice so you can generate it again. Undo Advice/Release (Shift+Z) also takes back the release and removes the picking list. They're all under Actions ➔ Advice on the Outbound Lines toolbar"
             }
           ]
         }
@@ -1089,10 +1089,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "This guide ends here. Invoicing is done in Financials, which this guide doesn't cover"
+                  "v": "This guide ends here. Invoicing happens in Financials, which this guide doesn't cover"
                 }
               ],
-              "text": "This guide ends here. Invoicing is done in Financials, which this guide doesn't cover"
+              "text": "This guide ends here. Invoicing happens in Financials, which this guide doesn't cover"
             },
             {
               "tokens": [
@@ -1120,7 +1120,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Replenish first: "
+                  "v": "Get more stock first: "
                 },
                 {
                   "t": "chip",
@@ -1158,7 +1158,7 @@
                 },
                 {
                   "t": "chip",
-                  "v": "buy it in"
+                  "v": "buy it"
                 },
                 {
                   "t": "text",
@@ -1174,7 +1174,7 @@
                   "v": "; then start again"
                 }
               ],
-              "text": "Replenish first: make it with Production order, move it with Warehouse transfer, or buy it in with Purchase to receipt; then start again"
+              "text": "Get more stock first: make it with Production order, move it with Warehouse transfer, or buy it with Purchase to receipt; then start again"
             },
             {
               "tokens": [
@@ -1192,6 +1192,6 @@
       "under": "Downstream actions"
     }
   ],
-  "verification": "Warning Partly verified. Phases 0, 1, 2, 3, 4, 6 have been performed against a live system and confirmed. Phase 5 has not. Follow that one as a plan, not as a record.",
+  "verification": "Warning No phase of this procedure has yet been performed end to end against a live system. Follow it as a plan, not as a record.",
   "openIssues": 1
 }

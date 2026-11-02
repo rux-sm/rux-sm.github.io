@@ -24,26 +24,26 @@
     "Warehousing"
   ],
   "status": "review",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
   "sessionCode": "whinh2300m000",
-  "walked": "2026-10-25",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "Advised and Released both show the ordered quantity, and the picking list prints."
+        "v": "Advised and Released both match the ordered quantity, and the picking list prints."
       }
     ],
-    "text": "Advised and Released both show the ordered quantity, and the picking list prints."
+    "text": "Advised and Released both match the ordered quantity, and the picking list prints."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. If the warehousing order type's outbound procedure releases advice automatically, the same action fills "
+        "v": "Generate Advice is where LN decides which stock to use and which locations it comes from. In some setups it also releases the advice, fills "
       },
       {
         "t": "field",
@@ -51,10 +51,10 @@
       },
       {
         "t": "text",
-        "v": " too and prints the picking list; if not, you release it yourself."
+        "v": " and prints the picking list. In others, you release it yourself."
       }
     ],
-    "text": "Generating advice is LN choosing which stock, from which locations, fills each outbound line. If the warehousing order type's outbound procedure releases advice automatically, the same action fills Released too and prints the picking list; if not, you release it yourself."
+    "text": "Generate Advice is where LN decides which stock to use and which locations it comes from. In some setups it also releases the advice, fills Released and prints the picking list. In others, you release it yourself."
   },
   "blocks": [
     {
@@ -97,7 +97,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Its row: "
+                  "v": "Your order's row: "
                 },
                 {
                   "t": "chip",
@@ -105,7 +105,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", a sales outbound order type such as "
+                  "v": ", a sales order type like "
                 },
                 {
                   "t": "chip",
@@ -120,7 +120,7 @@
                   "v": "Transaction Type Issue"
                 }
               ],
-              "text": "Its row: Origin Sales, a sales outbound order type such as 20- SO/SC Out, Transaction Type Issue"
+              "text": "Your order's row: Origin Sales, a sales order type like 20- SO/SC Out, Transaction Type Issue"
             }
           ],
           "id": "1",
@@ -333,7 +333,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Picking List by Location prints to its own tab, or the "
+                  "v": "One of three things happens: the Picking List by Location opens in its own tab, the "
                 },
                 {
                   "t": "chip",
@@ -341,10 +341,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " dialog opens, or nothing opens"
+                  "v": " box opens, or nothing opens"
                 }
               ],
-              "text": "The Picking List by Location prints to its own tab, or the Select Device dialog opens, or nothing opens"
+              "text": "One of three things happens: the Picking List by Location opens in its own tab, the Select Device box opens, or nothing opens"
             }
           ],
           "id": "6",
@@ -374,23 +374,23 @@
                 },
                 {
                   "t": "text",
-                  "v": " dialog opened, click "
+                  "v": " box opened, click "
                 },
                 {
                   "t": "button",
                   "label": "CONTINUE"
                 }
               ],
-              "text": "If the Select Device dialog opened, click CONTINUE"
+              "text": "If the Select Device box opened, click CONTINUE"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Picking List by Location prints to its own tab"
+                  "v": "The Picking List by Location opens in its own tab"
                 }
               ],
-              "text": "The Picking List by Location prints to its own tab"
+              "text": "The Picking List by Location opens in its own tab"
             }
           ],
           "id": "7",
@@ -412,7 +412,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "If nothing opened, read "
+                  "v": "If nothing opened, look at "
                 },
                 {
                   "t": "field",
@@ -431,7 +431,7 @@
                   "v": " on the outbound line"
                 }
               ],
-              "text": "If nothing opened, read Advised Quantity and Released Quantity on the outbound line"
+              "text": "If nothing opened, look at Advised Quantity and Released Quantity on the outbound line"
             },
             {
               "tokens": [
@@ -441,7 +441,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " shows the ordered quantity. An empty "
+                  "v": " shows the ordered quantity. If "
                 },
                 {
                   "t": "field",
@@ -449,10 +449,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " means the release is still to do"
+                  "v": " is empty, the advice isn't released yet"
                 }
               ],
-              "text": "Advised Quantity shows the ordered quantity. An empty Released Quantity means the release is still to do"
+              "text": "Advised Quantity shows the ordered quantity. If Released Quantity is empty, the advice isn't released yet"
             }
           ],
           "id": "8",
@@ -490,7 +490,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " is empty, choose "
+                  "v": " is empty, go to "
                 },
                 {
                   "t": "command",
@@ -509,16 +509,16 @@
                   "v": " toolbar"
                 }
               ],
-              "text": "If Released Quantity is empty, choose Actions ➔ Advice ➔ Release Advice on the Outbound Lines toolbar"
+              "text": "If Released Quantity is empty, go to Actions ➔ Advice ➔ Release Advice on the Outbound Lines toolbar"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The Picking List by Location prints to its own tab"
+                  "v": "The Picking List by Location opens in its own tab"
                 }
               ],
-              "text": "The Picking List by Location prints to its own tab"
+              "text": "The Picking List by Location opens in its own tab"
             }
           ],
           "id": "9",
@@ -540,10 +540,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read the picking list's header"
+                  "v": "Look at the top of the picking list"
                 }
               ],
-              "text": "Read the picking list's header"
+              "text": "Look at the top of the picking list"
             },
             {
               "tokens": [
@@ -613,10 +613,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The outbound line"
+                  "v": "Your outbound line"
                 }
               ],
-              "text": "The outbound line"
+              "text": "Your outbound line"
             }
           ],
           "id": "11",
@@ -638,7 +638,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "Check "
                 },
                 {
                   "t": "field",
@@ -657,16 +657,16 @@
                   "v": " on the outbound line"
                 }
               ],
-              "text": "Read Advised Quantity and Released Quantity on the outbound line"
+              "text": "Check Advised Quantity and Released Quantity on the outbound line"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Both show the ordered quantity"
+                  "v": "Both match the ordered quantity"
                 }
               ],
-              "text": "Both show the ordered quantity"
+              "text": "Both match the ordered quantity"
             }
           ],
           "id": "12",
@@ -713,7 +713,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Usually empty. If projected shipments are switched on, a "
+                  "v": "Usually empty. If projected shipments are on, you may already see a "
                 },
                 {
                   "t": "status",
@@ -729,14 +729,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " line may already show a "
+                  "v": " line with a "
                 },
                 {
                   "t": "field",
                   "v": "Shipment"
                 }
               ],
-              "text": "Usually empty. If projected shipments are switched on, a Projected or Open line may already show a Shipment"
+              "text": "Usually empty. If projected shipments are on, you may already see a Projected or Open line with a Shipment"
             }
           ],
           "id": "13",
@@ -786,7 +786,7 @@
               },
               {
                 "t": "text",
-                "v": " filter may be wrong, or the release may not have run. See step 8 of "
+                "v": " filter may be wrong, or the release didn't run. See step 8 of "
               },
               {
                 "t": "link",
@@ -794,7 +794,7 @@
                 "href": "release-to-warehousing.md"
               }
             ],
-            "text": "The Order filter may be wrong, or the release may not have run. See step 8 of Release to warehousing"
+            "text": "The Order filter may be wrong, or the release didn't run. See step 8 of Release to warehousing"
           }
         ]
       },
@@ -817,7 +817,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "You're on the session toolbar. The advice actions are on the "
+                "v": "You're on the top toolbar. The advice actions are on the "
               },
               {
                 "t": "chip",
@@ -828,7 +828,7 @@
                 "v": " toolbar. See step 6"
               }
             ],
-            "text": "You're on the session toolbar. The advice actions are on the Outbound Lines toolbar. See step 6"
+            "text": "You're on the top toolbar. The advice actions are on the Outbound Lines toolbar. See step 6"
           }
         ]
       },
@@ -859,14 +859,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Advice already exists: some configurations generate it on release. To start over, use "
+                "v": "The advice already exists. Some setups make it when you release. To start over, use "
               },
               {
                 "t": "chip",
                 "v": "Undo Advice"
               }
             ],
-            "text": "Advice already exists: some configurations generate it on release. To start over, use Undo Advice"
+            "text": "The advice already exists. Some setups make it when you release. To start over, use Undo Advice"
           }
         ]
       },
@@ -876,20 +876,20 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The outbound line's status reads "
+                "v": "The outbound line's status says "
               },
               {
                 "t": "chip",
                 "v": "Planned"
               }
             ],
-            "text": "The outbound line's status reads Planned"
+            "text": "The outbound line's status says Planned"
           },
           {
             "tokens": [
               {
                 "t": "text",
-                "v": "A planned line can't be advised. Choose "
+                "v": "You can't advise a planned line. Choose "
               },
               {
                 "t": "chip",
@@ -897,7 +897,7 @@
               },
               {
                 "t": "text",
-                "v": " on the warehousing order, and the line becomes "
+                "v": " on the warehousing order and the line turns "
               },
               {
                 "t": "chip",
@@ -912,7 +912,7 @@
                 "v": "Not documented for this release."
               }
             ],
-            "text": "A planned line can't be advised. Choose Activate on the warehousing order, and the line becomes Open. Not documented for this release."
+            "text": "You can't advise a planned line. Choose Activate on the warehousing order and the line turns Open. Not documented for this release."
           }
         ]
       },
@@ -931,7 +931,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "Check that the header "
+                "v": "Check that the "
               },
               {
                 "t": "field",
@@ -939,7 +939,7 @@
               },
               {
                 "t": "text",
-                "v": " holds the stock, against step 4 of "
+                "v": " at the top has the stock. Compare it with step 4 of "
               },
               {
                 "t": "link",
@@ -947,7 +947,7 @@
                 "href": "confirm-there-is-stock.md"
               }
             ],
-            "text": "Check that the header Warehouse holds the stock, against step 4 of Confirm there is stock"
+            "text": "Check that the Warehouse at the top has the stock. Compare it with step 4 of Confirm there is stock"
           }
         ]
       }
@@ -975,7 +975,7 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The warehousing order type's outbound procedure has "
+                "v": "The order type's outbound procedure has "
               },
               {
                 "t": "field",
@@ -983,10 +983,10 @@
               },
               {
                 "t": "text",
-                "v": " as a manual activity, so step 6 only advises; steps 8 and 9 release it"
+                "v": " as a manual step, so step 6 only advises. Steps 8 and 9 release it"
               }
             ],
-            "text": "The warehousing order type's outbound procedure has Release Outbound Advice as a manual activity, so step 6 only advises; steps 8 and 9 release it"
+            "text": "The order type's outbound procedure has Release Outbound Advice as a manual step, so step 6 only advises. Steps 8 and 9 release it"
           }
         ]
       }

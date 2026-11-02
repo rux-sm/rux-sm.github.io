@@ -21,26 +21,26 @@
     "Warehousing"
   ],
   "status": "review",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-24",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
+        "v": "On-hand in that warehouse went down by the quantity you shipped."
       }
     ],
-    "text": "On-hand in that warehouse fell by the quantity shipped, once anything else that moved the item is allowed for."
+    "text": "On-hand in that warehouse went down by the quantity you shipped."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Check the same item and warehouse you checked in "
+        "v": "Go back to the same item and warehouse from "
       },
       {
         "t": "link",
@@ -49,10 +49,10 @@
       },
       {
         "t": "text",
-        "v": ". This confirms that inventory changed as expected."
+        "v": ". If on-hand went down by what you shipped, the stock really left."
       }
     ],
-    "text": "Check the same item and warehouse you checked in Confirm there is stock. This confirms that inventory changed as expected."
+    "text": "Go back to the same item and warehouse from Confirm there is stock. If on-hand went down by what you shipped, the stock really left."
   },
   "blocks": [
     {
@@ -86,7 +86,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ", as at step 1 of "
+                  "v": ", like at step 1 of "
                 },
                 {
                   "t": "link",
@@ -94,16 +94,16 @@
                   "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "Filter the item in Inventory 360, as at step 1 of Confirm there is stock"
+              "text": "Filter the item in Inventory 360, like at step 1 of Confirm there is stock"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item's row"
+                  "v": "Your item's row"
                 }
               ],
-              "text": "The item's row"
+              "text": "Your item's row"
             }
           ],
           "id": "1",
@@ -133,10 +133,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the item's row"
+                  "v": "Tick the row for your item"
                 }
               ],
-              "text": "Tick the item's row"
+              "text": "Tick the row for your item"
             },
             {
               "tokens": [
@@ -184,10 +184,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens with the item filled in"
+                  "v": " opens with your item already in it"
                 }
               ],
-              "text": "Warehouse - Item Inventory opens with the item filled in"
+              "text": "Warehouse - Item Inventory opens with your item already in it"
             }
           ],
           "id": "3",
@@ -217,7 +217,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " for the warehouse you recorded at step 4 of "
+                  "v": " for the warehouse you wrote down at step 4 of "
                 },
                 {
                   "t": "link",
@@ -225,7 +225,7 @@
                   "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "Read Inventory on Hand for the warehouse you recorded at step 4 of Confirm there is stock"
+              "text": "Read Inventory on Hand for the warehouse you wrote down at step 4 of Confirm there is stock"
             },
             {
               "tokens": [
@@ -284,11 +284,11 @@
       "tokens": [
         {
           "t": "strong",
-          "v": "On-hand before − on-hand after should equal the shipped quantity, in the same unit, as long as nothing else moved the item in that warehouse."
+          "v": "Take on-hand before minus on-hand after. It should match the quantity you shipped."
         },
         {
           "t": "text",
-          "v": " On-hand before is the figure from step 4 of "
+          "v": " On-hand before is what you wrote down at step 4 of "
         },
         {
           "t": "link",
@@ -297,7 +297,7 @@
         },
         {
           "t": "text",
-          "v": ". If they differ, check that the shipment reads "
+          "v": ". Use the same unit for both. If they don't match, first check the shipment says "
         },
         {
           "t": "status",
@@ -313,7 +313,7 @@
         },
         {
           "t": "text",
-          "v": " from Inventory 360 to see what else moved the item. Ship from stock is done when the shipment is "
+          "v": " from Inventory 360 to see what else moved the item. You're done when the shipment is "
         },
         {
           "t": "strong",
@@ -321,10 +321,10 @@
         },
         {
           "t": "text",
-          "v": " and the drop in on-hand matches the quantity shipped, after allowing for anything else that moved the item."
+          "v": " and the numbers match."
         }
       ],
-      "text": "On-hand before − on-hand after should equal the shipped quantity, in the same unit, as long as nothing else moved the item in that warehouse. On-hand before is the figure from step 4 of Confirm there is stock. If they differ, check that the shipment reads Confirmed. Then open Item Transactions from Inventory 360 to see what else moved the item. Ship from stock is done when the shipment is Confirmed and the drop in on-hand matches the quantity shipped, after allowing for anything else that moved the item."
+      "text": "Take on-hand before minus on-hand after. It should match the quantity you shipped. On-hand before is what you wrote down at step 4 of Confirm there is stock. Use the same unit for both. If they don't match, first check the shipment says Confirmed. Then open Item Transactions from Inventory 360 to see what else moved the item. You're done when the shipment is Confirmed and the numbers match."
     }
   ],
   "example": {

@@ -21,26 +21,26 @@
     "Warehousing"
   ],
   "status": "review",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
   "sessionCode": "whwmd4300m000",
-  "walked": "2026-10-24",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
+        "v": "You've found a warehouse with enough free stock to ship."
       }
     ],
-    "text": "You know a warehouse whose on-hand, less what is allocated, covers the quantity to ship."
+    "text": "You've found a warehouse with enough free stock to ship."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Inventory 360 shows what's on hand, and "
+        "v": "Inventory 360 shows how much of the item you have, and "
       },
       {
         "t": "field",
@@ -48,10 +48,10 @@
       },
       {
         "t": "text",
-        "v": " shows how much of it other orders have already claimed. Stock is often spread across several warehouses. The sales order has to name one that holds enough, or LN won't find stock to pick. This task is where you choose that warehouse."
+        "v": " shows how much other orders already took. The stock is usually in more than one warehouse, so choose one that has enough. That warehouse goes on the sales order. If it doesn't have enough, LN won't find anything to pick."
       }
     ],
-    "text": "Inventory 360 shows what's on hand, and Allocated shows how much of it other orders have already claimed. Stock is often spread across several warehouses. The sales order has to name one that holds enough, or LN won't find stock to pick. This task is where you choose that warehouse."
+    "text": "Inventory 360 shows how much of the item you have, and Allocated shows how much other orders already took. The stock is usually in more than one warehouse, so choose one that has enough. That warehouse goes on the sales order. If it doesn't have enough, LN won't find anything to pick."
   },
   "blocks": [
     {
@@ -77,7 +77,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Type the item in the filter box above the grid's "
+                  "v": "Type the item in the filter box above the "
                 },
                 {
                   "t": "field",
@@ -88,13 +88,13 @@
                   "v": " column and press Enter"
                 }
               ],
-              "text": "Type the item in the filter box above the grid's Item column and press Enter"
+              "text": "Type the item in the filter box above the Item column and press Enter"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The item's row, and a row for any item whose code starts with it, showing "
+                  "v": "Your item, plus any item whose code starts the same way, with "
                 },
                 {
                   "t": "field",
@@ -125,7 +125,7 @@
                   "v": "Allocated"
                 }
               ],
-              "text": "The item's row, and a row for any item whose code starts with it, showing On Hand · Blocked · On Order · Allocated"
+              "text": "Your item, plus any item whose code starts the same way, with On Hand · Blocked · On Order · Allocated"
             }
           ],
           "id": "1",
@@ -147,19 +147,19 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Tick the item's own row"
+                  "v": "Tick the row for your item"
                 }
               ],
-              "text": "Tick the item's own row"
+              "text": "Tick the row for your item"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The header links become available"
+                  "v": "The links at the top turn on"
                 }
               ],
-              "text": "The header links become available"
+              "text": "The links at the top turn on"
             }
           ],
           "id": "2",
@@ -181,7 +181,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the "
+                  "v": "Under "
                 },
                 {
                   "t": "chip",
@@ -189,14 +189,14 @@
                 },
                 {
                   "t": "text",
-                  "v": " group of the header, click "
+                  "v": " at the top, click "
                 },
                 {
                   "t": "button",
                   "label": "Warehouse Inventory"
                 }
               ],
-              "text": "In the Inventory group of the header, click Warehouse Inventory"
+              "text": "Under Inventory at the top, click Warehouse Inventory"
             },
             {
               "tokens": [
@@ -207,10 +207,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " opens with the item already filled in"
+                  "v": " opens with your item already in it"
                 }
               ],
-              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with the item already filled in"
+              "text": "Warehouse - Item Inventory (whwmd2515m000) opens with your item already in it"
             }
           ],
           "id": "3",
@@ -232,7 +232,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Read "
+                  "v": "For each warehouse, read "
                 },
                 {
                   "t": "field",
@@ -245,19 +245,15 @@
                 {
                   "t": "field",
                   "v": "Inventory Allocated"
-                },
-                {
-                  "t": "text",
-                  "v": " per warehouse"
                 }
               ],
-              "text": "Read Inventory on Hand and Inventory Allocated per warehouse"
+              "text": "For each warehouse, read Inventory on Hand and Inventory Allocated"
             },
             {
               "tokens": [
                 {
                   "t": "text",
-                  "v": "The totals are under the grid — "
+                  "v": "The totals are at the bottom — "
                 },
                 {
                   "t": "pencil"
@@ -316,7 +312,7 @@
                   "v": "allocated"
                 }
               ],
-              "text": "The totals are under the grid — item, warehouse, on-hand, allocated"
+              "text": "The totals are at the bottom — item, warehouse, on-hand, allocated"
             }
           ],
           "id": "4",

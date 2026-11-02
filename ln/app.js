@@ -395,13 +395,13 @@
   if (asked.searchParams.has('print') && !navigator.standalone) {
     asked.searchParams.delete('print');
     history.replaceState(history.state, '', asked);
-    const go = async () => { await window.lnShotsReady; window.print(); };
+    const go = async () => { await window.lnPaperReady; window.print(); };
     if (document.readyState === 'complete') go();
     else window.addEventListener('load', go, { once: true });
   }
   waiting();
-  // A reader logged in sees each task's screenshot under its step. Print waits
-  // for this, so a printed copy carries every picture that could be drawn.
+  // A reader logged in sees each task's screenshot under its step, so a
+  // printed copy carries every picture that could be drawn.
   window.lnShotsReady = (async () => {
     const slots = [...document.querySelectorAll('[data-shot]')];
     if (!slots.length || !ln || !(await ln.reader())) return;
@@ -419,6 +419,17 @@
       img.src = url;
     })));
   })().catch(() => { /* without the database the page is as it was built */ });
+  // The owner's own copy names who prepared it and for whom. Anyone else's
+  // keeps the lines empty to write on, and the public page names nobody.
+  const CLIENT = 'LN training environment';
+  const signed = (async () => {
+    if (!ln || !(await ln.owner())) return;
+    const who = await window.Rux.account.person();
+    for (const el of document.querySelectorAll('[data-paper="by"]')) el.textContent = who?.name ?? '';
+    for (const el of document.querySelectorAll('[data-paper="client"]')) el.textContent = CLIENT;
+  })().catch(() => { /* without the database the lines stay empty */ });
+  // Print waits for both, so the copy is whole when the dialog opens.
+  window.lnPaperReady = Promise.all([window.lnShotsReady, signed]);
   // The owner's answers and the private shelf arrive after the page shows.
   ln?.owner().then(async (yes) => {
     if (!yes) return;

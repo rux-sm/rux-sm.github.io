@@ -24,16 +24,16 @@
     "Warehousing"
   ],
   "status": "review",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-24",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "The order status is "
+        "v": "The order is "
       },
       {
         "t": "strong",
@@ -44,7 +44,7 @@
         "v": "."
       }
     ],
-    "text": "The order status is In Process."
+    "text": "The order is In Process."
   },
   "before": [
     {
@@ -70,10 +70,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Only approved lines can be released to warehousing. If you skip approval, the release may fail later without a clear reason. The Order Acknowledgement that prints shows the sales order number, and the warehousing order uses the same number."
+        "v": "You can only release approved lines to the warehouse. If you skip approving, the release can fail later and LN won't tell you why. The Order Acknowledgement that prints has the sales order number on it, and the warehousing order gets the same number."
       }
     ],
-    "text": "Only approved lines can be released to warehousing. If you skip approval, the release may fail later without a clear reason. The Order Acknowledgement that prints shows the sales order number, and the warehousing order uses the same number."
+    "text": "You can only release approved lines to the warehouse. If you skip approving, the release can fail later and LN won't tell you why. The Order Acknowledgement that prints has the sales order number on it, and the warehousing order gets the same number."
   },
   "blocks": [
     {
@@ -99,7 +99,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the header, click "
+                  "v": "At the top, click "
                 },
                 {
                   "t": "button",
@@ -107,7 +107,7 @@
                   "location": "header"
                 }
               ],
-              "text": "In the header, click New"
+              "text": "At the top, click New"
             },
             {
               "tokens": [
@@ -138,7 +138,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Enter your customer as "
+                  "v": "Enter your customer in "
                 },
                 {
                   "t": "field",
@@ -146,10 +146,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", press Tab"
+                  "v": " and press Tab"
                 }
               ],
-              "text": "Enter your customer as Sold-to Business Partner, press Tab"
+              "text": "Enter your customer in Sold-to Business Partner and press Tab"
             },
             {
               "tokens": [
@@ -192,10 +192,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " LN fills in, and change it if your order needs another"
+                  "v": " LN puts in. Change it if your order needs a different one"
                 }
               ],
-              "text": "Check the Order Type LN fills in, and change it if your order needs another"
+              "text": "Check the Order Type LN puts in. Change it if your order needs a different one"
             },
             {
               "tokens": [
@@ -245,10 +245,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ", and change them if the customer needs another day"
+                  "v": ". Change them if the customer needs a different day"
                 }
               ],
-              "text": "Check Planned Delivery Date and Planned Receipt Date, and change them if the customer needs another day"
+              "text": "Check Planned Delivery Date and Planned Receipt Date. Change them if the customer needs a different day"
             },
             {
               "tokens": [
@@ -287,7 +287,15 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Check "
+                  "v": "On the "
+                },
+                {
+                  "t": "chip",
+                  "v": "Order"
+                },
+                {
+                  "t": "text",
+                  "v": " tab, check "
                 },
                 {
                   "t": "field",
@@ -300,21 +308,9 @@
                 {
                   "t": "field",
                   "v": "Site"
-                },
-                {
-                  "t": "text",
-                  "v": " on the "
-                },
-                {
-                  "t": "chip",
-                  "v": "Order"
-                },
-                {
-                  "t": "text",
-                  "v": " tab"
                 }
               ],
-              "text": "Check Sales Office and Site on the Order tab"
+              "text": "On the Order tab, check Sales Office and Site"
             },
             {
               "tokens": [
@@ -353,7 +349,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " to the warehouse recorded at step 4 of "
+                  "v": " to the warehouse you wrote down at step 4 of "
                 },
                 {
                   "t": "link",
@@ -361,7 +357,7 @@
                   "href": "confirm-there-is-stock.md"
                 }
               ],
-              "text": "Set Warehouse to the warehouse recorded at step 4 of Confirm there is stock"
+              "text": "Set Warehouse to the warehouse you wrote down at step 4 of Confirm there is stock"
             },
             {
               "tokens": [
@@ -500,7 +496,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Search for and select the "
+                  "v": "Search for the "
                 },
                 {
                   "t": "field",
@@ -514,9 +510,13 @@
                   "t": "link",
                   "v": "Confirm there is stock",
                   "href": "confirm-there-is-stock.md"
+                },
+                {
+                  "t": "text",
+                  "v": " and select it"
                 }
               ],
-              "text": "Search for and select the Item you checked at step 4 of Confirm there is stock"
+              "text": "Search for the Item you checked at step 4 of Confirm there is stock and select it"
             },
             {
               "tokens": [
@@ -641,14 +641,14 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "In the header, "
+                  "v": "At the top, "
                 },
                 {
                   "t": "command",
                   "route": "Actions ➔ Approve"
                 }
               ],
-              "text": "In the header, Actions ➔ Approve"
+              "text": "At the top, Actions ➔ Approve"
             },
             {
               "tokens": [
@@ -666,10 +666,10 @@
                 },
                 {
                   "t": "text",
-                  "v": ". The Order Acknowledgement prints. For an item that needs documents, a Conformance Reporting sheet prints too"
+                  "v": ". The Order Acknowledgement prints. If the item needs documents, a Conformance Reporting sheet prints too"
                 }
               ],
-              "text": "Status = In Process. The Order Acknowledgement prints. For an item that needs documents, a Conformance Reporting sheet prints too"
+              "text": "Status = In Process. The Order Acknowledgement prints. If the item needs documents, a Conformance Reporting sheet prints too"
             }
           ],
           "id": "12",
@@ -823,14 +823,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "The order isn't approved yet. Choose "
+                "v": "The order isn't approved yet. Go to "
               },
               {
                 "t": "command",
                 "route": "Actions ➔ Approve"
               }
             ],
-            "text": "The order isn't approved yet. Choose Actions ➔ Approve"
+            "text": "The order isn't approved yet. Go to Actions ➔ Approve"
           }
         ]
       },
@@ -857,14 +857,14 @@
               },
               {
                 "t": "text",
-                "v": " is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. "
+                "v": " is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "If Use Confirmation is selected on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
+            "text": "If Use Confirmation is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
           }
         ]
       },
@@ -874,10 +874,10 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "On-hand looks high enough, but the order won't fill"
+                "v": "On-hand looks like enough, but the order won't fill"
               }
             ],
-            "text": "On-hand looks high enough, but the order won't fill"
+            "text": "On-hand looks like enough, but the order won't fill"
           },
           {
             "tokens": [
@@ -891,7 +891,7 @@
               },
               {
                 "t": "text",
-                "v": ": other orders may already have claimed most of the on-hand. See step 4 of "
+                "v": ". Other orders may have already taken most of it. See step 4 of "
               },
               {
                 "t": "link",
@@ -899,7 +899,7 @@
                 "href": "confirm-there-is-stock.md"
               }
             ],
-            "text": "Check Allocated: other orders may already have claimed most of the on-hand. See step 4 of Confirm there is stock"
+            "text": "Check Allocated. Other orders may have already taken most of it. See step 4 of Confirm there is stock"
           }
         ]
       }

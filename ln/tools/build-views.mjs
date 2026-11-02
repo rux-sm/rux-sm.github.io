@@ -837,13 +837,14 @@ const docTable = (cols, rows, cls = '', title = '') => `<div class="rux--data-ta
 // is; the screen keeps the heading, and paper the title row.
 const docH2 = (id, title, cls = '') => `<h2 class="rux--type-productive-heading-04 ln-proc__h2${cls ? ` ${cls}` : ''}" id="${id}">${esc(title)}</h2>`;
 const docFacts = (facts) => `<dl class="ln-proc__facts">${facts.map(([k, v, cls]) => `<div${cls ? ` class="${cls}"` : ''}><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
-// Paper opens with the Rux mark and LN Notes, the kind of document, its
-// version, module and product, and lines to write the client and Prepared by
-// on, because no client's name goes on a public page.
+// Paper opens with the Rux mark and LN Notes, its version, module and
+// product, and lines for the client and Prepared by. They are empty here,
+// because no person's or client's name goes on a public page; app.js fills
+// them on the owner's own copy.
 const brandBlock = (updated, modules) => `<div class="ln-paper-only ln-brand">
 <div class="ln-brand__top"><img class="frame-mark" src="/design/brand/logo-dark.svg" alt=""><span class="ln-brand__name">LN Notes</span></div>
 <dl class="ln-brand__facts"><div><dt>Version</dt><dd>${updated ? day(updated) : '—'}</dd></div><div><dt>Module</dt><dd>${esc(modules.join(', '))}</dd></div><div><dt>Applies to</dt><dd>Infor LN</dd></div></dl>
-<dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd></dd></div></dl>
+<dl class="ln-brand__facts"><div class="ln-brand__by"><dt>Client</dt><dd data-paper="client"></dd></div><div class="ln-brand__by"><dt>Prepared by</dt><dd data-paper="by"></dd></div></dl>
 </div>`;
 // Paper ends with each task's result to tick and a sign-off,
 // so a printed copy is also the test sheet; the screen has the results in its
@@ -854,7 +855,7 @@ ${docTable([['Task', '4rem'], ['Expected result'], ['Pass or fail', '10rem']], r
 </section>`;
 const signOff = () => `<section class="ln-paper-only">
 ${docH2('sign-off', 'Sign-off')}
-${docTable([['Role', '20%'], ['Name', '28%'], ['Signature'], ['Date', '16%']], [['Prepared by', 'Consultant'], ['Reviewed by', 'Key user'], ['Approved by', 'Process owner']].map(([r, who]) => ({ cells: [`${r}<br><span class="ln-quiet">${who}</span>`, '', '', ''] })), 'ln-proc__signoff')}
+${docTable([['Role', '20%'], ['Name', '28%'], ['Signature'], ['Date', '16%']], [['Prepared by', 'Consultant'], ['Reviewed by', 'Key user'], ['Approved by', 'Process owner']].map(([r, who]) => ({ cells: [`${r}<br><span class="ln-quiet">${who}</span>`, r === 'Prepared by' ? '<span data-paper="by"></span>' : '', '', ''] })), 'ln-proc__signoff')}
 </section>`;
 const NOT_WALKED = 'Nobody has walked these steps in LN yet. Follow them as written, and expect a screen or a label to differ.';
 // Not walked is said on screen and left off paper, where a printed copy is

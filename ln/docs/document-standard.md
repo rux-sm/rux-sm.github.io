@@ -11,9 +11,10 @@ follows. A guide that misses a part is unfinished; the work to close it is in
 ## The parts, in order
 
 1. **Brand block**, on the first page only: the Rux mark and LN Notes, the
-   version, the module, Applies to Infor LN, and empty Client and Prepared by
-   lines to write on. No client's name or logo is
-   printed, because the site is public.
+   version, the module, Applies to Infor LN, and Client and Prepared by lines.
+   The page builds them empty, because the site is public. On the owner's
+   own copy, after log-in, Prepared by carries the account's name and Client
+   reads LN training environment; anyone else's stays empty to write on.
 2. **Title and purpose**: one sentence saying what the guide achieves.
 3. **Summary**: one row per task with what you do, its result and its number
    of steps.
@@ -29,6 +30,7 @@ follows. A guide that misses a part is unfinished; the work to close it is in
    tick, and boxes for Pass and Fail.
 10. **Sign-off**: Prepared by a consultant, Reviewed by a key user and
     Approved by a process owner, each with name, signature and date lines.
+    The owner's own copy fills the Prepared by name, as on the first page.
 
 Every page's footer gives the title, LN Notes, the Updated date and Page N
 of M. The version is the Updated

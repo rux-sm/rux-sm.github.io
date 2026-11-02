@@ -24,26 +24,26 @@
     "Warehousing"
   ],
   "status": "review",
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
   "sessionCode": "tdsls4601m200",
-  "walked": "2026-10-25",
+  "walked": null,
   "achieves": {
     "tokens": [
       {
         "t": "text",
-        "v": "A warehousing order exists with the sales order's number."
+        "v": "There's a warehousing order with the same number as your sales order."
       }
     ],
-    "text": "A warehousing order exists with the sales order's number."
+    "text": "There's a warehousing order with the same number as your sales order."
   },
   "before": [],
   "why": {
     "tokens": [
       {
         "t": "text",
-        "v": "Releasing passes the approved lines from Sales to Warehousing. LN creates a warehousing order with the sales order's number, and from then on the warehousing procedure decides what happens next, not the sales order. You release from the Actions menu; the "
+        "v": "Releasing sends the approved lines from Sales to Warehousing. LN makes a warehousing order with the same number as the sales order. From here on, the warehouse side decides what happens next. You release from the Actions menu. The "
       },
       {
         "t": "field",
@@ -51,10 +51,10 @@
       },
       {
         "t": "text",
-        "v": " panel only counts lines."
+        "v": " panel only counts lines, it doesn't release anything."
       }
     ],
-    "text": "Releasing passes the approved lines from Sales to Warehousing. LN creates a warehousing order with the sales order's number, and from then on the warehousing procedure decides what happens next, not the sales order. You release from the Actions menu; the Lines ready for panel only counts lines."
+    "text": "Releasing sends the approved lines from Sales to Warehousing. LN makes a warehousing order with the same number as the sales order. From here on, the warehouse side decides what happens next. You release from the Actions menu. The Lines ready for panel only counts lines, it doesn't release anything."
   },
   "blocks": [
     {
@@ -172,7 +172,7 @@
                 },
                 {
                   "t": "text",
-                  "v": " on or after the order line's "
+                  "v": " to the order line's "
                 },
                 {
                   "t": "field",
@@ -180,15 +180,7 @@
                 },
                 {
                   "t": "text",
-                  "v": ". LN offers today as "
-                },
-                {
-                  "t": "field",
-                  "v": "Upto Release Date"
-                },
-                {
-                  "t": "text",
-                  "v": ", and calculates each line's "
+                  "v": " or later. LN puts in today's date. A line's "
                 },
                 {
                   "t": "field",
@@ -196,10 +188,10 @@
                 },
                 {
                   "t": "text",
-                  "v": " as its planned delivery date minus the outbound lead time"
+                  "v": " is its planned delivery date minus the outbound lead time"
                 }
               ],
-              "text": "Set Upto Release Date on or after the order line's Release Date. LN offers today as Upto Release Date, and calculates each line's Release Date as its planned delivery date minus the outbound lead time"
+              "text": "Set Upto Release Date to the order line's Release Date or later. LN puts in today's date. A line's Release Date is its planned delivery date minus the outbound lead time"
             },
             {
               "tokens": [
@@ -478,10 +470,10 @@
               },
               {
                 "t": "text",
-                "v": " — the date used in this example; LN offers the day you release"
+                "v": " — the day of the test run. LN puts in today's date"
               }
             ],
-            "text": "2026-10-24 — the date used in this example; LN offers the day you release"
+            "text": "2026-10-24 — the day of the test run. LN puts in today's date"
           }
         ]
       }
@@ -564,7 +556,7 @@
               },
               {
                 "t": "text",
-                "v": " is earlier than the order line's "
+                "v": " is before the order line's "
               },
               {
                 "t": "field",
@@ -575,7 +567,7 @@
                 "v": ", which is the planned delivery date minus the outbound lead time. Set a later date"
               }
             ],
-            "text": "Upto Release Date is earlier than the order line's Release Date, which is the planned delivery date minus the outbound lead time. Set a later date"
+            "text": "Upto Release Date is before the order line's Release Date, which is the planned delivery date minus the outbound lead time. Set a later date"
           }
         ]
       },
@@ -602,7 +594,7 @@
               },
               {
                 "t": "text",
-                "v": " at step 8. If it reads "
+                "v": " at step 8. If it says "
               },
               {
                 "t": "status",
@@ -617,7 +609,7 @@
                 "route": "Actions ➔ Release"
               }
             ],
-            "text": "The release didn't run. Check Activities 1 at step 8. If it reads Free, run it from Actions ➔ Release"
+            "text": "The release didn't run. Check Activities 1 at step 8. If it says Free, run it from Actions ➔ Release"
           }
         ]
       },
@@ -640,14 +632,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "That activity doesn't run on its own in this configuration. Run it from "
+                "v": "That activity doesn't run on its own here. Run it from "
               },
               {
                 "t": "command",
                 "route": "Actions ➔ Release ➔ Release to Warehousing…"
               }
             ],
-            "text": "That activity doesn't run on its own in this configuration. Run it from Actions ➔ Release ➔ Release to Warehousing…"
+            "text": "That activity doesn't run on its own here. Run it from Actions ➔ Release ➔ Release to Warehousing…"
           }
         ]
       }

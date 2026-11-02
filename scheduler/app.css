@@ -1482,27 +1482,20 @@ button.scheduler-row-head__num::after {
    each side, 4px tall on the 2px line: in the
    trip's strongest ink once the leg has reached it, where its theme gives
    one, so it stands out of the filled line, and the line's ink dimmed
-   toward the bar while it is ahead. Under a mouse it grows, as an app does
-   in the Mac's Dock, by data.js's `--scheduler-stop-grow`, 1 at the pointer
-   to 0 at 40px: into a 10px dot, a stop ahead ringed in the line's ink. It
-   names the stop and its time on hover. */
+   toward the bar while it is ahead. It names the stop and its time on
+   hover; the route mark leading the row is what opens the route. */
 .scheduler-bar__stop {
   position: absolute;
   inset-block-start: 50%;
   inset-inline-start: var(--scheduler-at);
   translate: -50% -50%;
-  inline-size: calc(2px + var(--scheduler-stop-grow, 0) * 8px);
-  block-size: calc(var(--scheduler-track) + 2px + var(--scheduler-stop-grow, 0) * 6px);
-  border-radius: calc(var(--scheduler-stop-grow, 0) * 5px);
+  inline-size: 2px;
+  block-size: calc(var(--scheduler-track) + 2px);
   background: var(--scheduler-strong, currentColor);
-  transition: inline-size .12s, block-size .12s, border-radius .12s;
 }
-.scheduler-bar__stop--ahead {
-  background: color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent));
-  box-shadow: inset 0 0 0 calc(var(--scheduler-stop-grow, 0) * 1.5px) currentColor;
-}
+.scheduler-bar__stop--ahead { background: color-mix(in oklab, currentColor 60%, var(--scheduler-bg, transparent)); }
 /* The stop a bus out on the leg is heading for wears a ring in the line's
-   ink, 2px out from its tick, so it shows before the mouse comes near. */
+   ink, 2px out from its tick. */
 .scheduler-bar__stop--next {
   outline: 1.5px solid currentColor;
   outline-offset: 2px;

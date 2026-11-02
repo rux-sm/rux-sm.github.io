@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "approved",
+  "status": "review",
   "summary": "ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped.",
   "order": 7,
   "sources": [
@@ -41,7 +41,7 @@
         },
         {
           "t": "link",
-          "v": "Purchase order to warehouse receipt",
+          "v": "Purchase to receipt",
           "href": "purchase-order-to-warehouse-receipt.md"
         },
         {
@@ -49,7 +49,7 @@
           "v": "."
         }
       ],
-      "text": "You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
+      "text": "You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase to receipt."
     }
   ],
   "tasks": [
@@ -80,7 +80,7 @@
             "v": "The order is "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "In Process"
           },
           {
@@ -136,7 +136,7 @@
             "v": "The outbound line says "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Staged"
           },
           {
@@ -160,7 +160,7 @@
             "v": "The shipment says "
           },
           {
-            "t": "strong",
+            "t": "status",
             "v": "Confirmed"
           },
           {
@@ -289,7 +289,7 @@
         },
         {
           "t": "link",
-          "v": "Purchase order to warehouse receipt",
+          "v": "Purchase to receipt",
           "href": "purchase-order-to-warehouse-receipt.md"
         },
         {
@@ -297,7 +297,7 @@
           "v": "."
         }
       ],
-      "text": "> Prerequisite > You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase order to warehouse receipt."
+      "text": "> Prerequisite > You need a customer set up as a sold-to business partner, and an item with stock in a warehouse at your site. To put test stock in a warehouse, follow Purchase to receipt."
     },
     {
       "kind": "prose",
@@ -412,7 +412,7 @@
                   "v": "The order is "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "In Process"
                 }
               ],
@@ -539,7 +539,7 @@
                   "v": "The outbound line says "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Staged"
                 },
                 {
@@ -588,7 +588,7 @@
                   "v": "The shipment says "
                 },
                 {
-                  "t": "chip",
+                  "t": "status",
                   "v": "Confirmed"
                 }
               ],
@@ -855,14 +855,14 @@
                 },
                 {
                   "t": "text",
-                  "v": ". This guide doesn't use it, because when release is automatic, Generate Advice already releases. "
+                  "v": ". This guide doesn't use it, because when release is automatic, Generate Advice already releases "
                 },
                 {
                   "t": "strong",
                   "v": "Not documented for this release."
                 }
               ],
-              "text": "Actions ➔ Advice ➔ Direct Release is right next to Generate Advice. This guide doesn't use it, because when release is automatic, Generate Advice already releases. Not documented for this release."
+              "text": "Actions ➔ Advice ➔ Direct Release is right next to Generate Advice. This guide doesn't use it, because when release is automatic, Generate Advice already releases Not documented for this release."
             }
           ]
         },

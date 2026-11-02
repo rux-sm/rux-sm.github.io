@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
@@ -556,7 +556,7 @@
                 },
                 {
                   "t": "value",
-                  "v": "Run"
+                  "v": "run"
                 },
                 {
                   "t": "text",
@@ -571,10 +571,10 @@
                 },
                 {
                   "t": "value",
-                  "v": "Mission"
+                  "v": "mission"
                 }
               ],
-              "text": "Run, Mission"
+              "text": "run, mission"
             }
           ],
           "id": "10",
@@ -879,7 +879,7 @@
                 "v": "The outbound line's status says "
               },
               {
-                "t": "chip",
+                "t": "status",
                 "v": "Planned"
               }
             ],
@@ -900,19 +900,19 @@
                 "v": " on the warehousing order and the line turns "
               },
               {
-                "t": "chip",
+                "t": "status",
                 "v": "Open"
               },
               {
                 "t": "text",
-                "v": ". "
+                "v": " "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "You can't advise a planned line. Choose Activate on the warehousing order and the line turns Open. Not documented for this release."
+            "text": "You can't advise a planned line. Choose Activate on the warehousing order and the line turns Open Not documented for this release."
           }
         ]
       },

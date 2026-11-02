@@ -99,9 +99,11 @@ html, body, .ln-pages.rux--content { background: none; min-block-size: 0; }
    across pages, and a heading stays with what follows. */
 .ln-proc__table tr, .ln-proc__list li, .ln-list > li, .ln-full__rows > div, .ln-proc__lead,
 .ln-proc__task-title, .ln-proc__n, .ln-proc__meta { break-inside: avoid; }
-/* A short list of symptoms stays on one page, and a paragraph leaves no
-   line or two alone at the top or foot of one. */
+/* A short list of symptoms stays on one page, a longer one never carries a
+   last row alone onto the next, and a paragraph leaves no line or two alone
+   at the top or foot of one. */
 .ln-proc__wrong:not(:has(tbody tr:nth-child(4))) { break-inside: avoid; }
+.ln-proc__wrong tbody tr:last-child { break-before: avoid; }
 .ln-pages p, .ln-pages li { orphans: 3; widows: 3; }
 h1, h2, h3, h4, .rux--accordion__heading, .ln-proc__meta, .ln-proc__lead { break-after: avoid; }
 

@@ -137,7 +137,7 @@
       "code": "tcemm0650m000",
       "name": "Site",
       "purpose": "Holds one site: its planning cluster, calendar and enterprise unit, its external links, and the warehouses and departments that belong to it.",
-      "route": "drill-in from Sites (tcemm0150m000), by New or by double-clicking a line"
+      "route": "Drill In from Sites (tcemm0150m000), by New or by double-clicking a line"
     },
     {
       "code": "tcemm1135m000",
@@ -209,7 +209,7 @@
       "code": "tcibd0501m100",
       "name": "Item",
       "purpose": "Enters or changes one item's company-wide data.",
-      "route": "tick a row in Items (tcibd0501m000) and drill in"
+      "route": "tick a row in Items (tcibd0501m000) and Drill In"
     },
     {
       "code": "tcibd0502m000",
@@ -269,7 +269,7 @@
       "code": "tcibd2600m000",
       "name": "Item - Ordering",
       "purpose": "Holds the item's company-wide ordering data: lot-size limits, intervals and safety settings that the site and warehouse levels start from.",
-      "route": "drill-in from Items - Ordering (tcibd2100m000) by double-clicking a record, or stand-alone"
+      "route": "Drill In from Items - Ordering (tcibd2100m000) by double-clicking a record, or stand-alone"
     },
     {
       "code": "tcibd3100m000",
@@ -461,7 +461,7 @@
       "code": "tdpcg0611m000",
       "name": "Price Book",
       "purpose": "Shows one price book and the records in effect.",
-      "route": "drill-in from Price Books; the plural list is at Common - Pricing - Prices - Price Books"
+      "route": "Drill In from Price Books; the plural list is at Common - Pricing - Prices - Price Books"
     },
     {
       "code": "tdpur0143m000",
@@ -479,13 +479,13 @@
       "code": "tdpur0694m000",
       "name": "Purchase Order Type",
       "purpose": "Holds one purchase order type's settings, number series, warehousing order type and the activities its orders go through.",
-      "route": "drill-in from Order Types (tdpur0194m000), whose list opens each type in this detail session"
+      "route": "Drill In from Order Types (tdpur0194m000), whose list opens each type in this detail session"
     },
     {
       "code": "tdpur4100m900",
       "name": "Purchase Order",
       "purpose": "Enters, changes and processes one purchase order and its lines on one screen.",
-      "route": "drill in from the purchase order list, or from Purchase Order Intake Workbench (tdpur4601m200)"
+      "route": "Drill In from the purchase order list, or from Purchase Order Intake Workbench (tdpur4601m200)"
     },
     {
       "code": "tdpur4101m000",
@@ -533,7 +533,7 @@
       "code": "tdsls4100m900",
       "name": "Sales Order",
       "purpose": "Shows one sales order, header and lines, opened from the intake workbench.",
-      "route": "drill-in from Order Intake Workbench (tdsls4601m200)"
+      "route": "Drill In from Order Intake Workbench (tdsls4601m200)"
     },
     {
       "code": "tdsls4101m000",
@@ -617,7 +617,7 @@
       "code": "tibom3600m000",
       "name": "Job Shop Bill of Material",
       "purpose": "Shows one bill of material in detail. Job Shop Bills of Material opens it.",
-      "route": "drill-in from Job Shop Bills of Material (tibom3100m000)"
+      "route": "Drill In from Job Shop Bills of Material (tibom3100m000)"
     },
     {
       "code": "ticpr0100m000",
@@ -747,7 +747,7 @@
       "code": "tirou4600m000",
       "name": "Job Shop Routing",
       "purpose": "Holds routings by revision and site, with the same data as Job Shop Routings.",
-      "route": "drill in from Job Shop Routings (tirou4100m000)"
+      "route": "Drill In from Job Shop Routings (tirou4100m000)"
     },
     {
       "code": "tisfc0100s000",
@@ -909,7 +909,7 @@
       "code": "whinh2100m100",
       "name": "Warehousing Order",
       "purpose": "Shows one warehousing order, which starts and controls one inventory movement. LN creates it, or you enter it by hand.",
-      "route": "drill into an order row on Warehouse Manager Dashboard (whinh2300m000), or on Orders (whinh2100m000)"
+      "route": "Drill In from an order row on Manager Dashboard (whinh2300m000), or on Orders (whinh2100m000)"
     },
     {
       "code": "whinh2104m000",
@@ -955,7 +955,7 @@
       "code": "whinh3512m000",
       "name": "Warehouse Receipt",
       "purpose": "Creates and confirms receipts, where incoming goods become inventory.",
-      "route": "Actions - Receive from the inbound order line, or drill in from the receipt list"
+      "route": "Actions - Receive from the inbound order line, or Drill In from the receipt list"
     },
     {
       "code": "whinh3530m000",
@@ -973,7 +973,7 @@
       "code": "whinh4131m000",
       "name": "Shipment Lines",
       "purpose": "Changes a shipped quantity. This is the only place to do it, and only before the shipment line is confirmed.",
-      "route": "drill-in from Shipments (whinh4130m000)"
+      "route": "Drill In from Shipments (whinh4130m000)"
     },
     {
       "code": "whinh4135m000",
@@ -1003,7 +1003,7 @@
       "code": "whinh4630m000",
       "name": "Shipment",
       "purpose": "Shows and changes shipments. Here a shipment is frozen and confirmed, and the inventory leaves.",
-      "route": "drill into a row on Shipments (whinh4130m000)"
+      "route": "Drill In from a row on Shipments (whinh4130m000)"
     },
     {
       "code": "whinh5821m000",
@@ -1085,7 +1085,7 @@
       "code": "whwmd4600m000",
       "name": "Item - Warehousing",
       "purpose": "Holds the warehousing details of one item: location control, inventory differences and supply settings.",
-      "route": "drill-in from Item (tcibd0501m100); it opens as a dialog over that session"
+      "route": "Drill In from Item (tcibd0501m100); it opens as a dialog over that session"
     },
     {
       "code": "whwmd6130m000",

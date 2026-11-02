@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Sales ➔ Orders ➔ Order Intake Workbench",
   "session": "Sales Order Intake Workbench",
@@ -36,7 +36,7 @@
         "v": "The order is "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "In Process"
       },
       {
@@ -801,14 +801,14 @@
               },
               {
                 "t": "text",
-                "v": " is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. "
+                "v": " is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "If Use Confirmation is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first. Not documented for this release."
+            "text": "If Use Confirmation is ticked on the order's terms and conditions or on the sold-to business partner, the customer has to confirm the goods first Not documented for this release."
           }
         ]
       },

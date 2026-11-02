@@ -900,10 +900,16 @@ const docProse = (t, k) => t.blocks.filter((b) => b.kind === 'prose').map((b) =>
   return c ? notice(c, docText(c.rest, t, `Task ${k || ''}`.trim())) : `<p>${docText(b.tokens, t, `Task ${k || ''}`.trim())}</p>`;
 }).join('');
 // The screens a Document opens, in the order it first opens them.
+// A session a task opens from the menu is named as that menu entry reads, as
+// the task's own line names it; one reached another way keeps its own name.
+const menuNames = new Map(tasks.filter((t) => t.sessionCode && t.route?.includes(ARROW)).map((t) => [t.sessionCode, t.route.split(ARROW).at(-1)]));
+// How to open a session: a menu route as a route, or atlas's sentence with its
+// Drill In shown as the button and each code as a code.
+const howToOpen = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r)
+  : esc(cap(r ?? '—')).replace(/\bDrill In\b/g, '<span class="ln-t-press">Drill In</span>').replace(/\(([a-z]{5}\d{4}[a-z]\d{3})\)/g, (m, c) => coded(c));
 function screensTable(ts) {
   const codes = [...new Set(ts.flatMap((t) => [...codesOf(t)]))].filter((c) => cards.has(c));
-  const how = (r) => r && r.includes(ARROW) && !/[();]/.test(r) ? route(r) : esc(cap(r ?? '—'));
-  return docTable([['Session', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(cards.get(c).name)), exact(c), how(cards.get(c).route)] })), 'ln-proc__sect', 'Sessions used');
+  return docTable([['Session', '34%'], ['Code', '9rem'], ['How to open it']], codes.map((c) => ({ cells: [screenLink(c, esc(menuNames.get(c) ?? cards.get(c).name)), exact(c), howToOpen(cards.get(c).route)] })), 'ln-proc__sect', 'Sessions used');
 }
 const gapsSection = () => doc.gaps.length ? `<section class="ln-proc__gaps">
 ${docH2('gaps', 'Known gaps')}

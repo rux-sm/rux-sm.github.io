@@ -20,7 +20,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Inventory 360",
   "session": "Inventory 360",
@@ -40,7 +40,7 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Go back to the same item and warehouse from "
+        "v": "Go back to the same item and warehouse from step 4 of "
       },
       {
         "t": "link",
@@ -52,7 +52,7 @@
         "v": ". If on-hand went down by what you shipped, the stock really left."
       }
     ],
-    "text": "Go back to the same item and warehouse from Confirm there is stock. If on-hand went down by what you shipped, the stock really left."
+    "text": "Go back to the same item and warehouse from step 4 of Confirm there is stock. If on-hand went down by what you shipped, the stock really left."
   },
   "blocks": [
     {
@@ -316,7 +316,7 @@
           "v": " from Inventory 360 to see what else moved the item. You're done when the shipment is "
         },
         {
-          "t": "strong",
+          "t": "status",
           "v": "Confirmed"
         },
         {

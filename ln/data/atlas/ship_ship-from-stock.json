@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Shipments ➔ Shipments",
   "session": "Shipments",
@@ -36,7 +36,7 @@
         "v": "The shipment says "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Confirmed"
       },
       {
@@ -582,7 +582,7 @@
               },
               {
                 "t": "text",
-                "v": " column on Outbound Lines, then do "
+                "v": " column on Outbound Lines, then pick it from step 1 of "
               },
               {
                 "t": "link",
@@ -590,7 +590,7 @@
                 "href": "pick-the-goods_ship-from-stock.md"
               }
             ],
-            "text": "The line may not be picked yet. Check the Picked column on Outbound Lines, then do Pick the items"
+            "text": "The line may not be picked yet. Check the Picked column on Outbound Lines, then pick it from step 1 of Pick the items"
           }
         ]
       },
@@ -609,14 +609,14 @@
             "tokens": [
               {
                 "t": "text",
-                "v": "If the order type checks shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it gets checked again. "
+                "v": "If the order type checks shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it gets checked again "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "If the order type checks shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it gets checked again. Not documented for this release."
+            "text": "If the order type checks shipments, fix any message marked Blocking first. If you reopen a frozen shipment, it gets checked again Not documented for this release."
           }
         ]
       },
@@ -691,14 +691,14 @@
               },
               {
                 "t": "text",
-                "v": ", see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line. "
+                "v": ", see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line "
               },
               {
                 "t": "strong",
                 "v": "Not documented for this release."
               }
             ],
-            "text": "Lower Shipped Quantity on Shipment Lines (whinh4131m000), see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line. Not documented for this release."
+            "text": "Lower Shipped Quantity on Shipment Lines (whinh4131m000), see step 4. When you confirm the shipment, LN makes a backorder for the rest. Once Sales confirms the backorder, it becomes a new order line Not documented for this release."
           }
         ]
       }

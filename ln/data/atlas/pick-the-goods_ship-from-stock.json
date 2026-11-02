@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Outbound/Inspections ➔ Picking List",
   "session": "Picking List",
@@ -36,7 +36,7 @@
         "v": "The outbound line says "
       },
       {
-        "t": "strong",
+        "t": "status",
         "v": "Staged"
       },
       {
@@ -159,7 +159,7 @@
               "task": "generate-outbound-advice",
               "step": "10",
               "n": 0,
-              "label": "Run"
+              "label": "run"
             }
           ]
         },
@@ -310,7 +310,7 @@
               "task": "generate-outbound-advice",
               "step": "10",
               "n": 1,
-              "label": "Mission"
+              "label": "mission"
             }
           ]
         },
@@ -550,7 +550,7 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Your order from "
+                  "v": "The order you opened at step 3 of "
                 },
                 {
                   "t": "link",
@@ -558,7 +558,7 @@
                   "href": "generate-outbound-advice.md"
                 }
               ],
-              "text": "Your order from Generate outbound advice"
+              "text": "The order you opened at step 3 of Generate outbound advice"
             }
           ],
           "id": "9",

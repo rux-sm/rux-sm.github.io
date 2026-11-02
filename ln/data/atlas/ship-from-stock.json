@@ -10,7 +10,7 @@
     "Warehousing"
   ],
   "updated": "2026-11-01",
-  "status": "approved",
+  "status": "review",
   "summary": "ship a sales order for an item you already have in stock, then check that inventory went down by what you shipped.",
   "order": 7,
   "sources": [
@@ -117,10 +117,10 @@
         "tokens": [
           {
             "t": "text",
-            "v": "Advised and Released both match the ordered quantity, and the picking list prints."
+            "v": "Advised and Released match the order, and the picking list prints."
           }
         ],
-        "text": "Advised and Released both match the ordered quantity, and the picking list prints."
+        "text": "Advised and Released match the order, and the picking list prints."
       },
       "steps": 13,
       "walked": "2026-11-01"
@@ -495,10 +495,10 @@
               "tokens": [
                 {
                   "t": "text",
-                  "v": "Advised and Released both match the ordered quantity, and the picking list prints"
+                  "v": "Advised and Released match the order, and the picking list prints"
                 }
               ],
-              "text": "Advised and Released both match the ordered quantity, and the picking list prints"
+              "text": "Advised and Released match the order, and the picking list prints"
             }
           ]
         },

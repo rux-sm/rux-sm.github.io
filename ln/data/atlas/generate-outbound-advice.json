@@ -23,7 +23,7 @@
     "Sales",
     "Warehousing"
   ],
-  "status": "approved",
+  "status": "review",
   "updated": "2026-11-01",
   "route": "Warehousing ➔ Manager Dashboard",
   "session": "Warehouse Manager Dashboard",
@@ -33,10 +33,10 @@
     "tokens": [
       {
         "t": "text",
-        "v": "Advised and Released both match the ordered quantity, and the picking list prints."
+        "v": "Advised and Released match the order, and the picking list prints."
       }
     ],
-    "text": "Advised and Released both match the ordered quantity, and the picking list prints."
+    "text": "Advised and Released match the order, and the picking list prints."
   },
   "before": [],
   "why": {
